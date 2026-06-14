@@ -77,8 +77,7 @@ final class MedicationBarViewModel {
 
     // MARK: - Public
 
-    func refresh() {
-        let now = Date()
+    func refresh(now: Date = Date()) {
         let cutoff = now.addingTimeInterval(-24 * 3600)
         let mockMode = UserDefaults.standard.bool(forKey: "debugMockMode")
         var descriptor = FetchDescriptor<MedicationEvent>(

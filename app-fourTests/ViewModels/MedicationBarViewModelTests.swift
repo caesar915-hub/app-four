@@ -71,14 +71,16 @@ struct MedicationBarViewModelTests {
     }
 
     @Test func ordinalIsCorrectForMultipleDoses() throws {
-        let now = Date()
+        // Anchor to midday so the two doses never straddle a calendar-day boundary
+        // regardless of when the suite runs (the ordinal groups doses by `startOfDay`).
+        let now = Calendar.current.startOfDay(for: Date()).addingTimeInterval(12 * 3600)
         let first  = MedicationEvent(name: "Concerta", dose: "36mg", takenAt: now.addingTimeInterval(-3600), taken: true, source: .manual)
         let second = MedicationEvent(name: "Concerta", dose: "36mg", takenAt: now, taken: true, source: .manual)
         context.insert(first)
         context.insert(second)
         try context.save()
 
-        viewModel.refresh()
+        viewModel.refresh(now: now)
 
         #expect(viewModel.activeDoses.count == 2)
         #expect(viewModel.activeDoses.first?.doseNumber == 1)
