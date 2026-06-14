@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calendar Check-in Timeline — planned view (v2)</title>
+<style>
+  :root {
+    --ink: #1c1c1e;
+    --ink-2: #3a3a3c;
+    --muted: #8e8e93;
+    --purple: #7C3AED;       /* medication effect ring */
+    --track: #E6E6EC;        /* unfilled ring track */
+    --bg: #ffffff;
+    --frame: #111114;
+    --dot: #d9d9e0;
+  }
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    background: #f2f2f7;
+    color: var(--ink);
+    padding: 32px 16px 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+  h1.page { font-size: 17px; font-weight: 600; color: var(--ink-2); margin: 0; }
+  .sub { font-size: 13px; color: var(--muted); margin: -18px 0 0; max-width: 400px; text-align: center; line-height: 1.5; }
+
+  .phone {
+    width: 390px;
+    background: var(--bg);
+    border-radius: 40px;
+    border: 10px solid var(--frame);
+    box-shadow: 0 24px 60px rgba(0,0,0,.18);
+    overflow: hidden;
+  }
+  .screen {
+    padding: 22px 20px 36px;
+    background:
+      radial-gradient(circle at 1px 1px, var(--dot) 1px, transparent 0) 0 0 / 16px 16px,
+      var(--bg);
+    min-height: 760px;
+  }
+  .month { font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--ink); }
+  .month::after { content:""; display:block; width:64px; height:2px; background: var(--ink); margin-top:6px; }
+  .day-title { font-size: 26px; font-weight: 700; margin: 22px 0 6px; letter-spacing: -.01em; }
+
+  .timeline { margin-top: 8px; }
+  .node { display: flex; gap: 16px; }
+  .rail { position: relative; width: 76px; flex: 0 0 76px; }
+  .rail .bead { position: relative; z-index: 1; width: 76px; height: 76px; }
+  .connector {
+    position: absolute; top: 76px; bottom: 0; left: 38px;
+    width: 0; border-left: 2px dashed #c9c9d2; z-index: 0;
+  }
+  .node:last-child .connector { display: none; }
+
+  .bead .text {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    line-height: 1.05; pointer-events: none;
+  }
+  .bead .time { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .bead .pct  { font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .content { padding-top: 22px; padding-bottom: 30px; }
+  .node:last-child .content { padding-bottom: 6px; }
+  .content .label { font-size: 15px; font-weight: 700; letter-spacing: .04em; color: var(--ink); }
+  .content .meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .legend { width: 390px; background: #fff; border-radius: 18px; padding: 18px 20px; box-shadow: 0 6px 24px rgba(0,0,0,.06); }
+  .legend h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 12px; }
+  .legend .row { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 14px; }
+  .swatch { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--ink-2); }
+  .dot { width: 14px; height: 14px; border-radius: 50%; }
+  .ramp { height: 12px; width: 180px; border-radius: 6px;
+          background: linear-gradient(90deg, #D1B8FF 0%, #7300BF 30%, #7300BF 70%, #FF8C8C 100%); }
+  .note { font-size: 12px; color: var(--muted); line-height: 1.5; margin: 4px 0 0; }
+  .rule { background:#FBF5FF; border:1px solid #ECDDFB; border-radius:12px; padding:12px 14px; font-size:12px; color:#5B3D86; line-height:1.5; }
+</style>
+</head>
+<body>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <radialGradient id="moodBlue" cx="38%" cy="32%" r="80%">
+        <stop offset="0%" stop-color="#86D2F6"/>
+        <stop offset="100%" stop-color="#4FB0E8"/>
+      </radialGradient>
+    </defs>
+  </svg>
+
+  <h1 class="page">Calendar — Mood + Medication check-in timeline (v2)</h1>
+  <p class="sub">Corrected: a dose's ring fills to a full circle at 99%; at 100% the dose is finished and its ring disappears. New 19:00 node shows the first dose just after it vanished.</p>
+
+  <div class="phone">
+    <div class="screen">
+      <div class="month">JUN 2026</div>
+      <div class="day-title">Tuesday 9th June</div>
+      <div class="timeline" id="timeline"></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="rule"><strong>Ring lifecycle:</strong> a dose draws a ring from 0% (just taken) up to a full circle at 99%. The moment it reaches 100% the dose has run its full window — the ring (and its %) disappear, and any newer dose moves outward to fill the slot.</div>
+    <div style="height:14px"></div>
+    <h2>Bead centre — mood colour (from the check-in)</h2>
+    <div class="row">
+      <div class="swatch"><span class="dot" style="background:#FF3B30"></span>Low</div>
+      <div class="swatch"><span class="dot" style="background:#8E8E93"></span>Flat</div>
+      <div class="swatch"><span class="dot" style="background:#FFCC00"></span>Okay</div>
+      <div class="swatch"><span class="dot" style="background:#34C759"></span>Good</div>
+      <div class="swatch"><span class="dot" style="background:#30B0C7"></span>Great</div>
+      <div class="swatch"><span class="dot" style="background:#AEAEB2"></span>None / med-only (hollow)</div>
+    </div>
+    <h2>Rings — medication effect progress</h2>
+    <div class="row" style="align-items:center; gap:12px">
+      <div class="ramp"></div>
+      <span class="note" style="margin:0">0% &rarr; 99% over the dose's window</span>
+    </div>
+    <p class="note">Mock uses flat purple to match your screenshot. The plan can instead reuse the medication bar's colour ramp (lavender&rarr;purple&rarr;red) — still your call.</p>
+  </div>
+
+<script>
+  // Illustrative percentages. rings[0] = outermost = oldest dose. filled = mood/voice check-in.
+  // A ring value of 100 is never shown — the dose has finished and drops off.
+  const nodes = [
+    { time: "10:00", label: "MOOD - ENERGY - FOCUS", meta: "Mood check-in",                    filled: true,  rings: [] },
+    { time: "10:45", label: "CONCERTA 27 MG",        meta: "Medication check-in",              filled: false, rings: [0] },
+    { time: "14:00", label: "MOOD - ENERGY - FOCUS", meta: "Mood check-in · 1 dose active",    filled: true,  rings: [50] },
+    { time: "16:00", label: "CONCERTA 27 MG",        meta: "Medication check-in · 2nd dose",   filled: false, rings: [75, 0] },
+    { time: "18:00", label: "MOOD - ENERGY - FOCUS", meta: "Mood check-in · 2 doses active",   filled: true,  rings: [99, 25] },
+    { time: "19:00", label: "MOOD - ENERGY - FOCUS", meta: "Mood check-in · 1st dose finished", filled: true,  rings: [38] },
+  ];
+
+  const GEO = [ { r: 33, w: 5 }, { r: 24.5, w: 5 } ]; // outer, inner
+  const PURPLE = "#7C3AED", TRACK = "#E6E6EC";
+
+  function bead(node) {
+    const cx = 38, cy = 38;
+    // Finished doses (>=100%) never render.
+    const visible = node.rings.filter(p => p < 100);
+
+    const center = node.filled
+      ? `<circle cx="${cx}" cy="${cy}" r="30" fill="url(#moodBlue)"/>`
+      : `<circle cx="${cx}" cy="${cy}" r="30" fill="#fff" stroke="#DcDce2" stroke-width="1.5"/>`;
+
+    let rings = "";
+    visible.forEach((pct, i) => {
+      const g = GEO[i], C = 2 * Math.PI * g.r, dash = (pct / 100) * C;
+      if (!node.filled) {
+        rings += `<circle cx="${cx}" cy="${cy}" r="${g.r}" fill="none" stroke="${TRACK}" stroke-width="${g.w}"/>`;
+      }
+      if (pct > 0) {
+        rings += `<circle cx="${cx}" cy="${cy}" r="${g.r}" fill="none" stroke="${PURPLE}"
+                   stroke-width="${g.w}" stroke-linecap="round"
+                   stroke-dasharray="${dash} ${C - dash}" transform="rotate(-90 ${cx} ${cy})"/>`;
+      }
+    });
+
+    const tcolor = node.filled ? "#ffffff" : PURPLE;
+    const pcts = visible.map(p => `<div class="pct" style="color:${tcolor}">${p}%</div>`).join("");
+
+    return `
+      <div class="bead">
+        <svg width="76" height="76" viewBox="0 0 76 76">${center}${rings}</svg>
+        <div class="text">
+          <div class="time" style="color:${tcolor}">${node.time}</div>
+          ${pcts}
+        </div>
+      </div>`;
+  }
+
+  document.getElementById("timeline").innerHTML = nodes.map(n => `
+    <div class="node">
+      <div class="rail">
+        ${bead(n)}
+        <div class="connector"></div>
+      </div>
+      <div class="content">
+        <div class="label">${n.label}</div>
+        <div class="meta">${n.meta}</div>
+      </div>
+    </div>`).join("");
+</script>
+</body>
+</html>

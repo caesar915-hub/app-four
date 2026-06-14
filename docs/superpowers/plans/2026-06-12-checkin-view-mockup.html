@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check-in View — crescent hub proposals — 2026-06-12</title>
+<style>
+  :root{
+    --acc:#4F8A8B;            /* PLACEHOLDER accent — palette is being reworked */
+    --acc-l:#6AA9AA;
+    --med:#9B7BD0;           /* medication = purple (locked, app-wide) */
+    --med-l:#B79BE0;
+    --radius-pill:18px;
+    --font: -apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;
+    --serif:"New York","Iowan Old Style",Georgia,serif;
+  }
+  .dark{ --bg:#0E0E10; --card:#1C1C1E; --card2:#262629; --ink:#F2F2F7; --ink2:rgba(235,235,245,.6); --sep:rgba(235,235,245,.18); --hair:rgba(235,235,245,.10); }
+  .light{ --bg:#F4F4F2; --card:#FFFFFF; --card2:#ECECEA; --ink:#15161A; --ink2:rgba(60,60,67,.62); --sep:rgba(60,60,67,.20); --hair:rgba(60,60,67,.08); }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ font-family:var(--font); background:#1a1a1c; color:#eee; padding:40px 28px 80px; }
+  h1{ font-size:26px; font-weight:700; margin-bottom:6px; }
+  .sub{ color:#9a9a9e; font-size:14px; margin-bottom:28px; max-width:880px; line-height:1.5; }
+  .note{ background:#26262a; border:1px solid #38383c; border-radius:12px; padding:14px 18px; font-size:13px; color:#c8c8cc; max-width:880px; margin-bottom:36px; line-height:1.55;}
+  .note b{color:#fff;}
+  .acc-chip{display:inline-block;width:11px;height:11px;border-radius:3px;background:var(--acc);vertical-align:middle;margin:0 4px;}
+
+  .proposal{ margin-bottom:64px; }
+  .ptitle{ font-size:20px; font-weight:700; color:#fff; margin-bottom:4px; }
+  .ptag{ font-size:13px; color:var(--acc-l); font-weight:600; margin-bottom:10px; letter-spacing:.3px;}
+  .pdesc{ font-size:14px; color:#bcbcc0; max-width:880px; line-height:1.55; margin-bottom:22px; }
+  .pdesc em{color:#fff;font-style:normal;font-weight:600;}
+
+  .row{ display:flex; gap:30px; flex-wrap:wrap; align-items:flex-start;}
+  .framewrap{display:flex;flex-direction:column;gap:8px;align-items:center;}
+  .framelabel{font-size:12px;color:#8a8a8e;letter-spacing:.4px;text-transform:uppercase;}
+
+  /* ---- phone frame ---- */
+  .phone{ width:340px; border-radius:46px; padding:13px; background:#0a0a0b; box-shadow:0 20px 50px rgba(0,0,0,.55); }
+  .screen{ border-radius:34px; overflow:hidden; background:var(--bg); display:flex; flex-direction:column; height:710px; position:relative;}
+  .statusbar{ display:flex; justify-content:space-between; align-items:center; padding:16px 26px 4px; font-size:14px; font-weight:600; color:var(--ink);}
+  .statusbar .dots{letter-spacing:2px;font-size:11px;color:var(--ink2);}
+
+  /* medication bar (liquid glass capsule) */
+  .medbar{ margin:10px 16px 0; border-radius:20px; padding:10px 14px; background:var(--card2); border:1px solid var(--hair); display:flex; align-items:center; gap:10px; backdrop-filter:blur(20px);}
+  .medbar .mdot{width:8px;height:8px;border-radius:50%;background:var(--med);}
+  .medbar .mtext{font-size:12px;color:var(--ink2);}
+  .medbar .mtext b{color:var(--ink);font-weight:600;}
+
+  .navtitle{padding:18px 24px 0;}
+  .navtitle h2{font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-.5px;}
+  .navtitle .greet{font-size:14px;color:var(--ink2);margin-top:2px;}
+
+  .stage{flex:1; position:relative; display:flex; align-items:center; justify-content:center;}
+
+  /* crescent (double stroke, opening faces right) */
+  .crescent{ position:absolute; border-radius:50%; border-style:solid; border-color:var(--ink); border-right-color:transparent; opacity:.85;}
+  .cr-out{ width:300px; height:300px; border-width:13px; }
+  .cr-in{ width:262px; height:262px; border-width:9px; opacity:.5;}
+  .crescent.acc{ border-color:var(--acc); border-right-color:transparent; opacity:1;}
+  .crescent.acc.cr-in{opacity:.45;}
+
+  /* stacked pills */
+  .pills{ position:relative; z-index:2; display:flex; flex-direction:column; gap:14px; align-items:stretch; width:188px;}
+  .pill{ background:var(--card); border:1px solid var(--sep); border-radius:var(--radius-pill); padding:13px 16px; display:flex; align-items:center; gap:11px; box-shadow:0 6px 18px rgba(0,0,0,.18);}
+  .pill .ic{width:26px;height:26px;flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink);}
+  .pill .lab{font-size:14px;font-weight:600;color:var(--ink);line-height:1.15;}
+  .pill .sub{font-size:11px;color:var(--ink2);margin-top:1px;}
+  .pill.primary{ background:var(--acc); border-color:transparent;}
+  .pill.primary .ic,.pill.primary .lab{color:#fff;}
+  .pill.primary .sub{color:rgba(255,255,255,.8);}
+  .pill.med .ic{color:var(--med);}
+
+  /* mic hero (proposal C) */
+  .michero{ position:relative; z-index:2; width:128px;height:128px;border-radius:50%; background:var(--acc); display:flex;align-items:center;justify-content:center; box-shadow:0 14px 36px rgba(79,138,139,.45);}
+  .michero svg{color:#fff;}
+  .satellite{position:absolute; z-index:3; display:flex;align-items:center;gap:8px; background:var(--card); border:1px solid var(--sep); border-radius:16px; padding:9px 13px; box-shadow:0 6px 16px rgba(0,0,0,.16);}
+  .satellite .lab{font-size:12.5px;font-weight:600;color:var(--ink);}
+  .satellite.med .ic{color:var(--med);}
+  .sat-top{top:74px; left:50%; transform:translateX(-50%);}
+  .sat-bot{bottom:74px; left:50%; transform:translateX(-50%);}
+
+  /* recording state (proposal B) */
+  .recring{position:absolute;width:300px;height:300px;border-radius:50%;border:13px solid var(--acc);border-right-color:transparent;}
+  .recring.pulse{width:332px;height:332px;border-width:2px;opacity:.35;border-color:var(--acc);}
+  .recwave{position:relative;z-index:2;display:flex;align-items:center;gap:4px;height:60px;}
+  .recwave i{width:4px;border-radius:3px;background:var(--acc);display:block;}
+  .reccenter{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:18px;}
+  .rectime{font-size:34px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .reclabel{font-size:13px;color:var(--ink2);letter-spacing:.4px;}
+  .stopbtn{width:64px;height:64px;border-radius:20px;background:#E0524A;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(224,82,74,.4);}
+  .stopbtn .sq{width:22px;height:22px;border-radius:6px;background:#fff;}
+  .reccancel{font-size:13px;color:var(--ink2);}
+
+  /* tab bar */
+  .tabbar{ margin:0 14px 12px; height:64px; border-radius:32px; background:var(--card2); border:1px solid var(--hair); backdrop-filter:blur(20px); display:flex; align-items:center; justify-content:space-around; padding:0 6px;}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink2);font-size:10px;font-weight:600;}
+  .tab.on{color:var(--acc);}
+  .tab svg{width:22px;height:22px;}
+
+  .axis{font-size:12px;color:#86868a;margin:6px 0 0;}
+  .axis b{color:#cfcfd2;}
+</style>
+</head>
+<body>
+
+  <h1>Check-in view — crescent hub</h1>
+  <p class="sub">Three proposals replacing the old Record screen (segmented Voice/Text picker + waveform + round record button). Each is a single <em>Check in</em> hub built around your crescent sketch, with three actions: <b>Medication → Log meds</b>, <b>Voice input → Speak check-in</b>, <b>Text input → Type note</b>. Shown light + dark.</p>
+
+  <div class="note">
+    <b>Colour is deliberately neutral here.</b> Since the palette is being reworked, these use graphite ink + one placeholder accent <span class="acc-chip"></span> so you judge <b>form &amp; interaction</b>, not colour. Medication purple is the one fixed hue. &nbsp;·&nbsp; <b>The question each proposal answers differently:</b> does the crescent stay decorative, or does it <b>become the live recorder</b> (replacing the deleted waveform)?
+  </div>
+
+  <!-- ============ PROPOSAL A ============ -->
+  <div class="proposal">
+    <div class="ptitle">A · Faithful Hub</div>
+    <div class="ptag">CRESCENT = DECORATIVE BRAND MOTIF · THREE EQUAL ACTIONS</div>
+    <div class="pdesc">Closest to your sketch. A static double-stroke crescent frames three equal-weight pills. Tapping any pill <em>pushes</em> to its own flow — Medication opens the existing log sheet, Voice opens a dedicated recording screen, Text opens the note editor. The hub itself does nothing but choose. Calmest, most literal, least surprising.</div>
+    <div class="row">
+      <!-- DARK -->
+      <div class="framewrap">
+        <div class="framelabel">Dark</div>
+        <div class="phone"><div class="screen dark">
+          <div class="statusbar"><span>9:41</span><span class="dots">●●● 􀙇 􀛨</span></div>
+          <div class="medbar"><span class="mdot"></span><span class="mtext"><b>Concerta 50mg</b> · next dose 13:54</span></div>
+          <div class="navtitle"><h2>Check in</h2><div class="greet">How's your moment?</div></div>
+          <div class="stage">
+            <div class="crescent cr-out"></div>
+            <div class="crescent cr-in"></div>
+            <div class="pills">
+              <div class="pill med"><div class="ic">__PILL__</div><div><div class="lab">Medication</div><div class="sub">Log meds</div></div></div>
+              <div class="pill"><div class="ic">__MIC__</div><div><div class="lab">Voice input</div><div class="sub">Speak check-in</div></div></div>
+              <div class="pill"><div class="ic">__NOTE__</div><div><div class="lab">Text input</div><div class="sub">Type note</div></div></div>
+            </div>
+          </div>
+          __TABBAR__
+        </div></div>
+      </div>
+      <!-- LIGHT -->
+      <div class="framewrap">
+        <div class="framelabel">Light</div>
+        <div class="phone"><div class="screen light">
+          <div class="statusbar"><span>9:41</span><span class="dots">●●● 􀙇 􀛨</span></div>
+          <div class="medbar"><span class="mdot"></span><span class="mtext"><b>Concerta 50mg</b> · next dose 13:54</span></div>
+          <div class="navtitle"><h2>Check in</h2><div class="greet">How's your moment?</div></div>
+          <div class="stage">
+            <div class="crescent cr-out"></div>
+            <div class="crescent cr-in"></div>
+            <div class="pills">
+              <div class="pill med"><div class="ic">__PILL__</div><div><div class="lab">Medication</div><div class="sub">Log meds</div></div></div>
+              <div class="pill"><div class="ic">__MIC__</div><div><div class="lab">Voice input</div><div class="sub">Speak check-in</div></div></div>
+              <div class="pill"><div class="ic">__NOTE__</div><div><div class="lab">Text input</div><div class="sub">Type note</div></div></div>
+            </div>
+          </div>
+          __TABBAR__
+        </div></div>
+      </div>
+    </div>
+    <p class="axis"><b>Trade-off:</b> simplest to build &amp; most faithful — but the crescent is purely ornamental and the waveform/recording UI lives on a separate pushed screen.</p>
+  </div>
+
+  <!-- ============ PROPOSAL B ============ -->
+  <div class="proposal">
+    <div class="ptitle">B · Living Crescent</div>
+    <div class="ptag">CRESCENT = THE RECORDER · IN-PLACE TRANSFORM</div>
+    <div class="pdesc">The crescent earns its keep. At rest it shows the three pills (left). Tap <em>Voice input</em> and the pills recede — the crescent fills into a live audio ring that pulses to your voice, the timer + a stop button sit in its belly (right). <em>This is what replaces the deleted waveform.</em> Text and Medication still push to sheets; only Voice transforms the hub in place. Most distinctive, ties the brand shape to the core action.</div>
+    <div class="row">
+      <!-- DARK · RESTING -->
+      <div class="framewrap">
+        <div class="framelabel">Dark · resting</div>
+        <div class="phone"><div class="screen dark">
+          <div class="statusbar"><span>9:41</span><span class="dots">●●● 􀙇 􀛨</span></div>
+          <div class="medbar"><span class="mdot"></span><span class="mtext"><b>Concerta 50mg</b> · next dose 13:54</span></div>
+          <div class="navtitle"><h2>Check in</h2><div class="greet">How's your moment?</div></div>
+          <div class="stage">
+            <div class="crescent acc cr-out"></div>
+            <div class="crescent acc cr-in"></div>
+            <div class="pills">
+              <div class="pill med"><div class="ic">__PILL__</div><div><div class="lab">Medication</div><div class="sub">Log meds</div></div></div>
+              <div class="pill primary"><div class="ic">__MIC__</div><div><div class="lab">Voice input</div><div class="sub">Speak check-in</div></div></div>
+              <div class="pill"><div class="ic">__NOTE__</div><div><div class="lab">Text input</div><div class="sub">Type note</div></div></div>
+            </div>
+          </div>
+          __TABBAR__
+        </div></div>
+      </div>
+      <!-- LIGHT · RECORDING -->
+      <div class="framewrap">
+        <div class="framelabel">Light · recording (after Voice tap)</div>
+        <div class="phone"><div class="screen light">
+          <div class="statusbar"><span>9:41</span><span class="dots">●●● 􀙇 􀛨</span></div>
+          <div class="medbar"><span class="mdot"></span><span class="mtext"><b>Concerta 50mg</b> · next dose 13:54</span></div>
+          <div class="navtitle"><h2>Listening…</h2><div class="greet">Tap to stop when you're done</div></div>
+          <div class="stage">
+            <div class="recring pulse"></div>
+            <div class="recring"></div>
+            <div class="reccenter">
+              <div class="rectime">0:14</div>
+              <div class="recwave">__WAVE__</div>
+              <div class="stopbtn"><div class="sq"></div></div>
+              <div class="reccancel">Cancel</div>
+            </div>
+          </div>
+          __TABBAR__
+        </div></div>
+      </div>
+    </div>
+    <p class="axis"><b>Trade-off:</b> the strongest concept &amp; answers "what replaces the waveform" — but more motion/state to build and tune, and the crescent must read well both empty and full.</p>
+  </div>
+
+  <!-- ============ PROPOSAL C ============ -->
+  <div class="proposal">
+    <div class="ptitle">C · Voice-First Orbit</div>
+    <div class="ptag">CRESCENT = HALO AROUND A MIC HERO · WEIGHTED ACTIONS</div>
+    <div class="pdesc">Acknowledges that <em>voice is the primary check-in</em>. A large mic button is the hero; the crescent becomes its recording halo (it animates/fills while recording). Medication and Text are smaller satellite pills riding the arc above and below. Fastest to the dominant action; meds/text stay one tap away but visually secondary.</div>
+    <div class="row">
+      <!-- DARK -->
+      <div class="framewrap">
+        <div class="framelabel">Dark</div>
+        <div class="phone"><div class="screen dark">
+          <div class="statusbar"><span>9:41</span><span class="dots">●●● 􀙇 􀛨</span></div>
+          <div class="medbar"><span class="mdot"></span><span class="mtext"><b>Concerta 50mg</b> · next dose 13:54</span></div>
+          <div class="navtitle"><h2>Check in</h2><div class="greet">Tap to speak</div></div>
+          <div class="stage">
+            <div class="crescent acc cr-out"></div>
+            <div class="crescent acc cr-in"></div>
+            <div class="satellite med sat-top"><div class="ic">__PILLSM__</div><div class="lab">Log meds</div></div>
+            <div class="michero">__MICBIG__</div>
+            <div class="satellite sat-bot"><div class="ic">__NOTESM__</div><div class="lab">Type note</div></div>
+          </div>
+          __TABBAR__
+        </div></div>
+      </div>
+      <!-- LIGHT -->
+      <div class="framewrap">
+        <div class="framelabel">Light</div>
+        <div class="phone"><div class="screen light">
+          <div class="statusbar"><span>9:41</span><span class="dots">●●● 􀙇 􀛨</span></div>
+          <div class="medbar"><span class="mdot"></span><span class="mtext"><b>Concerta 50mg</b> · next dose 13:54</span></div>
+          <div class="navtitle"><h2>Check in</h2><div class="greet">Tap to speak</div></div>
+          <div class="stage">
+            <div class="crescent acc cr-out"></div>
+            <div class="crescent acc cr-in"></div>
+            <div class="satellite med sat-top"><div class="ic">__PILLSM__</div><div class="lab">Log meds</div></div>
+            <div class="michero">__MICBIG__</div>
+            <div class="satellite sat-bot"><div class="ic">__NOTESM__</div><div class="lab">Type note</div></div>
+          </div>
+          __TABBAR__
+        </div></div>
+      </div>
+    </div>
+    <p class="axis"><b>Trade-off:</b> quickest to record &amp; clear hierarchy — but it demotes meds/text and drifts furthest from the "three equal pills" in your sketch.</p>
+  </div>
+
+<script>
+// ---- shared SVG icons + tab bar, injected to keep markup DRY ----
+const ICONS = {
+  __PILL__:   '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="8" width="18" height="8" rx="4" transform="rotate(-45 12 12)"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+  __MIC__:    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="21"/></svg>',
+  __NOTE__:   '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11l5 5v11H4z"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="8" y1="15" x2="13" y2="15"/></svg>',
+  __PILLSM__: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="8" width="18" height="8" rx="4" transform="rotate(-45 12 12)"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+  __NOTESM__: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11l5 5v11H4z"/><line x1="8" y1="11" x2="14" y2="11"/></svg>',
+  __MICBIG__: '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="21"/></svg>',
+};
+const TABBAR = `<div class="tabbar">
+  <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>Calendar</div>
+  <div class="tab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-5-7.4"/><polyline points="9 12 11.5 14.5 16 9"/></svg>Check in</div>
+  <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="20" x2="6" y2="13"/><line x1="12" y1="20" x2="12" y2="8"/><line x1="18" y1="20" x2="18" y2="11"/></svg>Insights</div>
+  <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19 12a7 7 0 0 0-.1-1.3l2-1.6-2-3.5-2.4 1a7 7 0 0 0-2.2-1.3L14 1h-4l-.3 2.5a7 7 0 0 0-2.2 1.3l-2.4-1-2 3.5 2 1.6A7 7 0 0 0 5 12a7 7 0 0 0 .1 1.3l-2 1.6 2 3.5 2.4-1a7 7 0 0 0 2.2 1.3L10 23h4l.3-2.5a7 7 0 0 0 2.2-1.3l2.4 1 2-3.5-2-1.6A7 7 0 0 0 19 12z"/></svg>Settings</div>
+</div>`;
+// waveform bars for proposal B
+const heights=[14,28,46,22,52,34,18,40,56,30,20,44,26,50,16];
+const WAVE = heights.map(h=>`<i style="height:${h}px"></i>`).join('');
+
+document.body.innerHTML = document.body.innerHTML
+  .split('__TABBAR__').join(TABBAR)
+  .split('__WAVE__').join(WAVE);
+for(const k in ICONS){ document.body.innerHTML = document.body.innerHTML.split(k).join(ICONS[k]); }
+</script>
+</body>
+</html>

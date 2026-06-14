@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Insights — Whisper Notes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="phone-frame">
+    <!-- Med Bar -->
+    <div class="med-bar" style="margin-top: calc(var(--safe-top) + 8px);">
+      <div class="med-bar-fill" style="width:60%;"></div>
+      <div class="med-bar-text">
+        <span>Concerta 36mg · 08:00</span>
+        <span>ends 16:00</span>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+      <!-- Month Selector -->
+      <div class="month-selector">
+        <button class="month-item">JAN 2026</button>
+        <button class="month-item">FEB 2026</button>
+        <button class="month-item">MAR 2026</button>
+        <button class="month-item">APR 2026</button>
+        <button class="month-item">MAY 2026</button>
+        <button class="month-item active">JUN 2026</button>
+      </div>
+
+      <!-- Carousel Cards -->
+      <div style="display:flex;gap:16px;overflow-x:auto;padding:0 28px;scroll-snap-type:x mandatory;scrollbar-width:none;">
+        <!-- Card 1: Pie Chart -->
+        <div class="glass-card" style="min-width:calc(100% - 56px);scroll-snap-align:center;padding:20px;text-align:center;">
+          <div style="position:relative;width:200px;height:200px;margin:0 auto;">
+            <svg viewBox="0 0 200 200" width="200" height="200">
+              <!-- Background ring -->
+              <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="35"/>
+              <!-- Segments -->
+              <circle cx="100" cy="100" r="80" fill="none" stroke="var(--orange)" stroke-width="35" stroke-dasharray="251 502" stroke-dashoffset="0" transform="rotate(-90 100 100)"/>
+              <circle cx="100" cy="100" r="80" fill="none" stroke="var(--teal)" stroke-width="35" stroke-dasharray="126 502" stroke-dashoffset="-251" transform="rotate(-90 100 100)"/>
+              <circle cx="100" cy="100" r="80" fill="none" stroke="var(--green)" stroke-width="35" stroke-dasharray="63 502" stroke-dashoffset="-377" transform="rotate(-90 100 100)"/>
+            </svg>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:110px;height:110px;background:var(--bg);border-radius:50%;"></div>
+          </div>
+
+          <!-- Legend -->
+          <div style="display:flex;justify-content:center;gap:16px;margin-top:16px;">
+            <div style="text-align:center;">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;margin:0 auto 4px;">😰</div>
+              <div style="font-size:12px;color:var(--fg-secondary);">Low</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;margin:0 auto 4px;">😊</div>
+              <div style="font-size:12px;color:var(--fg-secondary);">Good</div>
+            </div>
+            <div style="text-align:center;">
+              <div style="width:40px;height:40px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 4px;">😌</div>
+              <div style="font-size:12px;color:var(--fg-secondary);">Great</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Calendar -->
+        <div class="glass-card" style="min-width:calc(100% - 56px);scroll-snap-align:center;padding:20px;">
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;">
+            <div style="font-size:11px;color:var(--fg-secondary);font-weight:600;padding:4px;">M</div>
+            <div style="font-size:11px;color:var(--fg-secondary);font-weight:600;padding:4px;">T</div>
+            <div style="font-size:11px;color:var(--fg-secondary);font-weight:600;padding:4px;">W</div>
+            <div style="font-size:11px;color:var(--fg-secondary);font-weight:600;padding:4px;">T</div>
+            <div style="font-size:11px;color:var(--fg-secondary);font-weight:600;padding:4px;">F</div>
+            <div style="font-size:11px;color:var(--fg-secondary);font-weight:600;padding:4px;">S</div>
+            <div style="font-size:11px;color:var(--fg-secondary);font-weight:600;padding:4px;">S</div>
+            <!-- Days -->
+            <div style="padding:6px;"></div><div style="padding:6px;"></div><div style="padding:6px;"></div><div style="padding:6px;"></div><div style="padding:6px;"></div><div style="padding:6px;"></div>
+            <div style="padding:6px;font-size:13px;">1</div>
+            <div style="padding:6px;font-size:13px;">2</div>
+            <div style="padding:6px;font-size:13px;">3</div>
+            <div style="padding:6px;font-size:13px;">4</div>
+            <div style="padding:6px;font-size:13px;">5</div>
+            <div style="padding:6px;font-size:13px;color:var(--red);font-weight:600;background:var(--red);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin:0 auto;">6</div>
+            <div style="padding:6px;font-size:13px;color:var(--green);font-weight:600;background:var(--green);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin:0 auto;">7</div>
+            <div style="padding:6px;font-size:13px;color:var(--orange);font-weight:600;background:var(--orange);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin:0 auto;">8</div>
+            <div style="padding:6px;font-size:13px;">9</div>
+            <div style="padding:6px;font-size:13px;">10</div>
+            <div style="padding:6px;font-size:13px;">11</div>
+            <div style="padding:6px;font-size:13px;">12</div>
+            <div style="padding:6px;font-size:13px;">13</div>
+            <div style="padding:6px;font-size:13px;">14</div>
+          </div>
+        </div>
+
+        <!-- Card 3: Emotions -->
+        <div class="glass-card" style="min-width:calc(100% - 56px);scroll-snap-align:center;padding:20px;">
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--orange);flex-shrink:0;"></div>
+              <span style="font-size:15px;font-weight:600;width:100px;">Anxious</span>
+              <div style="flex:1;height:32px;background:var(--bg-secondary);border-radius:16px;overflow:hidden;position:relative;">
+                <div style="width:45%;height:100%;background:var(--orange);opacity:0.85;border-radius:16px;"></div>
+                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:700;">9</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--teal);flex-shrink:0;"></div>
+              <span style="font-size:15px;font-weight:600;width:100px;">Motivated</span>
+              <div style="flex:1;height:32px;background:var(--bg-secondary);border-radius:16px;overflow:hidden;position:relative;">
+                <div style="width:35%;height:100%;background:var(--teal);opacity:0.85;border-radius:16px;"></div>
+                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:700;">7</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--green);flex-shrink:0;"></div>
+              <span style="font-size:15px;font-weight:600;width:100px;">Calm</span>
+              <div style="flex:1;height:32px;background:var(--bg-secondary);border-radius:16px;overflow:hidden;position:relative;">
+                <div style="width:25%;height:100%;background:var(--green);opacity:0.85;border-radius:16px;"></div>
+                <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;font-weight:700;">5</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carousel Header -->
+      <div style="text-align:center;padding:14px 20px;">
+        <div style="font-size:16px;font-weight:600;">Your overall check-in breakdown</div>
+        <div style="font-size:13px;color:var(--fg-secondary);margin-top:4px;">21 entries this month</div>
+        <div class="page-dots" style="margin-top:8px;">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Time of Day -->
+      <div class="section-header">Your mood during the day</div>
+      <div style="padding:0 20px 20px;display:flex;gap:12px;align-items:flex-end;height:200px;">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:100%;height:160px;background:var(--bg-secondary);border-radius:16px;position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:0;right:0;height:35%;background:var(--orange);border-radius:16px;"></div>
+            <div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:12px;font-weight:700;">35%</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:13px;font-weight:600;">Morning</div>
+            <div style="font-size:11px;color:var(--fg-secondary);">6am–12pm</div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:100%;height:160px;background:var(--bg-secondary);border-radius:16px;position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:0;right:0;height:55%;background:var(--teal);border-radius:16px;"></div>
+            <div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:12px;font-weight:700;">55%</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:13px;font-weight:600;">Afternoon</div>
+            <div style="font-size:11px;color:var(--fg-secondary);">12pm–6pm</div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:100%;height:160px;background:var(--bg-secondary);border-radius:16px;position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:0;right:0;height:25%;background:var(--green);border-radius:16px;"></div>
+            <div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;font-size:12px;font-weight:700;">25%</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:13px;font-weight:600;">Evening</div>
+            <div style="font-size:11px;color:var(--fg-secondary);">6pm–12am</div>
+          </div>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;">
+          <div style="width:100%;height:160px;background:var(--bg-secondary);border-radius:16px;position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:0;right:0;height:10%;background:var(--indigo);border-radius:16px;"></div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-size:13px;font-weight:600;">Night</div>
+            <div style="font-size:11px;color:var(--fg-secondary);">12am–6am</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Weekly Bars -->
+      <div class="section-header">Your emotions during the week</div>
+      <div style="padding:0 20px 20px;display:flex;gap:8px;align-items:flex-end;height:180px;">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:100%;height:140px;background:var(--bg-secondary);border-radius:12px;position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:0;right:0;height:70%;background:var(--orange);border-radius:12px;"></div>
+          </div>
+          <span style="font-size:12px;font-weight:600;">Mon</span>
+          <span style="font-size:11px;color:var(--fg-secondary);">5</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:100%;height:140px;background:var(--bg-secondary);border-radius:12px;position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:0;right:0;height:50%;background:var(--teal);border-radius:12px;"></div>
+          </div>
+          <span style="font-size:12px;font-weight:600;">Tue</span>
+          <span style="font-size:11px;color:var(--fg-secondary);">3</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:100%;height:140px;background:var(--bg-secondary);border-radius:12px;position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:0;right:0;height:30%;background:var(--green);border-radius:12px;"></div>
+          </div>
+          <span style="font-size:12px;font-weight:600;">Wed</span>
+          <span style="font-size:11px;color:var(--fg-secondary);">2</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:100%;height:140px;background:var(--bg-secondary);border-radius:12px;position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:0;right:0;height:60%;background:var(--orange);border-radius:12px;"></div>
+          </div>
+          <span style="font-size:12px;font-weight:600;">Thu</span>
+          <span style="font-size:11px;color:var(--fg-secondary);">4</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:100%;height:140px;background:var(--bg-secondary);border-radius:12px;position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:var(--teal);border-radius:12px;"></div>
+          </div>
+          <span style="font-size:12px;font-weight:600;">Fri</span>
+          <span style="font-size:11px;color:var(--fg-secondary);">3</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:100%;height:140px;background:var(--bg-secondary);border-radius:12px;position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:0;right:0;height:20%;background:var(--red);border-radius:12px;"></div>
+          </div>
+          <span style="font-size:12px;font-weight:600;">Sat</span>
+          <span style="font-size:11px;color:var(--fg-secondary);">1</span>
+        </div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;">
+          <div style="width:100%;height:140px;background:var(--bg-secondary);border-radius:12px;position:relative;overflow:hidden;">
+            <div style="position:absolute;bottom:0;left:0;right:0;height:45%;background:var(--green);border-radius:12px;"></div>
+          </div>
+          <span style="font-size:12px;font-weight:600;">Sun</span>
+          <span style="font-size:11px;color:var(--fg-secondary);">3</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Activity Grid -->
+      <div class="section-header">What you were doing and how you felt</div>
+      <div style="padding:0 20px 24px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="glass-card" style="padding:16px;text-align:center;">
+          <div style="position:relative;height:48px;margin-bottom:8px;">
+            <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:40px;background:rgba(255,159,10,0.3);border-radius:20px;"></div>
+            <div style="position:absolute;left:calc(50% - 32px);top:4px;width:28px;height:28px;background:rgba(255,159,10,0.3);border-radius:50%;"></div>
+            <div style="position:absolute;left:calc(50% + 8px);top:8px;width:20px;height:20px;background:rgba(255,159,10,0.3);border-radius:50%;"></div>
+          </div>
+          <span style="font-size:14px;font-weight:600;">Work</span>
+        </div>
+        <div class="glass-card" style="padding:16px;text-align:center;">
+          <div style="position:relative;height:48px;margin-bottom:8px;">
+            <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:40px;background:rgba(48,209,88,0.3);border-radius:20px;"></div>
+            <div style="position:absolute;left:calc(50% - 32px);top:4px;width:28px;height:28px;background:rgba(48,209,88,0.3);border-radius:50%;"></div>
+          </div>
+          <span style="font-size:14px;font-weight:600;">Exercise</span>
+        </div>
+        <div class="glass-card" style="padding:16px;text-align:center;">
+          <div style="position:relative;height:48px;margin-bottom:8px;">
+            <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:40px;background:rgba(94,92,230,0.3);border-radius:20px;"></div>
+            <div style="position:absolute;left:calc(50% + 8px);top:6px;width:24px;height:24px;background:rgba(94,92,230,0.3);border-radius:50%;"></div>
+          </div>
+          <span style="font-size:14px;font-weight:600;">Social</span>
+        </div>
+        <div class="glass-card" style="padding:16px;text-align:center;">
+          <div style="position:relative;height:48px;margin-bottom:8px;">
+            <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:64px;height:40px;background:rgba(255,55,95,0.3);border-radius:20px;"></div>
+            <div style="position:absolute;left:calc(50% - 28px);top:2px;width:32px;height:32px;background:rgba(255,55,95,0.3);border-radius:50%;"></div>
+          </div>
+          <span style="font-size:14px;font-weight:600;">Rest</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+      <a href="library.html" class="tab-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg>
+        Library
+      </a>
+      <a href="record.html" class="tab-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+        Record
+      </a>
+      <a href="insights.html" class="tab-item active">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+        Insights
+      </a>
+      <a href="settings.html" class="tab-item">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1.51-1H11a2 2 0 0 1 2-2 2 2 0 0 1 2 2h.09a1.65 1.65 0 0 0 1.51 1 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1 1.51V11a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        Settings
+      </a>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insights Redesign — v3: mood+energy+focus proposals — 2026-06-11</title>
+<style>
+  :root {
+    /* Mood (Recording+MoodDisplay.swift) — low→great */
+    --mood-low:   #DA7964;
+    --mood-flat:  #E89178;
+    --mood-okay:  #7BCDB1;
+    --mood-good:  #85B9DF;
+    --mood-great: #5179A8;
+    /* Energy ramp (Palette.energy = systemOrange family) — sluggish→charged */
+    --en-1: #7A5A40;
+    --en-2: #A1713F;
+    --en-3: #C98B43;
+    --en-4: #ECA64E;
+    --en-5: #FFC069;
+    /* Focus ramp (indigo family) — foggy→locked-in */
+    --fo-1: #45425E;
+    --fo-2: #5A5780;
+    --fo-3: #6F6FA8;
+    --fo-4: #8589D2;
+    --fo-5: #9DA8F8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    background: #2b2b2e;
+    color: #eee;
+    padding: 32px 24px 80px;
+  }
+
+  h1.page-title { font-size: 22px; margin-bottom: 4px; }
+  p.page-sub { color: #aaa; font-size: 14px; margin-bottom: 8px; max-width: 760px; line-height: 1.5; }
+  p.page-sub b { color: #fff; }
+
+  .grid { display: flex; gap: 32px; flex-wrap: wrap; align-items: flex-start; margin-top: 24px; }
+
+  /* Proposal panel = phone-width slice of the Insights scroll, dark mode */
+  .panel {
+    width: 393px; background: #000; border-radius: 28px; padding: 8px 0 28px;
+    box-shadow: 0 16px 40px rgba(0,0,0,.45);
+    --text: #fff; --text2: rgba(235,235,245,.6); --empty: #232325; --sep: rgba(84,84,88,.6);
+  }
+  .tag {
+    display: inline-block; margin: 16px 24px 0; padding: 4px 12px; border-radius: 12px;
+    background: #2e2e33; color: #9ad0ff; font-size: 12px; font-weight: 700; letter-spacing: .06em;
+  }
+  .answers { margin: 14px 24px 0; font-size: 13px; color: #8eda9f; line-height: 1.45; }
+  .answers::before { content: "↳ answers: "; color: #6a6a70; font-weight: 600; }
+
+  .section-title {
+    font-family: "New York", "Iowan Old Style", Georgia, serif;
+    font-size: 29px; line-height: 1.15; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--text); padding: 14px 24px 4px;
+  }
+  .section-sub { padding: 2px 24px 0; font-size: 14px; color: var(--text2); line-height: 1.4; }
+
+  /* ============ A. Three-signal strips ============ */
+  .strips { padding: 20px 24px 0; display: flex; flex-direction: column; gap: 22px; }
+  .strip .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 9px; }
+  .strip .name { font-size: 15px; font-weight: 700; color: var(--text); }
+  .strip .avg  { font-size: 13px; color: var(--text2); }
+  .beads { display: flex; gap: 5px; }
+  .bead { flex: 1; height: 34px; border-radius: 10px; background: var(--empty); }
+
+  /* ============ B. Average gauges ============ */
+  .gauges { display: flex; gap: 18px; padding: 24px 24px 0; }
+  .gauge { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .gtrack {
+    width: 100%; height: 280px; border-radius: 26px; background: var(--empty);
+    display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; position: relative;
+  }
+  .gfill { width: 100%; border-radius: 26px 26px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 12px; font-weight: 800; font-size: 16px; }
+  .gticks { position: absolute; inset: 0; display: flex; flex-direction: column; }
+  .gticks i { flex: 1; border-top: 1px dashed rgba(255,255,255,.10); }
+  .gauge .lbl { font-size: 15px; font-weight: 600; color: var(--text); }
+  .gauge .sub { font-size: 13px; color: var(--text2); margin-top: -8px; }
+
+  /* ============ C. Daily rhythm matrix ============ */
+  .matrix { padding: 22px 24px 0; }
+  .mrow { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .mlabel { width: 64px; font-size: 14px; font-weight: 700; color: var(--text); }
+  .mcells { display: flex; gap: 10px; flex: 1; }
+  .mcell { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .mblob { width: 100%; height: 52px; border-radius: 18px; }
+  .mword { font-size: 11px; color: var(--text2); }
+  .mhead { display: flex; gap: 10px; margin: 0 0 10px 74px; }
+  .mhead span { flex: 1; text-align: center; font-size: 12px; color: var(--text2); font-weight: 600; }
+
+  /* ============ D. Connection cards ============ */
+  .conns { padding: 20px 24px 0; display: flex; flex-direction: column; gap: 16px; }
+  .conn { background: #1c1c1e; border-radius: 22px; padding: 20px; }
+  .conn .sentence { font-family: "New York", "Iowan Old Style", Georgia, serif; font-size: 19px; line-height: 1.35; color: var(--text); }
+  .conn .sentence em { font-style: normal; }
+  .conn .pair { display: flex; gap: 8px; margin-top: 16px; align-items: center; }
+  .conn .pbar { height: 26px; border-radius: 13px; display: flex; align-items: center; padding-left: 12px; font-size: 13px; font-weight: 700; }
+  .conn .pcap { font-size: 12px; color: var(--text2); margin-top: 6px; }
+
+  .verdict { max-width: 860px; margin-top: 48px; background: #1c1c20; border-radius: 16px; padding: 28px 32px; }
+  .verdict h2 { font-size: 17px; margin-bottom: 14px; }
+  .verdict table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .verdict td { padding: 9px 12px 9px 0; border-bottom: 1px solid #333; color: #ccc; vertical-align: top; }
+  .verdict td:first-child { color: #fff; font-weight: 700; white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Insights v3 — proposals for mood + energy + focus</h1>
+<p class="page-sub">
+  Changes from v2: <b>activities section removed</b>. Below are four candidate views built around your
+  three core indicators — all 5-level ordinal scales sharing one visual grammar:
+  <b>mood</b> coral→blue, <b>energy</b> orange ramp, <b>focus</b> indigo ramp (from <code>Palette.energy</code> / tag colors).
+  Sample data is richer than your current 5 check-ins, to show how each view reads at density.
+  Pick any combination — they slot into the v2 scroll after "Your emotions during the week".
+</p>
+
+<div class="grid">
+
+  <!-- ============ PROPOSAL A ============ -->
+  <div class="panel">
+    <span class="tag">PROPOSAL A</span>
+    <div class="section-title">Your month in three signals</div>
+    <div class="section-sub">Each bead is one check-in, in order</div>
+    <div class="strips">
+      <div class="strip">
+        <div class="head"><span class="name">Mood</span><span class="avg">mostly Okay</span></div>
+        <div class="beads">
+          <div class="bead" style="background:linear-gradient(160deg,#93dcc0,var(--mood-okay))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,#ecaa94,var(--mood-low))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,#f0ac96,var(--mood-flat))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,#93dcc0,var(--mood-okay))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,#a4cce9,var(--mood-good))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,#93dcc0,var(--mood-okay))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,#a4cce9,var(--mood-good))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,#6e94c4,var(--mood-great))"></div>
+          <div class="bead"></div>
+          <div class="bead"></div>
+        </div>
+      </div>
+      <div class="strip">
+        <div class="head"><span class="name">Energy</span><span class="avg">mostly Steady</span></div>
+        <div class="beads">
+          <div class="bead" style="background:linear-gradient(160deg,var(--en-3),var(--en-2))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--en-2),var(--en-1))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--en-2),var(--en-1))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--en-4),var(--en-3))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--en-3),var(--en-2))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--en-4),var(--en-3))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--en-5),var(--en-4))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--en-4),var(--en-3))"></div>
+          <div class="bead"></div>
+          <div class="bead"></div>
+        </div>
+      </div>
+      <div class="strip">
+        <div class="head"><span class="name">Focus</span><span class="avg">mostly Present</span></div>
+        <div class="beads">
+          <div class="bead" style="background:linear-gradient(160deg,var(--fo-3),var(--fo-2))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--fo-1),var(--fo-1))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--fo-2),var(--fo-1))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--fo-3),var(--fo-2))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--fo-4),var(--fo-3))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--fo-4),var(--fo-3))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--fo-5),var(--fo-4))"></div>
+          <div class="bead" style="background:linear-gradient(160deg,var(--fo-4),var(--fo-3))"></div>
+          <div class="bead"></div>
+          <div class="bead"></div>
+        </div>
+      </div>
+    </div>
+    <div class="answers">"Are my three signals trending together or apart this month?"</div>
+  </div>
+
+  <!-- ============ PROPOSAL B ============ -->
+  <div class="panel">
+    <span class="tag">PROPOSAL B</span>
+    <div class="section-title">Where you averaged</div>
+    <div class="section-sub">Month average on each 5-step scale</div>
+    <div class="gauges">
+      <div class="gauge">
+        <div class="gtrack">
+          <div class="gticks"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="gfill" style="height:68%;background:linear-gradient(175deg,#a4cce9,var(--mood-okay));color:#0c2233">Okay+</div>
+        </div>
+        <div class="lbl">Mood</div>
+        <div class="sub">between Okay &amp; Good</div>
+      </div>
+      <div class="gauge">
+        <div class="gtrack">
+          <div class="gticks"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="gfill" style="height:55%;background:linear-gradient(175deg,var(--en-4),var(--en-3));color:#2e1a06">Steady</div>
+        </div>
+        <div class="lbl">Energy</div>
+        <div class="sub">Steady on average</div>
+      </div>
+      <div class="gauge">
+        <div class="gtrack">
+          <div class="gticks"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="gfill" style="height:74%;background:linear-gradient(175deg,var(--fo-5),var(--fo-4));color:#101331">Sharp</div>
+        </div>
+        <div class="lbl">Focus</div>
+        <div class="sub">Sharp on average</div>
+      </div>
+    </div>
+    <div class="answers">"Where do I sit on each scale overall?" — the calm executive summary</div>
+  </div>
+
+  <!-- ============ PROPOSAL C ============ -->
+  <div class="panel">
+    <span class="tag">PROPOSAL C</span>
+    <div class="section-title">Your daily rhythm</div>
+    <div class="section-sub">Dominant level by time of day</div>
+    <div class="matrix">
+      <div class="mhead"><span>Morning</span><span>Afternoon</span><span>Evening</span><span>Late</span></div>
+      <div class="mrow">
+        <div class="mlabel">Mood</div>
+        <div class="mcells">
+          <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,#93dcc0,var(--mood-okay))"></div><div class="mword">Okay</div></div>
+          <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,#a4cce9,var(--mood-good))"></div><div class="mword">Good</div></div>
+          <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,#6e94c4,var(--mood-great))"></div><div class="mword">Great</div></div>
+          <div class="mcell"><div class="mblob" style="background:var(--empty)"></div><div class="mword">—</div></div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="mlabel">Energy</div>
+        <div class="mcells">
+          <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,var(--en-5),var(--en-4))"></div><div class="mword">Charged</div></div>
+          <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,var(--en-3),var(--en-2))"></div><div class="mword">Steady</div></div>
+          <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,var(--en-2),var(--en-1))"></div><div class="mword">Tired</div></div>
+          <div class="mcell"><div class="mblob" style="background:var(--empty)"></div><div class="mword">—</div></div>
+        </div>
+      </div>
+      <div class="mrow">
+        <div class="mlabel">Focus</div>
+        <div class="mcells">
+          <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,var(--fo-4),var(--fo-3))"></div><div class="mword">Sharp</div></div>
+          <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,var(--fo-5),var(--fo-4))"></div><div class="mword">Locked in</div></div>
+          <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,var(--fo-2),var(--fo-1))"></div><div class="mword">Distracted</div></div>
+          <div class="mcell"><div class="mblob" style="background:var(--empty)"></div><div class="mword">—</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="answers">"When in the day am I at my best?" — directly relevant to med timing; could later overlay dose markers</div>
+  </div>
+
+  <!-- ============ PROPOSAL D ============ -->
+  <div class="panel">
+    <span class="tag">PROPOSAL D</span>
+    <div class="section-title">Connections</div>
+    <div class="section-sub">How your signals move together</div>
+    <div class="conns">
+      <div class="conn">
+        <div class="sentence">When your energy was <em style="color:var(--en-5)">Alert or Charged</em>, your focus was <em style="color:var(--fo-5)">Sharp or better</em> 4 out of 5 times.</div>
+        <div class="pair">
+          <div class="pbar" style="width:78%;background:linear-gradient(90deg,var(--fo-4),var(--fo-5));color:#101331">80%</div>
+        </div>
+        <div class="pcap">5 high-energy check-ins this month</div>
+      </div>
+      <div class="conn">
+        <div class="sentence">On days you slept under 6h, your mood averaged <em style="color:var(--mood-flat)">Flat</em> — vs <em style="color:var(--mood-good)">Good</em> otherwise.</div>
+        <div class="pair">
+          <div class="pbar" style="width:40%;background:linear-gradient(90deg,#f0ac96,var(--mood-flat));color:#3a120a">Flat</div>
+          <div class="pbar" style="width:58%;background:linear-gradient(90deg,#a4cce9,var(--mood-good));color:#0c2233">Good</div>
+        </div>
+        <div class="pcap">uses extracted sleep hours · needs ≥3 days of each to show</div>
+      </div>
+    </div>
+    <div class="answers">"What actually moves my mood/focus?" — highest insight value, needs honest minimum-data gating</div>
+  </div>
+
+</div>
+
+<!-- ===== Trade-offs ===== -->
+<div class="verdict">
+  <h2>Trade-offs &amp; recommendation</h2>
+  <table>
+    <tr><td>A · Three signals</td><td>Strongest "one glance, whole month" view; degrades gracefully with few check-ins (beads just stay gray). Cheap to compute. <b>Recommend: yes — lead section.</b></td></tr>
+    <tr><td>B · Averages</td><td>Calm summary, beautiful at the top, but averages hide variance (a low+great month reads "okay"). Good companion, weak alone.</td></tr>
+    <tr><td>C · Daily rhythm</td><td>The most <i>actionable</i> for ADHD self-knowledge (med timing, scheduling deep work). Replaces "Your mood during the day" — same axis, three signals instead of one. <b>Recommend: yes — replaces time-of-day bars.</b></td></tr>
+    <tr><td>D · Connections</td><td>Highest perceived intelligence, but needs data thresholds and careful copy to avoid claiming causation. Phase 2 candidate — design now, build after TestFlight.</td></tr>
+    <tr><td>Suggested scroll</td><td>Months → <b>A</b> three signals → breakdown bubbles → emotion calendar → most-felt emotions → <b>C</b> daily rhythm (replaces time-of-day) → weekly bars. (Activities removed per v3.)</td></tr>
+  </table>
+</div>
+
+</body>
+</html>

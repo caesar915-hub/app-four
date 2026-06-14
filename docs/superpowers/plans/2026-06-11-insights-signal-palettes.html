@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signal palette systems — mood kept, energy+focus proposed, med purple fixed — 2026-06-11</title>
+<style>
+  :root {
+    /* FIXED: mood (Recording+MoodDisplay.swift) */
+    --mood-low: #DA7964; --mood-flat: #E89178; --mood-okay: #7BCDB1; --mood-good: #85B9DF; --mood-great: #5179A8;
+    /* FIXED: medication (systemPurple, dark) */
+    --med: #BF5AF2;
+
+    /* SYSTEM 1 — Ember & Tide: energy amber, focus teal */
+    --s1e1: #7A5A40; --s1e2: #A1713F; --s1e3: #C98B43; --s1e4: #ECA64E; --s1e5: #FFC069;
+    --s1f1: #3A5258; --s1f2: #3F6E74; --s1f3: #44918F; --s1f4: #4BB8B4; --s1f5: #5FE0DA;
+
+    /* SYSTEM 2 — Gold & Graphite: energy gold, focus monochrome→white */
+    --s2e1: #6E5A2E; --s2e2: #927839; --s2e3: #B89742; --s2e4: #DCB84C; --s2e5: #FBDA60;
+    --s2f1: #3A3A3E; --s2f2: #58585E; --s2f3: #7E7E86; --s2f4: #ABABB5; --s2f5: #ECECF4;
+
+    /* SYSTEM 3 — Garnet & Jade: energy garnet-red, focus emerald */
+    --s3e1: #6B3A30; --s3e2: #8F4634; --s3e3: #B55438; --s3e4: #DA653E; --s3e5: #F97D4B;
+    --s3f1: #2F5240; --s3f2: #3A7355; --s3f3: #46966B; --s3f4: #54BA83; --s3f5: #69E09F;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #2b2b2e; color: #eee; padding: 32px 24px 80px; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  p.sub { color: #aaa; font-size: 14px; margin-bottom: 24px; max-width: 780px; line-height: 1.5; }
+  p.sub b { color: #fff; }
+
+  /* fixed anchors banner */
+  .anchors { display: flex; gap: 28px; align-items: center; background: #000; border-radius: 18px; padding: 18px 24px; margin-bottom: 32px; flex-wrap: wrap; }
+  .anchors .cap { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: #6a6a70; font-weight: 700; width: 100%; }
+  .anchors .grp { display: flex; align-items: center; gap: 8px; }
+  .anchors .grp .t { font-size: 13px; font-weight: 700; color: #fff; margin-right: 4px; }
+  .sw { width: 34px; height: 34px; border-radius: 10px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 14px; font-size: 13px; font-weight: 600; background: rgba(191,90,242,.16); color: var(--med); }
+  .chip::before { content: "💊"; font-size: 12px; }
+
+  .row { display: flex; gap: 28px; flex-wrap: wrap; align-items: stretch; }
+  .sys { width: 420px; background: #000; border-radius: 24px; padding: 24px;
+         --text: #fff; --text2: rgba(235,235,245,.6); --empty: #232325; }
+  .sys h2 { font-family: "New York", "Iowan Old Style", Georgia, serif; font-size: 23px; margin-bottom: 2px; }
+  .sys .meta { font-size: 13px; color: var(--text2); margin-bottom: 18px; line-height: 1.45; }
+
+  .ramp { margin-bottom: 4px; display: flex; align-items: center; gap: 10px; }
+  .ramp .n { width: 52px; font-size: 12px; font-weight: 700; color: #fff; }
+  .ramp .steps { display: flex; gap: 5px; flex: 1; }
+  .ramp .steps i { flex: 1; height: 36px; border-radius: 9px; }
+  .rampwords { display: flex; gap: 5px; margin: 0 0 14px 62px; }
+  .rampwords span { flex: 1; text-align: center; font-size: 9px; color: var(--text2); }
+
+  /* the full-system test: all 3 strips + med chip + rhythm row */
+  .test { background: #161618; border-radius: 16px; padding: 16px; margin-top: 14px; }
+  .test .cap { font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: #6a6a70; font-weight: 700; margin-bottom: 12px; }
+  .s { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .s .n { width: 52px; font-size: 12px; font-weight: 700; color: #fff; }
+  .beads { display: flex; gap: 4px; flex: 1; }
+  .beads i { flex: 1; height: 28px; border-radius: 8px; }
+  .medline { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #2a2a2e; }
+  .ring { width: 32px; height: 32px; border-radius: 50%; border: 3px solid var(--med); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--med); font-weight: 700; flex-shrink: 0; }
+  .medline .t { font-size: 12px; color: var(--text2); }
+
+  .verdict { margin-top: 16px; font-size: 13px; line-height: 1.55; border-top: 1px solid #2e2e33; padding-top: 12px; color: #bbb; }
+  .verdict b { color: #8eda9f; }
+  .verdict b.warn { color: #e8b06a; }
+
+  .notes { max-width: 900px; margin-top: 40px; background: #1c1c20; border-radius: 16px; padding: 26px 30px; font-size: 14px; line-height: 1.6; color: #ccc; }
+  .notes h2 { font-size: 16px; margin-bottom: 12px; color: #fff; }
+  .notes b { color: #fff; }
+  .notes table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin-top: 8px; }
+  .notes td, .notes th { padding: 8px 10px 8px 0; border-bottom: 1px solid #333; text-align: left; vertical-align: top; }
+  .notes th { color: #fff; }
+</style>
+</head>
+<body>
+
+<h1>Signal palette systems</h1>
+<p class="sub">
+  Fixed and untouchable: <b>medication purple</b> and the <b>existing mood palette</b>.
+  Below are three complete systems for energy + focus designed around those anchors.
+  Each system is tested as it will actually appear: three signal strips together, with a med chip and dose ring beside them.
+  You pick a <b>system</b>, not individual colors.
+</p>
+
+<div class="anchors">
+  <div class="cap">Fixed anchors — these do not change in any system</div>
+  <div class="grp">
+    <span class="t">Mood</span>
+    <div class="sw" style="background:var(--mood-low)" title="low"></div>
+    <div class="sw" style="background:var(--mood-flat)" title="flat"></div>
+    <div class="sw" style="background:var(--mood-okay)" title="okay"></div>
+    <div class="sw" style="background:var(--mood-good)" title="good"></div>
+    <div class="sw" style="background:var(--mood-great)" title="great"></div>
+  </div>
+  <div class="grp">
+    <span class="t">Medication</span>
+    <span class="chip">Concerta 36</span>
+    <div class="ring">36</div>
+  </div>
+</div>
+
+<div class="row">
+
+  <!-- ============ SYSTEM 1 ============ -->
+  <div class="sys">
+    <h2>1 · Ember &amp; Tide</h2>
+    <div class="meta">Energy stays in today's amber family (continuity with <code>Palette.energy</code> tags). Focus moves to teal — "fog lifting to clear water". Each signal owns a quadrant: warm fuel, cool clarity.</div>
+    <div class="ramp"><span class="n">Energy</span><div class="steps">
+      <i style="background:var(--s1e1)"></i><i style="background:var(--s1e2)"></i><i style="background:var(--s1e3)"></i><i style="background:var(--s1e4)"></i><i style="background:var(--s1e5)"></i>
+    </div></div>
+    <div class="rampwords"><span>Sluggish</span><span>Tired</span><span>Steady</span><span>Alert</span><span>Charged</span></div>
+    <div class="ramp"><span class="n">Focus</span><div class="steps">
+      <i style="background:var(--s1f1)"></i><i style="background:var(--s1f2)"></i><i style="background:var(--s1f3)"></i><i style="background:var(--s1f4)"></i><i style="background:var(--s1f5)"></i>
+    </div></div>
+    <div class="rampwords"><span>Foggy</span><span>Distracted</span><span>Present</span><span>Sharp</span><span>Locked-in</span></div>
+
+    <div class="test">
+      <div class="cap">Full-system test</div>
+      <div class="s"><span class="n">Mood</span><div class="beads">
+        <i style="background:linear-gradient(160deg,#93dcc0,var(--mood-okay))"></i><i style="background:linear-gradient(160deg,#ecaa94,var(--mood-low))"></i><i style="background:linear-gradient(160deg,#a4cce9,var(--mood-good))"></i><i style="background:linear-gradient(160deg,#6e94c4,var(--mood-great))"></i><i style="background:linear-gradient(160deg,#f0ac96,var(--mood-flat))"></i>
+      </div></div>
+      <div class="s"><span class="n">Energy</span><div class="beads">
+        <i style="background:linear-gradient(160deg,var(--s1e4),var(--s1e3))"></i><i style="background:linear-gradient(160deg,var(--s1e2),var(--s1e1))"></i><i style="background:linear-gradient(160deg,var(--s1e5),var(--s1e4))"></i><i style="background:linear-gradient(160deg,var(--s1e3),var(--s1e2))"></i><i style="background:linear-gradient(160deg,var(--s1e4),var(--s1e3))"></i>
+      </div></div>
+      <div class="s"><span class="n">Focus</span><div class="beads">
+        <i style="background:linear-gradient(160deg,var(--s1f4),var(--s1f3))"></i><i style="background:var(--s1f1)"></i><i style="background:linear-gradient(160deg,var(--s1f5),var(--s1f4))"></i><i style="background:linear-gradient(160deg,var(--s1f3),var(--s1f2))"></i><i style="background:linear-gradient(160deg,var(--s1f4),var(--s1f3))"></i>
+      </div></div>
+      <div class="medline"><div class="ring">36</div><span class="chip">Concerta 36</span><span class="t">← nothing above can be mistaken for this</span></div>
+    </div>
+    <div class="verdict"><b>Pros:</b> least migration (energy untouched today); focus maximally far from med purple; colorblind-safe purple↔teal. <b class="warn">Watch:</b> mid-teal sits two doors from mood-mint — separated by saturation and labels.</div>
+  </div>
+
+  <!-- ============ SYSTEM 2 ============ -->
+  <div class="sys">
+    <h2>2 · Gold &amp; Graphite</h2>
+    <div class="meta">Energy as gold ("battery level"), focus as pure neutral — graphite lifting to white, like signal coming into clarity. The most editorial, How-We-Feel-like option: focus literally <i>glows</i> when locked in.</div>
+    <div class="ramp"><span class="n">Energy</span><div class="steps">
+      <i style="background:var(--s2e1)"></i><i style="background:var(--s2e2)"></i><i style="background:var(--s2e3)"></i><i style="background:var(--s2e4)"></i><i style="background:var(--s2e5)"></i>
+    </div></div>
+    <div class="rampwords"><span>Sluggish</span><span>Tired</span><span>Steady</span><span>Alert</span><span>Charged</span></div>
+    <div class="ramp"><span class="n">Focus</span><div class="steps">
+      <i style="background:var(--s2f1)"></i><i style="background:var(--s2f2)"></i><i style="background:var(--s2f3)"></i><i style="background:var(--s2f4)"></i><i style="background:var(--s2f5)"></i>
+    </div></div>
+    <div class="rampwords"><span>Foggy</span><span>Distracted</span><span>Present</span><span>Sharp</span><span>Locked-in</span></div>
+
+    <div class="test">
+      <div class="cap">Full-system test</div>
+      <div class="s"><span class="n">Mood</span><div class="beads">
+        <i style="background:linear-gradient(160deg,#93dcc0,var(--mood-okay))"></i><i style="background:linear-gradient(160deg,#ecaa94,var(--mood-low))"></i><i style="background:linear-gradient(160deg,#a4cce9,var(--mood-good))"></i><i style="background:linear-gradient(160deg,#6e94c4,var(--mood-great))"></i><i style="background:linear-gradient(160deg,#f0ac96,var(--mood-flat))"></i>
+      </div></div>
+      <div class="s"><span class="n">Energy</span><div class="beads">
+        <i style="background:linear-gradient(160deg,var(--s2e4),var(--s2e3))"></i><i style="background:linear-gradient(160deg,var(--s2e2),var(--s2e1))"></i><i style="background:linear-gradient(160deg,var(--s2e5),var(--s2e4))"></i><i style="background:linear-gradient(160deg,var(--s2e3),var(--s2e2))"></i><i style="background:linear-gradient(160deg,var(--s2e4),var(--s2e3))"></i>
+      </div></div>
+      <div class="s"><span class="n">Focus</span><div class="beads">
+        <i style="background:linear-gradient(160deg,var(--s2f4),var(--s2f3))"></i><i style="background:var(--s2f1)"></i><i style="background:linear-gradient(160deg,var(--s2f5),var(--s2f4))"></i><i style="background:linear-gradient(160deg,var(--s2f3),var(--s2f2))"></i><i style="background:linear-gradient(160deg,var(--s2f4),var(--s2f3))"></i>
+      </div></div>
+      <div class="medline"><div class="ring">36</div><span class="chip">Concerta 36</span><span class="t">← purple is the only saturated cool color on screen</span></div>
+    </div>
+    <div class="verdict"><b>Pros:</b> zero hue collisions possible — focus has no hue; striking "locked-in = white-hot" moment on dark. <b class="warn">Watch:</b> in light mode the ramp inverts (graphite→near-black); gray low-end can read "disabled" rather than "foggy"; gold needs distance checks vs mood-flat coral in dense views.</div>
+  </div>
+
+  <!-- ============ SYSTEM 3 ============ -->
+  <div class="sys">
+    <h2>3 · Garnet &amp; Jade</h2>
+    <div class="meta">Energy moves to garnet — ember red, hotter and deeper than mood-coral. Focus takes jade green: growth, flow state. The boldest re-coloring, furthest from today's app.</div>
+    <div class="ramp"><span class="n">Energy</span><div class="steps">
+      <i style="background:var(--s3e1)"></i><i style="background:var(--s3e2)"></i><i style="background:var(--s3e3)"></i><i style="background:var(--s3e4)"></i><i style="background:var(--s3e5)"></i>
+    </div></div>
+    <div class="rampwords"><span>Sluggish</span><span>Tired</span><span>Steady</span><span>Alert</span><span>Charged</span></div>
+    <div class="ramp"><span class="n">Focus</span><div class="steps">
+      <i style="background:var(--s3f1)"></i><i style="background:var(--s3f2)"></i><i style="background:var(--s3f3)"></i><i style="background:var(--s3f4)"></i><i style="background:var(--s3f5)"></i>
+    </div></div>
+    <div class="rampwords"><span>Foggy</span><span>Distracted</span><span>Present</span><span>Sharp</span><span>Locked-in</span></div>
+
+    <div class="test">
+      <div class="cap">Full-system test</div>
+      <div class="s"><span class="n">Mood</span><div class="beads">
+        <i style="background:linear-gradient(160deg,#93dcc0,var(--mood-okay))"></i><i style="background:linear-gradient(160deg,#ecaa94,var(--mood-low))"></i><i style="background:linear-gradient(160deg,#a4cce9,var(--mood-good))"></i><i style="background:linear-gradient(160deg,#6e94c4,var(--mood-great))"></i><i style="background:linear-gradient(160deg,#f0ac96,var(--mood-flat))"></i>
+      </div></div>
+      <div class="s"><span class="n">Energy</span><div class="beads">
+        <i style="background:linear-gradient(160deg,var(--s3e4),var(--s3e3))"></i><i style="background:linear-gradient(160deg,var(--s3e2),var(--s3e1))"></i><i style="background:linear-gradient(160deg,var(--s3e5),var(--s3e4))"></i><i style="background:linear-gradient(160deg,var(--s3e3),var(--s3e2))"></i><i style="background:linear-gradient(160deg,var(--s3e4),var(--s3e3))"></i>
+      </div></div>
+      <div class="s"><span class="n">Focus</span><div class="beads">
+        <i style="background:linear-gradient(160deg,var(--s3f4),var(--s3f3))"></i><i style="background:var(--s3f1)"></i><i style="background:linear-gradient(160deg,var(--s3f5),var(--s3f4))"></i><i style="background:linear-gradient(160deg,var(--s3f3),var(--s3f2))"></i><i style="background:linear-gradient(160deg,var(--s3f4),var(--s3f3))"></i>
+      </div></div>
+      <div class="medline"><div class="ring">36</div><span class="chip">Concerta 36</span><span class="t">← jade and garnet both far from purple</span></div>
+    </div>
+    <div class="verdict"><b>Pros:</b> energy "heat" metaphor is the most intuitive of all; both ramps far from med purple. <b class="warn">Watch:</b> two real frictions — garnet's top steps brush mood-low/flat coral, and jade's light steps brush mood-okay mint. Strongest need for always-on labels. Migrates existing orange energy tags.</div>
+  </div>
+
+</div>
+
+<div class="notes">
+  <h2>How to decide</h2>
+  <table>
+    <tr><th></th><th>1 · Ember &amp; Tide</th><th>2 · Gold &amp; Graphite</th><th>3 · Garnet &amp; Jade</th></tr>
+    <tr><td><b>Distance from med purple</b></td><td>Max (teal)</td><td>Max (no hue at all)</td><td>Max (green/red)</td></tr>
+    <tr><td><b>Distance from mood palette</b></td><td>Good — one soft neighbor (mint↔teal)</td><td>Best — gold's only neighbor is coral, mild</td><td>Weakest — two neighbors (coral↔garnet, mint↔jade)</td></tr>
+    <tr><td><b>Colorblind safety</b></td><td>Strong</td><td>Strongest (luminance scale)</td><td>Red↔green is the classic CVD axis — relies on luminance steps, which these have, but weakest of the three</td></tr>
+    <tr><td><b>Migration cost</b></td><td>Lowest — energy tags keep orange</td><td>Medium — energy tags shift gold</td><td>Highest — energy tags shift red</td></tr>
+    <tr><td><b>Personality</b></td><td>Natural, calm</td><td>Editorial, premium</td><td>Vivid, expressive</td></tr>
+  </table>
+  <br>
+  <b>My pick: System 1</b>, with System 2 as the close second if you want the more striking, editorial feel.
+  Honest note on System 2's main risk: ~10% of the male population has some red-green deficiency, and System 2 is the only one fully immune by construction — but its gray low-end genuinely can read as "no data" next to the gray empty-state tracks, which would need a different empty treatment (e.g. dashed outline).
+  <br><br>
+  Tell me your top pick (or top two) and I'll re-render the <b>full v4 screen</b> with that system applied so you judge it in context, not in swatches.
+</div>
+
+</body>
+</html>

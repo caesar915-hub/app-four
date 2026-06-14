@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calendar — converged v3 (white text, flat icons, med-% proposals)</title>
+<style>
+  :root {
+    --purple:#AF52DE; --pink:#FF2D55; --indigo:#5856D6; --se:#C24B17;
+    --bg:#FFFFFF; --text-pri:#000; --text-sec:#3C3C4399; --separator:#3C3C434A;
+    --ink:#2c2c30; --frame:#111114;
+    /* palette B, deepened so WHITE text is legible on every mood */
+    --m-low:#C75B49; --m-flat:#CB733A; --m-okay:#B5852A; --m-good:#5F9A50; --m-great:#4E8C7A;
+  }
+  * { box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+         background:#e9e9ee; color:var(--text-pri); padding:28px 16px 64px;
+         display:flex; flex-direction:column; align-items:center; gap:14px; }
+  h1.page { font-size:18px; font-weight:600; color:#3a3a3c; margin:0; text-align:center; }
+  h2.sec { font-size:13px; font-weight:700; color:#3a3a3c; margin:14px 0 -4px; text-transform:uppercase; letter-spacing:.05em; }
+  p.sub { font-size:12.5px; color:#6b6b70; margin:-2px 0 0; max-width:720px; text-align:center; line-height:1.5; }
+
+  .phone { width:380px; background:var(--bg); border-radius:42px; border:10px solid var(--frame);
+           box-shadow:0 20px 52px rgba(0,0,0,.17); overflow:hidden; }
+  .screen { padding:18px 15px 30px; background:var(--bg); min-height:680px; }
+  .months { display:flex; gap:20px; padding:6px 4px 4px; }
+  .month { font-size:15px; font-weight:600; color:var(--text-sec); padding:6px 2px; position:relative; }
+  .month.sel { font-weight:700; color:var(--text-pri); }
+  .month.sel::after { content:""; position:absolute; left:2px; right:2px; bottom:0; height:2px; border-radius:1px; background:var(--text-pri); }
+
+  .day-card { border-radius:20px; padding:15px 13px; margin-top:12px; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+  .day-header { font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:0 0 13px 2px; }
+
+  .row { display:flex; align-items:flex-start; gap:12px; }
+  .rail { position:relative; width:54px; flex:0 0 54px; display:flex; flex-direction:column; align-items:center; }
+  .rail .connector { width:1px; background:var(--separator); flex:1 1 auto; min-height:18px; }
+  .row:last-child .rail .connector { display:none; }
+  .bead { position:relative; width:54px; height:54px; flex:0 0 54px; }
+  .bead .ls { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  .bead .time { font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; color:#fff; }
+  .bead .pct-in { position:absolute; left:0; right:0; bottom:8px; text-align:center; font-size:8px; font-weight:700; color:#fff; opacity:.95; }
+
+  .content { flex:1 1 auto; padding:7px 0 15px; display:flex; flex-direction:column; gap:7px; align-items:flex-start; }
+  .row:last-child .content { padding-bottom:2px; }
+  .banner { display:inline-block; font-size:13px; font-weight:700; color:#fff; letter-spacing:.01em; line-height:1.3; padding:4px 11px; border-radius:13px; }
+  .bi { width:13px; height:13px; vertical-align:-2px; margin-right:1px; }
+
+  .chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:500; padding:3px 9px; border-radius:999px; line-height:1.1; }
+  .chip .bi { width:11px; height:11px; vertical-align:-1px; margin:0; color:var(--ink); }   /* dark icon */
+  .chip.feel{ color:var(--pink); background:rgba(255,45,85,.12);}
+  .chip.se{ color:var(--se); background:rgba(255,149,0,.14);}
+  .chip.sleep{ color:var(--indigo); background:rgba(88,86,214,.12);}
+  .chip.med{ color:var(--purple); background:rgba(175,82,222,.13); font-weight:600;}
+
+  /* proposals */
+  .props { display:flex; flex-wrap:wrap; gap:18px; justify-content:center; }
+  .prop { background:#fff; border-radius:14px; padding:16px; width:170px; text-align:center; box-shadow:0 4px 16px rgba(0,0,0,.06); }
+  .prop h3 { font-size:12px; margin:0 0 3px; color:#3a3a3c; }
+  .prop p { font-size:10.5px; color:#8e8e93; margin:6px 0 0; line-height:1.4; }
+  .prop .demo { display:flex; justify-content:center; padding:8px 0 2px; min-height:90px; align-items:center; }
+  .b2 { position:relative; width:64px; height:64px; }
+  .b2 .ls { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+  .b2 .time { font-size:15px; font-weight:700; color:#fff; font-variant-numeric:tabular-nums; }
+  .p-in { position:absolute; left:0; right:0; bottom:9px; text-align:center; font-size:9px; font-weight:700; color:#fff; opacity:.95; }
+  .p-under { font-size:10px; font-weight:700; color:var(--purple); margin-top:3px; font-variant-numeric:tabular-nums; }
+  .p-badge { position:absolute; bottom:-3px; left:50%; transform:translateX(-50%); background:#fff; color:var(--purple);
+             font-size:9px; font-weight:800; padding:1px 6px; border-radius:999px; box-shadow:0 1px 3px rgba(0,0,0,.18); font-variant-numeric:tabular-nums; }
+  .p-band { position:absolute; left:6px; right:6px; bottom:7px; background:rgba(0,0,0,.28); color:#fff; border-radius:7px;
+            font-size:9px; font-weight:700; padding:1px 0; text-align:center; font-variant-numeric:tabular-nums; }
+  .colwrap { display:flex; flex-direction:column; align-items:center; }
+
+  .opts { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+  .opt { background:#fff; border-radius:12px; padding:10px 12px; box-shadow:0 3px 14px rgba(0,0,0,.06); text-align:center; }
+  .opt .lbl { font-size:11px; color:#8e8e93; margin-top:5px; }
+
+  .legend { width:720px; max-width:100%; background:#fff; border-radius:14px; padding:14px 18px; box-shadow:0 6px 24px rgba(0,0,0,.06); font-size:12.5px; color:#3a3a3c; line-height:1.6; }
+  .legend b{color:#3a3a3c}
+</style>
+</head>
+<body>
+
+  <h1 class="page">Converged v3 — white text · flat icons · med-% proposals</h1>
+  <p class="sub">All banner text white (palette B deepened so it stays legible). Every icon is flat/mono — white in the banner, dark in the chips. Mood icon is now a sparkle (options below). Pick a medication-% placement from the four proposals.</p>
+
+  <div class="phone"><div class="screen">
+    <div class="months"><div class="month">MAY</div><div class="month sel">JUN 2026</div></div>
+    <div class="day-card" id="card"></div>
+  </div></div>
+
+  <h2 class="sec">Medication % — where should it go? (4 proposals)</h2>
+  <div class="props" id="props"></div>
+
+  <h2 class="sec">Mood icon — pick one (replaces the face)</h2>
+  <div class="opts" id="opts"></div>
+
+  <div class="legend" id="legend"></div>
+
+<script>
+  const PURPLE="#AF52DE";
+  const M = { low:"#C75B49", flat:"#CB733A", okay:"#B5852A", good:"#5F9A50", great:"#4E8C7A" };
+  const SCALE = { low:1, flat:2, okay:3, good:4, great:5 };
+  const SCALE_COLOR = { 1:M.low,2:M.flat,3:M.okay,4:M.good,5:M.great };
+
+  const ICON = {
+    sparkle:'<path d="M8 1.2 L9.4 6.6 L14.8 8 L9.4 9.4 L8 14.8 L6.6 9.4 L1.2 8 L6.6 6.6 Z" fill="currentColor"/>',
+    star:'<path d="M8 1.4 L9.9 5.9 L14.7 6.3 L11 9.4 L12.2 14 L8 11.4 L3.8 14 L5 9.4 L1.3 6.3 L6.1 5.9 Z" fill="currentColor"/>',
+    sun:'<circle cx="8" cy="8" r="3.1" fill="currentColor"/><g stroke="currentColor" stroke-width="1.3" stroke-linecap="round"><line x1="8" y1="1" x2="8" y2="2.7"/><line x1="8" y1="13.3" x2="8" y2="15"/><line x1="1" y1="8" x2="2.7" y2="8"/><line x1="13.3" y1="8" x2="15" y2="8"/><line x1="3.3" y1="3.3" x2="4.5" y2="4.5"/><line x1="11.5" y1="11.5" x2="12.7" y2="12.7"/><line x1="3.3" y1="12.7" x2="4.5" y2="11.5"/><line x1="11.5" y1="4.5" x2="12.7" y2="3.3"/></g>',
+    heart:'<path d="M8 13.6 C2.4 9.3 3 5.1 5.6 5.1 C7.1 5.1 8 6.6 8 6.6 C8 6.6 8.9 5.1 10.4 5.1 C13 5.1 13.6 9.3 8 13.6 Z" fill="currentColor"/>',
+    moon:'<path d="M10.6 2.1 A6 6 0 1 0 13.9 10.6 A4.8 4.8 0 0 1 10.6 2.1 Z" fill="currentColor"/>',
+    cross:'<path d="M6.6 2.3 h2.8 v3.9 h3.9 v2.8 h-3.9 v3.9 h-2.8 v-3.9 H2.7 V6.2 h3.9 Z" fill="currentColor"/>',
+    pill:'<g transform="rotate(-32 8 8)"><rect x="2.4" y="6" width="11.2" height="4" rx="2" fill="currentColor"/></g>',
+    bolt:'<path d="M9.2 1.5 L4 9 H7 L6.4 14.5 L12 6.8 H9 Z" fill="currentColor"/>',
+    target:'<circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2.3" fill="currentColor"/>'
+  };
+  const svg=(k,c,cls="bi")=>`<svg class="${cls}" viewBox="0 0 16 16"${c?` style="color:${c}"`:""}>${ICON[k]}</svg>`;
+  const CHIP_ICON = { feel:"heart", sleep:"moon", se:"cross", med:"pill" };
+
+  let MOOD_ICON = "sparkle";   // default; changeable via the options row
+
+  const NODES = [
+    { time:"16:42", mood:"great", mw:"Great", en:"Alert",  fo:"Focused", carry:75, taken:null, rings:[0.75], chips:[{t:"feel",l:"Happy"},{t:"feel",l:"Calm"}] },
+    { time:"14:30", mood:"good",  mw:"Good",  en:"Steady", fo:"Focused", carry:52, taken:null, rings:[0.52], chips:[{t:"feel",l:"Relaxed"}] },
+    { time:"11:00", mood:"okay",  mw:"Okay",  en:"Tired",  fo:"Scattered", carry:18, taken:null, rings:[0.18], chips:[{t:"feel",l:"Anxious"}] },
+    { time:"09:15", mood:"good",  mw:"Good",  en:"Calm",   fo:"Focused", carry:null, taken:"Concerta 36mg", rings:[0.0], chips:[{t:"sleep",l:"5h sleep"},{t:"se",l:"Headache"}] },
+  ];
+
+  const avgColor = ()=>{ const v=NODES.filter(n=>n.mood).map(n=>SCALE[n.mood]); return SCALE_COLOR[Math.round(v.reduce((a,b)=>a+b,0)/v.length)]; };
+
+  function bead(node){
+    const S=64,c=S/2,RW=4,GAP=2,R=S/2-2, fill=M[node.mood];
+    let rings=""; node.rings.forEach((p,i)=>{ const r=R-i*(RW+GAP)-RW/2,C=2*Math.PI*r,dash=Math.max(.001,p)*C;
+      rings+=`<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${PURPLE}" stroke-width="${RW}" stroke-linecap="round" stroke-dasharray="${dash} ${C-dash}" transform="rotate(-90 ${c} ${c})"/>`; });
+    const pct = node.carry!=null ? `<div class="pct-in">${node.carry}%</div>` : "";
+    return `<div class="bead"><svg width="100%" height="100%" viewBox="0 0 ${S} ${S}"><circle cx="${c}" cy="${c}" r="${R}" fill="${fill}"/>${rings}</svg>
+            <div class="ls"><div class="time">${node.time}</div></div>${pct}</div>`;
+  }
+  function banner(node){
+    return `<span class="banner" style="background:${M[node.mood]}">${svg(MOOD_ICON,"#fff")} ${node.mw.toUpperCase()} ${svg('bolt','#fff')} ${node.en.toUpperCase()} ${svg('target','#fff')} ${node.fo.toUpperCase()}</span>`;
+  }
+  function row(node){
+    const a=[];
+    if(node.taken) a.push(`<span class="chip med">${svg('pill')}TAKEN ${node.taken.toUpperCase()}</span>`);
+    node.chips.forEach(ch=>a.push(`<span class="chip ${ch.t}">${svg(CHIP_ICON[ch.t])}${ch.l}</span>`));
+    return `<div class="row"><div class="rail">${bead(node)}<div class="connector"></div></div>
+            <div class="content">${banner(node)}<div class="chips">${a.join("")}</div></div></div>`;
+  }
+  function renderCard(){
+    const avg=avgColor();
+    const card=document.getElementById("card");
+    card.style.background=avg+"16";
+    card.innerHTML=`<div class="day-header" style="color:${avg}">Today, 11 Jun</div>`+NODES.map(row).join("");
+  }
+  renderCard();
+
+  // --- medication % proposals ---
+  const GREEN = M.good;
+  function demoBead(extraInside, after){
+    const S=64,c=32,RW=4.5,R=30, p=0.6, Cc=2*Math.PI*(R-RW/2), dash=p*Cc;
+    return `<div class="colwrap"><div class="b2">
+      <svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="${R}" fill="${GREEN}"/>
+        <circle cx="32" cy="32" r="${R-RW/2}" fill="none" stroke="${PURPLE}" stroke-width="${RW}" stroke-linecap="round" stroke-dasharray="${dash} ${Cc-dash}" transform="rotate(-90 32 32)"/></svg>
+      <div class="ls"><div class="time">14:30</div></div>${extraInside}</div>${after||""}</div>`;
+  }
+  const PROPS = [
+    { h:"P1 · Inside, below time", d:"% under the centred time, both in the circle. Compact but small.", body:demoBead(`<div class="p-in">60%</div>`) },
+    { h:"P2 · Under the bead", d:"% as purple text just below the circle. Roomy, very legible.", body:demoBead("", `<div class="p-under">60%</div>`) },
+    { h:"P3 · Edge badge", d:"A small white badge on the rim, like a count badge. Distinct from the time.", body:demoBead(`<div class="p-badge">60%</div>`) },
+    { h:"P4 · Bottom band", d:"% in a translucent band across the bottom inside the circle.", body:demoBead(`<div class="p-band">60%</div>`) },
+  ];
+  document.getElementById("props").innerHTML = PROPS.map(p=>`<div class="prop"><h3>${p.h}</h3><div class="demo">${p.body}</div><p>${p.d}</p></div>`).join("");
+
+  // --- mood icon options ---
+  const MOPTS = ["sparkle","star","sun","heart"];
+  document.getElementById("opts").innerHTML = MOPTS.map(k=>
+    `<div class="opt"><span class="banner" style="background:${GREEN}">${svg(k,"#fff")} GREAT ${svg('bolt','#fff')} ALERT ${svg('target','#fff')} FOCUSED</span>
+       <div class="lbl">${k}${k==="heart"?" (also used by feelings)":""}</div></div>`).join("");
+
+  document.getElementById("legend").innerHTML =
+    `<b>Deepened palette B</b> (so white text reads on every mood): low ${M.low} · flat ${M.flat} · okay ${M.okay} · good ${M.good} · great ${M.great}. The gold/coral got a touch darker than the swatches you picked — that's the cost of all-white text. <b>Icons</b> are flat SVG (white in banner, dark in chips). <b>Tell me:</b> which med-% proposal (P1–P4) and which mood icon.`;
+</script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Banner one-line fit — options</title>
+<style>
+  :root { --purple:#AF52DE; --good:#5F9A50; }
+  * { box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+         background:#e9e9ee; color:#222; padding:30px 16px 64px; display:flex; flex-direction:column; align-items:center; gap:16px; }
+  h1 { font-size:18px; font-weight:600; color:#3a3a3c; margin:0; text-align:center; }
+  p.sub { font-size:12.5px; color:#6b6b70; margin:-4px 0 0; max-width:720px; text-align:center; line-height:1.5; }
+
+  .grid { display:flex; flex-wrap:wrap; gap:18px; justify-content:center; max-width:1100px; }
+  .opt { background:#fff; border-radius:16px; padding:16px 18px; width:330px; box-shadow:0 5px 20px rgba(0,0,0,.07); }
+  .opt h3 { font-size:13px; margin:0 0 2px; color:#222; }
+  .opt .rec { color:#1F6B3A; font-weight:700; }
+  .opt p { font-size:11px; color:#8e8e93; margin:8px 0 0; line-height:1.45; }
+  .case { font-size:10px; text-transform:uppercase; letter-spacing:.05em; color:#b0b0b5; margin:12px 0 4px; }
+  /* content-column-width sandbox with a dashed right edge = the real boundary */
+  .fitbox { width:257px; border-right:1.5px dashed #d0d0d5; padding-right:2px; }
+
+  .banner { display:inline-block; background:var(--good); color:#fff; font-weight:700; letter-spacing:.01em;
+            line-height:1.28; padding:4px 11px; border-radius:13px; }
+  .banner.nowrap { white-space:nowrap; }
+  .bi { vertical-align:-2px; margin-right:1px; }
+  .full { display:block; text-align:left; }
+
+  .legend { width:720px; max-width:100%; background:#fff; border-radius:14px; padding:14px 18px; box-shadow:0 6px 24px rgba(0,0,0,.06); font-size:12.5px; color:#3a3a3c; line-height:1.6; }
+  .legend b{color:#3a3a3c}
+</style>
+</head>
+<body>
+
+  <h1>Banner — keeping mood · energy · focus on one line</h1>
+  <p class="sub">The dashed edge marks the real content-column width on a 6.1″ phone (~257&nbsp;pt). Each option shows a worst-case long combo and a short one. Goal: the long one never wraps.</p>
+
+  <div class="grid" id="grid"></div>
+  <div class="legend" id="legend"></div>
+
+<script>
+  const ICON = {
+    sparkle:'<path d="M8 1.2 L9.4 6.6 L14.8 8 L9.4 9.4 L8 14.8 L6.6 9.4 L1.2 8 L6.6 6.6 Z" fill="currentColor"/>',
+    bolt:'<path d="M9.2 1.5 L4 9 H7 L6.4 14.5 L12 6.8 H9 Z" fill="currentColor"/>',
+    target:'<circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2.3" fill="currentColor"/>'
+  };
+  const svg=(k,px)=>`<svg class="bi" viewBox="0 0 16 16" style="width:${px}px;height:${px}px;color:#fff">${ICON[k]}</svg>`;
+
+  const LONG  = { mw:"Great", en:"Drained", fo:"Scattered" };
+  const SHORT = { mw:"Okay",  en:"Calm",    fo:"Sharp" };
+
+  // build a banner; opts: {base, moodFs, efFs, spIcon, efIcon, nowrap, full}
+  function banner(d, o){
+    const moodFs=o.moodFs||o.base, efFs=o.efFs||o.base;
+    const sp=o.spIcon||16, ei=o.efIcon||13;
+    const cls = "banner"+(o.nowrap?" nowrap":"")+(o.full?" full":"");
+    return `<span class="${cls}" style="font-size:${o.base}px">`+
+      `<span style="font-size:${moodFs}px">${svg('sparkle',sp)} ${d.mw.toUpperCase()}</span> `+
+      `<span style="font-size:${efFs}px">${svg('bolt',ei)} ${d.en.toUpperCase()} ${svg('target',ei)} ${d.fo.toUpperCase()}</span></span>`;
+  }
+
+  const OPTS = [
+    { h:'Baseline — v4 (13px)', rec:'', note:'Today\'s design. The long combo WRAPS to two lines — the problem.',
+      o:{ base:13 }, wrapLong:true },
+    { h:'A · Auto-shrink to fit', rec:'recommended', note:'Stays 13px normally; shrinks just enough (down to ~11px) only when a line would overflow. Short entries keep full size. Always one line, any data.',
+      o:{ base:13 }, shrinkLong:11 },
+    { h:'B · Smaller fixed (12px)', rec:'', note:'Everything one notch smaller. Almost all real combos fit; simplest (no dynamic sizing) but short entries are smaller than they need to be.',
+      o:{ base:12, spIcon:14, efIcon:12, nowrap:true } },
+    { h:'C · Mood big · energy/focus small', rec:'', note:'Mood word stays prominent (14px); energy·focus drop to 11px on the same line. Adds hierarchy and fits — but two type sizes per banner.',
+      o:{ base:13, moodFs:14, efFs:11, spIcon:16, efIcon:11, nowrap:true } },
+  ];
+
+  document.getElementById("grid").innerHTML = OPTS.map(opt=>{
+    const longO = {...opt.o};
+    if(opt.shrinkLong){ longO.base=opt.shrinkLong; longO.moodFs=opt.shrinkLong; longO.efFs=opt.shrinkLong; longO.spIcon=14; longO.efIcon=11; longO.nowrap=true; }
+    if(opt.wrapLong){ /* leave wrapping on */ }
+    else { longO.nowrap = longO.nowrap ?? true; }
+    return `<div class="opt">
+      <h3>${opt.h} ${opt.rec?`<span class="rec">· ${opt.rec}</span>`:""}</h3>
+      <div class="case">long combo</div><div class="fitbox">${banner(LONG, longO)}</div>
+      <div class="case">short combo</div><div class="fitbox">${banner(SHORT, opt.o.shrinkLong?{...opt.o,nowrap:true}:{...opt.o,nowrap:true})}</div>
+      <p>${opt.note}</p>
+    </div>`;
+  }).join("");
+
+  document.getElementById("legend").innerHTML =
+    `<b>My pick: A (auto-shrink).</b> In SwiftUI that's <code>.lineLimit(1).minimumScaleFactor(...)</code> on the banner — full size for normal entries, a gentle shrink only for the rare long combo, never a wrap. If you'd rather avoid dynamic sizing, <b>B</b> (a flat 12px) is the simplest and fits almost everything. <b>C</b> is best if you also want the mood word to dominate. They combine too (e.g. A + C).`;
+</script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calendar Check-in Timeline — v9 (combined title + "TAKEN …")</title>
+<style>
+  /*
+    v9 — refines v8 per feedback:
+      1. The headline COMBINES mood + energy + focus into one title, e.g. "GOOD ALERT FOCUSED".
+         No separate smaller energy/focus line beneath.
+      2. A freshly-taken dose reads "TAKEN CONCERTA 36MG" (purple) instead of "… · 0%".
+         A med-only node (no voice check-in) uses that same text AS its title.
+      3. Active carry-over doses (still inside their window) keep the "💊 Name · 40%" line
+         and the ring around the bead — unchanged from v8.
+
+    Per row:
+      MOOD ENERGY FOCUS              ← single combined headline (bead colour identity)
+      💊 TAKEN CONCERTA 36MG         ← only when a dose is logged at THIS check-in
+      💊 Concerta 36mg · 40%         ← only for an earlier dose still active here
+      [feeling] [side effect] [sleep] [topic]   ← the OTHER inputs, scoped to THIS entry
+
+    Chip colours mirror Recording.displayTags:
+      energy/side-effect = systemOrange · sleep = indigo · feeling = pink ·
+      medication = systemPurple · topic = teal
+  */
+  :root {
+    --mood-low:   #DA7964;   --mood-flat:  #E89178;   --mood-okay:  #7BCDB1;
+    --mood-good:  #85B9DF;   --mood-great: #5179A8;   --mood-alert: #7BCDB1;
+    --mood-none:  #AEAEB2;
+    --purple:     #AF52DE;   --orange:     #FF9500;   --indigo:     #5856D6;
+    --pink:       #FF2D55;   --teal:       #30B0C7;
+
+    --bg:        #FFFFFF;    --text-pri:  #000000;
+    --text-sec:  #3C3C4399;  --separator: #3C3C434A;
+    --card:      #F2F2F7;    --frame:     #111114;
+  }
+  * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    background: #e9e9ee; color: var(--text-pri);
+    padding: 32px 16px 64px;
+    display: flex; flex-direction: column; align-items: center; gap: 22px;
+  }
+  h1.page  { font-size: 17px; font-weight: 600; color: #3a3a3c; margin: 0; text-align:center; }
+  p.sub    { font-size: 13px; color: #6b6b70; margin: -6px 0 0; max-width: 760px; text-align: center; line-height: 1.5; }
+
+  .stage { display: flex; flex-wrap: wrap; gap: 28px; justify-content: center; align-items: flex-start; }
+  .variant { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .variant .cap { font-size: 12px; color: #8e8e93; font-weight: 600; }
+
+  .phone { width: 400px; background: var(--bg); border-radius: 40px; border: 10px solid var(--frame);
+           box-shadow: 0 24px 60px rgba(0,0,0,.18); overflow: hidden; }
+  .screen { padding: 20px 16px 36px; background: var(--bg); min-height: 760px; }
+
+  .months { display: flex; gap: 24px; padding: 8px 4px 6px; overflow-x: auto; scrollbar-width: none; }
+  .months::-webkit-scrollbar { display: none; }
+  .month { font-size: 17px; font-weight: 600; color: var(--text-sec); white-space: nowrap; padding: 8px 4px 6px; position: relative; }
+  .month.sel { font-weight: 700; color: var(--text-pri); }
+  .month.sel::after { content:""; position:absolute; left:4px; right:4px; bottom:0; height:2px; border-radius:1px; background: var(--text-pri); }
+
+  .day-card { background: var(--card); border-radius: 20px; padding: 16px; margin-top: 14px; }
+  .day-header { font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--text-sec);
+                text-transform: uppercase; padding: 0 0 14px; }
+
+  .row { display: flex; align-items: flex-start; gap: 16px; }
+  .rail { position: relative; width: 56px; flex: 0 0 56px; display: flex; flex-direction: column; align-items: center; }
+  .rail .connector { width: 1px; background: var(--separator); flex: 1 1 auto; min-height: 24px; }
+  .row:last-child .rail .connector { display: none; }
+
+  .bead { position: relative; width: 56px; height: 56px; flex: 0 0 56px; }
+  .bead .label-stack { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+  .bead .time { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+  .content { flex: 1 1 auto; padding: 12px 0 18px; display: flex; flex-direction: column; gap: 6px; }
+  .row:last-child .content { padding-bottom: 2px; }
+
+  /* single combined headline */
+  .title { font-size: 17px; font-weight: 600; color: var(--text-pri); letter-spacing: -.01em; line-height: 1.15; }
+  .title.med { color: var(--purple); }           /* med-only node: the "TAKEN …" is the title */
+
+  .med   { font-size: 13px; font-weight: 600; color: var(--purple); font-variant-numeric: tabular-nums; }
+
+  .tags  { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+  .chip  { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 500;
+           padding: 4px 9px; border-radius: 999px; line-height: 1.1; }
+  .chip .ic { font-size: 11px; }
+  .chip.feel { color: var(--pink);   background: rgba(255,45,85,.12); }
+  .chip.se   { color: #C24B17;       background: rgba(255,149,0,.14); }
+  .chip.sleep{ color: var(--indigo); background: rgba(88,86,214,.12); }
+  .chip.cat  { color: #1C7E91;       background: rgba(48,176,199,.14); }
+
+  .legend { width: 760px; max-width: 100%; background: #fff; border-radius: 18px; padding: 18px 22px; box-shadow: 0 6px 24px rgba(0,0,0,.06); }
+  .legend h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: #8e8e93; margin: 0 0 10px; }
+  .legend ul { margin: 0; padding-left: 18px; font-size: 12.5px; color:#3a3a3c; line-height: 1.6; }
+  .legend code { background:#F2F2F7; border-radius:4px; padding:0 4px; }
+</style>
+</head>
+<body>
+
+  <h1 class="page">Calendar — v9: combined headline + “TAKEN …” for fresh doses</h1>
+  <p class="sub">The headline is one line — <b>mood + energy + focus</b> (e.g. “GOOD ALERT FOCUSED”). A dose logged at the check-in reads <b>“TAKEN CONCERTA 36MG”</b>; an earlier dose still active keeps its <b>“💊 Concerta 36mg · 40%”</b> line + ring. Feelings, side effects, sleep and topics stay as chips under their own entry.</p>
+
+  <div class="stage">
+    <div class="variant">
+      <div class="cap"><b>Default</b> text size</div>
+      <div class="phone">
+        <div class="screen">
+          <div class="months" id="months"></div>
+          <div class="day-card">
+            <div class="day-header">Today, 11 Jun</div>
+            <div class="timeline" id="timeline"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <h2>Rules in this mockup</h2>
+    <ul>
+      <li><b>Headline</b> = <code>mood + energy + focus</code>, uppercased, one line. Missing parts are dropped (e.g. just “LOW”).</li>
+      <li><b>TAKEN CONCERTA 36MG</b> = a dose logged at this instant (its 0% ring isn't spelled out — it was just taken).</li>
+      <li><b>💊 Concerta 36mg · 40%</b> = an earlier dose still inside its effect window here (ring + %).</li>
+      <li><b>Med-only node</b> (no voice note) uses “TAKEN …” as its title, on a hollow bead.</li>
+      <li>Chips under each entry = that check-in's <b>feelings · side effects · sleep · topics</b>. Nothing is pooled at the day level.</li>
+    </ul>
+  </div>
+
+<script>
+  const MONTHS = ["MAR 2026","APR 2026","MAY 2026","JUN 2026"];
+  document.getElementById("months").innerHTML = MONTHS.map(m =>
+    `<div class="month${m === "JUN 2026" ? " sel" : ""}">${m}</div>`).join("");
+
+  const MOOD = { low:"var(--mood-low)", flat:"var(--mood-flat)", okay:"var(--mood-okay)",
+                 good:"var(--mood-good)", great:"var(--mood-great)", alert:"var(--mood-alert)", none:"var(--mood-none)" };
+  const PURPLE = "#AF52DE";
+
+  // Newest first. Each node = one check-in with everything it extracted.
+  const nodes = [
+    { time:"13:40", mood:"good", moodWord:"Good", energy:"Alert", focus:"Focused",
+      taken:null, active:{ name:"Concerta 36mg", pct:40 }, rings:[40],
+      tags:[ {t:"feel", ic:"❤️", l:"Calm"} ] },
+
+    { time:"11:00", mood:null,  taken:"Concerta 36mg", active:null, rings:[0], tags:[] },  // med-only
+
+    { time:"09:15", mood:"low", moodWord:"Low", energy:"Drained", focus:"Scattered",
+      taken:"Concerta 36mg", active:null, rings:[0],
+      tags:[
+        {t:"sleep", ic:"🌙", l:"5h sleep"},
+        {t:"se",    ic:"🩹", l:"Headache"},
+        {t:"se",    ic:"🩹", l:"Nausea"},
+        {t:"feel",  ic:"❤️", l:"Anxious"},
+        {t:"feel",  ic:"❤️", l:"Tired"},
+        {t:"cat",   ic:"📋", l:"Work"},
+      ] },
+  ];
+
+  function bead(node) {
+    const S = 64, c = S/2, RW = 4, GAP = 2, centreR = (S/2) - 2;
+    const centre = node.mood
+      ? `<circle cx="${c}" cy="${c}" r="${centreR}" fill="${MOOD[node.mood]}"/>`
+      : `<circle cx="${c}" cy="${c}" r="${centreR-0.75}" fill="var(--bg)" stroke="var(--separator)" stroke-width="1"/>`;
+    let rings = "";
+    (node.rings || []).forEach((pct,i) => {
+      const inset = i*(RW+GAP), r = centreR - inset - RW/2, C = 2*Math.PI*r;
+      const dash = Math.max(0.001, pct/100)*C;
+      rings += `<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${PURPLE}" stroke-width="${RW}"
+                stroke-linecap="round" stroke-dasharray="${dash} ${C-dash}" transform="rotate(-90 ${c} ${c})"/>`;
+    });
+    const timeColor = node.mood ? "#ffffff" : PURPLE;
+    return `<div class="bead"><svg width="100%" height="100%" viewBox="0 0 ${S} ${S}">${centre}${rings}</svg>
+            <div class="label-stack"><div class="time" style="color:${timeColor}">${node.time}</div></div></div>`;
+  }
+
+  document.getElementById("timeline").innerHTML = nodes.map(n => {
+    const isMedOnly = !n.mood;
+    const title = isMedOnly
+      ? `Taken ${n.taken}`
+      : [n.moodWord, n.energy, n.focus].filter(Boolean).join(" ");
+    const titleClass = isMedOnly ? "title med" : "title";
+
+    let lines = "";
+    if (!isMedOnly && n.taken)  lines += `<div class="med">💊 TAKEN ${n.taken.toUpperCase()}</div>`;
+    if (!isMedOnly && n.active) lines += `<div class="med">💊 ${n.active.name} · ${n.active.pct}%</div>`;
+
+    const chips = n.tags.length
+      ? `<div class="tags">${n.tags.map(t => `<span class="chip ${t.t}"><span class="ic">${t.ic}</span>${t.l}</span>`).join("")}</div>`
+      : "";
+
+    return `
+      <div class="row">
+        <div class="rail">${bead(n)}<div class="connector"></div></div>
+        <div class="content">
+          <div class="${titleClass}">${title.toUpperCase()}</div>
+          ${lines}
+          ${chips}
+        </div>
+      </div>`;
+  }).join("");
+</script>
+</body>
+</html>

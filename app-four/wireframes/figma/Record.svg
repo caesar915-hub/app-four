@@ -1,0 +1,54 @@
+<svg width="390" height="844" viewBox="0 0 390 844" fill="#FAFAFA" xmlns="http://www.w3.org/2000/svg">
+<!-- Background -->
+<rect width="390" height="844" fill="#F9F9F9"/>
+
+<!-- Medication Bar -->
+<rect x="16" y="60" width="358" height="44" rx="12" fill="#EADDFF" stroke="#D8B4FE" stroke-width="1"/>
+<rect x="16" y="60" width="100" height="44" rx="12" fill="#D8B4FE"/>
+<text x="32" y="87" font-family="-apple-system, system-ui, sans-serif" font-size="14" font-weight="500" fill="#000">1st dose · Concerta 36mg · 12:23</text>
+<text x="280" y="87" font-family="-apple-system, system-ui, sans-serif" font-size="14" fill="#888">ends 22:23</text>
+
+<rect x="16" y="112" width="358" height="44" rx="12" fill="#EADDFF" stroke="#D8B4FE" stroke-width="1"/>
+<rect x="16" y="112" width="60" height="44" rx="12" fill="#D8B4FE"/>
+<text x="32" y="139" font-family="-apple-system, system-ui, sans-serif" font-size="14" font-weight="500" fill="#000">2nd dose · Concerta 36mg · 13:22</text>
+<text x="280" y="139" font-family="-apple-system, system-ui, sans-serif" font-size="14" fill="#888">ends 23:22</text>
+
+<!-- Voice/Text segmented control -->
+<rect x="16" y="180" width="358" height="36" rx="8" fill="#EEE"/>
+<rect x="18" y="182" width="175" height="32" rx="6" fill="#FFF"/>
+<text x="105" y="203" font-family="-apple-system, system-ui, sans-serif" font-size="14" font-weight="bold" fill="#000" text-anchor="middle">Voice</text>
+<text x="285" y="203" font-family="-apple-system, system-ui, sans-serif" font-size="14" fill="#888" text-anchor="middle">Text</text>
+
+<!-- Status Pill -->
+<rect x="100" y="350" width="190" height="60" rx="16" fill="#FFF" filter="drop-shadow(0px 2px 4px rgba(0,0,0,0.05))"/>
+<text x="195" y="375" font-family="-apple-system, system-ui, sans-serif" font-size="16" font-weight="bold" fill="#000" text-anchor="middle">Ready</text>
+<text x="195" y="395" font-family="-apple-system, system-ui, sans-serif" font-size="14" fill="#888" text-anchor="middle">Tap microphone to start</text>
+
+<!-- Waveform -->
+<path d="M50 500 L340 500" stroke="#CCC" stroke-width="6" stroke-dasharray="6 8" stroke-linecap="round"/>
+
+<!-- Record Button -->
+<circle cx="195" cy="650" r="40" fill="#007AFF"/>
+<circle cx="195" cy="650" r="15" fill="#FFF"/>
+
+<!-- Floating Action Button -->
+<circle cx="330" cy="650" r="28" fill="#FFF" filter="drop-shadow(0px 4px 8px rgba(0,0,0,0.1))"/>
+<path d="M320 640 h20 v15 h-20 z M325 645 h10 M325 650 h10" stroke="#007AFF" stroke-width="2" fill="none"/>
+
+<!-- Tab Bar -->
+<rect x="0" y="750" width="390" height="94" fill="#FFF"/>
+<path d="M0 750 H390" stroke="#EEE" stroke-width="1"/>
+
+<circle cx="50" cy="776" r="10" fill="#888"/>
+<text x="50" y="804" font-family="-apple-system, system-ui, sans-serif" font-size="10" fill="#888" text-anchor="middle">Calendar</text>
+
+<rect x="115" y="760" width="60" height="32" rx="16" fill="#E5F1FF"/>
+<circle cx="145" cy="776" r="10" fill="#007AFF"/>
+<text x="145" y="804" font-family="-apple-system, system-ui, sans-serif" font-size="10" fill="#007AFF" text-anchor="middle">Record</text>
+
+<circle cx="240" cy="776" r="10" fill="#888"/>
+<text x="240" y="804" font-family="-apple-system, system-ui, sans-serif" font-size="10" fill="#888" text-anchor="middle">Insights</text>
+
+<circle cx="335" cy="776" r="10" fill="#888"/>
+<text x="335" y="804" font-family="-apple-system, system-ui, sans-serif" font-size="10" fill="#888" text-anchor="middle">Settings</text>
+</svg>

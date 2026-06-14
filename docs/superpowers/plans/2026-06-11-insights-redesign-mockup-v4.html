@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Insights Redesign — v4: full proposal, 5 sections — 2026-06-11</title>
+<style>
+  :root {
+    /* Mood (Recording+MoodDisplay.swift) — low→great */
+    --mood-low:   #DA7964;
+    --mood-flat:  #E89178;
+    --mood-okay:  #7BCDB1;
+    --mood-good:  #85B9DF;
+    --mood-great: #5179A8;
+    /* Energy ramp (Palette.energy family) — sluggish→charged */
+    --en-1: #7A5A40; --en-2: #A1713F; --en-3: #C98B43; --en-4: #ECA64E; --en-5: #FFC069;
+    /* Focus ramp (indigo family) — foggy→locked-in */
+    --fo-1: #45425E; --fo-2: #5A5780; --fo-3: #6F6FA8; --fo-4: #8589D2; --fo-5: #9DA8F8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    background: #2b2b2e; color: #eee; padding: 32px 24px 80px;
+  }
+
+  h1.page-title { font-size: 22px; margin-bottom: 4px; }
+  p.page-sub { color: #aaa; font-size: 14px; margin-bottom: 28px; max-width: 760px; line-height: 1.5; }
+  p.page-sub b { color: #fff; }
+
+  .phones { display: flex; gap: 40px; flex-wrap: wrap; align-items: flex-start; }
+
+  /* ---------- Phone frame ---------- */
+  .phone {
+    width: 393px; border-radius: 48px; padding: 14px; background: #111;
+    box-shadow: 0 24px 60px rgba(0,0,0,.5); flex-shrink: 0;
+  }
+  .screen { border-radius: 36px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+  .frame-label { text-align: center; color: #888; font-size: 13px; margin-top: 12px; letter-spacing: .04em; text-transform: uppercase; }
+
+  /* ---------- Theme tokens (Theme.swift semantics) ---------- */
+  .dark .screen { background: #000; color: #fff; }
+  .dark { --card: #1c1c1e; --text: #fff; --text2: rgba(235,235,245,.6); --sep: rgba(84,84,88,.6); --empty: #232325; }
+  .light .screen { background: #fff; color: #111; }
+  .light { --card: #f2f2f7; --text: #111; --text2: rgba(60,60,67,.6); --sep: rgba(60,60,67,.29); --empty: #ececf0; }
+
+  .statusbar { display: flex; justify-content: space-between; padding: 18px 28px 6px; font-size: 15px; font-weight: 600; color: var(--text); }
+  .content { padding: 0 0 130px; }
+
+  /* ---------- Month selector ---------- */
+  .months { display: flex; gap: 28px; padding: 18px 24px 0; border-bottom: 1px solid var(--sep); }
+  .month { padding-bottom: 10px; font-size: 15px; letter-spacing: .06em; font-weight: 600; color: var(--text2); border-bottom: 2px solid transparent; }
+  .month.active { color: var(--text); border-bottom-color: var(--text); }
+
+  /* ---------- Serif section headers ---------- */
+  .section-title {
+    font-family: "New York", "Iowan Old Style", Georgia, serif;
+    font-size: 30px; line-height: 1.15; font-weight: 700; letter-spacing: -0.01em;
+    color: var(--text); padding: 44px 24px 4px;
+  }
+  .section-sub { padding: 2px 24px 0; font-size: 14px; color: var(--text2); line-height: 1.4; }
+
+  /* ---------- 1. Bubble breakdown ---------- */
+  .bubbles { position: relative; height: 250px; margin: 18px 24px 0; }
+  .bubble { position: absolute; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+  .bubble.b-okay  { width: 195px; height: 195px; left: 30px; top: 0;   font-size: 26px; color:#08221a;
+                    background: radial-gradient(circle at 32% 28%, #9ce0c6, var(--mood-okay) 70%); }
+  .bubble.b-good  { width: 112px; height: 112px; left: 196px; top: 132px; font-size: 19px; color:#0c2233;
+                    background: radial-gradient(circle at 32% 28%, #a9cfeb, var(--mood-good) 70%); }
+  .bubble.b-low   { width: 66px; height: 66px; left: 116px; top: 180px; font-size: 14px; color:#3a120a;
+                    background: radial-gradient(circle at 32% 28%, #ecaa94, var(--mood-low) 72%); }
+  .legend { display: flex; gap: 14px; margin: 16px 24px 0; flex-wrap: wrap; }
+  .legend span { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text2); }
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* ---------- 2. Three-signal strips ---------- */
+  .strips { padding: 20px 24px 0; display: flex; flex-direction: column; gap: 22px; }
+  .strip .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 9px; }
+  .strip .name { font-size: 15px; font-weight: 700; color: var(--text); }
+  .strip .avg  { font-size: 13px; color: var(--text2); }
+  .beads { display: flex; gap: 5px; }
+  .bead { flex: 1; height: 34px; border-radius: 10px; background: var(--empty); }
+
+  /* ---------- 3. Average gauges ---------- */
+  .gauges { display: flex; gap: 18px; padding: 24px 24px 0; }
+  .gauge { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .gtrack { width: 100%; height: 280px; border-radius: 26px; background: var(--empty);
+            display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; position: relative; }
+  .gfill { width: 100%; border-radius: 26px 26px 0 0; display: flex; align-items: flex-start; justify-content: center; padding-top: 12px; font-weight: 800; font-size: 16px; }
+  .gticks { position: absolute; inset: 0; display: flex; flex-direction: column; }
+  .gticks i { flex: 1; border-top: 1px dashed rgba(128,128,140,.18); }
+  .gauge .lbl { font-size: 15px; font-weight: 600; color: var(--text); }
+  .gauge .sub { font-size: 13px; color: var(--text2); margin-top: -8px; text-align: center; }
+
+  /* ---------- 4. Daily rhythm matrix ---------- */
+  .matrix { padding: 22px 24px 0; }
+  .mhead { display: flex; gap: 10px; margin: 0 0 10px 74px; }
+  .mhead span { flex: 1; text-align: center; font-size: 12px; color: var(--text2); font-weight: 600; }
+  .mrow { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+  .mlabel { width: 64px; font-size: 14px; font-weight: 700; color: var(--text); }
+  .mcells { display: flex; gap: 10px; flex: 1; }
+  .mcell { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .mblob { width: 100%; height: 52px; border-radius: 18px; }
+  .mword { font-size: 11px; color: var(--text2); }
+
+  /* ---------- 5. Connection cards ---------- */
+  .conns { padding: 20px 24px 0; display: flex; flex-direction: column; gap: 16px; }
+  .conn { background: var(--card); border-radius: 22px; padding: 20px; }
+  .conn .sentence { font-family: "New York", "Iowan Old Style", Georgia, serif; font-size: 19px; line-height: 1.35; color: var(--text); }
+  .conn .sentence em { font-style: normal; }
+  .conn .pair { display: flex; gap: 8px; margin-top: 16px; align-items: center; }
+  .conn .pbar { height: 26px; border-radius: 13px; display: flex; align-items: center; padding-left: 12px; font-size: 13px; font-weight: 700; }
+  .conn .pcap { font-size: 12px; color: var(--text2); margin-top: 6px; }
+  .conn.gated { border: 1px dashed var(--sep); background: transparent; }
+  .conn.gated .sentence { color: var(--text2); font-size: 16px; }
+
+  /* ---------- Tab bar ---------- */
+  .tabbar { position: absolute; bottom: 18px; left: 18px; right: 18px; height: 74px; border-radius: 37px;
+            backdrop-filter: blur(20px); display: flex; align-items: center; justify-content: space-around; font-size: 11px; }
+  .dark .tabbar { background: rgba(40,40,44,.85); color: #ddd; }
+  .light .tabbar { background: rgba(245,245,247,.9); color: #333; box-shadow: 0 4px 24px rgba(0,0,0,.12); }
+  .tabbar span { opacity: .65; }
+  .tabbar span.on { opacity: 1; font-weight: 600; }
+
+  /* ---------- Notes ---------- */
+  .notes { max-width: 880px; margin-top: 48px; background: #1c1c20; border-radius: 16px; padding: 28px 32px; }
+  .notes h2 { font-size: 17px; margin-bottom: 16px; }
+  .notes table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .notes td { padding: 9px 12px 9px 0; border-bottom: 1px solid #333; color: #ccc; vertical-align: top; }
+  .notes td:first-child { color: #fff; font-weight: 700; white-space: nowrap; }
+  .notes code { background: #2e2e33; padding: 1px 6px; border-radius: 5px; font-size: 13px; color: #9ad0ff; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">Insights v4 — full proposal: 5 sections, one scroll</h1>
+<p class="page-sub">
+  Final assembly per your pick: <b>breakdown bubbles</b> + all four signal views (A–D).
+  Scroll order: overall breakdown → month in three signals → averages → daily rhythm → connections.
+  Connections includes its <b>gated state</b> — with only a few check-ins, cards show an unlock hint
+  instead of weak statistics. Dark and light rendered from the same markup.
+</p>
+
+<div class="phones">
+
+  <!-- ================= DARK ================= -->
+  <div class="phone dark">
+    <div class="screen">
+      <div class="statusbar"><span>19:16</span><span>📶 37</span></div>
+      <div class="content">
+
+        <div class="months">
+          <span class="month">MAY 2026</span>
+          <span class="month active">JUN 2026</span>
+        </div>
+
+        <!-- 1. Overall breakdown -->
+        <div class="section-title">Your overall check-in breakdown</div>
+        <div class="section-sub">5 check-ins</div>
+        <div class="bubbles">
+          <div class="bubble b-okay">60%</div>
+          <div class="bubble b-good">25%</div>
+          <div class="bubble b-low">15%</div>
+        </div>
+        <div class="legend">
+          <span><i class="dot" style="background:var(--mood-okay)"></i>Okay</span>
+          <span><i class="dot" style="background:var(--mood-good)"></i>Good</span>
+          <span><i class="dot" style="background:var(--mood-low)"></i>Low</span>
+        </div>
+
+        <!-- 2. Month in three signals -->
+        <div class="section-title">Your month in three signals</div>
+        <div class="section-sub">Each bead is one check-in, in order</div>
+        <div class="strips">
+          <div class="strip">
+            <div class="head"><span class="name">Mood</span><span class="avg">mostly Okay</span></div>
+            <div class="beads">
+              <div class="bead" style="background:linear-gradient(160deg,#93dcc0,var(--mood-okay))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,#ecaa94,var(--mood-low))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,#f0ac96,var(--mood-flat))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,#93dcc0,var(--mood-okay))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,#a4cce9,var(--mood-good))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,#93dcc0,var(--mood-okay))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,#a4cce9,var(--mood-good))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,#6e94c4,var(--mood-great))"></div>
+              <div class="bead"></div>
+              <div class="bead"></div>
+            </div>
+          </div>
+          <div class="strip">
+            <div class="head"><span class="name">Energy</span><span class="avg">mostly Steady</span></div>
+            <div class="beads">
+              <div class="bead" style="background:linear-gradient(160deg,var(--en-3),var(--en-2))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--en-2),var(--en-1))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--en-2),var(--en-1))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--en-4),var(--en-3))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--en-3),var(--en-2))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--en-4),var(--en-3))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--en-5),var(--en-4))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--en-4),var(--en-3))"></div>
+              <div class="bead"></div>
+              <div class="bead"></div>
+            </div>
+          </div>
+          <div class="strip">
+            <div class="head"><span class="name">Focus</span><span class="avg">mostly Present</span></div>
+            <div class="beads">
+              <div class="bead" style="background:linear-gradient(160deg,var(--fo-3),var(--fo-2))"></div>
+              <div class="bead" style="background:var(--fo-1)"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--fo-2),var(--fo-1))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--fo-3),var(--fo-2))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--fo-4),var(--fo-3))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--fo-4),var(--fo-3))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--fo-5),var(--fo-4))"></div>
+              <div class="bead" style="background:linear-gradient(160deg,var(--fo-4),var(--fo-3))"></div>
+              <div class="bead"></div>
+              <div class="bead"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Where you averaged -->
+        <div class="section-title">Where you averaged</div>
+        <div class="section-sub">Month average on each 5-step scale</div>
+        <div class="gauges">
+          <div class="gauge">
+            <div class="gtrack">
+              <div class="gticks"><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="gfill" style="height:68%;background:linear-gradient(175deg,#a4cce9,var(--mood-okay));color:#0c2233">Okay+</div>
+            </div>
+            <div class="lbl">Mood</div>
+            <div class="sub">between Okay &amp; Good</div>
+          </div>
+          <div class="gauge">
+            <div class="gtrack">
+              <div class="gticks"><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="gfill" style="height:55%;background:linear-gradient(175deg,var(--en-4),var(--en-3));color:#2e1a06">Steady</div>
+            </div>
+            <div class="lbl">Energy</div>
+            <div class="sub">Steady on average</div>
+          </div>
+          <div class="gauge">
+            <div class="gtrack">
+              <div class="gticks"><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="gfill" style="height:74%;background:linear-gradient(175deg,var(--fo-5),var(--fo-4));color:#101331">Sharp</div>
+            </div>
+            <div class="lbl">Focus</div>
+            <div class="sub">Sharp on average</div>
+          </div>
+        </div>
+
+        <!-- 4. Daily rhythm -->
+        <div class="section-title">Your daily rhythm</div>
+        <div class="section-sub">Dominant level by time of day</div>
+        <div class="matrix">
+          <div class="mhead"><span>Morning</span><span>Afternoon</span><span>Evening</span><span>Late</span></div>
+          <div class="mrow">
+            <div class="mlabel">Mood</div>
+            <div class="mcells">
+              <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,#93dcc0,var(--mood-okay))"></div><div class="mword">Okay</div></div>
+              <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,#a4cce9,var(--mood-good))"></div><div class="mword">Good</div></div>
+              <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,#6e94c4,var(--mood-great))"></div><div class="mword">Great</div></div>
+              <div class="mcell"><div class="mblob" style="background:var(--empty)"></div><div class="mword">—</div></div>
+            </div>
+          </div>
+          <div class="mrow">
+            <div class="mlabel">Energy</div>
+            <div class="mcells">
+              <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,var(--en-5),var(--en-4))"></div><div class="mword">Charged</div></div>
+              <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,var(--en-3),var(--en-2))"></div><div class="mword">Steady</div></div>
+              <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,var(--en-2),var(--en-1))"></div><div class="mword">Tired</div></div>
+              <div class="mcell"><div class="mblob" style="background:var(--empty)"></div><div class="mword">—</div></div>
+            </div>
+          </div>
+          <div class="mrow">
+            <div class="mlabel">Focus</div>
+            <div class="mcells">
+              <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,var(--fo-4),var(--fo-3))"></div><div class="mword">Sharp</div></div>
+              <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,var(--fo-5),var(--fo-4))"></div><div class="mword">Locked in</div></div>
+              <div class="mcell"><div class="mblob" style="background:linear-gradient(150deg,var(--fo-2),var(--fo-1))"></div><div class="mword">Distracted</div></div>
+              <div class="mcell"><div class="mblob" style="background:var(--empty)"></div><div class="mword">—</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. Connections -->
+        <div class="section-title">Connections</div>
+        <div class="section-sub">How your signals move together</div>
+        <div class="conns">
+          <div class="conn">
+            <div class="sentence">When your energy was <em style="color:var(--en-5)">Alert or Charged</em>, your focus was <em style="color:var(--fo-5)">Sharp or better</em> 4 out of 5 times.</div>
+            <div class="pair">
+              <div class="pbar" style="width:78%;background:linear-gradient(90deg,var(--fo-4),var(--fo-5));color:#101331">80%</div>
+            </div>
+            <div class="pcap">5 high-energy check-ins this month</div>
+          </div>
+          <div class="conn gated">
+            <div class="sentence">Sleep × mood — check in on 3 more days with sleep noted to unlock this connection.</div>
+          </div>
+        </div>
+
+      </div>
+      <div class="tabbar">
+        <span>Calendar</span><span>Record</span><span class="on">Insights</span><span>Settings</span>
+      </div>
+    </div>
+    <div class="frame-label">Dark mode — full scroll content</div>
+  </div>
+
+  <!-- ================= LIGHT (cloned by JS) ================= -->
+  <div class="phone light" id="lightPhone"></div>
+
+</div>
+
+<!-- ===== Implementation notes ===== -->
+<div class="notes">
+  <h2>SwiftUI mapping (for the implementation plan — no code yet)</h2>
+  <table>
+    <tr><td>Removed</td><td><code>InsightsCarousel</code> + <code>InsightsCardKind</code> + page dots, <code>TimeOfDayBars</code>, <code>WeeklyBars</code>, <code>ActivityPillsGrid</code>, <code>MoodPieChart</code>, <code>CalendarGrid</code> (in Insights), <code>EmotionFrequencyBars</code>, <code>InsightsHeaderSection</code> (centered version).</td></tr>
+    <tr><td>New components</td><td><code>MoodBubbleChart</code>, <code>SignalStripsView</code> (A), <code>SignalAverageGauges</code> (B), <code>DailyRhythmMatrix</code> (C), <code>ConnectionCardsView</code> (D, with gated state). Each small, one file each under <code>Views/Insights/</code>.</td></tr>
+    <tr><td>Serif headers</td><td>New <code>Typography.display</code> = <code>.title.weight(.bold)</code> + <code>.fontDesign(.serif)</code>, left-aligned.</td></tr>
+    <tr><td>Color ramps</td><td>Mood gradients derive from <code>Recording+MoodDisplay</code> (SSOT). New 5-step <code>Palette.energyRamp</code> / <code>Palette.focusRamp</code> arrays matching lexicon levels (sluggish→charged, foggy→locked-in).</td></tr>
+    <tr><td>ViewModel</td><td><code>InsightsViewModel</code> gains: ordered per-check-in signal triples (A), per-signal month averages (B), dominant-level-per-bucket matrix for 3 signals (C), correlation pairs with minimum-N gating (D: needs ≥5 paired observations, else gated card).</td></tr>
+    <tr><td>Connections copy</td><td>Always "moved together", never "caused". Gated card explains exactly what unlocks it ("3 more days with sleep noted").</td></tr>
+    <tr><td>Day tap-through</td><td>Strip beads (A) tap → existing day detail sheet → recording navigation, replacing the calendar grid's role.</td></tr>
+    <tr><td>A11y</td><td>Every chart: <code>accessibilityElement(children: .contain)</code> + summary label ("Mood strip: 8 check-ins, mostly okay, trending up"). Level words always rendered as text beside color. % text in bubbles is real text, scales with Dynamic Type.</td></tr>
+    <tr><td>Empty month</td><td>All five sections share one empty state: gray tracks + "Check in to see your month" — no orphaned headers over blank charts.</td></tr>
+  </table>
+</div>
+
+<script>
+  // Clone the dark phone's screen into the light frame — identical markup, theme via CSS vars.
+  const dark = document.querySelector('.phone.dark .screen');
+  const light = document.getElementById('lightPhone');
+  light.innerHTML = dark.outerHTML + '<div class="frame-label">Light mode — full scroll content</div>';
+</script>
+
+</body>
+</html>

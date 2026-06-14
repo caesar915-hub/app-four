@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calendar — FINAL spec</title>
+<style>
+  :root {
+    --purple:#AF52DE; --ink:#2c2c30; --neutral:#3a3a3c;
+    --bg:#FFFFFF; --text-sec:#3C3C4399; --separator:#3C3C434A; --frame:#111114;
+    /* palette B, deepened for white text */
+    --m-low:#C75B49; --m-flat:#CB733A; --m-okay:#B5852A; --m-good:#5F9A50; --m-great:#4E8C7A;
+  }
+  * { box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+         background:#e9e9ee; color:#000; padding:30px 16px 64px; display:flex; flex-direction:column; align-items:center; gap:14px; }
+  h1.page { font-size:18px; font-weight:600; color:#3a3a3c; margin:0; text-align:center; }
+  p.sub { font-size:12.5px; color:#6b6b70; margin:-2px 0 0; max-width:680px; text-align:center; line-height:1.5; }
+
+  .phone { width:384px; background:var(--bg); border-radius:42px; border:10px solid var(--frame); box-shadow:0 22px 56px rgba(0,0,0,.18); overflow:hidden; }
+  .screen { padding:20px 16px 34px; background:var(--bg); min-height:780px; }
+  .months { display:flex; gap:22px; padding:6px 4px 4px; }
+  .month { font-size:16px; font-weight:600; color:var(--text-sec); padding:6px 2px; position:relative; }
+  .month.sel { font-weight:700; color:#000; }
+  .month.sel::after { content:""; position:absolute; left:2px; right:2px; bottom:0; height:2px; border-radius:1px; background:#000; }
+
+  .day-card { border-radius:20px; padding:16px 14px; margin-top:14px; box-shadow:0 1px 3px rgba(0,0,0,.05); }
+  .day-header { font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:0 0 14px 2px; }
+
+  .row { display:flex; align-items:flex-start; gap:13px; }
+  .rail { position:relative; width:54px; flex:0 0 54px; display:flex; flex-direction:column; align-items:center; }
+  .rail .connector { width:1px; background:var(--separator); flex:1 1 auto; min-height:22px; }
+  .row:last-child .rail .connector { display:none; }
+
+  .bead { position:relative; width:54px; height:54px; flex:0 0 54px; }
+  .bead .ls { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  .bead .time { font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; color:#fff; }
+  .pct-badge { position:absolute; left:50%; bottom:-4px; transform:translateX(-50%); background:#fff; color:var(--purple);
+               font-size:11.5px; font-weight:800; padding:1.5px 7px; border-radius:999px; box-shadow:0 1px 3px rgba(0,0,0,.22);
+               font-variant-numeric:tabular-nums; z-index:2; }
+
+  .content { flex:1 1 auto; padding:7px 0 16px; display:flex; flex-direction:column; gap:7px; align-items:flex-start; }
+  .row:last-child .content { padding-bottom:2px; }
+  /* B: flat 12px, one line */
+  .banner { display:inline-block; white-space:nowrap; font-size:12px; font-weight:700; color:#fff; letter-spacing:.01em; line-height:1.3; padding:4px 11px; border-radius:13px; }
+  .bi { width:12px; height:12px; vertical-align:-2px; margin-right:1px; }
+  .bi-lg { width:14px; height:14px; vertical-align:-2px; margin-right:1px; }   /* sparkle */
+
+  .chips { display:flex; flex-wrap:wrap; gap:6px; }
+  .chip { display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:500; padding:3px 9px; border-radius:999px; line-height:1.1; }
+  .chip .bi { width:11px; height:11px; vertical-align:-1px; margin:0; }
+  .chip.neutral { color:var(--neutral); background:rgba(0,0,0,.06); }
+  .chip.neutral .bi { color:var(--ink); }
+  .chip.med { color:var(--purple); background:rgba(175,82,222,.13); font-weight:600; }
+  .chip.med .bi { color:var(--ink); }
+
+  .legend { width:680px; max-width:100%; background:#fff; border-radius:14px; padding:14px 18px; box-shadow:0 6px 24px rgba(0,0,0,.06); font-size:12px; color:#3a3a3c; line-height:1.65; }
+  .legend b{color:#3a3a3c} .legend code{background:#F2F2F7;border-radius:4px;padding:0 4px;}
+</style>
+</head>
+<body>
+
+  <h1 class="page">Calendar timeline — FINAL spec</h1>
+  <p class="sub">Everything locked. This is the build target.</p>
+
+  <div class="phone"><div class="screen">
+    <div class="months"><div class="month">MAY</div><div class="month sel">JUN 2026</div></div>
+    <div class="day-card" id="card"></div>
+  </div></div>
+
+  <div class="legend" id="legend"></div>
+
+<script>
+  const PURPLE="#AF52DE";
+  const M = { low:"#C75B49", flat:"#CB733A", okay:"#B5852A", good:"#5F9A50", great:"#4E8C7A" };
+  const SCALE = { low:1, flat:2, okay:3, good:4, great:5 };
+  const SCALE_COLOR = { 1:M.low,2:M.flat,3:M.okay,4:M.good,5:M.great };
+
+  const ICON = {
+    sparkle:'<path d="M8 1.2 L9.4 6.6 L14.8 8 L9.4 9.4 L8 14.8 L6.6 9.4 L1.2 8 L6.6 6.6 Z" fill="currentColor"/>',
+    heart:'<path d="M8 13.6 C2.4 9.3 3 5.1 5.6 5.1 C7.1 5.1 8 6.6 8 6.6 C8 6.6 8.9 5.1 10.4 5.1 C13 5.1 13.6 9.3 8 13.6 Z" fill="currentColor"/>',
+    moon:'<path d="M10.6 2.1 A6 6 0 1 0 13.9 10.6 A4.8 4.8 0 0 1 10.6 2.1 Z" fill="currentColor"/>',
+    cross:'<path d="M6.6 2.3 h2.8 v3.9 h3.9 v2.8 h-3.9 v3.9 h-2.8 v-3.9 H2.7 V6.2 h3.9 Z" fill="currentColor"/>',
+    pill:'<g transform="rotate(-32 8 8)"><rect x="2.4" y="6" width="11.2" height="4" rx="2" fill="currentColor"/></g>',
+    bolt:'<path d="M9.2 1.5 L4 9 H7 L6.4 14.5 L12 6.8 H9 Z" fill="currentColor"/>',
+    target:'<circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="8" r="2.3" fill="currentColor"/>'
+  };
+  const svg=(k,c,cls="bi")=>`<svg class="${cls}" viewBox="0 0 16 16"${c?` style="color:${c}"`:""}>${ICON[k]}</svg>`;
+  const CHIP_ICON = { feel:"heart", sleep:"moon", se:"cross" };
+
+  const NODES = [
+    { time:"16:42", mood:"great", mw:"Great", en:"Alert",  fo:"Focused", carry:75, taken:null, rings:[0.75], chips:[{t:"feel",l:"Happy"},{t:"feel",l:"Calm"}] },
+    { time:"14:30", mood:"good",  mw:"Good",  en:"Steady", fo:"Focused", carry:52, taken:null, rings:[0.52], chips:[{t:"feel",l:"Relaxed"}] },
+    { time:"11:00", mood:"okay",  mw:"Okay",  en:"Tired",  fo:"Scattered", carry:18, taken:null, rings:[0.18], chips:[{t:"feel",l:"Anxious"}] },
+    { time:"09:15", mood:"good",  mw:"Good",  en:"Calm",   fo:"Focused", carry:null, taken:"Concerta 36mg", rings:[0.0], chips:[{t:"sleep",l:"5h sleep"},{t:"se",l:"Headache"}] },
+  ];
+  const avgColor = ()=>{ const v=NODES.filter(n=>n.mood).map(n=>SCALE[n.mood]); return SCALE_COLOR[Math.round(v.reduce((a,b)=>a+b,0)/v.length)]; };
+
+  function bead(node){
+    const S=64,c=S/2,RW=4,GAP=2,R=S/2-2, fill=M[node.mood];
+    let rings=""; node.rings.forEach((p,i)=>{ const r=R-i*(RW+GAP)-RW/2,C=2*Math.PI*r,dash=Math.max(.001,p)*C;
+      rings+=`<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${PURPLE}" stroke-width="${RW}" stroke-linecap="round" stroke-dasharray="${dash} ${C-dash}" transform="rotate(-90 ${c} ${c})"/>`; });
+    const badge = node.carry!=null ? `<div class="pct-badge">${node.carry}%</div>` : "";
+    return `<div class="bead"><svg width="100%" height="100%" viewBox="0 0 ${S} ${S}"><circle cx="${c}" cy="${c}" r="${R}" fill="${fill}"/>${rings}</svg>
+            <div class="ls"><div class="time">${node.time}</div></div>${badge}</div>`;
+  }
+  function banner(node){
+    return `<span class="banner" style="background:${M[node.mood]}">${svg('sparkle','#fff','bi-lg')} ${node.mw.toUpperCase()} ${svg('bolt','#fff')} ${node.en.toUpperCase()} ${svg('target','#fff')} ${node.fo.toUpperCase()}</span>`;
+  }
+  function row(node){
+    const a=[];
+    if(node.taken) a.push(`<span class="chip med">${svg('pill')}TAKEN ${node.taken.toUpperCase()}</span>`);
+    node.chips.forEach(ch=>a.push(`<span class="chip neutral">${svg(CHIP_ICON[ch.t])}${ch.l}</span>`));
+    return `<div class="row"><div class="rail">${bead(node)}<div class="connector"></div></div>
+            <div class="content">${banner(node)}<div class="chips">${a.join("")}</div></div></div>`;
+  }
+  const avg=avgColor();
+  const card=document.getElementById("card");
+  card.style.background=avg+"16";
+  card.innerHTML=`<div class="day-header" style="color:${avg}">Today, 11 Jun</div>`+NODES.map(row).join("");
+
+  document.getElementById("legend").innerHTML =
+    `<b>FINAL spec</b> — <b>Palette B (deepened):</b> low ${M.low} · flat ${M.flat} · okay ${M.okay} · good ${M.good} · great ${M.great}. `+
+    `<b>Banner:</b> 12px white, one line, big sparkle + ⚡ + 🎯 (white flat icons), <code>mood energy focus</code>. `+
+    `<b>Bead:</b> mood fill, white time; active dose = purple ring + white edge-badge %. `+
+    `<b>TAKEN</b> = purple pill (only when a dose is logged at the check-in). `+
+    `<b>Chips:</b> feelings/sleep/side-effects neutral grey; medication purple. `+
+    `<b>Day card</b> tinted by the average mood. Colour = mood + medication only.`;
+</script>
+</body>
+</html>

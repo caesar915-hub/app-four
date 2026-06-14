@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check-in “Listening…” — prompt timing &amp; treatment options · 2026-06-13</title>
+<style>
+  :root{ --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;
+         --serif:"New York","Iowan Old Style",Georgia,serif; }
+  .dark{ --bg:#000; --card:#1C1C1E; --ink:#FFF; --ink2:rgba(235,235,245,.6); --sep:rgba(235,235,245,.16);
+         --cres:#2A2A2C; --cres2:#3A3A3D; --accent:#0A84FF; --tabbg:rgba(28,28,30,.72); --halo:rgba(255,255,255,.05);}
+  .light{ --bg:#FFF; --card:#F2F2F7; --ink:#1C1C1E; --ink2:rgba(60,60,67,.6); --sep:rgba(60,60,67,.13);
+          --cres:#ECECEF; --cres2:#DEDEE3; --accent:#007AFF; --tabbg:rgba(242,242,247,.72); --halo:rgba(0,0,0,.02);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--font);background:#111;color:#e9e2d4;padding:40px 28px 100px;}
+  h1{font-size:27px;font-weight:700;margin-bottom:7px;color:#fff;letter-spacing:-.3px;}
+  .sub{color:#a0a0a4;font-size:14px;margin-bottom:18px;max-width:1060px;line-height:1.55;} .sub b{color:#fff;}
+
+  .toolbar{display:flex;align-items:center;gap:14px;margin-bottom:26px;flex-wrap:wrap;}
+  .toggle{background:#1d1d20;border:1px solid #34343a;color:#e9e2d4;font-size:13px;font-weight:600;
+          padding:9px 16px;border-radius:11px;cursor:pointer;font-family:var(--font);}
+  .toggle:hover{background:#26262b;}
+  .legend{font-size:12.5px;color:#8c8c90;} .legend b{color:#c6c6ca;}
+
+  .group{margin:34px 0 16px;padding-top:20px;border-top:1px solid #262629;}
+  .ghead{font-size:15px;font-weight:700;color:#7fb0ff;letter-spacing:.4px;text-transform:uppercase;}
+  .ghead .soft{font-weight:400;text-transform:none;color:#8c8c90;font-size:13.5px;}
+  .gnote{font-size:13.5px;color:#b4b4b8;max-width:1060px;line-height:1.55;margin:5px 0 18px;} .gnote em{color:#fff;font-style:normal;font-weight:600;}
+
+  .row{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start;}
+  .cf{flex:none;width:300px;}
+  .cflab{font-size:13px;font-weight:700;color:#e9e2d4;margin-bottom:9px;display:flex;align-items:center;gap:8px;}
+  .cflab .pick{font-size:10px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;color:#0a0a0b;background:#7fb0ff;padding:2px 7px;border-radius:6px;}
+  .cfcap{font-size:12.5px;color:#9aa0a8;line-height:1.5;margin-top:12px;} .cfcap b{color:#cfcfd2;}
+
+  /* phone */
+  .phone{width:300px;border-radius:42px;padding:11px;background:#0a0a0b;box-shadow:0 14px 36px rgba(0,0,0,.5);}
+  .screen{overflow:hidden;background:var(--bg);display:flex;flex-direction:column;height:548px;border-radius:32px;position:relative;}
+
+  .pbar-track{height:2px;background:var(--sep);position:relative;z-index:6;}
+  .pbar{height:2px;background:var(--accent);transform-origin:left;transform:scaleX(0);}
+  @keyframes prog{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+  .sb{position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center;color:var(--ink);font-weight:600;
+      padding:11px 20px 2px;font-size:12px;} .sb .dots{color:var(--ink2);letter-spacing:1.5px;font-size:8.5px;}
+
+  .head{position:relative;z-index:5;padding:14px 22px 0;}
+  .meta{display:flex;align-items:center;gap:8px;height:16px;}
+  .recdot{position:relative;width:8px;height:8px;border-radius:50%;background:#FF453A;flex:none;}
+  .recdot::after{content:"";position:absolute;inset:0;border-radius:50%;
+    box-shadow:0 0 0 0 rgba(255,69,58,.42);animation:pulse 2.4s ease-out infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,69,58,.42)}70%{box-shadow:0 0 0 7px rgba(255,69,58,0)}100%{box-shadow:0 0 0 0 rgba(255,69,58,0)}}
+  .reclabel{font-size:10.5px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--ink2);}
+  .rectime{margin-left:auto;font-size:14px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.3px;}
+  .hed{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--ink);line-height:1;letter-spacing:-.4px;margin-top:11px;}
+
+  .stage{position:relative;flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+  .halo{position:absolute;width:330px;height:330px;border-radius:50%;
+        background:radial-gradient(circle, var(--halo) 0%, transparent 64%);animation:halopulse 7s ease-in-out infinite;}
+  @keyframes halopulse{0%,100%{opacity:.65;transform:scale(.96)}50%{opacity:1;transform:scale(1.05)}}
+  .orb{position:absolute;width:230px;height:230px;opacity:.9;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  .orb .ring{transform-origin:131px 131px;animation:spin 26s linear infinite;}
+  .orb{animation:breathe 7s ease-in-out infinite;}
+
+  .prompt{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:11px;width:236px;text-align:center;}
+  .kick{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--ink2);}
+  .pq{font-family:var(--serif);color:var(--ink);letter-spacing:-.3px;animation:fadein .6s ease both;}
+  .ph{font-family:var(--serif);font-size:13px;font-style:italic;color:var(--ink2);line-height:1.4;max-width:210px;animation:fadein .6s ease .04s both;}
+  @keyframes fadein{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+  /* treatment difference */
+  .prompt.hero .kick{display:none;}
+  .prompt.hero .pq{font-size:27px;font-weight:700;line-height:1.12;}
+  .prompt.drift .pq{font-size:20px;font-weight:600;line-height:1.18;opacity:.94;}
+  .prompt.drift{gap:9px;}
+
+  .dots{display:flex;gap:6px;justify-content:center;margin-top:4px;}
+  .dots i{width:5px;height:5px;border-radius:50%;background:var(--sep);transition:all .3s;}
+  .dots i.on{background:var(--ink2);width:15px;border-radius:3px;}
+
+  .controls{position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;gap:7px;padding:0 22px 6px;}
+  .stopbtn{width:52px;height:52px;border-radius:16px;background:#FF453A;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;}
+  .stopbtn .sq{width:18px;height:18px;border-radius:5px;background:#fff;}
+  .stopcap{font-size:11.5px;font-weight:500;color:var(--ink2);}
+
+  .tabbar{position:relative;z-index:5;margin:6px 13px 11px;height:46px;border-radius:23px;background:var(--tabbg);
+          border:.5px solid var(--sep);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-around;padding:0 6px;}
+  .tb{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--ink2);font-size:8.5px;font-weight:600;}
+  .tb.on{color:var(--accent);} .tb svg{width:18px;height:18px;}
+
+  .verdict{background:#0e1622;border:1px solid #20344e;border-radius:14px;padding:18px 22px;max-width:1060px;margin-top:14px;}
+  .verdict h4{font-size:13px;color:#7fb0ff;text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;}
+  .verdict p{font-size:13.5px;color:#c6c6ca;line-height:1.6;max-width:1000px;} .verdict p+p{margin-top:9px;}
+  .verdict b{color:#fff;} .verdict code{font-size:12.5px;color:#e7c98a;}
+
+  @media (prefers-reduced-motion: reduce){
+    .orb,.orb .ring,.halo,.recdot::after{animation:none !important;}
+    .halo{opacity:.8;transform:scale(1);}
+  }
+</style>
+</head>
+<body>
+  <h1>“Listening…” — prompt timing &amp; treatment options</h1>
+  <p class="sub">Every frame below is <b>live</b> and cycling at its real speed, with a thin <b>blue progress bar</b> at the top counting down each prompt — so you can actually <em>feel</em> 4s vs 6s vs 10s side by side and decide. <b>5 prompts</b> are used (mood · energy · focus · sleep · feelings). Two treatments are compared: the <b>big hero</b> (a commanding question to answer) and <b>gentle drift</b> (a softer “you might mention” suggestion).</p>
+
+  <div class="toolbar">
+    <button class="toggle" id="themeToggle">◐ Switch to light</button>
+    <span class="legend"><b>Hero</b> = large serif question, “answer this.” &nbsp;·&nbsp; <b>Drift</b> = smaller muted suggestion, “you might mention.”</span>
+  </div>
+
+  <div class="group">
+    <div class="ghead">A · Timing <span class="soft">— gentle-drift treatment, so you feel the speed</span></div>
+    <p class="gnote">Same soft suggestion, four cadences. Watch how much breath each gives you before it moves on.</p>
+    <div class="row" data-group="A"></div>
+  </div>
+
+  <div class="group">
+    <div class="ghead">B · Treatment <span class="soft">— same 5s, why a fast cadence needs the gentle treatment</span></div>
+    <p class="gnote">Identical 5s timing on both. The <em>big hero</em> demands an answer and then yanks it away mid-sentence (pressure). The <em>gentle drift</em> just suggests, so the same speed feels calm.</p>
+    <div class="row" data-group="B"></div>
+  </div>
+
+  <div class="group">
+    <div class="ghead">Reference · the calm Q&amp;A baseline</div>
+    <p class="gnote">The current hero recommendation: <em>one big question, its own breath</em> — slow enough to actually speak a full answer before it advances.</p>
+    <div class="row" data-group="R"></div>
+  </div>
+
+  <div class="verdict">
+    <h4>My read</h4>
+    <p><b>The dwell time should follow the treatment, not the other way around.</b> At <b>4s</b> a prompt is gone before you finish reading it as anything but ambient noise; at <b>5s</b> it sparks an idea but pulls away if you start answering; <b>6s</b> is the first cadence that lets you read, register, and begin speaking without feeling chased — that’s why it’s my pick <i>for the gentle-drift treatment</i>.</p>
+    <p>A <b>big hero question</b> is a different contract: it says “answer me,” so it needs <b>~10s</b> to be answerable. Put a big hero on a 4–6s clock (group B, left) and you get the worst case — pressure plus an unfinished thought.</p>
+    <p><b>Recommendation:</b> 5 prompts, <b>gentle drift @ 6s</b> (or <b>escalating 5→9s</b> if you like the deeper questions getting more room). If you’d rather keep the commanding single hero, stay at <b>10s</b>. The behaviour cost is the same either way: <code>CheckInViewModel</code> flattens the trios into one ordered list and exposes a single <code>currentNudge</code> advancing on a timer — the only difference between these is the interval value and the prompt’s visual weight.</p>
+  </div>
+
+<script>
+const PROMPTS=[
+  ["How's your mood?","Heavy, light, flat, bright — whatever fits."],
+  ["What's your energy like?","Wired, steady, or running low."],
+  ["Able to focus?","Locked in, scattered, somewhere between."],
+  ["How did you sleep?","Hours, and how rested you feel."],
+  ["Any strong feelings?","Something sitting with you right now."]
+];
+
+function orb(){
+  return `<svg class="orb" viewBox="0 0 262 262" aria-hidden="true">
+    <defs><linearGradient id="cg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--cres2)"/><stop offset="1" stop-color="var(--cres)"/>
+    </linearGradient></defs>
+    <g class="ring"><circle cx="131" cy="131" r="112" fill="none" stroke="url(#cg)" stroke-width="22"
+        stroke-linecap="round" stroke-dasharray="572 132" transform="rotate(125 131 131)"/></g>
+  </svg>`;
+}
+const TAB=`<div class="tabbar">
+  <div class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/></svg>Calendar</div>
+  <div class="tb on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-5-7.4"/><polyline points="9 12 11.5 14.5 16 9"/></svg>Check in</div>
+  <div class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="20" x2="6" y2="13"/><line x1="12" y1="20" x2="12" y2="8"/><line x1="18" y1="20" x2="18" y2="11"/></svg>Insights</div>
+  <div class="tb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="12" r="8.5"/></svg>Settings</div></div>`;
+
+function dots(idx){return PROMPTS.map((_,i)=>`<i class="${i===idx?'on':''}"></i>`).join('');}
+
+function screen(cfg){
+  const heroHead = cfg.t==='hero'
+    ? `<div class="head"><div class="meta"><span class="recdot"></span><span class="reclabel">Recording</span><span class="rectime" data-time>0:08</span></div><div class="hed">Listening…</div></div>`
+    : `<div class="head"><div class="meta"><span class="recdot"></span><span class="reclabel">Recording</span><span class="rectime" data-time>0:08</span></div></div>`;
+  const promptBlock = cfg.t==='hero'
+    ? `<div class="prompt hero"><div class="pq" data-q>${PROMPTS[0][0]}</div><div class="ph" data-h>${PROMPTS[0][1]}</div><div class="dots" data-dots>${dots(0)}</div></div>`
+    : `<div class="prompt drift"><div class="kick">You might mention</div><div class="pq" data-q>${PROMPTS[0][0]}</div><div class="ph" data-h>${PROMPTS[0][1]}</div><div class="dots" data-dots>${dots(0)}</div></div>`;
+  return `<div class="phone"><div class="screen dark">
+    <div class="pbar-track"><div class="pbar" data-pbar></div></div>
+    <div class="sb"><span>9:41</span><span class="dots-sb">●●● &#xF8FF;</span></div>
+    ${heroHead}
+    <div class="stage"><div class="halo"></div>${orb()}${promptBlock}</div>
+    <div class="controls"><button class="stopbtn" aria-label="Finish check-in"><span class="sq"></span></button><div class="stopcap">tap stop when you're done</div></div>
+    ${TAB}
+  </div></div>`;
+}
+
+const FRAMES=[
+  {g:'A', t:'drift', dwell:4000, lab:'4s · fast', cap:'Registers, but it’s gone before you can answer it — only works as pure ambient inspiration.'},
+  {g:'A', t:'drift', dwell:5000, lab:'5s · medium', cap:'Brisk. Sparks an idea, but still pulls away if you actually start talking.'},
+  {g:'A', t:'drift', dwell:6000, lab:'6s · my pick', pick:true, cap:'First cadence with room to read, register, and begin speaking. Calm, not static.'},
+  {g:'A', t:'drift', dwell:[5000,6000,7000,8000,9000], lab:'Escalating 5→9s', cap:'Quicker up front, more room for the deeper questions (sleep, feelings). Organic pacing.'},
+  {g:'B', t:'hero', dwell:5000, lab:'Big hero · 5s', cap:'The pressure problem: a commanding question that vanishes while you’re mid-sentence.'},
+  {g:'B', t:'drift', dwell:5000, lab:'Gentle drift · 5s', cap:'Exact same 5s — but framed as a suggestion, so there’s nothing to keep up with.'},
+  {g:'R', t:'hero', dwell:10000, lab:'Big hero · 10s', cap:'One question, its own breath. Slow enough to speak a full answer before it advances.'},
+];
+
+// build
+FRAMES.forEach((cfg,idx)=>{
+  const host=document.querySelector(`.row[data-group="${cfg.g}"]`);
+  const cf=document.createElement('div');
+  cf.className='cf';
+  cf.innerHTML=`<div class="cflab">${cfg.lab}${cfg.pick?'<span class="pick">recommended</span>':''}</div>${screen(cfg)}<div class="cfcap">${cfg.cap}</div>`;
+  host.appendChild(cf);
+  cfg._el=cf.querySelector('.screen');
+});
+
+// shared elapsed timer
+let secs=8;
+setInterval(()=>{ secs++; const m=Math.floor(secs/60), s=String(secs%60).padStart(2,'0');
+  document.querySelectorAll('[data-time]').forEach(el=>el.textContent=`${m}:${s}`); },1000);
+
+// per-frame prompt cycling + progress bar (cycling stays on so the timing can be evaluated)
+function startCycle(cfg){
+  const scr=cfg._el;
+  const q=scr.querySelector('[data-q]'), h=scr.querySelector('[data-h]'), d=scr.querySelector('[data-dots]'), bar=scr.querySelector('[data-pbar]');
+  let i=0;
+  function runBar(ms){ bar.style.animation='none'; void bar.offsetWidth; bar.style.animation=`prog ${ms}ms linear forwards`; }
+  function dwellFor(n){ return Array.isArray(cfg.dwell)? cfg.dwell[n%cfg.dwell.length] : cfg.dwell; }
+  function step(){
+    i=(i+1)%PROMPTS.length;
+    [q,h].forEach(el=>{ el.style.animation='none'; void el.offsetWidth; });
+    q.textContent=PROMPTS[i][0]; q.style.animation='fadein .6s ease both';
+    h.textContent=PROMPTS[i][1]; h.style.animation='fadein .6s ease .04s both';
+    d.innerHTML=dots(i);
+    const ms=dwellFor(i); runBar(ms);
+    setTimeout(step, ms);
+  }
+  const first=dwellFor(0); runBar(first);
+  setTimeout(step, first);
+}
+FRAMES.forEach(startCycle);
+
+// light/dark toggle
+const btn=document.getElementById('themeToggle');
+let dark=true;
+btn.addEventListener('click',()=>{
+  dark=!dark;
+  document.querySelectorAll('.screen').forEach(s=>{ s.classList.toggle('dark',dark); s.classList.toggle('light',!dark); });
+  btn.textContent = dark ? '◐ Switch to light' : '◑ Switch to dark';
+});
+</script>
+</body>
+</html>

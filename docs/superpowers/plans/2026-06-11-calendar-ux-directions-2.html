@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calendar / Timeline — UX directions, round 2 (no faces, chips)</title>
+<style>
+  /*
+    Round 2. Locked from your feedback: NO faces (time back in the bead),
+    text CHIPS (not badges). These three vary other axes of the current timeline:
+
+      E — Mood accent bar:  a SOLID mood-colour stripe down each entry (the visible
+                            version of the "tint" you couldn't see). Scannable arc.
+      F — Mood pill head:   the mood word becomes a filled colour PILL; energy·focus
+                            drop to grey secondary text. Less shouty, mood reads as a tag.
+      G — Agenda gutter:    time moves to a left column (calendar-native); the bead
+                            shrinks to a mood dot (keeps med rings). Very readable time.
+  */
+  :root {
+    --mood-low:#DA7964; --mood-flat:#E89178; --mood-okay:#7BCDB1;
+    --mood-good:#85B9DF; --mood-great:#5179A8; --mood-alert:#7BCDB1; --mood-none:#AEAEB2;
+    --purple:#AF52DE; --orange:#FF9500; --indigo:#5856D6; --pink:#FF2D55; --teal:#30B0C7;
+    --bg:#FFFFFF; --text-pri:#000; --text-sec:#3C3C4399; --separator:#3C3C434A;
+    --card:#F2F2F7; --frame:#111114;
+  }
+  * { box-sizing:border-box; -webkit-font-smoothing:antialiased; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,sans-serif;
+         background:#e9e9ee; color:var(--text-pri); padding:28px 16px 64px;
+         display:flex; flex-direction:column; align-items:center; gap:18px; }
+  h1.page { font-size:18px; font-weight:600; color:#3a3a3c; margin:0; text-align:center; }
+  p.sub { font-size:13px; color:#6b6b70; margin:-4px 0 0; max-width:820px; text-align:center; line-height:1.5; }
+
+  .stage { display:flex; flex-wrap:wrap; gap:22px; justify-content:center; align-items:flex-start; }
+  .variant { display:flex; flex-direction:column; align-items:center; gap:8px; width:340px; }
+  .variant .cap { font-size:13px; color:#3a3a3c; font-weight:700; }
+  .variant .note { font-size:11.5px; color:#8e8e93; text-align:center; line-height:1.45; min-height:46px; }
+
+  .phone { width:340px; background:var(--bg); border-radius:36px; border:9px solid var(--frame);
+           box-shadow:0 18px 48px rgba(0,0,0,.16); overflow:hidden; }
+  .screen { padding:16px 13px 28px; background:var(--bg); min-height:660px; }
+
+  .months { display:flex; gap:20px; padding:6px 4px 4px; overflow:hidden; }
+  .month { font-size:15px; font-weight:600; color:var(--text-sec); white-space:nowrap; padding:6px 2px 5px; position:relative; }
+  .month.sel { font-weight:700; color:var(--text-pri); }
+  .month.sel::after { content:""; position:absolute; left:2px; right:2px; bottom:0; height:2px; border-radius:1px; background:var(--text-pri); }
+
+  .day-card { background:var(--card); border-radius:18px; padding:14px; margin-top:12px; }
+  .day-header { font-size:11px; font-weight:600; letter-spacing:.04em; color:var(--text-sec);
+                text-transform:uppercase; padding:0 0 12px; }
+
+  .row { display:flex; align-items:flex-start; gap:13px; }
+  .rail { position:relative; width:52px; flex:0 0 52px; display:flex; flex-direction:column; align-items:center; }
+  .rail .connector { width:1px; background:var(--separator); flex:1 1 auto; min-height:22px; }
+  .row:last-child .rail .connector { display:none; }
+  .bead { position:relative; width:52px; height:52px; flex:0 0 52px; }
+  .bead.dot { width:34px; height:34px; flex-basis:34px; }
+  .rail.dot { width:34px; flex-basis:34px; }
+  .bead .label-stack { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; }
+  .bead .time { font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; }
+
+  /* agenda gutter time column */
+  .time-col { width:42px; flex:0 0 42px; padding-top:9px; text-align:right; font-size:12px; font-weight:600;
+              color:var(--text-sec); font-variant-numeric:tabular-nums; line-height:1.1; }
+
+  .content { flex:1 1 auto; padding:9px 0 16px; display:flex; flex-direction:column; gap:5px; }
+  .row:last-child .content { padding-bottom:2px; }
+  /* E: solid mood accent stripe as a white sub-card */
+  .content.accent { background:#fff; border-radius:12px; padding:10px 12px; margin-bottom:7px;
+                    border-left:4px solid var(--accent); box-shadow:0 1px 3px rgba(0,0,0,.05); }
+
+  .title { font-size:16px; font-weight:600; letter-spacing:-.01em; line-height:1.15; color:var(--text-pri); }
+  .title.med { color:var(--purple); }
+  /* F: mood pill + secondary line */
+  .head-row { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+  .mood-pill { font-size:13px; font-weight:700; letter-spacing:.02em; color:#fff; padding:2px 9px; border-radius:999px; }
+  .sub-head { font-size:13px; color:var(--text-sec); font-weight:500; }
+
+  .taken { font-size:16px; font-weight:600; color:var(--purple); line-height:1.15; }
+  .taken.sm { font-size:13px; }
+  .active { font-size:12px; font-weight:600; color:var(--purple); font-variant-numeric:tabular-nums; }
+
+  .chips { display:flex; flex-wrap:wrap; gap:5px; margin-top:2px; }
+  .chip { display:inline-flex; align-items:center; gap:4px; font-size:11.5px; font-weight:500; padding:3px 8px; border-radius:999px; line-height:1.1; }
+  .chip .ic { font-size:10px; }
+  .chip.feel{ color:var(--pink); background:rgba(255,45,85,.12);}
+  .chip.se{ color:#C24B17; background:rgba(255,149,0,.14);}
+  .chip.sleep{ color:var(--indigo); background:rgba(88,86,214,.12);}
+  .chip.cat{ color:#1C7E91; background:rgba(48,176,199,.14);}
+
+  .legend { width:820px; max-width:100%; background:#fff; border-radius:16px; padding:16px 20px; box-shadow:0 6px 24px rgba(0,0,0,.06); }
+  .legend h2 { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:#8e8e93; margin:0 0 10px; }
+  .legend ul { margin:0; padding-left:18px; font-size:12.5px; color:#3a3a3c; line-height:1.7; }
+  .legend b.a{color:#3a3a3c}
+</style>
+</head>
+<body>
+
+  <h1 class="page">Calendar / timeline — round 2 (no faces · chips)</h1>
+  <p class="sub">Time stays in the bead; inputs stay as text chips. These three vary a different axis each: a <b>visible</b> mood-colour cue, the <b>mood word</b> treatment, and <b>time placement</b>. Same day across all three.</p>
+
+  <div class="stage" id="stage"></div>
+
+  <div class="legend">
+    <h2>What's varying (everything else is the current look)</h2>
+    <ul>
+      <li><b class="a">E · Mood accent bar</b> — each entry becomes a small white card with a <b>solid mood-colour stripe</b> on the left. This is the “tint” idea made obvious — you read the day's emotional arc down the coloured edges. Trade-off: looser, more card-like than a tight timeline.</li>
+      <li><b class="a">F · Mood pill headline</b> — the mood word is a <b>filled colour pill</b> (GREAT / LOW); energy·focus follow as quiet grey text. Mood reads as a clear tag and the headline stops shouting in all-caps. Trade-off: two type styles per line.</li>
+      <li><b class="a">G · Agenda gutter</b> — the time moves to a <b>left column</b> like a calendar/agenda; the bead shrinks to a mood <b>dot</b> (keeps its med rings). Time is very readable and the layout feels more “schedule”. Trade-off: smaller mood presence.</li>
+    </ul>
+  </div>
+
+<script>
+  const MOOD = { low:"var(--mood-low)", flat:"var(--mood-flat)", okay:"var(--mood-okay)",
+                 good:"var(--mood-good)", great:"var(--mood-great)", alert:"var(--mood-alert)", none:"var(--mood-none)" };
+  // resolved hex (for inline accent border / pill bg that need a real colour)
+  const HEX = { low:"#DA7964", flat:"#E89178", okay:"#7BCDB1", good:"#85B9DF", great:"#5179A8", alert:"#7BCDB1", none:"#AEAEB2" };
+  const PURPLE = "#AF52DE";
+
+  const NODES = [
+    { time:"14:30", mood:"great", moodWord:"Great", meta:["Alert","Focused"],
+      taken:null, active:{name:"Concerta 36mg", pct:60}, rings:[60],
+      chips:[ {t:"feel",ic:"❤️",l:"Happy"}, {t:"feel",ic:"❤️",l:"Calm"} ] },
+    { time:"11:00", mood:null, moodWord:null, meta:[], title:"Taken Concerta 36mg",
+      taken:"Concerta 36mg", active:null, rings:[0], chips:[] },
+    { time:"09:15", mood:"low", moodWord:"Low", meta:["Drained","Scattered"],
+      taken:"Concerta 36mg", active:null, rings:[0],
+      chips:[ {t:"sleep",ic:"🌙",l:"5h sleep"}, {t:"se",ic:"🩹",l:"Headache"}, {t:"feel",ic:"❤️",l:"Anxious"} ] },
+  ];
+
+  function bead(node, cfg) {
+    const dot = !!cfg.dot;
+    const S = 64, c = S/2, RW = dot?5:4, GAP = 2, R = S/2 - 2;
+    const isMed = !node.mood;
+    const centre = isMed
+      ? `<circle cx="${c}" cy="${c}" r="${R-0.75}" fill="var(--bg)" stroke="var(--separator)" stroke-width="1"/>`
+      : `<circle cx="${c}" cy="${c}" r="${R}" fill="${MOOD[node.mood]}"/>`;
+    let rings = "";
+    (node.rings||[]).forEach((p,i) => {
+      const r = R - i*(RW+GAP) - RW/2, C = 2*Math.PI*r, dash = Math.max(.001,p/100)*C;
+      rings += `<circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${PURPLE}" stroke-width="${RW}" stroke-linecap="round" stroke-dasharray="${dash} ${C-dash}" transform="rotate(-90 ${c} ${c})"/>`;
+    });
+    // time inside bead only when NOT in gutter mode; gutter dots show no inside text (med-only dot shows 💊)
+    let inside = "";
+    if (!cfg.gutter) inside = `<div class="time" style="color:${isMed?PURPLE:'#fff'}">${node.time}</div>`;
+    else if (isMed)  inside = `<div style="font-size:14px">💊</div>`;
+    return `<div class="bead${dot?' dot':''}"><svg width="100%" height="100%" viewBox="0 0 ${S} ${S}">${centre}${rings}</svg>
+            <div class="label-stack">${inside}</div></div>`;
+  }
+
+  function titleHTML(node, cfg) {
+    const isMed = !node.mood;
+    if (isMed) return `<div class="title med">${node.title.toUpperCase()}</div>`;
+    if (cfg.moodPill) {
+      const meta = node.meta.join(" · ");
+      return `<div class="head-row"><span class="mood-pill" style="background:${HEX[node.mood]}">${node.moodWord.toUpperCase()}</span>${meta?`<span class="sub-head">${meta}</span>`:""}</div>`;
+    }
+    return `<div class="title">${[node.moodWord, ...node.meta].join(" ").toUpperCase()}</div>`;
+  }
+
+  function chipsHTML(node) {
+    if (!node.chips.length) return "";
+    return `<div class="chips">${node.chips.map(ch => `<span class="chip ${ch.t}"><span class="ic">${ch.ic}</span>${ch.l}</span>`).join("")}</div>`;
+  }
+
+  function row(node, cfg) {
+    const isMed = !node.mood;
+    const taken  = (!isMed && node.taken)  ? `<div class="taken${cfg.gutter?' sm':''}">TAKEN ${node.taken.toUpperCase()}</div>` : "";
+    const active = (!isMed && node.active) ? `<div class="active">💊 ${node.active.name} · ${node.active.pct}%</div>` : "";
+    const body = `${titleHTML(node,cfg)}${taken}${active}${chipsHTML(node)}`;
+
+    if (cfg.gutter) {
+      return `<div class="row">
+        <div class="time-col">${node.time}</div>
+        <div class="rail dot">${bead(node,cfg)}<div class="connector"></div></div>
+        <div class="content">${body}</div>
+      </div>`;
+    }
+    if (cfg.accent) {
+      const accent = isMed ? PURPLE : HEX[node.mood];
+      return `<div class="row">
+        <div class="rail">${bead(node,cfg)}<div class="connector"></div></div>
+        <div class="content accent" style="--accent:${accent}">${body}</div>
+      </div>`;
+    }
+    return `<div class="row">
+      <div class="rail">${bead(node,cfg)}<div class="connector"></div></div>
+      <div class="content">${body}</div>
+    </div>`;
+  }
+
+  const VARIANTS = [
+    { cap:"E · Mood accent bar", note:"Solid mood-colour stripe per entry — the visible “tint”. Read the day's arc down the edges.", cfg:{accent:true} },
+    { cap:"F · Mood pill headline", note:"Mood word as a filled colour pill; energy·focus go quiet grey. Less shouty.", cfg:{moodPill:true} },
+    { cap:"G · Agenda gutter", note:"Time in a left column (calendar-style); bead shrinks to a mood dot with med rings.", cfg:{gutter:true, dot:true} },
+  ];
+
+  document.getElementById("stage").innerHTML = VARIANTS.map(v => `
+    <div class="variant">
+      <div class="cap">${v.cap}</div>
+      <div class="note">${v.note}</div>
+      <div class="phone"><div class="screen">
+        <div class="months"><div class="month">MAY</div><div class="month sel">JUN 2026</div></div>
+        <div class="day-card">
+          <div class="day-header">Today, 11 Jun</div>
+          <div>${NODES.map(n => row(n, v.cfg)).join("")}</div>
+        </div>
+      </div></div>
+    </div>`).join("");
+</script>
+</body>
+</html>

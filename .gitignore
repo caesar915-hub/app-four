@@ -1,0 +1,37 @@
+# Xcode
+#
+build/
+DerivedData/
+*.hmap
+*.ipa
+*.playground/
+xcuserdata/
+
+# Swift Package Manager
+#
+.build/
+.swiftpm/
+
+# OS X
+#
+.DS_Store
+*.swp
+*.lock
+
+# Gemini CLI
+#
+.agents/
+.gemini/
+memory/
+
+# Claude Code local config, hooks & installed skills — not app source
+.claude/
+
+# Local design reference screen recordings (any location)
+*.MP4
+*.mp4
+*.mov
+*.MOV
+
+# Scratch design drafts (e.g. .tmp-listen-v1.html)
+.tmp-*

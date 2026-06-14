@@ -1,0 +1,5 @@
+{"type":"server-started","port":57470,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:57470","screen_dir":"/Users/caesargrey/Projects/app-two/.superpowers/brainstorm/99512-1780874054/content","state_dir":"/Users/caesargrey/Projects/app-two/.superpowers/brainstorm/99512-1780874054/state"}
+{"type":"screen-added","file":"/Users/caesargrey/Projects/app-two/.superpowers/brainstorm/99512-1780874054/content/approaches.html"}
+{"type":"screen-added","file":"/Users/caesargrey/Projects/app-two/.superpowers/brainstorm/99512-1780874054/content/fullscreen.html"}
+{"type":"screen-added","file":"/Users/caesargrey/Projects/app-two/.superpowers/brainstorm/99512-1780874054/content/waiting.html"}
+{"type":"server-stopped","reason":"owner process exited"}

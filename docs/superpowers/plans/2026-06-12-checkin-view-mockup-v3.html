@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check-in view v3 — three options inside the circle, transform-in-place — 2026-06-12</title>
+<style>
+  :root{ --acc:#4F8A8B; --acc-l:#6AA9AA; --med:#9B7BD0;
+    --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",sans-serif;}
+  .dark{ --bg:#0E0E10; --card:#1C1C1E; --card2:#262629; --ink:#F2F2F7; --ink2:rgba(235,235,245,.6); --sep:rgba(235,235,245,.20); --hair:rgba(235,235,245,.10);}
+  .light{ --bg:#F4F4F2; --card:#FFFFFF; --card2:#ECECEA; --ink:#15161A; --ink2:rgba(60,60,67,.62); --sep:rgba(60,60,67,.22); --hair:rgba(60,60,67,.08);}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:var(--font);background:#1a1a1c;color:#eee;padding:40px 28px 80px;}
+  h1{font-size:25px;font-weight:700;margin-bottom:6px;}
+  .sub{color:#9a9a9e;font-size:14px;margin-bottom:24px;max-width:900px;line-height:1.5;}
+  .sub b{color:#fff;}
+  .note{background:#26262a;border:1px solid #38383c;border-radius:12px;padding:13px 18px;font-size:13px;color:#c8c8cc;max-width:900px;margin-bottom:34px;line-height:1.55;}
+  .note b{color:#fff;}
+  .block{margin-bottom:54px;}
+  .btitle{font-size:18px;font-weight:700;color:#fff;margin-bottom:3px;}
+  .btag{font-size:12.5px;color:var(--acc-l);font-weight:600;margin-bottom:14px;letter-spacing:.3px;}
+  .row{display:flex;gap:30px;flex-wrap:wrap;align-items:flex-start;}
+  .framewrap{display:flex;flex-direction:column;gap:8px;align-items:center;}
+  .framelabel{font-size:12px;color:#8a8a8e;letter-spacing:.4px;text-transform:uppercase;}
+  .axis{font-size:12px;color:#86868a;margin:8px 0 0;max-width:760px;line-height:1.5;}
+  .axis b{color:#cfcfd2;}
+
+  .phone{width:340px;border-radius:46px;padding:13px;background:#0a0a0b;box-shadow:0 20px 50px rgba(0,0,0,.55);}
+  .screen{border-radius:34px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column;height:712px;position:relative;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:16px 26px 4px;font-size:14px;font-weight:600;color:var(--ink);}
+  .statusbar .dots{letter-spacing:2px;font-size:11px;color:var(--ink2);}
+  .medbar{margin:10px 16px 0;border-radius:20px;padding:10px 14px;background:var(--card2);border:1px solid var(--hair);display:flex;align-items:center;gap:10px;backdrop-filter:blur(20px);}
+  .medbar .mdot{width:8px;height:8px;border-radius:50%;background:var(--med);}
+  .medbar .mtext{font-size:12px;color:var(--ink2);} .medbar .mtext b{color:var(--ink);font-weight:600;}
+  .navtitle{padding:18px 24px 0;}
+  .navtitle h2{font-size:30px;font-weight:800;color:var(--ink);letter-spacing:-.5px;}
+  .navtitle .greet{font-size:14px;color:var(--ink2);margin-top:2px;}
+  .stage{flex:1;position:relative;display:flex;align-items:center;justify-content:center;}
+
+  /* crescent — opening rotated down-right so its embrace wraps the options */
+  .crescent{position:absolute;border-radius:50%;border-style:solid;border-color:var(--acc);border-right-color:transparent;transform:rotate(38deg);}
+  .cr-out{width:300px;height:300px;border-width:13px;}
+  .cr-in{width:264px;height:264px;border-width:8px;opacity:.42;}
+
+  /* the three options, centered & contained INSIDE the ring */
+  .cluster{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:12px;width:176px;}
+  .opt{width:100%;display:flex;align-items:center;gap:10px;justify-content:center;background:var(--card);border:1px solid var(--sep);border-radius:15px;padding:10px 14px;box-shadow:0 6px 16px rgba(0,0,0,.16);}
+  .opt .ic{width:20px;height:20px;flex:none;display:flex;align-items:center;justify-content:center;color:var(--ink);}
+  .opt .lab{font-size:13px;font-weight:600;color:var(--ink);}
+  .opt.med .ic{color:var(--med);}
+  /* voice = the primary of the three, still inside the circle */
+  .opt.voice{background:var(--acc);border-color:transparent;padding:14px 14px;box-shadow:0 12px 28px rgba(79,138,139,.42);}
+  .opt.voice .ic{width:24px;height:24px;color:#fff;} .opt.voice .lab{color:#fff;font-size:15px;}
+
+  /* recording — transform in place (Option 1, locked) */
+  .recring{position:absolute;border-radius:50%;border:13px solid var(--acc);border-right-color:transparent;width:300px;height:300px;transform:rotate(38deg);}
+  .recring.full{border-right-color:var(--acc);transform:none;}
+  .recring.pulse{width:334px;height:334px;border:2px solid var(--acc);opacity:.3;transform:none;}
+  .reccenter{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;}
+  .rectime{font-size:36px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .recwave{display:flex;align-items:center;gap:4px;height:54px;}
+  .recwave i{width:4px;border-radius:3px;background:var(--acc);display:block;}
+  .stopbtn{width:66px;height:66px;border-radius:21px;background:#E0524A;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px rgba(224,82,74,.4);}
+  .stopbtn .sq{width:23px;height:23px;border-radius:6px;background:#fff;}
+  .reccancel{font-size:13px;color:var(--ink2);}
+
+  .tabbar{margin:0 14px 12px;height:64px;border-radius:32px;background:var(--card2);border:1px solid var(--hair);backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-around;padding:0 6px;}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--ink2);font-size:10px;font-weight:600;}
+  .tab.on{color:var(--acc);} .tab svg{width:22px;height:22px;}
+</style>
+</head>
+<body>
+
+  <h1>Check-in view — v3 · three options inside the circle</h1>
+  <p class="sub">Recording flow locked to <b>Option 1 — transforms in place</b>. Resting hub now has all three check-in options <b>contained inside the crescent's ring</b> (centred &amp; tucked into its embrace, not spilling toward the opening). Voice is the primary of the three; Log meds &amp; Type note flank it. Med bar stays on top.</p>
+  <div class="note"><b>Neutral colour still</b> — palette is a separate decision. The accent on the Voice option &amp; ring is a placeholder.</div>
+
+  <!-- RESTING -->
+  <div class="block">
+    <div class="btitle">The hub · at rest</div>
+    <div class="btag">LOG MEDS · SPEAK CHECK-IN (PRIMARY) · TYPE NOTE — ALL INSIDE THE RING</div>
+    <div class="row">
+      <div class="framewrap"><div class="framelabel">Dark</div>
+        <div class="phone"><div class="screen dark">
+          <div class="statusbar"><span>9:41</span><span class="dots">●●● 􀙇 􀛨</span></div>
+          <div class="medbar"><span class="mdot"></span><span class="mtext"><b>Concerta 50mg</b> · next dose 13:54</span></div>
+          <div class="navtitle"><h2>Check in</h2><div class="greet">How are you right now?</div></div>
+          <div class="stage">
+            <div class="crescent cr-out"></div><div class="crescent cr-in"></div>
+            <div class="cluster">
+              <div class="opt med"><span class="ic">__PILLSM__</span><span class="lab">Log meds</span></div>
+              <div class="opt voice"><span class="ic">__MIC__</span><span class="lab">Speak check-in</span></div>
+              <div class="opt"><span class="ic">__NOTESM__</span><span class="lab">Type note</span></div>
+            </div>
+          </div>
+          __TABBAR__
+        </div></div>
+      </div>
+      <div class="framewrap"><div class="framelabel">Light</div>
+        <div class="phone"><div class="screen light">
+          <div class="statusbar"><span>9:41</span><span class="dots">●●● 􀙇 􀛨</span></div>
+          <div class="medbar"><span class="mdot"></span><span class="mtext"><b>Concerta 50mg</b> · next dose 13:54</span></div>
+          <div class="navtitle"><h2>Check in</h2><div class="greet">How are you right now?</div></div>
+          <div class="stage">
+            <div class="crescent cr-out"></div><div class="crescent cr-in"></div>
+            <div class="cluster">
+              <div class="opt med"><span class="ic">__PILLSM__</span><span class="lab">Log meds</span></div>
+              <div class="opt voice"><span class="ic">__MIC__</span><span class="lab">Speak check-in</span></div>
+              <div class="opt"><span class="ic">__NOTESM__</span><span class="lab">Type note</span></div>
+            </div>
+          </div>
+          __TABBAR__
+        </div></div>
+      </div>
+    </div>
+    <p class="axis"><b>How it reads:</b> three tap targets nested in the ring — Voice is the filled primary in the middle, meds &amp; note are quiet outlines. The crescent embraces them from the upper-left.</p>
+  </div>
+
+  <!-- RECORDING (Option 1) -->
+  <div class="block">
+    <div class="btitle">Tap Speak → the crescent goes live · in place (Option 1)</div>
+    <div class="btag">SAME SCREEN · RING COMPLETES · TIMER + WAVE + STOP IN THE BELLY</div>
+    <div class="row">
+      <div class="framewrap"><div class="framelabel">Dark · recording</div>
+        <div class="phone"><div class="screen dark">
+          <div class="statusbar"><span>9:41</span><span class="dots">●●● 􀙇 􀛨</span></div>
+          <div class="medbar"><span class="mdot"></span><span class="mtext"><b>Concerta 50mg</b> · next dose 13:54</span></div>
+          <div class="navtitle"><h2>Listening…</h2><div class="greet">Tap to stop when you're done</div></div>
+          <div class="stage">
+            <div class="recring pulse"></div><div class="recring full"></div>
+            <div class="reccenter">
+              <div class="rectime">0:14</div><div class="recwave">__WAVE__</div>
+              <div class="stopbtn"><div class="sq"></div></div><div class="reccancel">Cancel</div>
+            </div>
+          </div>
+          __TABBAR__
+        </div></div>
+      </div>
+      <div class="framewrap"><div class="framelabel">Light · recording</div>
+        <div class="phone"><div class="screen light">
+          <div class="statusbar"><span>9:41</span><span class="dots">●●● 􀙇 􀛨</span></div>
+          <div class="medbar"><span class="mdot"></span><span class="mtext"><b>Concerta 50mg</b> · next dose 13:54</span></div>
+          <div class="navtitle"><h2>Listening…</h2><div class="greet">Tap to stop when you're done</div></div>
+          <div class="stage">
+            <div class="recring pulse"></div><div class="recring full"></div>
+            <div class="reccenter">
+              <div class="rectime">0:14</div><div class="recwave">__WAVE__</div>
+              <div class="stopbtn"><div class="sq"></div></div><div class="reccancel">Cancel</div>
+            </div>
+          </div>
+          __TABBAR__
+        </div></div>
+      </div>
+    </div>
+    <p class="axis"><b>The whole loop on one screen:</b> three options in the ring → tap Speak → the ring fills, options give way to the timer + live wave + a red stop. Stop returns to the resting hub. This is what replaces the old waveform &amp; round record button.</p>
+  </div>
+
+<script>
+const ICONS={
+  __PILLSM__:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="8" width="18" height="8" rx="4" transform="rotate(-45 12 12)"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+  __NOTESM__:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11l5 5v11H4z"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="8" y1="15" x2="13" y2="15"/></svg>',
+  __MIC__:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><line x1="12" y1="18" x2="12" y2="21"/></svg>',
+};
+const TABBAR=`<div class="tabbar">
+  <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="3"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/></svg>Calendar</div>
+  <div class="tab on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-5-7.4"/><polyline points="9 12 11.5 14.5 16 9"/></svg>Check in</div>
+  <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="20" x2="6" y2="13"/><line x1="12" y1="20" x2="12" y2="8"/><line x1="18" y1="20" x2="18" y2="11"/></svg>Insights</div>
+  <div class="tab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19 12a7 7 0 0 0-.1-1.3l2-1.6-2-3.5-2.4 1a7 7 0 0 0-2.2-1.3L14 1h-4l-.3 2.5a7 7 0 0 0-2.2 1.3l-2.4-1-2 3.5 2 1.6A7 7 0 0 0 5 12a7 7 0 0 0 .1 1.3l-2 1.6 2 3.5 2.4-1a7 7 0 0 0 2.2 1.3L10 23h4l.3-2.5a7 7 0 0 0 2.2-1.3l2.4 1 2-3.5-2-1.6A7 7 0 0 0 19 12z"/></svg>Settings</div>
+</div>`;
+const heights=[14,28,46,22,52,34,18,40,56,30,20,44,26,50,16];
+const WAVE=heights.map(h=>`<i style="height:${h}px"></i>`).join('');
+document.body.innerHTML=document.body.innerHTML.split('__TABBAR__').join(TABBAR).split('__WAVE__').join(WAVE);
+for(const k in ICONS){document.body.innerHTML=document.body.innerHTML.split(k).join(ICONS[k]);}
+</script>
+</body>
+</html>
