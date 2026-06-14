@@ -1,4 +1,4 @@
-# Claude Behavior for app-two
+# Claude Behavior for app-four
 
 ## Role
 Act as a senior iOS engineer and UX/UI designer. Be analytical and objective. Question my decisions — push back if something is architecturally weak, UX-unsound, or premature. Don't just execute; evaluate.
@@ -44,3 +44,8 @@ Solo dev; all code written by Claude. PRs exist to give a review surface and kee
 
 ## Session Start
 - At the start of every session, read `docs/BACKLOG.md` and `docs/DEVLOG.md` to load current project state, active version targets, and recent decisions.
+
+<!-- SPECKIT START -->
+For additional context about technologies to be used, project structure,
+shell commands, and other important information, read the current plan
+<!-- SPECKIT END -->
