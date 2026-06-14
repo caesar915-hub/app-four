@@ -3,7 +3,7 @@
 **Date:** 2026-06-13
 **Status:** 📐 Design — decisions locked; hardened against the codebase (multi-agent review, 2026-06-13)
 **Mockups:** [day-selection variants](../plans/2026-06-13-calendar-day-selection-mockup.html) · [navigator & list granularity](../plans/2026-06-13-calendar-granularity-mockup.html)
-**Replaces in:** [CalendarLibraryView.swift](../../../app-two/Views/Library/CalendarLibraryView.swift) — the `MonthSelectorScrollView` header
+**Replaces in:** [CalendarLibraryView.swift](../../../app-four/Views/Library/CalendarLibraryView.swift) — the `MonthSelectorScrollView` header
 **Reference:** Todoist "Upcoming" screen recording (`html-mockups/ScreenRecording_06-13-2026 17-21-12_1.MP4`)
 
 ---
@@ -73,7 +73,7 @@ Port that navigation chrome onto our **mood/medication timeline**, reframed for 
 - **First-ever launch / empty store:** `availableMonths` returns `[currentMonth]`; the grid shows the current week with no markers; the list shows today's "No check-ins" plus the existing `ContentUnavailableView` empty state in `CalendarLibraryView`.
 - **History bound:** month paging is already bounded by `availableMonths` (earliest recording's month → current); the chevron/swipe must stop at both ends. No "empty infinity" — empties are bounded within each month (decision #3).
 - **Month label:** equals `currentMonth` (no mid-scroll flip in the month-paged model). Updating `currentMonth` updates the label, grid, and list together.
-- **DST / timezone:** bucket days with `Calendar.current.startOfDay(for:)`, identical to `timelineDays` ([MoodLibraryViewModel.swift:66-71](../../../app-two/ViewModels/MoodLibraryViewModel.swift#L66-L71)), so the grid and list always agree.
+- **DST / timezone:** bucket days with `Calendar.current.startOfDay(for:)`, identical to `timelineDays` ([MoodLibraryViewModel.swift:66-71](../../../app-four/ViewModels/MoodLibraryViewModel.swift#L66-L71)), so the grid and list always agree.
 - **Tab switches:** `CalendarLibraryView.onChange(of: selectedTab)` already clears the nav path and bumps `scrollResetToken` (scroll-to-top). Extend it: on return to Calendar, reset selection to Today, collapse to week, and (existing) scroll to top — no stale selection.
 
 ---
@@ -85,16 +85,16 @@ Port that navigation chrome onto our **mood/medication timeline**, reframed for 
 | `CalendarHeaderView` *(new)* | Collapsible week/month calendar + month label + jump-to-today | replaces `MonthSelectorScrollView` in `CalendarLibraryView` |
 | `CalendarMonthModel` *(new, in VM)* | weeks/days for `currentMonth`, today, selection, per-day `DayMarker` — kept **separate** from `DayTimeline` (timeline-render layer) | `MoodLibraryViewModel` (`currentMonth`, `timelineDays`), `MoodLevel` |
 | `DayMarker` *(new)* | `enum DayMarker { none, mood(Color), neutral }` — `.mood` = deep `MoodLevel.color` of the day's rounded-average mood; `.neutral` = has entries but no mood; `.none` = no entries | `MoodLevel.average` + `.color`; bucketed via `Calendar.current.startOfDay` (match `timelineDays`) |
-| `timelineDays` *(change)* | Emit a `TimelineDay` for **every** day of `currentMonth` (not just the union of recordings/doses), empty ones with `nodes: []` | [MoodLibraryViewModel.swift:59-84](../../../app-two/ViewModels/MoodLibraryViewModel.swift#L59-L84). Also give `TimelineDay` a stable `Date` id (today it's the label string) for `.id`-based scroll-sync |
-| `DayCard` empty state *(change)* | Render header + "No check-ins" when `day.nodes.isEmpty` | [DayCard.swift:24-30](../../../app-two/Views/Components/DayCard.swift#L24-L30) |
-| Scroll-sync *(new)* | id-based `.scrollPosition(id:)` (iOS 17+) with each `DayCard` tagged `.id(dayDate)`; topmost-visible read → selection | **`ScreenContainer` only exposes edge-scroll** (`ScrollPosition(edge:.top)` + scroll-to-top token, [ScreenContainer.swift:37,64-69](../../../app-two/DesignSystem/ScreenContainer.swift#L37)). Either extend it to accept an id-based binding, or have this view manage its own `ScrollView` (`scrollable: false`) |
+| `timelineDays` *(change)* | Emit a `TimelineDay` for **every** day of `currentMonth` (not just the union of recordings/doses), empty ones with `nodes: []` | [MoodLibraryViewModel.swift:59-84](../../../app-four/ViewModels/MoodLibraryViewModel.swift#L59-L84). Also give `TimelineDay` a stable `Date` id (today it's the label string) for `.id`-based scroll-sync |
+| `DayCard` empty state *(change)* | Render header + "No check-ins" when `day.nodes.isEmpty` | [DayCard.swift:24-30](../../../app-four/Views/Components/DayCard.swift#L24-L30) |
+| Scroll-sync *(new)* | id-based `.scrollPosition(id:)` (iOS 17+) with each `DayCard` tagged `.id(dayDate)`; topmost-visible read → selection | **`ScreenContainer` only exposes edge-scroll** (`ScrollPosition(edge:.top)` + scroll-to-top token, [ScreenContainer.swift:37,64-69](../../../app-four/DesignSystem/ScreenContainer.swift#L37)). Either extend it to accept an id-based binding, or have this view manage its own `ScrollView` (`scrollable: false`) |
 
 **Visual tokens to reuse** (verified against `MoodLevel+Palette.swift`, `DayCard.swift`, `Palette.swift`):
 - The mood palette has **two ends per `MoodLevel`**:
   - **deep — `color` / `deepFill`:** `low #C2503F · flat #DE8050 · okay #E5C46A · good #94C56F · great #4CAF6E` (legend dots, header text, accents)
   - **light — `fill` / `gradientPartner`:** `low #D4705F · flat #EA9D72 · okay #EFD68C · good #AED68C · great #6BC68A` (bead/banner surfaces, the day-card wash)
 - **Day-marker dot → the deep `MoodLevel.color`** (legend-dot semantics; legible at small size) of `MoodLevel.average(of:)`. *Not* the light fill — that's the large day-card wash, which would wash out a tiny dot.
-- **Day-card mood tint** = `MoodLevel.averageFill` (light) at **`.opacity(0.16)`** (16%) over `Theme.cardBackground` — unchanged ([DayCard.swift:37-38](../../../app-two/Views/Components/DayCard.swift#L37-L38)).
+- **Day-card mood tint** = `MoodLevel.averageFill` (light) at **`.opacity(0.16)`** (16%) over `Theme.cardBackground` — unchanged ([DayCard.swift:37-38](../../../app-four/Views/Components/DayCard.swift#L37-L38)).
 - **Medication** = `Palette.medication` = `Color(.systemPurple)` (system-dynamic, adapts to appearance) — **not** a fixed hex. Unchanged.
 - SF Pro; the system tab bar is unchanged (not restyled here).
 

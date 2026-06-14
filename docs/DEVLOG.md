@@ -1,4 +1,4 @@
-# app-two DevLog
+# app-four DevLog
 
 Chronological narrative of the project — the *why* behind what happened. Newest day on top.
 
@@ -7,6 +7,12 @@ This complements, never duplicates: **[BACKLOG.md](BACKLOG.md)** holds current *
 **Entry types:** `Recap` (morning standup, written by `/recap`) · `Decision` (with *why:*) · `Investigation` (with outcome) · `Direction` · `Shipped` · `Open`.
 
 ---
+
+## 2026-06-15
+
+- **Investigation** — Fork verified. **Build green** on iPhone 17 sim (2 minor actor-isolation warnings, [Constants.swift:31-32](../app-four/Utils/Constants.swift#L31-L32)). Suite was **not** green (the "213/0" was app-two pre-fork): 200 tests, 3 failures, all root-caused. (a) `MedicationBarViewModelTests.ordinalIsCorrectForMultipleDoses` — **midnight-fragile** (ran 00:44; `now−1h` fell on the prior calendar day, and the ordinal groups doses by `startOfDay`). Product logic correct; **fixed** by injecting `now` into `MedicationBarViewModel.refresh(now:)` + anchoring the test to midday. (b) A non-deterministic `ModelContext.reset` **crash** whose victim moves per run (CalendarMonthModelTests → CheckInNoteStoreTests) — collateral from the **shared static** `AppModelContainer.container`/`AppDependencies` singletons + a long-lived `MedicationBarViewModel` NotificationCenter observer ([AppDependencies.swift:8-13](../app-four/Store/AppDependencies.swift#L8-L13)). This is the documented [test-suite-not-parallel-safe](BACKLOG.md) "isolate per-test state" debt; bites even serially; **not a product bug**; TestFlight runs no tests so not an 18 Jun blocker. Decision pending: do the test-isolation fix vs. palette colours.
+- **Decision** — Identity resolved. Product name = **Squirl** (user choice); internal codename = **app-four** (bundle id unchanged). Fixed: hardcoded `WhisperNotes v1.0.0` in [SettingsView.swift](../app-four/Views/SettingsView.swift) → dynamic `CFBundleDisplayName` + `CFBundleShortVersionString` (now "Squirl v0.8.0", can't drift); mic/speech permission **prompts** WhisperNotes→Squirl (pbxproj, Debug+Release); doc titles + 37 broken `../app-two/` doc links → `app-four/` (verified targets exist); NoteExtraction README `app-two`→`app-four`. Left as harmless internal: `@main struct WhisperNotesApp`, URL scheme `whispernotes`. _why:_ four competing names (app-two/app-four/Squirl/WhisperNotes) reached the user-facing layer — permission prompts said "WhisperNotes" while the app installs as "Squirl".
+- **Recap** — Since 2026-06-14: nothing feature-wise; repo reality diverges from docs — `app-four` is a 2-commit fresh fork of app-two `main` (`88f423b` fork + new bundle `Rythm-App.app-four`; `a08094b` Spec Kit + CLAUDE.md rename), **no remote, no PRs, single `main`** — all BACKLOG PR #1/#6/#8 + branches are inherited app-two lineage, not live here. In flight: none. Open: app-two/app-four/"Squirl" identity drift (docs titled app-two, links → `../app-two/...`); fork rationale unrecorded; fork **unbuilt/unverified** (213/0 was pre-fork). Today: (1) verify fork builds+runs, (2) confirm `Info.plist` mic/speech usage strings (crash risk), (3) resolve identity + fix doc links, (4) Insights palette colours (last v0.8 gate). v0.8 TestFlight 18 Jun = 3 days out; biggest risk is the unbuilt fork, not features.
 
 ## 2026-06-14
 

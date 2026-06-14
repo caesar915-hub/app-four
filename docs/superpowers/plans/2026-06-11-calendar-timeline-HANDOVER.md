@@ -86,12 +86,12 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 | File | Role |
 |------|------|
-| [app-two/ViewModels/DayTimeline.swift](../../../app-two/ViewModels/DayTimeline.swift) | `enum DayTimeline { Node, Ring }` + pure `DayTimelineBuilder.build(recordings:doses:)`. The core logic. |
-| [app-two/ViewModels/MoodLibraryViewModel.swift](../../../app-two/ViewModels/MoodLibraryViewModel.swift) | `timelineDays` (groups recordings + fetched medication events by day), `TimelineDay`, med-event fetch + `.medicationEventsDidChange` observer. |
-| [app-two/Views/Components/TimelineBead.swift](../../../app-two/Views/Components/TimelineBead.swift) | The circular bead: centre + concentric rings + in-bead time/%, adaptive Dynamic Type. |
-| [app-two/Views/Components/TimelineRow.swift](../../../app-two/Views/Components/TimelineRow.swift) | One row: bead column + connector line + tappable content; % line at AX sizes. |
-| [app-two/Views/Components/TimelineDaySection.swift](../../../app-two/Views/Components/TimelineDaySection.swift) | Day header + the day's `TimelineRow`s (extracted from CalendarLibraryView). |
-| [app-two/Views/Library/CalendarLibraryView.swift](../../../app-two/Views/Library/CalendarLibraryView.swift) | The Calendar tab; renders `TimelineDaySection` per `timelineDays`. |
+| [app-two/ViewModels/DayTimeline.swift](../../../app-four/ViewModels/DayTimeline.swift) | `enum DayTimeline { Node, Ring }` + pure `DayTimelineBuilder.build(recordings:doses:)`. The core logic. |
+| [app-two/ViewModels/MoodLibraryViewModel.swift](../../../app-four/ViewModels/MoodLibraryViewModel.swift) | `timelineDays` (groups recordings + fetched medication events by day), `TimelineDay`, med-event fetch + `.medicationEventsDidChange` observer. |
+| [app-two/Views/Components/TimelineBead.swift](../../../app-four/Views/Components/TimelineBead.swift) | The circular bead: centre + concentric rings + in-bead time/%, adaptive Dynamic Type. |
+| [app-two/Views/Components/TimelineRow.swift](../../../app-four/Views/Components/TimelineRow.swift) | One row: bead column + connector line + tappable content; % line at AX sizes. |
+| [app-two/Views/Components/TimelineDaySection.swift](../../../app-four/Views/Components/TimelineDaySection.swift) | Day header + the day's `TimelineRow`s (extracted from CalendarLibraryView). |
+| [app-two/Views/Library/CalendarLibraryView.swift](../../../app-four/Views/Library/CalendarLibraryView.swift) | The Calendar tab; renders `TimelineDaySection` per `timelineDays`. |
 | [app-twoTests/ViewModels/DayTimelineBuilderTests.swift](../../../app-twoTests/ViewModels/DayTimelineBuilderTests.swift) | 8 builder tests. |
 | [app-twoTests/ViewModels/MoodLibraryViewModelTests.swift](../../../app-twoTests/ViewModels/MoodLibraryViewModelTests.swift) | 4 VM tests. |
 

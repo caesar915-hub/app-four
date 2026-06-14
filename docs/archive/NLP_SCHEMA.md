@@ -126,7 +126,7 @@ Only a subset of `NoteExtraction` is persisted. Fields marked **⚠ not persiste
 
 ### `DisplayTag` — display only (not persisted)
 
-Computed by `Recording.displayTags` in [Recording+MoodDisplay.swift](app-two/Models/Recording+MoodDisplay.swift). Derived at render time from persisted fields. Has no source or confidence metadata.
+Computed by `Recording.displayTags` in [Recording+MoodDisplay.swift](app-four/Models/Recording+MoodDisplay.swift). Derived at render time from persisted fields. Has no source or confidence metadata.
 
 ```swift
 struct DisplayTag: Identifiable {
@@ -186,12 +186,12 @@ When users correct a tag, the source term is stored and injected into future ext
 
 | File | Role |
 |---|---|
-| [NoteExtraction.swift](app-two/Services/NoteExtraction/NoteExtraction.swift) | `NoteExtraction`, `MedEvent`, `SleepNote`, enums |
-| [NLNoteExtractor.swift](app-two/Services/NoteExtraction/NLNoteExtractor.swift) | Extraction engine |
-| [Lexicon.swift](app-two/Services/NoteExtraction/Lexicon.swift) | Injectable vocabulary |
-| [NLSummarizationService.swift](app-two/Services/NLSummarizationService.swift) | Maps `NoteExtraction` → `SummaryResult` → `Recording` |
-| [Recording.swift](app-two/Models/Recording.swift) | SwiftData model, `applySummary(_:)` |
-| [Recording+MoodDisplay.swift](app-two/Models/Recording+MoodDisplay.swift) | `DisplayTag`, `moodColor`, `moodIcon` |
+| [NoteExtraction.swift](app-four/Services/NoteExtraction/NoteExtraction.swift) | `NoteExtraction`, `MedEvent`, `SleepNote`, enums |
+| [NLNoteExtractor.swift](app-four/Services/NoteExtraction/NLNoteExtractor.swift) | Extraction engine |
+| [Lexicon.swift](app-four/Services/NoteExtraction/Lexicon.swift) | Injectable vocabulary |
+| [NLSummarizationService.swift](app-four/Services/NLSummarizationService.swift) | Maps `NoteExtraction` → `SummaryResult` → `Recording` |
+| [Recording.swift](app-four/Models/Recording.swift) | SwiftData model, `applySummary(_:)` |
+| [Recording+MoodDisplay.swift](app-four/Models/Recording+MoodDisplay.swift) | `DisplayTag`, `moodColor`, `moodIcon` |
 
 ---
 

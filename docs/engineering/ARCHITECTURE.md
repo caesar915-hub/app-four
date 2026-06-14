@@ -40,7 +40,7 @@ Because WhisperNotesApp is an entirely **local, offline-first application**, the
 
 ## 4. How Models are Loaded and Used
 
-Transcription uses one primary on-device model — **OpenAI Whisper Small**. Summarization/extraction is **not** model-based: it runs on Apple's `NaturalLanguage` framework via `NLNoteExtractor` (instant, no download). See [Services/NoteExtraction/README.md](../../app-two/Services/NoteExtraction/README.md).
+Transcription uses one primary on-device model — **OpenAI Whisper Small**. Summarization/extraction is **not** model-based: it runs on Apple's `NaturalLanguage` framework via `NLNoteExtractor` (instant, no download). See [Services/NoteExtraction/README.md](../../app-four/Services/NoteExtraction/README.md).
 
 **Model Management (`AIModelServiceImpl`)**:
 - Manages the download and lifecycle of the Whisper model (via `WhisperKit`) into the app's Library directory.

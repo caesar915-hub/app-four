@@ -110,11 +110,17 @@ struct SettingsView: View {
         }
     }
 
+    private var versionLabel: String {
+        let name = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? "Squirl"
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
+        return "\(name) v\(version)"
+    }
+
     private var versionSection: some View {
         Section {
             HStack {
                 Spacer()
-                Text("WhisperNotes v1.0.0")
+                Text(versionLabel)
                     .font(Typography.caption)
                     .foregroundStyle(.secondary)
                     #if DEBUG || TESTFLIGHT

@@ -1,4 +1,4 @@
-# app-two TODO — foundational & pre-launch
+# app-four TODO — foundational & pre-launch
 
 Action list for the **load-bearing gaps** surfaced 2026-06-14 (senior-iOS + PM doc audit).
 This is distinct from [BACKLOG.md](BACKLOG.md): the backlog tracks *features* by stage; this
