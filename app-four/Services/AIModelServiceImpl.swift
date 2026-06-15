@@ -32,6 +32,10 @@ final class AIModelServiceImpl: AIModelService {
                     case .whisper:
                         try await self.downloadWhisperModel { continuation.yield($0) }
                     }
+                    // A cancelled download must not write back: `metadata` may belong to a
+                    // ModelContext that has already been torn down (e.g. the owning screen
+                    // was dismissed, or a test finished), which would crash on access.
+                    guard !Task.isCancelled else { continuation.finish(); return }
                     metadata.isDownloaded = true
                     metadata.isCorrupted = false
                     try? context.save()
@@ -39,6 +43,7 @@ final class AIModelServiceImpl: AIModelService {
                     continuation.yield(1.0)
                     continuation.finish()
                 } catch {
+                    guard !Task.isCancelled else { continuation.finish(); return }
                     metadata.isCorrupted = true
                     try? context.save()
                     AppLogger.log("Download failed for \(type.rawValue): \(error)")

@@ -9,7 +9,7 @@ Update the **Stage** as work moves. Keep newest activity near the top of each se
 - 🔨 **In code** — being built / on a branch, not on `main`
 - ✅ **Shipped** — merged to `main`
 
-Last updated: 2026-06-14 (PR #8 calendar + PR #6 debug-tools/snap-scroll merged to `main`, integrated suite 213/0 green; NLP inflection match made deterministic; iCloud Sync → v1.2; Insights palette moved v0.9 → v0.8 — v0.8 no longer code-complete until palette ships)
+Last updated: 2026-06-15 (app-four fork **build/test-verified** on `main` — builds green on iPhone 17 sim; identity resolved to **Squirl** + codename app-four, broken doc links repaired; MedicationBar midnight-flaky test fixed. **suite now reliably green (212/0, two consecutive serial runs)** — the `ModelContext.reset` crash was an orphaned `AIModelServiceImpl.download()` Task writing `ModelMetadata` after teardown; fixed with a cancellation guard. **v0.8 is code-complete; Insights palette colours moved to new milestone v0.8.1.** CI's green-suite prerequisite is met.)
 
 ---
 
@@ -17,18 +17,26 @@ Last updated: 2026-06-14 (PR #8 calendar + PR #6 debug-tools/snap-scroll merged 
 
 Your roadmap. Not a feature list — a finish line. Each milestone is **one sentence of user outcome** + the backlog items that gate it. Everything not tied to a milestone is "later." Fill in the outcomes when you've thought it through.
 
-**Focus right now: v0.8 → v0.9.** v1.0 is parked below as the destination; don't build toward it until 0.9 ships.
+**Focus right now: v0.8 → v0.8.1 → v0.9.** v1.0 is parked below as the destination; don't build toward it until 0.9 ships.
 
 ### v0.8 — Dogfood _(focus)_ _(TestFlight: 18 Jun 2026)_
 > **Outcome:** Every day I can open the app, voice-log a check-in in under a minute, and trust it captures, transcribes, and tags every time — solid enough that I actually keep using it instead of avoiding it.
 > **For:** just me.
 
+✅ **Code-complete** (2026-06-15) — all code gates met; palette moved out to v0.8.1. Only the non-code TestFlight pipeline remains (see 🚢 Ship checklist).
+
 Gates — the core loop, clean and reliable:
 - [x] Actor-isolation fix (PR #5) — clean warning-free baseline
 - [x] Check-in "Listening…" redesign — core capture loop finished + merged
 - [x] NLP extraction quality (Phases A–C+E) merged to `main`
-- [ ] **Insights palette rework** — _moved up from v0.9 (2026-06-14)._ Structure done on `main`; **colours not built** — no branch/code exists yet. ⚠️ This re-opens v0.8: it is **no longer code-complete** until the palette ships.
-- [ ] _any daily-use bug or rough edge you keep hitting_
+- [x] Fork build/test-verified + identity resolved to Squirl (2026-06-15, `976482d`)
+
+### v0.8.1 — Insights palette _(focus, no date — follow-up to v0.8)_
+> **Outcome:** When I open Insights, the colours read clearly and feel intentional — mood, energy, focus and sleep are instantly distinguishable, not a muddy gradient.
+> **For:** just me (carries into v0.9 for others).
+
+Gates:
+- [ ] **Insights palette colours** — structure shipped on `main`; colours unresolved across 9+ mockup variants in [superpowers/plans/](superpowers/plans/). Needs a design pick before build. _(Was a v0.8 gate; moved to v0.8.1 on 2026-06-15.)_
 
 ### v0.9 — Private beta _(focus)_ _(TestFlight: 24 Jun 2026)_
 > **Outcome:** Someone I hand the app to can install it, figure out what to do on first launch without me explaining, log check-ins, and see their own mood and sleep patterns in Insights — without hitting anything confusing or broken.
@@ -38,7 +46,7 @@ Gates — everything in v0.8, plus what makes it usable by someone else:
 - [x] Calendar day-selection & navigation — merged to `main` (PR #8, 2026-06-14)
 - [ ] _onboarding / empty states good enough for a stranger's first run?_
 
-_(Insights palette rework moved to v0.8 — 2026-06-14.)_
+_(Insights palette: v0.9 → v0.8 on 2026-06-14, then → v0.8.1 on 2026-06-15.)_
 
 ### v1.0 — App Store _(App Store release: 6 Jul 2026)_
 > **Outcome:** _TBD_  ·  **Target user:** _TBD (strangers)_
@@ -89,10 +97,10 @@ Ranked shortlist — what to pick up next, not everything in flight. Reorder fre
 
 | # | Item | Added | Updated | Why now |
 |---|---|---|---|---|
-| 1 | **v0.8 TestFlight pipeline** (non-code, yours) | 2026-06-14 | 2026-06-14 | ⚠️ v0.8 no longer code-complete — Insights palette moved in (colours unbuilt). Otherwise 18 Jun is the long pole: App Store Connect record + signing + archive/upload. See 🚢 Ship checklist. |
-| 2 | **Insights palette colours** | 2026-06-14 | 2026-06-14 | Now a v0.8 gate; structure shipped, colours unresolved/unbuilt. Blocks v0.8 code-complete. |
-| 3 | **HealthKit signals** | 2026-06-14 | 2026-06-14 | 15-task TDD plan ready; bigger lift, do after the pipeline. |
-| 4 | **Test-suite parallel-safety** | 2026-06-14 | 2026-06-14 | 12 false failures under parallel `xcodebuild` (10 crashes + 2 NL, latter now deterministic-fixed); reddens CI. Stopgap: parallel-off `.xctestplan`. Owned by concurrent session. |
+| 1 | **v0.8 TestFlight pipeline** (non-code, yours) | 2026-06-14 | 2026-06-15 | 18 Jun long pole: App Store Connect record + signing + archive/upload. Manual upload is fastest for 18 Jun; CI/CD is a later investment. See 🚢 Ship checklist. |
+| 2 | **Insights palette colours** (v0.8.1) | 2026-06-14 | 2026-06-15 | Structure shipped; colours unresolved across 9+ mockup variants. Needs a design pick before build. |
+| 3 | **Git remote + Xcode Cloud CI/CD** | 2026-06-15 | 2026-06-15 | ✅ green-suite prerequisite now met. Next: create remote, then PR→build/test, tag→TestFlight. Auto-signing erases the hard part. Don't block 18 Jun on it. |
+| 4 | **HealthKit signals** | 2026-06-14 | 2026-06-14 | 15-task TDD plan ready; bigger lift, do after the pipeline. |
 
 ---
 
@@ -124,6 +132,8 @@ Ranked shortlist — what to pick up next, not everything in flight. Reorder fre
 
 | Item | Notes |
 |---|---|
+| Test suite green (isolation fix) | 2026-06-15. Suite **212/0**, two consecutive serial runs. Root cause: `AIModelServiceImpl.download()` spawned an `AsyncStream` Task that wrote `ModelMetadata` (`isDownloaded`/`isCorrupted`) on the success/error path *after* the owning `ModelContext` was torn down → non-deterministic `ModelContext.reset` crash (moving victim) even serially. Fixed by guarding both writes with `Task.isCancelled` (also a production correctness win: a cancelled download no longer flags the model corrupt). Clears CI's green-suite prerequisite. |
+| app-four fork bring-up (verify + identity) | Merged to `main` (2026-06-15, `976482d`). Build verified green on iPhone 17 sim. Identity → **Squirl** (dynamic version label replacing hardcoded `WhisperNotes v1.0.0`; mic/speech prompts), codename app-four, 37 broken `../app-two/` doc links repaired. MedicationBar midnight-flaky test fixed (injectable clock). CodeRabbit clean (limited mode, no remote). |
 | Calendar day-selection & navigation | Merged via **PR #8** (2026-06-14). Collapsible week↔month calendar over the mood/med timeline: N1 month grid, mood-colour day-dots, past/newest-first, month-paged, all days shown (empty = "No check-ins"), two-way scroll-sync, force-week + a11y at AX sizes. Replaces `MonthSelectorScrollView`. 29/29 unit tests; CodeRabbit review fixes applied (guarded date math, empty-month grid). Integrated suite 213/0 green. |
 | Debug mock-data toggle + reseed | Merged via **PR #6** (2026-06-14). Mock Mode toggle + Seed/Wipe&Reseed in a hidden debug sheet; `isMockData` flag filters queries; `#if DEBUG`-only `MockDataGenerator`. Verified green in the integrated suite (was unverified on-branch). |
 | Insights snap-to-section scroll | Merged via **PR #6** (2026-06-14). Pinned selector, dimmed peek. Verified green in the integrated suite. |
