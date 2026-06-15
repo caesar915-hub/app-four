@@ -56,19 +56,30 @@ struct InsightsView: View {
     // MARK: - Snapping scroll
 
     private var sectionsScroll: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                breakdownSection
-                signalsSection
-                averagesSection
-                rhythmSection
-                connectionsSection
+        GeometryReader { proxy in
+            let pageHeight = proxy.size.height
+            ScrollView {
+                VStack(spacing: 0) {
+                    page(breakdownSection, height: pageHeight)
+                    page(signalsSection, height: pageHeight)
+                    page(averagesSection, height: pageHeight)
+                    page(rhythmSection, height: pageHeight)
+                    page(connectionsSection, height: pageHeight)
+                }
+                .scrollTargetLayout()
             }
-            .scrollTargetLayout()
+            .scrollTargetBehavior(.paging)
+            .scrollPosition(id: $activeSectionID, anchor: .top)
+            .edgeFadeMask(top: 0, bottom: 36)
         }
-        .scrollTargetBehavior(.viewAligned)
-        .scrollPosition(id: $activeSectionID, anchor: .top)
-        .edgeFadeMask(top: 0, bottom: 36)
+    }
+
+    /// Sizes a section to exactly one viewport so paging snaps one section per
+    /// flick with no peek of the next. Content top-aligns for a consistent title Y.
+    private func page(_ section: some View, height: CGFloat) -> some View {
+        section
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .frame(height: height)
     }
 
     /// Active heading at full emphasis; every other heading (incl. the peeking

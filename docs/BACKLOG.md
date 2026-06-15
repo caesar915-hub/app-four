@@ -36,7 +36,7 @@ Gates — the core loop, clean and reliable:
 > **For:** just me (carries into v0.9 for others).
 
 Gates:
-- [ ] **Insights palette colours** — structure shipped on `main`; colours unresolved across 9+ mockup variants in [superpowers/plans/](superpowers/plans/). Needs a design pick before build. _(Was a v0.8 gate; moved to v0.8.1 on 2026-06-15.)_
+- [ ] **Insights palette colours** — 🔨 **in code** on `feat/insights-palette`. Design picked (2026-06-15): **Meadow·Burnt** mood (level-2 amber `#EDA94A`), **Lemon** energy, **Voltage/blue** focus; sleep deferred (no ramp yet). Focus loses its light/dark graphite inversion (now static blue). Final swatches: [palette-FINAL](superpowers/plans/2026-06-15-palette-FINAL.html). _(Was a v0.8 gate; → v0.8.1 on 2026-06-15.)_
 
 ### v0.9 — Private beta _(focus)_ _(TestFlight: 24 Jun 2026)_
 > **Outcome:** Someone I hand the app to can install it, figure out what to do on first launch without me explaining, log check-ins, and see their own mood and sleep patterns in Insights — without hitting anything confusing or broken.
@@ -44,7 +44,7 @@ Gates:
 
 Gates — everything in v0.8, plus what makes it usable by someone else:
 - [x] Calendar day-selection & navigation — merged to `main` (PR #8, 2026-06-14)
-- [ ] _onboarding / empty states good enough for a stranger's first run?_
+- [ ] _onboarding / empty states good enough for a stranger's first run?_ — ⚠️ onboarding hero still hardcodes **"Welcome to Whisper Notes"** (Squirl rename missed it; seen on sim launch 2026-06-15). Fix as part of this gate.
 
 _(Insights palette: v0.9 → v0.8 on 2026-06-14, then → v0.8.1 on 2026-06-15.)_
 

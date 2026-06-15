@@ -4,14 +4,6 @@ import UIKit
 // MARK: - Dynamic colour + contrast helpers
 
 extension Color {
-    /// A dynamic colour that resolves to `darkHex` in dark mode and `lightHex` in light mode.
-    /// Used for the focus (graphite) ramp, which inverts between modes.
-    init(lightHex: String, darkHex: String) {
-        self = Color(uiColor: UIColor { trait in
-            UIColor(Color(hex: trait.userInterfaceStyle == .dark ? darkHex : lightHex))
-        })
-    }
-
     /// Black or white — whichever reads on `fill` in the given scheme. Resolves dynamic
     /// colours first, so it is correct even for the inverting focus ramp.
     ///

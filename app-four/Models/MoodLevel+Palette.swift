@@ -1,9 +1,9 @@
 import SwiftUI
 
 /// Calendar + Insights display palette for the extracted ``MoodLevel`` (defined in
-/// NoteExtraction). The **app-wide mood SSOT**: the Meadow "M2" valence ramp
-/// (low→great = red→amber→green). Calendar timeline, mood library, recording detail,
-/// and Insights all read it, so re-coloring here re-colors the whole app.
+/// NoteExtraction). The **app-wide mood SSOT**: the Meadow·Burnt valence ramp
+/// (low→great = burnt-orange→amber→green). Calendar timeline, mood library, recording
+/// detail, and Insights all read it, so re-coloring here re-colors the whole app.
 ///
 /// Two ends per level:
 /// - ``color`` / ``deepFill`` — the saturated **base** (deep shade): header text, accents,
@@ -18,26 +18,26 @@ extension MoodLevel {
         self.init(rawValue: name.lowercased())
     }
 
-    /// M2 base — saturated valence colour (red→amber→green). The dark end of every fill.
+    /// Meadow·Burnt base — saturated valence colour (burnt-orange→amber→green). The dark end of every fill.
     var color: Color {
         switch self {
-        case .low:   Color(hex: "#C2503F")
-        case .flat:  Color(hex: "#DE8050")
-        case .okay:  Color(hex: "#E5C46A")
-        case .good:  Color(hex: "#94C56F")
-        case .great: Color(hex: "#4CAF6E")
+        case .low:   Color(hex: "#DA7A2A")
+        case .flat:  Color(hex: "#EDA94A")
+        case .okay:  Color(hex: "#9FCB79")
+        case .good:  Color(hex: "#5FB36E")
+        case .great: Color(hex: "#2E8B57")
         }
     }
 
-    /// M2 light partner — the light end of every fill, and the flat calendar bead/banner
+    /// Meadow·Burnt light partner — the light end of every fill, and the flat calendar bead/banner
     /// surface (kept light so the fixed dark ``onColor`` ink stays legible).
     var gradientPartner: Color {
         switch self {
-        case .low:   Color(hex: "#D4705F")
-        case .flat:  Color(hex: "#EA9D72")
-        case .okay:  Color(hex: "#EFD68C")
-        case .good:  Color(hex: "#AED68C")
-        case .great: Color(hex: "#6BC68A")
+        case .low:   Color(hex: "#EA9248")
+        case .flat:  Color(hex: "#FDC06C")
+        case .okay:  Color(hex: "#B9DB9C")
+        case .good:  Color(hex: "#7EC38A")
+        case .great: Color(hex: "#459B6B")
         }
     }
 
