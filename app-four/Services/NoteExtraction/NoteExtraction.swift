@@ -208,7 +208,7 @@ public enum MedEventChange: String, Codable, Sendable {
     case stopped
 }
 
-public struct MedEvent: Sendable, Codable, Equatable {
+public struct MedEvent: Sendable, Codable, Equatable, Hashable {
     public var name: String
     public var dose: String?
     public var time: String?        // HH:mm 24h (e.g. "10:00"); nil when not derivable

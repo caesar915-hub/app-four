@@ -89,12 +89,10 @@ struct ExtractionReviewView: View {
 
     // MARK: - Medications
 
+    // MVP (TestFlight): only the meds the first testers actually take. NLP can still
+    // extract others from speech — these are just the manual quick-pick chips.
     private let medicationGroups: [ChipGroup] = [
-        ChipGroup(label: "Stimulants",     items: ["Concerta", "Ritalin", "Adderall", "Vyvanse", "Elvanse",
-                                                   "Focalin", "Dexedrine", "Dexamfetamine"]),
-        ChipGroup(label: "Non-stimulants", items: ["Strattera", "Atomoxetine", "Intuniv", "Guanfacine",
-                                                   "Qelbree", "Clonidine", "Kapvay"]),
-        ChipGroup(label: "Off-label",      items: ["Wellbutrin", "Bupropion", "Modafinil", "Armodafinil"])
+        ChipGroup(label: "Medications", items: ["Concerta", "Ritalin", "Elvanse"])
     ]
 
     private var medicationSection: some View {
@@ -103,8 +101,9 @@ struct ExtractionReviewView: View {
 
             if !viewModel.medications.isEmpty {
                 VStack(spacing: Spacing.s) { // was 6
-                    ForEach(viewModel.medications.indices, id: \.self) { i in
-                        let med = viewModel.medications[i]
+                    // Iterate by element (not indices): a med can be removed mid-edit,
+                    // and ForEach(indices) re-renders a stale row → Index out of range.
+                    ForEach(viewModel.medications, id: \.self) { med in
                         HStack(spacing: Spacing.s) { // was 10
                             Image(systemName: "pills.fill")
                                 .foregroundStyle(.purple)
@@ -116,7 +115,7 @@ struct ExtractionReviewView: View {
                                         .font(Typography.body)
                                     TextField("Dose", text: Binding(
                                         get: { med.dose ?? "" },
-                                        set: { viewModel.setMedDose(i, dose: $0.isEmpty ? nil : $0) }
+                                        set: { viewModel.setMedDose(med, dose: $0.isEmpty ? nil : $0) }
                                     ))
                                     .font(Typography.body)
                                     .foregroundStyle(.secondary)
@@ -128,7 +127,7 @@ struct ExtractionReviewView: View {
                             }
                             Spacer()
                             Button {
-                                viewModel.toggleMedTaken(i)
+                                viewModel.toggleMedTaken(med)
                             } label: {
                                 Text(med.taken ? "Taken" : "Missed")
                                     .font(.caption2)
