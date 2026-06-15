@@ -1,3 +1,5 @@
+> **⚠️ HISTORICAL SNAPSHOT — superseded.** Frozen 2026-06-15. Pre-app-four (WhisperNotes/app-two era); does not reflect current project state. Current architecture lives in the Notion `app-two` DB, [docs/BACKLOG.md](../BACKLOG.md), and [docs/DEVLOG.md](../DEVLOG.md). Any "Gemma" mention is historical — Gemma was removed before the app-four fork.
+
 # WhisperNotes: Project Architecture
 
 WhisperNotes is built on a **Service-Oriented MVVM** architecture, strictly adhering to **Swift 6 Concurrency** patterns and **SwiftData** for persistence.

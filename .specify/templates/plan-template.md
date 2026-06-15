@@ -40,7 +40,27 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+Mark each PASS / FAIL / N-A and justify any FAIL in Complexity Tracking. See
+`.specify/memory/constitution.md` (v1.1.0).
+
+- [ ] **I. SwiftUI-First** — UI is SwiftUI on modern APIs (iOS 26+); no UIKit
+      unless no SwiftUI equivalent; new views have an HTML mockup first.
+- [ ] **II. Test-Build-Ship** — plan produces a buildable, fully-tested change;
+      no step ships unverified.
+- [ ] **III. Correctness Over Speed** — no dead code, compat shims, or stubs; any
+      tradeoff is surfaced explicitly.
+- [ ] **IV. Minimal Surface** — no abstractions/flags beyond what the task needs;
+      added complexity justified below.
+- [ ] **V. Solo Git Discipline** — work is one revertable feature on a `feat/…` or
+      `fix/…` branch, `/code-review` before merge, `main` stays releasable.
+- [ ] **VI. On-Device Privacy** — no audio/health/mood/med data leaves the device;
+      no cloud by default; logs are counts/durations only.
+- [ ] **VII. Deterministic, Measured Extraction** — extraction stays deterministic,
+      off-main, whole-token, lexicon-as-data; eval harness run, floors not regressed.
+- [ ] **VIII. Service-Oriented Architecture** — new capabilities behind a `Services/`
+      protocol via `AppDependencies`; `@MainActor @Observable` VMs; heavy work off-main.
+- [ ] **IX. Pre-Release Data Posture** — schema stays CloudKit-compatible (optional/
+      defaulted, no `@Attribute(.unique)`); any unique/required attribute justified.
 
 ## Project Structure
 

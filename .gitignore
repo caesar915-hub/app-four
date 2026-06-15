@@ -23,6 +23,10 @@ xcuserdata/
 .agents/
 .gemini/
 memory/
+# …but the Spec Kit constitution lives under .specify/memory/ and MUST be tracked
+# (it gates every spec/plan). The bare `memory/` above would otherwise swallow it.
+!.specify/memory/
+!.specify/memory/**
 
 # Claude Code local config, hooks & installed skills — not app source
 .claude/

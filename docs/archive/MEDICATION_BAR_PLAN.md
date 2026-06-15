@@ -1,3 +1,5 @@
+> **⚠️ HISTORICAL SNAPSHOT — superseded.** Frozen 2026-06-15. Pre-app-four (WhisperNotes/app-two era); does not reflect current project state. Current architecture lives in the Notion `app-two` DB, [docs/BACKLOG.md](../BACKLOG.md), and [docs/DEVLOG.md](../DEVLOG.md). Any "Gemma" mention is historical — Gemma was removed before the app-four fork.
+
 # Medication Bar — Plan of Action
 
 > **Superseded 2026-06-10:** The bar is now a floating Liquid Glass capsule (`.glassEffect`, rounded, with side margins), matching the iOS 26 floating tab bar family. The "solid, no material" rule below is historical context only.

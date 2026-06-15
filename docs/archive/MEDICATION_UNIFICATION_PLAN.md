@@ -1,3 +1,5 @@
+> **⚠️ HISTORICAL SNAPSHOT — superseded.** Frozen 2026-06-15. Pre-app-four (WhisperNotes/app-two era); does not reflect current project state. Current architecture lives in the Notion `app-two` DB, [docs/BACKLOG.md](../BACKLOG.md), and [docs/DEVLOG.md](../DEVLOG.md). Any "Gemma" mention is historical — Gemma was removed before the app-four fork.
+
 # Medication Model Unification — Proposal & Implementation Plan
 
 Goal: one medication concept used everywhere. Manual logs and transcript-extracted meds become the **same persisted type**. The bar, the recording detail, and the calendar all read from **one source**. No more two tracks, no more conflicting info.

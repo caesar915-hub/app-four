@@ -8,7 +8,7 @@
 - **Device floor: iPhone 12 Pro+ (A14, 6 GB RAM).** This **rules out Apple Foundation Models** (Apple Intelligence requires iPhone 15 Pro+). That was otherwise the best fit (free, built-in, `@Generable` guided generation).
 - **On-device only** — privacy is a product pillar. No cloud extraction.
 - **Multilingual is a near-term goal** — whatever we pick must scale past English without re-architecting.
-- **Gemma is being removed** — too heavy for what is fundamentally topic extraction + extractive summarization. (`GemmaSummarizationService` / `GemmaInferenceEngine` are dormant and slated for deletion.)
+- **Gemma is gone** — removed before the app-four fork; too heavy for what is fundamentally topic extraction + extractive summarization. `AIModelType` now has a single case (`.whisper`); no Gemma service, engine, or download path remains in the app target.
 
 ## Reframe: this is not one generative task
 

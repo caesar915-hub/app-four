@@ -60,8 +60,7 @@ do {
     print("")
 
     if shouldSummarize {
-        print("⏳ Summarizing via Gemma...")
-        print("(Summarization not yet wired in CLI. Transcript is above.)")
+        print("(Summarization not wired in CLI. Transcript is above.)")
     }
 
     // Unload model to free RAM

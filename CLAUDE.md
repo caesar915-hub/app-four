@@ -22,6 +22,7 @@ Act as a senior iOS engineer and UX/UI designer. Be analytical and objective. Qu
 - Never overwrite an existing file without explicit instruction.
 
 ## Process
+- **Spec Kit is the main build workflow** (spec → plan → tasks → implement) for every feature — see `docs/SPECKIT.md`. superpowers (`/spec`, `/design-*`) is design-exploration only; its mockups feed Spec Kit specs. Constitution (`.specify/memory/constitution.md`) gates every spec/plan.
 - For new UI: HTML mockup before SwiftUI — see memory.
 - Plan → surface assumptions → execute. No mid-task interruptions.
 - Log to `docs/DEVLOG.md` at real checkpoints (a decision made, an investigation concluded, a direction set, an item shipped) — the *why*, not every edit. Run `/recap` for the morning standup.
