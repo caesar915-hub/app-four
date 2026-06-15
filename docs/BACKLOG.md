@@ -9,7 +9,7 @@ Update the **Stage** as work moves. Keep newest activity near the top of each se
 - 🔨 **In code** — being built / on a branch, not on `main`
 - ✅ **Shipped** — merged to `main`
 
-Last updated: 2026-06-15 (app-four fork **build/test-verified** on `main` — builds green on iPhone 17 sim; identity resolved to **Squirl** + codename app-four, broken doc links repaired; MedicationBar midnight-flaky test fixed. **suite now reliably green (212/0, two consecutive serial runs)** — the `ModelContext.reset` crash was an orphaned `AIModelServiceImpl.download()` Task writing `ModelMetadata` after teardown; fixed with a cancellation guard. **v0.8 is code-complete; Insights palette colours moved to new milestone v0.8.1.** CI's green-suite prerequisite is met.)
+Last updated: 2026-06-15 (**Calendar header scroll-fade** — first feature through full Spec Kit; → 🔨 In code on `fix/calendar-header-scroll-fade`, suite 223/0 green, on-device verify pending. Whisper simulator-compute fix split to its own branch. // **Swipeable nudges** spec filed → new **v1.1.2** milestone + 📐 Plan row. app-four fork **build/test-verified** on `main` — builds green on iPhone 17 sim; identity resolved to **Squirl** + codename app-four, broken doc links repaired; MedicationBar midnight-flaky test fixed. **suite now reliably green (212/0, two consecutive serial runs)** — the `ModelContext.reset` crash was an orphaned `AIModelServiceImpl.download()` Task writing `ModelMetadata` after teardown; fixed with a cancellation guard. **v0.8 is code-complete; Insights palette colours moved to new milestone v0.8.1.** CI's green-suite prerequisite is met.)
 
 ---
 
@@ -57,6 +57,13 @@ Heavier intelligence layer — only after 0.9 proves the core:
 
 ### v1.1 — Post-launch _(later, no date)_
 - [ ] Tag extraction — Phase D (paraphrase + multilingual) — **gated on the Gate-0 embedding spike**; cut from v1.0 to de-risk the 6 Jul date. Ships once the spike proves on-device.
+
+### v1.1.2 — Recording polish _(later, no date)_
+> **Outcome:** While I'm voice-recording a check-in, I can swipe the on-screen nudge to the prompt I want instead of waiting for the timer — and the timer resets so I get a full beat on the new one.
+> **For:** me (carries to others post-launch).
+
+Gates:
+- [ ] **Swipeable nudges** — 📐 plan written. Timer still auto-advances; a left/right swipe jumps to a prompt early and re-bases the interval clock. Wrap-around carousel. [spec](superpowers/specs/2026-06-15-swipeable-nudges-design.md). _(Filed 2026-06-15 at user request; the only patch-level milestone — rest are x.y.)_
 
 ### v1.2 — Later _(no date)_
 - [ ] iCloud Sync (Backup & Restore) — `feature/icloud-sync` · PR #1 (open). Deferred here: gates no near-term outcome; parked to stop accruing merge-conflict risk against `main`. Rebase when v1.2 starts; keep the PR open as the design surface or close and reopen later.
@@ -108,7 +115,8 @@ Ranked shortlist — what to pick up next, not everything in flight. Reorder fre
 
 | Item | Branch / PR | Artifacts | Notes |
 |---|---|---|---|
-| _(empty — PR #6 and PR #8 merged to `main` 2026-06-14)_ | | | |
+| Calendar header scroll-fade | `fix/calendar-header-scroll-fade` (PR pending) | [spec](../specs/001-calendar-header-scroll-fade/spec.md) · [plan](../specs/001-calendar-header-scroll-fade/plan.md) · [tasks](../specs/001-calendar-header-scroll-fade/tasks.md) · [mockup](superpowers/plans/2026-06-15-calendar-scroll-fade-header.html) | Header moved into the timeline `ScrollView`; offset-driven fade to nothing, day row tappable until faded, scroll-to-top recovery; med bar unaffected. First feature through full Spec Kit. Sonnet sub-agent implemented; parent caught + fixed a dual-`scrollPosition` integration bug (unit-test-invisible) and split out 2 undisclosed out-of-scope agent changes. Suite **223/0 green** (serial). ⚠️ **on-device unverified** (month-paging swipe vs scroll pan; status-bar-tap recovery) — verify before merge. |
+| Whisper simulator compute fix | `fix/whisper-simulator-compute` (PR pending) | — | `.cpuAndGPU` under `targetEnvironment(simulator)` (no ANE → ANE-targeted Whisper hangs/crawls). Split from the calendar-fade branch (was an undisclosed agent change). 1 commit. |
 
 ## 📐 Plan written, not built
 
@@ -117,6 +125,7 @@ Ranked shortlist — what to pick up next, not everything in flight. Reorder fre
 | HealthKit signals (sleep, activity, heart, cycle) | [spec](superpowers/specs/2026-06-13-healthkit-signals-design.md) · [impl plan](superpowers/plans/2026-06-13-healthkit-signals-implementation.md) | New day-keyed `DailySignals` model (per-group provenance; HealthKit-wins-unless-edited). Quarantined `HealthKitService` actor + `SignalSyncCoordinator`. Read-on-open + manual refresh (no background sync v1). Dedicated Day Signals editor sheet; existing manual sleep entry moves here. All four signals end-to-end. 15-task TDD plan ready; mockup gate at Task 10. |
 | Tag extraction — Phase D (paraphrase + multilingual) | [spec](superpowers/specs/2026-06-13-tag-suggestion-design.md) | NLContextualEmbedding zero-shot prototypes over CURRENT tags to close the recall gaps Phases A–C can't (energy/focus/sleep paraphrases, PT/ES). Gate-0 anisotropy spike decides go/no-go (MiniLM fallback). Phases A–C+E already in code on `feat/nlp-eval-and-precision`. |
 | Check-in view redesign | [impl plan](superpowers/plans/2026-06-12-checkin-view-implementation.md) · mockups: [FINAL](superpowers/plans/2026-06-12-checkin-FINAL.html), [journeys](superpowers/plans/2026-06-12-checkin-journeys.html) | Rename Record view → "Check in" + redesign. User is bringing the design — don't build speculatively. |
+| Swipeable nudges (recording) — v1.1.2 | [spec](superpowers/specs/2026-06-15-swipeable-nudges-design.md) | Swipe the recording nudge left/right to jump to a prompt early; timer keeps auto-advancing but re-bases on swipe (full fresh interval). Wrap-around. Core change: prompt index goes from pure-clock-derived → anchored (`baseIndex`+`anchorTime`), collapsing to today's behavior when untouched so existing deterministic test stays green. |
 
 ## 💡 Ideas (investigated, no plan)
 

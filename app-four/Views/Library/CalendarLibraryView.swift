@@ -11,6 +11,8 @@ struct CalendarLibraryView: View {
     @State private var topDayID: Date?
     @State private var isProgrammaticScroll = false
     @State private var scrollGuardTask: Task<Void, Never>?
+    @State private var scrollOffset: CGFloat = 0
+    @State private var headerHeight: CGFloat = 0
     @Environment(AppServices.self) private var services
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     private let store: RecordingStore
@@ -22,27 +24,17 @@ struct CalendarLibraryView: View {
         _selectedTab = selectedTab
     }
 
+    private var currentHeaderOpacity: Double {
+        Self.headerOpacity(scrollOffset: scrollOffset, headerHeight: headerHeight)
+    }
+
     var body: some View {
         ScreenContainer(title: "", showsMedicationBar: true, scrollable: false, path: $path) {
             VStack(spacing: 0) {
-                CalendarHeaderView(
-                    model: viewModel.calendarMonth,
-                    selectedDay: $selectedDay,
-                    isExpanded: $isCalendarExpanded,
-                    monthLabel: viewModel.monthLabel,
-                    canJumpToToday: !calendar.isDateInToday(selectedDay) || !viewModel.isCurrentMonth,
-                    onSelect: { selectDay($0) },
-                    onJumpToToday: { jumpToToday() },
-                    onPageMonth: { pageMonth($0) }
-                )
-                .padding(.horizontal, Spacing.l)
-                .padding(.top, Spacing.s)
-
-                Divider().padding(.top, Spacing.s)
-
                 if viewModel.hasAnyEntries {
                     timelineList
                 } else {
+                    pinnedHeader
                     emptyState.frame(maxWidth: .infinity).padding(.top, Spacing.hero)
                     Spacer()
                 }
@@ -62,9 +54,46 @@ struct CalendarLibraryView: View {
         }
     }
 
+    // MARK: - Header
+
+    /// The header+divider block as a non-scrolling element (used only in the empty-state path).
+    private var pinnedHeader: some View {
+        headerBlock
+    }
+
+    /// The header+divider block that lives inside the ScrollView as first content.
+    private var scrollingHeader: some View {
+        headerBlock
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { headerHeight = $0 }
+            .opacity(currentHeaderOpacity)
+            .allowsHitTesting(currentHeaderOpacity > 0.05)
+    }
+
+    private var headerBlock: some View {
+        VStack(spacing: 0) {
+            CalendarHeaderView(
+                model: viewModel.calendarMonth,
+                selectedDay: $selectedDay,
+                isExpanded: $isCalendarExpanded,
+                monthLabel: viewModel.monthLabel,
+                canJumpToToday: !calendar.isDateInToday(selectedDay) || !viewModel.isCurrentMonth,
+                onSelect: { selectDay($0) },
+                onJumpToToday: { jumpToToday() },
+                onPageMonth: { pageMonth($0) }
+            )
+            .padding(.horizontal, Spacing.l)
+            .padding(.top, Spacing.s)
+
+            Divider().padding(.top, Spacing.s)
+        }
+    }
+
+    // MARK: - Timeline
+
     private var timelineList: some View {
         ScrollView {
             LazyVStack(spacing: Spacing.m) {
+                scrollingHeader
                 ForEach(viewModel.timelineDays) { day in
                     DayCard(day: day, onTapRecording: { path.append($0) })
                         .id(day.date)
@@ -75,11 +104,23 @@ struct CalendarLibraryView: View {
             .padding(.bottom, Spacing.xxl)
         }
         .scrollPosition(id: $topDayID, anchor: .top)
+        .onScrollGeometryChange(for: CGFloat.self) { geo in
+            geo.contentOffset.y + geo.contentInsets.top   // 0 at rest, grows as scrolled up — inset-independent
+        } action: { _, new in
+            scrollOffset = new
+        }
         .edgeFadeMask(top: 0, bottom: Spacing.section)
         .onChange(of: topDayID) { _, newValue in
             guard !isProgrammaticScroll, let day = newValue else { return }
             selectedDay = day
         }
+    }
+
+    // MARK: - Pure opacity mapping (testable)
+
+    static func headerOpacity(scrollOffset: CGFloat, headerHeight: CGFloat) -> Double {
+        guard headerHeight > 0 else { return 1.0 }
+        return Double(min(max(1 - scrollOffset / headerHeight, 0), 1))
     }
 
     // MARK: - Selection / navigation
