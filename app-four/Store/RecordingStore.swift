@@ -11,8 +11,26 @@ final class RecordingStore {
     init(context: ModelContext) {
         self.modelContext = context
         loadRecordings()
+        recoverOrphanedTranscriptions()
     }
-    
+
+    /// A recording still marked `.transcribing` at launch cannot have a live task —
+    /// the app was killed or relaunched mid-transcription (e.g. its transcription was
+    /// cancelled by a second recording and never finalized). Recover it to `.failed`
+    /// so the detail view stops showing a permanent "Transcribing…" and offers retry.
+    private func recoverOrphanedTranscriptions() {
+        let orphaned = recordings.filter { $0.status == .transcribing }
+        guard !orphaned.isEmpty else { return }
+        for recording in orphaned {
+            recording.status = .failed
+            if recording.fullTranscriptText.isEmpty {
+                recording.fullTranscriptText = "Transcription was interrupted. Tap to retry in the recording detail view."
+            }
+        }
+        try? modelContext.save()
+        AppLogger.log("Recovered \(orphaned.count) orphaned .transcribing recording(s) → .failed")
+    }
+
     func loadRecordings() {
         do {
             let mockMode = UserDefaults.standard.bool(forKey: "debugMockMode")

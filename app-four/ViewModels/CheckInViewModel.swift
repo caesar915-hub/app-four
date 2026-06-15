@@ -129,10 +129,16 @@ final class CheckInViewModel {
             )
         } catch is CancellationError {
             AppLogger.log("Transcription cancelled for \(recording.id)")
-            await transcriptionService.cancelTranscription()
-            recording.status = .failed
-            recording.fullTranscriptText = "Transcription cancelled."
-            store.save()
+            // The enclosing task is itself cancelled here, so any `await` (incl. an
+            // actor hop) may be skipped — finalize the persisted status in a fresh,
+            // uncancelled MainActor task so the recording never stays stuck on
+            // `.transcribing`. The service was already torn down by the caller's
+            // `cancelInFlightServices()`, so no extra cancel call is needed.
+            Task { @MainActor [store] in
+                recording.status = .failed
+                recording.fullTranscriptText = "Transcription cancelled. Tap to retry in the recording detail view."
+                store.save()
+            }
         } catch RecordingError.timeout {
             AppLogger.log("Transcription timed out for \(recording.id)")
             await transcriptionService.cancelTranscription()
