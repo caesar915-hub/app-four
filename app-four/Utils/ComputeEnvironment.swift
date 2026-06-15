@@ -26,11 +26,19 @@ enum ComputeEnvironment {
         return (info.kp_proc.p_flag & P_TRACED) != 0
     }
 
-    /// ANE when available (fast), GPU when a debugger is attached (ANE compiler
-    /// is unreachable then; GPU avoids the slow CPU fallback / hang).
+    /// ANE when available (fast). GPU when a debugger is attached (the ANE compiler
+    /// is unreachable then) or on the Simulator, which has no Neural Engine at all —
+    /// an ANE-targeted model there hangs at compile or crawls on the CPU fallback,
+    /// stalling transcription on "Transcribing with Whisper…" indefinitely.
     static var preferredUnits: MLComputeUnits {
+        #if targetEnvironment(simulator)
+        let units: MLComputeUnits = .cpuAndGPU
+        let reason = "simulator (no ANE)"
+        #else
         let units: MLComputeUnits = isDebuggerAttached ? .cpuAndGPU : .cpuAndNeuralEngine
-        AppLogger.log("ComputeEnvironment: debuggerAttached=\(isDebuggerAttached) → \(units == .cpuAndGPU ? "cpuAndGPU" : "cpuAndNeuralEngine")")
+        let reason = "debuggerAttached=\(isDebuggerAttached)"
+        #endif
+        AppLogger.log("ComputeEnvironment: \(reason) → \(units == .cpuAndGPU ? "cpuAndGPU" : "cpuAndNeuralEngine")")
         return units
     }
 }
