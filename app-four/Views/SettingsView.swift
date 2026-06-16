@@ -1,27 +1,42 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @Binding var selectedTab: Tab
     @State private var viewModel: SettingsViewModel
     @State private var showingDebug = false
     @State private var showingClearConfirmation = false
 
-    init(store: RecordingStore, services: AppServices) {
+    private static let topID = "settings-top"
+
+    init(store: RecordingStore, services: AppServices, selectedTab: Binding<Tab>) {
         _viewModel = State(wrappedValue: SettingsViewModel(store: store, services: services))
+        _selectedTab = selectedTab
     }
 
     var body: some View {
         // List manages its own scroll — ScreenContainer is non-scrollable here
         ScreenContainer(title: "", showsMedicationBar: true, scrollable: false) {
-            List {
-                aiModelsSection
-                systemSection
-                checkInSection
-                medicationBarSection
-                accessibilitySection
-                dangerSection
-                versionSection
+            ScrollViewReader { proxy in
+                List {
+                    aiModelsSection
+                        .id(Self.topID)
+                    systemSection
+                    checkInSection
+                    medicationBarSection
+                    accessibilitySection
+                    dangerSection
+                    versionSection
+                }
+                .listStyle(.insetGrouped)
+                // TabView keeps this tab alive, so its scroll offset persists.
+                // Reset to top each time Settings becomes the active tab.
+                .onChange(of: selectedTab) { _, newValue in
+                    guard newValue == .settings else { return }
+                    withAnimation(.easeOut(duration: 0.25)) {
+                        proxy.scrollTo(Self.topID, anchor: .top)
+                    }
+                }
             }
-            .listStyle(.insetGrouped)
         }
         .trackScreen("SettingsView")
         .sheet(isPresented: $showingDebug) {
@@ -134,6 +149,6 @@ struct SettingsView: View {
 }
 
 #Preview {
-    SettingsView(store: .preview, services: .preview)
+    SettingsView(store: .preview, services: .preview, selectedTab: .constant(.settings))
         .withPreviewEnvironment()
 }

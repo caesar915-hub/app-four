@@ -21,18 +21,17 @@ struct InsightsView: View {
 
     var body: some View {
         ScreenContainer(title: "", scrollable: false, path: $path) {
-            VStack(spacing: 0) {
-                MonthSelectorScrollView(
-                    currentMonth: $viewModel.currentMonth,
-                    availableMonths: viewModel.availableMonths
-                )
-                .padding(.vertical, Spacing.s)
-
+            Group {
                 if viewModel.hasAnyData {
+                    // Month selector rides at the top of the first page so it scrolls
+                    // (and pages) away with the content rather than staying pinned.
                     sectionsScroll
                 } else {
-                    emptyState
-                    Spacer(minLength: 0)
+                    VStack(spacing: 0) {
+                        monthSelector
+                        emptyState
+                        Spacer(minLength: 0)
+                    }
                 }
             }
             .navigationDestination(for: UUID.self) { id in
@@ -51,6 +50,14 @@ struct InsightsView: View {
                 activeSectionID = .breakdown
             }
         }
+    }
+
+    private var monthSelector: some View {
+        MonthSelectorScrollView(
+            currentMonth: $viewModel.currentMonth,
+            availableMonths: viewModel.availableMonths
+        )
+        .padding(.vertical, Spacing.s)
     }
 
     // MARK: - Snapping scroll
@@ -99,6 +106,7 @@ struct InsightsView: View {
         let count = viewModel.monthRecordings.count
         let subtitle = "\(count) check-in\(count == 1 ? "" : "s")"
         VStack(spacing: 0) {
+            monthSelector
             InsightsSectionHeader(title: "Your overall check-in breakdown", subtitle: subtitle)
                 .opacity(headerOpacity(.breakdown))
             if !viewModel.moodShares.isEmpty {

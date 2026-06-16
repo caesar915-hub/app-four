@@ -29,7 +29,7 @@ struct RootTabView: View {
                 .tabItem { Label("Insights", systemImage: Icons.insights) }
                 .tag(Tab.insights)
 
-            SettingsView(store: store, services: services)
+            SettingsView(store: store, services: services, selectedTab: $selectedTab)
                 .tabItem { Label("Settings", systemImage: Icons.settings) }
                 .tag(Tab.settings)
         }

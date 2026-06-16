@@ -74,7 +74,7 @@ struct CheckInView: View {
 
     private var headlineText: String {
         switch viewModel.state {
-        case .idle: "How are you,\nright now?"
+        case .idle: "How are you?"
         case .recording, .paused: ""
         case .processing: "Saving…"
         case .done: "Check-in saved"
