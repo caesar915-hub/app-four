@@ -135,14 +135,14 @@ final class ExtractionReviewViewModel: Identifiable {
         if sideEffects.contains(effect) { sideEffects.remove(effect) } else { sideEffects.insert(effect) }
     }
 
-    func toggleMedTaken(_ index: Int) {
-        guard medications.indices.contains(index) else { return }
+    func toggleMedTaken(_ med: MedEvent) {
+        guard let index = medications.firstIndex(of: med) else { return }
         medications[index].taken.toggle()
         editedFields.insert(.medication)
     }
 
-    func setMedDose(_ index: Int, dose: String?) {
-        guard medications.indices.contains(index) else { return }
+    func setMedDose(_ med: MedEvent, dose: String?) {
+        guard let index = medications.firstIndex(of: med) else { return }
         medications[index].dose = dose
         editedFields.insert(.medication)
     }
