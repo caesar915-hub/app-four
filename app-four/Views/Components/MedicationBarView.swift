@@ -43,8 +43,8 @@ struct MedicationBarView: View {
                 Button("Cancel", role: .cancel) { selectedDose = nil }
             }
             .sheet(isPresented: $showLogSheet) {
-                MedicationLogSheet(onLog: { name, dose, time in
-                    viewModel.logManualDose(name: name, dose: dose, takenAt: time)
+                MedicationLogSheet(onLog: { name, dose, time, duration in
+                    viewModel.logManualDose(name: name, dose: dose, takenAt: time, durationHours: duration)
                 })
             }
             .onAppear { viewModel.refresh() }

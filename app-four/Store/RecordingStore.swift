@@ -117,7 +117,7 @@ final class RecordingStore {
                 dose: med.dose,
                 takenAt: med.takenAt,
                 taken: true,
-                durationHours: 10.0,
+                durationHours: med.durationHours,
                 source: .manual
             )
             modelContext.insert(event)

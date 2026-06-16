@@ -38,9 +38,9 @@ struct TextCheckInComposer: View {
                 }
             }
             .sheet(isPresented: $showMedSheet) {
-                MedicationLogSheet { name, dose, takenAt in
+                MedicationLogSheet { name, dose, takenAt, durationHours in
                     draft.meds.append(
-                        CheckInDraft.DraftMedication(name: name, dose: dose, takenAt: takenAt)
+                        CheckInDraft.DraftMedication(name: name, dose: dose, takenAt: takenAt, durationHours: durationHours)
                     )
                 }
             }

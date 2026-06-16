@@ -19,6 +19,21 @@ struct MedicationBarViewModelTests {
         viewModel = MedicationBarViewModel(context: context)
     }
 
+    @Test func logManualDoseUsesGivenDuration() throws {
+        viewModel.logManualDose(name: "Concerta", dose: "36 mg", takenAt: Date(), durationHours: 8)
+        let events = try context.fetch(FetchDescriptor<MedicationEvent>())
+        #expect(events.count == 1)
+        let event = try #require(events.first)
+        #expect(event.durationHours == 8)   // the chosen duration, not the old hard-coded 10h (SC-002)
+        #expect(event.source == .manual)
+    }
+
+    @Test func logManualDoseDefaultsToTenHours() throws {
+        viewModel.logManualDose(name: "Ritalin", dose: nil, takenAt: Date())
+        let event = try #require(try context.fetch(FetchDescriptor<MedicationEvent>()).first)
+        #expect(event.durationHours == 10)
+    }
+
     @Test func refreshReturnsEmptyWhenNoEvents() {
         viewModel.refresh()
         #expect(viewModel.activeDoses.isEmpty)

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log-Dose Picker — Squirl (Paper &amp; Pollen)</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F1E7; --surface:#FCF8EF; --inset:#EFE8D8; --ink:#221E16;
+    --muted:#7A7361; --hairline:#E3DAC7; --med:#7E5CA8; --accent:#B8842A;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;
+       display:flex;flex-direction:column;align-items:center;gap:14px;padding:24px}
+  .note{max-width:430px;color:var(--muted);font-size:13px;line-height:1.5}
+  .note b{color:var(--ink)}
+  .sheet{width:390px;background:var(--surface);border:1px solid var(--hairline);border-radius:22px;
+         overflow:hidden;box-shadow:0 8px 30px rgba(34,30,22,.10)}
+  .bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--hairline)}
+  .bar .t{font-family:"Fraunces",serif;font-weight:600;font-size:18px}
+  .bar .c{color:var(--accent);font-weight:600;font-size:15px}
+  .bar .s{color:var(--muted);font-weight:600;font-size:15px}
+  .sec{padding:14px 18px;border-bottom:1px solid var(--hairline)}
+  .sec:last-child{border-bottom:0}
+  .lab{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+  .chip{white-space:nowrap;padding:7px 14px;border-radius:999px;background:rgba(122,115,97,.14);
+        font-size:15px;cursor:default}
+  .chip.sel{background:rgba(126,92,168,.25);font-weight:600;color:#4b3570}
+  .field{margin-top:12px;padding:11px 12px;background:var(--inset);border-radius:12px;font-size:16px;color:var(--muted)}
+  .row{display:flex;align-items:center;justify-content:space-between;font-size:16px;padding:6px 0}
+  .row .v{font-variant-numeric:tabular-nums}
+  .row .muted{color:var(--muted)}
+  .dur{display:flex;align-items:baseline;gap:8px}
+  .dur .box{min-width:64px;padding:9px 12px;background:var(--inset);border-radius:10px;font-size:18px;
+            font-weight:600;font-variant-numeric:tabular-nums;text-align:center}
+  .hint{color:var(--muted);font-size:13px;margin-top:6px}
+</style>
+</head>
+<body>
+  <div class="note"><b>005 · Log-Dose picker</b> — opens from the medication bar's “Log new dose”. Selection-first (no typing in the common case); a catalog med fills its dose options, shows onset (info only), and prefills an <b>editable</b> duration. Free-text “Name” still adds an unlisted med (persists to history). Taken-time capped at now.</div>
+
+  <div class="sheet">
+    <div class="bar"><span class="c">Cancel</span><span class="t">Log Dose</span><span class="s">Save</span></div>
+
+    <div class="sec">
+      <div class="lab">Medication</div>
+      <div class="chips">
+        <span class="chip sel">Concerta</span>
+        <span class="chip">Ritalin</span>
+        <span class="chip">Elvanse</span>
+        <span class="chip">Vyvanse</span><!-- a history med folded in -->
+      </div>
+      <div class="field">Name — “Concerta”</div>
+    </div>
+
+    <div class="sec">
+      <div class="lab">Dose</div>
+      <div class="row"><span>Dose</span><span class="v">36 mg ▾</span></div>
+      <div class="row"><span class="muted">Onset</span><span class="v muted">≈ 60 min</span></div>
+    </div>
+
+    <div class="sec">
+      <div class="lab">Effect duration</div>
+      <div class="dur"><span class="box">12</span><span class="muted">hours</span></div>
+      <div class="hint">Prefilled from the medication; edit to match how it actually lasts for you. Sets the bar’s fill window.</div>
+    </div>
+
+    <div class="sec">
+      <div class="lab">Taken at</div>
+      <div class="row"><span>Time</span><span class="v">now · 18:42 ▾</span></div>
+    </div>
+  </div>
+
+  <div class="note">Free-text path: type a name not in the list → the Dose row becomes a plain “Dose (optional)” field, Onset is hidden, duration defaults to 10 h (editable). FR-012: the same catalog feeds the Edit-sheet chips, so the two never drift.</div>
+</body>
+</html>

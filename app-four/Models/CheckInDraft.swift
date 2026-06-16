@@ -15,10 +15,12 @@ struct CheckInDraft: Equatable {
         var name: String
         var dose: String?
         var takenAt: Date = .now
+        var durationHours: Double = 10
 
         // `id` is for list identity only — two structurally identical meds are equal.
         static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.name == rhs.name && lhs.dose == rhs.dose && lhs.takenAt == rhs.takenAt
+            lhs.name == rhs.name && lhs.dose == rhs.dose
+                && lhs.takenAt == rhs.takenAt && lhs.durationHours == rhs.durationHours
         }
     }
 

@@ -29,8 +29,8 @@ struct CheckInView: View {
         .onAppear { consumeAutoStart() }
         .onChange(of: shouldAutoStart) { _, isOn in if isOn { consumeAutoStart() } }
         .sheet(isPresented: $showMedLogSheet) {
-            MedicationLogSheet { name, dose, takenAt in
-                medicationBarViewModel.logManualDose(name: name, dose: dose, takenAt: takenAt)
+            MedicationLogSheet { name, dose, takenAt, durationHours in
+                medicationBarViewModel.logManualDose(name: name, dose: dose, takenAt: takenAt, durationHours: durationHours)
             }
         }
         .sheet(isPresented: $showComposer) {

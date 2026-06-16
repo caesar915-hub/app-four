@@ -129,13 +129,13 @@ final class MedicationBarViewModel {
         }
     }
 
-    func logManualDose(name: String, dose: String?, takenAt: Date) {
+    func logManualDose(name: String, dose: String?, takenAt: Date, durationHours: Double = 10.0) {
         let event = MedicationEvent(
             name: name,
             dose: dose,
             takenAt: takenAt,
             taken: true,
-            durationHours: 10.0,
+            durationHours: durationHours,
             source: .manual
         )
         context.insert(event)

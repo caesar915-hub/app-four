@@ -89,10 +89,11 @@ struct ExtractionReviewView: View {
 
     // MARK: - Medications
 
-    // MVP (TestFlight): only the meds the first testers actually take. NLP can still
-    // extract others from speech — these are just the manual quick-pick chips.
+    // Quick-pick chips come from the shared MedicationCatalog (single source of truth, FR-012)
+    // — so the Log-Dose sheet and this Edit sheet never drift on which meds exist. NLP can
+    // still extract others from speech; these are just the manual quick-pick chips.
     private let medicationGroups: [ChipGroup] = [
-        ChipGroup(label: "Medications", items: ["Concerta", "Ritalin", "Elvanse"])
+        ChipGroup(label: "Medications", items: MedicationCatalog.all.map(\.name))
     ]
 
     private var medicationSection: some View {
