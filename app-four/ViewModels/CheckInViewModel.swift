@@ -86,9 +86,15 @@ final class CheckInViewModel {
 
     @discardableResult
     func stopRecording() -> Task<Void, Never> {
-        self.stopTasks()
+        // Keep any prior recording's transcription running — we chain after it below.
+        self.stopTasks(cancelTranscription: false)
         UIApplication.shared.isIdleTimerDisabled = false
         self.state = .processing
+
+        // The prior in-flight transcription (if any). The new one waits for it so the
+        // single WhisperKit actor isn't asked to run two inferences at once, and so a
+        // back-to-back recording never cancels the previous one's transcription.
+        let priorTranscription = self.transcriptionTask
 
         return Task {
             do {
@@ -100,9 +106,10 @@ final class CheckInViewModel {
                 // Immediately show done; transcribe in background
                 self.state = .done
 
-                // Tear down any prior in-flight transcription before starting fresh.
-                await self.cancelInFlightServices()
                 self.transcriptionTask = Task {
+                    // Let the prior transcription finish first (serialize on the single
+                    // Whisper instance). It's never cancelled here, so its work is kept.
+                    await priorTranscription?.value
                     await self.transcribeInBackground(recording)
                 }
             } catch {
@@ -129,10 +136,16 @@ final class CheckInViewModel {
             )
         } catch is CancellationError {
             AppLogger.log("Transcription cancelled for \(recording.id)")
-            await transcriptionService.cancelTranscription()
-            recording.status = .failed
-            recording.fullTranscriptText = "Transcription cancelled."
-            store.save()
+            // The enclosing task is itself cancelled here, so any `await` (incl. an
+            // actor hop) may be skipped — finalize the persisted status in a fresh,
+            // uncancelled MainActor task so the recording never stays stuck on
+            // `.transcribing`. The service was already torn down by the caller's
+            // `cancelInFlightServices()`, so no extra cancel call is needed.
+            Task { @MainActor [store] in
+                recording.status = .failed
+                recording.fullTranscriptText = "Transcription cancelled. Tap to retry in the recording detail view."
+                store.save()
+            }
         } catch RecordingError.timeout {
             AppLogger.log("Transcription timed out for \(recording.id)")
             await transcriptionService.cancelTranscription()
@@ -302,13 +315,20 @@ final class CheckInViewModel {
     /// Cancels the local consumer task handles. Synchronous — the async
     /// service-level teardown is handled by `cancelInFlightServices()` from the
     /// structured Task bodies of `stopRecording()` / `cancelRecording()`.
-    private func stopTasks() {
+    ///
+    /// `cancelTranscription`: discarding a recording (`cancelRecording`) must kill any
+    /// in-flight transcription; finishing one to record again (`stopRecording`) must
+    /// NOT — the prior recording's transcription is left running and the new one
+    /// chains after it, so back-to-back check-ins don't throw away each other's work.
+    private func stopTasks(cancelTranscription: Bool = true) {
         timerTask?.cancel()
         timerTask = nil
         levelTask?.cancel()
         levelTask = nil
-        transcriptionTask?.cancel()
-        transcriptionTask = nil
+        if cancelTranscription {
+            transcriptionTask?.cancel()
+            transcriptionTask = nil
+        }
     }
 
     /// Tears down any in-flight transcription at the service level. Awaited from

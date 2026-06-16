@@ -47,6 +47,26 @@ struct RecordingStoreTests {
         #expect(recording.isFavorite == false)
     }
 
+    // A recording left `.transcribing` when the app was killed (or whose transcription
+    // was cancelled and never finalized) must be recovered to `.failed` at launch, so
+    // the detail view stops showing a permanent "Transcribing…" and offers retry.
+    @Test func orphanedTranscribingRecoveredToFailedOnLaunch() throws {
+        let orphan = Recording(audioFileName: "orphan.m4a", status: .transcribing)
+        let healthy = Recording(audioFileName: "done.m4a", status: .completed)
+        container.mainContext.insert(orphan)
+        container.mainContext.insert(healthy)
+        try container.mainContext.save()
+
+        // A fresh store on the same container runs the launch-time sweep in init.
+        let recovered = RecordingStore(context: container.mainContext)
+
+        let sweptOrphan = try #require(recovered.recordings.first { $0.audioFileName == "orphan.m4a" })
+        let untouchedDone = try #require(recovered.recordings.first { $0.audioFileName == "done.m4a" })
+        #expect(sweptOrphan.status == .failed)            // orphan recovered
+        #expect(!sweptOrphan.fullTranscriptText.isEmpty)  // got a retry message
+        #expect(untouchedDone.status == .completed)       // healthy one left alone
+    }
+
     @Test func adhdFieldsPersistThroughSave() throws {
         let recording = Recording(
             audioFileName: "adhd.m4a",
