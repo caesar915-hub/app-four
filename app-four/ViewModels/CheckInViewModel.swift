@@ -123,7 +123,7 @@ final class CheckInViewModel {
     private func transcribeInBackground(_ recording: Recording) async {
         do {
             let stream = try await transcriptionService.transcribe(audioURL: recording.audioURL)
-            try await consumeStreamWithTimeout(stream, for: recording, timeoutSeconds: 300)
+            try await consumeStreamWithTimeout(stream, for: recording, timeoutSeconds: 90)
 
             recording.status = .completed
             store.save()

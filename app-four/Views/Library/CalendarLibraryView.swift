@@ -6,6 +6,7 @@ struct CalendarLibraryView: View {
     @Binding var selectedTab: Tab
     @State private var viewModel: MoodLibraryViewModel
     @State private var path = NavigationPath()
+    @State private var detailRef: RecordingDetailRef?
     @State private var selectedDay = Calendar.current.startOfDay(for: Date())
     @State private var isCalendarExpanded = false
     @State private var topDayID: Date?
@@ -39,9 +40,10 @@ struct CalendarLibraryView: View {
                     Spacer()
                 }
             }
-            .navigationDestination(for: UUID.self) { id in
-                if let recording = viewModel.recording(for: id) {
+            .sheet(item: $detailRef) { ref in
+                if let recording = viewModel.recording(for: ref.id) {
                     RecordingDetailView(recording: recording, store: store, services: services)
+                        .presentationDragIndicator(.visible)
                 }
             }
         }
@@ -95,7 +97,7 @@ struct CalendarLibraryView: View {
             LazyVStack(spacing: Spacing.m) {
                 scrollingHeader
                 ForEach(viewModel.timelineDays) { day in
-                    DayCard(day: day, onTapRecording: { path.append($0) })
+                    DayCard(day: day, onTapRecording: { detailRef = RecordingDetailRef(id: $0) })
                         .id(day.date)
                 }
             }

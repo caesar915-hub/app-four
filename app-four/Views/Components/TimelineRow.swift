@@ -54,7 +54,7 @@ struct TimelineRow: View {
                     mood: recording.mood,
                     energy: recording.energyLevel,
                     focus: recording.focusLevel,
-                    fallbackTitle: recording.title,
+                    fallbackTitle: recording.displayTitle,
                     fill: recording.moodColor
                 )
             }

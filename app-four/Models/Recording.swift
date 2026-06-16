@@ -37,6 +37,12 @@ final class Recording {
     var sleepLevelValue: String?
     var isMockData: Bool = false
 
+    /// Name to show in lists/headers. While transcription is in progress the real title
+    /// isn't known yet, so show a temporary "Transcribing…" placeholder (feedback §4.1).
+    var displayTitle: String {
+        status == .transcribing ? "Transcribing…" : title
+    }
+
     @Relationship(deleteRule: .cascade, inverse: \TranscriptionSegment.recording)
     var segments: [TranscriptionSegment]?
 

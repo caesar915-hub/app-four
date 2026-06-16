@@ -1,5 +1,8 @@
 import SwiftUI
 
+/// Lightweight Identifiable wrapper so a recording id can drive `.sheet(item:)`.
+struct RecordingDetailRef: Identifiable { let id: UUID }
+
 struct RecordingDetailView: View {
     let recording: Recording
     @State private var viewModel: RecordingDetailViewModel
@@ -51,7 +54,7 @@ struct RecordingDetailView: View {
                     .fill(viewModel.recording.moodColor)
                     .frame(width: 44, height: 44)
 
-                Text(viewModel.recording.title)
+                Text(viewModel.recording.displayTitle)
                     .font(Typography.title)
 
                 Spacer()
@@ -105,6 +108,16 @@ struct RecordingDetailView: View {
                 }
             }
             .buttonStyle(.plain)
+
+            if viewModel.recording.status == .failed {
+                Button {
+                    viewModel.retryTranscription()
+                } label: {
+                    Label("Retry transcription", systemImage: "arrow.clockwise")
+                        .font(Typography.body)
+                }
+                .buttonStyle(.bordered)
+            }
 
             if isTranscriptExpanded {
                 if viewModel.recording.status == .transcribing {
