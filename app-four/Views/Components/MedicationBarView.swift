@@ -86,6 +86,9 @@ struct MedicationBarView: View {
                         .frame(height: 0.5)
                 }
             }
+            // Hit-test the whole row: the progress fill is partial-width and the labels
+            // are pinned to the edges, so without this the empty middle isn't tappable.
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel(dose: dose))
