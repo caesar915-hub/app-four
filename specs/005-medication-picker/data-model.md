@@ -10,26 +10,23 @@ Compiled into the binary as a fixed array (`MedicationCatalog`). Read-only in v1
 
 | Field | Type | Notes |
 |---|---|---|
-| `name` | `String` | Display name, e.g. "Concerta XL" |
-| `aliases` | `[String]` | History-matching aliases, e.g. ["Concerta"]; may be empty |
-| `doseOptions` | `[String]` | mg options, e.g. ["18","27","36","54"]; ≥1 |
+| `name` | `String` | Display name: "Concerta" \| "Ritalin" \| "Elvanse" (matches the shipped Edit-sheet chips) |
+| `doseOptions` | `[String]` | display strings, e.g. ["18 mg","27 mg","36 mg","54 mg"]; ≥1 |
 | `onsetMinutes` | `Int` | Read-only info; > 0 |
 | `durationHours` | `Double` | Prefilled, editable effect window; > 0 |
 
-**Seed values** (from spec FR-002):
+**Seed values** (spec FR-002 — 3-med beta subset):
 
 | name | doseOptions (mg) | onsetMinutes | durationHours |
 |---|---|---|---|
-| Methylphenidate IR (Ritalin, Medikinet) | 5, 10, 20 | 20 | 3 |
-| Medikinet retard | 5, 10, 20, 30, 40, 60 | 30 | 6 |
-| Equasym XL | 10, 20, 30 | 30 | 8 |
-| Ritalin LA | 10, 20, 30, 40 | 30 | 8 |
-| Concerta XL | 18, 27, 36, 54 | 60 | 12 |
-| Dexamfetamine (Attentin, Amfexa) | 5, 10, 20 | 20 | 4 |
-| Lisdexamfetamine (Elvanse) | 20, 30, 40, 50, 60, 70 | 90 | 10 |
+| Concerta | 18, 27, 36, 54 | 60 | 12 |
+| Ritalin | 5, 10, 20 | 20 | 3 |
+| Elvanse | 20, 30, 40, 50, 60, 70 | 90 | 10 |
 
-**Validation invariants** (covered by `MedicationCatalogTests`): names unique;
-`doseOptions` non-empty; `onsetMinutes > 0`; `durationHours > 0`.
+**Validation invariants** (covered by `MedicationCatalogTests`, **written test-first per Principle X**):
+exactly 3 entries {Concerta, Ritalin, Elvanse}; names unique; `doseOptions` non-empty;
+`onsetMinutes > 0`; `durationHours > 0`; `entry(matching:)` resolves base names
+case-insensitively ("concerta", "Concerta 36 mg" → Concerta) and returns nil for unknown.
 
 ## Reused unchanged — `MedicationEvent` (`@Model`)
 
@@ -49,12 +46,13 @@ partitioning via `isMockData` unchanged. **No migration.**
 ## Derived data (not persisted)
 
 - **Picker list** = catalog entries ∪ distinct history names, de-duplicated by normalized
-  base name; a history name matching a catalog entry (by name or alias) folds into that
-  catalog entry (FR-014).
+  base name; a history name matching a catalog entry (by normalized base name) folds into
+  that catalog entry (FR-014).
 - **Effect window** (`endsAt`, `effectProgress`) already derives from
   `takenAt + durationHours` in `MedicationEvent`/`MedicationBarViewModel` — no new
   derivation needed; honoring the chosen `durationHours` is what fixes SC-002.
 
-## Constitution IX re-check (post-design)
+## Constitution re-check (post-design)
 
-PASS — no attribute added, no constraint introduced, no store created. ✅
+- **IX** PASS — no attribute added, no constraint introduced, no store created.
+- **X** PASS — the catalog and `entry(matching:)` are pure logic, built test-first (`MedicationCatalogTests`, RED→GREEN). ✅
