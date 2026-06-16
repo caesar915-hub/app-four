@@ -1,25 +1,25 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.0.0 → 1.1.0
-Rationale: Add four project-specific, load-bearing principles (VI–IX) grounded in
-  the verified app-four codebase; correct the Technology Stack to app-four reality.
+Version change: 1.1.0 → 1.2.0
+Rationale: Adopt test-first development (TDD) as the discipline for the Spec Kit
+  implement step. Adds Principle X (Test-First Development, NON-NEGOTIABLE) and
+  corrects the Testing stack to Swift Testing (reconciling the v1.1.1 BACKLOG note
+  that was logged but never applied to this file).
 Added principles:
-  - VI. On-Device Privacy (NON-NEGOTIABLE)
-  - VII. Deterministic, Measured Extraction
-  - VIII. Service-Oriented Architecture
-  - IX. Pre-Release Data Posture
+  - X. Test-First Development (NON-NEGOTIABLE) — RED-GREEN-REFACTOR, test-first for
+    logic (models, services, view-models, NLP extraction); SwiftUI views exempt
+    (verified by build + simulator run). Tests MANDATORY, not optional.
 Modified sections:
-  - Technology Stack — module app-two→app-four, bundle id Rythm-App.app-four,
-    iOS 17+→iOS 26+, Swift→6 (strict concurrency), Whisper-Small as the only
-    managed model (Gemma removed before the fork)
-  - Governance — Constitution Check gate now spans Principles I–IX
+  - Technology Stack — Testing: XCTest → Swift Testing (@Test/#expect), test-first
+  - Governance — Constitution Check gate now spans Principles I–X
 Removed sections: n/a
 Templates requiring updates:
-  - .specify/templates/plan-template.md ✅ — Constitution Check gate now enumerates
-    Principles I–IX explicitly (replaced the [Gates determined…] placeholder)
+  - .specify/templates/plan-template.md ✅ — Constitution Check adds Principle X;
+    version reference bumped to v1.2.0
+  - .specify/templates/tasks-template.md ✅ — tests flipped OPTIONAL → MANDATORY
+    test-first; explicit RED checkpoint before implementation per user story
   - .specify/templates/spec-template.md ✅ — no edit needed; principles inform criteria
-  - .specify/templates/tasks-template.md ✅ — no edit needed; task categories reflect principles
 Deferred TODOs: none
 -->
 
@@ -111,6 +111,21 @@ boolean, not by separate stores. Introducing a unique constraint or a required
 (non-defaulted) attribute MUST be justified against the CloudKit path in the
 plan's Complexity Tracking before it is merged.
 
+### X. Test-First Development (NON-NEGOTIABLE)
+
+Testable logic — SwiftData `@Model` types, `Services/` implementations,
+`@MainActor @Observable` view-models, and the `NLNoteExtractor` extraction
+pipeline — MUST be built test-first: a failing test (**RED**) is written and
+confirmed to fail BEFORE the implementation that makes it pass (**GREEN**), after
+which the code is refactored with the test staying green. Tests for this logic are
+MANDATORY, not optional — a `/speckit-tasks` breakdown that omits them, or an
+implementation task ordered before its test, VIOLATES this constitution. SwiftUI
+views are EXEMPT from unit-test-first: they are verified by build + on-simulator
+run (Principle II) and an HTML mockup (Principle I); snapshot tests are encouraged,
+not required. Tests use **Swift Testing** (`@Test`, `#expect`/`#require`). This
+complements Principle II (the full suite stays green before "done") and Principle
+VII (the extraction eval harness and non-regressing precision/recall floors).
+
 ## Technology Stack
 
 - **Language**: Swift 6+ (strict concurrency enabled)
@@ -120,7 +135,7 @@ plan's Complexity Tracking before it is merged.
 - **On-device ML**: WhisperKit running OpenAI Whisper Small (`openai_whisper-small`)
   for transcription; Apple `NaturalLanguage` (`NLNoteExtractor`) for extraction.
   `AIModelType` has a single case, `.whisper` — Gemma was removed before the fork.
-- **Testing**: XCTest (unit + integration); XCUITest for UI flows
+- **Testing**: Swift Testing (`@Test`/`#expect`) for unit + integration, test-first per Principle X; XCUITest for UI flows where warranted
 - **Platform**: iOS (primary), iPadOS (secondary)
 - **Target / identity**: Xcode target & module `app-four`; bundle id
   `Rythm-App.app-four`; display name **Squirl** (`@main` type `WhisperNotesApp`
@@ -152,9 +167,9 @@ Amendments require:
 4. Update to `LAST_AMENDED_DATE`.
 
 All specs and plans MUST include a Constitution Check gate that verifies
-compliance with Principles I–IX before Phase 0 research proceeds.
+compliance with Principles I–X before Phase 0 research proceeds.
 
 Runtime development guidance lives in `CLAUDE.md` at the repository root. The
 Spec Kit operating procedure lives in `docs/SPECKIT.md`.
 
-**Version**: 1.1.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-15
+**Version**: 1.2.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-16

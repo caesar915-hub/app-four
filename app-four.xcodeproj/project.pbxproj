@@ -467,7 +467,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "app-four/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Squirl";
+				INFOPLIST_KEY_CFBundleDisplayName = Squirl;
 				INFOPLIST_KEY_CFBundleURLTypes = "{\"CFBundleTypeRole\"=>\"Editor\", \"CFBundleURLName\"=>\"com.rythmapp.whispernotes\", \"CFBundleURLSchemes\"=>[\"whispernotes\"]}";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
@@ -507,7 +507,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "app-four/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Squirl";
+				INFOPLIST_KEY_CFBundleDisplayName = Squirl;
 				INFOPLIST_KEY_CFBundleURLTypes = "{\"CFBundleTypeRole\"=>\"Editor\", \"CFBundleURLName\"=>\"com.rythmapp.whispernotes\", \"CFBundleURLSchemes\"=>[\"whispernotes\"]}";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;

@@ -41,7 +41,7 @@
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 Mark each PASS / FAIL / N-A and justify any FAIL in Complexity Tracking. See
-`.specify/memory/constitution.md` (v1.1.0).
+`.specify/memory/constitution.md` (v1.2.0).
 
 - [ ] **I. SwiftUI-First** — UI is SwiftUI on modern APIs (iOS 26+); no UIKit
       unless no SwiftUI equivalent; new views have an HTML mockup first.
@@ -61,6 +61,9 @@ Mark each PASS / FAIL / N-A and justify any FAIL in Complexity Tracking. See
       protocol via `AppDependencies`; `@MainActor @Observable` VMs; heavy work off-main.
 - [ ] **IX. Pre-Release Data Posture** — schema stays CloudKit-compatible (optional/
       defaulted, no `@Attribute(.unique)`); any unique/required attribute justified.
+- [ ] **X. Test-First Development** — logic (models, services, view-models, NLP
+      extraction) is built test-first (RED→GREEN→refactor) with Swift Testing; tests
+      are MANDATORY, ordered before implementation; SwiftUI views exempt (build + run).
 
 ## Project Structure
 

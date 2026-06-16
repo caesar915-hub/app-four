@@ -39,3 +39,4 @@ memory/
 
 # Scratch design drafts (e.g. .tmp-listen-v1.html)
 .tmp-*
+.gstack/

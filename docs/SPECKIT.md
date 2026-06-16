@@ -2,7 +2,7 @@
 
 **Spec Kit is the main, end-to-end workflow for this project.** Every feature goes
 through it: spec → plan → tasks → implement. It is constitution-gated — see
-[.specify/memory/constitution.md](../.specify/memory/constitution.md) (v1.1.0),
+[.specify/memory/constitution.md](../.specify/memory/constitution.md) (v1.2.0),
 which defines the non-negotiables every spec and plan must satisfy.
 
 **superpowers (`/spec`, `/design-*`, HTML mockups) is design only.** It is the
@@ -22,12 +22,12 @@ each task is one clean, revertable checkpoint.
 
 | Step | Command | Produces | Gate |
 |---|---|---|---|
-| 0 | `/speckit-constitution` | `.specify/memory/constitution.md` | Already done (v1.1.0). Re-run only to amend. |
+| 0 | `/speckit-constitution` | `.specify/memory/constitution.md` | Already done (v1.2.0). Re-run only to amend. |
 | 1 | `/speckit-clarify` | clarifying Q&A folded into the spec | Run FIRST when scope is fuzzy — front-loads `[NEEDS CLARIFICATION]` as questions instead of buried tags. |
 | 2 | `/speckit-specify` | `specs/NNN-slug/spec.md` (what & why) | User stories + acceptance criteria. No architecture, no code. |
-| 3 | `/speckit-plan` | `plan.md`, `research.md`, `data-model.md`, contracts | **Constitution Check (I–IX) must PASS** before Phase 0. |
-| 4 | `/speckit-tasks` | `tasks.md` (numbered, TDD-ordered) | Tests scaffolded before implementation. |
-| 5 | `/speckit-implement` | code, one task per session | Build + tests green before stopping. |
+| 3 | `/speckit-plan` | `plan.md`, `research.md`, `data-model.md`, contracts | **Constitution Check (I–X) must PASS** before Phase 0. |
+| 4 | `/speckit-tasks` | `tasks.md` (numbered, TDD-ordered) | Tests are **MANDATORY + test-first** for logic (models/services/VMs/extraction) per Principle X; SwiftUI views exempt (build + run). |
+| 5 | `/speckit-implement` | code, one task per session | **RED→GREEN→refactor per task** — write the failing test first, confirm it fails, then implement. Build + full suite green before stopping. |
 
 ## Operating rules
 

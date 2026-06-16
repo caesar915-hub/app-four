@@ -43,8 +43,12 @@ Solo dev; all code written by Claude. PRs exist to give a review surface and kee
 - Update it whenever work changes stage: a new idea, a spec/plan written, a build started (with branch/PR), or a merge to `main`.
 - When starting work, check the backlog first; when finishing a stage, move the item before reporting done.
 
+## Design System
+- `DESIGN.md` (repo root) is the source of truth for all visual/UI decisions — aesthetic ("Paper & Pollen"), typography (Fraunces + DM Sans), color (signal ramps + medication purple), the signal glyph language (sprout/lightning/aperture; sleep bed icon, med capsule), spacing, layout, motion, and per-screen specs. Read it before writing or changing any SwiftUI. Don't deviate without explicit approval; flag mismatches in design/QA review.
+- Visual companion (HTML): `docs/superpowers/plans/2026-06-15-paper-pollen-design-system.html`.
+
 ## Session Start
-- At the start of every session, read `docs/BACKLOG.md` and `docs/DEVLOG.md` to load current project state, active version targets, and recent decisions.
+- At the start of every session, read `docs/BACKLOG.md`, `docs/DEVLOG.md`, and `DESIGN.md` to load current project state, active version targets, recent decisions, and the design system.
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
