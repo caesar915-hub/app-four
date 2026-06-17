@@ -10,7 +10,6 @@ enum Icons {
     static let settings = "gear"
 
     // Domain
-    static let medication = "pills.fill"
-    static let energy = "bolt.fill"
+    static let medication = "pills.fill"   // "Log meds" hub action button (not a signal readout)
     static let sideEffect = "bandage.fill"
 }

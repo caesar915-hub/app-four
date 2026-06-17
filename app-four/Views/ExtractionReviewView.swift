@@ -75,6 +75,7 @@ struct ExtractionReviewView: View {
             sectionLabel("Mood")
             scaleRow(
                 cases: MoodLevel.allCases,
+                kind: .mood,
                 selected: MoodLevel(rawValue: viewModel.mood),
                 accentColor: moodLevelColor(MoodLevel(rawValue: viewModel.mood)),
                 label: { $0.rawValue.capitalized },
@@ -106,10 +107,7 @@ struct ExtractionReviewView: View {
                     // and ForEach(indices) re-renders a stale row → Index out of range.
                     ForEach(viewModel.medications, id: \.self) { med in
                         HStack(spacing: Spacing.s) { // was 10
-                            Image(systemName: "pills.fill")
-                                .foregroundStyle(.purple)
-                                .font(.caption)
-                                .accessibilityHidden(true)
+                            SignalGlyph(.medication, size: 18, decorative: true)
                             VStack(alignment: .leading, spacing: Spacing.xs) { // was 2
                                 HStack(spacing: Spacing.xs) {
                                     Text(med.name)
@@ -178,6 +176,7 @@ struct ExtractionReviewView: View {
             sectionLabel("Energy")
             scaleRow(
                 cases: EnergyLevel.allCases,
+                kind: .energy,
                 selected: viewModel.energy,
                 accentColor: .orange,
                 label: { $0.rawValue.capitalized },
@@ -195,6 +194,7 @@ struct ExtractionReviewView: View {
             sectionLabel("Focus")
             scaleRow(
                 cases: FocusLevel.allCases,
+                kind: .focus,
                 selected: viewModel.focus,
                 accentColor: .indigo,
                 label: { $0.displayLabel },
@@ -290,22 +290,29 @@ struct ExtractionReviewView: View {
 
     private func scaleRow<T: CaseIterable & Equatable>(
         cases: T.AllCases,
+        kind: GlyphSignal? = nil,
         selected: T?,
         accentColor: Color,
         label: @escaping (T) -> String,
         onSelect: @escaping (T) -> Void
     ) -> some View {
         HStack(spacing: 0) {
-            ForEach(Array(cases.enumerated()), id: \.offset) { _, level in
+            ForEach(Array(cases.enumerated()), id: \.offset) { item in
+                let level = item.element
                 let isSelected = selected == level
                 Button { onSelect(level) } label: {
-                    Text(label(level))
-                        .font(Typography.caption.weight(isSelected ? .semibold : .regular))
-                        .lineLimit(1)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, Spacing.m)
-                        .background(isSelected ? accentColor.opacity(0.2) : Color.secondary.opacity(0.07))
-                        .foregroundStyle(isSelected ? accentColor : .secondary)
+                    VStack(spacing: 3) {
+                        if let kind {
+                            SignalGlyph(kind, level: item.offset + 1, size: 24, decorative: true)
+                        }
+                        Text(label(level))
+                            .font(Typography.caption.weight(isSelected ? .semibold : .regular))
+                            .lineLimit(1)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, Spacing.s)
+                    .background(isSelected ? accentColor.opacity(0.2) : Color.secondary.opacity(0.07))
+                    .foregroundStyle(isSelected ? accentColor : .secondary)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(label(level))

@@ -26,6 +26,9 @@ private struct GaugeColumn: View {
 
     var body: some View {
         VStack(spacing: Spacing.s) {
+            SignalGlyph(average.kind.glyphSignal,
+                        level: average.isEmpty ? nil : clampedSignalLevel(Int((average.fraction * 5).rounded())),
+                        size: 26)
             ZStack(alignment: .bottom) {
                 // Track
                 RoundedRectangle(cornerRadius: Radius.control)

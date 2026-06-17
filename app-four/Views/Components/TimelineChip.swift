@@ -8,11 +8,17 @@ struct TimelineChip: View {
     let label: String
     var textColor: Color = Theme.textPrimary
     var background: Color = Color(.secondarySystemFill)
+    /// When set, render the Paper & Pollen glyph instead of the SF Symbol `icon`.
+    var glyph: GlyphBadge? = nil
 
     var body: some View {
         HStack(spacing: Spacing.xs) {
-            Image(systemName: icon)
-                .foregroundStyle(Theme.textPrimary)   // dark icon in every chip
+            if let glyph {
+                SignalGlyph(glyph.kind, level: glyph.level, size: 18, decorative: true)
+            } else {
+                Image(systemName: icon)
+                    .foregroundStyle(Theme.textPrimary)   // dark icon in every chip
+            }
             Text(label)
                 .foregroundStyle(textColor)
         }
@@ -28,7 +34,8 @@ struct TimelineChip: View {
             icon: "pills.fill",
             label: label,
             textColor: Palette.medication,
-            background: Palette.medication.opacity(0.13)
+            background: Palette.medication.opacity(0.13),
+            glyph: GlyphBadge(kind: .medication)
         )
     }
 }

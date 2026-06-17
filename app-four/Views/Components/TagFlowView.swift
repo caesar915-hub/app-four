@@ -6,7 +6,14 @@ struct TagFlowView: View {
     var body: some View {
         FlowLayout(spacing: Spacing.s) { // was 6
             ForEach(tags) { tag in
-                Label(tag.label, systemImage: tag.icon)
+                HStack(spacing: 4) {
+                    if let glyph = tag.glyph {
+                        SignalGlyph(glyph.kind, level: glyph.level, size: 15, decorative: true)
+                    } else {
+                        Image(systemName: tag.icon)
+                    }
+                    Text(tag.label)
+                }
                     .font(.caption)
                     .fontWeight(.medium)
                     .foregroundStyle(tag.color)

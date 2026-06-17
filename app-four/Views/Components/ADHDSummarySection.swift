@@ -26,13 +26,16 @@ struct ADHDSummarySection: View {
                 if hasStateBadges {
                     HStack(spacing: Spacing.s) {
                         if let mood = recording.mood {
-                            StateBadge(icon: recording.moodIcon, label: "Mood", value: mood, color: recording.moodColor)
+                            StateBadge(glyph: GlyphBadge(kind: .mood, level: MoodLevel(name: mood)?.numericValue),
+                                       label: "Mood", value: mood, color: recording.moodColor)
                         }
                         if let energy = recording.energyLevel {
-                            StateBadge(icon: "bolt.fill", label: "Energy", value: energy, color: .orange)
+                            StateBadge(glyph: GlyphBadge(kind: .energy, level: EnergyLevel(rawValue: energy.lowercased())?.numericValue),
+                                       label: "Energy", value: energy, color: .orange)
                         }
                         if let focus = recording.focusLevel {
-                            StateBadge(icon: "target", label: "Focus", value: focus, color: .indigo)
+                            StateBadge(glyph: GlyphBadge(kind: .focus, level: FocusLevel(rawValue: focus.lowercased())?.numericValue),
+                                       label: "Focus", value: focus, color: .indigo)
                         }
                     }
                 }
@@ -74,10 +77,10 @@ struct ADHDSummarySection: View {
             tags.append(DisplayTag(id: "f-\(i)", label: feeling.capitalized, icon: "heart.fill", color: .pink))
         }
         if let level = recording.decodedSleepLevel {
-            tags.append(DisplayTag(id: "sleep", label: level.rawValue.capitalized, icon: "moon.fill", color: .indigo))
+            tags.append(DisplayTag(id: "sleep", label: level.rawValue.capitalized, icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
         } else if let hours = recording.sleepHours {
             let label = hours == hours.rounded() ? "\(Int(hours))h sleep" : "\(hours)h sleep"
-            tags.append(DisplayTag(id: "sleep", label: label, icon: "moon.fill", color: .indigo))
+            tags.append(DisplayTag(id: "sleep", label: label, icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
         }
         for (i, effect) in recording.decodedSideEffects.enumerated() {
             tags.append(DisplayTag(id: "se-\(i)", label: effect.capitalized, icon: "bandage.fill", color: .orange))
@@ -108,10 +111,7 @@ struct ADHDSummarySection: View {
     private func medicationRow(_ event: MedicationEvent) -> some View {
         let timeStr = event.takenAt.formatted(date: .omitted, time: .shortened)
         return HStack(spacing: Spacing.s) {
-            Image(systemName: "pills.fill")
-                .font(.caption)
-                .foregroundStyle(.purple)
-                .accessibilityHidden(true)
+            SignalGlyph(.medication, size: 18, decorative: true)
             Text(timeStr)
                 .font(.caption)
                 .monospacedDigit()
@@ -189,7 +189,8 @@ struct ADHDSummarySection: View {
 }
 
 private struct StateBadge: View {
-    let icon: String
+    var icon: String? = nil
+    var glyph: GlyphBadge? = nil
     let label: String
     let value: String
     let color: Color
@@ -197,9 +198,13 @@ private struct StateBadge: View {
     var body: some View {
         VStack(spacing: Spacing.xs) {
             HStack(spacing: Spacing.xs) {
-                Image(systemName: icon)
-                    .font(.caption2)
-                    .accessibilityHidden(true)
+                if let glyph {
+                    SignalGlyph(glyph.kind, level: glyph.level, size: 16, decorative: true)
+                } else if let icon {
+                    Image(systemName: icon)
+                        .font(.caption2)
+                        .accessibilityHidden(true)
+                }
                 Text(label)
                     .font(.caption2)
                     .fontWeight(.medium)

@@ -14,9 +14,9 @@ struct TextCheckInComposer: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: Spacing.xl) {
-                    SignalScaleRow(title: "Mood", selection: $draft.mood)
-                    SignalScaleRow(title: "Energy", selection: $draft.energy)
-                    SignalScaleRow(title: "Focus", selection: $draft.focus)
+                    SignalScaleRow(title: "Mood", kind: .mood, selection: $draft.mood)
+                    SignalScaleRow(title: "Energy", kind: .energy, selection: $draft.energy)
+                    SignalScaleRow(title: "Focus", kind: .focus, selection: $draft.focus)
                     medsRow
                     sleepRow
                     noteRow
@@ -130,6 +130,7 @@ struct TextCheckInComposer: View {
 /// Five equal segments; the selected one fills with the level's gradient.
 struct SignalScaleRow<Level: SignalLevel & CaseIterable & Equatable>: View {
     let title: String
+    let kind: GlyphSignal
     @Binding var selection: Level?
 
     var body: some View {
@@ -149,9 +150,17 @@ struct SignalScaleRow<Level: SignalLevel & CaseIterable & Equatable>: View {
                     Button {
                         selection = selection == level ? nil : level
                     } label: {
-                        RoundedRectangle(cornerRadius: Radius.control)
-                            .fill(selection == level ? AnyShapeStyle(level.fillGradient) : AnyShapeStyle(Theme.cardBackground))
-                            .frame(height: 30)
+                        SignalGlyph(kind, level: level.numericValue, size: 30, decorative: true)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 40)
+                            .background(
+                                RoundedRectangle(cornerRadius: Radius.control)
+                                    .fill(Theme.cardBackground)
+                            )
+                            .overlay(
+                                RoundedRectangle(cornerRadius: Radius.control)
+                                    .strokeBorder(Theme.accent, lineWidth: selection == level ? 2 : 0)
+                            )
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("\(title) \(level.displayLabel)")

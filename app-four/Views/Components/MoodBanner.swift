@@ -1,12 +1,11 @@
 import SwiftUI
 
-/// The filled, mood-coloured headline for a timeline check-in: a full-width bar
-/// holding mood · energy · focus on one line, each led by an SF Symbol
-/// (sparkles / bolt / target), with dark ink on the pastel fill.
+/// The filled, mood-coloured headline for a timeline check-in: a full-width bar holding
+/// mood · energy · focus on one line, each led by its Paper & Pollen glyph (sprout /
+/// lightning / aperture), with dark ink on the pastel fill.
 ///
-/// One uniform fixed size for the whole banner (no Dynamic Type, no per-entry
-/// resize); a genuinely over-long combination truncates with an ellipsis rather
-/// than shrinking, so every entry's text stays the same size.
+/// One uniform fixed size for the whole banner (no Dynamic Type, no per-entry resize); a
+/// genuinely over-long combination truncates rather than shrinking.
 struct MoodBanner: View {
     let mood: String?
     let energy: String?
@@ -14,13 +13,11 @@ struct MoodBanner: View {
     let fallbackTitle: String
     let fill: Color
 
-    private let font = Font.system(size: 12, weight: .bold)
+    private let glyphSize: CGFloat = 17
 
     var body: some View {
-        bannerText
-            .font(font)
-            .lineLimit(1)
-            .truncationMode(.tail)
+        content
+            .font(.system(size: 12, weight: .bold))
             .foregroundStyle(MoodLevel.onColor)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 5)
@@ -30,27 +27,46 @@ struct MoodBanner: View {
             .accessibilityLabel(accessibilityLabel)
     }
 
-    /// One uniform `Text` built via string interpolation (the icons inherit the
-    /// banner font) — avoids the deprecated `Text + Text` concatenation.
-    private var bannerText: Text {
-        var interpolation = LocalizedStringKey.StringInterpolation(literalCapacity: 0, interpolationCount: 0)
-        var hasContent = false
-        func add(symbol: String, word: String) {
-            if hasContent { interpolation.appendLiteral("  ") }
-            interpolation.appendInterpolation(Image(systemName: symbol))
-            interpolation.appendLiteral(" \(word.uppercased())")
-            hasContent = true
+    @ViewBuilder private var content: some View {
+        let items = signalItems
+        if items.isEmpty {
+            Text(fallbackTitle.uppercased()).lineLimit(1).truncationMode(.tail)
+        } else {
+            HStack(spacing: Spacing.s) {
+                ForEach(items) { item in
+                    HStack(spacing: 3) {
+                        SignalGlyph(item.kind, level: item.level, size: glyphSize, decorative: true)
+                        Text(item.word.uppercased()).lineLimit(1)
+                    }
+                }
+            }
         }
-        if let mood, !mood.isEmpty { add(symbol: "sparkles", word: mood) }
-        if let energy, !energy.isEmpty { add(symbol: "bolt.fill", word: energy) }
-        if let focus, !focus.isEmpty { add(symbol: "target", word: focus) }
-        guard hasContent else { return Text(fallbackTitle.uppercased()) }
-        return Text(LocalizedStringKey(stringInterpolation: interpolation))
+    }
+
+    private var signalItems: [BannerItem] {
+        var items: [BannerItem] = []
+        if let mood, !mood.isEmpty {
+            items.append(.init(kind: .mood, level: MoodLevel(name: mood)?.numericValue, word: mood))
+        }
+        if let energy, !energy.isEmpty {
+            items.append(.init(kind: .energy, level: EnergyLevel(rawValue: energy.lowercased())?.numericValue, word: energy))
+        }
+        if let focus, !focus.isEmpty {
+            items.append(.init(kind: .focus, level: FocusLevel(rawValue: focus.lowercased())?.numericValue, word: focus))
+        }
+        return items
     }
 
     private var accessibilityLabel: String {
         let parts = [mood, energy, focus].compactMap { $0?.isEmpty == false ? $0 : nil }
         return parts.isEmpty ? fallbackTitle : parts.joined(separator: ", ")
+    }
+
+    private struct BannerItem: Identifiable {
+        let kind: GlyphSignal
+        let level: Int?
+        let word: String
+        var id: GlyphSignal { kind }
     }
 }
 

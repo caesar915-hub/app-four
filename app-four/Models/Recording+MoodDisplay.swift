@@ -10,17 +10,6 @@ extension Recording {
         MoodLevel(name: mood)?.fill ?? Color(.systemGray4)
     }
 
-    var moodIcon: String {
-        switch mood?.lowercased() {
-        case "low":  return "cloud.fill"
-        case "flat": return "minus.circle"
-        case "okay": return "circle"
-        case "good": return "sun.min.fill"
-        case "great": return "sun.max.fill"
-        default:     return "circle"
-        }
-    }
-
     /// Combined headline for a timeline check-in: mood + energy + focus
     /// (e.g. "Good Alert Focused"). Falls back to the note's title when none of
     /// the three were extracted.
@@ -50,13 +39,15 @@ extension Recording {
         if let energy = energyLevel {
             let level = EnergyLevel(rawValue: energy.lowercased())
             tags.append(DisplayTag(id: "energy", label: "\(energy) energy", icon: "bolt.fill",
-                                   color: level?.color ?? Palette.energyRamp[2]))
+                                   color: level?.color ?? Palette.energyRamp[2],
+                                   glyph: GlyphBadge(kind: .energy, level: level?.numericValue)))
         }
 
         if let focus = focusLevel {
             let level = FocusLevel(rawValue: focus.lowercased())
             tags.append(DisplayTag(id: "focus", label: focus, icon: "target",
-                                   color: level?.color ?? Palette.focusRamp[2]))
+                                   color: level?.color ?? Palette.focusRamp[2],
+                                   glyph: GlyphBadge(kind: .focus, level: level?.numericValue)))
         }
 
         if let event = decodedSleepEvent {
@@ -68,12 +59,12 @@ extension Recording {
             } else {
                 label = "sleep"
             }
-            tags.append(DisplayTag(id: "sleep", label: label, icon: "moon.fill", color: .indigo))
+            tags.append(DisplayTag(id: "sleep", label: label, icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
         } else if let hours = sleepHours {
             let label = hours == hours.rounded() ? "\(Int(hours))h sleep" : "\(hours)h sleep"
-            tags.append(DisplayTag(id: "sleep", label: label, icon: "moon.fill", color: .indigo))
+            tags.append(DisplayTag(id: "sleep", label: label, icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
         } else if let quality = sleepQuality {
-            tags.append(DisplayTag(id: "sleep", label: "\(quality) sleep", icon: "moon.fill", color: .indigo))
+            tags.append(DisplayTag(id: "sleep", label: "\(quality) sleep", icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
         }
 
         for (i, effect) in decodedSideEffects.enumerated() {
@@ -91,7 +82,7 @@ extension Recording {
             let changeSuffix = event.change == .started ? " ↑" : event.change == .stopped ? " ↓" : ""
             let qtySuffix = qty == 0.5 ? " ½" : ""
             let label = "\(event.name)\(qtySuffix)\(changeSuffix)"
-            tags.append(DisplayTag(id: "med-\(event.name)", label: label, icon: "pills.fill", color: Palette.medication))
+            tags.append(DisplayTag(id: "med-\(event.name)", label: label, icon: "pills.fill", color: Palette.medication, glyph: GlyphBadge(kind: .medication)))
         }
 
         return tags
@@ -103,4 +94,6 @@ struct DisplayTag: Identifiable {
     let label: String
     let icon: String
     let color: Color
+    /// When set, render the Paper & Pollen glyph instead of `icon` (signal tags only).
+    var glyph: GlyphBadge? = nil
 }

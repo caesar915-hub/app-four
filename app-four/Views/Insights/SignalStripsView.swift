@@ -24,6 +24,7 @@ private struct StripRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             HStack {
+                SignalGlyph(strip.kind.glyphSignal, level: 4, size: 18, decorative: true)
                 Text(strip.kind.label)
                     .font(Typography.subheadline)
                     .fontWeight(.medium)

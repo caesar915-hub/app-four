@@ -9,4 +9,7 @@ enum Palette {
     static let medication = Color(.systemPurple)
     /// Warning / caution accents and side-effect tags (no longer shared with energy)
     static let warning = Color(.systemOrange)
+    /// Sleep — a cool indigo, bluer than medication purple so the two never read as one.
+    /// Single, non-varying (the sleep 1→5 ramp is deferred).
+    static let sleepIndigo = Color(hex: "#5566A6")
 }
