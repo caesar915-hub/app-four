@@ -53,7 +53,7 @@ struct ExtractionReviewView: View {
                     Button("Cancel") { viewModel.cancel(); dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { viewModel.confirm(); dismiss() }
+                    Button("Save") { save() }
                         .fontWeight(.semibold)
                 }
             }
@@ -144,7 +144,13 @@ struct ExtractionReviewView: View {
                 label: { $0.rawValue.capitalized },
                 onSelect: { viewModel.setSleepLevel(viewModel.sleepLevel == $0 ? nil : $0) }
             )
-            if let level = viewModel.sleepLevel { currentLine(level.rawValue.capitalized, level.subtitle) }
+            // Sleep is the one signal that drops synonyms (DESIGN.md) — show the named level only.
+            if let level = viewModel.sleepLevel {
+                Text(level.rawValue.capitalized)
+                    .font(Typography.caption)
+                    .foregroundStyle(Theme.textSecondary)
+                    .padding(.horizontal, Spacing.xs)
+            }
 
             HStack(spacing: Spacing.s) {
                 ForEach(sleepDurations, id: \.self) { hours in
@@ -309,12 +315,15 @@ struct ExtractionReviewView: View {
     // MARK: - Save corrections
 
     private var saveCorrectionsButton: some View {
-        Button("Save corrections") {
-            viewModel.confirm()
-            dismiss()
-        }
-        .buttonStyle(.primary)
-        .padding(.top, Spacing.s)
+        Button("Save corrections") { save() }
+            .buttonStyle(.primary)
+            .padding(.top, Spacing.s)
+    }
+
+    /// Single commit path — both the toolbar Save and the bottom "Save corrections" call this.
+    private func save() {
+        viewModel.confirm()
+        dismiss()
     }
 
     // MARK: - Reusable scale row
@@ -347,6 +356,7 @@ struct ExtractionReviewView: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(label(level))
+                .accessibilityAddTraits(isSelected ? [.isSelected] : [])
             }
         }
         .clipShape(.rect(cornerRadius: Radius.control))

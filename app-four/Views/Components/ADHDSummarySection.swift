@@ -11,8 +11,16 @@ struct ADHDSummarySection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.l) {
             if hasSummaryContent { summaryCard }
-            if recording.hasMedication { medsCard }
+            // Gate on the rows that actually render (transcript-sourced), not hasMedication —
+            // a manual-only dose would otherwise show an empty "Meds" eyebrow card.
+            if !transcriptMeds.isEmpty { medsCard }
         }
+    }
+
+    private var transcriptMeds: [MedicationEvent] {
+        recording.medicationEvents
+            .filter { $0.source == .transcript }
+            .sorted { $0.takenAt < $1.takenAt }
     }
 
     // MARK: - Summary card
@@ -58,13 +66,10 @@ struct ADHDSummarySection: View {
     // MARK: - Meds card
 
     private var medsCard: some View {
-        let sorted = recording.medicationEvents
-            .filter { $0.source == .transcript }
-            .sorted { $0.takenAt < $1.takenAt }
-        return VStack(alignment: .leading, spacing: Spacing.s) {
+        VStack(alignment: .leading, spacing: Spacing.s) {
             Text("Meds").cardEyebrow()
             VStack(spacing: Spacing.xs) {
-                ForEach(sorted) { event in
+                ForEach(transcriptMeds) { event in
                     medicationRow(event)
                 }
             }

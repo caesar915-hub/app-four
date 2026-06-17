@@ -274,22 +274,6 @@ final class CheckInViewModel {
         state = .done
     }
 
-    // MARK: - Composer support
-
-    var recentMedicationNames: [String] {
-        var descriptor = FetchDescriptor<MedicationEvent>(
-            sortBy: [SortDescriptor(\.takenAt, order: .reverse)]
-        )
-        descriptor.fetchLimit = 50
-        let events = (try? store.context.fetch(descriptor)) ?? []
-        var seen = Set<String>()
-        var names: [String] = []
-        for event in events where seen.insert(event.name.lowercased()).inserted {
-            names.append(event.name)
-        }
-        return Array(names.prefix(4))
-    }
-
     private func startTimer() {
         timerTask = Task {
             while !Task.isCancelled {

@@ -158,7 +158,8 @@ private struct DoseTrack: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var pulsing = false
 
-    private var isOnset: Bool { progress < 0.2 }
+    /// Pulse only during onset (<20%) and never under Reduce Motion.
+    private var onsetPulsing: Bool { progress < 0.2 && !reduceMotion }
 
     var body: some View {
         GeometryReader { geo in
@@ -167,16 +168,22 @@ private struct DoseTrack: View {
                 Capsule()
                     .fill(Palette.medication)
                     .frame(width: max(6, geo.size.width * progress))
-                    .opacity(isOnset && pulsing ? 0.55 : 1)
+                    .opacity(onsetPulsing && pulsing ? 0.55 : 1)
             }
         }
         .frame(height: 8)
-        .animation(.easeInOut(duration: 0.5), value: progress)
-        .onAppear {
-            guard isOnset, !reduceMotion else { return }
-            withAnimation(.easeInOut(duration: 1.3).repeatForever(autoreverses: true)) {
-                pulsing = true
-            }
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.5), value: progress)
+        .onAppear { syncPulse() }
+        // React to onset ending and to a live Reduce-Motion toggle, so the
+        // repeatForever pulse is actually stopped rather than latched at appear.
+        .onChange(of: onsetPulsing) { _, _ in syncPulse() }
+    }
+
+    private func syncPulse() {
+        if onsetPulsing {
+            withAnimation(.easeInOut(duration: 1.3).repeatForever(autoreverses: true)) { pulsing = true }
+        } else {
+            withAnimation(.easeInOut(duration: 0.2)) { pulsing = false }
         }
     }
 }

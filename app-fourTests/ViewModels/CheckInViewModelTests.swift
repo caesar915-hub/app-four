@@ -87,20 +87,4 @@ struct CheckInViewModelTests {
         #expect(store.recordings.isEmpty)
     }
 
-    // MARK: Recent meds
-
-    @Test func recentMedicationNamesAreDistinctNewestFirst() throws {
-        let ctx = container.mainContext
-        let now = Date()
-        let seed: [(offset: TimeInterval, name: String)] = [
-            (0, "Concerta"), (60, "Magnesium"), (120, "concerta"), (180, "Omega 3"),
-        ]
-        for entry in seed {
-            let e = MedicationEvent(name: entry.name, takenAt: now.addingTimeInterval(-entry.offset),
-                                    taken: true, source: .manual)
-            ctx.insert(e)
-        }
-        try ctx.save()
-        #expect(viewModel.recentMedicationNames == ["Concerta", "Magnesium", "Omega 3"])
-    }
 }

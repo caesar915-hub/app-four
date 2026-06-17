@@ -116,13 +116,15 @@ struct RecordingDetailView: View {
     private var signalGlyphRow: some View {
         HStack(alignment: .top, spacing: Spacing.xl) {
             if let mood = viewModel.recording.mood {
-                glyphSummaryItem(.mood, level: MoodLevel(name: mood)?.numericValue, label: mood)
+                glyphSummaryItem(.mood, level: MoodLevel(name: mood)?.numericValue, label: mood.capitalized)
             }
-            if let energy = viewModel.recording.energyLevel {
-                glyphSummaryItem(.energy, level: EnergyLevel(rawValue: energy.lowercased())?.numericValue, label: energy)
+            // energyLevel / focusLevel are stored as the canonical enum rawValue
+            // ("charged", "lockedIn"); match it verbatim and show the human displayLabel.
+            if let energy = viewModel.recording.energyLevel, let level = EnergyLevel(rawValue: energy) {
+                glyphSummaryItem(.energy, level: level.numericValue, label: level.displayLabel)
             }
-            if let focus = viewModel.recording.focusLevel {
-                glyphSummaryItem(.focus, level: FocusLevel(rawValue: focus.lowercased())?.numericValue, label: focus)
+            if let focus = viewModel.recording.focusLevel, let level = FocusLevel(rawValue: focus) {
+                glyphSummaryItem(.focus, level: level.numericValue, label: level.displayLabel)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -131,7 +133,7 @@ struct RecordingDetailView: View {
     private func glyphSummaryItem(_ kind: GlyphSignal, level: Int?, label: String) -> some View {
         VStack(spacing: Spacing.xs) {
             SignalGlyph(kind, level: level, size: 26, decorative: true)
-            Text(label.capitalized)
+            Text(label)
                 .font(Typography.label)
                 .foregroundStyle(Theme.textSecondary)
         }
