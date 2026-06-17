@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct WhisperNotesApp: App {
+struct SquirlApp: App {
     @State private var selectedTab: Tab = .calendar
     @State private var shouldAutoStartRecording = false
 

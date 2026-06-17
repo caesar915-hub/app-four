@@ -44,12 +44,12 @@ struct CheckInView: View {
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Whisper Notes needs microphone access to record voice notes. Enable it in Settings.")
+            Text("Squirl needs microphone access to record voice notes. Enable it in Settings.")
         }
         .alert("Not Enough Storage", isPresented: $viewModel.lowDiskSpace) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text("Whisper Notes needs at least 50 MB of free space to record. Free up some space and try again.")
+            Text("Squirl needs at least 50 MB of free space to record. Free up some space and try again.")
         }
     }
 
