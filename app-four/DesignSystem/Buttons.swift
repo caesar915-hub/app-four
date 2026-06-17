@@ -9,20 +9,25 @@ struct PrimaryButtonStyle: ButtonStyle {
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity, minHeight: Metrics.minTapTarget)
             .padding(.horizontal, Spacing.l)
-            .background(Theme.accent, in: .rect(cornerRadius: Radius.control))
-            .opacity(configuration.isPressed ? 0.85 : 1)
+            .background(Theme.meadowGradient, in: .rect(cornerRadius: Radius.button))
+            .shadow(color: Theme.meadowAmber.opacity(0.34), radius: 12, y: 5)
+            .opacity(configuration.isPressed ? 0.9 : 1)
     }
 }
 
-/// Tinted secondary action — accent text on a subtle fill.
+/// Ghost secondary action — ink text on the surface with a hairline border.
 struct SecondaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(Typography.headline)
-            .foregroundStyle(Theme.accent)
+            .foregroundStyle(Theme.textPrimary)
             .frame(maxWidth: .infinity, minHeight: Metrics.minTapTarget)
             .padding(.horizontal, Spacing.l)
-            .background(Theme.accent.opacity(0.15), in: .rect(cornerRadius: Radius.control))
+            .background(Theme.cardBackground, in: .rect(cornerRadius: Radius.button))
+            .overlay(
+                RoundedRectangle(cornerRadius: Radius.button)
+                    .strokeBorder(Theme.separator, lineWidth: 1)
+            )
             .opacity(configuration.isPressed ? 0.85 : 1)
     }
 }
