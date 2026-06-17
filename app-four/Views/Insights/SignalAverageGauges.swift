@@ -110,7 +110,7 @@ private struct TickLines: View {
             ForEach(1...5, id: \.self) { level in
                 let y = gaugeHeight - (gaugeHeight * CGFloat(level) / 5)
                 Rectangle()
-                    .fill(Color.secondary.opacity(0.25))
+                    .fill(Theme.separator)
                     .frame(width: gaugeWidth, height: 1)
                     .offset(y: y - gaugeHeight / 2)
                     .mask(

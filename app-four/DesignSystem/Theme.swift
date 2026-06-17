@@ -32,6 +32,8 @@ enum Theme {
     // MARK: - Status (no raw system green/orange)
     static let statusDone = meadowGreen
     static let statusInProgress = meadowAmber
+    /// Quiet danger — failed transcription, a "stopped" med. Warm clay, never raw red.
+    static let danger = Color(lightHex: "#B5503A", darkHex: "#CF6A52")
 
     // MARK: - The signature gradient
     /// Green → amber (~120°) — primary actions, the crescent, active states.

@@ -10,18 +10,15 @@ struct MedicationBarView: View {
     @AppStorage("medicationBarShowTime") private var showTime = true
     @AppStorage("medicationBarShowEndTime") private var showEndTime = true
 
-    /// Rounded shape that echoes the Liquid Glass tab bar pill.
-    private var barShape: RoundedRectangle { RoundedRectangle(cornerRadius: 22, style: .continuous) }
-
     var body: some View {
         if showBar, !viewModel.activeDoses.isEmpty {
-            VStack(spacing: 0) {
+            VStack(spacing: Spacing.s) {
                 ForEach(Array(viewModel.activeDoses.enumerated()), id: \.element.eventID) { index, dose in
-                    doseRow(dose, isLast: index == viewModel.activeDoses.count - 1)
+                    if index > 0 { Divider().overlay(Theme.separator) }
+                    doseRow(dose)
                 }
             }
-            .clipShape(barShape)
-            .glassEffect(.regular, in: barShape)
+            .card(padding: Spacing.m)
             .confirmationDialog(
                 selectedDose.map { "\($0.name)\($0.dose.map { " \($0)" } ?? "")" } ?? "",
                 isPresented: Binding(
@@ -53,45 +50,48 @@ struct MedicationBarView: View {
 
     // MARK: - Single row
 
-    private func doseRow(_ dose: MedicationBarViewModel.DoseDisplay, isLast: Bool) -> some View {
-        let progress = dose.progress
+    private func doseRow(_ dose: MedicationBarViewModel.DoseDisplay) -> some View {
+        Button { selectedDose = dose } label: {
+            HStack(spacing: Spacing.s) {
+                SignalGlyph(.medication, size: 28, decorative: true)
 
-        return Button { selectedDose = dose } label: {
-            ZStack(alignment: .leading) {
-                Rectangle()
-                    .fill(Palette.medication.opacity(0.3))   // match the timeline medication purple
-                    .scaleEffect(x: progress, y: 1, anchor: .leading)
-                    .animation(.easeInOut(duration: 0.5), value: progress)
-
-                HStack {
-                    Text(leftLabel(dose: dose))
-                        .font(.caption.weight(.semibold).monospacedDigit())
-                        .foregroundStyle(.primary)
-                        .lineLimit(1)
-
-                    Spacer()
-
-                    Text(rightLabel(dose: dose))
-                        .font(.caption.weight(.semibold).monospacedDigit())
-                        .foregroundStyle(.secondary)
-                        .lineLimit(1)
+                VStack(alignment: .leading, spacing: Spacing.xs) {
+                    HStack(spacing: Spacing.s) {
+                        Text(nameLine(dose: dose))
+                            .font(Typography.subheadline)
+                            .foregroundStyle(Theme.textPrimary)
+                            .lineLimit(1)
+                        Spacer(minLength: 0)
+                        Text(stateWord(for: dose.progress))
+                            .font(Typography.label)
+                            .foregroundStyle(Palette.medication)
+                            .lineLimit(1)
+                    }
+                    DoseTrack(progress: dose.progress)
+                    if !subLine(dose: dose).isEmpty {
+                        Text(subLine(dose: dose))
+                            .font(Typography.mono12)
+                            .foregroundStyle(Theme.textSecondary)
+                            .lineLimit(1)
+                    }
                 }
-                .padding(.horizontal, Spacing.l)
             }
             .frame(maxWidth: .infinity)
-            .frame(height: viewModel.activeDoses.count == 1 ? 44 : 40)
-            .overlay(alignment: .bottom) {
-                if !isLast {
-                    Theme.separator
-                        .frame(height: 0.5)
-                }
-            }
-            // Hit-test the whole row: the progress fill is partial-width and the labels
-            // are pinned to the edges, so without this the empty middle isn't tappable.
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel(dose: dose))
+    }
+
+    /// Stage by fill amount only — 0–20% kicking in · 20–80% active · 80–100% wearing off.
+    /// Never red/alarming (locked decision).
+    private func stateWord(for progress: Double) -> String {
+        switch progress {
+        case ..<0.2: return "kicking in"
+        case ..<0.8: return "active"
+        case ..<1.0: return "wearing off"
+        default:     return "worn off"
+        }
     }
 
     // MARK: - Labels
@@ -102,7 +102,8 @@ struct MedicationBarView: View {
         return f
     }()
 
-    private func leftLabel(dose: MedicationBarViewModel.DoseDisplay) -> String {
+    /// Top line — bold med name (with ordinal when multiple doses today). Identity always shows.
+    private func nameLine(dose: MedicationBarViewModel.DoseDisplay) -> String {
         var parts: [String] = []
         if dose.totalDosesToday > 1 {
             parts.append(ordinal(dose.doseNumber) + " dose")
@@ -110,15 +111,22 @@ struct MedicationBarView: View {
         if showName {
             parts.append(dose.effectiveDose.map { "\(dose.name) \($0)" } ?? dose.name)
         }
-        if showTime {
-            parts.append(Self.timeFormatter.string(from: dose.takenAt))
-        }
-        return parts.joined(separator: " · ")
+        return parts.isEmpty ? dose.name : parts.joined(separator: " · ")
     }
 
-    private func rightLabel(dose: MedicationBarViewModel.DoseDisplay) -> String {
-        guard showEndTime else { return "" }
-        return "ends \(Self.timeFormatter.string(from: dose.endsAt))"
+    /// Mono sub-line — "taken 9:15 · onset · ends 19:15" (toggles honored).
+    private func subLine(dose: MedicationBarViewModel.DoseDisplay) -> String {
+        var parts: [String] = []
+        if showTime {
+            parts.append("taken \(Self.timeFormatter.string(from: dose.takenAt))")
+        }
+        if dose.progress < 0.2 {
+            parts.append("onset")
+        }
+        if showEndTime {
+            parts.append("ends \(Self.timeFormatter.string(from: dose.endsAt))")
+        }
+        return parts.joined(separator: " · ")
     }
 
     private func accessibilityLabel(dose: MedicationBarViewModel.DoseDisplay) -> String {
@@ -136,6 +144,39 @@ struct MedicationBarView: View {
         case 2: return "2nd"
         case 3: return "3rd"
         default: return "\(n)th"
+        }
+    }
+}
+
+// MARK: - Track
+
+/// Slim progress track: a surface-2 groove with a medication-purple fill that grows
+/// empty→full across the dose window, pulsing softly during onset (<20%). One purple,
+/// fill amount only — never red. Reduce Motion collapses to a static fill.
+private struct DoseTrack: View {
+    let progress: Double
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var pulsing = false
+
+    private var isOnset: Bool { progress < 0.2 }
+
+    var body: some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                Capsule().fill(Theme.surface2)
+                Capsule()
+                    .fill(Palette.medication)
+                    .frame(width: max(6, geo.size.width * progress))
+                    .opacity(isOnset && pulsing ? 0.55 : 1)
+            }
+        }
+        .frame(height: 8)
+        .animation(.easeInOut(duration: 0.5), value: progress)
+        .onAppear {
+            guard isOnset, !reduceMotion else { return }
+            withAnimation(.easeInOut(duration: 1.3).repeatForever(autoreverses: true)) {
+                pulsing = true
+            }
         }
     }
 }

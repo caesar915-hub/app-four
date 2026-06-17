@@ -1,133 +1,105 @@
 import SwiftUI
 
+/// §06 Type-note (Layout A) — signals-first: a custom close/title navbar, the three
+/// mood/energy/focus glyph pickers, a single free-text notebox, and a gradient
+/// "Save check-in" pill. Meds and sleep are captured by voice and the Edit sheet, not here.
 struct TextCheckInComposer: View {
-    let recentMedicationNames: [String]
     let onSave: (CheckInDraft) -> Void
 
     @Environment(\.dismiss) private var dismiss
     @State private var draft = CheckInDraft()
-    @State private var showMedSheet = false
-
-    private let sleepOptions = ["poor", "okay", "good"]
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            navbar
             ScrollView {
-                VStack(alignment: .leading, spacing: Spacing.xl) {
-                    SignalScaleRow(title: "Mood", kind: .mood, selection: $draft.mood)
-                    SignalScaleRow(title: "Energy", kind: .energy, selection: $draft.energy)
-                    SignalScaleRow(title: "Focus", kind: .focus, selection: $draft.focus)
-                    medsRow
-                    sleepRow
-                    noteRow
+                VStack(alignment: .leading, spacing: Spacing.l) {
+                    signalPickers
+                    noteBox
+                    saveButton
                 }
                 .padding(Spacing.l)
             }
-            .navigationTitle("New note")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        onSave(draft)
-                        dismiss()
-                    }
-                    .disabled(draft.isEmpty)
-                }
+        }
+        .background(Theme.background.ignoresSafeArea())
+        .presentationDragIndicator(.visible)
+    }
+
+    // MARK: - Navbar
+
+    private var navbar: some View {
+        HStack {
+            Button { dismiss() } label: {
+                Image(systemName: "xmark")
+                    .font(Typography.subheadline)
+                    .foregroundStyle(Theme.textPrimary)
+                    .frame(width: 30, height: 30)
+                    .background(Theme.cardBackground, in: Circle())
+                    .overlay(Circle().strokeBorder(Theme.separator, lineWidth: 1))
             }
-            .sheet(isPresented: $showMedSheet) {
-                MedicationLogSheet { name, dose, takenAt, durationHours in
-                    draft.meds.append(
-                        CheckInDraft.DraftMedication(name: name, dose: dose, takenAt: takenAt, durationHours: durationHours)
-                    )
-                }
-            }
+            .accessibilityLabel("Close")
+
+            Spacer()
+            Text("Type a check-in")
+                .font(Typography.title)
+                .foregroundStyle(Theme.textPrimary)
+            Spacer()
+
+            Color.clear.frame(width: 30, height: 30)
+        }
+        .padding(.horizontal, Spacing.l)
+        .padding(.vertical, Spacing.m)
+    }
+
+    // MARK: - Signal pickers
+
+    private var signalPickers: some View {
+        VStack(spacing: 0) {
+            SignalScaleRow(title: "Mood", kind: .mood, selection: $draft.mood)
+            Divider().overlay(Theme.separator)
+            SignalScaleRow(title: "Energy", kind: .energy, selection: $draft.energy)
+            Divider().overlay(Theme.separator)
+            SignalScaleRow(title: "Focus", kind: .focus, selection: $draft.focus)
         }
     }
 
-    private var medsRow: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            fieldLabel("Meds")
-            FlowChips {
-                ForEach(recentMedicationNames, id: \.self) { name in
-                    let isOn = draft.meds.contains { $0.name.caseInsensitiveCompare(name) == .orderedSame }
-                    chip(name + (isOn ? " ✓" : ""), on: isOn, tint: Palette.medication) {
-                        if isOn {
-                            draft.meds.removeAll { $0.name.caseInsensitiveCompare(name) == .orderedSame }
-                        } else {
-                            draft.meds.append(CheckInDraft.DraftMedication(name: name, dose: nil))
-                        }
-                    }
-                }
-                ForEach(draft.meds.filter { med in
-                    !recentMedicationNames.contains { $0.caseInsensitiveCompare(med.name) == .orderedSame }
-                }) { med in
-                    chip(med.name + " ✓", on: true, tint: Palette.medication) {
-                        draft.meds.removeAll { $0.id == med.id }
-                    }
-                }
-                chip("+ add", on: false, tint: nil) { showMedSheet = true }
-            }
-        }
-    }
+    // MARK: - Note
 
-    private var sleepRow: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            fieldLabel("Sleep")
-            FlowChips {
-                ForEach(sleepOptions, id: \.self) { option in
-                    chip(option.capitalized, on: draft.sleepQuality == option, tint: nil) {
-                        draft.sleepQuality = draft.sleepQuality == option ? nil : option
-                    }
-                }
-            }
-        }
-    }
-
-    private var noteRow: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            HStack {
-                fieldLabel("Note")
-                Spacer()
-                Text("optional")
-                    .font(Typography.caption)
+    private var noteBox: some View {
+        ZStack(alignment: .topLeading) {
+            if draft.note.isEmpty {
+                Text("Anything you want to remember about today?")
+                    .font(Typography.callout)
                     .foregroundStyle(Theme.textSecondary)
+                    .padding(.horizontal, Spacing.s + 5)
+                    .padding(.vertical, Spacing.s + 8)
+                    .allowsHitTesting(false)
             }
             TextEditor(text: $draft.note)
                 .font(Typography.body)
+                .foregroundStyle(Theme.textPrimary)
                 .scrollContentBackground(.hidden)
-                .padding(Spacing.m)
-                .frame(minHeight: 110)
-                .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.card))
+                .padding(Spacing.s)
+                .frame(minHeight: 120)
         }
+        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.control))
+        .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(Theme.separator, lineWidth: 1))
     }
 
-    private func fieldLabel(_ text: String) -> some View {
-        Text(text)
-            .font(Typography.label)
-            .textCase(.uppercase)
-            .foregroundStyle(Theme.textSecondary)
-    }
+    // MARK: - Save
 
-    private func chip(_ label: String, on: Bool, tint: Color?, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(label)
-                .font(Typography.callout)
-                .foregroundStyle(on ? (tint ?? Theme.accent) : Theme.textPrimary)
-                .padding(.horizontal, Spacing.m)
-                .padding(.vertical, Spacing.s)
-                .background(Theme.cardBackground, in: Capsule())
-                .overlay(
-                    Capsule().strokeBorder(on ? (tint ?? Theme.accent) : .clear, lineWidth: 1.5)
-                )
+    private var saveButton: some View {
+        Button("Save check-in") {
+            onSave(draft)
+            dismiss()
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.primary)
+        .disabled(draft.isEmpty)
     }
 }
 
-/// Five equal segments; the selected one fills with the level's gradient.
+/// One signal picker row — a sentence-case title, a mono "N · Name" readout, and the
+/// bare 1→5 glyph ramp with the selected glyph ringed in accent.
 struct SignalScaleRow<Level: SignalLevel & CaseIterable & Equatable>: View {
     let title: String
     let kind: GlyphSignal
@@ -137,51 +109,41 @@ struct SignalScaleRow<Level: SignalLevel & CaseIterable & Equatable>: View {
         VStack(alignment: .leading, spacing: Spacing.s) {
             HStack {
                 Text(title)
-                    .font(Typography.label)
-                    .textCase(.uppercase)
-                    .foregroundStyle(Theme.textSecondary)
+                    .font(Typography.subheadline)
+                    .foregroundStyle(Theme.textPrimary)
                 Spacer()
-                Text(selection?.displayLabel ?? "—")
-                    .font(Typography.callout)
-                    .foregroundStyle(selection == nil ? Theme.textSecondary : Theme.textPrimary)
+                Text(readout)
+                    .font(Typography.mono12)
+                    .foregroundStyle(Theme.textSecondary)
             }
-            HStack(spacing: Spacing.xs + 2) {
+            HStack(spacing: Spacing.s) {
                 ForEach(Array(Level.allCases), id: \.numericValue) { level in
                     Button {
                         selection = selection == level ? nil : level
                     } label: {
-                        SignalGlyph(kind, level: level.numericValue, size: 30, decorative: true)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 40)
-                            .background(
-                                RoundedRectangle(cornerRadius: Radius.control)
-                                    .fill(Theme.cardBackground)
-                            )
+                        SignalGlyph(kind, level: level.numericValue, size: 26, decorative: true)
+                            .padding(4)
                             .overlay(
                                 RoundedRectangle(cornerRadius: Radius.control)
-                                    .strokeBorder(Theme.accent, lineWidth: selection == level ? 2 : 0)
+                                    .strokeBorder(Theme.accent, lineWidth: selection == level ? 1.5 : 0)
                             )
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("\(title) \(level.displayLabel)")
                     .accessibilityAddTraits(selection == level ? [.isSelected] : [])
                 }
+                Spacer(minLength: 0)
             }
         }
+        .padding(.vertical, Spacing.m)
     }
-}
 
-/// Minimal wrapping chip row.
-struct FlowChips<Content: View>: View {
-    @ViewBuilder let content: Content
-
-    var body: some View {
-        LazyVGrid(columns: [GridItem(.adaptive(minimum: 92), spacing: Spacing.s)], alignment: .leading, spacing: Spacing.s) {
-            content
-        }
+    private var readout: String {
+        guard let selection else { return "—" }
+        return "\(selection.numericValue) · \(selection.displayLabel)"
     }
 }
 
 #Preview {
-    TextCheckInComposer(recentMedicationNames: ["Concerta", "Magnesium"]) { _ in }
+    TextCheckInComposer { _ in }
 }

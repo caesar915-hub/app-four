@@ -1,135 +1,97 @@
 import SwiftUI
 
-/// Renders the ADHD-specific fields produced by ProcessingViewModel:
-/// medication info, mood/energy/focus state, and the structured bullet summary.
-/// Hidden entirely when the recording has no ADHD data (e.g., legacy notes).
+/// §07 Recording detail — the **Summary** card (regenerate ↻ + green-dot bullets, plus
+/// feeling/sleep/side-effect tags) and the standalone **Meds** card. The mood/energy/focus
+/// signal readback lives in the detail's top glyph row (RecordingDetailView), not here.
+/// Hidden entirely when the recording carries no ADHD data (e.g. legacy notes).
 struct ADHDSummarySection: View {
     let recording: Recording
     var onRegenerate: (() -> Void)?
 
     var body: some View {
-        if hasContent {
-            VStack(alignment: .leading, spacing: Spacing.l) {
-                HStack {
-                    Text("Log Entries")
-                        .font(Typography.headline)
-                    Spacer()
-                    if let onRegenerate {
-                        Button(action: onRegenerate) {
-                            Image(systemName: "arrow.clockwise")
-                                .foregroundStyle(Theme.accent)
-                        }
-                        .accessibilityLabel("Regenerate summary")
+        VStack(alignment: .leading, spacing: Spacing.l) {
+            if hasSummaryContent { summaryCard }
+            if recording.hasMedication { medsCard }
+        }
+    }
+
+    // MARK: - Summary card
+
+    private var summaryCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            HStack {
+                Text("Summary").cardEyebrow()
+                Spacer()
+                if let onRegenerate {
+                    Button(action: onRegenerate) {
+                        Image(systemName: "arrow.clockwise")
+                            .font(Typography.subheadline)
+                            .foregroundStyle(Theme.accent)
                     }
-                }
-
-                if hasStateBadges {
-                    HStack(spacing: Spacing.s) {
-                        if let mood = recording.mood {
-                            StateBadge(glyph: GlyphBadge(kind: .mood, level: MoodLevel(name: mood)?.numericValue),
-                                       label: "Mood", value: mood, color: recording.moodColor)
-                        }
-                        if let energy = recording.energyLevel {
-                            StateBadge(glyph: GlyphBadge(kind: .energy, level: EnergyLevel(rawValue: energy.lowercased())?.numericValue),
-                                       label: "Energy", value: energy, color: .orange)
-                        }
-                        if let focus = recording.focusLevel {
-                            StateBadge(glyph: GlyphBadge(kind: .focus, level: FocusLevel(rawValue: focus.lowercased())?.numericValue),
-                                       label: "Focus", value: focus, color: .indigo)
-                        }
-                    }
-                }
-
-                if recording.hasMedication {
-                    medicationSection()
-                }
-
-                if hasTags {
-                    TagFlowView(tags: extraTags)
+                    .accessibilityLabel("Regenerate summary")
                 }
             }
-            .card(padding: Spacing.xxl)
+
+            if !recording.summaryBullets.isEmpty {
+                VStack(alignment: .leading, spacing: Spacing.s) {
+                    ForEach(Array(recording.summaryBullets.enumerated()), id: \.offset) { _, bullet in
+                        HStack(alignment: .top, spacing: Spacing.s) {
+                            Circle()
+                                .fill(Theme.meadowGreen)
+                                .frame(width: 5, height: 5)
+                                .padding(.top, 7)
+                            Text(bullet)
+                                .font(Typography.body)
+                                .foregroundStyle(Theme.textPrimary)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                }
+            }
+
+            if hasTags { TagFlowView(tags: extraTags) }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .card()
     }
 
-    private var hasContent: Bool {
-        recording.hasMedication
-            || recording.mood != nil
-            || recording.energyLevel != nil
-            || recording.focusLevel != nil
-            || !recording.decodedFeelings.isEmpty
-            || !recording.decodedSideEffects.isEmpty
-            || recording.decodedSleepLevel != nil
-            || recording.sleepHours != nil
-    }
+    // MARK: - Meds card
 
-    private var hasStateBadges: Bool {
-        recording.mood != nil
-            || recording.energyLevel != nil
-            || recording.focusLevel != nil
-    }
-
-    private var hasTags: Bool { !extraTags.isEmpty }
-
-    private var extraTags: [DisplayTag] {
-        var tags: [DisplayTag] = []
-        for (i, feeling) in recording.decodedFeelings.enumerated() {
-            tags.append(DisplayTag(id: "f-\(i)", label: feeling.capitalized, icon: "heart.fill", color: .pink))
-        }
-        if let level = recording.decodedSleepLevel {
-            tags.append(DisplayTag(id: "sleep", label: level.rawValue.capitalized, icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
-        } else if let hours = recording.sleepHours {
-            let label = hours == hours.rounded() ? "\(Int(hours))h sleep" : "\(hours)h sleep"
-            tags.append(DisplayTag(id: "sleep", label: label, icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
-        }
-        for (i, effect) in recording.decodedSideEffects.enumerated() {
-            tags.append(DisplayTag(id: "se-\(i)", label: effect.capitalized, icon: "bandage.fill", color: .orange))
-        }
-        return tags
-    }
-
-    private func medicationSection() -> some View {
+    private var medsCard: some View {
         let sorted = recording.medicationEvents
             .filter { $0.source == .transcript }
             .sorted { $0.takenAt < $1.takenAt }
-        return VStack(alignment: .leading, spacing: Spacing.s) { // was 6
-            Text("Medication")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding(.leading, Spacing.xs) // was 2
+        return VStack(alignment: .leading, spacing: Spacing.s) {
+            Text("Meds").cardEyebrow()
             VStack(spacing: Spacing.xs) {
                 ForEach(sorted) { event in
                     medicationRow(event)
                 }
             }
         }
-        .padding(Spacing.m)
-        .background(Color.purple.opacity(0.12))
-        .clipShape(.rect(cornerRadius: 12))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .card()
     }
 
     private func medicationRow(_ event: MedicationEvent) -> some View {
-        let timeStr = event.takenAt.formatted(date: .omitted, time: .shortened)
-        return HStack(spacing: Spacing.s) {
+        HStack(spacing: Spacing.s) {
             SignalGlyph(.medication, size: 18, decorative: true)
-            Text(timeStr)
-                .font(.caption)
-                .monospacedDigit()
-                .foregroundStyle(.secondary)
-                .frame(width: 44, alignment: .leading)
             Text(doseText(for: event))
-                .font(Typography.subheadline)
-                .fontWeight(.medium)
-            Spacer(minLength: 0)
-            if let change = event.change {
+                .font(Typography.body)
+                .foregroundStyle(Theme.textPrimary)
+            if let change = event.change, change != .regular {
                 changeBadge(change)
             }
+            Spacer(minLength: 0)
             if !event.taken {
                 Image(systemName: "xmark.circle")
-                    .font(.caption)
-                    .foregroundStyle(.orange.opacity(0.8))
+                    .font(Typography.caption)
+                    .foregroundStyle(Theme.textSecondary)
                     .accessibilityLabel("missed")
             }
+            Text(event.takenAt.formatted(date: .omitted, time: .shortened))
+                .font(Typography.mono12)
+                .foregroundStyle(Theme.textSecondary)
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(medicationRowLabel(event))
@@ -138,27 +100,47 @@ struct ADHDSummarySection: View {
     private func changeBadge(_ change: MedEventChange) -> some View {
         Group {
             if change == .started {
-                Text("Started")
-                    .font(.caption2)
-                    .fontWeight(.semibold)
-                    .padding(.horizontal, Spacing.s) // was 6
-                    .padding(.vertical, Spacing.xs) // was 2
-                    .background(Color.green.opacity(0.15))
-                    .foregroundStyle(.green)
-                    .clipShape(.rect(cornerRadius: 8))
+                badge("Started", Theme.meadowGreen)
             } else if change == .stopped {
-                Text("Stopped")
-                    .font(.caption2)
-                    .fontWeight(.semibold)
-                    .padding(.horizontal, Spacing.s) // was 6
-                    .padding(.vertical, Spacing.xs) // was 2
-                    .background(Color.red.opacity(0.15))
-                    .foregroundStyle(.red)
-                    .clipShape(.rect(cornerRadius: 8))
+                badge("Stopped", Theme.danger)
             }
         }
     }
 
+    private func badge(_ text: String, _ color: Color) -> some View {
+        Text(text)
+            .font(Typography.label)
+            .foregroundStyle(color)
+            .padding(.horizontal, Spacing.s)
+            .padding(.vertical, Spacing.xs)
+            .background(color.opacity(0.15))
+            .clipShape(.rect(cornerRadius: 8))
+    }
+
+    // MARK: - Derived content
+
+    private var hasSummaryContent: Bool {
+        !recording.summaryBullets.isEmpty || hasTags
+    }
+
+    private var hasTags: Bool { !extraTags.isEmpty }
+
+    private var extraTags: [DisplayTag] {
+        var tags: [DisplayTag] = []
+        for (i, feeling) in recording.decodedFeelings.enumerated() {
+            tags.append(DisplayTag(id: "f-\(i)", label: feeling.capitalized, icon: "heart.fill", color: Theme.accent))
+        }
+        if let level = recording.decodedSleepLevel {
+            tags.append(DisplayTag(id: "sleep", label: level.rawValue.capitalized, icon: "moon.fill", color: Palette.sleepIndigo, glyph: GlyphBadge(kind: .sleep)))
+        } else if let hours = recording.sleepHours {
+            let label = hours == hours.rounded() ? "\(Int(hours))h sleep" : "\(hours)h sleep"
+            tags.append(DisplayTag(id: "sleep", label: label, icon: "moon.fill", color: Palette.sleepIndigo, glyph: GlyphBadge(kind: .sleep)))
+        }
+        for (i, effect) in recording.decodedSideEffects.enumerated() {
+            tags.append(DisplayTag(id: "se-\(i)", label: effect.capitalized, icon: "bandage.fill", color: Palette.warning))
+        }
+        return tags
+    }
 
     private func doseText(for event: MedicationEvent) -> String {
         let qty = event.quantity ?? 1.0
@@ -185,42 +167,6 @@ struct ADHDSummarySection: View {
         if let label = event.timeLabel { parts.append(label) }
         if !event.taken { parts.append("missed") }
         return parts.joined(separator: " ")
-    }
-}
-
-private struct StateBadge: View {
-    var icon: String? = nil
-    var glyph: GlyphBadge? = nil
-    let label: String
-    let value: String
-    let color: Color
-
-    var body: some View {
-        VStack(spacing: Spacing.xs) {
-            HStack(spacing: Spacing.xs) {
-                if let glyph {
-                    SignalGlyph(glyph.kind, level: glyph.level, size: 16, decorative: true)
-                } else if let icon {
-                    Image(systemName: icon)
-                        .font(.caption2)
-                        .accessibilityHidden(true)
-                }
-                Text(label)
-                    .font(.caption2)
-                    .fontWeight(.medium)
-            }
-            .foregroundStyle(color)
-            Text(value.capitalized)
-                .font(.caption)
-                .fontWeight(.semibold)
-        }
-        .padding(.horizontal, Spacing.m)
-        .padding(.vertical, Spacing.s)
-        .frame(maxWidth: .infinity)
-        .background(color.opacity(0.15))
-        .clipShape(.rect(cornerRadius: 12))
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(label): \(value)")
     }
 }
 

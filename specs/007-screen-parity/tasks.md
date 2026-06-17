@@ -20,35 +20,35 @@
 
 ## Phase C — Recording detail §07 (P1)
 
-- [ ] T010 `RecordingDetailView`: ⋯ + uppercase date bar, **no back** · Fraunces title · mono meta · signal-glyph summary row · Summary card (↻ + green-dot bullets) · Meds card · Audio card (gradient play + waveform) **last** · gradient "Edit check-in".
-- [ ] T011 Build + screenshot detail (light + dark) vs §07.
+- [X] T010 `RecordingDetailView`: ⋯ + uppercase date bar, **no back** · Fraunces title · mono meta · signal-glyph summary row · Summary card (↻ + green-dot bullets) · Meds card · Audio card (gradient play + waveform) **last** · gradient "Edit check-in".
+- [X] T011 Build + screenshot detail (light + dark) vs §07.
 
 ## Phase D — Edit sheet §07 (P2)
 
-- [ ] T012 `ExtractionReviewView`: grab handle · sticky Cancel/"Edit check-in"/Save header · numbered fields 01 When · 02–04 glyph pickers (name + synonym) · 05 Sleep scale + hour presets + custom input · 06 Medications chip grid + inline-expand card (dose pills · duration box · info time) · 07/08 chip groups · gradient "Save corrections".
-- [ ] T013 Build + screenshot Edit vs §07.
+- [X] T012 `ExtractionReviewView`: grab handle · sticky Cancel/"Edit check-in"/Save header · numbered fields 01 When · 02–04 glyph pickers (name + synonym) · 05 Sleep scale + hour presets + custom input · 06 Medications chip grid + inline-expand card (dose pills · duration box · info time) · 07/08 chip groups · gradient "Save corrections".
+- [X] T013 Build + screenshot Edit vs §07.
 
 ## Phase E — Type-note §06 (P2)
 
-- [ ] T014 `TextCheckInComposer`: navbar (✕ + "Type a check-in") · signals-first glyph pickers · note box ("Anything you want to remember about today?") · gradient "Save check-in".
-- [ ] T015 Build + screenshot Type-note vs §06.
+- [X] T014 `TextCheckInComposer`: navbar (✕ + "Type a check-in") · signals-first glyph pickers · note box ("Anything you want to remember about today?") · gradient "Save check-in".
+- [X] T015 Build + screenshot Type-note vs §06.
 
 ## Phase F — Insights §06 (P2)
 
-- [ ] T016 Insights: Fraunces "Insights" + "today vs your usual" · glyph-led signal rows · Sleep "not tracked yet" dashed chip · 5-section snapping scroll.
-- [ ] T017 Build + screenshot Insights vs §06.
+- [X] T016 Insights: Fraunces "Insights" + "today vs your usual" · glyph-led signal rows · Sleep "not tracked yet" dashed chip · 5-section snapping scroll.
+- [X] T017 Build + screenshot Insights vs §06.
 
 ## Phase G — Medication bar §04 (P3)
 
-- [ ] T018 `MedicationBarOverlay`: capsule glyph · name + bold state label · single purple fill empty→full · onset pulse · mono sub · never alarms.
-- [ ] T019 Build + screenshot the bar vs §04.
+- [X] T018 `MedicationBarOverlay`: capsule glyph · name + bold state label · single purple fill empty→full · onset pulse · mono sub · never alarms.
+- [X] T019 Build + screenshot the bar vs §04.
 
 ## Phase H — Polish
 
-- [ ] T020 Full Swift Testing suite serial → green (no regressions, SC-002).
-- [ ] T021 Light + dark + Dynamic Type pass across all reworked screens (SC-004); Reduce Motion (SC-005).
-- [ ] T022 grep for raw `.purple`/`.orange`/system-blue + hard-coded hexes in reworked screens → tokens (SC-003).
-- [ ] T023 Update DEVLOG + BACKLOG; `/code-review` the diff before PR.
+- [X] T020 Full Swift Testing suite serial → green (no regressions, SC-002).
+- [X] T021 Light + dark + Dynamic Type pass across all reworked screens (SC-004); Reduce Motion (SC-005).
+- [X] T022 grep for raw `.purple`/`.orange`/system-blue + hard-coded hexes in reworked screens → tokens (SC-003).
+- [X] T023 Update DEVLOG + BACKLOG; `/code-review` the diff before PR.
 
 ## Dependencies
 Phase A first (tokens propagate). B–G independent after A (any order; P1 = B, C). H last.

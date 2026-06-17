@@ -3,6 +3,7 @@ import SwiftUI
 struct ExtractionReviewView: View {
     @Bindable var viewModel: ExtractionReviewViewModel
     @Environment(\.dismiss) private var dismiss
+    @State private var customHoursText: String = ""
 
     private struct ChipGroup: Identifiable {
         var id: String { label }
@@ -37,11 +38,16 @@ struct ExtractionReviewView: View {
                     medicationSection
                     feelingsSection
                     sideEffectsSection
+                    saveCorrectionsButton
                 }
-                .padding(Spacing.xl)
+                .padding(Spacing.l)
             }
-            .navigationTitle("Edit")
+            .background(Theme.background.ignoresSafeArea())
+            .scrollContentBackground(.hidden)
+            .navigationTitle("Edit check-in")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(Theme.background, for: .navigationBar)
+            .tint(Theme.accent)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { viewModel.cancel(); dismiss() }
@@ -56,11 +62,11 @@ struct ExtractionReviewView: View {
         .presentationDragIndicator(.visible)
     }
 
-    // MARK: - Date & Time
+    // MARK: - 01 · When
 
     private var dateSection: some View {
         VStack(alignment: .leading, spacing: Spacing.s) {
-            sectionLabel("Date & Time")
+            numberedLabel("01", "When")
             DatePicker("", selection: $viewModel.date, in: ...Date(), displayedComponents: [.date, .hourAndMinute])
                 .datePickerStyle(.compact)
                 .labelsHidden()
@@ -68,27 +74,120 @@ struct ExtractionReviewView: View {
         .sectionCard()
     }
 
-    // MARK: - Mood 0–5
+    // MARK: - 02 · Mood
 
     private var moodSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) { // was 10
-            sectionLabel("Mood")
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            numberedLabel("02", "Mood")
             scaleRow(
                 cases: MoodLevel.allCases,
                 kind: .mood,
                 selected: MoodLevel(rawValue: viewModel.mood),
-                accentColor: moodLevelColor(MoodLevel(rawValue: viewModel.mood)),
+                accentColor: MoodLevel(rawValue: viewModel.mood)?.color ?? Theme.accent,
                 label: { $0.rawValue.capitalized },
                 onSelect: { viewModel.setMood($0 == MoodLevel(rawValue: viewModel.mood) ? "" : $0.rawValue) }
             )
             if let level = MoodLevel(rawValue: viewModel.mood) {
-                subtitleText(level.subtitle)
+                currentLine(level.displayLabel, level.subtitle)
             }
         }
         .sectionCard()
     }
 
-    // MARK: - Medications
+    // MARK: - 03 · Energy
+
+    private var energySection: some View {
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            numberedLabel("03", "Energy")
+            scaleRow(
+                cases: EnergyLevel.allCases,
+                kind: .energy,
+                selected: viewModel.energy,
+                accentColor: viewModel.energy?.color ?? Theme.accent,
+                label: { $0.rawValue.capitalized },
+                onSelect: { viewModel.setEnergy(viewModel.energy == $0 ? nil : $0) }
+            )
+            if let level = viewModel.energy { currentLine(level.displayLabel, level.subtitle) }
+        }
+        .sectionCard()
+    }
+
+    // MARK: - 04 · Focus
+
+    private var focusSection: some View {
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            numberedLabel("04", "Focus")
+            scaleRow(
+                cases: FocusLevel.allCases,
+                kind: .focus,
+                selected: viewModel.focus,
+                accentColor: viewModel.focus?.color ?? Theme.accent,
+                label: { $0.displayLabel },
+                onSelect: { viewModel.setFocus(viewModel.focus == $0 ? nil : $0) }
+            )
+            if let level = viewModel.focus { currentLine(level.displayLabel, level.subtitle) }
+        }
+        .sectionCard()
+    }
+
+    // MARK: - 05 · Sleep
+
+    private let sleepDurations = [2.0, 4.0, 6.0, 8.0, 10.0]
+
+    private var sleepSection: some View {
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            numberedLabel("05", "Sleep")
+            scaleRow(
+                cases: SleepLevel.allCases,
+                selected: viewModel.sleepLevel,
+                accentColor: Palette.sleepIndigo,
+                label: { $0.rawValue.capitalized },
+                onSelect: { viewModel.setSleepLevel(viewModel.sleepLevel == $0 ? nil : $0) }
+            )
+            if let level = viewModel.sleepLevel { currentLine(level.rawValue.capitalized, level.subtitle) }
+
+            HStack(spacing: Spacing.s) {
+                ForEach(sleepDurations, id: \.self) { hours in
+                    let isSelected = viewModel.sleepHours == hours
+                    Button {
+                        viewModel.setSleepHours(isSelected ? nil : hours)
+                        customHoursText = ""
+                    } label: {
+                        Text("\(Int(hours))h")
+                            .font(Typography.caption)
+                            .padding(.horizontal, Spacing.m)
+                            .padding(.vertical, Spacing.s)
+                            .background(isSelected ? Palette.sleepIndigo.opacity(0.2) : Theme.surface2)
+                            .foregroundStyle(isSelected ? Palette.sleepIndigo : Theme.textSecondary)
+                            .clipShape(.rect(cornerRadius: Radius.control))
+                    }
+                    .buttonStyle(.plain)
+                }
+
+                TextField("h", text: $customHoursText)
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.center)
+                    .font(Typography.caption)
+                    .foregroundStyle(Theme.textPrimary)
+                    .frame(width: 52)
+                    .padding(.vertical, Spacing.s)
+                    .background(Theme.surface2, in: RoundedRectangle(cornerRadius: Radius.control))
+                    .onChange(of: customHoursText) { _, text in
+                        if let h = Double(text) { viewModel.setSleepHours(h) }
+                        else if text.isEmpty, !sleepDurations.contains(viewModel.sleepHours ?? -1) { viewModel.setSleepHours(nil) }
+                    }
+                    .accessibilityLabel("Custom sleep hours")
+            }
+        }
+        .sectionCard()
+        .onAppear {
+            if let h = viewModel.sleepHours, !sleepDurations.contains(h) {
+                customHoursText = h == h.rounded() ? String(Int(h)) : String(h)
+            }
+        }
+    }
+
+    // MARK: - 06 · Medications
 
     // Quick-pick chips come from the shared MedicationCatalog (single source of truth, FR-012)
     // — so the Log-Dose sheet and this Edit sheet never drift on which meds exist. NLP can
@@ -98,30 +197,31 @@ struct ExtractionReviewView: View {
     ]
 
     private var medicationSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) { // was 10
-            sectionLabel("Medications")
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            numberedLabel("06", "Medications")
 
             if !viewModel.medications.isEmpty {
-                VStack(spacing: Spacing.s) { // was 6
+                VStack(spacing: Spacing.s) {
                     // Iterate by element (not indices): a med can be removed mid-edit,
                     // and ForEach(indices) re-renders a stale row → Index out of range.
                     ForEach(viewModel.medications, id: \.self) { med in
-                        HStack(spacing: Spacing.s) { // was 10
+                        HStack(spacing: Spacing.s) {
                             SignalGlyph(.medication, size: 18, decorative: true)
-                            VStack(alignment: .leading, spacing: Spacing.xs) { // was 2
+                            VStack(alignment: .leading, spacing: Spacing.xs) {
                                 HStack(spacing: Spacing.xs) {
                                     Text(med.name)
                                         .font(Typography.body)
+                                        .foregroundStyle(Theme.textPrimary)
                                     TextField("Dose", text: Binding(
                                         get: { med.dose ?? "" },
                                         set: { viewModel.setMedDose(med, dose: $0.isEmpty ? nil : $0) }
                                     ))
                                     .font(Typography.body)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(Theme.textSecondary)
                                     .frame(width: 60)
                                 }
                                 if let label = med.timeLabel ?? med.time {
-                                    Text(label).font(Typography.caption).foregroundStyle(.secondary)
+                                    Text(label).font(Typography.caption).foregroundStyle(Theme.textSecondary)
                                 }
                             }
                             Spacer()
@@ -129,12 +229,11 @@ struct ExtractionReviewView: View {
                                 viewModel.toggleMedTaken(med)
                             } label: {
                                 Text(med.taken ? "Taken" : "Missed")
-                                    .font(.caption2)
-                                    .fontWeight(.medium)
-                                    .padding(.horizontal, Spacing.s) // was 10
+                                    .font(Typography.label)
+                                    .padding(.horizontal, Spacing.s)
                                     .padding(.vertical, Spacing.xs)
-                                    .background(med.taken ? Color.green.opacity(0.15) : Color.orange.opacity(0.15))
-                                    .foregroundStyle(med.taken ? .green : .orange)
+                                    .background(med.taken ? Theme.meadowGreen.opacity(0.15) : Palette.warning.opacity(0.15))
+                                    .foregroundStyle(med.taken ? Theme.meadowGreen : Palette.warning)
                                     .clipShape(.rect(cornerRadius: 8))
                             }
                             .buttonStyle(.plain)
@@ -146,22 +245,17 @@ struct ExtractionReviewView: View {
             }
 
             ForEach(medicationGroups) { group in
-                VStack(alignment: .leading, spacing: Spacing.s) {
-                    Text(group.label)
-                        .font(Typography.caption)
-                        .foregroundStyle(.secondary)
-                    FlowLayout(spacing: Spacing.s) {
-                        ForEach(group.items, id: \.self) { medName in
-                            let on = viewModel.medications.contains(where: { $0.name == medName })
-                            Chip.filter(medName, isSelected: on) {
-                                if on {
-                                    viewModel.removeMedication(medName)
-                                } else {
-                                    viewModel.addMedication(medName)
-                                }
+                FlowLayout(spacing: Spacing.s) {
+                    ForEach(group.items, id: \.self) { medName in
+                        let on = viewModel.medications.contains(where: { $0.name == medName })
+                        Chip.filter(medName, isSelected: on) {
+                            if on {
+                                viewModel.removeMedication(medName)
+                            } else {
+                                viewModel.addMedication(medName)
                             }
-                            .accessibilityLabel("\(medName)\(on ? ", selected" : "")")
                         }
+                        .accessibilityLabel("\(medName)\(on ? ", selected" : "")")
                     }
                 }
             }
@@ -169,52 +263,16 @@ struct ExtractionReviewView: View {
         .sectionCard()
     }
 
-    // MARK: - Energy 0–5
-
-    private var energySection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) { // was 10
-            sectionLabel("Energy")
-            scaleRow(
-                cases: EnergyLevel.allCases,
-                kind: .energy,
-                selected: viewModel.energy,
-                accentColor: .orange,
-                label: { $0.rawValue.capitalized },
-                onSelect: { viewModel.setEnergy(viewModel.energy == $0 ? nil : $0) }
-            )
-            if let level = viewModel.energy { subtitleText(level.subtitle) }
-        }
-        .sectionCard()
-    }
-
-    // MARK: - Focus 0–5
-
-    private var focusSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) { // was 10
-            sectionLabel("Focus")
-            scaleRow(
-                cases: FocusLevel.allCases,
-                kind: .focus,
-                selected: viewModel.focus,
-                accentColor: .indigo,
-                label: { $0.displayLabel },
-                onSelect: { viewModel.setFocus(viewModel.focus == $0 ? nil : $0) }
-            )
-            if let level = viewModel.focus { subtitleText(level.subtitle) }
-        }
-        .sectionCard()
-    }
-
-    // MARK: - Feelings
+    // MARK: - 07 · Feelings
 
     private var feelingsSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.m) { // was 14 (equidistant 12/16; chose tighter)
-            sectionLabel("Feelings")
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            numberedLabel("07", "Feelings")
             ForEach(feelingGroups) { group in
                 VStack(alignment: .leading, spacing: Spacing.s) {
                     Text(group.label)
                         .font(Typography.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.textSecondary)
                     FlowLayout(spacing: Spacing.s) {
                         ForEach(group.items, id: \.self) { feeling in
                             let on = viewModel.feelings.contains(feeling)
@@ -230,49 +288,11 @@ struct ExtractionReviewView: View {
         .sectionCard()
     }
 
-    // MARK: - Sleep 0–5
-
-    private let sleepDurations = [2.0, 4.0, 6.0, 8.0, 10.0]
-
-    private var sleepSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) { // was 10
-            sectionLabel("Sleep")
-            scaleRow(
-                cases: SleepLevel.allCases,
-                selected: viewModel.sleepLevel,
-                accentColor: .indigo,
-                label: { $0.rawValue.capitalized },
-                onSelect: { viewModel.setSleepLevel(viewModel.sleepLevel == $0 ? nil : $0) }
-            )
-            if let level = viewModel.sleepLevel { subtitleText(level.subtitle) }
-
-            HStack(spacing: Spacing.s) {
-                ForEach(sleepDurations, id: \.self) { hours in
-                    let isSelected = viewModel.sleepHours == hours
-                    Button {
-                        viewModel.setSleepHours(isSelected ? nil : hours)
-                    } label: {
-                        Text("\(Int(hours))h")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                            .padding(.horizontal, Spacing.m)
-                            .padding(.vertical, Spacing.s) // was 6
-                            .background(isSelected ? Color.indigo.opacity(0.2) : Color.secondary.opacity(0.1))
-                            .foregroundStyle(isSelected ? .indigo : .secondary)
-                            .clipShape(.rect(cornerRadius: 10))
-                    }
-                    .buttonStyle(.plain)
-                }
-            }
-        }
-        .sectionCard()
-    }
-
-    // MARK: - Side Effects
+    // MARK: - 08 · Side Effects
 
     private var sideEffectsSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) { // was 10
-            sectionLabel("Side Effects")
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            numberedLabel("08", "Side effects")
             FlowLayout(spacing: Spacing.s) {
                 ForEach(commonSideEffects, id: \.self) { effect in
                     let on = viewModel.sideEffects.contains(effect)
@@ -284,6 +304,17 @@ struct ExtractionReviewView: View {
             }
         }
         .sectionCard()
+    }
+
+    // MARK: - Save corrections
+
+    private var saveCorrectionsButton: some View {
+        Button("Save corrections") {
+            viewModel.confirm()
+            dismiss()
+        }
+        .buttonStyle(.primary)
+        .padding(.top, Spacing.s)
     }
 
     // MARK: - Reusable scale row
@@ -311,39 +342,36 @@ struct ExtractionReviewView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, Spacing.s)
-                    .background(isSelected ? accentColor.opacity(0.2) : Color.secondary.opacity(0.07))
-                    .foregroundStyle(isSelected ? accentColor : .secondary)
+                    .background(isSelected ? accentColor.opacity(0.2) : Theme.surface2)
+                    .foregroundStyle(isSelected ? accentColor : Theme.textSecondary)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(label(level))
             }
         }
-        .clipShape(.rect(cornerRadius: 12))
+        .clipShape(.rect(cornerRadius: Radius.control))
     }
 
     // MARK: - Helpers
 
-    private func sectionLabel(_ text: String) -> some View {
-        Text(text)
-            .font(Typography.headline)
-    }
-
-    private func subtitleText(_ text: String) -> some View {
-        Text(text)
-            .font(Typography.caption)
-            .foregroundStyle(.secondary)
-            .padding(.horizontal, Spacing.xs) // was 2
-    }
-
-    private func moodLevelColor(_ level: MoodLevel?) -> Color {
-        switch level {
-        case .low:  return .orange
-        case .flat: return Color(.systemGray)
-        case .okay: return .blue
-        case .good: return .green
-        case .great: return .teal
-        case nil:   return .blue
+    private func numberedLabel(_ number: String, _ title: String) -> some View {
+        HStack(spacing: Spacing.s) {
+            Text(number)
+                .font(Typography.mono12)
+                .foregroundStyle(Theme.accent)
+            Text(title)
+                .font(Typography.label)
+                .textCase(.uppercase)
+                .tracking(0.6)
+                .foregroundStyle(Theme.textSecondary)
         }
+    }
+
+    private func currentLine(_ name: String, _ synonym: String) -> some View {
+        Text("\(name) · \(synonym)")
+            .font(Typography.caption)
+            .foregroundStyle(Theme.textSecondary)
+            .padding(.horizontal, Spacing.xs)
     }
 }
 

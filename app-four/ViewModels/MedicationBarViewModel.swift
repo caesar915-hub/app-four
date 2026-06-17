@@ -35,27 +35,6 @@ final class MedicationBarViewModel {
         let doseNumber: Int
         let totalDosesToday: Int
         let progress: Double
-
-        var color: Color { MedicationBarViewModel.effectColor(for: progress) }
-    }
-
-    /// Lavender(0–20%) → deep purple(20–80%) → light red(80–100%).
-    static func effectColor(for progress: Double) -> Color {
-        let p = min(1, max(0, progress))
-        typealias RGB = (r: Double, g: Double, b: Double)
-        let lavender: RGB = (0.82, 0.72, 1.00)
-        let purple:   RGB = (0.45, 0.00, 0.75)
-        let lightRed: RGB = (1.00, 0.55, 0.55)
-        func lerp(_ a: RGB, _ b: RGB, _ t: Double) -> RGB {
-            (a.r + t * (b.r - a.r), a.g + t * (b.g - a.g), a.b + t * (b.b - a.b))
-        }
-        let c: RGB
-        switch p {
-        case 0..<0.2:  c = lerp(lavender, purple,  p / 0.2)
-        case 0.2..<0.8: c = purple
-        default:       c = lerp(purple,   lightRed, (p - 0.8) / 0.2)
-        }
-        return Color(red: c.r, green: c.g, blue: c.b)
     }
 
     init(context: ModelContext? = nil) {

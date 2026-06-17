@@ -54,7 +54,7 @@ private struct RhythmCellView: View {
                     .fill(level.fillGradient)
                     .frame(width: blobSize, height: blobSize)
                 Text(level.displayLabel)
-                    .font(.system(size: 9, weight: .medium))
+                    .font(Typography.label)
                     .foregroundStyle(Theme.textSecondary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
@@ -66,7 +66,7 @@ private struct RhythmCellView: View {
                     )
                     .frame(width: blobSize, height: blobSize)
                 Text("—")
-                    .font(.system(size: 9))
+                    .font(Typography.label)
                     .foregroundStyle(Theme.textSecondary.opacity(0.4))
             }
         }

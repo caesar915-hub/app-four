@@ -34,6 +34,19 @@ extension View {
     }
 }
 
+// MARK: - Card section eyebrow
+
+extension Text {
+    /// Uppercase, tracked, muted eyebrow used as a card/section header (e.g. "Summary", "Meds", "Audio").
+    func cardEyebrow() -> some View {
+        self
+            .font(Typography.label)
+            .textCase(.uppercase)
+            .tracking(0.7)
+            .foregroundStyle(Theme.textSecondary)
+    }
+}
+
 // MARK: - Preview
 
 #Preview {

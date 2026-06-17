@@ -32,7 +32,7 @@ struct CheckInView: View {
             }
         }
         .sheet(isPresented: $showComposer) {
-            TextCheckInComposer(recentMedicationNames: viewModel.recentMedicationNames) { draft in
+            TextCheckInComposer { draft in
                 viewModel.saveTextCheckIn(draft)
             }
         }

@@ -21,10 +21,19 @@ private struct StripRow: View {
     let strip: SignalStrip
     let onBeadTap: (Date) -> Void
 
+    /// The strip's modal (most-common) level, so the row glyph reflects the month rather
+    /// than a hardcoded value. Falls back to mid-scale when the month has no data.
+    private var representativeLevel: Int {
+        let levels = strip.beads.compactMap { $0.level?.numericValue }
+        guard !levels.isEmpty else { return 3 }
+        let counts = Dictionary(grouping: levels, by: { $0 }).mapValues(\.count)
+        return counts.max { $0.value < $1.value }?.key ?? 3
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             HStack {
-                SignalGlyph(strip.kind.glyphSignal, level: 4, size: 18, decorative: true)
+                SignalGlyph(strip.kind.glyphSignal, level: representativeLevel, size: 18, decorative: true)
                 Text(strip.kind.label)
                     .font(Typography.subheadline)
                     .fontWeight(.medium)

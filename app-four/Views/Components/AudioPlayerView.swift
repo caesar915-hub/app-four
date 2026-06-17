@@ -11,6 +11,9 @@ struct AudioPlayerView: View {
 
     var body: some View {
         HStack(spacing: Spacing.m) {
+            playPauseButton
+                .frame(width: 36, height: 36)
+
             PlaybackWaveformBars(
                 seed: recording.id.uuidString,
                 progress: viewModel.duration > 0 ? viewModel.currentTime / viewModel.duration : 0,
@@ -20,17 +23,11 @@ struct AudioPlayerView: View {
             )
 
             Text(timeString(viewModel.currentTime))
-                .font(.system(.subheadline, design: .monospaced))
+                .font(Typography.duration)
                 .monospacedDigit()
-                .frame(minWidth: 40, alignment: .trailing)
-
-            playPauseButton
-                .frame(width: 40, height: 40)
+                .foregroundStyle(Theme.textSecondary)
+                .frame(minWidth: 42, alignment: .trailing)
         }
-        .padding(.vertical, Spacing.m)
-        .padding(.horizontal, Spacing.l)
-        .background(Color(.secondarySystemBackground))
-        .clipShape(.capsule)
         .onDisappear {
             viewModel.cleanup()
         }
@@ -48,10 +45,10 @@ struct AudioPlayerView: View {
             }
         } label: {
             Image(systemName: iconName)
-                .font(Typography.headline.weight(.semibold))
+                .font(Typography.subheadline.weight(.semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color(.systemGray3), in: Circle())
+                .background(Theme.meadowGradient, in: Circle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel)
