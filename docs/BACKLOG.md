@@ -46,7 +46,7 @@ Gates:
 
 Gates — everything in v0.8, plus what makes it usable by someone else:
 - [x] Calendar day-selection & navigation — merged to `main` (PR #8, 2026-06-14)
-- [ ] _onboarding / empty states good enough for a stranger's first run?_ — ⚠️ onboarding hero still hardcodes **"Welcome to Whisper Notes"** (Squirl rename missed it; seen on sim launch 2026-06-15). Fix as part of this gate.
+- [ ] _onboarding / empty states good enough for a stranger's first run?_ — 🔨 **visible-name half done** on `fix/squirl-rename` / **PR #6** (2026-06-17): all 6 "Whisper Notes" strings (onboarding welcome/permission/download/CTA + 2 CheckIn alerts) **+** the `@main` entry point (`WhisperNotesApp` → `SquirlApp`) renamed to "Squirl"; build green + 277/277 suite green. `whispernotes://` URL scheme + `WhisperCLI` banner intentionally kept (functional contract / separate target). Remaining for this gate: empty-states / first-run polish.
 
 _(Insights palette: v0.9 → v0.8 on 2026-06-14, then → v0.8.1 on 2026-06-15.)_
 
