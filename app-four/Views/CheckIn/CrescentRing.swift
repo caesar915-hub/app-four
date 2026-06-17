@@ -1,35 +1,53 @@
 import SwiftUI
 
-/// The How-We-Feel-style check-in ring: a soft, rounded ~295° arc that rotates
-/// slowly at rest and faster while recording. Purely decorative.
+/// The Paper & Pollen check-in ring: a soft ~295° arc that fades **green → amber**.
+/// At rest it **breathes** (idle); while recording it **spins** (active). Decorative.
 struct CrescentRing: View {
     var isActive: Bool = false
     var lineWidth: CGFloat = 22
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var spinning = false
+    @State private var breathing = false
 
-    private var revolutionSeconds: Double { isActive ? 7 : 16 }
-
-    var body: some View {
+    private var arc: some View {
         Circle()
             .trim(from: 0, to: 0.82)
-            .stroke(.quaternary, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-            .padding(lineWidth / 2)
-            .rotationEffect(.degrees(spinning ? 360 : 0))
-            .animation(
-                AccessibilityHelpers.isReduceMotionEnabled
-                    ? nil
-                    : .linear(duration: revolutionSeconds).repeatForever(autoreverses: false),
-                value: spinning
+            .stroke(
+                AngularGradient(
+                    gradient: Gradient(stops: [
+                        .init(color: .clear, location: 0.0),
+                        .init(color: Theme.meadowGreen, location: 0.18),
+                        .init(color: Theme.meadowAmber, location: 0.62),
+                        .init(color: .clear, location: 0.82),
+                    ]),
+                    center: .center,
+                    startAngle: .degrees(135),
+                    endAngle: .degrees(135 + 360)
+                ),
+                style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
             )
-            .onAppear { spinning = true }
-            .onChange(of: isActive) {
-                // Restart so the new speed takes effect; the phase snap is masked
-                // by the hub <-> recording crossfade.
-                spinning = false
-                Task { @MainActor in spinning = true }
+            .padding(lineWidth / 2)
+    }
+
+    var body: some View {
+        Group {
+            if isActive {
+                arc
+                    .rotationEffect(.degrees(spinning ? 360 : 0))
+                    .animation(reduceMotion ? nil : .linear(duration: 7).repeatForever(autoreverses: false),
+                               value: spinning)
+                    .onAppear { spinning = true }
+            } else {
+                arc
+                    .scaleEffect(breathing ? 1.035 : 1.0)
+                    .opacity(breathing ? 1.0 : 0.94)
+                    .animation(reduceMotion ? nil : .easeInOut(duration: 5).repeatForever(autoreverses: true),
+                               value: breathing)
+                    .onAppear { breathing = true }
             }
-            .accessibilityHidden(true)
+        }
+        .accessibilityHidden(true)
     }
 }
 

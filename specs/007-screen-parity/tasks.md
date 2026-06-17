@@ -12,11 +12,11 @@
 
 ## Phase B — Check-in §05 (P1) 🎯
 
-- [ ] T005 `CrescentRing`: 130-pt conic green→amber arc; **breathe** (idle ~5s) / **spin** (listening ~7s) / **settle-to-check** (saved); honor Reduce Motion.
-- [ ] T006 `CheckInView` Idle: uppercase date · Fraunces "Ready when you are." · crescent · gradient "Speak check-in" · two ghost secondaries · medication overlay pill · tab bar.
-- [ ] T007 `CheckInView` Listening: mono timer + pulsing rec dot + ✕ · rotating Fraunces nudge · thin progress bar + prompt dots · spinning crescent · dark "Stop & save".
-- [ ] T008 `CheckInView` Saved: gradient checkmark pop · Fraunces "Captured." · subtitle · "Done" + "Check in again" ghost · no transcribing UI.
-- [ ] T009 Build + screenshot all 3 states (light + dark) vs §05.
+- [X] T005 `CrescentRing`: 130-pt conic green→amber arc; **breathe** (idle ~5s) / **spin** (listening ~7s) / **settle-to-check** (saved); honor Reduce Motion.
+- [X] T006 `CheckInView` Idle: uppercase date · Fraunces "Ready when you are." · crescent · gradient "Speak check-in" · two ghost secondaries · medication overlay pill · tab bar.
+- [X] T007 `CheckInView` Listening: mono timer + pulsing rec dot + ✕ · rotating Fraunces nudge · thin progress bar + prompt dots · spinning crescent · dark "Stop & save".
+- [X] T008 `CheckInView` Saved: gradient checkmark pop · Fraunces "Captured." · subtitle · "Done" + "Check in again" ghost · no transcribing UI.
+- [X] T009 Build + screenshot all 3 states (light + dark) vs §05.
 
 ## Phase C — Recording detail §07 (P1)
 
