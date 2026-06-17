@@ -5,10 +5,10 @@
 
 ## Phase A — Shared tokens (propagates to every screen)
 
-- [ ] T001 Align `Palette`/`Theme` colors to the mockup `:root` + dark vars (bg `#F6F1E7`, surface `#FCF8EF`, surface-2 `#EFE8D8`, ink `#221E16`, muted `#7A7361`, hairline `#E3DAC7`, green `#5F8A4C`, amber `#E0A33A`, accent `#B8842A`, med `#7E5CA8`).
-- [ ] T002 Align `Typography` roles to Fraunces (display, +italic) / DM Sans (body/UI) / IBM Plex Mono (data/time), matching the mockup sizes.
-- [ ] T003 Align shared components: primary = green→amber **gradient pill**, secondary = **ghost** hairline pill (`Buttons.swift`); card = surface + hairline + soft shadow, radius 14–18 (`Card.swift`).
-- [ ] T004 Build green after token changes (no regressions).
+- [X] T001 Align `Palette`/`Theme` colors to the mockup `:root` + dark vars (bg `#F6F1E7`, surface `#FCF8EF`, surface-2 `#EFE8D8`, ink `#221E16`, muted `#7A7361`, hairline `#E3DAC7`, green `#5F8A4C`, amber `#E0A33A`, accent `#B8842A`, med `#7E5CA8`).
+- [X] T002 Align `Typography` roles to Fraunces (display, +italic) / DM Sans (body/UI) / IBM Plex Mono (data/time), matching the mockup sizes.
+- [X] T003 Align shared components: primary = green→amber **gradient pill**, secondary = **ghost** hairline pill (`Buttons.swift`); card = surface + hairline + soft shadow, radius 14–18 (`Card.swift`).
+- [X] T004 Build green after token changes (no regressions).
 
 ## Phase B — Check-in §05 (P1) 🎯
 
