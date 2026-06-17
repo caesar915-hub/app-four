@@ -26,21 +26,26 @@ struct ExtractionReviewView: View {
         "rebound", "crash", "sweating", "grinding teeth", "flat affect"
     ]
 
+    private let sleepDurations = [2.0, 4.0, 6.0, 8.0, 10.0]
+
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: Spacing.l) {
-                    dateSection
-                    moodSection
-                    energySection
-                    focusSection
-                    sleepSection
-                    medicationSection
-                    feelingsSection
-                    sideEffectsSection
-                    saveCorrectionsButton
+                VStack(alignment: .leading, spacing: 0) {
+                    whenField
+                    moodField
+                    energyField
+                    focusField
+                    sleepField
+                    medicationsField
+                    feelingsField
+                    sideEffectsField
+                    Button("Save corrections") { save() }
+                        .buttonStyle(.primary)
+                        .padding(.top, Spacing.l)
                 }
-                .padding(Spacing.l)
+                .padding(.horizontal, Spacing.l)
+                .padding(.bottom, Spacing.l)
             }
             .background(Theme.background.ignoresSafeArea())
             .scrollContentBackground(.hidden)
@@ -53,344 +58,382 @@ struct ExtractionReviewView: View {
                     Button("Cancel") { viewModel.cancel(); dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { save() }
-                        .fontWeight(.semibold)
+                    Button("Save") { save() }.fontWeight(.semibold)
                 }
             }
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
+        .onAppear(perform: syncCustomHours)
     }
 
-    // MARK: - 01 · When
+    // MARK: - Field scaffold (hairline-separated, not cards)
 
-    private var dateSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            numberedLabel("01", "When")
-            DatePicker("", selection: $viewModel.date, in: ...Date(), displayedComponents: [.date, .hourAndMinute])
-                .datePickerStyle(.compact)
-                .labelsHidden()
+    private func field<H: View, C: View>(@ViewBuilder header: () -> H, @ViewBuilder content: () -> C) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: Spacing.m) {
+                header()
+                content()
+            }
+            .padding(.vertical, Spacing.l)
+            Divider().overlay(Theme.separator)
         }
-        .sectionCard()
     }
 
-    // MARK: - 02 · Mood
+    private func numberedHeader<T: View>(_ number: String, _ name: String, @ViewBuilder trailing: () -> T) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
+            Text(number).font(Typography.mono12).foregroundStyle(Theme.accent)
+            Text(name).cardEyebrow()
+            Spacer()
+            trailing()
+        }
+    }
 
-    private var moodSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            numberedLabel("02", "Mood")
-            scaleRow(
-                cases: MoodLevel.allCases,
-                kind: .mood,
-                selected: MoodLevel(rawValue: viewModel.mood),
-                accentColor: MoodLevel(rawValue: viewModel.mood)?.color ?? Theme.accent,
-                label: { $0.rawValue.capitalized },
-                onSelect: { viewModel.setMood($0 == MoodLevel(rawValue: viewModel.mood) ? "" : $0.rawValue) }
-            )
-            if let level = MoodLevel(rawValue: viewModel.mood) {
-                currentLine(level.displayLabel, level.subtitle)
+    /// The "Great · bright, thriving" current-value line: name accent, synonym muted.
+    @ViewBuilder
+    private func synonym(_ name: String?, _ syn: String?) -> some View {
+        if let name {
+            Text(name).font(Typography.caption.weight(.semibold)).foregroundStyle(Theme.accent)
+            + Text(syn.map { " · \($0)" } ?? "").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+        }
+    }
+
+    // MARK: - 01 When
+
+    private var whenField: some View {
+        field {
+            numberedHeader("01", "When") { EmptyView() }
+        } content: {
+            HStack(spacing: Spacing.s) {
+                dateBox("Date") {
+                    DatePicker("", selection: $viewModel.date, in: ...Date(), displayedComponents: .date).labelsHidden()
+                }
+                dateBox("Time") {
+                    DatePicker("", selection: $viewModel.date, in: ...Date(), displayedComponents: .hourAndMinute).labelsHidden()
+                }
             }
         }
-        .sectionCard()
     }
 
-    // MARK: - 03 · Energy
-
-    private var energySection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            numberedLabel("03", "Energy")
-            scaleRow(
-                cases: EnergyLevel.allCases,
-                kind: .energy,
-                selected: viewModel.energy,
-                accentColor: viewModel.energy?.color ?? Theme.accent,
-                label: { $0.rawValue.capitalized },
-                onSelect: { viewModel.setEnergy(viewModel.energy == $0 ? nil : $0) }
-            )
-            if let level = viewModel.energy { currentLine(level.displayLabel, level.subtitle) }
+    private func dateBox<P: View>(_ label: String, @ViewBuilder picker: () -> P) -> some View {
+        HStack {
+            Text(label).font(Typography.caption).foregroundStyle(Theme.textSecondary)
+            Spacer()
+            picker()
         }
-        .sectionCard()
+        .padding(.horizontal, Spacing.m)
+        .padding(.vertical, Spacing.s)
+        .frame(maxWidth: .infinity)
+        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.control))
+        .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(Theme.separator, lineWidth: 1))
     }
 
-    // MARK: - 04 · Focus
+    // MARK: - 02/03/04 Mood / Energy / Focus
 
-    private var focusSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            numberedLabel("04", "Focus")
-            scaleRow(
-                cases: FocusLevel.allCases,
-                kind: .focus,
-                selected: viewModel.focus,
-                accentColor: viewModel.focus?.color ?? Theme.accent,
-                label: { $0.displayLabel },
-                onSelect: { viewModel.setFocus(viewModel.focus == $0 ? nil : $0) }
-            )
-            if let level = viewModel.focus { currentLine(level.displayLabel, level.subtitle) }
+    private var moodField: some View {
+        field {
+            numberedHeader("02", "Mood") {
+                let level = MoodLevel(rawValue: viewModel.mood)
+                synonym(level?.displayLabel, level?.subtitle)
+            }
+        } content: {
+            GlyphRampPicker(kind: .mood, selection: moodBinding)
         }
-        .sectionCard()
     }
 
-    // MARK: - 05 · Sleep
+    private var energyField: some View {
+        field {
+            numberedHeader("03", "Energy") {
+                synonym(viewModel.energy?.displayLabel, viewModel.energy?.subtitle)
+            }
+        } content: {
+            GlyphRampPicker(kind: .energy, selection: energyBinding)
+        }
+    }
 
-    private let sleepDurations = [2.0, 4.0, 6.0, 8.0, 10.0]
+    private var focusField: some View {
+        field {
+            numberedHeader("04", "Focus") {
+                synonym(viewModel.focus?.displayLabel, viewModel.focus?.subtitle)
+            }
+        } content: {
+            GlyphRampPicker(kind: .focus, selection: focusBinding)
+        }
+    }
 
-    private var sleepSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            numberedLabel("05", "Sleep")
-            scaleRow(
-                cases: SleepLevel.allCases,
-                selected: viewModel.sleepLevel,
-                accentColor: Palette.sleepIndigo,
-                label: { $0.rawValue.capitalized },
-                onSelect: { viewModel.setSleepLevel(viewModel.sleepLevel == $0 ? nil : $0) }
-            )
-            // Sleep is the one signal that drops synonyms (DESIGN.md) — show the named level only.
-            if let level = viewModel.sleepLevel {
-                Text(level.rawValue.capitalized)
+    private var moodBinding: Binding<MoodLevel?> {
+        Binding(get: { MoodLevel(rawValue: viewModel.mood) }, set: { viewModel.setMood($0?.rawValue ?? "") })
+    }
+    private var energyBinding: Binding<EnergyLevel?> {
+        Binding(get: { viewModel.energy }, set: { viewModel.setEnergy($0) })
+    }
+    private var focusBinding: Binding<FocusLevel?> {
+        Binding(get: { viewModel.focus }, set: { viewModel.setFocus($0) })
+    }
+
+    // MARK: - 05 Sleep (named scale, no synonyms, + hours)
+
+    private var sleepField: some View {
+        field {
+            HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
+                SignalGlyph(.sleep, size: 16, decorative: true)
+                Text("05").font(Typography.mono12).foregroundStyle(Theme.accent)
+                Text("Sleep").cardEyebrow()
+                Spacer()
+                Text("no synonyms").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+            }
+        } content: {
+            VStack(alignment: .leading, spacing: Spacing.s) {
+                HStack(spacing: Spacing.xs) {
+                    ForEach(SleepLevel.allCases, id: \.self) { level in
+                        segPill(level.rawValue.capitalized,
+                                on: viewModel.sleepLevel == level,
+                                tint: Palette.sleepIndigo,
+                                selectedText: Theme.textPrimary) {
+                            viewModel.setSleepLevel(viewModel.sleepLevel == level ? nil : level)
+                        }
+                    }
+                }
+                HStack(spacing: Spacing.xs) {
+                    ForEach(sleepDurations, id: \.self) { hours in
+                        segPill("\(Int(hours))h",
+                                on: viewModel.sleepHours == hours,
+                                tint: Theme.accent,
+                                selectedText: Theme.accent) {
+                            viewModel.setSleepHours(viewModel.sleepHours == hours ? nil : hours)
+                            customHoursText = ""
+                        }
+                    }
+                    customHoursBox
+                }
+            }
+        }
+    }
+
+    private func segPill(_ text: String, on: Bool, tint: Color, selectedText: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(text)
+                .font(Typography.caption.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, Spacing.s)
+                .background(on ? tint.opacity(0.16) : Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.control))
+                .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(on ? tint : Theme.separator, lineWidth: 1))
+                .foregroundStyle(on ? selectedText : Theme.textSecondary)
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(on ? [.isSelected] : [])
+    }
+
+    private var customHoursBox: some View {
+        HStack(spacing: Spacing.xs) {
+            TextField("7.5", text: $customHoursText)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .font(Typography.mono12)
+                .foregroundStyle(Theme.textPrimary)
+                .frame(maxWidth: .infinity)
+                .onChange(of: customHoursText) { _, text in
+                    if let h = Double(text) { viewModel.setSleepHours(h) }
+                }
+            Text("h").font(Typography.mono12).foregroundStyle(Theme.textSecondary)
+        }
+        .padding(.horizontal, Spacing.s)
+        .padding(.vertical, Spacing.s)
+        .frame(maxWidth: .infinity)
+        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.control))
+        .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(isCustomHours ? Theme.accent : Theme.separator, lineWidth: 1))
+        .accessibilityLabel("Custom sleep hours")
+    }
+
+    private var isCustomHours: Bool {
+        guard let h = viewModel.sleepHours else { return false }
+        return !sleepDurations.contains(h)
+    }
+
+    private func syncCustomHours() {
+        if let h = viewModel.sleepHours, !sleepDurations.contains(h) {
+            customHoursText = h == h.rounded() ? String(Int(h)) : String(h)
+        }
+    }
+
+    // MARK: - 06 Medications (inline-expand)
+
+    private var medicationsField: some View {
+        field {
+            numberedHeader("06", "Medications") {
+                Text("Stimulants · no limit").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+            }
+        } content: {
+            VStack(alignment: .leading, spacing: Spacing.s) {
+                ForEach(viewModel.medications, id: \.name) { med in
+                    selectedMedCard(med)
+                }
+                medGrid
+                Text("Tap to add · expands inline · × to remove · independent events")
                     .font(Typography.caption)
                     .foregroundStyle(Theme.textSecondary)
-                    .padding(.horizontal, Spacing.xs)
             }
+        }
+    }
 
+    private func selectedMedCard(_ med: MedEvent) -> some View {
+        let entry = MedicationCatalog.entry(matching: med.name)
+        return VStack(alignment: .leading, spacing: Spacing.s) {
             HStack(spacing: Spacing.s) {
-                ForEach(sleepDurations, id: \.self) { hours in
-                    let isSelected = viewModel.sleepHours == hours
-                    Button {
-                        viewModel.setSleepHours(isSelected ? nil : hours)
-                        customHoursText = ""
-                    } label: {
-                        Text("\(Int(hours))h")
-                            .font(Typography.caption)
-                            .padding(.horizontal, Spacing.m)
-                            .padding(.vertical, Spacing.s)
-                            .background(isSelected ? Palette.sleepIndigo.opacity(0.2) : Theme.surface2)
-                            .foregroundStyle(isSelected ? Palette.sleepIndigo : Theme.textSecondary)
-                            .clipShape(.rect(cornerRadius: Radius.control))
-                    }
-                    .buttonStyle(.plain)
+                SignalGlyph(.medication, size: 22, decorative: true)
+                Text(med.name).font(Typography.subheadline.weight(.semibold)).foregroundStyle(Theme.textPrimary)
+                Spacer()
+                Button { viewModel.toggleMedTaken(med) } label: {
+                    Text(med.taken ? "Taken" : "Missed")
+                        .font(Typography.label)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, Spacing.s)
+                        .padding(.vertical, Spacing.xs)
+                        .background(med.taken ? Palette.medication : Theme.textSecondary, in: Capsule())
                 }
+                .buttonStyle(.plain)
+                Button { viewModel.removeMedication(med.name) } label: {
+                    Image(systemName: "xmark").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Remove \(med.name)")
+            }
 
-                TextField("h", text: $customHoursText)
-                    .keyboardType(.decimalPad)
-                    .multilineTextAlignment(.center)
-                    .font(Typography.caption)
-                    .foregroundStyle(Theme.textPrimary)
-                    .frame(width: 52)
-                    .padding(.vertical, Spacing.s)
-                    .background(Theme.surface2, in: RoundedRectangle(cornerRadius: Radius.control))
-                    .onChange(of: customHoursText) { _, text in
-                        if let h = Double(text) { viewModel.setSleepHours(h) }
-                        else if text.isEmpty, !sleepDurations.contains(viewModel.sleepHours ?? -1) { viewModel.setSleepHours(nil) }
+            if let entry {
+                Grid(alignment: .leading, horizontalSpacing: Spacing.s, verticalSpacing: Spacing.s) {
+                    GridRow(alignment: .top) {
+                        Text("Dose").cardEyebrow()
+                        FlowLayout(spacing: Spacing.xs) {
+                            ForEach(entry.doseOptions, id: \.self) { dose in
+                                dosePill(dose, on: med.dose == dose) { viewModel.setMedDose(med, dose: dose) }
+                            }
+                        }
                     }
-                    .accessibilityLabel("Custom sleep hours")
+                    GridRow {
+                        Text("Time").cardEyebrow()
+                        Text("\(med.time ?? "08:00") · info").font(Typography.mono12).foregroundStyle(Theme.textSecondary)
+                    }
+                    GridRow(alignment: .center) {
+                        Text("Dur").cardEyebrow()
+                        HStack(spacing: Spacing.xs) {
+                            durBox(med, fallback: entry.durationHours)
+                            Text("shortest").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+                        }
+                    }
+                }
+            } else if let dose = med.dose {
+                Text(dose).font(Typography.caption).foregroundStyle(Theme.textSecondary)
             }
         }
-        .sectionCard()
-        .onAppear {
-            if let h = viewModel.sleepHours, !sleepDurations.contains(h) {
-                customHoursText = h == h.rounded() ? String(Int(h)) : String(h)
+        .padding(Spacing.m)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.card))
+        .overlay(RoundedRectangle(cornerRadius: Radius.card).strokeBorder(Palette.medication.opacity(0.35), lineWidth: 1))
+    }
+
+    private func dosePill(_ text: String, on: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(text)
+                .font(Typography.caption.weight(.semibold))
+                .padding(.horizontal, Spacing.s)
+                .padding(.vertical, Spacing.xs)
+                .background(on ? Palette.medication.opacity(0.18) : Theme.surface2, in: Capsule())
+                .overlay(Capsule().strokeBorder(on ? Palette.medication : Theme.separator, lineWidth: 1))
+                .foregroundStyle(on ? Palette.medication : Theme.textSecondary)
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(on ? [.isSelected] : [])
+    }
+
+    private func durBox(_ med: MedEvent, fallback: Double) -> some View {
+        let binding = Binding<String>(
+            get: {
+                guard let h = med.durationHours else { return "" }
+                return h == h.rounded() ? String(Int(h)) : String(h)
+            },
+            set: { viewModel.setMedDuration(med, hours: Double($0)) }
+        )
+        return HStack(spacing: Spacing.xs) {
+            TextField(fallback == fallback.rounded() ? String(Int(fallback)) : String(fallback), text: binding)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .font(Typography.mono12)
+                .foregroundStyle(Theme.textPrimary)
+                .fixedSize()
+            Text("h").font(Typography.mono12).foregroundStyle(Theme.textSecondary)
+        }
+        .padding(.horizontal, Spacing.s)
+        .padding(.vertical, Spacing.xs)
+        .background(Theme.surface2, in: RoundedRectangle(cornerRadius: Radius.control))
+        .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(Theme.separator, lineWidth: 1))
+        .accessibilityLabel("\(med.name) duration hours")
+    }
+
+    private var medGrid: some View {
+        FlowLayout(spacing: Spacing.s) {
+            ForEach(MedicationCatalog.all) { entry in
+                let on = viewModel.medications.contains { $0.name == entry.name }
+                Button {
+                    if on { viewModel.removeMedication(entry.name) } else { viewModel.addMedication(entry.name) }
+                } label: {
+                    Text(entry.name)
+                        .font(Typography.caption.weight(.semibold))
+                        .padding(.horizontal, Spacing.m)
+                        .padding(.vertical, Spacing.s)
+                        .background(on ? Palette.medication.opacity(0.16) : Theme.cardBackground, in: Capsule())
+                        .overlay(Capsule().strokeBorder(on ? Palette.medication : Theme.separator, lineWidth: 1))
+                        .foregroundStyle(on ? Palette.medication : Theme.textPrimary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(entry.name)\(on ? ", selected" : "")")
+                .accessibilityAddTraits(on ? [.isSelected] : [])
             }
         }
     }
 
-    // MARK: - 06 · Medications
+    // MARK: - 07/08 Feelings / Side effects
 
-    // Quick-pick chips come from the shared MedicationCatalog (single source of truth, FR-012)
-    // — so the Log-Dose sheet and this Edit sheet never drift on which meds exist. NLP can
-    // still extract others from speech; these are just the manual quick-pick chips.
-    private let medicationGroups: [ChipGroup] = [
-        ChipGroup(label: "Medications", items: MedicationCatalog.all.map(\.name))
-    ]
-
-    private var medicationSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            numberedLabel("06", "Medications")
-
-            if !viewModel.medications.isEmpty {
-                VStack(spacing: Spacing.s) {
-                    // Iterate by element (not indices): a med can be removed mid-edit,
-                    // and ForEach(indices) re-renders a stale row → Index out of range.
-                    ForEach(viewModel.medications, id: \.self) { med in
-                        HStack(spacing: Spacing.s) {
-                            SignalGlyph(.medication, size: 18, decorative: true)
-                            VStack(alignment: .leading, spacing: Spacing.xs) {
-                                HStack(spacing: Spacing.xs) {
-                                    Text(med.name)
-                                        .font(Typography.body)
-                                        .foregroundStyle(Theme.textPrimary)
-                                    TextField("Dose", text: Binding(
-                                        get: { med.dose ?? "" },
-                                        set: { viewModel.setMedDose(med, dose: $0.isEmpty ? nil : $0) }
-                                    ))
-                                    .font(Typography.body)
-                                    .foregroundStyle(Theme.textSecondary)
-                                    .frame(width: 60)
+    private var feelingsField: some View {
+        field {
+            numberedHeader("07", "Feelings") { EmptyView() }
+        } content: {
+            VStack(alignment: .leading, spacing: Spacing.m) {
+                ForEach(feelingGroups) { group in
+                    VStack(alignment: .leading, spacing: Spacing.s) {
+                        Text(group.label).font(Typography.caption).foregroundStyle(Theme.textSecondary)
+                        FlowLayout(spacing: Spacing.s) {
+                            ForEach(group.items, id: \.self) { feeling in
+                                Chip.filter(feeling.capitalized, isSelected: viewModel.feelings.contains(feeling)) {
+                                    viewModel.toggleFeeling(feeling)
                                 }
-                                if let label = med.timeLabel ?? med.time {
-                                    Text(label).font(Typography.caption).foregroundStyle(Theme.textSecondary)
-                                }
+                                .accessibilityLabel("\(feeling)\(viewModel.feelings.contains(feeling) ? ", selected" : "")")
                             }
-                            Spacer()
-                            Button {
-                                viewModel.toggleMedTaken(med)
-                            } label: {
-                                Text(med.taken ? "Taken" : "Missed")
-                                    .font(Typography.label)
-                                    .padding(.horizontal, Spacing.s)
-                                    .padding(.vertical, Spacing.xs)
-                                    .background(med.taken ? Theme.meadowGreen.opacity(0.15) : Palette.warning.opacity(0.15))
-                                    .foregroundStyle(med.taken ? Theme.meadowGreen : Palette.warning)
-                                    .clipShape(.rect(cornerRadius: 8))
-                            }
-                            .buttonStyle(.plain)
-                        }
-                        .accessibilityElement(children: .combine)
-                    }
-                }
-                .padding(.bottom, Spacing.s)
-            }
-
-            ForEach(medicationGroups) { group in
-                FlowLayout(spacing: Spacing.s) {
-                    ForEach(group.items, id: \.self) { medName in
-                        let on = viewModel.medications.contains(where: { $0.name == medName })
-                        Chip.filter(medName, isSelected: on) {
-                            if on {
-                                viewModel.removeMedication(medName)
-                            } else {
-                                viewModel.addMedication(medName)
-                            }
-                        }
-                        .accessibilityLabel("\(medName)\(on ? ", selected" : "")")
-                    }
-                }
-            }
-        }
-        .sectionCard()
-    }
-
-    // MARK: - 07 · Feelings
-
-    private var feelingsSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.m) {
-            numberedLabel("07", "Feelings")
-            ForEach(feelingGroups) { group in
-                VStack(alignment: .leading, spacing: Spacing.s) {
-                    Text(group.label)
-                        .font(Typography.caption)
-                        .foregroundStyle(Theme.textSecondary)
-                    FlowLayout(spacing: Spacing.s) {
-                        ForEach(group.items, id: \.self) { feeling in
-                            let on = viewModel.feelings.contains(feeling)
-                            Chip.filter(feeling.capitalized, isSelected: on) {
-                                viewModel.toggleFeeling(feeling)
-                            }
-                            .accessibilityLabel("\(feeling)\(on ? ", selected" : "")")
                         }
                     }
                 }
             }
         }
-        .sectionCard()
     }
 
-    // MARK: - 08 · Side Effects
-
-    private var sideEffectsSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            numberedLabel("08", "Side effects")
+    private var sideEffectsField: some View {
+        field {
+            numberedHeader("08", "Side effects") { EmptyView() }
+        } content: {
             FlowLayout(spacing: Spacing.s) {
                 ForEach(commonSideEffects, id: \.self) { effect in
-                    let on = viewModel.sideEffects.contains(effect)
-                    Chip.filter(effect.capitalized, isSelected: on) {
+                    Chip.filter(effect.capitalized, isSelected: viewModel.sideEffects.contains(effect)) {
                         viewModel.toggleSideEffect(effect)
                     }
-                    .accessibilityLabel("\(effect)\(on ? ", selected" : "")")
+                    .accessibilityLabel("\(effect)\(viewModel.sideEffects.contains(effect) ? ", selected" : "")")
                 }
             }
         }
-        .sectionCard()
     }
 
-    // MARK: - Save corrections
+    // MARK: - Commit
 
-    private var saveCorrectionsButton: some View {
-        Button("Save corrections") { save() }
-            .buttonStyle(.primary)
-            .padding(.top, Spacing.s)
-    }
-
-    /// Single commit path — both the toolbar Save and the bottom "Save corrections" call this.
     private func save() {
         viewModel.confirm()
         dismiss()
-    }
-
-    // MARK: - Reusable scale row
-
-    private func scaleRow<T: CaseIterable & Equatable>(
-        cases: T.AllCases,
-        kind: GlyphSignal? = nil,
-        selected: T?,
-        accentColor: Color,
-        label: @escaping (T) -> String,
-        onSelect: @escaping (T) -> Void
-    ) -> some View {
-        HStack(spacing: 0) {
-            ForEach(Array(cases.enumerated()), id: \.offset) { item in
-                let level = item.element
-                let isSelected = selected == level
-                Button { onSelect(level) } label: {
-                    VStack(spacing: 3) {
-                        if let kind {
-                            SignalGlyph(kind, level: item.offset + 1, size: 24, decorative: true)
-                        }
-                        Text(label(level))
-                            .font(Typography.caption.weight(isSelected ? .semibold : .regular))
-                            .lineLimit(1)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, Spacing.s)
-                    .background(isSelected ? accentColor.opacity(0.2) : Theme.surface2)
-                    .foregroundStyle(isSelected ? accentColor : Theme.textSecondary)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel(label(level))
-                .accessibilityAddTraits(isSelected ? [.isSelected] : [])
-            }
-        }
-        .clipShape(.rect(cornerRadius: Radius.control))
-    }
-
-    // MARK: - Helpers
-
-    private func numberedLabel(_ number: String, _ title: String) -> some View {
-        HStack(spacing: Spacing.s) {
-            Text(number)
-                .font(Typography.mono12)
-                .foregroundStyle(Theme.accent)
-            Text(title)
-                .font(Typography.label)
-                .textCase(.uppercase)
-                .tracking(0.6)
-                .foregroundStyle(Theme.textSecondary)
-        }
-    }
-
-    private func currentLine(_ name: String, _ synonym: String) -> some View {
-        Text("\(name) · \(synonym)")
-            .font(Typography.caption)
-            .foregroundStyle(Theme.textSecondary)
-            .padding(.horizontal, Spacing.xs)
-    }
-}
-
-// MARK: - Section card modifier
-
-private extension View {
-    func sectionCard() -> some View {
-        self
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .card(padding: Spacing.l)
     }
 }

@@ -71,8 +71,8 @@ struct TextCheckInComposer: View {
                 Text("Anything you want to remember about today?")
                     .font(Typography.callout)
                     .foregroundStyle(Theme.textSecondary)
-                    .padding(.horizontal, Spacing.s + 5)
-                    .padding(.vertical, Spacing.s + 8)
+                    .padding(.horizontal, Spacing.m)
+                    .padding(.vertical, Spacing.m)
                     .allowsHitTesting(false)
             }
             TextEditor(text: $draft.note)
@@ -80,11 +80,14 @@ struct TextCheckInComposer: View {
                 .foregroundStyle(Theme.textPrimary)
                 .scrollContentBackground(.hidden)
                 .padding(Spacing.s)
-                .frame(minHeight: 120)
+                .frame(minHeight: noteMinHeight)
         }
-        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.control))
-        .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(Theme.separator, lineWidth: 1))
+        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.card))
+        .overlay(RoundedRectangle(cornerRadius: Radius.card).strokeBorder(Theme.separator, lineWidth: 1))
     }
+
+    /// Note-box content height (a content dimension, not a spacing-scale value).
+    private let noteMinHeight: CGFloat = 120
 
     // MARK: - Save
 
@@ -109,31 +112,14 @@ struct SignalScaleRow<Level: SignalLevel & CaseIterable & Equatable>: View {
         VStack(alignment: .leading, spacing: Spacing.s) {
             HStack {
                 Text(title)
-                    .font(Typography.subheadline)
+                    .font(Typography.subheadline.weight(.semibold))
                     .foregroundStyle(Theme.textPrimary)
                 Spacer()
                 Text(readout)
                     .font(Typography.mono12)
                     .foregroundStyle(Theme.textSecondary)
             }
-            HStack(spacing: Spacing.s) {
-                ForEach(Array(Level.allCases), id: \.numericValue) { level in
-                    Button {
-                        selection = selection == level ? nil : level
-                    } label: {
-                        SignalGlyph(kind, level: level.numericValue, size: 26, decorative: true)
-                            .padding(4)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: Radius.control)
-                                    .strokeBorder(Theme.accent, lineWidth: selection == level ? 1.5 : 0)
-                            )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("\(title) \(level.displayLabel)")
-                    .accessibilityAddTraits(selection == level ? [.isSelected] : [])
-                }
-                Spacer(minLength: 0)
-            }
+            GlyphRampPicker(kind: kind, selection: $selection)
         }
         .padding(.vertical, Spacing.m)
     }

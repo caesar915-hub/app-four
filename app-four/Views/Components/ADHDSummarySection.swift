@@ -68,58 +68,31 @@ struct ADHDSummarySection: View {
     private var medsCard: some View {
         VStack(alignment: .leading, spacing: Spacing.s) {
             Text("Meds").cardEyebrow()
-            VStack(spacing: Spacing.xs) {
-                ForEach(transcriptMeds) { event in
-                    medicationRow(event)
-                }
+            HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
+                SignalGlyph(.medication, size: 18, decorative: true)
+                Text(medsLine)
+                    .font(Typography.body)
+                    .foregroundStyle(Theme.textPrimary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .card()
     }
 
-    private func medicationRow(_ event: MedicationEvent) -> some View {
-        HStack(spacing: Spacing.s) {
-            SignalGlyph(.medication, size: 18, decorative: true)
-            Text(doseText(for: event))
-                .font(Typography.body)
-                .foregroundStyle(Theme.textPrimary)
-            if let change = event.change, change != .regular {
-                changeBadge(change)
+    /// §07 single line: "Concerta 36mg · Ritalin 10mg" (quantity / missed appended inline).
+    private var medsLine: String {
+        transcriptMeds.map { event in
+            var s = event.dose.map { "\(event.name) \($0)" } ?? event.name
+            let qty = event.quantity ?? 1.0
+            if qty == 0.5 { s += " ×½" }
+            else if qty != 1.0 {
+                let f = qty == qty.rounded() ? String(Int(qty)) : String(format: "%.1f", qty)
+                s += " ×\(f)"
             }
-            Spacer(minLength: 0)
-            if !event.taken {
-                Image(systemName: "xmark.circle")
-                    .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary)
-                    .accessibilityLabel("missed")
-            }
-            Text(event.takenAt.formatted(date: .omitted, time: .shortened))
-                .font(Typography.mono12)
-                .foregroundStyle(Theme.textSecondary)
-        }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(medicationRowLabel(event))
-    }
-
-    private func changeBadge(_ change: MedEventChange) -> some View {
-        Group {
-            if change == .started {
-                badge("Started", Theme.meadowGreen)
-            } else if change == .stopped {
-                badge("Stopped", Theme.danger)
-            }
-        }
-    }
-
-    private func badge(_ text: String, _ color: Color) -> some View {
-        Text(text)
-            .font(Typography.label)
-            .foregroundStyle(color)
-            .padding(.horizontal, Spacing.s)
-            .padding(.vertical, Spacing.xs)
-            .background(color.opacity(0.15))
-            .clipShape(.rect(cornerRadius: 8))
+            if !event.taken { s += " (missed)" }
+            return s
+        }.joined(separator: " · ")
     }
 
     // MARK: - Derived content
@@ -147,32 +120,6 @@ struct ADHDSummarySection: View {
         return tags
     }
 
-    private func doseText(for event: MedicationEvent) -> String {
-        let qty = event.quantity ?? 1.0
-        let base = event.dose.map { "\(event.name) \($0)" } ?? event.name
-        if qty == 0.5 {
-            return "\(base) × ½"
-        } else if qty != 1.0 {
-            let formatted = qty == qty.rounded() ? String(Int(qty)) : String(format: "%.1f", qty)
-            return "\(base) × \(formatted)"
-        }
-        return base
-    }
-
-    private func medicationRowLabel(_ event: MedicationEvent) -> String {
-        var parts = [event.name]
-        if let dose = event.dose { parts.append(dose) }
-        let qty = event.quantity ?? 1.0
-        if qty == 0.5 { parts.append("half dose") }
-        else if qty != 1.0 { parts.append("\(qty) doses") }
-        if let change = event.change, change != .regular {
-            parts.append(change.rawValue)
-        }
-        parts.append("at \(event.takenAt.formatted(date: .omitted, time: .shortened))")
-        if let label = event.timeLabel { parts.append(label) }
-        if !event.taken { parts.append("missed") }
-        return parts.joined(separator: " ")
-    }
 }
 
 #Preview("Full") {

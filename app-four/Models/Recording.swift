@@ -322,7 +322,7 @@ extension Recording {
                 takenAt: takenAt,
                 taken: med.taken,
                 quantity: med.quantity,
-                durationHours: durationHours ?? 10.0,
+                durationHours: med.durationHours ?? durationHours ?? MedicationCatalog.entry(matching: med.name)?.durationHours ?? 10.0,
                 change: med.change,
                 timeLabel: med.timeLabel,
                 source: .transcript

@@ -216,8 +216,9 @@ public struct MedEvent: Sendable, Codable, Equatable, Hashable {
     public var taken: Bool          // default true; false when negation detected
     public var quantity: Double?    // nil = 1.0 (full dose); 0.5 = half pill
     public var change: MedEventChange?
+    public var durationHours: Double?  // per-dose duration (Edit-sheet inline-expand); nil → catalog/default
 
-    public nonisolated init(name: String, dose: String? = nil, time: String? = nil, timeLabel: String? = nil, taken: Bool = true, quantity: Double? = nil, change: MedEventChange? = nil) {
+    public nonisolated init(name: String, dose: String? = nil, time: String? = nil, timeLabel: String? = nil, taken: Bool = true, quantity: Double? = nil, change: MedEventChange? = nil, durationHours: Double? = nil) {
         self.name = name
         self.dose = dose
         self.time = time
@@ -225,6 +226,7 @@ public struct MedEvent: Sendable, Codable, Equatable, Hashable {
         self.taken = taken
         self.quantity = quantity
         self.change = change
+        self.durationHours = durationHours
     }
 }
 

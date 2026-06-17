@@ -48,11 +48,7 @@ struct RecordingDetailView: View {
         .toolbarBackground(Theme.background, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text(navDate)
-                    .font(Typography.label)
-                    .textCase(.uppercase)
-                    .tracking(0.6)
-                    .foregroundStyle(Theme.textSecondary)
+                Text(navDate).cardEyebrow()
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {

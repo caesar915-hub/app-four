@@ -135,21 +135,31 @@ final class ExtractionReviewViewModel: Identifiable {
         if sideEffects.contains(effect) { sideEffects.remove(effect) } else { sideEffects.insert(effect) }
     }
 
+    // Look up the row by name (unique among selected meds), not by value: a value match
+    // breaks the moment any field on the row is edited (stale capture → dropped edit).
     func toggleMedTaken(_ med: MedEvent) {
-        guard let index = medications.firstIndex(of: med) else { return }
+        guard let index = medications.firstIndex(where: { $0.name == med.name }) else { return }
         medications[index].taken.toggle()
         editedFields.insert(.medication)
     }
 
     func setMedDose(_ med: MedEvent, dose: String?) {
-        guard let index = medications.firstIndex(of: med) else { return }
+        guard let index = medications.firstIndex(where: { $0.name == med.name }) else { return }
         medications[index].dose = dose
+        editedFields.insert(.medication)
+    }
+
+    func setMedDuration(_ med: MedEvent, hours: Double?) {
+        guard let index = medications.firstIndex(where: { $0.name == med.name }) else { return }
+        medications[index].durationHours = hours
         editedFields.insert(.medication)
     }
 
     func addMedication(_ name: String) {
         guard !medications.contains(where: { $0.name == name }) else { return }
-        medications.append(MedEvent(name: name))
+        // Seed dose + duration from the catalog so the inline-expand opens populated.
+        let entry = MedicationCatalog.entry(matching: name)
+        medications.append(MedEvent(name: name, dose: entry?.doseOptions.first, durationHours: entry?.durationHours))
         editedFields.insert(.medication)
     }
 
