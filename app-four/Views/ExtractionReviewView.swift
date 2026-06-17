@@ -106,10 +106,12 @@ struct ExtractionReviewView: View {
         } content: {
             HStack(spacing: Spacing.s) {
                 dateBox("Date") {
-                    DatePicker("", selection: $viewModel.date, in: ...Date(), displayedComponents: .date).labelsHidden()
+                    DatePicker("", selection: $viewModel.date, in: ...Date(), displayedComponents: .date)
+                        .labelsHidden().accessibilityLabel("Check-in date")
                 }
                 dateBox("Time") {
-                    DatePicker("", selection: $viewModel.date, in: ...Date(), displayedComponents: .hourAndMinute).labelsHidden()
+                    DatePicker("", selection: $viewModel.date, in: ...Date(), displayedComponents: .hourAndMinute)
+                        .labelsHidden().accessibilityLabel("Check-in time")
                 }
             }
         }
@@ -233,7 +235,13 @@ struct ExtractionReviewView: View {
                 .foregroundStyle(Theme.textPrimary)
                 .frame(maxWidth: .infinity)
                 .onChange(of: customHoursText) { _, text in
-                    if let h = Double(text) { viewModel.setSleepHours(h) }
+                    let norm = text.replacingOccurrences(of: ",", with: ".")
+                    if let h = Double(norm) {
+                        viewModel.setSleepHours(h)
+                    } else if text.isEmpty, !sleepDurations.contains(viewModel.sleepHours ?? -1) {
+                        // Field cleared (and not on a preset) → clear the stored custom value.
+                        viewModel.setSleepHours(nil)
+                    }
                 }
             Text("h").font(Typography.mono12).foregroundStyle(Theme.textSecondary)
         }
@@ -265,7 +273,7 @@ struct ExtractionReviewView: View {
             }
         } content: {
             VStack(alignment: .leading, spacing: Spacing.s) {
-                ForEach(viewModel.medications, id: \.name) { med in
+                ForEach(viewModel.medications, id: \.editRowID) { med in
                     selectedMedCard(med)
                 }
                 medGrid
@@ -292,7 +300,9 @@ struct ExtractionReviewView: View {
                         .background(med.taken ? Palette.medication : Theme.textSecondary, in: Capsule())
                 }
                 .buttonStyle(.plain)
-                Button { viewModel.removeMedication(med.name) } label: {
+                .accessibilityLabel("Mark \(med.name) as taken or missed")
+                .accessibilityValue(med.taken ? "Taken" : "Missed")
+                Button { viewModel.removeMedication(id: med.editRowID) } label: {
                     Image(systemName: "xmark").font(Typography.caption).foregroundStyle(Theme.textSecondary)
                 }
                 .buttonStyle(.plain)
@@ -316,7 +326,9 @@ struct ExtractionReviewView: View {
                     GridRow(alignment: .center) {
                         Text("Dur").cardEyebrow()
                         HStack(spacing: Spacing.xs) {
-                            durBox(med, fallback: entry.durationHours)
+                            DurationField(current: med.durationHours, fallback: entry.durationHours) {
+                                viewModel.setMedDuration(med, hours: $0)
+                            }
                             Text("shortest").font(Typography.caption).foregroundStyle(Theme.textSecondary)
                         }
                     }
@@ -345,28 +357,40 @@ struct ExtractionReviewView: View {
         .accessibilityAddTraits(on ? [.isSelected] : [])
     }
 
-    private func durBox(_ med: MedEvent, fallback: Double) -> some View {
-        let binding = Binding<String>(
-            get: {
-                guard let h = med.durationHours else { return "" }
-                return h == h.rounded() ? String(Int(h)) : String(h)
-            },
-            set: { viewModel.setMedDuration(med, hours: Double($0)) }
-        )
-        return HStack(spacing: Spacing.xs) {
-            TextField(fallback == fallback.rounded() ? String(Int(fallback)) : String(fallback), text: binding)
-                .keyboardType(.decimalPad)
-                .multilineTextAlignment(.trailing)
-                .font(Typography.mono12)
-                .foregroundStyle(Theme.textPrimary)
-                .fixedSize()
-            Text("h").font(Typography.mono12).foregroundStyle(Theme.textSecondary)
+    /// Per-med duration input — backed by local `@State` so partial/fractional typing
+    /// (e.g. "7.") is never reformatted away mid-keystroke; commits only parseable values
+    /// and normalizes a locale comma to a dot. Seeds from the stored value on appear.
+    private struct DurationField: View {
+        let current: Double?
+        let fallback: Double
+        let onCommit: (Double?) -> Void
+        @State private var text = ""
+
+        var body: some View {
+            HStack(spacing: Spacing.xs) {
+                TextField(Self.format(fallback), text: $text)
+                    .keyboardType(.decimalPad)
+                    .multilineTextAlignment(.trailing)
+                    .font(Typography.mono12)
+                    .foregroundStyle(Theme.textPrimary)
+                    .fixedSize()
+                    .onChange(of: text) { _, value in
+                        let norm = value.replacingOccurrences(of: ",", with: ".")
+                        onCommit(norm.isEmpty ? nil : Double(norm))
+                    }
+                Text("h").font(Typography.mono12).foregroundStyle(Theme.textSecondary)
+            }
+            .padding(.horizontal, Spacing.s)
+            .padding(.vertical, Spacing.xs)
+            .background(Theme.surface2, in: RoundedRectangle(cornerRadius: Radius.control))
+            .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(Theme.separator, lineWidth: 1))
+            .onAppear { if let h = current { text = Self.format(h) } }
+            .accessibilityLabel("Duration hours")
         }
-        .padding(.horizontal, Spacing.s)
-        .padding(.vertical, Spacing.xs)
-        .background(Theme.surface2, in: RoundedRectangle(cornerRadius: Radius.control))
-        .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(Theme.separator, lineWidth: 1))
-        .accessibilityLabel("\(med.name) duration hours")
+
+        private static func format(_ h: Double) -> String {
+            h == h.rounded() ? String(Int(h)) : String(h)
+        }
     }
 
     private var medGrid: some View {

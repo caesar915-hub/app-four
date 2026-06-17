@@ -33,8 +33,11 @@ struct MedEventDurationTests {
         #expect(event?.durationHours == 5)
     }
 
-    @Test func nilDurationFallsBackToCatalog() throws {
+    /// The shared resolver stays catalog-free so the voice/transcript path is unchanged:
+    /// a nil per-med duration (and nil call-site arg) falls back to the 10h default, NOT
+    /// the catalog. (Catalog seeding lives in the Edit-sheet VM's addMedication.)
+    @Test func nilDurationFallsBackToDefault() throws {
         let event = try transcriptEvent(after: [MedEvent(name: "Concerta")])
-        #expect(event?.durationHours == MedicationCatalog.entry(matching: "Concerta")?.durationHours)
+        #expect(event?.durationHours == 10)
     }
 }

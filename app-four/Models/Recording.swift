@@ -322,7 +322,10 @@ extension Recording {
                 takenAt: takenAt,
                 taken: med.taken,
                 quantity: med.quantity,
-                durationHours: med.durationHours ?? durationHours ?? MedicationCatalog.entry(matching: med.name)?.durationHours ?? 10.0,
+                // Per-med duration (Edit sheet) wins, else the call-site default, else 10h.
+                // No catalog step here — the Edit-sheet VM seeds the catalog default into
+                // med.durationHours, so the voice/transcript path stays byte-identical.
+                durationHours: med.durationHours ?? durationHours ?? 10.0,
                 change: med.change,
                 timeLabel: med.timeLabel,
                 source: .transcript
