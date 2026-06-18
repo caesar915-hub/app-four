@@ -36,7 +36,7 @@ final class MetricManager: NSObject, MXMetricManagerSubscriber {
         super.init()
     }
     
-    /// Call once on app launch (e.g. from `WhisperNotesApp.init`).
+    /// Call once on app launch (e.g. from `SquirlApp.init`).
     func start() {
         let manager = MXMetricManager.shared
         manager.add(self)

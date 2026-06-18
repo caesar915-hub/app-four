@@ -70,7 +70,7 @@ private struct WelcomeStep: View {
                 .accessibilityHidden(true)
 
             VStack(spacing: Spacing.m) {
-                Text("Welcome to Whisper Notes")
+                Text("Welcome to Squirl")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
@@ -119,7 +119,7 @@ private struct PermissionStep: View {
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
 
-                Text("Whisper Notes needs microphone access to record voice notes. Audio is processed entirely on this device.")
+                Text("Squirl needs microphone access to record voice notes. Audio is processed entirely on this device.")
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -172,7 +172,7 @@ private struct DownloadStep: View {
                     .fontWeight(.bold)
                     .multilineTextAlignment(.center)
 
-                Text("Whisper Notes runs entirely on this device. We'll download the transcription model now (~150 MB). Wi-Fi recommended.")
+                Text("Squirl runs entirely on this device. We'll download the transcription model now (~150 MB). Wi-Fi recommended.")
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
@@ -289,7 +289,7 @@ private struct DownloadStep: View {
 
         case .completed:
             Button(action: onContinue) {
-                Text("Start Using Whisper Notes")
+                Text("Start Using Squirl")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
