@@ -1,20 +1,25 @@
 import Foundation
 
-/// Summarization adapter backed by the on-device NaturalLanguage-based
-/// `NLNoteExtractor`. Instant; no model load or download required.
+/// Summarization adapter backed by the on-device ML extractor (mood/energy/focus)
+/// composited over the lexicon extractor (meds, sleep, activities, feelings).
 struct NLSummarizationService: SummarizationService {
 
-    private let extractor: NLNoteExtractor
+    private let extractor: any NoteExtractor
+    /// Held separately because `summarize` needs the vocabulary to filter side-effect
+    /// keywords downstream, and the `NoteExtractor` protocol deliberately hides it.
+    private let lexicon: Lexicon
 
-    /// Production path loads the bundled, swarm-expanded vocabulary (with an
-    /// optional personal overlay). Tests pass an explicit `Lexicon` for
-    /// deterministic, minimal vocabularies.
+    /// Production path: ML models override mood/energy/focus; lexicon handles everything else.
+    /// Tests pass an explicit `Lexicon` and get a plain `NLNoteExtractor` (no ML models in test bundle).
     init(lexicon: Lexicon) {
-        self.extractor = NLNoteExtractor(lexicon: lexicon)
+        self.lexicon = lexicon
+        self.extractor = NLModelExtractor(lexicon: NLNoteExtractor(lexicon: lexicon))
     }
 
     init(personalOverlay: PersonalLexicon? = nil) {
-        self.extractor = NLNoteExtractor(lexicon: LexiconLoader.loadBundled(overlay: personalOverlay))
+        let loaded = LexiconLoader.loadBundled(overlay: personalOverlay)
+        self.lexicon = loaded
+        self.extractor = NLModelExtractor(lexicon: NLNoteExtractor(lexicon: loaded))
     }
 
     /// Run the (synchronous, CPU-bound) extraction off the main actor so the UI
@@ -43,7 +48,6 @@ struct NLSummarizationService: SummarizationService {
 
     nonisolated func summarize(rawTranscription: String) async throws -> SummaryResult {
         let extraction = await runExtraction(on: rawTranscription)
-        let lexicon = extractor.lexicon
         let topics = Self.deriveTopics(from: extraction)
 
         let sleepEvent: SleepEvent? = extraction.sleep?.mentioned == true ? SleepEvent(
