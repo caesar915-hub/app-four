@@ -1,20 +1,20 @@
 import Foundation
 
-/// Summarization adapter backed by the on-device NaturalLanguage-based
-/// `NLNoteExtractor`. Instant; no model load or download required.
+/// Summarization adapter backed by the on-device ML extractor (mood/energy/focus)
+/// composited over the lexicon extractor (meds, sleep, activities, feelings).
 struct NLSummarizationService: SummarizationService {
 
-    private let extractor: NLNoteExtractor
+    private let extractor: any NoteExtractor
 
-    /// Production path loads the bundled, swarm-expanded vocabulary (with an
-    /// optional personal overlay). Tests pass an explicit `Lexicon` for
-    /// deterministic, minimal vocabularies.
+    /// Production path: ML models override mood/energy/focus; lexicon handles everything else.
+    /// Tests pass an explicit `Lexicon` and get a plain `NLNoteExtractor` (no ML models in test bundle).
     init(lexicon: Lexicon) {
-        self.extractor = NLNoteExtractor(lexicon: lexicon)
+        self.extractor = NLModelExtractor(lexicon: NLNoteExtractor(lexicon: lexicon))
     }
 
     init(personalOverlay: PersonalLexicon? = nil) {
-        self.extractor = NLNoteExtractor(lexicon: LexiconLoader.loadBundled(overlay: personalOverlay))
+        let base = NLNoteExtractor(lexicon: LexiconLoader.loadBundled(overlay: personalOverlay))
+        self.extractor = NLModelExtractor(lexicon: base)
     }
 
     /// Run the (synchronous, CPU-bound) extraction off the main actor so the UI
