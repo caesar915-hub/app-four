@@ -50,7 +50,10 @@ struct ScreenContainer<Content: View>: View {
             primaryContent
                 .navigationTitle(title)
                 .navigationBarTitleDisplayMode(.inline)
+                .background(Theme.background.ignoresSafeArea())
+                .toolbarBackground(Theme.background, for: .navigationBar)
         }
+        .tint(Theme.accent)
     }
 
     // MARK: - Private
@@ -61,6 +64,7 @@ struct ScreenContainer<Content: View>: View {
             ScrollView {
                 content()
             }
+            .scrollContentBackground(.hidden)
             .scrollPosition($scrollPosition)
             .onChange(of: scrollResetToken) {
                 withAnimation(.easeOut(duration: 0.25)) {

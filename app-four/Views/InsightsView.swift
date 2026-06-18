@@ -60,6 +60,39 @@ struct InsightsView: View {
         .padding(.vertical, Spacing.s)
     }
 
+    /// Screen identity — Fraunces "Insights" + the "<month> · today vs your usual" framing.
+    private var insightsIdentity: some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            Text("Insights")
+                .font(Typography.largeTitle)
+                .foregroundStyle(Theme.textPrimary)
+            Text("\(viewModel.currentMonth.formatted(.dateTime.month(.wide))) · today vs your usual")
+                .font(Typography.subheadline)
+                .foregroundStyle(Theme.textSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, Spacing.l)
+        .padding(.top, Spacing.l)
+        .accessibilityAddTraits(.isHeader)
+    }
+
+    /// Sleep is spec'd but its ramp is deferred — surface it as a dashed "not tracked yet" chip.
+    private var sleepDeferredChip: some View {
+        HStack(spacing: Spacing.xs) {
+            SignalGlyph(.sleep, size: 15, decorative: true)
+            Text("Sleep · not tracked yet")
+                .font(Typography.caption)
+                .foregroundStyle(Theme.textSecondary)
+        }
+        .padding(.horizontal, Spacing.m)
+        .padding(.vertical, Spacing.s)
+        .overlay(Capsule().strokeBorder(Theme.separator, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, Spacing.l)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Sleep, not tracked yet")
+    }
+
     // MARK: - Snapping scroll
 
     private var sectionsScroll: some View {
@@ -106,6 +139,7 @@ struct InsightsView: View {
         let count = viewModel.monthRecordings.count
         let subtitle = "\(count) check-in\(count == 1 ? "" : "s")"
         VStack(spacing: 0) {
+            insightsIdentity
             monthSelector
             InsightsSectionHeader(title: "Your overall check-in breakdown", subtitle: subtitle)
                 .opacity(headerOpacity(.breakdown))
@@ -132,6 +166,8 @@ struct InsightsView: View {
                 viewModel.selectedDay = viewModel.calendarDay(for: date)
             }
             .padding(.top, Spacing.s)
+            sleepDeferredChip
+                .padding(.top, Spacing.m)
         }
         .id(SectionID.signals)
         .animation(headerAnimation, value: activeSectionID)
@@ -180,7 +216,8 @@ struct InsightsView: View {
     private var emptyState: some View {
         VStack(spacing: Spacing.m) {
             Image(systemName: "chart.bar.doc.horizontal")
-                .font(.system(size: 48))
+                .font(Typography.largeTitle)
+                .imageScale(.large)
                 .foregroundStyle(Theme.textSecondary)
             Text("Check in to see your month")
                 .font(Typography.headline)

@@ -76,7 +76,7 @@ struct TimelineRow: View {
                     TimelineChip.medication(label)
                 }
                 ForEach(inputs) { tag in
-                    TimelineChip(icon: tag.icon, label: tag.label)
+                    TimelineChip(icon: tag.icon, label: tag.label, glyph: tag.glyph)
                 }
             }
         }

@@ -15,7 +15,7 @@ struct PlaybackWaveformBars: View {
             HStack(alignment: .center, spacing: spacing) {
                 ForEach(0..<barCount, id: \.self) { index in
                     RoundedRectangle(cornerRadius: barWidth / 2)
-                        .fill(isPlayed(index: index) ? Color.primary : Color.primary.opacity(0.15))
+                        .fill(isPlayed(index: index) ? Theme.accent.opacity(0.6) : Theme.separator)
                         .frame(width: barWidth, height: barHeight(for: index))
                 }
             }

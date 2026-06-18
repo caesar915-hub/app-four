@@ -69,7 +69,7 @@ private struct BubbleCell: View {
                     .fontWeight(.semibold)
                 if diameter >= 68 {
                     Text(share.level.displayLabel)
-                        .font(.system(size: 9, weight: .medium))
+                        .font(Typography.label)
                 }
             }
             .foregroundStyle(ink)

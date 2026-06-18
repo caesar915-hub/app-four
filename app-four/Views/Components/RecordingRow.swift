@@ -74,8 +74,12 @@ struct RecordingRow: View {
             HStack(spacing: Spacing.xs) {
                 ForEach(recording.displayTags) { tag in
                     HStack(spacing: Spacing.xs) { // was 3
-                        Image(systemName: tag.icon)
-                            .font(Typography.caption)
+                        if let glyph = tag.glyph {
+                            SignalGlyph(glyph.kind, level: glyph.level, size: 16, decorative: true)
+                        } else {
+                            Image(systemName: tag.icon)
+                                .font(Typography.caption)
+                        }
                         Text(tag.label)
                             .font(Typography.caption)
                     }

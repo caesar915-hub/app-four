@@ -19,6 +19,11 @@ extension View {
         let base = self
             .padding(padding)
             .background(Theme.cardBackground, in: .rect(cornerRadius: Radius.card))
+            .overlay(
+                RoundedRectangle(cornerRadius: Radius.card)
+                    .strokeBorder(Theme.cardStroke, lineWidth: 1)
+            )
+            .shadow(color: Color(lightHex: "#221E16", darkHex: "#000000").opacity(0.06), radius: 10, y: 3)
         return Group {
             if elevated {
                 base.elevated()
@@ -26,6 +31,19 @@ extension View {
                 base
             }
         }
+    }
+}
+
+// MARK: - Card section eyebrow
+
+extension Text {
+    /// Uppercase, tracked, muted eyebrow used as a card/section header (e.g. "Summary", "Meds", "Audio").
+    func cardEyebrow() -> some View {
+        self
+            .font(Typography.label)
+            .textCase(.uppercase)
+            .tracking(0.7)
+            .foregroundStyle(Theme.textSecondary)
     }
 }
 

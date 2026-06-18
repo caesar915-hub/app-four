@@ -9,6 +9,11 @@ enum SignalKind: CaseIterable, Equatable, Hashable {
     var label: String {
         switch self { case .mood: "Mood"; case .energy: "Energy"; case .focus: "Focus" }
     }
+
+    /// Bridge to the glyph layer (which also covers sleep/medication).
+    var glyphSignal: GlyphSignal {
+        switch self { case .mood: .mood; case .energy: .energy; case .focus: .focus }
+    }
 }
 
 struct MoodShare {

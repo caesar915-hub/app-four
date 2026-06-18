@@ -19,11 +19,9 @@ struct CheckInView: View {
         @Bindable var viewModel = viewModel
 
         ScreenContainer(title: "", showsMedicationBar: true, scrollable: false) {
-            VStack(alignment: .leading, spacing: 0) {
-                headline
-                content
-            }
-            .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: viewModel.state)
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: viewModel.state)
         }
         .trackScreen("CheckInView")
         .onAppear { consumeAutoStart() }
@@ -34,7 +32,7 @@ struct CheckInView: View {
             }
         }
         .sheet(isPresented: $showComposer) {
-            TextCheckInComposer(recentMedicationNames: viewModel.recentMedicationNames) { draft in
+            TextCheckInComposer { draft in
                 viewModel.saveTextCheckIn(draft)
             }
         }
@@ -60,25 +58,8 @@ struct CheckInView: View {
         viewModel.startRecording()
     }
 
-    @ViewBuilder
-    private var headline: some View {
-        if !headlineText.isEmpty {
-            Text(headlineText)
-                .font(Typography.display)
-                .foregroundStyle(Theme.textPrimary)
-                .padding(.horizontal, Spacing.l)
-                .padding(.top, Spacing.l)
-                .accessibilityAddTraits(.isHeader)
-        }
-    }
-
-    private var headlineText: String {
-        switch viewModel.state {
-        case .idle: "How are you?"
-        case .recording, .paused: ""
-        case .processing: "Saving…"
-        case .done: "Check-in saved"
-        }
+    private var todayDate: String {
+        Date.now.formatted(.dateTime.weekday(.abbreviated).day().month(.wide))
     }
 
     @ViewBuilder
@@ -100,27 +81,40 @@ struct CheckInView: View {
     // MARK: Hub
 
     private var hub: some View {
-        GeometryReader { geo in
-            ZStack {
-                CrescentRing()
-                    .frame(width: ringSide(in: geo), height: ringSide(in: geo))
-                VStack(spacing: Spacing.m) {
+        VStack(spacing: Spacing.l) {
+            VStack(spacing: Spacing.xs) {
+                Text(todayDate)
+                    .font(Typography.label)
+                    .textCase(.uppercase)
+                    .foregroundStyle(Theme.textSecondary)
+                Text("Ready when\nyou are.")
+                    .font(Typography.title)
+                    .foregroundStyle(Theme.textPrimary)
+                    .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
+            }
+            .padding(.top, Spacing.xl)
+
+            Spacer()
+            CrescentRing()
+                .frame(width: 200, height: 200)
+            Spacer()
+
+            VStack(spacing: Spacing.s) {
+                speakButton
+                HStack(spacing: Spacing.s) {
                     hubOption("Log meds", icon: Icons.medication, tint: Palette.medication) {
                         showMedLogSheet = true
                     }
-                    speakButton
                     hubOption("Type note", icon: "square.and.pencil", tint: nil) {
                         showComposer = true
                     }
                 }
-                .frame(width: ringSide(in: geo) * 0.62)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .padding(.bottom, Spacing.l)
         }
-    }
-
-    private func ringSide(in geo: GeometryProxy) -> CGFloat {
-        max(0, min(geo.size.width - Spacing.l * 2, geo.size.height - Spacing.l, 320))
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, Spacing.l)
     }
 
     private var speakButton: some View {
@@ -134,7 +128,8 @@ struct CheckInView: View {
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
             .padding(.vertical, Spacing.l)
-            .background(Theme.accent, in: RoundedRectangle(cornerRadius: Radius.button))
+            .background(Theme.meadowGradient, in: RoundedRectangle(cornerRadius: Radius.button))
+            .shadow(color: Theme.meadowAmber.opacity(0.34), radius: 12, y: 5)
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Start voice check-in")
@@ -149,6 +144,10 @@ struct CheckInView: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, Spacing.m)
             .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.button))
+            .overlay(
+                RoundedRectangle(cornerRadius: Radius.button)
+                    .strokeBorder(Theme.separator, lineWidth: 1)
+            )
         }
         .buttonStyle(.plain)
     }
@@ -250,18 +249,20 @@ struct CheckInView: View {
         Button {
             viewModel.stopRecording()
         } label: {
-            ZStack {
-                RoundedRectangle(cornerRadius: Radius.button)
-                    .fill(.red)
-                    .frame(width: 64, height: 64)
+            HStack(spacing: Spacing.s) {
                 if viewModel.state == .processing {
-                    ProgressView().tint(.white)
+                    ProgressView().tint(Theme.background)
                 } else {
-                    RoundedRectangle(cornerRadius: 5)
-                        .fill(.white)
-                        .frame(width: 22, height: 22)
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(Theme.background)
+                        .frame(width: 11, height: 11)
+                    Text("Stop & save").font(Typography.headline)
                 }
             }
+            .foregroundStyle(Theme.background)
+            .padding(.vertical, Spacing.m)
+            .padding(.horizontal, Spacing.xxl)
+            .background(Theme.textPrimary, in: Capsule())
         }
         .buttonStyle(.plain)
         .disabled(viewModel.state == .processing)
@@ -271,80 +272,51 @@ struct CheckInView: View {
 
 // MARK: - Saved
 
-private struct SavedChip: Identifiable {
-    let label: String
-    let color: Color
-    var id: String { label }
-}
-
+/// §05 Saved — pure confirmation: a gradient checkmark that pops, "Captured." in Fraunces,
+/// a calm subtitle, and Done / Check in again. No card, no transcribing UI (locked decision).
 private struct CheckInSavedView: View {
     let recording: Recording?
     let onNewCheckIn: () -> Void
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var popped = false
 
     var body: some View {
         VStack(spacing: Spacing.l) {
             Spacer()
-            Image(systemName: "checkmark.circle")
-                .font(.system(size: 56, weight: .light))
-                .foregroundStyle(Theme.statusDone)
-            if let recording {
-                savedDetails(for: recording)
+            ZStack {
+                Circle()
+                    .fill(Theme.meadowGradient)
+                    .frame(width: 78, height: 78)
+                    .shadow(color: Theme.meadowAmber.opacity(0.3), radius: 20, y: 8)
+                Image(systemName: "checkmark")
+                    .font(.system(size: 32, weight: .bold))
+                    .foregroundStyle(.white)
             }
-            Spacer()
-            Button("New check-in", action: onNewCheckIn)
-                .font(Typography.headline)
-                .foregroundStyle(Theme.accent)
-                .padding(.bottom, Spacing.hero)
-        }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, Spacing.l)
-    }
+            .scaleEffect(popped ? 1 : 0.6)
+            .opacity(popped ? 1 : 0)
 
-    @ViewBuilder
-    private func savedDetails(for recording: Recording) -> some View {
-        let chips = savedChips(for: recording)
-        if chips.isEmpty {
-            Text("Picking out the details…")
-                .font(Typography.callout)
-                .foregroundStyle(Theme.textSecondary)
-        } else {
-            Text("We picked these up — tweak any time on the entry.")
+            Text("Captured.")
+                .font(Typography.title)
+                .foregroundStyle(Theme.textPrimary)
+            Text("That's today's check-in. Talk to you next time.")
                 .font(Typography.callout)
                 .foregroundStyle(Theme.textSecondary)
                 .multilineTextAlignment(.center)
-            FlowChips {
-                ForEach(chips) { chip in
-                    HStack(spacing: Spacing.xs) {
-                        Circle().fill(chip.color).frame(width: 8, height: 8)
-                        Text(chip.label).font(Typography.caption).foregroundStyle(Theme.textPrimary)
-                    }
-                    .padding(.horizontal, Spacing.s + 2)
-                    .padding(.vertical, Spacing.xs + 2)
-                    .background(Theme.cardBackground, in: Capsule())
-                }
-            }
-        }
-    }
+                .frame(maxWidth: 240)
 
-    private func savedChips(for recording: Recording) -> [SavedChip] {
-        var chips: [SavedChip] = []
-        if let mood = MoodLevel(name: recording.mood) {
-            chips.append(SavedChip(label: mood.displayLabel, color: mood.color))
+            Spacer()
+            VStack(spacing: Spacing.s) {
+                Button("Done", action: onNewCheckIn).buttonStyle(.primary)
+                Button("Check in again", action: onNewCheckIn).buttonStyle(.secondary)
+            }
+            .padding(.bottom, Spacing.hero)
         }
-        if let energy = recording.energyLevel.flatMap({ EnergyLevel(rawValue: $0.lowercased()) }) {
-            chips.append(SavedChip(label: energy.displayLabel, color: energy.color))
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, Spacing.l)
+        .onAppear {
+            guard !reduceMotion else { popped = true; return }
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) { popped = true }
         }
-        if let focus = recording.focusLevel.flatMap({ FocusLevel(rawValue: $0.lowercased()) }) {
-            chips.append(SavedChip(label: focus.displayLabel, color: focus.color))
-        }
-        var seenMeds = Set<String>()
-        for event in recording.medicationEvents where seenMeds.insert(event.name.lowercased()).inserted {
-            chips.append(SavedChip(label: event.name, color: Palette.medication))
-        }
-        if let quality = recording.sleepQuality {
-            chips.append(SavedChip(label: "\(quality.capitalized) sleep", color: .indigo))
-        }
-        return chips
     }
 }
 

@@ -1,42 +1,44 @@
 import SwiftUI
 
-/// Semantic color roles. Thin wrappers over UIKit adaptive system colors
-/// so every color adapts automatically to light/dark mode and accessibility.
-///
-/// Never use hardcoded `Color.white`, `Color.black`, or `Color.white.opacity(...)` in views.
-/// The only accepted opacity usage is:
-///   - `.opacity(0.15)` for subtle background strokes
-///   - `.opacity(0.3)` for separator lines
+/// Paper & Pollen semantic colours. Warm **paper** in light, warm **loam** in dark —
+/// never system white/black. Every value is an adaptive light/dark token, matching the
+/// design-system `:root` (and dark) variables.
 enum Theme {
     // MARK: - Backgrounds
-    /// Main screen background (white / near-black)
-    static let background = Color(.systemBackground)
-    /// Card, group, and row backgrounds (light gray / dark gray)
-    static let cardBackground = Color(.secondarySystemBackground)
-    /// Elevated card background (used for cards on top of secondarySystemBackground)
-    static let elevatedBackground = Color(.tertiarySystemBackground)
+    /// Main screen background — paper / loam.
+    static let background = Color(lightHex: "#F6F1E7", darkHex: "#14130F")
+    /// Card / row background.
+    static let cardBackground = Color(lightHex: "#FCF8EF", darkHex: "#1E1C16")
+    /// Inset / second surface (segmented fills, tracks, chips).
+    static let surface2 = Color(lightHex: "#EFE8D8", darkHex: "#272419")
+    /// Elevated card background.
+    static let elevatedBackground = Color(lightHex: "#FCF8EF", darkHex: "#272419")
 
     // MARK: - Text
-    /// Full-weight primary text
-    static let textPrimary = Color.primary
-    /// Secondary / supporting text
-    static let textSecondary = Color.secondary
+    static let textPrimary = Color(lightHex: "#221E16", darkHex: "#F3EEE0")
+    static let textSecondary = Color(lightHex: "#7A7361", darkHex: "#9A917C")
 
     // MARK: - Separators
-    /// System-standard divider color
-    static let separator = Color(.separator)
+    /// Hairline rules and card borders.
+    static let separator = Color(lightHex: "#E3DAC7", darkHex: "#322E22")
+    static let cardStroke = Color(lightHex: "#E3DAC7", darkHex: "#322E22")
 
-    // MARK: - Accent
-    /// Single accent color — set via AccentColor in the asset catalog
-    static let accent = Color.accentColor
+    // MARK: - Accent + Meadow
+    /// Bronze accent — links, focus, the "current" ring.
+    static let accent = Color(lightHex: "#B8842A", darkHex: "#D4A24A")
+    static let meadowGreen = Color(lightHex: "#5F8A4C", darkHex: "#6E9A58")
+    static let meadowAmber = Color(lightHex: "#E0A33A", darkHex: "#E8B255")
 
-    // MARK: - Status
-    /// Done / completed states
-    static let statusDone = Color.green
-    /// In-progress / pending states
-    static let statusInProgress = Color.orange
+    // MARK: - Status (no raw system green/orange)
+    static let statusDone = meadowGreen
+    static let statusInProgress = meadowAmber
+    /// Quiet danger — failed transcription, a "stopped" med. Warm clay, never raw red.
+    static let danger = Color(lightHex: "#B5503A", darkHex: "#CF6A52")
 
-    // MARK: - Stroke helper
-    /// Subtle card border — use at 0.15 opacity max
-    static let cardStroke = Color(.separator)
+    // MARK: - The signature gradient
+    /// Green → amber (~120°) — primary actions, the crescent, active states.
+    static var meadowGradient: LinearGradient {
+        LinearGradient(colors: [meadowGreen, meadowAmber],
+                       startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
 }

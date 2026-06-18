@@ -79,7 +79,8 @@ final class ExtractionReviewViewModel: Identifiable {
                     timeLabel: event.timeLabel,
                     taken: event.taken,
                     quantity: event.quantity,
-                    change: event.change
+                    change: event.change,
+                    durationHours: event.durationHours  // carry persisted duration so a re-edit + Save preserves it
                 )
             }
         let result = SummaryResult(
@@ -135,24 +136,43 @@ final class ExtractionReviewViewModel: Identifiable {
         if sideEffects.contains(effect) { sideEffects.remove(effect) } else { sideEffects.insert(effect) }
     }
 
+    // Look up the row by its stable per-row identity (`editRowID`), not by name or value:
+    // name collides when the same med is logged twice (two doses), and value equality
+    // breaks the moment any field on the row is edited (stale capture → dropped edit).
     func toggleMedTaken(_ med: MedEvent) {
-        guard let index = medications.firstIndex(of: med) else { return }
+        guard let index = medications.firstIndex(where: { $0.editRowID == med.editRowID }) else { return }
         medications[index].taken.toggle()
         editedFields.insert(.medication)
     }
 
     func setMedDose(_ med: MedEvent, dose: String?) {
-        guard let index = medications.firstIndex(of: med) else { return }
+        guard let index = medications.firstIndex(where: { $0.editRowID == med.editRowID }) else { return }
         medications[index].dose = dose
+        editedFields.insert(.medication)
+    }
+
+    func setMedDuration(_ med: MedEvent, hours: Double?) {
+        guard let index = medications.firstIndex(where: { $0.editRowID == med.editRowID }) else { return }
+        medications[index].durationHours = hours
         editedFields.insert(.medication)
     }
 
     func addMedication(_ name: String) {
         guard !medications.contains(where: { $0.name == name }) else { return }
-        medications.append(MedEvent(name: name))
+        // Seed dose + duration from the catalog so the inline-expand opens populated, and
+        // so the saved duration matches the box (the shared resolver no longer adds catalog).
+        let entry = MedicationCatalog.entry(matching: name)
+        medications.append(MedEvent(name: name, dose: entry?.doseOptions.first, durationHours: entry?.durationHours))
         editedFields.insert(.medication)
     }
 
+    /// Remove one specific dose row (the × on its inline-expand card).
+    func removeMedication(id: String) {
+        medications.removeAll(where: { $0.editRowID == id })
+        editedFields.insert(.medication)
+    }
+
+    /// Remove every dose of a med (the catalog add/remove grid chip toggling off).
     func removeMedication(_ name: String) {
         medications.removeAll(where: { $0.name == name })
         editedFields.insert(.medication)
@@ -241,4 +261,11 @@ final class ExtractionReviewViewModel: Identifiable {
             store.save()
         }
     }
+}
+
+extension MedEvent {
+    /// Stable per-row identity for the Edit-sheet medication list. Distinguishes two doses
+    /// of the same med (which differ by time) and is invariant under dose/duration/taken
+    /// edits — so list diffing and the row-keyed setters always target exactly one row.
+    var editRowID: String { "\(name)|\(time ?? "")|\(timeLabel ?? "")|\(quantity ?? 1)" }
 }

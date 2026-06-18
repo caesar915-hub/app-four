@@ -121,9 +121,9 @@ private struct MiniBar: View {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     Capsule()
-                        .fill(Color.secondary.opacity(0.15))
+                        .fill(Theme.separator)
                     Capsule()
-                        .fill(Color.accentColor)
+                        .fill(Theme.accent)
                         .frame(width: max(barHeight, geo.size.width * fraction))
                 }
                 .frame(height: barHeight)
