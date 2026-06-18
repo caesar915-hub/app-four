@@ -584,6 +584,8 @@
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.3.3;
 			};
+			traits = (
+			);
 		};
 /* End XCRemoteSwiftPackageReference section */
 

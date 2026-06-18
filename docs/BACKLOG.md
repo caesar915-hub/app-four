@@ -131,6 +131,7 @@ Ranked shortlist — what to pick up next, not everything in flight. Reorder fre
 | Tiered NL + LLM pipeline | NL per-recording (keep) + Apple Foundation Models via BGProcessingTask for daily/weekly trend aggregation. New `DailyInsight` + `WeeklySummary` models. Pairs with calendar view. |
 | User correction + learning | Remaining scope after Tag suggestion plan: phrase-selection → personal lexicon. Tag-editing half moved to 📐 Tag suggestion engine. |
 | Tag provenance | Largely realised: `RecordingTag(source:confidence:)` exists; Tag suggestion plan adds suggested/confirmed/rejected lifecycle. Remaining: weighted insights. |
+| Intra-entry emotional arc in tags | Today the extractor reports **one label per dimension per entry** (strongest-confidence-across-sentences wins — see `spikes/README.md`), so an entry that goes "powered through… then crashed and got irritable" collapses energy/mood to a single value and drops the later state. Idea: capture the **arc** (e.g. `energy: charged → crashed`, `mood: good → low`) instead of flattening. Changes both extractor aggregation (per-sentence sequence + tense/recency ordering) and tag rendering (range/transition chip). The FLAN-T5 summary already preserves the arc narratively; this is about the structured tags. **Deferred — not for now** (noted 2026-06-18). |
 
 ## ✅ Shipped (on `main`)
 

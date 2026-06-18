@@ -40,3 +40,6 @@ memory/
 # Scratch design drafts (e.g. .tmp-listen-v1.html)
 .tmp-*
 .gstack/
+
+# ML signal-extractor spike (parked 2026-06-18 — see docs spec + DEVLOG)
+spikes/
