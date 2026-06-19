@@ -1,0 +1,3536 @@
+[
+  {
+    "id": "day002",
+    "text": "More tired than a normal day. Had a call with my therapist.",
+    "sentences": [
+      {
+        "text": "More tired than a normal day.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Had a call with my therapist.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "tired",
+      "focus": null
+    }
+  },
+  {
+    "id": "day003",
+    "text": "Um. Only got 5 hours, restless. No emotional response to anything. I felt physically competent and normal. I felt intellectually clear and alert. Had coffee with a friend.",
+    "sentences": [
+      {
+        "text": "Um.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Only got 5 hours, restless.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "No emotional response to anything.",
+        "mood": "flat",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I felt physically competent and normal.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "I felt intellectually clear and alert.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "Had coffee with a friend.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "flat",
+      "energy": "steady",
+      "focus": "sharp"
+    }
+  },
+  {
+    "id": "day004",
+    "text": "I had a genuinely good day.",
+    "sentences": [
+      {
+        "text": "I had a genuinely good day.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": null,
+      "focus": null
+    }
+  },
+  {
+    "id": "day006",
+    "text": "Today. Elvanse kicked in around 9. Decent sleep, woke up naturally. No emotional drama today, just okay.",
+    "sentences": [
+      {
+        "text": "Today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Elvanse kicked in around 9.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Decent sleep, woke up naturally.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "No emotional drama today, just okay.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": null,
+      "focus": null
+    }
+  },
+  {
+    "id": "day007",
+    "text": "I mean. Took my meds a bit late today. Slept like a rock for 8. Felt genuinely pleased with life today. I'm physically activated today. I was appropriately attentive today. I'll see if i can focus once the meds kick in.",
+    "sentences": [
+      {
+        "text": "I mean.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took my meds a bit late today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Slept like a rock for 8.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Felt genuinely pleased with life today.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I'm physically activated today.",
+        "mood": null,
+        "energy": "alert",
+        "focus": null
+      },
+      {
+        "text": "I was appropriately attentive today.",
+        "mood": null,
+        "energy": null,
+        "focus": "present"
+      },
+      {
+        "text": "I'll see if i can focus once the meds kick in.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "alert",
+      "focus": "present"
+    }
+  },
+  {
+    "id": "day008",
+    "text": "Couldn't access any feelings today. I feel clear-headed and energetic. I was operating at peak mental capacity. Had a call with my therapist.",
+    "sentences": [
+      {
+        "text": "Couldn't access any feelings today.",
+        "mood": "flat",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I feel clear-headed and energetic.",
+        "mood": null,
+        "energy": "alert",
+        "focus": null
+      },
+      {
+        "text": "I was operating at peak mental capacity.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "Had a call with my therapist.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "flat",
+      "energy": "alert",
+      "focus": "sharp"
+    }
+  },
+  {
+    "id": "day010",
+    "text": "Did my usual elvanse 50. Total wipeout, energy completely gone. Worked from home today.",
+    "sentences": [
+      {
+        "text": "Did my usual elvanse 50.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Total wipeout, energy completely gone.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "Worked from home today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "sluggish",
+      "focus": null
+    }
+  },
+  {
+    "id": "day011",
+    "text": "I felt deeply happy and at peace. Felt physically balanced today. I should really hydrate more.",
+    "sentences": [
+      {
+        "text": "I felt deeply happy and at peace.",
+        "mood": "great",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Felt physically balanced today.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "I should really hydrate more.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "great",
+      "energy": "steady",
+      "focus": null
+    }
+  },
+  {
+    "id": "day012",
+    "text": "Just didn't feel good at all. i had decent energy earlier. Totally wiped out. Had back to back meetings all morning.",
+    "sentences": [
+      {
+        "text": "Just didn't feel good at all.",
+        "mood": "low",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "i had decent energy earlier.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "Totally wiped out.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "Had back to back meetings all morning.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "low",
+      "energy": "sluggish",
+      "focus": null
+    }
+  },
+  {
+    "id": "day013",
+    "text": "Mood was pretty flat but in a neutral way. No gas in the tank whatsoever. Long commute today, stuck in traffic.",
+    "sentences": [
+      {
+        "text": "Mood was pretty flat but in a neutral way.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "No gas in the tank whatsoever.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "Long commute today, stuck in traffic.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": "sluggish",
+      "focus": null
+    }
+  },
+  {
+    "id": "day015",
+    "text": "No meds today, drug holiday. Had a rough night, kept waking up. I felt mentally available and engaged. Had back to back meetings all morning. I'll see if i can focus once the meds kick in.",
+    "sentences": [
+      {
+        "text": "No meds today, drug holiday.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Had a rough night, kept waking up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I felt mentally available and engaged.",
+        "mood": null,
+        "energy": null,
+        "focus": "present"
+      },
+      {
+        "text": "Had back to back meetings all morning.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I'll see if i can focus once the meds kick in.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": null,
+      "focus": "present"
+    }
+  },
+  {
+    "id": "day016",
+    "text": "So yeah. I was attentive and switched on. Had a call with my therapist. Going to do a deep work session later.",
+    "sentences": [
+      {
+        "text": "So yeah.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I was attentive and switched on.",
+        "mood": null,
+        "energy": null,
+        "focus": "present"
+      },
+      {
+        "text": "Had a call with my therapist.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Going to do a deep work session later.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": null,
+      "focus": "present"
+    }
+  },
+  {
+    "id": "day017",
+    "text": "Honestly. Took my elvanse 50mg at 8 with breakfast. Slept in this morning. I feel like i'm watching myself from outside. I had to push through the tiredness. Had a call with my therapist.",
+    "sentences": [
+      {
+        "text": "Honestly.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took my elvanse 50mg at 8 with breakfast.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Slept in this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I feel like i'm watching myself from outside.",
+        "mood": "flat",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I had to push through the tiredness.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Had a call with my therapist.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "flat",
+      "energy": "tired",
+      "focus": null
+    }
+  },
+  {
+    "id": "day018",
+    "text": "Mood was bright and positive. I experienced rare, deep focus today. Going to do a deep work session later.",
+    "sentences": [
+      {
+        "text": "Mood was bright and positive.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I experienced rare, deep focus today.",
+        "mood": null,
+        "energy": null,
+        "focus": "lockedIn"
+      },
+      {
+        "text": "Going to do a deep work session later.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": null,
+      "focus": "lockedIn"
+    }
+  },
+  {
+    "id": "day019",
+    "text": "Blunted emotions today, nothing lands. Physical state was dire today.",
+    "sentences": [
+      {
+        "text": "Blunted emotions today, nothing lands.",
+        "mood": "flat",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Physical state was dire today.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "flat",
+      "energy": "sluggish",
+      "focus": null
+    }
+  },
+  {
+    "id": "day021",
+    "text": "Decent sleep, woke up naturally. I feel like everything is going right. Physical energy was baseline, which is fine. i was able to focus this morning. Hyperdistracted today, typical adhd day. Made a proper dinner for once.",
+    "sentences": [
+      {
+        "text": "Decent sleep, woke up naturally.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I feel like everything is going right.",
+        "mood": "great",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Physical energy was baseline, which is fine.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "i was able to focus this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "Hyperdistracted today, typical adhd day.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Made a proper dinner for once.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "great",
+      "energy": "steady",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day024",
+    "text": "Right so. Elvanse kicked in around 9. Slept about 7 hours. No real feelings today, just blank. I feel physically primed today. Did the grocery shop.",
+    "sentences": [
+      {
+        "text": "Right so.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Elvanse kicked in around 9.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Slept about 7 hours.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "No real feelings today, just blank.",
+        "mood": "flat",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I feel physically primed today.",
+        "mood": null,
+        "energy": "alert",
+        "focus": null
+      },
+      {
+        "text": "Did the grocery shop.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "flat",
+      "energy": "alert",
+      "focus": null
+    }
+  },
+  {
+    "id": "day025",
+    "text": "Okay so. Took vyvanse around 7am. Decent sleep, woke up naturally. Energy through the roof today. I couldn't commit to any one thing. Finished that report finally. Hope tomorrow's a better one.",
+    "sentences": [
+      {
+        "text": "Okay so.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took vyvanse around 7am.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Decent sleep, woke up naturally.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Energy through the roof today.",
+        "mood": null,
+        "energy": "charged",
+        "focus": null
+      },
+      {
+        "text": "I couldn't commit to any one thing.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Finished that report finally.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Hope tomorrow's a better one.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "charged",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day026",
+    "text": "Let me think. Good mood from morning to night. I feel physically capable and energized. I've been in flow state for hours.",
+    "sentences": [
+      {
+        "text": "Let me think.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Good mood from morning to night.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I feel physically capable and energized.",
+        "mood": null,
+        "energy": "alert",
+        "focus": null
+      },
+      {
+        "text": "I've been in flow state for hours.",
+        "mood": null,
+        "energy": null,
+        "focus": "lockedIn"
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "alert",
+      "focus": "lockedIn"
+    }
+  },
+  {
+    "id": "day027",
+    "text": "Right so. Skipped my medication this morning. i had decent energy earlier. Physical energy was at absolute zero. I was totally unfocused and it cost me the day. Did the grocery shop. Hope tomorrow's a better one.",
+    "sentences": [
+      {
+        "text": "Right so.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Skipped my medication this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "i had decent energy earlier.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "Physical energy was at absolute zero.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "I was totally unfocused and it cost me the day.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Did the grocery shop.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Hope tomorrow's a better one.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "sluggish",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day028",
+    "text": "Skipped my medication this morning. Today just felt good. I could not get going no matter what. My brain felt like it was operating at peak capacity. Planning to take it easy this weekend.",
+    "sentences": [
+      {
+        "text": "Skipped my medication this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Today just felt good.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I could not get going no matter what.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "My brain felt like it was operating at peak capacity.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "Planning to take it easy this weekend.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "sluggish",
+      "focus": "sharp"
+    }
+  },
+  {
+    "id": "day029",
+    "text": "Yeah. No meds today, drug holiday. Slept like a rock for 8. I was upbeat and positive. i had decent energy earlier. Energy dropped off after lunch. Had coffee with a friend.",
+    "sentences": [
+      {
+        "text": "Yeah.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "No meds today, drug holiday.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Slept like a rock for 8.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I was upbeat and positive.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "i had decent energy earlier.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "Energy dropped off after lunch.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Had coffee with a friend.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "tired",
+      "focus": null
+    }
+  },
+  {
+    "id": "day030",
+    "text": "Took my dose, lets see how it goes. A bit lethargic today. My cognition was completely off. Had coffee with a friend. I should really hydrate more.",
+    "sentences": [
+      {
+        "text": "Took my dose, lets see how it goes.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "A bit lethargic today.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "My cognition was completely off.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      },
+      {
+        "text": "Had coffee with a friend.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I should really hydrate more.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "tired",
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day031",
+    "text": "Only got 5 hours, restless. Not exactly exhausted but not far off. I flitted from one thing to another all day.",
+    "sentences": [
+      {
+        "text": "Only got 5 hours, restless.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Not exactly exhausted but not far off.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "I flitted from one thing to another all day.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "tired",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day036",
+    "text": "Skipped my medication this morning. Not happy today honestly. Mentally checked out today. Had coffee with a friend.",
+    "sentences": [
+      {
+        "text": "Skipped my medication this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Not happy today honestly.",
+        "mood": "low",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Mentally checked out today.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      },
+      {
+        "text": "Had coffee with a friend.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "low",
+      "energy": null,
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day037",
+    "text": "Anyway. Did my usual elvanse 50. Went to bed late again. Felt pretty balanced today. Too much going on in my head to focus. Did the grocery shop.",
+    "sentences": [
+      {
+        "text": "Anyway.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Did my usual elvanse 50.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Went to bed late again.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Felt pretty balanced today.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Too much going on in my head to focus.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Did the grocery shop.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": null,
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day038",
+    "text": "Yeah. Elvanse kicked in around 9. Stable mood, no real ups or downs. Low battery mode today. My focus was clean and sustained.",
+    "sentences": [
+      {
+        "text": "Yeah.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Elvanse kicked in around 9.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Stable mood, no real ups or downs.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Low battery mode today.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "My focus was clean and sustained.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": "tired",
+      "focus": "sharp"
+    }
+  },
+  {
+    "id": "day040",
+    "text": "Forgot my meds until like 11. The tiredness caught up with me today. Total attention breakdown today. Long commute today, stuck in traffic.",
+    "sentences": [
+      {
+        "text": "Forgot my meds until like 11.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "The tiredness caught up with me today.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Total attention breakdown today.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Long commute today, stuck in traffic.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "tired",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day041",
+    "text": "Um. Elvanse kicked in around 9. Slept about 7 hours. Kind of emotionally hollow today. I was present and on it today. Had a call with my therapist.",
+    "sentences": [
+      {
+        "text": "Um.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Elvanse kicked in around 9.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Slept about 7 hours.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Kind of emotionally hollow today.",
+        "mood": "flat",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I was present and on it today.",
+        "mood": null,
+        "energy": null,
+        "focus": "present"
+      },
+      {
+        "text": "Had a call with my therapist.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "flat",
+      "energy": null,
+      "focus": "present"
+    }
+  },
+  {
+    "id": "day042",
+    "text": "Today. Elvanse kicked in around 9. Slept in this morning. Felt good today. Barely functional today energy-wise. Did the grocery shop. Going to do a deep work session later.",
+    "sentences": [
+      {
+        "text": "Today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Elvanse kicked in around 9.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Slept in this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Felt good today.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Barely functional today energy-wise.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "Did the grocery shop.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Going to do a deep work session later.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "sluggish",
+      "focus": null
+    }
+  },
+  {
+    "id": "day043",
+    "text": "Right so. More tired than a normal day. Did the grocery shop.",
+    "sentences": [
+      {
+        "text": "Right so.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "More tired than a normal day.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Did the grocery shop.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "tired",
+      "focus": null
+    }
+  },
+  {
+    "id": "day045",
+    "text": "Today. Took vyvanse around 7am. Went to bed late again. I was glowing a bit emotionally. My body operated normally today. I kept my attention where it needed to be. Went for a walk after lunch. Planning to take it easy this weekend.",
+    "sentences": [
+      {
+        "text": "Today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took vyvanse around 7am.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Went to bed late again.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I was glowing a bit emotionally.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "My body operated normally today.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "I kept my attention where it needed to be.",
+        "mood": null,
+        "energy": null,
+        "focus": "present"
+      },
+      {
+        "text": "Went for a walk after lunch.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Planning to take it easy this weekend.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "steady",
+      "focus": "present"
+    }
+  },
+  {
+    "id": "day048",
+    "text": "Today. Took my dose, lets see how it goes. Good day emotionally, really. Had nothing left in me. I was mentally razor sharp today. Worked from home today.",
+    "sentences": [
+      {
+        "text": "Today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took my dose, lets see how it goes.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Good day emotionally, really.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Had nothing left in me.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "I was mentally razor sharp today.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "Worked from home today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "sluggish",
+      "focus": "sharp"
+    }
+  },
+  {
+    "id": "day049",
+    "text": "Let me think. Took my dose, lets see how it goes. Went to bed late again. Not bad, not amazing, just okay. No energy crashes or spikes. Distraction won today.",
+    "sentences": [
+      {
+        "text": "Let me think.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took my dose, lets see how it goes.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Went to bed late again.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Not bad, not amazing, just okay.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "No energy crashes or spikes.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "Distraction won today.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": "steady",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day050",
+    "text": "Took my elvanse 50mg at 8 with breakfast. I'm indifferent and a bit spacey. I ran out of steam by 3pm. Long commute today, stuck in traffic. Let's see how the afternoon goes.",
+    "sentences": [
+      {
+        "text": "Took my elvanse 50mg at 8 with breakfast.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I'm indifferent and a bit spacey.",
+        "mood": "flat",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I ran out of steam by 3pm.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Long commute today, stuck in traffic.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Let's see how the afternoon goes.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "flat",
+      "energy": "tired",
+      "focus": null
+    }
+  },
+  {
+    "id": "day051",
+    "text": "Okay so. Took my elvanse 50mg at 8 with breakfast. Barely slept last night, maybe 4 hours. I had a spring in my step today. Not at full capacity energy-wise. i was able to focus this morning. My brain wanted everything but nothing in particular. Planning to take it easy this weekend.",
+    "sentences": [
+      {
+        "text": "Okay so.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took my elvanse 50mg at 8 with breakfast.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Barely slept last night, maybe 4 hours.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I had a spring in my step today.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Not at full capacity energy-wise.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "i was able to focus this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "My brain wanted everything but nothing in particular.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Planning to take it easy this weekend.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "tired",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day052",
+    "text": "I mean. I got through the day feeling okay. Had nothing left in me. Focus was there, dependable and calm. Had back to back meetings all morning.",
+    "sentences": [
+      {
+        "text": "I mean.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I got through the day feeling okay.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Had nothing left in me.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "Focus was there, dependable and calm.",
+        "mood": null,
+        "energy": null,
+        "focus": "present"
+      },
+      {
+        "text": "Had back to back meetings all morning.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": "sluggish",
+      "focus": "present"
+    }
+  },
+  {
+    "id": "day053",
+    "text": "So yeah. My concentration was completely gone. Did some laundry and tidied up. Going to try and sleep earlier tonight.",
+    "sentences": [
+      {
+        "text": "So yeah.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "My concentration was completely gone.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      },
+      {
+        "text": "Did some laundry and tidied up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Going to try and sleep earlier tonight.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": null,
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day054",
+    "text": "Had a rough night, kept waking up. I felt the best i have in a long time. It was a tired kind of day. Want to get back into a routine.",
+    "sentences": [
+      {
+        "text": "Had a rough night, kept waking up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I felt the best i have in a long time.",
+        "mood": "great",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "It was a tired kind of day.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Want to get back into a routine.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "great",
+      "energy": "tired",
+      "focus": null
+    }
+  },
+  {
+    "id": "day056",
+    "text": "No meds today, drug holiday. Decent sleep, woke up naturally.",
+    "sentences": [
+      {
+        "text": "No meds today, drug holiday.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Decent sleep, woke up naturally.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": null,
+      "focus": null
+    }
+  },
+  {
+    "id": "day057",
+    "text": "I mean. No meds today, drug holiday. I felt neutral most of the day. I wasn't pushing or dragging, just moving. Finished that report finally.",
+    "sentences": [
+      {
+        "text": "I mean.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "No meds today, drug holiday.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I felt neutral most of the day.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I wasn't pushing or dragging, just moving.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "Finished that report finally.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": "steady",
+      "focus": null
+    }
+  },
+  {
+    "id": "day058",
+    "text": "Did my usual elvanse 50. Had a rough night, kept waking up. Feeling cheerful and upbeat. My concentration was completely gone. Going to try and sleep earlier tonight.",
+    "sentences": [
+      {
+        "text": "Did my usual elvanse 50.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Had a rough night, kept waking up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Feeling cheerful and upbeat.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "My concentration was completely gone.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      },
+      {
+        "text": "Going to try and sleep earlier tonight.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": null,
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day059",
+    "text": "Let me think. I have my usual energy levels. I was appropriately attentive today. Had coffee with a friend.",
+    "sentences": [
+      {
+        "text": "Let me think.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I have my usual energy levels.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "I was appropriately attentive today.",
+        "mood": null,
+        "energy": null,
+        "focus": "present"
+      },
+      {
+        "text": "Had coffee with a friend.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "steady",
+      "focus": "present"
+    }
+  },
+  {
+    "id": "day061",
+    "text": "Anyway. No meds today, drug holiday. The emotional numbness is familiar but uncomfortable. I should really hydrate more.",
+    "sentences": [
+      {
+        "text": "Anyway.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "No meds today, drug holiday.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "The emotional numbness is familiar but uncomfortable.",
+        "mood": "flat",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I should really hydrate more.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "flat",
+      "energy": null,
+      "focus": null
+    }
+  },
+  {
+    "id": "day062",
+    "text": "Did my usual elvanse 50. Had a rough night, kept waking up. No energy whatsoever. Went to the gym.",
+    "sentences": [
+      {
+        "text": "Did my usual elvanse 50.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Had a rough night, kept waking up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "No energy whatsoever.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "Went to the gym.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "sluggish",
+      "focus": null
+    }
+  },
+  {
+    "id": "day065",
+    "text": "Forgot my meds until like 11. Barely slept last night, maybe 4 hours. I was doing okay all things considered. Excellent mental sharpness today. Long commute today, stuck in traffic. Let's see how the afternoon goes.",
+    "sentences": [
+      {
+        "text": "Forgot my meds until like 11.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Barely slept last night, maybe 4 hours.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I was doing okay all things considered.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Excellent mental sharpness today.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "Long commute today, stuck in traffic.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Let's see how the afternoon goes.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": null,
+      "focus": "sharp"
+    }
+  },
+  {
+    "id": "day067",
+    "text": "Forgot my meds until like 11. Slept about 7 hours. Feeling cheerful and upbeat. I have my usual energy levels. My mind kept blanking today. Did the grocery shop.",
+    "sentences": [
+      {
+        "text": "Forgot my meds until like 11.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Slept about 7 hours.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Feeling cheerful and upbeat.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I have my usual energy levels.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "My mind kept blanking today.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      },
+      {
+        "text": "Did the grocery shop.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "steady",
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day068",
+    "text": "Total brain fog today. Hope tomorrow's a better one.",
+    "sentences": [
+      {
+        "text": "Total brain fog today.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      },
+      {
+        "text": "Hope tomorrow's a better one.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": null,
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day069",
+    "text": "Today was emotionally rewarding. Total crash today, no energy at all. Worked from home today. Let's see how the afternoon goes.",
+    "sentences": [
+      {
+        "text": "Today was emotionally rewarding.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Total crash today, no energy at all.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "Worked from home today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Let's see how the afternoon goes.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "sluggish",
+      "focus": null
+    }
+  },
+  {
+    "id": "day070",
+    "text": "Took my meds a bit late today. Had a rough night, kept waking up. Spiraling a bit mentally. Running a bit low on energy. Spent the morning answering emails.",
+    "sentences": [
+      {
+        "text": "Took my meds a bit late today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Had a rough night, kept waking up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Spiraling a bit mentally.",
+        "mood": "low",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Running a bit low on energy.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Spent the morning answering emails.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "low",
+      "energy": "tired",
+      "focus": null
+    }
+  },
+  {
+    "id": "day071",
+    "text": "Right so. Felt fine, honestly. Did some laundry and tidied up. Hope tomorrow's a better one.",
+    "sentences": [
+      {
+        "text": "Right so.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Felt fine, honestly.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Did some laundry and tidied up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Hope tomorrow's a better one.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": null,
+      "focus": null
+    }
+  },
+  {
+    "id": "day072",
+    "text": "Only got 5 hours, restless. Good vibes today, genuinely. Alert and focused physically. I was disorganized and scattered today.",
+    "sentences": [
+      {
+        "text": "Only got 5 hours, restless.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Good vibes today, genuinely.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Alert and focused physically.",
+        "mood": null,
+        "energy": "alert",
+        "focus": null
+      },
+      {
+        "text": "I was disorganized and scattered today.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "alert",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day073",
+    "text": "Anyway. Did my usual elvanse 50. Went to bed late again. Life felt enjoyable today. My body refused to cooperate today. Planning to take it easy this weekend.",
+    "sentences": [
+      {
+        "text": "Anyway.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Did my usual elvanse 50.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Went to bed late again.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Life felt enjoyable today.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "My body refused to cooperate today.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "Planning to take it easy this weekend.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "sluggish",
+      "focus": null
+    }
+  },
+  {
+    "id": "day074",
+    "text": "Skipped my medication this morning. I was thrilled to be alive today. Low energy, needed to keep pushing. Spent the morning answering emails.",
+    "sentences": [
+      {
+        "text": "Skipped my medication this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I was thrilled to be alive today.",
+        "mood": "great",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Low energy, needed to keep pushing.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Spent the morning answering emails.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "great",
+      "energy": "tired",
+      "focus": null
+    }
+  },
+  {
+    "id": "day075",
+    "text": "Okay so. Forgot my meds until like 11.",
+    "sentences": [
+      {
+        "text": "Okay so.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Forgot my meds until like 11.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": null,
+      "focus": null
+    }
+  },
+  {
+    "id": "day076",
+    "text": "Took my dose, lets see how it goes. i had decent energy earlier. Flagging in the afternoon. I spent the day being busy but getting nothing done. Did some laundry and tidied up.",
+    "sentences": [
+      {
+        "text": "Took my dose, lets see how it goes.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "i had decent energy earlier.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "Flagging in the afternoon.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "I spent the day being busy but getting nothing done.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Did some laundry and tidied up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "tired",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day077",
+    "text": "Slept about 7 hours. I ran out of steam by 3pm.",
+    "sentences": [
+      {
+        "text": "Slept about 7 hours.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I ran out of steam by 3pm.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "tired",
+      "focus": null
+    }
+  },
+  {
+    "id": "day078",
+    "text": "Okay so. Took my elvanse 50mg at 8 with breakfast. No emotional drama today, just okay. Tired but got through it. Mentally checked out today. Worked from home today.",
+    "sentences": [
+      {
+        "text": "Okay so.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took my elvanse 50mg at 8 with breakfast.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "No emotional drama today, just okay.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Tired but got through it.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Mentally checked out today.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      },
+      {
+        "text": "Worked from home today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": "tired",
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day080",
+    "text": "Elvanse kicked in around 9. Slept about 7 hours. Mood was solid, felt really good. Feeling slower than usual. I kept getting sidetracked. Had a call with my therapist.",
+    "sentences": [
+      {
+        "text": "Elvanse kicked in around 9.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Slept about 7 hours.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Mood was solid, felt really good.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Feeling slower than usual.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "I kept getting sidetracked.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Had a call with my therapist.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "tired",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day081",
+    "text": "Anyway. Normal energy, felt fine. My concentration was completely gone.",
+    "sentences": [
+      {
+        "text": "Anyway.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Normal energy, felt fine.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "My concentration was completely gone.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "steady",
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day082",
+    "text": "Took my dose, lets see how it goes. Feeling hopeless and down. i had decent energy earlier. I felt under-powered today. Going to try and sleep earlier tonight.",
+    "sentences": [
+      {
+        "text": "Took my dose, lets see how it goes.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Feeling hopeless and down.",
+        "mood": "low",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "i had decent energy earlier.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "I felt under-powered today.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Going to try and sleep earlier tonight.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "low",
+      "energy": "tired",
+      "focus": null
+    }
+  },
+  {
+    "id": "day083",
+    "text": "Um. Took my elvanse 50mg at 8 with breakfast. Had a rough night, kept waking up. Feeling steady, neither tired nor wired. Went for a walk after lunch.",
+    "sentences": [
+      {
+        "text": "Um.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took my elvanse 50mg at 8 with breakfast.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Had a rough night, kept waking up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Feeling steady, neither tired nor wired.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "Went for a walk after lunch.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "steady",
+      "focus": null
+    }
+  },
+  {
+    "id": "day084",
+    "text": "Let me think. Took vyvanse around 7am. Grey inside, everything is muted.",
+    "sentences": [
+      {
+        "text": "Let me think.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took vyvanse around 7am.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Grey inside, everything is muted.",
+        "mood": "flat",
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "flat",
+      "energy": null,
+      "focus": null
+    }
+  },
+  {
+    "id": "day085",
+    "text": "Let me think. Elvanse kicked in around 9. Reasonable day emotionally. I felt great physical energy today. I kept losing track of what i was doing. Made a proper dinner for once.",
+    "sentences": [
+      {
+        "text": "Let me think.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Elvanse kicked in around 9.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Reasonable day emotionally.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I felt great physical energy today.",
+        "mood": null,
+        "energy": "alert",
+        "focus": null
+      },
+      {
+        "text": "I kept losing track of what i was doing.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      },
+      {
+        "text": "Made a proper dinner for once.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": "alert",
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day086",
+    "text": "Anyway. Took my dose, lets see how it goes. I'm alright, nothing special. I was mentally restless and unfocused.",
+    "sentences": [
+      {
+        "text": "Anyway.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took my dose, lets see how it goes.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I'm alright, nothing special.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I was mentally restless and unfocused.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": null,
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day087",
+    "text": "Honestly. Life felt enjoyable today. Running at about 60% energy. I couldn't lock onto anything today. Planning to take it easy this weekend.",
+    "sentences": [
+      {
+        "text": "Honestly.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Life felt enjoyable today.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Running at about 60% energy.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "I couldn't lock onto anything today.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Planning to take it easy this weekend.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "tired",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day088",
+    "text": "Um. I felt purely, deeply happy. i had decent energy earlier. Low energy, needed to keep pushing. Did the grocery shop. Going to do a deep work session later.",
+    "sentences": [
+      {
+        "text": "Um.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I felt purely, deeply happy.",
+        "mood": "great",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "i had decent energy earlier.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "Low energy, needed to keep pushing.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Did the grocery shop.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Going to do a deep work session later.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "great",
+      "energy": "tired",
+      "focus": null
+    }
+  },
+  {
+    "id": "day089",
+    "text": "Today. I felt genuinely well today. i was able to focus this morning. I couldn't stay on one thing for more than a minute. Going to do a deep work session later.",
+    "sentences": [
+      {
+        "text": "Today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I felt genuinely well today.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "i was able to focus this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "I couldn't stay on one thing for more than a minute.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Going to do a deep work session later.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": null,
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day092",
+    "text": "Honestly. Skipped my medication this morning. Consistent energy from morning to evening. i was able to focus this morning. I kept losing the thread. Had a call with my therapist.",
+    "sentences": [
+      {
+        "text": "Honestly.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Skipped my medication this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Consistent energy from morning to evening.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "i was able to focus this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "I kept losing the thread.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Had a call with my therapist.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "steady",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day093",
+    "text": "Right so. Took my elvanse 50mg at 8 with breakfast. i had decent energy earlier. I felt my energy sapping as the day went on. I couldn't connect the dots today. Worked from home today.",
+    "sentences": [
+      {
+        "text": "Right so.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took my elvanse 50mg at 8 with breakfast.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "i had decent energy earlier.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "I felt my energy sapping as the day went on.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "I couldn't connect the dots today.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      },
+      {
+        "text": "Worked from home today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "tired",
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day094",
+    "text": "Elvanse kicked in around 9. Had a rough night, kept waking up. Had nothing left in me. Did some laundry and tidied up. Want to get back into a routine.",
+    "sentences": [
+      {
+        "text": "Elvanse kicked in around 9.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Had a rough night, kept waking up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Had nothing left in me.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "Did some laundry and tidied up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Want to get back into a routine.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "sluggish",
+      "focus": null
+    }
+  },
+  {
+    "id": "day095",
+    "text": "Right so. Took my meds a bit late today. Slept about 7 hours. It was an okay kind of day. Zero focus today. Spent the morning answering emails.",
+    "sentences": [
+      {
+        "text": "Right so.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took my meds a bit late today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Slept about 7 hours.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "It was an okay kind of day.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Zero focus today.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      },
+      {
+        "text": "Spent the morning answering emails.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": null,
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day096",
+    "text": "Today. Had a rough night, kept waking up. A bit exhausted by the end of the day. Did some laundry and tidied up.",
+    "sentences": [
+      {
+        "text": "Today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Had a rough night, kept waking up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "A bit exhausted by the end of the day.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "Did some laundry and tidied up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "tired",
+      "focus": null
+    }
+  },
+  {
+    "id": "day097",
+    "text": "Physical energy was as expected. Had back to back meetings all morning. Going to do a deep work session later.",
+    "sentences": [
+      {
+        "text": "Physical energy was as expected.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "Had back to back meetings all morning.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Going to do a deep work session later.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "steady",
+      "focus": null
+    }
+  },
+  {
+    "id": "day099",
+    "text": "My thoughts are scattered and fuzzy. Finished that report finally.",
+    "sentences": [
+      {
+        "text": "My thoughts are scattered and fuzzy.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      },
+      {
+        "text": "Finished that report finally.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": null,
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day100",
+    "text": "Let me think. Did my usual elvanse 50. Only got 5 hours, restless. Not thriving but not struggling either. Did some laundry and tidied up.",
+    "sentences": [
+      {
+        "text": "Let me think.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Did my usual elvanse 50.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Only got 5 hours, restless.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Not thriving but not struggling either.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Did some laundry and tidied up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": null,
+      "focus": null
+    }
+  },
+  {
+    "id": "day101",
+    "text": "Took my dose, lets see how it goes. I was present in my work and conversations. Did some laundry and tidied up. Planning to take it easy this weekend.",
+    "sentences": [
+      {
+        "text": "Took my dose, lets see how it goes.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I was present in my work and conversations.",
+        "mood": null,
+        "energy": null,
+        "focus": "present"
+      },
+      {
+        "text": "Did some laundry and tidied up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Planning to take it easy this weekend.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": null,
+      "focus": "present"
+    }
+  },
+  {
+    "id": "day102",
+    "text": "Decent sleep, woke up naturally. i had decent energy earlier. Tired but got through it. i was able to focus this morning. I bounced between tasks without finishing any. Went to the gym.",
+    "sentences": [
+      {
+        "text": "Decent sleep, woke up naturally.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "i had decent energy earlier.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "Tired but got through it.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "i was able to focus this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "I bounced between tasks without finishing any.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Went to the gym.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "tired",
+      "focus": "distracted"
+    }
+  },
+  {
+    "id": "day103",
+    "text": "Let me think. Only got 5 hours, restless. Mood was solid, felt really good. Not energetic at all today. My thinking is crisp and fast. Going to try and sleep earlier tonight.",
+    "sentences": [
+      {
+        "text": "Let me think.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Only got 5 hours, restless.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Mood was solid, felt really good.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Not energetic at all today.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "My thinking is crisp and fast.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "Going to try and sleep earlier tonight.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "tired",
+      "focus": "sharp"
+    }
+  },
+  {
+    "id": "day104",
+    "text": "Slept like a rock for 8. Not bad, not amazing, just okay. i had decent energy earlier. Energy was on the lower side today. i was able to focus this morning. I felt mentally blunted today. Had a call with my therapist.",
+    "sentences": [
+      {
+        "text": "Slept like a rock for 8.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Not bad, not amazing, just okay.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "i had decent energy earlier.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "Energy was on the lower side today.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "i was able to focus this morning.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "I felt mentally blunted today.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      },
+      {
+        "text": "Had a call with my therapist.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": "tired",
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day105",
+    "text": "Okay so. No meds today, drug holiday. Only got 5 hours, restless. I had a genuinely good day. Physical energy was as expected. Made a proper dinner for once.",
+    "sentences": [
+      {
+        "text": "Okay so.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "No meds today, drug holiday.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Only got 5 hours, restless.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I had a genuinely good day.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Physical energy was as expected.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "Made a proper dinner for once.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "steady",
+      "focus": null
+    }
+  },
+  {
+    "id": "day106",
+    "text": "Okay so. Took my elvanse 50mg at 8 with breakfast. Physical output was steady and reliable. I felt highly mentally competent today. I should really hydrate more.",
+    "sentences": [
+      {
+        "text": "Okay so.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took my elvanse 50mg at 8 with breakfast.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Physical output was steady and reliable.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "I felt highly mentally competent today.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "I should really hydrate more.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "steady",
+      "focus": "sharp"
+    }
+  },
+  {
+    "id": "day109",
+    "text": "So yeah. Decent sleep, woke up naturally. Everything feels equally unimportant. I'm switched on right now. Today i experienced real, deep hyperfocus. Did the grocery shop.",
+    "sentences": [
+      {
+        "text": "So yeah.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Decent sleep, woke up naturally.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Everything feels equally unimportant.",
+        "mood": "flat",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I'm switched on right now.",
+        "mood": null,
+        "energy": "alert",
+        "focus": null
+      },
+      {
+        "text": "Today i experienced real, deep hyperfocus.",
+        "mood": null,
+        "energy": null,
+        "focus": "lockedIn"
+      },
+      {
+        "text": "Did the grocery shop.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "flat",
+      "energy": "alert",
+      "focus": "lockedIn"
+    }
+  },
+  {
+    "id": "day110",
+    "text": "Anyway. Took my meds a bit late today. Kind of a blah day but not in a bad way. I felt under-powered today. I couldn't form a coherent sentence in my head.",
+    "sentences": [
+      {
+        "text": "Anyway.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Took my meds a bit late today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Kind of a blah day but not in a bad way.",
+        "mood": "okay",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I felt under-powered today.",
+        "mood": null,
+        "energy": "tired",
+        "focus": null
+      },
+      {
+        "text": "I couldn't form a coherent sentence in my head.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      }
+    ],
+    "gold": {
+      "mood": "okay",
+      "energy": "tired",
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day112",
+    "text": "So yeah. Elvanse kicked in around 9. Slept about 7 hours. I couldn't form a coherent sentence in my head.",
+    "sentences": [
+      {
+        "text": "So yeah.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Elvanse kicked in around 9.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Slept about 7 hours.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I couldn't form a coherent sentence in my head.",
+        "mood": null,
+        "energy": null,
+        "focus": "foggy"
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": null,
+      "focus": "foggy"
+    }
+  },
+  {
+    "id": "day113",
+    "text": "I mean. Did my usual elvanse 50. Had a rough night, kept waking up. I felt physically competent and normal. I felt mentally here today.",
+    "sentences": [
+      {
+        "text": "I mean.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Did my usual elvanse 50.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Had a rough night, kept waking up.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I felt physically competent and normal.",
+        "mood": null,
+        "energy": "steady",
+        "focus": null
+      },
+      {
+        "text": "I felt mentally here today.",
+        "mood": null,
+        "energy": null,
+        "focus": "present"
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": "steady",
+      "focus": "present"
+    }
+  },
+  {
+    "id": "day115",
+    "text": "Today. Going to try and sleep earlier tonight.",
+    "sentences": [
+      {
+        "text": "Today.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Going to try and sleep earlier tonight.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": null,
+      "energy": null,
+      "focus": null
+    }
+  },
+  {
+    "id": "day116",
+    "text": "Took vyvanse around 7am. Mood was high today, feeling good. I needed a nap but even that didn't help. I felt mentally here today. Going to try and sleep earlier tonight.",
+    "sentences": [
+      {
+        "text": "Took vyvanse around 7am.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Mood was high today, feeling good.",
+        "mood": "good",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "I needed a nap but even that didn't help.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "I felt mentally here today.",
+        "mood": null,
+        "energy": null,
+        "focus": "present"
+      },
+      {
+        "text": "Going to try and sleep earlier tonight.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "good",
+      "energy": "sluggish",
+      "focus": "present"
+    }
+  },
+  {
+    "id": "day117",
+    "text": "Yeah. Only got 5 hours, restless. Woke up sad and stayed that way. The exhaustion was bone-deep. My mind cut through everything easily today. Had a call with my therapist. Planning to take it easy this weekend.",
+    "sentences": [
+      {
+        "text": "Yeah.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Only got 5 hours, restless.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Woke up sad and stayed that way.",
+        "mood": "low",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "The exhaustion was bone-deep.",
+        "mood": null,
+        "energy": "sluggish",
+        "focus": null
+      },
+      {
+        "text": "My mind cut through everything easily today.",
+        "mood": null,
+        "energy": null,
+        "focus": "sharp"
+      },
+      {
+        "text": "Had a call with my therapist.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Planning to take it easy this weekend.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "low",
+      "energy": "sluggish",
+      "focus": "sharp"
+    }
+  },
+  {
+    "id": "day119",
+    "text": "Incredible mood, rare feeling. Not focused at all. Want to get back into a routine.",
+    "sentences": [
+      {
+        "text": "Incredible mood, rare feeling.",
+        "mood": "great",
+        "energy": null,
+        "focus": null
+      },
+      {
+        "text": "Not focused at all.",
+        "mood": null,
+        "energy": null,
+        "focus": "distracted"
+      },
+      {
+        "text": "Want to get back into a routine.",
+        "mood": null,
+        "energy": null,
+        "focus": null
+      }
+    ],
+    "gold": {
+      "mood": "great",
+      "energy": null,
+      "focus": "distracted"
+    }
+  }
+]

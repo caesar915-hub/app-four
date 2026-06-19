@@ -1,0 +1,1682 @@
+[
+  {
+    "text": "I can't think straight today",
+    "label": "foggy"
+  },
+  {
+    "text": "My brain is completely foggy",
+    "label": "foggy"
+  },
+  {
+    "text": "Can't hold a thought for more than a second",
+    "label": "foggy"
+  },
+  {
+    "text": "Everything feels blurry mentally",
+    "label": "foggy"
+  },
+  {
+    "text": "I feel mentally slow and cloudy",
+    "label": "foggy"
+  },
+  {
+    "text": "Total brain fog today",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't process information properly",
+    "label": "foggy"
+  },
+  {
+    "text": "My thoughts are scattered and fuzzy",
+    "label": "foggy"
+  },
+  {
+    "text": "I kept losing track of what I was doing",
+    "label": "foggy"
+  },
+  {
+    "text": "Mentally checked out today",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt like I was thinking through mud",
+    "label": "foggy"
+  },
+  {
+    "text": "Couldn't string two thoughts together",
+    "label": "foggy"
+  },
+  {
+    "text": "My head feels full of noise",
+    "label": "foggy"
+  },
+  {
+    "text": "Zero mental clarity today",
+    "label": "foggy"
+  },
+  {
+    "text": "Brain just wasn't working today",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't make sense of anything today",
+    "label": "foggy"
+  },
+  {
+    "text": "Thoughts were slow and sluggish",
+    "label": "foggy"
+  },
+  {
+    "text": "My mind felt like wet cement",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't get any mental traction",
+    "label": "foggy"
+  },
+  {
+    "text": "Dense fog in my head all day",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt cognitively impaired today",
+    "label": "foggy"
+  },
+  {
+    "text": "My brain refused to cooperate",
+    "label": "foggy"
+  },
+  {
+    "text": "Mental cloudiness all day",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't access my thoughts properly",
+    "label": "foggy"
+  },
+  {
+    "text": "Everything was slow and muddled mentally",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't connect the dots today",
+    "label": "foggy"
+  },
+  {
+    "text": "My thinking was completely disrupted",
+    "label": "foggy"
+  },
+  {
+    "text": "I was mentally offline",
+    "label": "foggy"
+  },
+  {
+    "text": "Brain fog was severe today",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt cognitively empty",
+    "label": "foggy"
+  },
+  {
+    "text": "My mind kept blanking today",
+    "label": "foggy"
+  },
+  {
+    "text": "I was in a complete mental haze",
+    "label": "foggy"
+  },
+  {
+    "text": "Everything felt mentally distant and blurry",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't retain any information today",
+    "label": "foggy"
+  },
+  {
+    "text": "Mental processing was extremely slow",
+    "label": "foggy"
+  },
+  {
+    "text": "I kept forgetting what I was doing mid-task",
+    "label": "foggy"
+  },
+  {
+    "text": "My thoughts dissolved before I could use them",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt like my brain was buffering all day",
+    "label": "foggy"
+  },
+  {
+    "text": "Couldn't think clearly about anything",
+    "label": "foggy"
+  },
+  {
+    "text": "Mental fog so thick I could barely function",
+    "label": "foggy"
+  },
+  {
+    "text": "I was in a mental daze",
+    "label": "foggy"
+  },
+  {
+    "text": "Comprehension was really poor today",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't hold a thought in my head",
+    "label": "foggy"
+  },
+  {
+    "text": "My brain felt like it was working at 10% today",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt mentally underwater",
+    "label": "foggy"
+  },
+  {
+    "text": "No cognitive clarity whatsoever",
+    "label": "foggy"
+  },
+  {
+    "text": "I was cognitively scattered and slow",
+    "label": "foggy"
+  },
+  {
+    "text": "My thinking was muddy and confused",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt mentally blunted today",
+    "label": "foggy"
+  },
+  {
+    "text": "Nothing was registering mentally",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't follow a thread of thought",
+    "label": "foggy"
+  },
+  {
+    "text": "My mind was totally unresponsive",
+    "label": "foggy"
+  },
+  {
+    "text": "I was mentally checked out all morning",
+    "label": "foggy"
+  },
+  {
+    "text": "Everything went in one ear and out the other",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt cognitively blocked",
+    "label": "foggy"
+  },
+  {
+    "text": "Mental performance was at rock bottom",
+    "label": "foggy"
+  },
+  {
+    "text": "My thinking was incoherent today",
+    "label": "foggy"
+  },
+  {
+    "text": "Fuzzy head, couldn't get clear",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't form a coherent sentence in my head",
+    "label": "foggy"
+  },
+  {
+    "text": "My head was cloudy from the moment I woke up",
+    "label": "foggy"
+  },
+  {
+    "text": "I was mentally absent today",
+    "label": "foggy"
+  },
+  {
+    "text": "Brain felt like it was wrapped in cotton wool",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't think my way out of a paper bag today",
+    "label": "foggy"
+  },
+  {
+    "text": "Chronic brain fog hit hard",
+    "label": "foggy"
+  },
+  {
+    "text": "My cognition was completely off",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't get any mental momentum",
+    "label": "foggy"
+  },
+  {
+    "text": "Total mental shutdown today",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt intellectually paralyzed",
+    "label": "foggy"
+  },
+  {
+    "text": "My brain was like static all day",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt mentally stuck and slow",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't focus at all today",
+    "label": "distracted"
+  },
+  {
+    "text": "Really distracted, kept losing my train of thought",
+    "label": "distracted"
+  },
+  {
+    "text": "I jumped from task to task without finishing anything",
+    "label": "distracted"
+  },
+  {
+    "text": "My mind kept wandering",
+    "label": "distracted"
+  },
+  {
+    "text": "I was all over the place today",
+    "label": "distracted"
+  },
+  {
+    "text": "Impossible to concentrate, too many distractions",
+    "label": "distracted"
+  },
+  {
+    "text": "I opened five tabs and finished none of them",
+    "label": "distracted"
+  },
+  {
+    "text": "Kept getting pulled away from what I was working on",
+    "label": "distracted"
+  },
+  {
+    "text": "Couldn't sit still long enough to get anything done",
+    "label": "distracted"
+  },
+  {
+    "text": "I was easily distracted by everything around me",
+    "label": "distracted"
+  },
+  {
+    "text": "Focus was really poor today",
+    "label": "distracted"
+  },
+  {
+    "text": "My attention kept slipping away",
+    "label": "distracted"
+  },
+  {
+    "text": "I started things but couldn't follow through",
+    "label": "distracted"
+  },
+  {
+    "text": "Felt scattered and restless mentally",
+    "label": "distracted"
+  },
+  {
+    "text": "Too much going on in my head to focus",
+    "label": "distracted"
+  },
+  {
+    "text": "I kept getting sidetracked",
+    "label": "distracted"
+  },
+  {
+    "text": "Every little thing pulled my attention away",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't stay on one thing for more than a minute",
+    "label": "distracted"
+  },
+  {
+    "text": "Distraction was brutal today",
+    "label": "distracted"
+  },
+  {
+    "text": "I was chasing my tail all day",
+    "label": "distracted"
+  },
+  {
+    "text": "My attention was hijacked constantly",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't resist every notification and interruption",
+    "label": "distracted"
+  },
+  {
+    "text": "I kept drifting off task",
+    "label": "distracted"
+  },
+  {
+    "text": "My attention span was essentially zero",
+    "label": "distracted"
+  },
+  {
+    "text": "I was unfocused and scattered",
+    "label": "distracted"
+  },
+  {
+    "text": "Everything distracted me today",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't maintain attention on anything",
+    "label": "distracted"
+  },
+  {
+    "text": "I bounced between tasks without finishing any",
+    "label": "distracted"
+  },
+  {
+    "text": "My focus was fractured all day",
+    "label": "distracted"
+  },
+  {
+    "text": "I was pulled in every direction",
+    "label": "distracted"
+  },
+  {
+    "text": "Concentration was impossible today",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't resist checking my phone every two minutes",
+    "label": "distracted"
+  },
+  {
+    "text": "I kept forgetting what I was supposed to be doing",
+    "label": "distracted"
+  },
+  {
+    "text": "I flitted from one thing to another all day",
+    "label": "distracted"
+  },
+  {
+    "text": "My mind was a pinball machine today",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't commit to any one thing",
+    "label": "distracted"
+  },
+  {
+    "text": "The ADHD was winning today",
+    "label": "distracted"
+  },
+  {
+    "text": "I kept losing the thread",
+    "label": "distracted"
+  },
+  {
+    "text": "My attention was everywhere except where it needed to be",
+    "label": "distracted"
+  },
+  {
+    "text": "I was disorganized and scattered today",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't concentrate for more than a few minutes",
+    "label": "distracted"
+  },
+  {
+    "text": "Every sound pulled me away from what I was doing",
+    "label": "distracted"
+  },
+  {
+    "text": "I was mentally restless and unfocused",
+    "label": "distracted"
+  },
+  {
+    "text": "I kept abandoning tasks halfway through",
+    "label": "distracted"
+  },
+  {
+    "text": "Productivity was terrible because I couldn't focus",
+    "label": "distracted"
+  },
+  {
+    "text": "I was all noise and no signal today",
+    "label": "distracted"
+  },
+  {
+    "text": "My brain wanted everything but nothing in particular",
+    "label": "distracted"
+  },
+  {
+    "text": "Attention was scattered like confetti",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't lock onto anything today",
+    "label": "distracted"
+  },
+  {
+    "text": "I was a mess of half-finished thoughts",
+    "label": "distracted"
+  },
+  {
+    "text": "Couldn't stay on task no matter how hard I tried",
+    "label": "distracted"
+  },
+  {
+    "text": "I was constantly interrupted by my own thoughts",
+    "label": "distracted"
+  },
+  {
+    "text": "My mind kept jumping ahead without finishing anything",
+    "label": "distracted"
+  },
+  {
+    "text": "I was distracted by everything, even nothing",
+    "label": "distracted"
+  },
+  {
+    "text": "My focus was like trying to hold water",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't follow through on any single intention",
+    "label": "distracted"
+  },
+  {
+    "text": "I got pulled off task before I even started",
+    "label": "distracted"
+  },
+  {
+    "text": "Hyperdistracted today, typical ADHD day",
+    "label": "distracted"
+  },
+  {
+    "text": "I kept clicking away from what I needed to be doing",
+    "label": "distracted"
+  },
+  {
+    "text": "Every task I started got abandoned for another",
+    "label": "distracted"
+  },
+  {
+    "text": "I was totally unfocused and it cost me the day",
+    "label": "distracted"
+  },
+  {
+    "text": "My attention was impossible to hold today",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't filter out distractions at all",
+    "label": "distracted"
+  },
+  {
+    "text": "Total attention breakdown today",
+    "label": "distracted"
+  },
+  {
+    "text": "I was pulled in too many directions to get anything done",
+    "label": "distracted"
+  },
+  {
+    "text": "Distraction won today",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't stop the mental zigzagging",
+    "label": "distracted"
+  },
+  {
+    "text": "Every time I started something a new idea pulled me away",
+    "label": "distracted"
+  },
+  {
+    "text": "I spent the day being busy but getting nothing done",
+    "label": "distracted"
+  },
+  {
+    "text": "I feel present and engaged today",
+    "label": "present"
+  },
+  {
+    "text": "Focus is okay, I'm keeping up",
+    "label": "present"
+  },
+  {
+    "text": "Managed to stay on task most of the day",
+    "label": "present"
+  },
+  {
+    "text": "I'm reasonably focused",
+    "label": "present"
+  },
+  {
+    "text": "Not in flow but getting things done",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally present today",
+    "label": "present"
+  },
+  {
+    "text": "Good enough focus to be productive",
+    "label": "present"
+  },
+  {
+    "text": "I could hold my attention on tasks",
+    "label": "present"
+  },
+  {
+    "text": "Staying grounded and on track",
+    "label": "present"
+  },
+  {
+    "text": "I was attentive and switched on",
+    "label": "present"
+  },
+  {
+    "text": "Focus was solid today",
+    "label": "present"
+  },
+  {
+    "text": "I kept my attention where it needed to be",
+    "label": "present"
+  },
+  {
+    "text": "Able to sit with tasks without drifting much",
+    "label": "present"
+  },
+  {
+    "text": "I felt grounded and able to concentrate",
+    "label": "present"
+  },
+  {
+    "text": "Mental clarity was good today",
+    "label": "present"
+  },
+  {
+    "text": "I was present and on it today",
+    "label": "present"
+  },
+  {
+    "text": "I could follow through on most things",
+    "label": "present"
+  },
+  {
+    "text": "My focus held up reasonably well",
+    "label": "present"
+  },
+  {
+    "text": "I was engaged and paying attention",
+    "label": "present"
+  },
+  {
+    "text": "I could track conversations and tasks fine",
+    "label": "present"
+  },
+  {
+    "text": "My attention was mostly where it needed to be",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally here today",
+    "label": "present"
+  },
+  {
+    "text": "I was appropriately focused for the tasks I had",
+    "label": "present"
+  },
+  {
+    "text": "My attention was functional today",
+    "label": "present"
+  },
+  {
+    "text": "I could hold a thought and follow it through",
+    "label": "present"
+  },
+  {
+    "text": "I wasn't perfect but I was focused enough",
+    "label": "present"
+  },
+  {
+    "text": "I managed to keep up with things mentally",
+    "label": "present"
+  },
+  {
+    "text": "Focus was adequate and reliable today",
+    "label": "present"
+  },
+  {
+    "text": "I was reasonably present all day",
+    "label": "present"
+  },
+  {
+    "text": "My mental clarity was decent",
+    "label": "present"
+  },
+  {
+    "text": "I could work at a normal pace without losing focus",
+    "label": "present"
+  },
+  {
+    "text": "I stayed on top of things today mentally",
+    "label": "present"
+  },
+  {
+    "text": "I was focused enough to get through the day",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally available and engaged",
+    "label": "present"
+  },
+  {
+    "text": "My attention was stable today",
+    "label": "present"
+  },
+  {
+    "text": "I tracked well today, followed through on tasks",
+    "label": "present"
+  },
+  {
+    "text": "Focus was good enough that I didn't notice it",
+    "label": "present"
+  },
+  {
+    "text": "I felt cognitively present and aware",
+    "label": "present"
+  },
+  {
+    "text": "I was paying attention and it showed",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally grounded and focused",
+    "label": "present"
+  },
+  {
+    "text": "Concentration was there when I needed it",
+    "label": "present"
+  },
+  {
+    "text": "My focus was reliable today",
+    "label": "present"
+  },
+  {
+    "text": "I was present in my work and conversations",
+    "label": "present"
+  },
+  {
+    "text": "I could follow things without losing the thread",
+    "label": "present"
+  },
+  {
+    "text": "I maintained reasonable attention all day",
+    "label": "present"
+  },
+  {
+    "text": "I was engaged without being exceptional",
+    "label": "present"
+  },
+  {
+    "text": "My focus was consistent if not outstanding",
+    "label": "present"
+  },
+  {
+    "text": "I felt attentive and on the ball today",
+    "label": "present"
+  },
+  {
+    "text": "I was focused in a quiet, steady way",
+    "label": "present"
+  },
+  {
+    "text": "Mental presence was solid today",
+    "label": "present"
+  },
+  {
+    "text": "I was in the room mentally and emotionally",
+    "label": "present"
+  },
+  {
+    "text": "Focus was there, dependable and calm",
+    "label": "present"
+  },
+  {
+    "text": "I could work without drifting too much",
+    "label": "present"
+  },
+  {
+    "text": "I felt cognitively competent today",
+    "label": "present"
+  },
+  {
+    "text": "I was tracking well and staying on task",
+    "label": "present"
+  },
+  {
+    "text": "Good enough focus to call today productive",
+    "label": "present"
+  },
+  {
+    "text": "My mind stayed where it was supposed to",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally present and capable",
+    "label": "present"
+  },
+  {
+    "text": "I was focused in a natural, effortless way",
+    "label": "present"
+  },
+  {
+    "text": "Attention was steady and reliable",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally available today",
+    "label": "present"
+  },
+  {
+    "text": "I was engaged with what was in front of me",
+    "label": "present"
+  },
+  {
+    "text": "My focus was good enough to do quality work",
+    "label": "present"
+  },
+  {
+    "text": "I was appropriately attentive today",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally present and composed",
+    "label": "present"
+  },
+  {
+    "text": "I was tuned in and engaged today",
+    "label": "present"
+  },
+  {
+    "text": "My attention was where it should be",
+    "label": "present"
+  },
+  {
+    "text": "I felt focused in a natural way",
+    "label": "present"
+  },
+  {
+    "text": "I stayed mentally on track today",
+    "label": "present"
+  },
+  {
+    "text": "I feel sharp today",
+    "label": "sharp"
+  },
+  {
+    "text": "Really focused and clear-headed",
+    "label": "sharp"
+  },
+  {
+    "text": "My thinking is crisp and fast",
+    "label": "sharp"
+  },
+  {
+    "text": "I feel mentally on point",
+    "label": "sharp"
+  },
+  {
+    "text": "Everything is clicking today",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt sharp and precise all morning",
+    "label": "sharp"
+  },
+  {
+    "text": "Mental performance is high today",
+    "label": "sharp"
+  },
+  {
+    "text": "My focus has been excellent",
+    "label": "sharp"
+  },
+  {
+    "text": "I'm thinking clearly and quickly",
+    "label": "sharp"
+  },
+  {
+    "text": "I can cut through problems fast today",
+    "label": "sharp"
+  },
+  {
+    "text": "Felt like my brain was running at full speed",
+    "label": "sharp"
+  },
+  {
+    "text": "I was dialed in and efficient",
+    "label": "sharp"
+  },
+  {
+    "text": "Sharp focus, no mental drift",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt intellectually clear and alert",
+    "label": "sharp"
+  },
+  {
+    "text": "Everything just made sense today",
+    "label": "sharp"
+  },
+  {
+    "text": "I was mentally razor sharp today",
+    "label": "sharp"
+  },
+  {
+    "text": "My thinking was precise and fast",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt cognitively excellent today",
+    "label": "sharp"
+  },
+  {
+    "text": "My mind was working beautifully",
+    "label": "sharp"
+  },
+  {
+    "text": "Everything clicked mentally, I was sharp",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt highly focused and clear",
+    "label": "sharp"
+  },
+  {
+    "text": "My thoughts were precise and well-ordered",
+    "label": "sharp"
+  },
+  {
+    "text": "I was mentally on fire today",
+    "label": "sharp"
+  },
+  {
+    "text": "Sharp, clear, and fast all day",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt like my brain was dialed in",
+    "label": "sharp"
+  },
+  {
+    "text": "My cognitive performance was high today",
+    "label": "sharp"
+  },
+  {
+    "text": "I was crisp and efficient mentally",
+    "label": "sharp"
+  },
+  {
+    "text": "Mental agility was excellent",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt exceptionally clear-headed",
+    "label": "sharp"
+  },
+  {
+    "text": "My mind was running clean and fast",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt highly mentally competent today",
+    "label": "sharp"
+  },
+  {
+    "text": "Sharp thinking all day, felt great",
+    "label": "sharp"
+  },
+  {
+    "text": "I was mentally brilliant today",
+    "label": "sharp"
+  },
+  {
+    "text": "My focus was exceptional and sustained",
+    "label": "sharp"
+  },
+  {
+    "text": "I could think clearly about complex things",
+    "label": "sharp"
+  },
+  {
+    "text": "I was mentally precise and fast",
+    "label": "sharp"
+  },
+  {
+    "text": "My brain felt like it was operating at peak capacity",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt cognitively sharper than usual",
+    "label": "sharp"
+  },
+  {
+    "text": "Everything came easily mentally today",
+    "label": "sharp"
+  },
+  {
+    "text": "I was mentally quick and on point",
+    "label": "sharp"
+  },
+  {
+    "text": "My thinking was really clear and rapid",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt like a well-oiled thinking machine today",
+    "label": "sharp"
+  },
+  {
+    "text": "Excellent mental sharpness today",
+    "label": "sharp"
+  },
+  {
+    "text": "I was mentally switched on and sharp",
+    "label": "sharp"
+  },
+  {
+    "text": "My focus was elevated and clean",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt cognitively sharp and engaged",
+    "label": "sharp"
+  },
+  {
+    "text": "Crystal clear thinking all day",
+    "label": "sharp"
+  },
+  {
+    "text": "I was mentally agile and quick today",
+    "label": "sharp"
+  },
+  {
+    "text": "I could process things fast and accurately",
+    "label": "sharp"
+  },
+  {
+    "text": "My mental precision was high today",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt bright and sharp",
+    "label": "sharp"
+  },
+  {
+    "text": "My cognitive edge was there today",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt mentally excellent",
+    "label": "sharp"
+  },
+  {
+    "text": "Sharp mind today, got a lot done",
+    "label": "sharp"
+  },
+  {
+    "text": "I was thinking at a high level today",
+    "label": "sharp"
+  },
+  {
+    "text": "Felt super sharp and on it",
+    "label": "sharp"
+  },
+  {
+    "text": "Mental performance was notably high",
+    "label": "sharp"
+  },
+  {
+    "text": "I was focused and thinking clearly",
+    "label": "sharp"
+  },
+  {
+    "text": "My mind cut through everything easily today",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt intellectually sharp and energized",
+    "label": "sharp"
+  },
+  {
+    "text": "My focus was clean and sustained",
+    "label": "sharp"
+  },
+  {
+    "text": "Thoughts were crisp, focus was high",
+    "label": "sharp"
+  },
+  {
+    "text": "I was operating at peak mental capacity",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt cognitively on fire",
+    "label": "sharp"
+  },
+  {
+    "text": "My brain felt sharp and well-tuned",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt mentally exceptional today",
+    "label": "sharp"
+  },
+  {
+    "text": "Sharp focus all day, I was really on",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt mentally crisp from the start",
+    "label": "sharp"
+  },
+  {
+    "text": "My thinking was outstanding today",
+    "label": "sharp"
+  },
+  {
+    "text": "I'm completely in the zone",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Deep focus, nothing can break my concentration",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I've been in flow state for hours",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Hyperfocused today, lost track of time",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Everything else faded away and I just worked",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was locked in all afternoon",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Total immersion in what I was doing",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I couldn't stop working, I was so focused",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Deep work mode, completely absorbed",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I hit a flow state and rode it for hours",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Nothing distracted me, pure focus",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was tunnel-visioned on my work in a good way",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Felt like a machine, fully locked in",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Deepest focus I've had in weeks",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was completely absorbed and in control",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I entered flow and couldn't be pulled out",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was so deep in work I forgot to eat lunch",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was in the zone and nothing touched me",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Complete hyperfocus today",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I felt locked in at a cellular level",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Total focus for hours, unbroken",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was fully absorbed and it felt incredible",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I couldn't be distracted today even if I tried",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Flow state hit and I ran with it",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was in a bubble of total concentration",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I experienced rare, deep focus today",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was locked into my work completely",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Nothing could pull me away from what I was doing",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was deeply absorbed and incredibly productive",
+    "label": "lockedIn"
+  },
+  {
+    "text": "This was one of those rare deep focus days",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was fully in it, completely present and focused",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Hyperfocus kicked in and I went for hours",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I didn't notice the time passing, I was so deep in flow",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was immovably focused today",
+    "label": "lockedIn"
+  },
+  {
+    "text": "My concentration was unshakeable",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I disappeared into my work completely",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I achieved the kind of focus I rarely get",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Total tunnel vision on my work, in a good way",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was fully present and deeply focused for hours",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was in a deep work cocoon today",
+    "label": "lockedIn"
+  },
+  {
+    "text": "The world faded and I was just working",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was operating in a completely focused state",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I lost myself in my work today",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Pure hyperfocus, nothing could reach me",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was in a state of complete absorption",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Flow came and I stayed in it all morning",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was deeply locked in and it felt effortless",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Complete immersion in what I was doing",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was so focused I had to remind myself to breathe",
+    "label": "lockedIn"
+  },
+  {
+    "text": "The work pulled me in and didn't let go",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was in a rare state of total focus",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Locked in completely, best focus in weeks",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was deeply absorbed and time flew",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Deep work, no interruptions, completely locked",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I entered a state of complete focus early and stayed there",
+    "label": "lockedIn"
+  },
+  {
+    "text": "The focus was so deep I forgot everything else",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was in a bubble today, total concentration",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I stayed locked in all afternoon without breaking",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Complete absorption in my task, nothing else existed",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I've never been this focused in a long time",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was deeply in the zone and couldn't be moved",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Today I experienced real, deep hyperfocus",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was completely locked in and highly productive",
+    "label": "lockedIn"
+  },
+  {
+    "text": "The best flow state I've had in months",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was deeply immersed and it showed in my output",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I hit deep focus and couldn't pull myself out",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was completely consumed by what I was doing",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Pure, deep, unbroken focus all afternoon",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was so locked in I had to be reminded to take a break",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Took elvanse 50mg, lets see if I can focus now",
+    "label": "none"
+  },
+  {
+    "text": "Let's see if I can focus after my meds kick in",
+    "label": "none"
+  },
+  {
+    "text": "I hope the medication helps me concentrate today",
+    "label": "none"
+  },
+  {
+    "text": "Maybe I'll be able to focus better tomorrow",
+    "label": "none"
+  },
+  {
+    "text": "I want to try to focus more this week",
+    "label": "none"
+  },
+  {
+    "text": "I should try to reduce distractions",
+    "label": "none"
+  },
+  {
+    "text": "Planning to do a deep work session later",
+    "label": "none"
+  },
+  {
+    "text": "I need to find a better environment to work in",
+    "label": "none"
+  },
+  {
+    "text": "Took my meds this morning",
+    "label": "none"
+  },
+  {
+    "text": "Skipped my medication today",
+    "label": "none"
+  },
+  {
+    "text": "Had a meeting that ran long",
+    "label": "none"
+  },
+  {
+    "text": "Worked from a coffee shop",
+    "label": "none"
+  },
+  {
+    "text": "I didn't have trouble focusing",
+    "label": "none"
+  },
+  {
+    "text": "I wasn't distracted today",
+    "label": "none"
+  },
+  {
+    "text": "I don't feel foggy",
+    "label": "none"
+  },
+  {
+    "text": "Focus wasn't an issue",
+    "label": "none"
+  },
+  {
+    "text": "I'm not having trouble concentrating",
+    "label": "none"
+  },
+  {
+    "text": "I wasn't unfocused",
+    "label": "none"
+  },
+  {
+    "text": "No particular focus issues today",
+    "label": "none"
+  },
+  {
+    "text": "Hoping to get into flow tomorrow",
+    "label": "none"
+  },
+  {
+    "text": "I wonder if the new dose will help me focus",
+    "label": "none"
+  },
+  {
+    "text": "Doctor said focus might improve over time",
+    "label": "none"
+  },
+  {
+    "text": "I'd like to be more consistent with my concentration",
+    "label": "none"
+  },
+  {
+    "text": "Going to try the Pomodoro technique",
+    "label": "none"
+  },
+  {
+    "text": "Read an article about ADHD focus strategies",
+    "label": "none"
+  },
+  {
+    "text": "Had breakfast and coffee",
+    "label": "none"
+  },
+  {
+    "text": "Spent the morning in meetings",
+    "label": "none"
+  },
+  {
+    "text": "Finished a report for work",
+    "label": "none"
+  },
+  {
+    "text": "Took a break and went for a walk",
+    "label": "none"
+  },
+  {
+    "text": "Listened to music while working",
+    "label": "none"
+  },
+  {
+    "text": "Tried working in silence today",
+    "label": "none"
+  },
+  {
+    "text": "Had a coaching session about productivity",
+    "label": "none"
+  },
+  {
+    "text": "Bought a new planner to organize my tasks",
+    "label": "none"
+  },
+  {
+    "text": "Set up a new workspace at home",
+    "label": "none"
+  },
+  {
+    "text": "I'll try to focus better after lunch",
+    "label": "none"
+  },
+  {
+    "text": "Adjusted my screen time settings",
+    "label": "none"
+  },
+  {
+    "text": "Blocked social media during work hours",
+    "label": "none"
+  },
+  {
+    "text": "Used noise cancelling headphones today",
+    "label": "none"
+  },
+  {
+    "text": "The office was noisy, hard to work",
+    "label": "none"
+  },
+  {
+    "text": "I might need to adjust my medication timing",
+    "label": "none"
+  },
+  {
+    "text": "I want to build better focus habits",
+    "label": "none"
+  },
+  {
+    "text": "I should set up a proper work environment",
+    "label": "none"
+  },
+  {
+    "text": "Planning to try body doubling tomorrow",
+    "label": "none"
+  },
+  {
+    "text": "I read about time blocking today",
+    "label": "none"
+  },
+  {
+    "text": "Trying to reduce multitasking",
+    "label": "none"
+  },
+  {
+    "text": "I'd like to do more deep work sessions",
+    "label": "none"
+  },
+  {
+    "text": "I need to get better at task switching",
+    "label": "none"
+  },
+  {
+    "text": "I'll experiment with different work schedules",
+    "label": "none"
+  },
+  {
+    "text": "Maybe working in shorter bursts will help",
+    "label": "none"
+  },
+  {
+    "text": "I need to deal with the notifications on my phone",
+    "label": "none"
+  },
+  {
+    "text": "I went for a walk to clear my head",
+    "label": "none"
+  },
+  {
+    "text": "Had a quiet morning at home",
+    "label": "none"
+  },
+  {
+    "text": "Spent the afternoon on admin tasks",
+    "label": "none"
+  },
+  {
+    "text": "Did some light tasks to ease into the day",
+    "label": "none"
+  },
+  {
+    "text": "Had a catch-up call with my manager",
+    "label": "none"
+  },
+  {
+    "text": "Took a proper lunch break today",
+    "label": "none"
+  },
+  {
+    "text": "Finished the week's work on time",
+    "label": "none"
+  },
+  {
+    "text": "Switched tasks to give my brain a break",
+    "label": "none"
+  },
+  {
+    "text": "I'm going to try the two-minute rule",
+    "label": "none"
+  },
+  {
+    "text": "Thinking about hiring an ADHD coach",
+    "label": "none"
+  },
+  {
+    "text": "I read a chapter of my book",
+    "label": "none"
+  },
+  {
+    "text": "Had a relaxed evening at home",
+    "label": "none"
+  },
+  {
+    "text": "Watched some TV to wind down",
+    "label": "none"
+  },
+  {
+    "text": "Meal prepped for the week",
+    "label": "none"
+  },
+  {
+    "text": "Had an early night to reset",
+    "label": "none"
+  },
+  {
+    "text": "Took my vitamins",
+    "label": "none"
+  },
+  {
+    "text": "Went to bed at the same time as yesterday",
+    "label": "none"
+  },
+  {
+    "text": "Did some light exercise this evening",
+    "label": "none"
+  },
+  {
+    "text": "Talked to my psychiatrist about my focus",
+    "label": "none"
+  },
+  {
+    "text": "Made a to-do list for tomorrow",
+    "label": "none"
+  },
+  {
+    "text": "Set reminders for my tasks",
+    "label": "none"
+  },
+  {
+    "text": "I'll try to start the hardest task first tomorrow",
+    "label": "none"
+  },
+  {
+    "text": "Thinking about switching to a different ADHD strategy",
+    "label": "none"
+  },
+  {
+    "text": "I need to sleep more to improve my focus",
+    "label": "none"
+  }
+]

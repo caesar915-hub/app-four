@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Squirl — every design decision</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F6F1E7;--surface:#FCF8EF;--surface2:#EFE8D8;--ink:#221E16;--muted:#7A7361;--hair:#E3DAC7;--accent:#B8842A;--green:#5F8A4C;--amber:#E0A33A;--med:#7E5CA8}
+  [data-theme="dark"]{--bg:#14130F;--surface:#1E1C16;--surface2:#272419;--ink:#F3EEE0;--muted:#9A917C;--hair:#322E22;--accent:#D4A24A;--green:#6E9A58;--amber:#E8B255;--med:#9277BE}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:36px 24px 110px}
+  h1,h2,h3{font-family:"Fraunces",serif;font-weight:500;letter-spacing:-.01em;margin:0}
+  h1{font-size:36px}h2{font-size:22px}h3{font-size:14px;font-weight:600;margin:14px 0 4px;font-family:"DM Sans"}
+  p{margin:.4em 0;color:var(--muted);font-size:14px}
+  .lead{color:var(--ink);font-size:15px;max-width:82ch}
+  .legend{font-size:12px;color:var(--muted)}
+  .toggle{position:fixed;top:16px;right:16px;z-index:9;border:1px solid var(--hair);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 16px;font:inherit;font-size:13px;cursor:pointer}
+  .sec{background:var(--surface);border:1px solid var(--hair);border-radius:18px;padding:22px 24px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .num{font-family:"Fraunces",serif;color:var(--accent);margin-right:6px}
+  .d{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;margin:6px 0;color:var(--ink)}
+  .d .k{color:var(--green);font-weight:700;flex:none}
+  .d b{font-weight:600}.d .why{color:var(--muted)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+  @media(max-width:760px){.grid2,.grid3{grid-template-columns:1fr}}
+  .typ{display:flex;flex-direction:column;gap:8px}
+  .typ .big{font-family:"Fraunces",serif;font-size:26px;font-weight:600}
+  .typ .body{font-family:"DM Sans";font-size:14px;color:var(--ink)}
+  .typ .mono{font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--ink)}
+  .typ .cap{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .sw{display:flex;flex-direction:column;gap:3px}.sw .chip{height:38px;border-radius:10px;border:1px solid rgba(0,0,0,.06)}
+  .sw .lbl{font-size:11px;color:var(--muted)}.sw .lbl b{color:var(--ink);font-weight:600;display:block}
+  .ramprow{display:flex;gap:3px;margin:4px 0}.ramprow .c{flex:1;height:20px;border-radius:5px}
+  .trio{display:flex;gap:10px;justify-content:center;background:var(--surface2);border-radius:14px;padding:14px 10px;margin:6px 0 12px}
+  .trio .t{flex:1;text-align:center;max-width:130px}.trio svg{height:44px;width:auto;display:block;margin:0 auto 4px}
+  .tl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .ramps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}@media(max-width:760px){.ramps{grid-template-columns:1fr}}
+  .rtag{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 4px}
+  .ramp{display:flex;gap:4px;align-items:flex-end;min-height:44px}
+  .cell{flex:1;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+  .cell svg{display:block;margin:0 auto}.lvl{font-size:9px;color:var(--muted);margin-top:2px}.lvl b{display:block;color:var(--ink);font-weight:600}
+  .lvl i{display:block;font-style:normal;color:var(--muted);font-size:8.5px}
+  .single{display:flex;gap:20px;flex-wrap:wrap;margin-top:12px}
+  .single .s{display:flex;gap:12px;align-items:center;background:var(--surface2);border-radius:12px;padding:10px 16px}
+  .single svg{height:32px;width:auto;color:var(--ink)}.syn{font-size:12.5px;color:var(--muted)}
+  .picker{display:flex;gap:6px;max-width:300px;align-items:flex-end}
+  .pk{text-align:center;flex:1}.pk .ph{min-height:40px;display:grid;place-items:center;border-radius:12px;padding:3px}
+  .pk.cur .ph{box-shadow:0 0 0 2px var(--accent)}.pk svg{height:28px;width:auto}.pk .pl{font-size:10px;color:var(--muted);margin-top:2px}
+  /* med stages */
+  .stages{margin-top:10px}
+  .strow{display:flex;align-items:center;gap:10px;margin:6px 0;font-size:12px}
+  .strow .t{width:46px;color:var(--muted);font-family:"IBM Plex Mono",monospace}
+  .strow .tr{flex:1;height:9px;border-radius:999px;background:var(--surface2);overflow:hidden}
+  .strow .f{display:block;height:100%;background:var(--med);border-radius:999px}
+  .strow .l{width:90px;color:var(--ink);font-weight:600}
+  /* phone */
+  .phone{width:288px;border-radius:28px;border:1px solid var(--hair);background:var(--surface);padding:12px 10px;box-shadow:0 10px 28px rgba(0,0,0,.08)}
+  .monthhdr{font-family:"Fraunces",serif;font-size:17px;margin:2px 6px 8px}
+  .entry{display:flex;gap:9px;align-items:flex-start;margin:11px 4px}
+  .ering{width:40px;height:40px;border-radius:999px;flex:none;display:grid;place-items:center;font-size:9px;font-weight:600}
+  .ering span{width:31px;height:31px;border-radius:999px;background:var(--surface);display:grid;place-items:center}
+  .etime{font-size:10px;color:var(--muted);text-align:center;width:40px;margin-top:3px}
+  .sigpill{flex:1;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-radius:999px;padding:6px 11px}
+  .sig{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--ink)}.sig svg{height:18px;width:auto}
+  .medchip{font-size:10.5px;color:var(--med);background:color-mix(in srgb,var(--med) 14%,transparent);border-radius:999px;padding:3px 9px;display:inline-flex;align-items:center;gap:4px;margin:6px 0 0 50px}.medchip svg{height:14px;width:auto}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:6px}
+  th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--hair);vertical-align:top}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  td.area{font-weight:600;white-space:nowrap;width:120px}
+  tr.sup td{color:var(--muted)}tr.sup .dec{text-decoration:line-through}
+  .badge{font-size:10px;font-weight:700;border-radius:999px;padding:1px 7px;white-space:nowrap}
+  .b-final{color:#fff;background:var(--green)}.b-sup{color:var(--muted);background:var(--surface2);border:1px solid var(--hair)}
+  .toc{columns:2;font-size:13px;color:var(--accent)}.toc a{color:inherit;text-decoration:none;display:block;padding:2px 0}@media(max-width:600px){.toc{columns:1}}
+  .eng{font-size:13px;color:var(--ink);background:var(--surface2);border-radius:12px;padding:12px 14px;margin-top:8px}
+  .src{font-size:12px;color:var(--muted);margin-top:8px}
+</style>
+</head>
+<body>
+<button class="toggle" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'">◐ theme</button>
+<div class="wrap">
+  <p style="color:var(--accent);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:12px">Squirl · complete design decision register · 2026-06-17</p>
+  <h1>Every design decision</h1>
+  <p class="lead">The full Paper &amp; Pollen system, transcribed decision-by-decision from the canonical <code>squirl-design-system.html</code> — identity, type, color, glyphs, motion, the medication bar (with its stages), and every screen (Check-in · Type-note · Insights · Calendar · Detail · Edit sheet) in full, plus the open engineering notes. Mood/Energy/Focus = <b style="color:var(--ink)">sprout · lightning · aperture</b>; Mood is <b style="color:var(--ink)">fixed</b> (selectable set removed). Sleep = bed, Medication = horizontal capsule.</p>
+  <p class="legend">Legend: <span class="badge b-final">FINAL</span> current · <span class="badge b-sup">SUPERSEDED</span> reversed.</p>
+  <div class="sec"><div class="toc">
+    <a href="#identity">1 · Identity &amp; posture</a><a href="#type">2 · Typography</a><a href="#color">3 · Color</a><a href="#glyphs">4 · Glyph language</a><a href="#motion">5 · Spacing · layout · motion</a><a href="#med">6 · Medication</a><a href="#screens">7 · Screens (every state)</a><a href="#log">8 · Decisions Log</a><a href="#eng">9 · Open engineering notes</a>
+  </div></div>
+
+  <div class="sec" id="identity">
+    <h2><span class="num">1</span> Identity &amp; posture <span class="badge b-final">FINAL</span></h2>
+    <div class="d"><span class="k">✓</span><div><b>"Paper &amp; Pollen"</b> — warm paper (light) / loam (dark), organic, calm + frictionless. Never pure white, never #000.</div></div>
+    <div class="d"><span class="k">✓</span><div><b>Thesis:</b> "A warm field journal that listens. Meadow as the skin, ruthless speed as the skeleton. The app is always slightly calmer than you."</div></div>
+    <div class="d"><span class="k">✓</span><div><b>North star: effortless</b> — in and out under a minute.</div></div>
+    <div class="d"><span class="k">✓</span><div><b>Product:</b> on-device, privacy-first ADHD voice check-in journal (iOS / SwiftUI). Audience is a functional constraint: low cognitive load, minimal friction.</div></div>
+    <div class="d"><span class="k">✓</span><div><b>Posture (non-negotiable):</b> glyphs not emoji faces · no gamification / streaks · meds never nag (no red, no "you're late") · privacy-first.</div></div>
+  </div>
+
+  <div class="sec" id="type">
+    <h2><span class="num">2</span> Typography <span class="badge b-final">FINAL</span></h2>
+    <div class="grid3">
+      <div class="typ"><div class="cap">Display / Hero · Fraunces</div><div class="big">What's today been like?</div></div>
+      <div class="typ"><div class="cap">Body / UI · DM Sans</div><div class="body">You logged a check-in in 48 seconds. Squirl never grades you — it just remembers.</div></div>
+      <div class="typ"><div class="cap">Data · DM Sans tabular / IBM Plex Mono</div><div class="mono">MOOD 5/5 · ENERGY 1/5 · FOCUS 3/5 · 7h30m</div></div>
+    </div>
+    <div class="d" style="margin-top:8px"><span class="k">✓</span><div>Fraunces (hero) · DM Sans (UI/body) · IBM Plex Mono + DM Sans tabular (data). Both free/OFL. <b>No default SF</b> as display or body. Dynamic Type wired on all three.</div></div>
+  </div>
+
+  <div class="sec" id="color">
+    <h2><span class="num">3</span> Color <span class="badge b-final">FINAL</span></h2>
+    <div class="grid3" data-foundation style="margin:6px 0 10px"></div>
+    <h3>Signal ramps (1→5, data-encoding — not brand)</h3>
+    <div data-ramps-color></div>
+    <div class="d" style="margin-top:8px"><span class="k">✓</span><div><b>Rule:</b> color is never the only cue — every level is also shape + fill (colorblind/grayscale-safe). Sleep <b style="color:#5566A6">#5566A6</b> deferred · Medication <b style="color:var(--med)">#7E5CA8</b> (the one hue no signal uses).</div></div>
+  </div>
+
+  <div class="sec" id="glyphs">
+    <h2><span class="num">4</span> Glyph language — sprout · lightning · aperture <span class="badge b-final">FINAL</span></h2>
+    <p>Four dimensions, one glyph language: each signal has its own shape + hue + fill. Mood = sprout · Energy = lightning · Focus = aperture · Sleep = bed · Medication = capsule. Pickers/Insights show the named 1→5 level + a synonym.</p>
+    <div class="trio" data-trio></div>
+    <div class="ramps" data-glyph-ramps></div>
+    <div class="single">
+      <div class="s"><span data-single="sleep"></span><div><h3 style="margin:0">Sleep — bed</h3><div class="syn">cool indigo · single, ramp deferred</div></div></div>
+      <div class="s"><span data-single="med"></span><div><h3 style="margin:0">Medication — horizontal capsule</h3><div class="syn">purple · chip, not a 1→5 ramp</div></div></div>
+    </div>
+    <div class="d" style="margin-top:10px"><span class="k">✓</span><div><b>Mood icon = sprout, fixed.</b> <span class="why">The earlier user-selectable set (Seedling/Flower/Daisy/Clover) was removed 2026-06-17 — one fixed Mood glyph.</span></div></div>
+  </div>
+
+  <div class="sec" id="motion">
+    <h2><span class="num">5</span> Spacing · layout · motion <span class="badge b-final">FINAL</span></h2>
+    <div class="grid2">
+      <div>
+        <div class="d"><span class="k">✓</span><div><b>8px base.</b> Scale 4·8·12·16·24·32·48. Radius: small 12 · medium 14–16 · card 18 · pill/full 999.</div></div>
+        <div class="d"><span class="k">✓</span><div><b>One primary action per screen.</b> Four tabs: Calendar · Check-in · Insights · Settings.</div></div>
+        <div class="d"><span class="k">✓</span><div><b>Cards</b> on Surface, hairline + soft shadow, reading order. <b>Buttons:</b> primary = Meadow gradient pill, secondary = ghost pill. <b>Chips</b> for feelings/side-effects/meds (tap × to remove, "+ Add").</div></div>
+        <div style="margin-top:8px"><div class="rtag">Signal picker — tap 1→5 (current ringed)</div><div class="picker" data-picker></div></div>
+      </div>
+      <div>
+        <div class="d"><span class="k">✓</span><div><b>Crescent (CrescentRing):</b> breathes idle (~5s, 1→1.035) → revolves while listening (~7s/rev) with a voice-level glow → settles to a check when saved.</div></div>
+        <div class="d"><span class="k">✓</span><div><b>Easing:</b> enter ease-out · exit ease-in · move ease-in-out. <b>Durations:</b> micro 50–100ms · short 150–250 · medium 250–400.</div></div>
+        <div class="d"><span class="k">✓</span><div><b>No confetti, no streak celebration, no "you're late" alarms.</b> Honor Reduce Motion (breathing → static glow).</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" id="med">
+    <h2><span class="num">6</span> Medication <span class="badge b-final">FINAL</span></h2>
+    <div class="d"><span class="k">✓</span><div><b>Purple #7E5CA8</b> — the one hue no signal uses. <b>Horizontal capsule</b> icon (single, two-tone).</div></div>
+    <div class="d"><span class="k">✓</span><div><b>Bar fills empty (just taken) → full (worn off)</b> over <code>MedicationEvent.durationHours</code>. <b>One consistent purple</b> — only the fill changes, so onset and fading never share a color.</div></div>
+    <div class="d"><span class="k">✓</span><div><b>Onset</b> (~first 20 min) shows a gentle pulse ("kicking in"). <b>Worn-off → quiet</b>, overlay fades out. <b>Never alarms</b> (no red, no nag).</div></div>
+    <div class="d"><span class="k">✓</span><div>Med overlay rides above Check-in when a dose is on board. Fuller <b>effect curve</b> (rise → peak → decline) may show in the med card where there's room.</div></div>
+    <div class="stages" data-stages style="max-width:460px"></div>
+  </div>
+
+  <div class="sec" id="screens">
+    <h2><span class="num">7</span> Screens — every state <span class="badge b-final">FINAL</span></h2>
+    <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start">
+      <div><div class="rtag" style="margin-bottom:6px">Calendar timeline</div><div class="phone" data-cal></div></div>
+      <div style="flex:1;min-width:320px">
+        <h3>Check-in — three states (one primary action each)</h3>
+        <div class="d"><span class="k">✓</span><div><b>Idle hub:</b> date + greeting ("Ready when you are."), crescent breathing, big <b>"🎙 Speak check-in"</b>, quiet secondaries <b>"Log meds" / "Type note"</b>, tab bar. Med overlay rides above when a dose is on board.</div></div>
+        <div class="d"><span class="k">✓</span><div><b>Listening:</b> live timer (rec dot + 0:14) + ✕ cancel, rotating Fraunces <b>nudge</b> ("What's today been like?"), countdown bar + prompt dots, crescent revolving, single <b>"Stop &amp; save"</b> — no idle buttons.</div></div>
+        <div class="d"><span class="k">✓</span><div><b>Saved:</b> checkmark pops, <b>"Captured."</b> + "That's today's check-in. Talk to you next time.", <b>"Done" leads</b> + "🎙 Check in again" secondary. <b>No transcribing UI, no daily card</b> — extraction runs silently.</div></div>
+
+        <h3>Type-note — Layout A "signals first"</h3>
+        <div class="d"><span class="k">✓</span><div>Nav "Type a check-in" (✕) → <b>glyph pickers are the input</b> (mood/energy/focus, tap to set level) → note field ("Anything you want to remember about today?") → "Save check-in". Same glyph vocabulary as Insights/Edit.</div></div>
+
+        <h3>Insights — 5-section snapping scroll</h3>
+        <div class="d"><span class="k">✓</span><div>"Insights" (Fraunces) + "today vs your usual" → breakdown (MoodBubbleChart) · <b>signals (glyph ramps)</b> · averages · rhythm · connections. <b>Sleep "not tracked yet."</b> Pinned selector; inactive headers dim.</div></div>
+
+        <h3>Calendar — unchanged</h3>
+        <div class="d"><span class="k">✓</span><div>Collapsible week↔month grid over the mood/med timeline, <b>exactly as built</b> — owner-preferred, not redesigned. Recordings open from here → detail → Edit sheet.</div></div>
+
+        <h3>Recording detail — page top-to-bottom</h3>
+        <div class="d"><span class="k">✓</span><div>Navbar ⋯ + date (<b>no back button</b>; swipe-left). Title (Fraunces) + meta → <b>signal glyph summary</b> → Summary card (with ↻ <b>Regenerate</b>) → Meds → Feelings → Transcript → <b>Audio player last</b> → <b>"Edit check-in"</b> (single edit affordance; pencil removed).</div></div>
+
+        <h3>Edit sheet (ExtractionReviewView) — one scrolling modal</h3>
+        <div class="d"><span class="k">✓</span><div>Header Cancel / "Edit check-in" / Save. Order: <b>01 When</b> (date/time) · <b>02 Mood · 03 Energy · 04 Focus</b> (glyph pickers, named 1–5 <b>+ synonym</b>) · <b>05 Sleep</b> (named scale Restless→Deep, <b>no synonyms</b>, 2/4/6/8/10h presets <b>+ custom-hours input</b>; bed icon) · <b>06 Medications</b> · <b>07 Feelings · 08 Side-effects</b> (chip groups).</div></div>
+        <div class="d"><span class="k">✓</span><div><b>Medications:</b> Stimulants only · multi-select · removable (×) · <b>no count limit</b> · each selected med uses <b>P1 inline-expand</b> (dose from table · info-only default time · duration text box defaulted to shortest) · each is an <b>independent MedicationEvent</b> (same timestamp allowed). "Save corrections" writes <code>RecordingTag(.userCorrected)</code> → trains the personal lexicon.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec" id="log">
+    <h2><span class="num">8</span> Decisions Log — locked areas</h2>
+    <table data-log></table>
+    <p class="src">Source of truth: DESIGN.md. ⚠️ DESIGN.md §Iconography still says "Bud botanical" + lists the selectable Mood set — both need reverting to match this register.</p>
+  </div>
+
+  <div class="sec" id="eng">
+    <h2><span class="num">9</span> Open engineering notes <span style="font-size:13px;color:var(--muted);font-weight:400">(not design)</span></h2>
+    <div class="eng">① Review the SwiftData schema to confirm independent <code>MedicationEvent</code>s sharing a timestamp is supported before building multi-med check-ins.<br>② 🐛 Fix the <b>crash when &gt;4 meds are selected</b> in the Edit sheet (currently hard-capped at 4) before lifting the cap.</div>
+  </div>
+</div>
+
+<script>
+function gMood(hex,level,base){const s=base+level*3,fo=(0.42+level*0.145).toFixed(2),o=level>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${level>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${level>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,level,base){const s=base+level*2.8,op=(0.35+level*0.15).toFixed(2),sw=(0.9+level*0.16).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,level,base){const s=base+level*2.4,cx=12,cy=13,d=level<=2?'stroke-dasharray="3 3"':'';let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+level*0.12).toFixed(2)}" ${d}/>`;if(level>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+level*0.11).toFixed(2)}"/>`;if(level>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;if(level>=3){const dr=((level-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+level*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icBed(c){return `<svg viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a2 2 0 0 1 2-2h9a4 4 0 0 1 4 4v4"/><path d="M3 14h18"/><path d="M6.5 10V8.6a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V10"/></svg>`;}
+function medHoriz(){const c='#7E5CA8';return `<svg viewBox="0 0 48 48"><rect x="8" y="19" width="32" height="10" rx="5" fill="${c}" fill-opacity=".22"/><path d="M24 19 H13 A5 5 0 0 0 13 29 H24 Z" fill="${c}" fill-opacity=".5"/><rect x="8" y="19" width="32" height="10" rx="5" fill="none" stroke="${c}" stroke-width="2.3"/><line x1="24" y1="20" x2="24" y2="28" stroke="${c}" stroke-width="1.6"/></svg>`;}
+
+const M=['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'],E=['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'],F=['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'];
+const SIG={mood:{ramp:M,g:gMood,names:['Low','Flat','Okay','Good','Great'],syn:['heavy, muted','dull, flat','steady, fine','light, warm','bright, thriving']},
+           energy:{ramp:E,g:gEnergy,names:['Sluggish','Tired','Steady','Alert','Charged'],syn:['slow','drained','even','ready','electric']},
+           focus:{ramp:F,g:gFocus,names:['Foggy','Distracted','Present','Sharp','Locked In'],syn:['hazy','restless','grounded','keen','flowing']}};
+const ORDER=[['mood','Mood'],['energy','Energy'],['focus','Focus']];
+
+document.querySelector('[data-foundation]').innerHTML=[['Paper','#F6F1E7'],['Surface','#FCF8EF'],['Surface-2','#EFE8D8'],['Ink','#221E16'],['Muted ink','#7A7361'],['Hairline','#E3DAC7'],['Meadow green','#5F8A4C'],['Meadow amber','#E0A33A'],['Bronze accent','#B8842A'],['Medication','#7E5CA8'],['Sleep indigo','#5566A6']].map(([n,h])=>`<div class="sw"><div class="chip" style="background:${h}"></div><div class="lbl"><b>${n}</b>${h}</div></div>`).join('');
+document.querySelector('[data-ramps-color]').innerHTML=[['Mood · Meadow·Burnt',M],['Energy · Lemon',E],['Focus · Voltage blue',F]].map(([n,r])=>`<div class="rtag" style="margin-top:6px">${n}</div><div class="ramprow">`+r.map(c=>`<div class="c" style="background:${c}"></div>`).join('')+`</div>`).join('');
+document.querySelector('[data-trio]').innerHTML=ORDER.map(([k,L])=>`<div class="t">${SIG[k].g(SIG[k].ramp[4],5,16)}<div class="tl">${L}</div></div>`).join('');
+document.querySelector('[data-glyph-ramps]').innerHTML=ORDER.map(([k,L])=>`<div><div class="rtag">${L}</div><div class="ramp">`+[1,2,3,4,5].map(l=>`<div class="cell">${SIG[k].g(SIG[k].ramp[l-1],l,15)}<div class="lvl"><b>${l} ${SIG[k].names[l-1]}</b><i>${SIG[k].syn[l-1]}</i></div></div>`).join('')+`</div></div>`).join('');
+document.querySelectorAll('[data-single]').forEach(el=>{el.innerHTML=el.dataset.single==='sleep'?icBed('#5566A6'):medHoriz();});
+document.querySelector('[data-picker]').innerHTML=[1,2,3,4,5].map(l=>`<div class="pk${l===3?' cur':''}"><div class="ph">${gFocus(F[l-1],l,14)}</div><div class="pl">${l}</div></div>`).join('');
+
+document.querySelector('[data-stages]').innerHTML=[['9:15',4,'kicking in'],['+3h',30,'active'],['+6h',60,'active'],['+9h',88,'wearing off'],['+10h',100,'worn off']].map(([t,w,l])=>`<div class="strow"><span class="t">${t}</span><span class="tr"><span class="f" style="width:${w}%"></span></span><span class="l">${l}</span></div>`).join('');
+
+const EN=[{time:'18:09',pct:85,m:2,e:2,f:4,med:null},{time:'15:35',pct:60,m:3,e:4,f:2,med:null},{time:'12:54',pct:33,m:2,e:2,f:5,med:'Concerta 36mg'}];
+document.querySelector('[data-cal]').innerHTML=`<div class="monthhdr">June 2026 · 16 Jun</div>`+EN.map(en=>{const mc=M[en.m-1];return `<div class="entry"><div style="display:flex;flex-direction:column;align-items:center"><div class="ering" style="background:conic-gradient(${mc} ${en.pct*3.6}deg,var(--hair) 0)"><span>${en.pct}%</span></div><div class="etime">${en.time}</div></div><div style="flex:1"><div class="sigpill" style="background:color-mix(in srgb,${mc} 28%,var(--surface2))"><span class="sig">${gMood(M[en.m-1],en.m,11)} ${SIG.mood.names[en.m-1]}</span><span class="sig">${gEnergy(E[en.e-1],en.e,11)} ${SIG.energy.names[en.e-1]}</span><span class="sig">${gFocus(F[en.f-1],en.f,11)} ${SIG.focus.names[en.f-1]}</span></div>${en.med?`<div class="medchip">${medHoriz()} Taken ${en.med}</div>`:''}</div></div>`;}).join('');
+
+const LOG=[
+  ['Identity','Paper &amp; Pollen — warm paper/loam, organic, calm + frictionless. North star: effortless.','final'],
+  ['Type','Fraunces (hero) · DM Sans (UI/body) · IBM Plex Mono / DM Sans tabular (data). No default SF.','final'],
+  ['Palette','Shipped ramps kept: Mood Meadow·Burnt · Energy Lemon · Focus Voltage blue. Sleep deferred.','final'],
+  ['Glyphs','Mood sprout · Energy lightning · Focus aperture · Sleep bed · Medication capsule.','final'],
+  ['Mood icon','Sprout, FIXED. Selectable set (Seedling/Flower/Daisy/Clover) removed 2026-06-17.','final'],
+  ['Motion','Crescent breathe → revolve+glow → settle-to-check. No confetti/streaks. Reduce Motion honored.','final'],
+  ['Check-in','Idle (Speak primary) → Listening (nudge + timer + stop) → Saved (Captured, Done leads, no machinery).','final'],
+  ['Type-note','Layout A — signals-first glyph pickers + note field.','final'],
+  ['Calendar','Unchanged (owner favorite).','final'],
+  ['Detail','No back button (swipe-left); pencil → "Edit check-in"; audio player last.','final'],
+  ['Edit sheet','One scroll. M/E/F = pickers with name + synonym; Sleep = named scale, no synonyms, + custom-hours; Medications = stimulants only, multi-select, removable, P1 inline-expand, independent events, no limit.','final'],
+  ['Medication','Horizontal capsule · single purple #7E5CA8 · bar fills empty→full over the dose · no alarm.','final'],
+  ['Posture','Glyphs not emoji · no gamification/streaks · meds never nag · privacy-first.','final'],
+  ['Glyph rework','"Bud" botanical (seed pod · seedhead) — explored then REVERTED to sprout/lightning/aperture.','sup'],
+];
+document.querySelector('[data-log]').innerHTML=`<tr><th>Area</th><th>Decision</th><th></th></tr>`+LOG.map(([a,dec,st])=>`<tr class="${st==='sup'?'sup':''}"><td class="area">${a}</td><td class="dec">${dec}</td><td><span class="badge ${st==='sup'?'b-sup':'b-final'}">${st==='sup'?'SUPERSEDED':'FINAL'}</span></td></tr>`).join('');
+</script>
+</body>
+</html>

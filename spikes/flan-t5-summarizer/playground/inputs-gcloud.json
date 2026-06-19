@@ -1,0 +1,7 @@
+[
+  {
+    "id": "voice-architecture-appcore",
+    "note": "voice import · 2025-06-18_14-30_demo-session.md",
+    "transcript": "So I'm thinking about the architecture for the new feature set. The main problem we're trying to solve is improving the test coverage for the AppCore Swift Package. Right now we've got the TDD loop set up on the Linux VM, which is working pretty well with swift test. The key thing is keeping the logic testable and separated from the iOS UI layer. That's why we're using the AppCore package — it's basically a pure Swift library that doesn't have any UIKit dependencies. I was looking at some patterns for organizing the test structure. We could do it by feature or by layer. I think by feature makes more sense because it keeps the tests closer to the actual implementation. Another thing to consider is the CI/CD pipeline. We need to make sure tests run automatically on every push. With the GCP VM setup, we can hook that into GitHub Actions pretty cleanly. One more thing — I should probably set up a memory system for tracking all the architectural decisions we're making. Something like an ADR folder would be helpful for documenting why we chose certain patterns over others."
+  }
+]

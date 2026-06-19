@@ -1,0 +1,2826 @@
+[
+  {
+    "text": "My thoughts dissolved before I could use them",
+    "label": "foggy"
+  },
+  {
+    "text": "Nothing was registering mentally",
+    "label": "foggy"
+  },
+  {
+    "text": "Comprehension was really poor today",
+    "label": "foggy"
+  },
+  {
+    "text": "Mental fog so thick I could barely function",
+    "label": "foggy"
+  },
+  {
+    "text": "Everything felt mentally distant and blurry",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't access my thoughts properly",
+    "label": "foggy"
+  },
+  {
+    "text": "My thoughts are scattered and fuzzy",
+    "label": "foggy"
+  },
+  {
+    "text": "My thinking was incoherent today",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt mentally underwater",
+    "label": "foggy"
+  },
+  {
+    "text": "Total brain fog today",
+    "label": "foggy"
+  },
+  {
+    "text": "My thinking was completely disrupted",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't get any mental traction",
+    "label": "foggy"
+  },
+  {
+    "text": "Mental cloudiness all day",
+    "label": "foggy"
+  },
+  {
+    "text": "Couldn't think clearly about anything",
+    "label": "foggy"
+  },
+  {
+    "text": "My brain refused to cooperate",
+    "label": "foggy"
+  },
+  {
+    "text": "I was cognitively scattered and slow",
+    "label": "foggy"
+  },
+  {
+    "text": "My head was cloudy from the moment I woke up",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't think my way out of a paper bag today",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt cognitively impaired today",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt intellectually paralyzed",
+    "label": "foggy"
+  },
+  {
+    "text": "Zero mental clarity today",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't get any mental momentum",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't process information properly",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't make sense of anything today",
+    "label": "foggy"
+  },
+  {
+    "text": "I was in a complete mental haze",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt mentally blunted today",
+    "label": "foggy"
+  },
+  {
+    "text": "Everything feels blurry mentally",
+    "label": "foggy"
+  },
+  {
+    "text": "Couldn't string two thoughts together",
+    "label": "foggy"
+  },
+  {
+    "text": "My brain felt like it was working at 10% today",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt cognitively empty",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt cognitively blocked",
+    "label": "foggy"
+  },
+  {
+    "text": "Brain fog was severe today",
+    "label": "foggy"
+  },
+  {
+    "text": "I was mentally checked out all morning",
+    "label": "foggy"
+  },
+  {
+    "text": "I was mentally offline",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't form a coherent sentence in my head",
+    "label": "foggy"
+  },
+  {
+    "text": "Mental performance was at rock bottom",
+    "label": "foggy"
+  },
+  {
+    "text": "My mind felt like wet cement",
+    "label": "foggy"
+  },
+  {
+    "text": "My cognition was completely off",
+    "label": "foggy"
+  },
+  {
+    "text": "Dense fog in my head all day",
+    "label": "foggy"
+  },
+  {
+    "text": "Can't hold a thought for more than a second",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt like my brain was buffering all day",
+    "label": "foggy"
+  },
+  {
+    "text": "I felt like I was thinking through mud",
+    "label": "foggy"
+  },
+  {
+    "text": "I feel mentally slow and cloudy",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't hold a thought in my head",
+    "label": "foggy"
+  },
+  {
+    "text": "I can't think straight today",
+    "label": "foggy"
+  },
+  {
+    "text": "Everything was slow and muddled mentally",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't retain any information today",
+    "label": "foggy"
+  },
+  {
+    "text": "I couldn't follow a thread of thought",
+    "label": "foggy"
+  },
+  {
+    "text": "My mind was totally unresponsive",
+    "label": "foggy"
+  },
+  {
+    "text": "Chronic brain fog hit hard",
+    "label": "foggy"
+  },
+  {
+    "text": "Every time I started something a new idea pulled me away",
+    "label": "distracted"
+  },
+  {
+    "text": "Every little thing pulled my attention away",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't lock onto anything today",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't resist checking my phone every two minutes",
+    "label": "distracted"
+  },
+  {
+    "text": "Couldn't stay on task no matter how hard I tried",
+    "label": "distracted"
+  },
+  {
+    "text": "Every task I started got abandoned for another",
+    "label": "distracted"
+  },
+  {
+    "text": "My mind kept wandering",
+    "label": "distracted"
+  },
+  {
+    "text": "My mind kept jumping ahead without finishing anything",
+    "label": "distracted"
+  },
+  {
+    "text": "My attention span was essentially zero",
+    "label": "distracted"
+  },
+  {
+    "text": "I was mentally restless and unfocused",
+    "label": "distracted"
+  },
+  {
+    "text": "Hyperdistracted today, typical ADHD day",
+    "label": "distracted"
+  },
+  {
+    "text": "My attention was hijacked constantly",
+    "label": "distracted"
+  },
+  {
+    "text": "I was pulled in every direction",
+    "label": "distracted"
+  },
+  {
+    "text": "Everything distracted me today",
+    "label": "distracted"
+  },
+  {
+    "text": "My focus was fractured all day",
+    "label": "distracted"
+  },
+  {
+    "text": "Too much going on in my head to focus",
+    "label": "distracted"
+  },
+  {
+    "text": "I was all noise and no signal today",
+    "label": "distracted"
+  },
+  {
+    "text": "I started things but couldn't follow through",
+    "label": "distracted"
+  },
+  {
+    "text": "I kept abandoning tasks halfway through",
+    "label": "distracted"
+  },
+  {
+    "text": "My attention kept slipping away",
+    "label": "distracted"
+  },
+  {
+    "text": "Every sound pulled me away from what I was doing",
+    "label": "distracted"
+  },
+  {
+    "text": "Focus was really poor today",
+    "label": "distracted"
+  },
+  {
+    "text": "I was distracted by everything, even nothing",
+    "label": "distracted"
+  },
+  {
+    "text": "I kept clicking away from what I needed to be doing",
+    "label": "distracted"
+  },
+  {
+    "text": "I flitted from one thing to another all day",
+    "label": "distracted"
+  },
+  {
+    "text": "I was pulled in too many directions to get anything done",
+    "label": "distracted"
+  },
+  {
+    "text": "Total attention breakdown today",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't filter out distractions at all",
+    "label": "distracted"
+  },
+  {
+    "text": "Felt scattered and restless mentally",
+    "label": "distracted"
+  },
+  {
+    "text": "My brain wanted everything but nothing in particular",
+    "label": "distracted"
+  },
+  {
+    "text": "I was totally unfocused and it cost me the day",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't stop the mental zigzagging",
+    "label": "distracted"
+  },
+  {
+    "text": "I opened five tabs and finished none of them",
+    "label": "distracted"
+  },
+  {
+    "text": "I got pulled off task before I even started",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't focus at all today",
+    "label": "distracted"
+  },
+  {
+    "text": "I was chasing my tail all day",
+    "label": "distracted"
+  },
+  {
+    "text": "Productivity was terrible because I couldn't focus",
+    "label": "distracted"
+  },
+  {
+    "text": "Distraction won today",
+    "label": "distracted"
+  },
+  {
+    "text": "I kept forgetting what I was supposed to be doing",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't stay on one thing for more than a minute",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't commit to any one thing",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't resist every notification and interruption",
+    "label": "distracted"
+  },
+  {
+    "text": "I kept losing the thread",
+    "label": "distracted"
+  },
+  {
+    "text": "I was unfocused and scattered",
+    "label": "distracted"
+  },
+  {
+    "text": "Attention was scattered like confetti",
+    "label": "distracted"
+  },
+  {
+    "text": "I was disorganized and scattered today",
+    "label": "distracted"
+  },
+  {
+    "text": "My attention was everywhere except where it needed to be",
+    "label": "distracted"
+  },
+  {
+    "text": "I jumped from task to task without finishing anything",
+    "label": "distracted"
+  },
+  {
+    "text": "Kept getting pulled away from what I was working on",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't follow through on any single intention",
+    "label": "distracted"
+  },
+  {
+    "text": "I was a mess of half-finished thoughts",
+    "label": "distracted"
+  },
+  {
+    "text": "I spent the day being busy but getting nothing done",
+    "label": "distracted"
+  },
+  {
+    "text": "Distraction was brutal today",
+    "label": "distracted"
+  },
+  {
+    "text": "Really distracted, kept losing my train of thought",
+    "label": "distracted"
+  },
+  {
+    "text": "I was easily distracted by everything around me",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't maintain attention on anything",
+    "label": "distracted"
+  },
+  {
+    "text": "I was all over the place today",
+    "label": "distracted"
+  },
+  {
+    "text": "I was constantly interrupted by my own thoughts",
+    "label": "distracted"
+  },
+  {
+    "text": "I kept drifting off task",
+    "label": "distracted"
+  },
+  {
+    "text": "Impossible to concentrate, too many distractions",
+    "label": "distracted"
+  },
+  {
+    "text": "I was focused enough to get through the day",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally available and engaged",
+    "label": "present"
+  },
+  {
+    "text": "I felt attentive and on the ball today",
+    "label": "present"
+  },
+  {
+    "text": "I was engaged with what was in front of me",
+    "label": "present"
+  },
+  {
+    "text": "Mental presence was solid today",
+    "label": "present"
+  },
+  {
+    "text": "I was present and on it today",
+    "label": "present"
+  },
+  {
+    "text": "I felt grounded and able to concentrate",
+    "label": "present"
+  },
+  {
+    "text": "Mental clarity was good today",
+    "label": "present"
+  },
+  {
+    "text": "I was focused in a quiet, steady way",
+    "label": "present"
+  },
+  {
+    "text": "My focus was reliable today",
+    "label": "present"
+  },
+  {
+    "text": "I managed to keep up with things mentally",
+    "label": "present"
+  },
+  {
+    "text": "Good enough focus to be productive",
+    "label": "present"
+  },
+  {
+    "text": "Focus was solid today",
+    "label": "present"
+  },
+  {
+    "text": "Managed to stay on task most of the day",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally present today",
+    "label": "present"
+  },
+  {
+    "text": "My focus was consistent if not outstanding",
+    "label": "present"
+  },
+  {
+    "text": "I was reasonably present all day",
+    "label": "present"
+  },
+  {
+    "text": "I could hold my attention on tasks",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally available today",
+    "label": "present"
+  },
+  {
+    "text": "I could work at a normal pace without losing focus",
+    "label": "present"
+  },
+  {
+    "text": "Not in flow but getting things done",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally present and composed",
+    "label": "present"
+  },
+  {
+    "text": "I was engaged and paying attention",
+    "label": "present"
+  },
+  {
+    "text": "I feel present and engaged today",
+    "label": "present"
+  },
+  {
+    "text": "I was present in my work and conversations",
+    "label": "present"
+  },
+  {
+    "text": "Able to sit with tasks without drifting much",
+    "label": "present"
+  },
+  {
+    "text": "I wasn't perfect but I was focused enough",
+    "label": "present"
+  },
+  {
+    "text": "I was attentive and switched on",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally present and capable",
+    "label": "present"
+  },
+  {
+    "text": "I was in the room mentally and emotionally",
+    "label": "present"
+  },
+  {
+    "text": "Focus was adequate and reliable today",
+    "label": "present"
+  },
+  {
+    "text": "My attention was stable today",
+    "label": "present"
+  },
+  {
+    "text": "Focus was good enough that I didn't notice it",
+    "label": "present"
+  },
+  {
+    "text": "I tracked well today, followed through on tasks",
+    "label": "present"
+  },
+  {
+    "text": "I was tracking well and staying on task",
+    "label": "present"
+  },
+  {
+    "text": "I kept my attention where it needed to be",
+    "label": "present"
+  },
+  {
+    "text": "My attention was mostly where it needed to be",
+    "label": "present"
+  },
+  {
+    "text": "I could track conversations and tasks fine",
+    "label": "present"
+  },
+  {
+    "text": "I could work without drifting too much",
+    "label": "present"
+  },
+  {
+    "text": "I could follow through on most things",
+    "label": "present"
+  },
+  {
+    "text": "My attention was functional today",
+    "label": "present"
+  },
+  {
+    "text": "I maintained reasonable attention all day",
+    "label": "present"
+  },
+  {
+    "text": "My mind stayed where it was supposed to",
+    "label": "present"
+  },
+  {
+    "text": "Attention was steady and reliable",
+    "label": "present"
+  },
+  {
+    "text": "My focus was good enough to do quality work",
+    "label": "present"
+  },
+  {
+    "text": "I stayed on top of things today mentally",
+    "label": "present"
+  },
+  {
+    "text": "My focus held up reasonably well",
+    "label": "present"
+  },
+  {
+    "text": "I was engaged without being exceptional",
+    "label": "present"
+  },
+  {
+    "text": "I felt focused in a natural way",
+    "label": "present"
+  },
+  {
+    "text": "Focus was there, dependable and calm",
+    "label": "present"
+  },
+  {
+    "text": "I stayed mentally on track today",
+    "label": "present"
+  },
+  {
+    "text": "I was appropriately focused for the tasks I had",
+    "label": "present"
+  },
+  {
+    "text": "My mental clarity was decent",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally here today",
+    "label": "present"
+  },
+  {
+    "text": "Good enough focus to call today productive",
+    "label": "present"
+  },
+  {
+    "text": "I was focused in a natural, effortless way",
+    "label": "present"
+  },
+  {
+    "text": "I'm reasonably focused",
+    "label": "present"
+  },
+  {
+    "text": "Staying grounded and on track",
+    "label": "present"
+  },
+  {
+    "text": "I was appropriately attentive today",
+    "label": "present"
+  },
+  {
+    "text": "I felt cognitively present and aware",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally grounded and focused",
+    "label": "present"
+  },
+  {
+    "text": "I could hold a thought and follow it through",
+    "label": "present"
+  },
+  {
+    "text": "I was tuned in and engaged today",
+    "label": "present"
+  },
+  {
+    "text": "Concentration was there when I needed it",
+    "label": "present"
+  },
+  {
+    "text": "I felt cognitively competent today",
+    "label": "present"
+  },
+  {
+    "text": "Focus is okay, I'm keeping up",
+    "label": "present"
+  },
+  {
+    "text": "I could follow things without losing the thread",
+    "label": "present"
+  },
+  {
+    "text": "I was paying attention and it showed",
+    "label": "present"
+  },
+  {
+    "text": "My attention was where it should be",
+    "label": "present"
+  },
+  {
+    "text": "I felt mentally exceptional today",
+    "label": "sharp"
+  },
+  {
+    "text": "My thinking was really clear and rapid",
+    "label": "sharp"
+  },
+  {
+    "text": "Sharp thinking all day, felt great",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt mentally crisp from the start",
+    "label": "sharp"
+  },
+  {
+    "text": "I was thinking at a high level today",
+    "label": "sharp"
+  },
+  {
+    "text": "My mental precision was high today",
+    "label": "sharp"
+  },
+  {
+    "text": "Mental performance is high today",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt cognitively sharp and engaged",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt highly mentally competent today",
+    "label": "sharp"
+  },
+  {
+    "text": "I feel mentally on point",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt intellectually sharp and energized",
+    "label": "sharp"
+  },
+  {
+    "text": "Everything is clicking today",
+    "label": "sharp"
+  },
+  {
+    "text": "Crystal clear thinking all day",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt mentally excellent",
+    "label": "sharp"
+  },
+  {
+    "text": "My cognitive performance was high today",
+    "label": "sharp"
+  },
+  {
+    "text": "Sharp, clear, and fast all day",
+    "label": "sharp"
+  },
+  {
+    "text": "Felt like my brain was running at full speed",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt like my brain was dialed in",
+    "label": "sharp"
+  },
+  {
+    "text": "I was mentally brilliant today",
+    "label": "sharp"
+  },
+  {
+    "text": "My brain felt sharp and well-tuned",
+    "label": "sharp"
+  },
+  {
+    "text": "Everything just made sense today",
+    "label": "sharp"
+  },
+  {
+    "text": "Really focused and clear-headed",
+    "label": "sharp"
+  },
+  {
+    "text": "My focus has been excellent",
+    "label": "sharp"
+  },
+  {
+    "text": "I could process things fast and accurately",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt bright and sharp",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt intellectually clear and alert",
+    "label": "sharp"
+  },
+  {
+    "text": "My thinking was precise and fast",
+    "label": "sharp"
+  },
+  {
+    "text": "Everything clicked mentally, I was sharp",
+    "label": "sharp"
+  },
+  {
+    "text": "Excellent mental sharpness today",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt cognitively on fire",
+    "label": "sharp"
+  },
+  {
+    "text": "I feel sharp today",
+    "label": "sharp"
+  },
+  {
+    "text": "My focus was clean and sustained",
+    "label": "sharp"
+  },
+  {
+    "text": "I can cut through problems fast today",
+    "label": "sharp"
+  },
+  {
+    "text": "I was mentally precise and fast",
+    "label": "sharp"
+  },
+  {
+    "text": "I was operating at peak mental capacity",
+    "label": "sharp"
+  },
+  {
+    "text": "Felt super sharp and on it",
+    "label": "sharp"
+  },
+  {
+    "text": "Everything came easily mentally today",
+    "label": "sharp"
+  },
+  {
+    "text": "My thinking was outstanding today",
+    "label": "sharp"
+  },
+  {
+    "text": "My focus was elevated and clean",
+    "label": "sharp"
+  },
+  {
+    "text": "I was mentally agile and quick today",
+    "label": "sharp"
+  },
+  {
+    "text": "My mind was running clean and fast",
+    "label": "sharp"
+  },
+  {
+    "text": "Mental performance was notably high",
+    "label": "sharp"
+  },
+  {
+    "text": "Thoughts were crisp, focus was high",
+    "label": "sharp"
+  },
+  {
+    "text": "My mind was working beautifully",
+    "label": "sharp"
+  },
+  {
+    "text": "I was crisp and efficient mentally",
+    "label": "sharp"
+  },
+  {
+    "text": "I'm thinking clearly and quickly",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt cognitively sharper than usual",
+    "label": "sharp"
+  },
+  {
+    "text": "I was mentally on fire today",
+    "label": "sharp"
+  },
+  {
+    "text": "I was mentally quick and on point",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt sharp and precise all morning",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt like a well-oiled thinking machine today",
+    "label": "sharp"
+  },
+  {
+    "text": "My mind cut through everything easily today",
+    "label": "sharp"
+  },
+  {
+    "text": "My thoughts were precise and well-ordered",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt cognitively excellent today",
+    "label": "sharp"
+  },
+  {
+    "text": "I was dialed in and efficient",
+    "label": "sharp"
+  },
+  {
+    "text": "My brain felt like it was operating at peak capacity",
+    "label": "sharp"
+  },
+  {
+    "text": "Sharp focus all day, I was really on",
+    "label": "sharp"
+  },
+  {
+    "text": "Sharp mind today, got a lot done",
+    "label": "sharp"
+  },
+  {
+    "text": "My cognitive edge was there today",
+    "label": "sharp"
+  },
+  {
+    "text": "I felt highly focused and clear",
+    "label": "sharp"
+  },
+  {
+    "text": "I was in a bubble of total concentration",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Flow came and I stayed in it all morning",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Deep work, no interruptions, completely locked",
+    "label": "lockedIn"
+  },
+  {
+    "text": "The work pulled me in and didn't let go",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Total immersion in what I was doing",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Flow state hit and I ran with it",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I hit a flow state and rode it for hours",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I achieved the kind of focus I rarely get",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was locked in all afternoon",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Pure, deep, unbroken focus all afternoon",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was deeply locked in and it felt effortless",
+    "label": "lockedIn"
+  },
+  {
+    "text": "The best flow state I've had in months",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was deeply absorbed and incredibly productive",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was tunnel-visioned on my work in a good way",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Nothing could pull me away from what I was doing",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Complete hyperfocus today",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I disappeared into my work completely",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I've been in flow state for hours",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Total focus for hours, unbroken",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Pure hyperfocus, nothing could reach me",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Complete immersion in what I was doing",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Everything else faded away and I just worked",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I stayed locked in all afternoon without breaking",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Total tunnel vision on my work, in a good way",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was operating in a completely focused state",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I didn't notice the time passing, I was so deep in flow",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was deeply in the zone and couldn't be moved",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Deepest focus I've had in weeks",
+    "label": "lockedIn"
+  },
+  {
+    "text": "This was one of those rare deep focus days",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Locked in completely, best focus in weeks",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I felt locked in at a cellular level",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I've never been this focused in a long time",
+    "label": "lockedIn"
+  },
+  {
+    "text": "The world faded and I was just working",
+    "label": "lockedIn"
+  },
+  {
+    "text": "The focus was so deep I forgot everything else",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was so focused I had to remind myself to breathe",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I experienced rare, deep focus today",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Hyperfocus kicked in and I went for hours",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I'm completely in the zone",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was deeply absorbed and time flew",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was in the zone and nothing touched me",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was completely locked in and highly productive",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Nothing distracted me, pure focus",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was in a state of complete absorption",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was in a rare state of total focus",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I entered a state of complete focus early and stayed there",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Felt like a machine, fully locked in",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was completely absorbed and in control",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I couldn't be distracted today even if I tried",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was in a bubble today, total concentration",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I was fully in it, completely present and focused",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I have no focus",
+    "label": "foggy"
+  },
+  {
+    "text": "I really have no focus",
+    "label": "foggy"
+  },
+  {
+    "text": "no focus at all today",
+    "label": "foggy"
+  },
+  {
+    "text": "zero concentration",
+    "label": "foggy"
+  },
+  {
+    "text": "no concentration left",
+    "label": "foggy"
+  },
+  {
+    "text": "I have no mental clarity",
+    "label": "foggy"
+  },
+  {
+    "text": "my focus is completely gone",
+    "label": "foggy"
+  },
+  {
+    "text": "no focus whatsoever",
+    "label": "foggy"
+  },
+  {
+    "text": "can't focus at all",
+    "label": "distracted"
+  },
+  {
+    "text": "couldn't concentrate today",
+    "label": "distracted"
+  },
+  {
+    "text": "not able to focus",
+    "label": "distracted"
+  },
+  {
+    "text": "I lost my focus completely",
+    "label": "distracted"
+  },
+  {
+    "text": "no focus",
+    "label": "foggy"
+  },
+  {
+    "text": "zero focus today",
+    "label": "foggy"
+  },
+  {
+    "text": "I have absolutely no focus",
+    "label": "foggy"
+  },
+  {
+    "text": "no ability to concentrate",
+    "label": "foggy"
+  },
+  {
+    "text": "my concentration is shot",
+    "label": "foggy"
+  },
+  {
+    "text": "focus is completely gone",
+    "label": "foggy"
+  },
+  {
+    "text": "no mental focus whatsoever",
+    "label": "foggy"
+  },
+  {
+    "text": "my focus has vanished",
+    "label": "foggy"
+  },
+  {
+    "text": "I have zero focus right now",
+    "label": "foggy"
+  },
+  {
+    "text": "no concentration at all today",
+    "label": "foggy"
+  },
+  {
+    "text": "I can't focus",
+    "label": "distracted"
+  },
+  {
+    "text": "couldn't focus on anything",
+    "label": "distracted"
+  },
+  {
+    "text": "I can't concentrate at all",
+    "label": "distracted"
+  },
+  {
+    "text": "totally unable to focus",
+    "label": "distracted"
+  },
+  {
+    "text": "I have no attention span today",
+    "label": "distracted"
+  },
+  {
+    "text": "not focused at all",
+    "label": "distracted"
+  },
+  {
+    "text": "can't keep my mind on anything",
+    "label": "distracted"
+  },
+  {
+    "text": "I couldn't focus to save my life",
+    "label": "distracted"
+  },
+  {
+    "text": "now I really have no focus",
+    "label": "foggy"
+  },
+  {
+    "text": "I have lost all focus",
+    "label": "foggy"
+  },
+  {
+    "text": "My head is in a complete fog",
+    "label": "foggy"
+  },
+  {
+    "text": "I can't think clearly at all",
+    "label": "foggy"
+  },
+  {
+    "text": "Brain feels like soup today",
+    "label": "foggy"
+  },
+  {
+    "text": "Everything is mentally hazy",
+    "label": "foggy"
+  },
+  {
+    "text": "I keep blanking out",
+    "label": "foggy"
+  },
+  {
+    "text": "My mind is mush today",
+    "label": "foggy"
+  },
+  {
+    "text": "Cognitively I'm just not here today",
+    "label": "foggy"
+  },
+  {
+    "text": "Thinking feels impossible right now",
+    "label": "foggy"
+  },
+  {
+    "text": "I keep getting pulled away from tasks",
+    "label": "distracted"
+  },
+  {
+    "text": "My attention won't settle on anything",
+    "label": "distracted"
+  },
+  {
+    "text": "I bounce between things constantly",
+    "label": "distracted"
+  },
+  {
+    "text": "Can't stay on one task today",
+    "label": "distracted"
+  },
+  {
+    "text": "I'm scattered all over the place",
+    "label": "distracted"
+  },
+  {
+    "text": "Every notification derails me",
+    "label": "distracted"
+  },
+  {
+    "text": "I lose my train of thought constantly",
+    "label": "distracted"
+  },
+  {
+    "text": "I'm keeping up with things mentally",
+    "label": "present"
+  },
+  {
+    "text": "My focus is steady enough today",
+    "label": "present"
+  },
+  {
+    "text": "I can stay with my work okay",
+    "label": "present"
+  },
+  {
+    "text": "Mentally I'm present and tracking",
+    "label": "present"
+  },
+  {
+    "text": "Focus is fine, nothing remarkable",
+    "label": "present"
+  },
+  {
+    "text": "I'm engaged with what I'm doing",
+    "label": "present"
+  },
+  {
+    "text": "My mind is razor sharp today",
+    "label": "sharp"
+  },
+  {
+    "text": "I'm thinking fast and clearly",
+    "label": "sharp"
+  },
+  {
+    "text": "Everything clicks mentally today",
+    "label": "sharp"
+  },
+  {
+    "text": "I'm cutting through work easily",
+    "label": "sharp"
+  },
+  {
+    "text": "My focus is crisp and strong",
+    "label": "sharp"
+  },
+  {
+    "text": "Mentally on point all day",
+    "label": "sharp"
+  },
+  {
+    "text": "I'm in deep flow right now",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Completely locked into my work",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Hours passed without me noticing, total flow",
+    "label": "lockedIn"
+  },
+  {
+    "text": "I'm in the zone and unstoppable",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Deep focus, nothing reaches me",
+    "label": "lockedIn"
+  },
+  {
+    "text": "Physical energy was baseline, which is fine",
+    "label": "none"
+  },
+  {
+    "text": "I'm okay, no need to overthink it",
+    "label": "none"
+  },
+  {
+    "text": "Feeling indifferent about everything",
+    "label": "none"
+  },
+  {
+    "text": "I woke up feeling good",
+    "label": "none"
+  },
+  {
+    "text": "Apathy was the dominant feeling",
+    "label": "none"
+  },
+  {
+    "text": "Felt sluggish from the moment I woke up",
+    "label": "none"
+  },
+  {
+    "text": "Emotional pain today",
+    "label": "none"
+  },
+  {
+    "text": "Mood was neither here nor there",
+    "label": "none"
+  },
+  {
+    "text": "Coasting emotionally today",
+    "label": "none"
+  },
+  {
+    "text": "Sadness just sat on my chest all day",
+    "label": "none"
+  },
+  {
+    "text": "I feel alert and functional",
+    "label": "none"
+  },
+  {
+    "text": "I ran out of steam by 3pm",
+    "label": "none"
+  },
+  {
+    "text": "Emotionally flat, not good not bad",
+    "label": "none"
+  },
+  {
+    "text": "I felt optimistic and bright",
+    "label": "none"
+  },
+  {
+    "text": "I felt euphoric and full of joy",
+    "label": "none"
+  },
+  {
+    "text": "I felt blessed and joyful",
+    "label": "none"
+  },
+  {
+    "text": "Felt genuinely cheerful",
+    "label": "none"
+  },
+  {
+    "text": "Kept tearing up throughout the day",
+    "label": "none"
+  },
+  {
+    "text": "I feel physically primed today",
+    "label": "none"
+  },
+  {
+    "text": "I felt the energy drain throughout the day",
+    "label": "none"
+  },
+  {
+    "text": "A bit lethargic today",
+    "label": "none"
+  },
+  {
+    "text": "Energy has been strong today",
+    "label": "none"
+  },
+  {
+    "text": "Best mood I've had in weeks",
+    "label": "none"
+  },
+  {
+    "text": "I was running low by mid-afternoon",
+    "label": "none"
+  },
+  {
+    "text": "Reasonable day emotionally",
+    "label": "none"
+  },
+  {
+    "text": "Energy was regulated and stable",
+    "label": "none"
+  },
+  {
+    "text": "Zero energy, couldn't do anything",
+    "label": "none"
+  },
+  {
+    "text": "Energy through the roof today",
+    "label": "none"
+  },
+  {
+    "text": "Mood held steady all day",
+    "label": "none"
+  },
+  {
+    "text": "Today was a 10 out of 10 emotionally",
+    "label": "none"
+  },
+  {
+    "text": "No highs or lows energy-wise",
+    "label": "none"
+  },
+  {
+    "text": "I feel unstoppable right now",
+    "label": "none"
+  },
+  {
+    "text": "Meal prepped for the week",
+    "label": "none"
+  },
+  {
+    "text": "I felt under-powered today",
+    "label": "none"
+  },
+  {
+    "text": "I had a consistent physical baseline today",
+    "label": "none"
+  },
+  {
+    "text": "Deadened today, just going through motions",
+    "label": "none"
+  },
+  {
+    "text": "Physical output was steady and reliable",
+    "label": "none"
+  },
+  {
+    "text": "I could not get going no matter what",
+    "label": "none"
+  },
+  {
+    "text": "Low energy but not crashed",
+    "label": "none"
+  },
+  {
+    "text": "I felt deeply happy and at peace",
+    "label": "none"
+  },
+  {
+    "text": "I felt calibrated and stable",
+    "label": "none"
+  },
+  {
+    "text": "Doing okay, just a normal day",
+    "label": "none"
+  },
+  {
+    "text": "Energy was on the lower side today",
+    "label": "none"
+  },
+  {
+    "text": "Feeling very down and withdrawn",
+    "label": "none"
+  },
+  {
+    "text": "I feel awake and engaged physically",
+    "label": "none"
+  },
+  {
+    "text": "Detached and a bit empty",
+    "label": "none"
+  },
+  {
+    "text": "Low and heavy all day",
+    "label": "none"
+  },
+  {
+    "text": "My energy is elevated above baseline",
+    "label": "none"
+  },
+  {
+    "text": "I felt whole and happy",
+    "label": "none"
+  },
+  {
+    "text": "Feeling awake and ready to go",
+    "label": "none"
+  },
+  {
+    "text": "I feel energized and present",
+    "label": "none"
+  },
+  {
+    "text": "The best emotional day I've had recently",
+    "label": "none"
+  },
+  {
+    "text": "Good day, genuinely happy",
+    "label": "none"
+  },
+  {
+    "text": "My body is ready and responsive",
+    "label": "none"
+  },
+  {
+    "text": "I feel lively and energized",
+    "label": "none"
+  },
+  {
+    "text": "Today lifted my spirits",
+    "label": "none"
+  },
+  {
+    "text": "Normal energy, felt fine",
+    "label": "none"
+  },
+  {
+    "text": "My energy dipped in the afternoon",
+    "label": "none"
+  },
+  {
+    "text": "I feel turbo-charged today",
+    "label": "none"
+  },
+  {
+    "text": "High energy all day, no crash",
+    "label": "none"
+  },
+  {
+    "text": "I stayed at a good baseline all day",
+    "label": "none"
+  },
+  {
+    "text": "The emotional numbness is familiar but uncomfortable",
+    "label": "none"
+  },
+  {
+    "text": "Made a to-do list for tomorrow",
+    "label": "none"
+  },
+  {
+    "text": "Joyful and light all day long",
+    "label": "none"
+  },
+  {
+    "text": "I feel like I could take on anything",
+    "label": "none"
+  },
+  {
+    "text": "Low battery mode today",
+    "label": "none"
+  },
+  {
+    "text": "I felt my usual self physically",
+    "label": "none"
+  },
+  {
+    "text": "I need to get better at task switching",
+    "label": "none"
+  },
+  {
+    "text": "Peak energy today, everything feels easy",
+    "label": "none"
+  },
+  {
+    "text": "I felt grounded and stable physically",
+    "label": "none"
+  },
+  {
+    "text": "Running at about 60% energy",
+    "label": "none"
+  },
+  {
+    "text": "I felt broken today",
+    "label": "none"
+  },
+  {
+    "text": "Good headspace, clear and happy",
+    "label": "none"
+  },
+  {
+    "text": "Leaden limbs all day",
+    "label": "none"
+  },
+  {
+    "text": "Very sad for no clear reason",
+    "label": "none"
+  },
+  {
+    "text": "Energy feels normal today",
+    "label": "none"
+  },
+  {
+    "text": "I just felt terrible inside",
+    "label": "none"
+  },
+  {
+    "text": "Feeling pleased with how the day went",
+    "label": "none"
+  },
+  {
+    "text": "I moved at a comfortable, normal pace",
+    "label": "none"
+  },
+  {
+    "text": "Everything I do feels effortless",
+    "label": "none"
+  },
+  {
+    "text": "I'm going to try the two-minute rule",
+    "label": "none"
+  },
+  {
+    "text": "Decent day, no complaints",
+    "label": "none"
+  },
+  {
+    "text": "Had a relaxed evening at home",
+    "label": "none"
+  },
+  {
+    "text": "I felt settled and neutral",
+    "label": "none"
+  },
+  {
+    "text": "I'm indifferent to everything happening around me",
+    "label": "none"
+  },
+  {
+    "text": "I felt like I was wading through treacle",
+    "label": "none"
+  },
+  {
+    "text": "I feel awake and full of drive",
+    "label": "none"
+  },
+  {
+    "text": "The tiredness caught up with me today",
+    "label": "none"
+  },
+  {
+    "text": "I felt defeated all day",
+    "label": "none"
+  },
+  {
+    "text": "Focus wasn't an issue",
+    "label": "none"
+  },
+  {
+    "text": "Steady state physically",
+    "label": "none"
+  },
+  {
+    "text": "No crashes, no spikes, just steady",
+    "label": "none"
+  },
+  {
+    "text": "Felt fine, honestly",
+    "label": "none"
+  },
+  {
+    "text": "Feeling crisp and awake",
+    "label": "none"
+  },
+  {
+    "text": "Read an article about ADHD focus strategies",
+    "label": "none"
+  },
+  {
+    "text": "Not my most energetic day",
+    "label": "none"
+  },
+  {
+    "text": "Nothing is exciting me, nothing is upsetting me",
+    "label": "none"
+  },
+  {
+    "text": "The office was noisy, hard to work",
+    "label": "none"
+  },
+  {
+    "text": "I haven't felt this energized in ages",
+    "label": "none"
+  },
+  {
+    "text": "Tired but got through it",
+    "label": "none"
+  },
+  {
+    "text": "I feel genuinely wired and powerful",
+    "label": "none"
+  },
+  {
+    "text": "Good energy emotionally today",
+    "label": "none"
+  },
+  {
+    "text": "I'm switched on right now",
+    "label": "none"
+  },
+  {
+    "text": "Physical state is strong and active",
+    "label": "none"
+  },
+  {
+    "text": "Things were okay, no major issues",
+    "label": "none"
+  },
+  {
+    "text": "Feeling heavy and slow all day",
+    "label": "none"
+  },
+  {
+    "text": "Today was emotionally rich and beautiful",
+    "label": "none"
+  },
+  {
+    "text": "Really good mood this afternoon",
+    "label": "none"
+  },
+  {
+    "text": "I feel physically transformed today",
+    "label": "none"
+  },
+  {
+    "text": "I've been bouncing off the walls",
+    "label": "none"
+  },
+  {
+    "text": "Couldn't access any feelings today",
+    "label": "none"
+  },
+  {
+    "text": "I felt light and happy",
+    "label": "none"
+  },
+  {
+    "text": "Absolutely on top of the world",
+    "label": "none"
+  },
+  {
+    "text": "Today had a good emotional tone",
+    "label": "none"
+  },
+  {
+    "text": "Feeling happy and content",
+    "label": "none"
+  },
+  {
+    "text": "I was glowing a bit today emotionally",
+    "label": "none"
+  },
+  {
+    "text": "Incredible day, feeling on fire emotionally",
+    "label": "none"
+  },
+  {
+    "text": "Not exactly exhausted but not far off",
+    "label": "none"
+  },
+  {
+    "text": "Everything felt possible today",
+    "label": "none"
+  },
+  {
+    "text": "Nothing penetrates today",
+    "label": "none"
+  },
+  {
+    "text": "I could barely move this morning",
+    "label": "none"
+  },
+  {
+    "text": "I feel physically up to any task",
+    "label": "none"
+  },
+  {
+    "text": "Energy is stratospheric today",
+    "label": "none"
+  },
+  {
+    "text": "No gas in the tank whatsoever",
+    "label": "none"
+  },
+  {
+    "text": "Maybe I'll be able to focus better tomorrow",
+    "label": "none"
+  },
+  {
+    "text": "I got through the day feeling okay",
+    "label": "none"
+  },
+  {
+    "text": "More energy than I know what to do with",
+    "label": "none"
+  },
+  {
+    "text": "Mood has been really bad today",
+    "label": "none"
+  },
+  {
+    "text": "Mood is fine, not great not terrible",
+    "label": "none"
+  },
+  {
+    "text": "Switched tasks to give my brain a break",
+    "label": "none"
+  },
+  {
+    "text": "Neither happy nor sad, just okay",
+    "label": "none"
+  },
+  {
+    "text": "Good consistent energy, nothing dramatic",
+    "label": "none"
+  },
+  {
+    "text": "I'm buzzing with positivity",
+    "label": "none"
+  },
+  {
+    "text": "Happiness was effortless today",
+    "label": "none"
+  },
+  {
+    "text": "I was glowing a bit emotionally",
+    "label": "none"
+  },
+  {
+    "text": "The fatigue was debilitating",
+    "label": "none"
+  },
+  {
+    "text": "Overjoyed today",
+    "label": "none"
+  },
+  {
+    "text": "I'm switched on and feeling it",
+    "label": "none"
+  },
+  {
+    "text": "Overflowing with positivity and joy",
+    "label": "none"
+  },
+  {
+    "text": "I'm alert and feeling capable",
+    "label": "none"
+  },
+  {
+    "text": "I felt complete and joyful",
+    "label": "none"
+  },
+  {
+    "text": "Body is responsive and switched on",
+    "label": "none"
+  },
+  {
+    "text": "Energy has been above average today",
+    "label": "none"
+  },
+  {
+    "text": "I'm in a dark place right now",
+    "label": "none"
+  },
+  {
+    "text": "Energy kicked in after breakfast",
+    "label": "none"
+  },
+  {
+    "text": "Today just felt good",
+    "label": "none"
+  },
+  {
+    "text": "Completely out of fuel",
+    "label": "none"
+  },
+  {
+    "text": "Despondent most of the day",
+    "label": "none"
+  },
+  {
+    "text": "It was a rough one emotionally",
+    "label": "none"
+  },
+  {
+    "text": "Feeling fantastic, on top of the world",
+    "label": "none"
+  },
+  {
+    "text": "Emotionally steady, nothing to report",
+    "label": "none"
+  },
+  {
+    "text": "I'm physically activated today",
+    "label": "none"
+  },
+  {
+    "text": "Bought a new planner to organize my tasks",
+    "label": "none"
+  },
+  {
+    "text": "Took a proper lunch break today",
+    "label": "none"
+  },
+  {
+    "text": "I feel like I could run a marathon",
+    "label": "none"
+  },
+  {
+    "text": "Energy is flowing well today",
+    "label": "none"
+  },
+  {
+    "text": "I had my usual amount of physical drive",
+    "label": "none"
+  },
+  {
+    "text": "I couldn't find any happiness today",
+    "label": "none"
+  },
+  {
+    "text": "Energy was high and consistent",
+    "label": "none"
+  },
+  {
+    "text": "I was more fatigued than usual",
+    "label": "none"
+  },
+  {
+    "text": "I felt reliably energized at a normal level",
+    "label": "none"
+  },
+  {
+    "text": "I'm running on maximum power",
+    "label": "none"
+  },
+  {
+    "text": "I'd give my mood a solid okay today",
+    "label": "none"
+  },
+  {
+    "text": "I wasn't pushing or dragging, just moving",
+    "label": "none"
+  },
+  {
+    "text": "Feeling pretty miserable",
+    "label": "none"
+  },
+  {
+    "text": "Not my best, not my worst",
+    "label": "none"
+  },
+  {
+    "text": "Had breakfast and coffee",
+    "label": "none"
+  },
+  {
+    "text": "I feel like a coiled spring",
+    "label": "none"
+  },
+  {
+    "text": "Wired in a good way today",
+    "label": "none"
+  },
+  {
+    "text": "The physical energy today was remarkable",
+    "label": "none"
+  },
+  {
+    "text": "My body was cooperative and steady",
+    "label": "none"
+  },
+  {
+    "text": "I can't believe how much energy I had",
+    "label": "none"
+  },
+  {
+    "text": "Mood was pretty flat but in a neutral way",
+    "label": "none"
+  },
+  {
+    "text": "I hope the medication helps me concentrate today",
+    "label": "none"
+  },
+  {
+    "text": "Physical energy was at absolute zero",
+    "label": "none"
+  },
+  {
+    "text": "I should try to reduce distractions",
+    "label": "none"
+  },
+  {
+    "text": "I felt tremendous joy",
+    "label": "none"
+  },
+  {
+    "text": "I wasn't unfocused",
+    "label": "none"
+  },
+  {
+    "text": "I felt down the whole afternoon",
+    "label": "none"
+  },
+  {
+    "text": "Extraordinary physical day",
+    "label": "none"
+  },
+  {
+    "text": "Everything feels wonderful right now",
+    "label": "none"
+  },
+  {
+    "text": "Mood was in the middle",
+    "label": "none"
+  },
+  {
+    "text": "Energy dipped pretty significantly",
+    "label": "none"
+  },
+  {
+    "text": "I've been smiling a lot today",
+    "label": "none"
+  },
+  {
+    "text": "I feel awake and alert",
+    "label": "none"
+  },
+  {
+    "text": "Strong physical energy, good day",
+    "label": "none"
+  },
+  {
+    "text": "No motivation, no energy, just exhausted",
+    "label": "none"
+  },
+  {
+    "text": "I had to lie down multiple times today",
+    "label": "none"
+  },
+  {
+    "text": "Today was emotionally rewarding",
+    "label": "none"
+  },
+  {
+    "text": "Steady as she goes today",
+    "label": "none"
+  },
+  {
+    "text": "I was firing on every cylinder all day",
+    "label": "none"
+  },
+  {
+    "text": "Dark clouds today mood-wise",
+    "label": "none"
+  },
+  {
+    "text": "Had a coaching session about productivity",
+    "label": "none"
+  },
+  {
+    "text": "Joy filled up the whole day",
+    "label": "none"
+  },
+  {
+    "text": "I was flying emotionally",
+    "label": "none"
+  },
+  {
+    "text": "I felt positive most of the day",
+    "label": "none"
+  },
+  {
+    "text": "I hit the afternoon wall today",
+    "label": "none"
+  },
+  {
+    "text": "I'm alright, nothing special",
+    "label": "none"
+  },
+  {
+    "text": "I'm supercharged right now",
+    "label": "none"
+  },
+  {
+    "text": "I was ecstatic and full of love",
+    "label": "none"
+  },
+  {
+    "text": "Peak emotional state today",
+    "label": "none"
+  },
+  {
+    "text": "Maybe working in shorter bursts will help",
+    "label": "none"
+  },
+  {
+    "text": "Energy faded as the day went on",
+    "label": "none"
+  },
+  {
+    "text": "Energy was subpar today",
+    "label": "none"
+  },
+  {
+    "text": "Today was emotionally bright",
+    "label": "none"
+  },
+  {
+    "text": "Mood is static, no movement at all",
+    "label": "none"
+  },
+  {
+    "text": "The energy is real and intense",
+    "label": "none"
+  },
+  {
+    "text": "I struggled to keep going by the afternoon",
+    "label": "none"
+  },
+  {
+    "text": "I feel physically charged and alive",
+    "label": "none"
+  },
+  {
+    "text": "Today I felt like nothing",
+    "label": "none"
+  },
+  {
+    "text": "I'm really not okay today",
+    "label": "none"
+  },
+  {
+    "text": "Total crash today, no energy at all",
+    "label": "none"
+  },
+  {
+    "text": "I'm really struggling right now",
+    "label": "none"
+  },
+  {
+    "text": "I felt disconnected from everything",
+    "label": "none"
+  },
+  {
+    "text": "I was upbeat and positive",
+    "label": "none"
+  },
+  {
+    "text": "I feel robotic today",
+    "label": "none"
+  },
+  {
+    "text": "Best mood in recent memory",
+    "label": "none"
+  },
+  {
+    "text": "I didn't feel tired or wired, just on",
+    "label": "none"
+  },
+  {
+    "text": "I was doing okay all things considered",
+    "label": "none"
+  },
+  {
+    "text": "I needed more sleep than I got",
+    "label": "none"
+  },
+  {
+    "text": "Nothing could bring me down today",
+    "label": "none"
+  },
+  {
+    "text": "I've been feeling really sad",
+    "label": "none"
+  },
+  {
+    "text": "Crashed hard this afternoon",
+    "label": "none"
+  },
+  {
+    "text": "Dissociated and kind of blank",
+    "label": "none"
+  },
+  {
+    "text": "I wasn't distracted today",
+    "label": "none"
+  },
+  {
+    "text": "I was lit up from inside",
+    "label": "none"
+  },
+  {
+    "text": "I felt at my natural energy baseline",
+    "label": "none"
+  },
+  {
+    "text": "Lack of energy end of the day",
+    "label": "none"
+  },
+  {
+    "text": "Neutral and grounded today",
+    "label": "none"
+  },
+  {
+    "text": "Energy just wasn't there today",
+    "label": "none"
+  },
+  {
+    "text": "I had to push through the tiredness",
+    "label": "none"
+  },
+  {
+    "text": "Happy and settled today",
+    "label": "none"
+  },
+  {
+    "text": "Took my vitamins",
+    "label": "none"
+  },
+  {
+    "text": "Feeling alright, things are fine",
+    "label": "none"
+  },
+  {
+    "text": "I should set up a proper work environment",
+    "label": "none"
+  },
+  {
+    "text": "Blocked social media during work hours",
+    "label": "none"
+  },
+  {
+    "text": "Trying to reduce multitasking",
+    "label": "none"
+  },
+  {
+    "text": "Energy was even and reliable",
+    "label": "none"
+  },
+  {
+    "text": "Watched some TV to wind down",
+    "label": "none"
+  },
+  {
+    "text": "Finished the week's work on time",
+    "label": "none"
+  },
+  {
+    "text": "I felt really low all day",
+    "label": "none"
+  },
+  {
+    "text": "I felt satisfied and content",
+    "label": "none"
+  },
+  {
+    "text": "Today was genuinely wonderful",
+    "label": "none"
+  },
+  {
+    "text": "I felt physically competent and normal",
+    "label": "none"
+  },
+  {
+    "text": "I had a spring in my step today",
+    "label": "none"
+  },
+  {
+    "text": "I feel really low today",
+    "label": "none"
+  },
+  {
+    "text": "So much physical drive today",
+    "label": "none"
+  },
+  {
+    "text": "Mood was acceptable, nothing to complain about",
+    "label": "none"
+  },
+  {
+    "text": "Spiraling a bit mentally",
+    "label": "none"
+  },
+  {
+    "text": "I had less energy than I wanted",
+    "label": "none"
+  },
+  {
+    "text": "Worked from a coffee shop",
+    "label": "none"
+  },
+  {
+    "text": "Stable mood, no real ups or downs",
+    "label": "none"
+  },
+  {
+    "text": "I haven't felt this good in ages",
+    "label": "none"
+  },
+  {
+    "text": "My body is performing well today",
+    "label": "none"
+  },
+  {
+    "text": "No reserves at all today",
+    "label": "none"
+  },
+  {
+    "text": "The fatigue was overwhelming today",
+    "label": "none"
+  },
+  {
+    "text": "Carried on fine today",
+    "label": "none"
+  },
+  {
+    "text": "Did some light exercise this evening",
+    "label": "none"
+  },
+  {
+    "text": "Energy is clear and sustained",
+    "label": "none"
+  },
+  {
+    "text": "Switched off emotionally",
+    "label": "none"
+  },
+  {
+    "text": "I'd like to be more consistent with my concentration",
+    "label": "none"
+  },
+  {
+    "text": "Physical energy is through the roof",
+    "label": "none"
+  },
+  {
+    "text": "Feeling grateful and happy",
+    "label": "none"
+  },
+  {
+    "text": "I have good physical drive today",
+    "label": "none"
+  },
+  {
+    "text": "Just a regular day emotionally",
+    "label": "none"
+  },
+  {
+    "text": "Normal energy state all day",
+    "label": "none"
+  },
+  {
+    "text": "I was a mess today",
+    "label": "none"
+  },
+  {
+    "text": "I'd say I'm okay today",
+    "label": "none"
+  },
+  {
+    "text": "I barely held it together",
+    "label": "none"
+  },
+  {
+    "text": "I felt depleted by evening",
+    "label": "none"
+  },
+  {
+    "text": "No emotional highs or lows, just grey",
+    "label": "none"
+  },
+  {
+    "text": "Physically at my peak today",
+    "label": "none"
+  },
+  {
+    "text": "I felt empty of energy",
+    "label": "none"
+  },
+  {
+    "text": "Just okay, which is fine",
+    "label": "none"
+  },
+  {
+    "text": "Everything felt pointless",
+    "label": "none"
+  },
+  {
+    "text": "No emotion, just existing",
+    "label": "none"
+  },
+  {
+    "text": "Everything feels equally unimportant",
+    "label": "none"
+  },
+  {
+    "text": "My body refused to cooperate today",
+    "label": "none"
+  },
+  {
+    "text": "Good day emotionally, really",
+    "label": "none"
+  },
+  {
+    "text": "Not at full capacity energy-wise",
+    "label": "none"
+  },
+  {
+    "text": "Really down in the dumps",
+    "label": "none"
+  },
+  {
+    "text": "I needed rest today",
+    "label": "none"
+  },
+  {
+    "text": "I don't feel foggy",
+    "label": "none"
+  },
+  {
+    "text": "I felt like I could do anything",
+    "label": "none"
+  },
+  {
+    "text": "Couldn't shake the sadness today",
+    "label": "none"
+  },
+  {
+    "text": "Physical energy is solid and elevated",
+    "label": "none"
+  },
+  {
+    "text": "Stable enough to get through the day",
+    "label": "none"
+  },
+  {
+    "text": "I'm vibrating with energy today",
+    "label": "none"
+  },
+  {
+    "text": "Emotional high today, just incredible",
+    "label": "none"
+  },
+  {
+    "text": "I felt like I was running on rocket fuel",
+    "label": "none"
+  },
+  {
+    "text": "Had a quiet morning at home",
+    "label": "none"
+  },
+  {
+    "text": "I'm fully charged and firing on all cylinders",
+    "label": "none"
+  },
+  {
+    "text": "Burned out and depleted",
+    "label": "none"
+  },
+  {
+    "text": "I was in great spirits",
+    "label": "none"
+  },
+  {
+    "text": "Feeling a bit low on energy",
+    "label": "none"
+  },
+  {
+    "text": "Weighed down by sadness today",
+    "label": "none"
+  },
+  {
+    "text": "I don't feel much of anything",
+    "label": "none"
+  },
+  {
+    "text": "Really struggling emotionally today",
+    "label": "none"
+  },
+  {
+    "text": "Emotionally offline",
+    "label": "none"
+  },
+  {
+    "text": "A genuinely pleasant emotional day",
+    "label": "none"
+  },
+  {
+    "text": "Sluggish in the morning, a bit better after lunch",
+    "label": "none"
+  },
+  {
+    "text": "I felt radiant and alive",
+    "label": "none"
+  },
+  {
+    "text": "Flagging in the afternoon",
+    "label": "none"
+  },
+  {
+    "text": "Productive day at a sustainable pace",
+    "label": "none"
+  },
+  {
+    "text": "Mood was off the charts good",
+    "label": "none"
+  },
+  {
+    "text": "Thinking about hiring an ADHD coach",
+    "label": "none"
+  },
+  {
+    "text": "I have a physical aliveness today",
+    "label": "none"
+  },
+  {
+    "text": "I feel a physical readiness today",
+    "label": "none"
+  },
+  {
+    "text": "Did some light tasks to ease into the day",
+    "label": "none"
+  },
+  {
+    "text": "Took a break and went for a walk",
+    "label": "none"
+  },
+  {
+    "text": "Can barely keep my head up",
+    "label": "none"
+  },
+  {
+    "text": "Flat as a board today mood-wise",
+    "label": "none"
+  },
+  {
+    "text": "Emotionally flat-lined today",
+    "label": "none"
+  },
+  {
+    "text": "Unbelievable energy today, truly",
+    "label": "none"
+  },
+  {
+    "text": "Just cruising through the day with no feeling",
+    "label": "none"
+  },
+  {
+    "text": "I felt the best I have in a long time",
+    "label": "none"
+  },
+  {
+    "text": "I feel like everything is going right",
+    "label": "none"
+  },
+  {
+    "text": "I felt composed and neutral",
+    "label": "none"
+  },
+  {
+    "text": "My energy disappeared by 9am",
+    "label": "none"
+  },
+  {
+    "text": "I kept losing steam throughout the day",
+    "label": "none"
+  },
+  {
+    "text": "Not full energy, kind of drained",
+    "label": "none"
+  },
+  {
+    "text": "Energy is at a rare high today",
+    "label": "none"
+  },
+  {
+    "text": "No emotional response to anything",
+    "label": "none"
+  },
+  {
+    "text": "Dark mood all day",
+    "label": "none"
+  },
+  {
+    "text": "Mood was high today, feeling good",
+    "label": "none"
+  },
+  {
+    "text": "No energy crashes or spikes",
+    "label": "none"
+  },
+  {
+    "text": "I felt warm and positive",
+    "label": "none"
+  },
+  {
+    "text": "Planning to do a deep work session later",
+    "label": "none"
+  },
+  {
+    "text": "Planning to try body doubling tomorrow",
+    "label": "none"
+  },
+  {
+    "text": "I felt great physical energy today",
+    "label": "none"
+  },
+  {
+    "text": "My mood crashed after lunch",
+    "label": "none"
+  },
+  {
+    "text": "Middle of the road today emotionally",
+    "label": "none"
+  },
+  {
+    "text": "I'll try to focus better after lunch",
+    "label": "none"
+  },
+  {
+    "text": "I feel like a high-performance engine today",
+    "label": "none"
+  },
+  {
+    "text": "No highs, no lows, nothing",
+    "label": "none"
+  },
+  {
+    "text": "Feeling cheerful and upbeat",
+    "label": "none"
+  },
+  {
+    "text": "Total wipeout, energy completely gone",
+    "label": "none"
+  },
+  {
+    "text": "Nothing felt worthwhile today",
+    "label": "none"
+  },
+  {
+    "text": "I felt genuinely well today",
+    "label": "none"
+  },
+  {
+    "text": "I felt like I needed three more nights of sleep",
+    "label": "none"
+  },
+  {
+    "text": "Not great physically, felt tired throughout",
+    "label": "none"
+  },
+  {
+    "text": "Blunted emotions today, nothing lands",
+    "label": "none"
+  },
+  {
+    "text": "Crashed in the afternoon and never recovered",
+    "label": "none"
+  },
+  {
+    "text": "I'm humming along at a good energy level",
+    "label": "none"
+  },
+  {
+    "text": "I'm in a good mood",
+    "label": "none"
+  },
+  {
+    "text": "I want to try to focus more this week",
+    "label": "none"
+  },
+  {
+    "text": "The slowness today was unbearable",
+    "label": "none"
+  },
+  {
+    "text": "I felt tired after lunch",
+    "label": "none"
+  },
+  {
+    "text": "Life felt enjoyable today",
+    "label": "none"
+  },
+  {
+    "text": "I'm numb but not sad",
+    "label": "none"
+  },
+  {
+    "text": "Set up a new workspace at home",
+    "label": "none"
+  },
+  {
+    "text": "Spent the afternoon on admin tasks",
+    "label": "none"
+  },
+  {
+    "text": "Low mood, hard to function",
+    "label": "none"
+  }
+]

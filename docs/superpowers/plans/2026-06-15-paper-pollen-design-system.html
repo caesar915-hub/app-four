@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Squirl — Paper &amp; Pollen · full design system</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#F6F1E7; --surface:#FCF8EF; --surface2:#EFE8D8; --ink:#221E16; --muted:#7A7361; --hair:#E3DAC7; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#7E5CA8; --shadow:0 1px 2px rgba(34,30,22,.05),0 8px 24px rgba(34,30,22,.07); }
+  [data-theme="dark"] { --bg:#14130F; --surface:#1E1C16; --surface2:#272419; --ink:#F3EEE0; --muted:#9A917C; --hair:#322E22; --green:#6E9A58; --amber:#E8B255; --accent:#D4A24A; --med:#9277BE; --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4); }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:"DM Sans",system-ui,sans-serif; font-optical-sizing:auto; line-height:1.55; -webkit-font-smoothing:antialiased; transition:background .4s,color .4s; }
+  .wrap { max-width:1140px; margin:0 auto; padding:40px 28px 120px; }
+  h1 { font-family:"Fraunces",serif; font-weight:500; font-size:clamp(38px,6vw,66px); line-height:1.02; margin:0 0 8px; letter-spacing:-.02em; }
+  .thesis { font-family:"Fraunces",serif; font-style:italic; font-size:21px; color:var(--accent); margin:14px 0 0; max-width:52ch; }
+  .subt { font-size:18px; color:var(--muted); margin:6px 0 0; }
+  header.top { display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap; }
+  .toggle { position:sticky; top:16px; font-size:13px; font-weight:600; cursor:pointer; background:var(--surface); color:var(--ink); border:1px solid var(--hair); border-radius:999px; padding:10px 16px; box-shadow:var(--shadow); z-index:20; }
+  section { margin-top:74px; }
+  .eyebrow { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:700; margin:0 0 14px; }
+  h2 { font-family:"Fraunces",serif; font-weight:500; font-size:30px; margin:0 0 6px; letter-spacing:-.01em; }
+  .lead { color:var(--muted); margin:0 0 26px; max-width:68ch; }
+  code { font-family:"IBM Plex Mono",monospace; font-size:.87em; }
+
+  .swatches { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:13px; }
+  .sw { border:1px solid var(--hair); border-radius:14px; overflow:hidden; background:var(--surface); } .sw .chip{height:56px} .sw .m{padding:9px 11px} .sw .nm{font-size:12px;font-weight:600} .sw .hx{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted);text-transform:uppercase}
+
+  .card { background:var(--surface); border:1px solid var(--hair); border-radius:18px; padding:22px; box-shadow:var(--shadow); }
+  .ramp-row { display:flex; align-items:center; gap:16px; padding:13px 0; border-top:1px solid var(--hair); } .ramp-row:first-child{border-top:none}
+  .ramp-label { width:196px; flex:0 0 196px; } .ramp-label .nm{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px} .ramp-label .nm svg{width:18px;height:18px} .ramp-label .note{font-size:11.5px;color:var(--muted)}
+  .ramp-chips { display:flex; gap:9px; align-items:flex-end; flex-wrap:wrap; } .gl{display:flex;flex-direction:column;align-items:center;gap:5px} .gl .n{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--muted)}
+  .deferred { display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); border:1px dashed var(--hair); border-radius:999px; padding:5px 11px; }
+
+  .spec { border-top:1px solid var(--hair); padding:20px 0; } .spec:first-child{border-top:none} .spec .role{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:9px}
+  .demo-hero { font-family:"Fraunces",serif; font-weight:500; font-size:40px; line-height:1.06; letter-spacing:-.02em; margin:0; } .demo-body{font-size:16px;max-width:60ch;margin:0} .demo-data{font-family:"IBM Plex Mono",monospace;font-size:15px} .meta{font-size:13px;color:var(--muted);margin-top:8px}
+
+  /* med */
+  .medgrid { display:grid; grid-template-columns:1fr 1fr; gap:22px; } @media (max-width:760px){ .medgrid{grid-template-columns:1fr} .screens{flex-direction:column} }
+  .medbar-card { display:flex; align-items:center; gap:14px; } .medicon{width:34px;height:34px;flex:0 0 34px;color:var(--med)} .medicon svg{width:32px;height:32px}
+  .mbody{flex:1;min-width:0} .mtop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px} .mname{font-size:13.5px;font-weight:600} .mlabel{font-size:12px;font-weight:700;color:var(--med)}
+  .track{height:10px;border-radius:6px;background:var(--surface2);overflow:hidden} .fill{height:100%;border-radius:6px;background:var(--med)} .fill.building{animation:pulse 1.3s ease-in-out infinite} @keyframes pulse{0%,100%{opacity:.55}50%{opacity:1}}
+  .msub{font-size:11.5px;color:var(--muted);margin-top:7px;font-family:"IBM Plex Mono",monospace}
+  .stagecol .row{display:flex;align-items:center;gap:12px;padding:8px 0} .stagecol .row .t{width:46px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted)} .stagecol .row .tr{flex:1;height:8px;border-radius:5px;background:var(--surface2);overflow:hidden} .stagecol .row .tr .f{height:100%;background:var(--med);border-radius:5px} .stagecol .row .l{width:78px;font-size:11px;color:var(--muted)}
+
+  /* phones */
+  .screens { display:flex; gap:28px; flex-wrap:wrap; align-items:flex-start; }
+  .col { width:288px; }
+  .phone { width:288px; background:var(--bg); border-radius:40px; border:1px solid var(--hair); box-shadow:var(--shadow); padding:12px 0 0; position:relative; overflow:hidden; }
+  .notch{width:84px;height:22px;background:var(--bg);border-radius:0 0 14px 14px;position:absolute;top:0;left:50%;transform:translateX(-50%);border:1px solid var(--hair);border-top:none;z-index:6}
+  .statusbar{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);padding:3px 18px 0;font-weight:500}
+  .pb{padding:8px 16px 0;height:520px;display:flex;flex-direction:column}
+  .pb.scroll{overflow-y:auto;scrollbar-width:none} .pb.scroll::-webkit-scrollbar{display:none}
+  .ccap{text-align:center;font-size:12.5px;color:var(--muted);margin:11px 0 0} .ccap b{color:var(--ink)}
+  .tabbar{display:flex;justify-content:space-around;padding:8px 4px 13px;border-top:1px solid var(--hair);margin:11px -16px 0;background:var(--surface)}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--muted);font-weight:500} .tab.active{color:var(--accent)} .tab svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7}
+
+  .date{text-align:center;font-size:11px;letter-spacing:.05em;color:var(--muted);font-weight:600;text-transform:uppercase;margin-top:22px} .greet{font-family:"Fraunces",serif;font-size:22px;font-weight:500;text-align:center;margin:6px 0 0}
+  .crescent-wrap{display:flex;justify-content:center;align-items:center;flex:1} .crescent{width:130px;height:130px;border-radius:50%;position:relative;background:conic-gradient(from 145deg,transparent 0deg,var(--green) 70deg,var(--amber) 230deg,transparent 290deg);-webkit-mask:radial-gradient(farthest-side,transparent 64%,#000 66%);mask:radial-gradient(farthest-side,transparent 64%,#000 66%)} .crescent.idle{animation:breathe 5s ease-in-out infinite} .crescent.live{animation:spin 7s linear infinite}
+  @keyframes breathe{0%,100%{transform:scale(1);opacity:.94}50%{transform:scale(1.035);opacity:1}} @keyframes spin{to{transform:rotate(360deg)}}
+  .big{width:100%;font-weight:600;font-size:15px;border:none;border-radius:16px;padding:14px;color:#fff;background:linear-gradient(120deg,var(--green),var(--amber));box-shadow:0 5px 15px color-mix(in srgb,var(--amber) 36%,transparent);display:flex;gap:8px;justify-content:center;align-items:center;cursor:pointer}
+  .row2{display:flex;gap:8px;margin-top:9px} .ghost{flex:1;font-weight:600;font-size:13px;border:1px solid var(--hair);border-radius:14px;padding:12px;background:var(--surface);color:var(--ink)}
+  .ovl{display:flex;align-items:center;gap:9px;background:color-mix(in srgb,var(--med) 14%,var(--surface));border:1px solid color-mix(in srgb,var(--med) 32%,transparent);border-radius:13px;padding:8px 11px;margin-top:14px} .ovl .oi{color:var(--med);display:flex} .ovl .oi svg{width:18px;height:18px} .ovl .ot{font-size:12px;font-weight:600;flex:1} .ovl .ob{width:50px;height:6px;border-radius:4px;background:var(--surface2);overflow:hidden} .ovl .ob .f{height:100%;width:30%;background:var(--med);border-radius:4px} .ovl .ox{font-size:10px;color:var(--muted);font-family:"IBM Plex Mono",monospace}
+
+  .live-top{display:flex;justify-content:space-between;align-items:center;margin-top:20px} .live-timer{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px} .rec-dot{width:7px;height:7px;border-radius:50%;background:var(--amber);animation:pulse 1.1s ease-in-out infinite} .xb{width:28px;height:28px;border-radius:50%;border:1px solid var(--hair);background:var(--surface);color:var(--muted);font-size:14px;display:flex;align-items:center;justify-content:center}
+  .nudge{font-family:"Fraunces",serif;font-weight:500;font-size:25px;line-height:1.16;text-align:center;margin:26px 2px 0;letter-spacing:-.015em} .pbar{height:3px;background:var(--hair);border-radius:3px;margin:13px 16px 0;overflow:hidden;position:relative} .pbar::after{content:"";position:absolute;left:0;top:0;height:100%;width:46%;background:var(--accent);opacity:.55;border-radius:3px} .pdots{display:flex;gap:6px;justify-content:center;margin-top:13px} .pdot{width:6px;height:6px;border-radius:50%;background:var(--hair)} .pdot.on{background:var(--accent)} .stop{flex:1;font-weight:600;font-size:15px;border:none;border-radius:16px;padding:14px;background:var(--ink);color:var(--bg);display:flex;gap:8px;justify-content:center;align-items:center} .stopsq{width:12px;height:12px;border-radius:3px;background:currentColor}
+  .checkmark{width:78px;height:78px;border-radius:50%;background:linear-gradient(120deg,var(--green),var(--amber));display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px color-mix(in srgb,var(--amber) 30%,transparent);animation:pop .5s cubic-bezier(.2,.9,.3,1.2)} @keyframes pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.06)}100%{transform:scale(1)}} .checkmark svg{width:36px;height:36px;stroke:#fff;stroke-width:3;fill:none} .saved-t{font-family:"Fraunces",serif;font-size:26px;font-weight:500;text-align:center;margin:20px 0 5px} .saved-s{text-align:center;font-size:13px;color:var(--muted);max-width:24ch;margin:0 auto}
+
+  .sig-row{padding:11px 0;border-top:1px solid var(--hair)} .sig-row:first-of-type{border-top:none} .sig-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px} .sig-name{font-size:13px;font-weight:600} .sig-val{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted)} .glyphs{display:flex;gap:7px;align-items:flex-end} .gbtn{display:flex;align-items:flex-end;justify-content:center;position:relative;padding:3px;background:none;border:none;cursor:pointer;border-radius:8px} .gbtn.sel::before{content:"";position:absolute;inset:0;border:1.5px solid var(--accent);border-radius:8px} .notebox{margin-top:13px;background:var(--surface);border:1px solid var(--hair);border-radius:13px;padding:12px;color:var(--muted);font-size:13px}
+
+  /* detail + edit */
+  .navbar{display:flex;align-items:center;justify-content:space-between;padding-top:10px} .navbar .d{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.04em} .nic{width:30px;height:30px;border-radius:50%;border:1px solid var(--hair);background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--ink)} .nonav{width:30px}
+  .dtitle{font-family:"Fraunces",serif;font-size:21px;font-weight:500;line-height:1.16;margin:12px 0 3px} .dmeta{font-size:12px;color:var(--muted);font-family:"IBM Plex Mono",monospace} .dsig{display:flex;gap:16px;margin:14px 0 4px} .dsig .s{display:flex;flex-direction:column;align-items:center;gap:4px} .dsig .l{font-size:10px;color:var(--muted);font-weight:600}
+  .dcard{background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:12px;margin-top:12px} .dcard .h{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:7px;display:flex;justify-content:space-between} .dcard .h .r{color:var(--accent)} .bul{margin:0;padding:0;list-style:none} .bul li{font-size:12.5px;line-height:1.4;padding-left:13px;position:relative;margin-bottom:5px} .bul li::before{content:"";position:absolute;left:0;top:7px;width:5px;height:5px;border-radius:50%;background:var(--green)}
+  .play{display:flex;align-items:center;gap:9px} .play .pl{width:32px;height:32px;border-radius:50%;flex:0 0 32px;background:linear-gradient(120deg,var(--green),var(--amber));color:#fff;display:flex;align-items:center;justify-content:center} .wave{flex:1;display:flex;align-items:center;gap:2px;height:22px} .wave span{flex:1;background:var(--hair);border-radius:2px} .wave span.on{background:var(--accent);opacity:.6}
+  .editbtn{width:100%;font-weight:600;font-size:15px;border:none;border-radius:14px;padding:13px;color:#fff;background:linear-gradient(120deg,var(--green),var(--amber));margin:13px 0 6px;box-shadow:0 5px 15px color-mix(in srgb,var(--amber) 34%,transparent)}
+
+  .grab{width:36px;height:5px;border-radius:3px;background:var(--hair);margin:9px auto 6px} .shead{display:flex;align-items:center;justify-content:space-between;padding:6px 16px 10px;border-bottom:1px solid var(--hair);position:sticky;top:0;background:var(--bg);z-index:4} .shead .c{font-size:13px;color:var(--muted);font-weight:600} .shead .s{font-size:13px;color:var(--accent);font-weight:700} .shead .t{font-family:"Fraunces",serif;font-size:15px;font-weight:600}
+  .sn{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--accent)}
+  .field{padding:13px 0;border-bottom:1px solid var(--hair)} .field-l{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;display:flex;justify-content:space-between;align-items:baseline} .field-l .cur{color:var(--accent);text-transform:none;letter-spacing:0;font-size:12px;font-weight:600} .field-l .cur .syn{color:var(--muted);font-weight:400} .field-l .ic{display:flex;align-items:center;gap:6px;text-transform:none;letter-spacing:0} .field-l .ic svg{width:18px;height:18px}
+  .dtrow{display:flex;gap:9px} .dtbox{flex:1;background:var(--surface);border:1px solid var(--hair);border-radius:11px;padding:9px 12px;font-size:12.5px;display:flex;justify-content:space-between} .dtbox .v{font-family:"IBM Plex Mono",monospace;font-size:12px}
+  .scale{display:flex;gap:5px} .seg{flex:1;text-align:center;font-size:11px;font-weight:600;padding:8px 2px;border-radius:9px;background:var(--surface);border:1px solid var(--hair);color:var(--muted);cursor:pointer} .seg.on{background:color-mix(in srgb,var(--med) 16%,var(--surface));border-color:color-mix(in srgb,var(--med) 45%,transparent);color:var(--ink)}
+  .hours{display:flex;gap:6px;margin-top:10px} .hr{font-size:11.5px;font-weight:600;padding:8px 0;flex:1;text-align:center;border-radius:9px;background:var(--surface);border:1px solid var(--hair);color:var(--muted);cursor:pointer} .hr.on{border-color:var(--accent);color:var(--accent)} .hr.custom{display:flex;align-items:center;gap:4px;flex:1.3;justify-content:center;color:var(--ink)} .hr.custom input{width:30px;border:none;background:transparent;color:var(--ink);font-family:"IBM Plex Mono",monospace;font-size:13px;text-align:right}
+  .selA{background:var(--surface);border:1px solid color-mix(in srgb,var(--med) 35%,var(--hair));border-radius:13px;padding:11px;margin-bottom:9px} .selA .top{display:flex;align-items:center;gap:8px} .selA .nm{font-size:13.5px;font-weight:600;flex:1} .cap{color:var(--med);display:inline-flex} .cap svg{width:22px;height:22px} .taken{font-size:10px;font-weight:700;color:#fff;background:var(--med);border-radius:999px;padding:2px 8px} .rm{color:var(--muted);font-size:14px;cursor:pointer}
+  .drow{display:flex;align-items:center;gap:7px;margin-top:8px} .dlab{font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);width:50px;flex:0 0 50px} .dpills{display:flex;gap:4px;flex-wrap:wrap} .dp{font-size:11px;font-weight:600;padding:4px 8px;border-radius:999px;background:var(--surface2);border:1px solid var(--hair);color:var(--muted);cursor:pointer} .dp.on{background:color-mix(in srgb,var(--med) 18%,transparent);border-color:var(--med);color:var(--med)} .durbox{display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--hair);border-radius:8px;padding:4px 8px;font-family:"IBM Plex Mono",monospace;font-size:12px} .durbox input{width:26px;border:none;background:transparent;color:var(--ink);font-family:inherit;font-size:12px;text-align:right} .info{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted)}
+  .grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px} .mc{font-size:12px;font-weight:600;padding:7px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--hair);color:var(--ink);cursor:pointer} .mc.on{background:color-mix(in srgb,var(--med) 16%,transparent);border-color:var(--med);color:var(--med)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px} .chip{font-size:12px;border-radius:999px;padding:5px 10px;background:var(--surface2);border:1px solid var(--hair);display:inline-flex;gap:5px;align-items:center} .chip .x{color:var(--muted)} .chip.add{background:transparent;border-style:dashed;color:var(--muted);cursor:pointer}
+  .save{width:100%;font-weight:600;font-size:15px;border:none;border-radius:14px;padding:13px;color:#fff;background:linear-gradient(120deg,var(--green),var(--amber));margin-top:16px}
+  .notecard{background:var(--surface);border:1px solid var(--hair);border-radius:18px;padding:18px;box-shadow:var(--shadow);font-size:14px;color:var(--muted);max-width:300px} .notecard b{color:var(--ink)}
+
+  .decisions{width:100%;border-collapse:collapse;font-size:14px} .decisions td{padding:11px 12px;border-top:1px solid var(--hair);vertical-align:top} .decisions td:first-child{font-weight:600;width:160px} .decisions .lock{color:var(--green);font-weight:700}
+  .eng{margin-top:16px;font-size:13px;color:var(--muted)} .eng b{color:var(--ink)}
+  .foot{margin-top:60px;color:var(--muted);font-size:13px;border-top:1px solid var(--hair);padding-top:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow">Squirl · full design system · 15 Jun 2026</p>
+      <h1>Paper &amp; Pollen</h1>
+      <p class="subt">On-device ADHD voice check-in journal · iOS / SwiftUI</p>
+      <p class="thesis">A warm field journal that listens. Meadow as the skin, ruthless speed as the skeleton. The app is always slightly calmer than you.</p>
+    </div>
+    <button class="toggle" onclick="document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')">◑ light / dark</button>
+  </header>
+
+  <section><p class="eyebrow">01 · Foundation</p><h2>Warm paper, not dark glass</h2><p class="lead">Never pure white, never <code>#000</code>. Toggle dark to watch paper become loam.</p><div class="swatches" id="foundation"></div></section>
+
+  <section><p class="eyebrow">02 · Type</p><h2>Fraunces &amp; DM Sans</h2><p class="lead">Soft serif for voice + big numbers; calm grotesque for UI. Both free/OFL. No default SF.</p>
+    <div class="card">
+      <div class="spec"><div class="role">Display / Hero — Fraunces</div><p class="demo-hero">What's today been like?</p></div>
+      <div class="spec"><div class="role">Body / UI — DM Sans</div><p class="demo-body">You logged a check-in in 48 seconds. Squirl never grades you — it just remembers.</p></div>
+      <div class="spec"><div class="role">Data — DM Sans tabular / IBM Plex Mono</div><p class="demo-data">MOOD 5/5&nbsp; ENERGY 1/5&nbsp; FOCUS 3/5&nbsp; · 7h30m</p></div>
+    </div></section>
+
+  <section><p class="eyebrow">03 · Signals</p><h2>Four dimensions, one glyph language</h2><p class="lead">Each signal has its own <b>shape + hue + fill</b> — colorblind- and grayscale-safe. Mood = sprout (default; selectable, see 03b) · Energy = lightning · Focus = aperture · Sleep = bed icon (ramp deferred) · Medication = capsule.</p><div class="card" id="signals"></div></section>
+
+  <section><p class="eyebrow">03b · Mood icon (yours to choose)</p><h2>One signal, five ways to grow</h2><p class="lead">Mood is the one glyph the user can personalize — a small, no-pressure bit of ownership in <b>Settings → Mood icon</b>. The shipped set is five botanical "open/close" forms that all read 1→5; <b>Sprout is the default</b>. Energy / Focus / Sleep / Medication icons are fixed.</p>
+    <div class="card" id="moodset"></div>
+    <div class="card" style="margin-top:16px"><div class="role" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:12px">Settings → Mood icon · tap to choose (shown at level 4)</div><div id="pickrow" style="display:flex;flex-wrap:wrap;gap:10px"></div></div>
+  </section>
+
+  <section><p class="eyebrow">04 · Medication</p><h2>Purple, a capsule, a bar that fills and never alarms</h2><p class="lead">Purple is the one hue no signal uses. The bar <b>fills from empty (just taken) to full (worn off)</b> over the dose window — one consistent purple, onset pulse, no red, no nagging.</p>
+    <div class="medgrid">
+      <div class="card"><div class="medbar-card"><div class="medicon" id="medic"></div><div class="mbody"><div class="mtop"><span class="mname">Vyvanse · 30mg</span><span class="mlabel" id="medlabel">kicking in</span></div><div class="track"><div class="fill building" id="medfill" style="width:4%"></div></div><div class="msub" id="medsub">taken 9:15 · onset</div></div></div><p class="meta" style="margin-top:16px">Live: a 10-hour dose filling in ~10s. Empty just-taken → full worn-off.</p></div>
+      <div class="card stagecol"><div class="role" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:6px">Stages (fill = elapsed)</div>
+        <div class="row"><span class="t">9:15</span><span class="tr"><span class="f" style="width:4%"></span></span><span class="l">kicking in</span></div>
+        <div class="row"><span class="t">+3h</span><span class="tr"><span class="f" style="width:30%"></span></span><span class="l">active</span></div>
+        <div class="row"><span class="t">+6h</span><span class="tr"><span class="f" style="width:60%"></span></span><span class="l">active</span></div>
+        <div class="row"><span class="t">+9h</span><span class="tr"><span class="f" style="width:88%"></span></span><span class="l">wearing off</span></div>
+        <div class="row"><span class="t">+10h</span><span class="tr"><span class="f" style="width:100%"></span></span><span class="l">worn off</span></div></div>
+    </div></section>
+
+  <section><p class="eyebrow">05 · Check-in</p><h2>Idle → listening → saved</h2><p class="lead">One primary action per state. Crescent breathes idle, revolves listening, settles to a check when saved. Saved is pure confirmation — no transcribing UI, no card. Med overlay rides above when a dose is on board.</p>
+    <div class="screens">
+      <div class="col"><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span>100%</span></div><div class="pb">
+        <div class="ovl"><span class="oi" id="ov1"></span><span class="ot">Vyvanse · active</span><span class="ob"><span class="f"></span></span><span class="ox">3h in</span></div>
+        <div class="date">Tue · 15 June</div><div class="greet" style="margin-top:4px">Ready when<br>you are.</div>
+        <div class="crescent-wrap"><div class="crescent idle"></div></div>
+        <div><button class="big">🎙 Speak check-in</button><div class="row2"><button class="ghost">Log meds</button><button class="ghost">Type note</button></div></div>
+        <div class="tabbar" id="tb1"></div></div></div><div class="ccap"><b>Idle hub</b></div></div>
+
+      <div class="col"><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span>100%</span></div><div class="pb">
+        <div class="live-top"><div class="live-timer"><span class="rec-dot"></span> 0:14</div><div class="xb">✕</div></div>
+        <div class="nudge">What's today<br>been like?</div><div class="pbar"></div><div class="pdots"><span class="pdot"></span><span class="pdot on"></span><span class="pdot"></span><span class="pdot"></span></div>
+        <div class="crescent-wrap"><div class="crescent live"></div></div>
+        <div style="margin-top:auto;padding-bottom:8px"><button class="stop"><span class="stopsq"></span> Stop &amp; save</button></div></div></div><div class="ccap"><b>Listening</b></div></div>
+
+      <div class="col"><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span>100%</span></div><div class="pb" style="align-items:center">
+        <div style="flex:1"></div><div class="checkmark"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+        <div class="saved-t">Captured.</div><div class="saved-s">That's today's check-in. Talk to you next time.</div>
+        <div style="flex:1"></div><div style="width:100%"><button class="big">Done</button><button class="ghost" style="width:100%;margin-top:9px">🎙 Check in again</button></div></div></div><div class="ccap"><b>Saved</b> — no machinery shown</div></div>
+    </div></section>
+
+  <section><p class="eyebrow">06 · Type-note &amp; Insights</p><h2>The glyphs as input and readout</h2><p class="lead">Type-note (Layout A) makes the glyphs the input — tap to set a level. Insights reads them back. Calendar is kept as-is (your favorite).</p>
+    <div class="screens">
+      <div class="col"><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span>100%</span></div><div class="pb">
+        <div class="navbar"><div class="nic">✕</div><div style="font-family:Fraunces,serif;font-size:16px;font-weight:500">Type a check-in</div><div class="nonav"></div></div>
+        <div id="typenote" style="margin-top:13px"></div><div class="notebox">Anything you want to remember about today?</div><button class="big" style="margin-top:13px">Save check-in</button></div></div><div class="ccap"><b>Type-note · Layout A</b></div></div>
+
+      <div class="col"><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span>100%</span></div><div class="pb">
+        <div style="font-family:Fraunces,serif;font-size:22px;font-weight:500;margin-top:18px">Insights</div><div style="font-size:12px;color:var(--muted);margin-bottom:6px">June · today vs your usual</div>
+        <div id="insights"></div><div class="deferred" style="margin-top:11px">Sleep · not tracked yet</div><div class="tabbar" id="tb2" style="margin-top:auto"></div></div></div><div class="ccap"><b>Insights · signals</b></div></div>
+
+      <div class="col"><div class="notecard"><b>Calendar — unchanged.</b><br><br>The collapsible week↔month grid over the mood/med timeline stays exactly as built. Owner-preferred; not redesigned. Recordings open from here into the detail page → Edit sheet (next section).</div></div>
+    </div></section>
+
+  <section><p class="eyebrow">07 · Recording detail &amp; the Edit sheet</p><h2>Tap "Edit check-in" → one scrolling sheet</h2><p class="lead">Detail loses the back button (swipe-left) and the pencil (→ the "Edit check-in" button). The Edit sheet is a single screen: When · Mood · Energy · Focus · Sleep · Medications · Feelings · Side effects. Mood/Energy/Focus pickers show name + synonym; Sleep drops synonyms + adds custom hours; Medications are Stimulants-only, multi-select, removable, each expanding inline (P1).</p>
+    <div class="screens">
+      <div class="col"><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span>100%</span></div><div class="pb">
+        <div class="navbar"><span class="nonav"></span><span class="d">TUE · 15 JUNE</span><span class="nic">⋯</span></div>
+        <div class="dtitle">Slow start,<br>better afternoon</div><div class="dmeta">16:12 · 2:50</div>
+        <div class="dsig" id="dsig"></div>
+        <div class="dcard"><div class="h"><span>Summary</span><span class="r">↻</span></div><ul class="bul"><li>Slow start, kept putting off the email.</li><li>Afternoon improved after a walk.</li></ul></div>
+        <div class="dcard"><div class="h"><span>Meds</span></div><div style="display:flex;align-items:center;gap:8px;font-size:12.5px"><span class="cap" id="dcap"></span> Concerta 36mg · Ritalin 10mg</div></div>
+        <div class="dcard"><div class="h"><span>Audio</span></div><div class="play"><div class="pl">▶</div><div class="wave" id="wave"></div></div></div>
+        <button class="editbtn">Edit check-in</button></div></div><div class="ccap"><b>Detail</b> — no back button, audio last</div></div>
+
+      <div class="col"><div class="phone"><div class="grab"></div><div class="shead"><span class="c">Cancel</span><span class="t">Edit check-in</span><span class="s">Save</span></div><div class="pb scroll" style="padding-top:4px">
+        <div class="field"><div class="field-l"><span><span class="sn">01</span> When</span></div><div class="dtrow"><div class="dtbox">Date <span class="v">15 Jun</span></div><div class="dtbox">Time <span class="v">16:12</span></div></div></div>
+        <div class="field"><div class="field-l"><span><span class="sn">02</span> Mood</span><span class="cur" id="cu-mood"></span></div><div class="glyphs" id="pk-mood"></div></div>
+        <div class="field"><div class="field-l"><span><span class="sn">03</span> Energy</span><span class="cur" id="cu-energy"></span></div><div class="glyphs" id="pk-energy"></div></div>
+        <div class="field"><div class="field-l"><span><span class="sn">04</span> Focus</span><span class="cur" id="cu-focus"></span></div><div class="glyphs" id="pk-focus"></div></div>
+        <div class="field"><div class="field-l"><span class="ic" id="sleephead"></span><span style="color:var(--muted);font-size:11px">no synonyms</span></div><div class="scale" id="sleepscale"></div><div class="hours" id="sleephours"></div></div>
+        <div class="field"><div class="field-l"><span><span class="sn">06</span> Medications</span><span style="font-size:11px;color:var(--muted)">Stimulants · no limit</span></div><div id="selected" style="margin-top:4px"></div><div class="grid" id="grid"></div><div style="font-size:11px;color:var(--muted);margin-top:9px">Tap to add · expands inline · × to remove · independent events</div></div>
+        <div class="field"><div class="field-l"><span><span class="sn">07</span> Feelings</span></div><div class="chips"><span class="chip">restless <span class="x">✕</span></span><span class="chip">groggy <span class="x">✕</span></span><span class="chip add">+ Add</span></div></div>
+        <div class="field"><div class="field-l"><span><span class="sn">08</span> Side effects</span></div><div class="chips"><span class="chip">nausea <span class="x">✕</span></span><span class="chip add">+ Add</span></div></div>
+        <button class="save">Save corrections</button></div></div><div class="ccap"><b>Edit sheet</b> — one scroll, all sections</div></div>
+    </div></section>
+
+  <section><p class="eyebrow">08 · Decisions</p><h2>Everything locked today</h2>
+    <table class="decisions">
+      <tr><td>Identity</td><td><span class="lock">Paper &amp; Pollen</span> — warm paper/loam, organic, calm + frictionless. North star: effortless.</td></tr>
+      <tr><td>Type</td><td>Fraunces (hero) · DM Sans (UI/body) · IBM Plex Mono / DM Sans tabular (data).</td></tr>
+      <tr><td>Palette</td><td>Shipped ramps kept: Mood Meadow·Burnt · Energy Lemon · Focus Voltage blue. Sleep <b>deferred</b>.</td></tr>
+      <tr><td>Glyphs</td><td>Mood sprout · Energy lightning · Focus aperture · Sleep bed icon · Medication capsule.</td></tr>
+      <tr><td>Motion</td><td>Crescent breathe → revolve+glow → settle-to-check. No confetti, no streaks. Reduce Motion honored.</td></tr>
+      <tr><td>Check-in</td><td>Idle (Speak primary) → Listening (nudge + timer + stop) → Saved (Captured, Done leads, no machinery).</td></tr>
+      <tr><td>Type-note</td><td>Layout A — signals-first glyph pickers + note field.</td></tr>
+      <tr><td>Calendar</td><td>Unchanged (your favorite).</td></tr>
+      <tr><td>Detail</td><td><b>No back button</b> (swipe-left); pencil → "Edit check-in" button; audio player last.</td></tr>
+      <tr><td>Edit sheet</td><td>One scroll. Mood/Energy/Focus = glyph pickers with <b>name + synonym</b>; Sleep = named scale <b>no synonyms</b> + <b>custom-hours input</b>; Medications = <b>Stimulants only</b>, multi-select, removable, <b>P1 inline-expand</b> (dose from table · default time info · duration text box defaulted to shortest); <b>independent med events</b>, no count limit.</td></tr>
+      <tr><td>Medication</td><td>Capsule · single purple <code>#7E5CA8</code> · bar <b>fills empty→full</b> over the dose · no alarm.</td></tr>
+      <tr><td>Mood icon</td><td><b>User-selectable</b> (Settings → Mood icon): Sprout (default) · Seedling · Flower · Daisy · Clover — five botanical "open/close" forms. Energy/Focus/Sleep/Medication icons fixed.</td></tr>
+      <tr><td>Posture</td><td>Glyphs not emoji · no gamification/streaks · meds never nag.</td></tr>
+    </table>
+    <p class="eng"><b>Open engineering notes (not design):</b> review the SwiftData schema for independent <code>MedicationEvent</code>s sharing a timestamp; fix the <b>crash when &gt;4 meds are selected</b> (currently capped at 4).</p>
+  </section>
+
+  <p class="foot">Squirl · Paper &amp; Pollen · /design-consultation, 15 Jun 2026. Source of truth: <code>DESIGN.md</code>. Tokens drop into the existing <code>DesignSystem/</code> layer. Next: <code>/speckit-specify</code> per screen.</p>
+</div>
+
+<script>
+  function gMood(hex,level,base){ const s=base+level*3, fo=(0.42+level*0.145).toFixed(2), o=level>=4, w=o?Math.round(s*1.15):s; return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${level>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${level>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`; }
+  function gEnergy(hex,level,base){ const s=base+level*2.8, op=(0.35+level*0.15).toFixed(2), sw=(0.9+level*0.16).toFixed(2); return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`; }
+  function gFocus(hex,level,base){ const s=base+level*2.4, cx=12, cy=13, d=level<=2?'stroke-dasharray="3 3"':''; let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+level*0.12).toFixed(2)}" ${d}/>`; if(level>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+level*0.11).toFixed(2)}"/>`; if(level>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`; if(level>=3){const dr=((level-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+level*0.1).toFixed(2)}"/>`;} return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`; }
+  function ic_capsule(c){ return `<svg viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.7"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.3"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.22"/></g></svg>`; }
+  function ic_bed(c){ return `<svg viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a2 2 0 0 1 2-2h9a4 4 0 0 1 4 4v4"/><path d="M3 14h18"/><path d="M6.5 10V8.6a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V10"/></svg>`; }
+  // selectable mood glyphs (Sprout is gMood above)
+  function gSeedling(hex,level,base){ const s=base+level*3, op=(0.4+level*0.12).toFixed(2), h=7+level*3, top=26-h, lw=2+level*0.5, lh=3.5+level*1; return `<svg width="${s}" height="${s+5}" viewBox="0 0 24 28"><path d="M12 26 V${top}" stroke="${hex}" stroke-width="1.6" fill="none" stroke-linecap="round"/><ellipse cx="${(12-lw-1).toFixed(1)}" cy="${(top+lh).toFixed(1)}" rx="${lw.toFixed(1)}" ry="${lh.toFixed(1)}" fill="${hex}" fill-opacity="${op}" transform="rotate(-38 ${(12-lw-1).toFixed(1)} ${(top+lh).toFixed(1)})"/><ellipse cx="${(12+lw+1).toFixed(1)}" cy="${(top+lh).toFixed(1)}" rx="${lw.toFixed(1)}" ry="${lh.toFixed(1)}" fill="${hex}" fill-opacity="${op}" transform="rotate(38 ${(12+lw+1).toFixed(1)} ${(top+lh).toFixed(1)})"/>${level>=4?`<circle cx="12" cy="${top.toFixed(1)}" r="${(level-2.5).toFixed(1)}" fill="${hex}"/>`:''}</svg>`; }
+  function gFlower(hex,level,base){ const s=base+level*3, op=(0.45+level*0.1).toFixed(2), cx=12, cy=8, r=1.4+level*0.6; let g=`<path d="M12 26 V${(cy+r).toFixed(1)}" stroke="${hex}" stroke-width="1.6" fill="none" stroke-linecap="round"/><ellipse cx="9" cy="18" rx="2.6" ry="1.3" fill="${hex}" fill-opacity="0.5" transform="rotate(-30 9 18)"/>`; if(level>=2){ const petals=level+2; for(let i=0;i<petals;i++){ const a=(i/petals)*Math.PI*2; const px=cx+Math.cos(a)*(r+1.4), py=cy+Math.sin(a)*(r+1.4); g+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${(1+level*0.35).toFixed(1)}" fill="${hex}" fill-opacity="${op}"/>`; } } g+=`<circle cx="${cx}" cy="${cy}" r="${r.toFixed(1)}" fill="${hex}"/>`; return `<svg width="${s}" height="${s+5}" viewBox="0 0 24 28">${g}</svg>`; }
+  function gDaisy(hex,level,base){ const s=base+level*3, op=(0.5+level*0.1).toFixed(2), cx=12, cy=8, n=level+3, plen=2.4+level*0.8, pw=0.9+level*0.13; let g=`<path d="M12 26 V${(cy+1.5).toFixed(1)}" stroke="${hex}" stroke-width="1.5" fill="none" stroke-linecap="round"/><ellipse cx="9" cy="18" rx="2.4" ry="1.2" fill="${hex}" fill-opacity="0.5" transform="rotate(-30 9 18)"/>`; for(let i=0;i<n;i++){ const deg=i*360/n; const r=deg*Math.PI/180; const d=1.4+plen*0.5; const px=cx+Math.cos(r)*d, py=cy+Math.sin(r)*d; g+=`<ellipse cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" rx="${pw.toFixed(1)}" ry="${(plen/2).toFixed(1)}" fill="${hex}" fill-opacity="${op}" transform="rotate(${(deg+90).toFixed(0)} ${px.toFixed(1)} ${py.toFixed(1)})"/>`; } g+=`<circle cx="${cx}" cy="${cy}" r="${(1.4+level*0.25).toFixed(1)}" fill="${hex}"/>`; return `<svg width="${s}" height="${s+5}" viewBox="0 0 24 28">${g}</svg>`; }
+  function gClover(hex,level,base){ const s=base+level*3, op=(0.42+level*0.13).toFixed(2), cx=12, cy=10, r=1.6+level*0.7, d=2+level*0.5; const angles = level>=5?[-90,0,90,180]:[-90,30,150]; let g=`<path d="M12 26 V${(cy+d).toFixed(1)}" stroke="${hex}" stroke-width="1.5" fill="none" stroke-linecap="round"/>`; for(const deg of angles){ const rad=deg*Math.PI/180; const px=cx+Math.cos(rad)*d, py=cy+Math.sin(rad)*d; g+=`<circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="${r.toFixed(1)}" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="1"/>`; } return `<svg width="${s}" height="${s+5}" viewBox="0 0 24 28">${g}</svg>`; }
+
+  const SIG={
+    mood:{ramp:['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'],names:['Low','Flat','Okay','Good','Great'],syn:['heavy, muted','dull, flat','steady, fine','light, warm','bright, thriving'],g:gMood,lvl:5},
+    energy:{ramp:['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'],names:['Sluggish','Tired','Steady','Alert','Charged'],syn:['slow, heavy','low, drained','even, ok','awake, ready','electric, on'],g:gEnergy,lvl:1},
+    focus:{ramp:['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'],names:['Foggy','Distracted','Present','Sharp','Locked In'],syn:['hazy','restless','grounded, there','clear, keen','deep, flowing'],g:gFocus,lvl:3},
+  };
+
+  /* foundation */
+  document.getElementById('foundation').innerHTML = [['Paper','#F6F1E7'],['Surface','#FCF8EF'],['Ink','#221E16'],['Muted','#7A7361'],['Hairline','#E3DAC7'],['Meadow green','#5F8A4C'],['Meadow amber','#E0A33A'],['Accent','#B8842A'],['Medication','#7E5CA8']].map(([n,h])=>`<div class="sw"><div class="chip" style="background:${h}"></div><div class="m"><div class="nm">${n}</div><div class="hx">${h}</div></div></div>`).join('');
+
+  /* signal ramps */
+  document.getElementById('signals').innerHTML = [['mood','Mood','sprout · Meadow·Burnt'],['energy','Energy','lightning · Lemon'],['focus','Focus','aperture · Voltage blue']].map(([k,nm,note])=>`<div class="ramp-row"><div class="ramp-label"><div class="nm">${nm}</div><div class="note">${note}</div></div><div class="ramp-chips">${SIG[k].ramp.map((h,i)=>`<div class="gl">${SIG[k].g(h,i+1,16)}<div class="n">${i+1}</div></div>`).join('')}</div></div>`).join('')
+    + `<div class="ramp-row"><div class="ramp-label"><div class="nm"><span style="color:var(--med);display:inline-flex">${ic_bed('currentColor')}</span> Sleep</div><div class="note">single bed icon · ramp deferred</div></div><div class="ramp-chips"><span class="deferred">add a bluer ramp later</span></div></div>`
+    + `<div class="ramp-row"><div class="ramp-label"><div class="nm"><span style="color:var(--med);display:inline-flex">${ic_capsule('currentColor')}</span> Medication</div><div class="note">single capsule · purple #7E5CA8</div></div><div class="ramp-chips"><span class="deferred">time-based bar, not a 1–5 ramp</span></div></div>`;
+
+  /* mood icon set (selectable) */
+  const MOODSET=[['Sprout',gMood,true],['Seedling',gSeedling,false],['Flower',gFlower,false],['Daisy',gDaisy,false],['Clover',gClover,false]];
+  document.getElementById('moodset').innerHTML = MOODSET.map(([nm,fn,def])=>`<div class="ramp-row"><div class="ramp-label"><div class="nm">${nm}${def?' · default':''}</div><div class="note">${def?'shipped default':'selectable'}</div></div><div class="ramp-chips">${SIG.mood.ramp.map((h,i)=>`<div class="gl">${fn(h,i+1,16)}<div class="n">${i+1}</div></div>`).join('')}</div></div>`).join('');
+  let moodChoice='Sprout';
+  function renderMoodPick(){ document.getElementById('pickrow').innerHTML = MOODSET.map(([nm,fn])=>`<div onclick="moodChoice='${nm}';renderMoodPick()" style="width:56px;height:64px;border:1px solid ${nm===moodChoice?'var(--accent)':'var(--hair)'};border-radius:13px;background:${nm===moodChoice?'color-mix(in srgb,var(--accent) 10%,var(--bg))':'var(--bg)'};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer">${fn(SIG.mood.ramp[3],4,15)}<div style="font-size:9px;color:var(--muted);font-weight:600">${nm}</div></div>`).join(''); }
+  renderMoodPick();
+
+  /* med icons */
+  document.getElementById('medic').innerHTML = ic_capsule('currentColor');
+  document.getElementById('ov1').innerHTML = ic_capsule('currentColor');
+  document.getElementById('dcap').innerHTML = ic_capsule('currentColor');
+
+  /* tab bars */
+  const TABS=(a)=>['Calendar','Check-in','Insights','Settings'].map((t,i)=>{ const ic=[`<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/>`,`<path d="M12 3a3 3 0 0 1 3 3v5a3 3 0 0 1-6 0V6a3 3 0 0 1 3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>`,`<path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/>`,`<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.6-2-3.4-2.3 1a7 7 0 0 0-1.7-1l-.3-2.5h-4l-.3 2.5a7 7 0 0 0-1.7 1l-2.3-1-2 3.4 2 1.6a7 7 0 0 0 0 2l-2 1.6 2 3.4 2.3-1a7 7 0 0 0 1.7 1l.3 2.5h4l.3-2.5a7 7 0 0 0 1.7-1l2.3 1 2-3.4-2-1.6a7 7 0 0 0 .1-1z"/>`][i]; return `<div class="tab ${i===a?'active':''}"><svg viewBox="0 0 24 24">${ic}</svg>${t}</div>`; }).join('');
+  document.getElementById('tb1').innerHTML=TABS(1); document.getElementById('tb2').innerHTML=TABS(2);
+
+  /* type-note + insights + detail summary */
+  const stateT={mood:5,energy:1,focus:3};
+  function renderType(){ document.getElementById('typenote').innerHTML=['mood','energy','focus'].map(k=>`<div class="sig-row"><div class="sig-top"><span class="sig-name">${SIG[k].names[stateT[k]-1]?k[0].toUpperCase()+k.slice(1):''}</span><span class="sig-val">${stateT[k]} · ${SIG[k].names[stateT[k]-1]}</span></div><div class="glyphs">${SIG[k].ramp.map((h,i)=>`<span class="gbtn ${i+1===stateT[k]?'sel':''}" onclick="stateT['${k}']=${i+1};renderType()">${SIG[k].g(h,i+1,15)}</span>`).join('')}</div></div>`).join(''); }
+  renderType();
+  document.getElementById('insights').innerHTML=['mood','energy','focus'].map(k=>`<div class="sig-row"><div class="sig-top"><span class="sig-name">${k[0].toUpperCase()+k.slice(1)}</span><span class="sig-val">${stateT[k]} · ${SIG[k].names[stateT[k]-1]}</span></div><div class="glyphs">${SIG[k].ramp.map((h,i)=>`<span class="gbtn ${i+1===stateT[k]?'sel':''}">${SIG[k].g(h,i+1,14)}</span>`).join('')}</div></div>`).join('');
+  document.getElementById('dsig').innerHTML=['mood','energy','focus'].map(k=>`<div class="s">${SIG[k].g(SIG[k].ramp[stateT[k]-1],stateT[k],15)}<div class="l">${SIG[k].names[stateT[k]-1]}</div></div>`).join('');
+  document.getElementById('wave').innerHTML=Array.from({length:28},(_,i)=>`<span class="${i<10?'on':''}" style="height:${20+Math.abs(Math.sin(i*1.3))*70}%"></span>`).join('');
+
+  /* edit pickers */
+  function renderPicker(k){ const s=SIG[k]; document.getElementById('cu-'+k).innerHTML=`${s.names[s.lvl-1]} <span class="syn">· ${s.syn[s.lvl-1]}</span>`; document.getElementById('pk-'+k).innerHTML=s.ramp.map((h,i)=>`<button class="gbtn ${i+1===s.lvl?'sel':''}" onclick="SIG['${k}'].lvl=${i+1};renderPicker('${k}')">${s.g(h,i+1,16)}</button>`).join(''); }
+  ['mood','energy','focus'].forEach(renderPicker);
+
+  /* sleep */
+  document.getElementById('sleephead').innerHTML=`<span style="color:var(--med)">${ic_bed('currentColor')}</span> <span class="sn">05</span> Sleep`;
+  const sN=['Restless','Light','Okay','Good','Deep']; let sLvl=5;
+  function rSleep(){ document.getElementById('sleepscale').innerHTML=sN.map((n,i)=>`<div class="seg ${i+1===sLvl?'on':''}" onclick="sLvl=${i+1};rSleep()">${n}</div>`).join(''); }
+  rSleep();
+  let sH='7.5';
+  function rHours(){ const p=['2','4','6','8','10']; document.getElementById('sleephours').innerHTML=p.map(h=>`<div class="hr ${h===sH?'on':''}" onclick="sH='${h}';rHours()">${h}h</div>`).join('')+`<label class="hr custom"><input value="${p.includes(sH)?'':sH}" placeholder="7.5" oninput="sH=this.value"> h</label>`; }
+  rHours();
+
+  /* medications inline */
+  const MEDS={ Concerta:{doses:['18mg','27mg','36mg','54mg'],dur:'12'}, Ritalin:{doses:['5mg','10mg','20mg'],dur:'3'}, Adderall:{doses:['5mg','10mg','20mg','30mg'],dur:'4'}, Vyvanse:{doses:['30mg','50mg','70mg'],dur:'10'}, Elvanse:{doses:['20mg','30mg','50mg','70mg'],dur:'10'}, Focalin:{doses:['5mg','10mg'],dur:'4'}, Dexedrine:{doses:['5mg','10mg'],dur:'4'}, Dexamfetamine:{doses:['5mg','10mg'],dur:'4'} };
+  const ORDER=Object.keys(MEDS); let selected={ Concerta:{dose:'36mg',dur:'12'}, Ritalin:{dose:'10mg',dur:'3'} };
+  function rMeds(){ document.getElementById('selected').innerHTML=Object.keys(selected).map(name=>{ const m=MEDS[name], sel=selected[name];
+      return `<div class="selA"><div class="top"><span class="cap">${ic_capsule('currentColor')}</span><span class="nm">${name}</span><span class="taken">Taken</span><span class="rm" onclick="delete selected['${name}'];rMeds()">✕</span></div>
+        <div class="drow"><span class="dlab">Dose</span><div class="dpills">${m.doses.map(d=>`<span class="dp ${d===sel.dose?'on':''}" onclick="selected['${name}'].dose='${d}';rMeds()">${d}</span>`).join('')}</div></div>
+        <div class="drow"><span class="dlab">Time</span><span class="info">08:00 · info</span></div>
+        <div class="drow"><span class="dlab">Dur</span><span class="durbox"><input value="${sel.dur}" onchange="selected['${name}'].dur=this.value"><span style="color:var(--muted)">h</span></span><span style="font-size:10px;color:var(--muted)">shortest</span></div></div>`; }).join('');
+    document.getElementById('grid').innerHTML=ORDER.map(name=>`<div class="mc ${selected[name]?'on':''}" onclick="toggleMed('${name}')">${name}</div>`).join(''); }
+  function toggleMed(name){ if(selected[name]) delete selected[name]; else selected[name]={dose:MEDS[name].doses[0],dur:MEDS[name].dur}; rMeds(); }
+  rMeds();
+
+  /* med bar fill-up animation */
+  const fill=document.getElementById('medfill'), mlabel=document.getElementById('medlabel'), msub=document.getElementById('medsub'); const PERIOD=10000;
+  function frame(now){ let t=(now%(PERIOD+1800))/PERIOD; if(t>1)t=1; const pct=(t*100).toFixed(0), left=(10-t*10).toFixed(1); fill.style.width=pct+'%';
+    if(t<0.12){ fill.classList.add('building'); mlabel.textContent='kicking in'; msub.textContent='taken 9:15 · onset'; }
+    else { fill.classList.remove('building'); if(t<0.55){mlabel.textContent='active';msub.textContent='steady · '+left+'h left';} else if(t<0.92){mlabel.textContent='active';msub.textContent=''+left+'h left';} else if(t<1){mlabel.textContent='wearing off';msub.textContent=''+left+'h left';} else {mlabel.textContent='worn off';msub.textContent='done for today · strip fades';} }
+    mlabel.style.color=t>=1?'var(--muted)':'var(--med)'; requestAnimationFrame(frame); }
+  requestAnimationFrame(frame);
+</script>
+</body>
+</html>

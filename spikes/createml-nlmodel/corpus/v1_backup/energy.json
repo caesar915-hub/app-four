@@ -1,0 +1,1714 @@
+[
+  {
+    "text": "I feel completely drained today",
+    "label": "sluggish"
+  },
+  {
+    "text": "Barely had the energy to get out of bed",
+    "label": "sluggish"
+  },
+  {
+    "text": "Feeling heavy and slow all day",
+    "label": "sluggish"
+  },
+  {
+    "text": "My body feels like lead",
+    "label": "sluggish"
+  },
+  {
+    "text": "I could barely move this morning",
+    "label": "sluggish"
+  },
+  {
+    "text": "Total crash today, no energy at all",
+    "label": "sluggish"
+  },
+  {
+    "text": "Felt sluggish from the moment I woke up",
+    "label": "sluggish"
+  },
+  {
+    "text": "Everything took enormous effort today",
+    "label": "sluggish"
+  },
+  {
+    "text": "I dragged myself through the day",
+    "label": "sluggish"
+  },
+  {
+    "text": "Completely depleted, can't do anything",
+    "label": "sluggish"
+  },
+  {
+    "text": "Moving in slow motion today",
+    "label": "sluggish"
+  },
+  {
+    "text": "No motivation, no energy, just exhausted",
+    "label": "sluggish"
+  },
+  {
+    "text": "I felt weighed down the whole day",
+    "label": "sluggish"
+  },
+  {
+    "text": "Running on empty",
+    "label": "sluggish"
+  },
+  {
+    "text": "The fatigue was overwhelming today",
+    "label": "sluggish"
+  },
+  {
+    "text": "Crashed hard this afternoon",
+    "label": "sluggish"
+  },
+  {
+    "text": "Zero energy, couldn't do anything",
+    "label": "sluggish"
+  },
+  {
+    "text": "My limbs felt heavy all day",
+    "label": "sluggish"
+  },
+  {
+    "text": "Barely functional today energy-wise",
+    "label": "sluggish"
+  },
+  {
+    "text": "Total wipeout, energy completely gone",
+    "label": "sluggish"
+  },
+  {
+    "text": "I felt like I was wading through treacle",
+    "label": "sluggish"
+  },
+  {
+    "text": "Exhaustion hit me hard",
+    "label": "sluggish"
+  },
+  {
+    "text": "I could not get going no matter what",
+    "label": "sluggish"
+  },
+  {
+    "text": "Physical energy was at absolute zero",
+    "label": "sluggish"
+  },
+  {
+    "text": "I had to force every single movement",
+    "label": "sluggish"
+  },
+  {
+    "text": "The fatigue was debilitating",
+    "label": "sluggish"
+  },
+  {
+    "text": "My body refused to cooperate today",
+    "label": "sluggish"
+  },
+  {
+    "text": "No gas in the tank whatsoever",
+    "label": "sluggish"
+  },
+  {
+    "text": "I felt physically dead today",
+    "label": "sluggish"
+  },
+  {
+    "text": "Couldn't summon any energy at all",
+    "label": "sluggish"
+  },
+  {
+    "text": "Totally wiped out",
+    "label": "sluggish"
+  },
+  {
+    "text": "I needed a nap but even that didn't help",
+    "label": "sluggish"
+  },
+  {
+    "text": "Energy levels were on the floor",
+    "label": "sluggish"
+  },
+  {
+    "text": "I dragged myself from task to task",
+    "label": "sluggish"
+  },
+  {
+    "text": "Profound fatigue today",
+    "label": "sluggish"
+  },
+  {
+    "text": "I felt like a zombie all day",
+    "label": "sluggish"
+  },
+  {
+    "text": "Every step was an effort",
+    "label": "sluggish"
+  },
+  {
+    "text": "My body was completely unresponsive",
+    "label": "sluggish"
+  },
+  {
+    "text": "Crashed and couldn't recover",
+    "label": "sluggish"
+  },
+  {
+    "text": "The exhaustion was bone-deep",
+    "label": "sluggish"
+  },
+  {
+    "text": "I had nothing left today",
+    "label": "sluggish"
+  },
+  {
+    "text": "Completely flat physically",
+    "label": "sluggish"
+  },
+  {
+    "text": "Felt like I was moving through fog physically",
+    "label": "sluggish"
+  },
+  {
+    "text": "My energy disappeared by 9am",
+    "label": "sluggish"
+  },
+  {
+    "text": "I woke up exhausted and it only got worse",
+    "label": "sluggish"
+  },
+  {
+    "text": "Leaden limbs all day",
+    "label": "sluggish"
+  },
+  {
+    "text": "I couldn't even sit upright comfortably",
+    "label": "sluggish"
+  },
+  {
+    "text": "So tired I felt sick",
+    "label": "sluggish"
+  },
+  {
+    "text": "Physically incapacitated by exhaustion",
+    "label": "sluggish"
+  },
+  {
+    "text": "I had to lie down multiple times today",
+    "label": "sluggish"
+  },
+  {
+    "text": "Burned out and depleted",
+    "label": "sluggish"
+  },
+  {
+    "text": "Fatigue that goes all the way through",
+    "label": "sluggish"
+  },
+  {
+    "text": "I felt empty of energy",
+    "label": "sluggish"
+  },
+  {
+    "text": "My body is on strike today",
+    "label": "sluggish"
+  },
+  {
+    "text": "Can barely keep my head up",
+    "label": "sluggish"
+  },
+  {
+    "text": "The slowness today was unbearable",
+    "label": "sluggish"
+  },
+  {
+    "text": "I felt like I had concrete in my veins",
+    "label": "sluggish"
+  },
+  {
+    "text": "Completely out of fuel",
+    "label": "sluggish"
+  },
+  {
+    "text": "No reserves at all today",
+    "label": "sluggish"
+  },
+  {
+    "text": "I was dragging all day long",
+    "label": "sluggish"
+  },
+  {
+    "text": "Felt paralyzed by exhaustion",
+    "label": "sluggish"
+  },
+  {
+    "text": "Physical state was dire today",
+    "label": "sluggish"
+  },
+  {
+    "text": "I had to cancel things because I was too tired",
+    "label": "sluggish"
+  },
+  {
+    "text": "Too exhausted to even feel frustrated",
+    "label": "sluggish"
+  },
+  {
+    "text": "My body kept asking to stop",
+    "label": "sluggish"
+  },
+  {
+    "text": "Heavy and slow and done",
+    "label": "sluggish"
+  },
+  {
+    "text": "Crashed in the afternoon and never recovered",
+    "label": "sluggish"
+  },
+  {
+    "text": "Profound physical depletion today",
+    "label": "sluggish"
+  },
+  {
+    "text": "I felt like I needed three more nights of sleep",
+    "label": "sluggish"
+  },
+  {
+    "text": "No physical capacity today",
+    "label": "sluggish"
+  },
+  {
+    "text": "I'm tired today",
+    "label": "tired"
+  },
+  {
+    "text": "Feeling a bit low on energy",
+    "label": "tired"
+  },
+  {
+    "text": "Lack of energy end of the day",
+    "label": "tired"
+  },
+  {
+    "text": "I felt tired after lunch",
+    "label": "tired"
+  },
+  {
+    "text": "My energy dipped in the afternoon",
+    "label": "tired"
+  },
+  {
+    "text": "Not exhausted but definitely tired",
+    "label": "tired"
+  },
+  {
+    "text": "I've been yawning all day",
+    "label": "tired"
+  },
+  {
+    "text": "Could use a nap right now",
+    "label": "tired"
+  },
+  {
+    "text": "Feeling worn out",
+    "label": "tired"
+  },
+  {
+    "text": "Energy has been low today",
+    "label": "tired"
+  },
+  {
+    "text": "I ran out of steam by 3pm",
+    "label": "tired"
+  },
+  {
+    "text": "Tired but functional",
+    "label": "tired"
+  },
+  {
+    "text": "Not full energy, kind of drained",
+    "label": "tired"
+  },
+  {
+    "text": "I've been feeling fatigued",
+    "label": "tired"
+  },
+  {
+    "text": "Energy faded as the day went on",
+    "label": "tired"
+  },
+  {
+    "text": "I hit the afternoon wall today",
+    "label": "tired"
+  },
+  {
+    "text": "Running a bit low on energy",
+    "label": "tired"
+  },
+  {
+    "text": "Flagging in the afternoon",
+    "label": "tired"
+  },
+  {
+    "text": "Energy dropped off after lunch",
+    "label": "tired"
+  },
+  {
+    "text": "I felt the tiredness creeping in",
+    "label": "tired"
+  },
+  {
+    "text": "Moderately tired today",
+    "label": "tired"
+  },
+  {
+    "text": "My get-up-and-go got up and went",
+    "label": "tired"
+  },
+  {
+    "text": "Not at full capacity energy-wise",
+    "label": "tired"
+  },
+  {
+    "text": "I was running low by mid-afternoon",
+    "label": "tired"
+  },
+  {
+    "text": "Energy wasn't great today",
+    "label": "tired"
+  },
+  {
+    "text": "I felt drained by evening",
+    "label": "tired"
+  },
+  {
+    "text": "A bit lethargic today",
+    "label": "tired"
+  },
+  {
+    "text": "Low energy but not crashed",
+    "label": "tired"
+  },
+  {
+    "text": "I could feel the tiredness in my body",
+    "label": "tired"
+  },
+  {
+    "text": "Physically tired but mentally okay",
+    "label": "tired"
+  },
+  {
+    "text": "I needed more sleep than I got",
+    "label": "tired"
+  },
+  {
+    "text": "A bit flat energy-wise",
+    "label": "tired"
+  },
+  {
+    "text": "Low battery mode today",
+    "label": "tired"
+  },
+  {
+    "text": "Running at about 60% energy",
+    "label": "tired"
+  },
+  {
+    "text": "I felt under-powered today",
+    "label": "tired"
+  },
+  {
+    "text": "Energy was subpar today",
+    "label": "tired"
+  },
+  {
+    "text": "I woke up already tired",
+    "label": "tired"
+  },
+  {
+    "text": "Still functional but noticeably low energy",
+    "label": "tired"
+  },
+  {
+    "text": "I've been dragging a bit",
+    "label": "tired"
+  },
+  {
+    "text": "A bit exhausted by the end of the day",
+    "label": "tired"
+  },
+  {
+    "text": "I needed rest today",
+    "label": "tired"
+  },
+  {
+    "text": "Feeling slower than usual",
+    "label": "tired"
+  },
+  {
+    "text": "I had less energy than I wanted",
+    "label": "tired"
+  },
+  {
+    "text": "Energy just wasn't there today",
+    "label": "tired"
+  },
+  {
+    "text": "I ran out of steam earlier than usual",
+    "label": "tired"
+  },
+  {
+    "text": "Not my most energetic day",
+    "label": "tired"
+  },
+  {
+    "text": "I felt heavy-limbed by evening",
+    "label": "tired"
+  },
+  {
+    "text": "I was more tired than I expected today",
+    "label": "tired"
+  },
+  {
+    "text": "Energy reservoir was pretty low",
+    "label": "tired"
+  },
+  {
+    "text": "I faded early today",
+    "label": "tired"
+  },
+  {
+    "text": "Tired but got through it",
+    "label": "tired"
+  },
+  {
+    "text": "I felt the energy drain throughout the day",
+    "label": "tired"
+  },
+  {
+    "text": "Not exactly exhausted but not far off",
+    "label": "tired"
+  },
+  {
+    "text": "I had to push through the tiredness",
+    "label": "tired"
+  },
+  {
+    "text": "My body wanted to rest",
+    "label": "tired"
+  },
+  {
+    "text": "I kept losing steam throughout the day",
+    "label": "tired"
+  },
+  {
+    "text": "Sluggish in the morning, a bit better after lunch",
+    "label": "tired"
+  },
+  {
+    "text": "I felt depleted by evening",
+    "label": "tired"
+  },
+  {
+    "text": "More tired than a normal day",
+    "label": "tired"
+  },
+  {
+    "text": "Energy dipped pretty significantly",
+    "label": "tired"
+  },
+  {
+    "text": "I struggled to keep going by the afternoon",
+    "label": "tired"
+  },
+  {
+    "text": "Low energy, needed to keep pushing",
+    "label": "tired"
+  },
+  {
+    "text": "I was dragging by the time evening came",
+    "label": "tired"
+  },
+  {
+    "text": "The tiredness caught up with me today",
+    "label": "tired"
+  },
+  {
+    "text": "I felt the usual afternoon tiredness more than usual",
+    "label": "tired"
+  },
+  {
+    "text": "Energy was on the lower side today",
+    "label": "tired"
+  },
+  {
+    "text": "I was more fatigued than usual",
+    "label": "tired"
+  },
+  {
+    "text": "It was a tired kind of day",
+    "label": "tired"
+  },
+  {
+    "text": "I felt my energy sapping as the day went on",
+    "label": "tired"
+  },
+  {
+    "text": "Not great physically, felt tired throughout",
+    "label": "tired"
+  },
+  {
+    "text": "Energy feels normal today",
+    "label": "steady"
+  },
+  {
+    "text": "I have my usual energy levels",
+    "label": "steady"
+  },
+  {
+    "text": "Feeling steady, neither tired nor wired",
+    "label": "steady"
+  },
+  {
+    "text": "Energy is consistent today",
+    "label": "steady"
+  },
+  {
+    "text": "Nothing special energy-wise, just normal",
+    "label": "steady"
+  },
+  {
+    "text": "I felt stable and grounded physically",
+    "label": "steady"
+  },
+  {
+    "text": "Maintained good energy throughout the day",
+    "label": "steady"
+  },
+  {
+    "text": "Not boosted, not drained, just regular",
+    "label": "steady"
+  },
+  {
+    "text": "Energy has been flat in a good way",
+    "label": "steady"
+  },
+  {
+    "text": "Felt physically balanced today",
+    "label": "steady"
+  },
+  {
+    "text": "My body felt normal, steady output",
+    "label": "steady"
+  },
+  {
+    "text": "Productive day at a sustainable pace",
+    "label": "steady"
+  },
+  {
+    "text": "No energy crashes or spikes",
+    "label": "steady"
+  },
+  {
+    "text": "Energy was even and reliable",
+    "label": "steady"
+  },
+  {
+    "text": "I functioned well at a normal energy level",
+    "label": "steady"
+  },
+  {
+    "text": "Consistent energy from morning to evening",
+    "label": "steady"
+  },
+  {
+    "text": "I felt well-paced today",
+    "label": "steady"
+  },
+  {
+    "text": "Physical energy was baseline, which is fine",
+    "label": "steady"
+  },
+  {
+    "text": "I had exactly the energy I needed",
+    "label": "steady"
+  },
+  {
+    "text": "Steady state physically",
+    "label": "steady"
+  },
+  {
+    "text": "I felt calibrated and stable",
+    "label": "steady"
+  },
+  {
+    "text": "My energy held without peaks or valleys",
+    "label": "steady"
+  },
+  {
+    "text": "A regular energy day, which is good",
+    "label": "steady"
+  },
+  {
+    "text": "I didn't feel tired or wired, just on",
+    "label": "steady"
+  },
+  {
+    "text": "Energy was predictable and consistent",
+    "label": "steady"
+  },
+  {
+    "text": "I felt physically normal today",
+    "label": "steady"
+  },
+  {
+    "text": "My body was cooperative and steady",
+    "label": "steady"
+  },
+  {
+    "text": "No highs or lows energy-wise",
+    "label": "steady"
+  },
+  {
+    "text": "I stayed at a good baseline all day",
+    "label": "steady"
+  },
+  {
+    "text": "Energy was well-distributed today",
+    "label": "steady"
+  },
+  {
+    "text": "I felt reliably energized at a normal level",
+    "label": "steady"
+  },
+  {
+    "text": "No crashes, no spikes, just steady",
+    "label": "steady"
+  },
+  {
+    "text": "My energy was exactly what I expected",
+    "label": "steady"
+  },
+  {
+    "text": "I held a good physical rhythm all day",
+    "label": "steady"
+  },
+  {
+    "text": "Normal energy, felt fine",
+    "label": "steady"
+  },
+  {
+    "text": "Energy was regulated and stable",
+    "label": "steady"
+  },
+  {
+    "text": "Felt steady from start to finish",
+    "label": "steady"
+  },
+  {
+    "text": "I had a consistent physical baseline today",
+    "label": "steady"
+  },
+  {
+    "text": "Energy stayed where I needed it",
+    "label": "steady"
+  },
+  {
+    "text": "I didn't notice my energy at all, which means it was fine",
+    "label": "steady"
+  },
+  {
+    "text": "Physical state was just normal today",
+    "label": "steady"
+  },
+  {
+    "text": "I felt grounded and stable physically",
+    "label": "steady"
+  },
+  {
+    "text": "My energy budget was balanced today",
+    "label": "steady"
+  },
+  {
+    "text": "I had enough energy and didn't exceed it",
+    "label": "steady"
+  },
+  {
+    "text": "Steady physical state all day",
+    "label": "steady"
+  },
+  {
+    "text": "I felt at my natural energy baseline",
+    "label": "steady"
+  },
+  {
+    "text": "Good consistent energy, nothing dramatic",
+    "label": "steady"
+  },
+  {
+    "text": "No afternoon crash today",
+    "label": "steady"
+  },
+  {
+    "text": "I maintained a normal energy output",
+    "label": "steady"
+  },
+  {
+    "text": "Energy was average in the best way",
+    "label": "steady"
+  },
+  {
+    "text": "I felt physically on par with a normal day",
+    "label": "steady"
+  },
+  {
+    "text": "I wasn't pushing or dragging, just moving",
+    "label": "steady"
+  },
+  {
+    "text": "Today's energy was unremarkable and that's good",
+    "label": "steady"
+  },
+  {
+    "text": "I felt physically even-keeled",
+    "label": "steady"
+  },
+  {
+    "text": "My body operated normally today",
+    "label": "steady"
+  },
+  {
+    "text": "Physical baseline was maintained",
+    "label": "steady"
+  },
+  {
+    "text": "I felt my usual self physically",
+    "label": "steady"
+  },
+  {
+    "text": "Energy was stable, no complaints",
+    "label": "steady"
+  },
+  {
+    "text": "Regular physical energy, regular day",
+    "label": "steady"
+  },
+  {
+    "text": "I moved at a comfortable, normal pace",
+    "label": "steady"
+  },
+  {
+    "text": "Physical output was steady and reliable",
+    "label": "steady"
+  },
+  {
+    "text": "I felt neutrally energized",
+    "label": "steady"
+  },
+  {
+    "text": "Normal energy state all day",
+    "label": "steady"
+  },
+  {
+    "text": "My body was in its usual rhythm",
+    "label": "steady"
+  },
+  {
+    "text": "I felt physically ordinary, which is a win",
+    "label": "steady"
+  },
+  {
+    "text": "Energy stayed at a good baseline throughout",
+    "label": "steady"
+  },
+  {
+    "text": "I had my usual amount of physical drive",
+    "label": "steady"
+  },
+  {
+    "text": "Physical energy was as expected",
+    "label": "steady"
+  },
+  {
+    "text": "I felt physically competent and normal",
+    "label": "steady"
+  },
+  {
+    "text": "I feel awake and alert",
+    "label": "alert"
+  },
+  {
+    "text": "Good energy today, feeling sharp and present",
+    "label": "alert"
+  },
+  {
+    "text": "I'm switched on right now",
+    "label": "alert"
+  },
+  {
+    "text": "Feeling awake and ready to go",
+    "label": "alert"
+  },
+  {
+    "text": "Energy kicked in after breakfast",
+    "label": "alert"
+  },
+  {
+    "text": "I feel clear-headed and energetic",
+    "label": "alert"
+  },
+  {
+    "text": "No afternoon slump today, still going strong",
+    "label": "alert"
+  },
+  {
+    "text": "Feeling physically activated and responsive",
+    "label": "alert"
+  },
+  {
+    "text": "Alert and focused physically",
+    "label": "alert"
+  },
+  {
+    "text": "My body feels alive and ready",
+    "label": "alert"
+  },
+  {
+    "text": "Good energy levels, feeling on it",
+    "label": "alert"
+  },
+  {
+    "text": "I feel energized and present",
+    "label": "alert"
+  },
+  {
+    "text": "Woke up feeling properly awake for once",
+    "label": "alert"
+  },
+  {
+    "text": "Energy is high and sustainable",
+    "label": "alert"
+  },
+  {
+    "text": "I feel activated and sharp",
+    "label": "alert"
+  },
+  {
+    "text": "I'm awake and firing on all cylinders",
+    "label": "alert"
+  },
+  {
+    "text": "Energy is genuinely good today",
+    "label": "alert"
+  },
+  {
+    "text": "I feel physically ready for anything",
+    "label": "alert"
+  },
+  {
+    "text": "Wired in a good way today",
+    "label": "alert"
+  },
+  {
+    "text": "I'm sharp and energized",
+    "label": "alert"
+  },
+  {
+    "text": "Energy is elevated and focused",
+    "label": "alert"
+  },
+  {
+    "text": "I feel sprightly and awake",
+    "label": "alert"
+  },
+  {
+    "text": "Body is responsive and switched on",
+    "label": "alert"
+  },
+  {
+    "text": "I have good physical drive today",
+    "label": "alert"
+  },
+  {
+    "text": "I'm alert and feeling capable",
+    "label": "alert"
+  },
+  {
+    "text": "Energy has been strong today",
+    "label": "alert"
+  },
+  {
+    "text": "I feel ready and able physically",
+    "label": "alert"
+  },
+  {
+    "text": "My energy is elevated above baseline",
+    "label": "alert"
+  },
+  {
+    "text": "I feel lively and energized",
+    "label": "alert"
+  },
+  {
+    "text": "Good physical energy, I'm on",
+    "label": "alert"
+  },
+  {
+    "text": "I feel physically primed today",
+    "label": "alert"
+  },
+  {
+    "text": "Energy is up and I'm using it",
+    "label": "alert"
+  },
+  {
+    "text": "I feel awake in a real way today",
+    "label": "alert"
+  },
+  {
+    "text": "Sharp and responsive physically",
+    "label": "alert"
+  },
+  {
+    "text": "I feel physically capable and energized",
+    "label": "alert"
+  },
+  {
+    "text": "Energy has been above average today",
+    "label": "alert"
+  },
+  {
+    "text": "I'm physically on today",
+    "label": "alert"
+  },
+  {
+    "text": "Feeling crisp and awake",
+    "label": "alert"
+  },
+  {
+    "text": "I'm physically activated today",
+    "label": "alert"
+  },
+  {
+    "text": "Energy feels elevated and good",
+    "label": "alert"
+  },
+  {
+    "text": "I feel alert and functional",
+    "label": "alert"
+  },
+  {
+    "text": "My body is ready and responsive",
+    "label": "alert"
+  },
+  {
+    "text": "I felt a good physical kick today",
+    "label": "alert"
+  },
+  {
+    "text": "Energy is steady and elevated",
+    "label": "alert"
+  },
+  {
+    "text": "I feel awake and engaged physically",
+    "label": "alert"
+  },
+  {
+    "text": "Strong physical energy, good day",
+    "label": "alert"
+  },
+  {
+    "text": "I feel awake and full of drive",
+    "label": "alert"
+  },
+  {
+    "text": "Energy is flowing well today",
+    "label": "alert"
+  },
+  {
+    "text": "I feel bright and physically ready",
+    "label": "alert"
+  },
+  {
+    "text": "My energy is noticeably good today",
+    "label": "alert"
+  },
+  {
+    "text": "I'm alert, awake, and ready",
+    "label": "alert"
+  },
+  {
+    "text": "Feeling snappy and physically present",
+    "label": "alert"
+  },
+  {
+    "text": "I have a physical aliveness today",
+    "label": "alert"
+  },
+  {
+    "text": "Energy is clear and sustained",
+    "label": "alert"
+  },
+  {
+    "text": "I feel physically switched on",
+    "label": "alert"
+  },
+  {
+    "text": "My body is performing well today",
+    "label": "alert"
+  },
+  {
+    "text": "I feel physically up to any task",
+    "label": "alert"
+  },
+  {
+    "text": "Energy has been really good today",
+    "label": "alert"
+  },
+  {
+    "text": "I feel a physical readiness today",
+    "label": "alert"
+  },
+  {
+    "text": "Alert and alive today",
+    "label": "alert"
+  },
+  {
+    "text": "I feel energetically above average",
+    "label": "alert"
+  },
+  {
+    "text": "I'm humming along at a good energy level",
+    "label": "alert"
+  },
+  {
+    "text": "Physical energy is solid and elevated",
+    "label": "alert"
+  },
+  {
+    "text": "I feel capable and alert",
+    "label": "alert"
+  },
+  {
+    "text": "Energy was high and consistent",
+    "label": "alert"
+  },
+  {
+    "text": "I felt great physical energy today",
+    "label": "alert"
+  },
+  {
+    "text": "I'm switched on and feeling it",
+    "label": "alert"
+  },
+  {
+    "text": "Physical state is strong and active",
+    "label": "alert"
+  },
+  {
+    "text": "I'm alert and physically well today",
+    "label": "alert"
+  },
+  {
+    "text": "Energy was above baseline all day",
+    "label": "alert"
+  },
+  {
+    "text": "I have so much energy today",
+    "label": "charged"
+  },
+  {
+    "text": "Feeling absolutely wired and ready",
+    "label": "charged"
+  },
+  {
+    "text": "Energy through the roof today",
+    "label": "charged"
+  },
+  {
+    "text": "I feel unstoppable right now",
+    "label": "charged"
+  },
+  {
+    "text": "Buzzing with energy, can't sit still",
+    "label": "charged"
+  },
+  {
+    "text": "I'm fully charged and firing on all cylinders",
+    "label": "charged"
+  },
+  {
+    "text": "More energy than I know what to do with",
+    "label": "charged"
+  },
+  {
+    "text": "I feel like I could run a marathon",
+    "label": "charged"
+  },
+  {
+    "text": "Peak energy today, everything feels easy",
+    "label": "charged"
+  },
+  {
+    "text": "I'm supercharged right now",
+    "label": "charged"
+  },
+  {
+    "text": "Feeling electric, so much drive",
+    "label": "charged"
+  },
+  {
+    "text": "High energy all day, no crash",
+    "label": "charged"
+  },
+  {
+    "text": "I've been bouncing off the walls",
+    "label": "charged"
+  },
+  {
+    "text": "Explosive energy today, really productive",
+    "label": "charged"
+  },
+  {
+    "text": "I feel physically incredible",
+    "label": "charged"
+  },
+  {
+    "text": "Energy is at an absolute peak",
+    "label": "charged"
+  },
+  {
+    "text": "I feel turbo-charged today",
+    "label": "charged"
+  },
+  {
+    "text": "I could go all night",
+    "label": "charged"
+  },
+  {
+    "text": "Physical energy is through the roof",
+    "label": "charged"
+  },
+  {
+    "text": "I feel like a coiled spring",
+    "label": "charged"
+  },
+  {
+    "text": "So much physical drive today",
+    "label": "charged"
+  },
+  {
+    "text": "I'm revving at maximum capacity",
+    "label": "charged"
+  },
+  {
+    "text": "Energy is exceptional today",
+    "label": "charged"
+  },
+  {
+    "text": "I feel genuinely wired and powerful",
+    "label": "charged"
+  },
+  {
+    "text": "The energy is real and intense",
+    "label": "charged"
+  },
+  {
+    "text": "I have boundless energy today",
+    "label": "charged"
+  },
+  {
+    "text": "Everything I do feels effortless",
+    "label": "charged"
+  },
+  {
+    "text": "I feel like I could take on anything",
+    "label": "charged"
+  },
+  {
+    "text": "Physically at my peak today",
+    "label": "charged"
+  },
+  {
+    "text": "Energy is overflowing",
+    "label": "charged"
+  },
+  {
+    "text": "I'm vibrating with energy today",
+    "label": "charged"
+  },
+  {
+    "text": "I feel powerful and unstoppable",
+    "label": "charged"
+  },
+  {
+    "text": "Unbelievable energy today, truly",
+    "label": "charged"
+  },
+  {
+    "text": "I haven't felt this energized in ages",
+    "label": "charged"
+  },
+  {
+    "text": "I feel like I've been plugged in",
+    "label": "charged"
+  },
+  {
+    "text": "My physical capacity is maxed out today",
+    "label": "charged"
+  },
+  {
+    "text": "I'm running at 200% today",
+    "label": "charged"
+  },
+  {
+    "text": "Energy is intense and sustained",
+    "label": "charged"
+  },
+  {
+    "text": "I feel physically exceptional",
+    "label": "charged"
+  },
+  {
+    "text": "I'm charged and ready for anything",
+    "label": "charged"
+  },
+  {
+    "text": "This is peak physical performance for me",
+    "label": "charged"
+  },
+  {
+    "text": "I feel like a high-performance engine today",
+    "label": "charged"
+  },
+  {
+    "text": "Energy is stratospheric today",
+    "label": "charged"
+  },
+  {
+    "text": "I feel physically transformed today",
+    "label": "charged"
+  },
+  {
+    "text": "So much drive and energy, truly charged",
+    "label": "charged"
+  },
+  {
+    "text": "I feel completely fuelled and ready",
+    "label": "charged"
+  },
+  {
+    "text": "Energy is at a rare high today",
+    "label": "charged"
+  },
+  {
+    "text": "I felt invincible physically today",
+    "label": "charged"
+  },
+  {
+    "text": "Everything felt physically effortless",
+    "label": "charged"
+  },
+  {
+    "text": "I'm running on maximum power",
+    "label": "charged"
+  },
+  {
+    "text": "The physical energy today was remarkable",
+    "label": "charged"
+  },
+  {
+    "text": "I've been going non-stop and still feel great",
+    "label": "charged"
+  },
+  {
+    "text": "I feel like I could work for twelve more hours",
+    "label": "charged"
+  },
+  {
+    "text": "Truly exceptional physical energy today",
+    "label": "charged"
+  },
+  {
+    "text": "I feel physically charged and alive",
+    "label": "charged"
+  },
+  {
+    "text": "I haven't crashed and it's been hours",
+    "label": "charged"
+  },
+  {
+    "text": "I feel like a completely different person energy-wise",
+    "label": "charged"
+  },
+  {
+    "text": "Physical performance was outstanding today",
+    "label": "charged"
+  },
+  {
+    "text": "I had the energy of ten people today",
+    "label": "charged"
+  },
+  {
+    "text": "I felt like I could do anything",
+    "label": "charged"
+  },
+  {
+    "text": "Extraordinary physical day",
+    "label": "charged"
+  },
+  {
+    "text": "I was firing on every cylinder all day",
+    "label": "charged"
+  },
+  {
+    "text": "I can't believe how much energy I had",
+    "label": "charged"
+  },
+  {
+    "text": "I felt like a machine today",
+    "label": "charged"
+  },
+  {
+    "text": "Energy just kept coming",
+    "label": "charged"
+  },
+  {
+    "text": "I felt physically phenomenal",
+    "label": "charged"
+  },
+  {
+    "text": "I'm fully powered up",
+    "label": "charged"
+  },
+  {
+    "text": "My physical reserves were full all day",
+    "label": "charged"
+  },
+  {
+    "text": "Today I had more energy than I ever do",
+    "label": "charged"
+  },
+  {
+    "text": "I felt like I was running on rocket fuel",
+    "label": "charged"
+  },
+  {
+    "text": "Took elvanse 50mg this morning",
+    "label": "none"
+  },
+  {
+    "text": "Skipped my meds today to give my body a break",
+    "label": "none"
+  },
+  {
+    "text": "Let's see if the medication kicks in",
+    "label": "none"
+  },
+  {
+    "text": "I hope I have more energy tomorrow",
+    "label": "none"
+  },
+  {
+    "text": "Maybe I'll feel less tired after the weekend",
+    "label": "none"
+  },
+  {
+    "text": "I should try going to bed earlier",
+    "label": "none"
+  },
+  {
+    "text": "Thinking about starting to exercise more",
+    "label": "none"
+  },
+  {
+    "text": "Had a therapy session this afternoon",
+    "label": "none"
+  },
+  {
+    "text": "The meeting ran really long",
+    "label": "none"
+  },
+  {
+    "text": "I didn't sleep well last night",
+    "label": "none"
+  },
+  {
+    "text": "Slept 8 hours and woke up naturally",
+    "label": "none"
+  },
+  {
+    "text": "I wasn't tired",
+    "label": "none"
+  },
+  {
+    "text": "I didn't feel drained",
+    "label": "none"
+  },
+  {
+    "text": "Not particularly energetic but not exhausted",
+    "label": "none"
+  },
+  {
+    "text": "I don't feel low energy right now",
+    "label": "none"
+  },
+  {
+    "text": "Energy wasn't a factor today",
+    "label": "none"
+  },
+  {
+    "text": "I wonder if the new dose will help my energy",
+    "label": "none"
+  },
+  {
+    "text": "Doctor said the fatigue might improve",
+    "label": "none"
+  },
+  {
+    "text": "Planning to take a rest day tomorrow",
+    "label": "none"
+  },
+  {
+    "text": "I want to have more energy",
+    "label": "none"
+  },
+  {
+    "text": "Hoping this week is less draining",
+    "label": "none"
+  },
+  {
+    "text": "Worked from home today",
+    "label": "none"
+  },
+  {
+    "text": "Had coffee and breakfast",
+    "label": "none"
+  },
+  {
+    "text": "Went to the gym",
+    "label": "none"
+  },
+  {
+    "text": "Took a nap after lunch",
+    "label": "none"
+  },
+  {
+    "text": "Stayed up late watching TV",
+    "label": "none"
+  },
+  {
+    "text": "Drank a lot of water today",
+    "label": "none"
+  },
+  {
+    "text": "Had a productive work day",
+    "label": "none"
+  },
+  {
+    "text": "Finished my tasks for the week",
+    "label": "none"
+  },
+  {
+    "text": "Took ibuprofen for a headache",
+    "label": "none"
+  },
+  {
+    "text": "Doctor adjusted my medication dose",
+    "label": "none"
+  },
+  {
+    "text": "I might need to change my sleep schedule",
+    "label": "none"
+  },
+  {
+    "text": "Going to try meditating before bed",
+    "label": "none"
+  },
+  {
+    "text": "Had a big lunch, felt a bit full",
+    "label": "none"
+  },
+  {
+    "text": "The commute was long today",
+    "label": "none"
+  },
+  {
+    "text": "I should hydrate more",
+    "label": "none"
+  },
+  {
+    "text": "Looking forward to the weekend",
+    "label": "none"
+  },
+  {
+    "text": "Caught up with a friend",
+    "label": "none"
+  },
+  {
+    "text": "Spent the evening reading",
+    "label": "none"
+  },
+  {
+    "text": "I'll try to eat better this week",
+    "label": "none"
+  },
+  {
+    "text": "Had a walk at lunchtime",
+    "label": "none"
+  },
+  {
+    "text": "Meal prepped for the week",
+    "label": "none"
+  },
+  {
+    "text": "Did some yoga this morning",
+    "label": "none"
+  },
+  {
+    "text": "Forgot to eat breakfast",
+    "label": "none"
+  },
+  {
+    "text": "Had a heavy dinner",
+    "label": "none"
+  },
+  {
+    "text": "Went to bed at a reasonable time",
+    "label": "none"
+  },
+  {
+    "text": "Woke up before the alarm",
+    "label": "none"
+  },
+  {
+    "text": "I should exercise more regularly",
+    "label": "none"
+  },
+  {
+    "text": "Planning a rest day this weekend",
+    "label": "none"
+  },
+  {
+    "text": "Might try a morning routine",
+    "label": "none"
+  },
+  {
+    "text": "I could probably sleep better",
+    "label": "none"
+  },
+  {
+    "text": "Trying to build better habits",
+    "label": "none"
+  },
+  {
+    "text": "Had a phone call with my doctor",
+    "label": "none"
+  },
+  {
+    "text": "I've been taking my meds on time",
+    "label": "none"
+  },
+  {
+    "text": "Changed to a different medication brand",
+    "label": "none"
+  },
+  {
+    "text": "The new prescription started today",
+    "label": "none"
+  },
+  {
+    "text": "First day without medication this month",
+    "label": "none"
+  },
+  {
+    "text": "I took my meds later than usual",
+    "label": "none"
+  },
+  {
+    "text": "Medication holiday today",
+    "label": "none"
+  },
+  {
+    "text": "Trying to figure out the right dose",
+    "label": "none"
+  },
+  {
+    "text": "The pharmacist gave me a different generic",
+    "label": "none"
+  },
+  {
+    "text": "I forgot to pick up my prescription",
+    "label": "none"
+  },
+  {
+    "text": "I'll ask about changing my dose at the next appointment",
+    "label": "none"
+  },
+  {
+    "text": "I wonder if I need a higher dose",
+    "label": "none"
+  },
+  {
+    "text": "Today was just a regular day at work",
+    "label": "none"
+  },
+  {
+    "text": "Nothing particularly noteworthy today",
+    "label": "none"
+  },
+  {
+    "text": "Had a normal routine today",
+    "label": "none"
+  },
+  {
+    "text": "Did all the usual things",
+    "label": "none"
+  },
+  {
+    "text": "It was a quiet day overall",
+    "label": "none"
+  },
+  {
+    "text": "Had a team lunch at work",
+    "label": "none"
+  },
+  {
+    "text": "Spent the morning in back-to-back meetings",
+    "label": "none"
+  },
+  {
+    "text": "I had a lighter workload today",
+    "label": "none"
+  },
+  {
+    "text": "Finished my report early",
+    "label": "none"
+  },
+  {
+    "text": "Left the office on time for once",
+    "label": "none"
+  },
+  {
+    "text": "Spent the evening with family",
+    "label": "none"
+  },
+  {
+    "text": "Watched a documentary tonight",
+    "label": "none"
+  },
+  {
+    "text": "Went to bed earlier than usual",
+    "label": "none"
+  },
+  {
+    "text": "The kids wore me out today",
+    "label": "none"
+  },
+  {
+    "text": "Had errands to run after work",
+    "label": "none"
+  }
+]

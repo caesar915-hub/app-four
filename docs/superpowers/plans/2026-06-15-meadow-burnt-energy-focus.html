@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meadow Burnt — yellow energy × blue/ice/graphite focus — 2026-06-15</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #2b2b2e; color: #eee; padding: 32px 24px 90px; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  h2.sect { font-size: 17px; margin: 34px 0 12px; color: #fff; }
+  p.sub { color: #aaa; font-size: 14px; margin-bottom: 10px; max-width: 920px; line-height: 1.55; }
+  p.sub b { color: #fff; }
+  code { background: #2e2e33; padding: 1px 6px; border-radius: 5px; font-size: 13px; color: #9ad0ff; }
+
+  .fixed { background: #000; border-radius: 16px; padding: 16px 18px; max-width: 560px; margin-bottom: 8px; }
+  .fixed .lab { font-size: 12px; color: rgba(235,235,245,.55); margin-bottom: 8px; }
+  .fixed .lab b { color: #8eda9f; }
+  .strip { display: flex; gap: 5px; }
+  .strip i { flex: 1; height: 34px; border-radius: 8px; }
+
+  .enblock { margin-bottom: 30px; }
+  .enhead { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+  .enhead .ename { font-family: "New York", Georgia, serif; font-size: 19px; color: #fff; }
+  .enhead .estrip { display: flex; gap: 4px; width: 200px; }
+  .enhead .estrip i { flex: 1; height: 22px; border-radius: 6px; }
+  .sep { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+  .sep.clear { background: rgba(142,218,159,.16); color: #8eda9f; }
+  .sep.ok { background: rgba(154,208,255,.14); color: #9ad0ff; }
+  .sep.tight { background: rgba(232,176,106,.18); color: #e8b06a; }
+
+  .row { display: flex; gap: 16px; flex-wrap: wrap; }
+  .card { width: 318px; background: #000; border-radius: 16px; padding: 16px; }
+  .card .fname { font-size: 14px; font-weight: 800; color: #fff; margin-bottom: 2px; }
+  .card .combo { font-size: 11px; color: #9ad0ff; font-weight: 700; margin-bottom: 10px; }
+  .test { background: #161618; border-radius: 12px; padding: 12px; }
+  .s { display: flex; align-items: center; gap: 9px; margin-bottom: 7px; }
+  .s .n { width: 50px; font-size: 11px; font-weight: 700; color: #fff; }
+  .beads { display: flex; gap: 4px; flex: 1; }
+  .beads i { flex: 1; height: 24px; border-radius: 7px; }
+  .medline { display: flex; align-items: center; gap: 9px; margin-top: 9px; padding-top: 9px; border-top: 1px solid #2a2a2e; }
+  .ring { width: 27px; height: 27px; border-radius: 50%; border: 3px solid #BF5AF2; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #BF5AF2; font-weight: 700; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 13px; font-size: 11.5px; font-weight: 600; background: rgba(191,90,242,.16); color: #BF5AF2; }
+  .chip::before { content: "💊"; font-size: 11px; }
+
+  .notes { max-width: 920px; margin-top: 34px; background: #1c1c20; border-radius: 16px; padding: 24px 28px; font-size: 14px; line-height: 1.65; color: #ccc; }
+  .notes h2 { font-size: 16px; margin-bottom: 10px; color: #fff; }
+  .notes b { color: #fff; }
+</style>
+</head>
+<body>
+
+<h1>Meadow · Burnt — energy × focus</h1>
+<p class="sub">Mood is locked. Below: <b>4 yellow energy</b> options × <b>4 focus</b> options (blue / ice / steel / graphite) = 16 combinations.
+  Each energy is scored for how well it <b>separates from the gold mood Flat</b> (the crux — same hue family). Focus families are far in hue, so they stay clean.</p>
+
+<div class="fixed" id="fixed"></div>
+
+<div id="blocks"></div>
+
+<div class="notes">
+  <h2>Reading the separation score</h2>
+  <span class="sep clear" style="display:inline">clear</span> the yellow energy reads distinctly from the gold mood (different lightness/saturation) · <span class="sep ok" style="display:inline">ok</span> distinguishable with labels · <span class="sep tight" style="display:inline">tight</span> nearly the same as the mood gold — avoid unless they're never shown adjacent.<br><br>
+  <b>Why this works now:</b> the mood Flat is a <b>light amber</b> (more orange than gold), so it sits further from yellow — which opens room for the energy. Measured: pale <b>Cream/Butter/Wheat</b> read clear (45–55), and a vivid <b>Lemon</b> is now <b>ok (≈21)</b> rather than tight. The burnt-orange Low and the light-amber Flat also separate cleanly (39).<br><br>
+  Reply with a combo — e.g. <code>Lemon + Ice</code>, <code>Cream + Graphite</code>, <code>Butter + Voltage</code> — and I'll render the full Insights screen (dark + light), then wire mood+energy+focus into <code>Palette.swift</code> for v0.8.1.
+</div>
+
+<script>
+  const MOOD = { name: "Meadow · Burnt", c: ["#DA7A2A","#F0B85C","#9FCB79","#5FB36E","#2E8B57"] };
+  const ENERGIES = [
+    { name: "Cream",  c: ["#9A9472","#BEB890","#D8D2AC","#ECE8CC","#F8F5E4"], note: "very pale yellow — clearest" },
+    { name: "Butter", c: ["#857F55","#A8A06A","#C6BE82","#E2DAA0","#F4EEC2"], note: "pale soft yellow" },
+    { name: "Wheat",  c: ["#8C7E50","#B0A267","#CEC084","#E6DAA6","#F4ECC6"], note: "pale warm yellow" },
+    { name: "Lemon",  c: ["#7C6E2E","#A89236","#D2BB40","#EEDA4C","#FCEE64"], note: "bright lemon — now ok (amber Flat opened room)" },
+  ];
+  const FOCUSES = [
+    { name: "Voltage (blue)", c: ["#44546E","#4E6F94","#5889BA","#63A4E0","#79C4FF"] },
+    { name: "Ice",            c: ["#3D4E66","#4E6A8A","#6188AC","#79A8CE","#97CCF2"] },
+    { name: "Steel",          c: ["#404852","#566270","#6E7E90","#93A3B5","#C2D0E0"] },
+    { name: "Graphite",       c: ["#3A3A3E","#58585E","#7E7E86","#ABABB5","#ECECF4"] },
+  ];
+  const MED_HEX = "#BF5AF2";
+
+  function toHSL(hex){const n=parseInt(hex.slice(1),16);const r=(n>>16)/255,g=((n>>8)&255)/255,b=(n&255)/255;const mx=Math.max(r,g,b),mn=Math.min(r,g,b),d=mx-mn;let h=0;if(d){if(mx===r)h=((g-b)/d)%6;else if(mx===g)h=(b-r)/d+2;else h=(r-g)/d+4;h*=60;if(h<0)h+=360;}const l=(mx+mn)/2;const s=d===0?0:d/(1-Math.abs(2*l-1));return{h,s,l};}
+  function hueDist(a,b){const d=Math.abs(a-b)%360;return Math.min(d,360-d);}
+  // blended perceptual-ish distance between two colours; neutral (low-sat) vs anything = very distinct
+  function bd(p,q){ if(p.s<0.15||q.s<0.15) return 200; return hueDist(p.h,q.h) + 140*Math.abs(p.l-q.l) + 70*Math.abs(p.s-q.s); }
+  function steps(ramp){ return ramp.map(toHSL).filter(x=>x.l>0.12&&x.l<0.95); }
+  const MED = [toHSL(MED_HEX)];
+
+  function pairMin(A,B){ let m=999; for(const a of A) for(const b of B) m=Math.min(m, bd(a,b)); return m; }
+
+  const moodSteps = steps(MOOD.c);
+  function sepLabel(v){ return v>=30?["clear","clear"]:v>=20?["ok","ok"]:["tight","tight"]; }
+  function lighten(hex, amt){const n=parseInt(hex.slice(1),16);const r=Math.min(255,(n>>16)+amt),g=Math.min(255,((n>>8)&255)+amt),b=Math.min(255,(n&255)+amt);return`rgb(${r},${g},${b})`;}
+  const SEQ_M=[2,0,3,4,1,3,2], SEQ_E=[3,1,4,2,3,2,4], SEQ_F=[3,0,4,2,3,4,2];
+  function beadRow(label, ramp, seq){ return `<div class="s"><span class="n">${label}</span><div class="beads">${seq.map(i=>`<i style="background:linear-gradient(160deg,${lighten(ramp[i],22)},${ramp[i]})"></i>`).join("")}</div></div>`; }
+
+  document.getElementById("fixed").innerHTML =
+    `<div class="lab">Mood (locked): <b>${MOOD.name}</b> · Low burnt-orange → light amber → 3 greens</div>
+     <div class="strip">${MOOD.c.map(c=>`<i style="background:${c}"></i>`).join("")}</div>`;
+
+  document.getElementById("blocks").innerHTML = ENERGIES.map(en => {
+    const enSteps = steps(en.c);
+    const me = pairMin(enSteps, moodSteps);
+    const [cls] = sepLabel(me);
+    const cards = FOCUSES.map(fo => {
+      const foSteps = steps(fo.c);
+      const overall = Math.round(Math.min(
+        pairMin(enSteps, moodSteps), pairMin(foSteps, moodSteps), pairMin(enSteps, foSteps),
+        pairMin(moodSteps, MED), pairMin(enSteps, MED), pairMin(foSteps, MED)
+      ));
+      return `<div class="card">
+        <div class="fname">${fo.name}</div>
+        <div class="combo">Meadow·Burnt + ${en.name} + ${fo.name.split(" ")[0]} · min gap ${overall}</div>
+        <div class="test">
+          ${beadRow("Mood", MOOD.c, SEQ_M)}
+          ${beadRow("Energy", en.c, SEQ_E)}
+          ${beadRow("Focus", fo.c, SEQ_F)}
+          <div class="medline"><div class="ring">36</div><span class="chip">Concerta 36</span></div>
+        </div>
+      </div>`;
+    }).join("");
+    return `<div class="enblock">
+      <div class="enhead">
+        <span class="ename">${en.name} energy</span>
+        <div class="estrip">${en.c.map(c=>`<i style="background:${c}"></i>`).join("")}</div>
+        <span class="sep ${cls}">vs mood gold: ${cls} (${Math.round(me)})</span>
+        <span style="font-size:12px;color:rgba(235,235,245,.5)">${en.note}</span>
+      </div>
+      <div class="row">${cards}</div>
+    </div>`;
+  }).join("");
+</script>
+
+</body>
+</html>

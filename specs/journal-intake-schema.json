@@ -1,0 +1,309 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Mental Health Journal Check-In Schema",
+  "description": "Deterministic structured output for daily journal entries. Ensures consistent formatting for 30-day analysis. Uses controlled vocabulary from app-four signal system.",
+  "type": "object",
+  "required": ["metadata", "baseline", "content", "extraction"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": ["timestamp", "entry_source", "modality"],
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp when entry was recorded"
+        },
+        "entry_source": {
+          "type": "string",
+          "enum": ["telegram", "cli", "app", "web"],
+          "description": "Platform where entry originated"
+        },
+        "modality": {
+          "type": "string",
+          "enum": ["audio", "text"],
+          "description": "How the entry was delivered"
+        },
+        "duration_seconds": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "For audio entries: length in seconds"
+        }
+      }
+    },
+    "baseline": {
+      "type": "object",
+      "required": ["mood", "energy", "focus"],
+      "properties": {
+        "mood": {
+          "type": "object",
+          "required": ["level", "name", "synonym"],
+          "properties": {
+            "level": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5,
+              "description": "1–5 scale from app-four signal system"
+            },
+            "name": {
+              "type": "string",
+              "enum": ["Low", "Flat", "Okay", "Good", "Great"],
+              "description": "Canonical mood name (exactly as in app-four data model)"
+            },
+            "synonym": {
+              "type": "string",
+              "enum": ["heavy", "muted", "dull", "flat", "steady", "fine", "light", "warm", "bright", "thriving"],
+              "description": "User-facing mood synonym from signal system"
+            },
+            "detected": {
+              "type": "boolean",
+              "description": "true = explicitly mentioned in entry; false = inferred"
+            }
+          }
+        },
+        "energy": {
+          "type": "object",
+          "required": ["level", "name", "synonym"],
+          "properties": {
+            "level": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5,
+              "description": "1–5 scale from app-four signal system"
+            },
+            "name": {
+              "type": "string",
+              "enum": ["Sluggish", "Tired", "Steady", "Alert", "Charged"],
+              "description": "Canonical energy name (exactly as in app-four data model)"
+            },
+            "synonym": {
+              "type": "string",
+              "enum": ["slow", "drained", "restless", "even", "ready", "keen", "electric"],
+              "description": "User-facing energy synonym from signal system"
+            },
+            "detected": {
+              "type": "boolean",
+              "description": "true = explicitly mentioned in entry; false = inferred"
+            }
+          }
+        },
+        "focus": {
+          "type": "object",
+          "required": ["level", "name", "synonym"],
+          "properties": {
+            "level": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 5,
+              "description": "1–5 scale from app-four signal system"
+            },
+            "name": {
+              "type": "string",
+              "enum": ["Foggy", "Distracted", "Present", "Sharp", "Locked In"],
+              "description": "Canonical focus name (exactly as in app-four data model)"
+            },
+            "synonym": {
+              "type": "string",
+              "enum": ["hazy", "restless", "grounded", "keen", "flowing"],
+              "description": "User-facing focus synonym from signal system"
+            },
+            "detected": {
+              "type": "boolean",
+              "description": "true = explicitly mentioned in entry; false = inferred"
+            }
+          }
+        },
+        "sleep": {
+          "type": "object",
+          "properties": {
+            "hours": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 24,
+              "description": "Hours of sleep reported"
+            },
+            "quality": {
+              "type": "string",
+              "enum": ["poor", "light", "decent", "good", "excellent"],
+              "description": "Subjective sleep quality if mentioned"
+            },
+            "detected": {
+              "type": "boolean",
+              "description": "true = sleep data found in entry"
+            }
+          }
+        },
+        "medications": {
+          "type": "array",
+          "description": "Medications mentioned",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "enum": ["Concerta", "Ritalin", "Elvanse", "Trazodone", "Melatonin"],
+                "description": "Medication name from catalog"
+              },
+              "dose": {
+                "type": "string",
+                "description": "Dose if specified (e.g., '36mg')"
+              },
+              "taken": {
+                "type": "boolean",
+                "description": "Whether user reported taking it"
+              },
+              "side_effects": {
+                "type": "array",
+                "description": "Any side effects mentioned",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "properties": {
+        "raw_transcription": {
+          "type": "string",
+          "description": "Full verbatim transcription (for audio) or original text entry"
+        },
+        "what_bothering_you": {
+          "type": "string",
+          "description": "User-identified concern or blocker from entry"
+        },
+        "what_went_well": {
+          "type": "string",
+          "description": "Positive or win from today"
+        },
+        "worldview_shift": {
+          "type": "string",
+          "description": "Any perspective change or realization noted"
+        },
+        "personal_objectives": {
+          "type": "object",
+          "properties": {
+            "step_taken": {
+              "type": "string",
+              "description": "Progress made toward a goal"
+            },
+            "blocker": {
+              "type": "string",
+              "description": "Obstacle or challenge identified"
+            },
+            "next": {
+              "type": "string",
+              "description": "Next intended action"
+            }
+          }
+        }
+      }
+    },
+    "extraction": {
+      "type": "object",
+      "description": "NLP-extracted feelings, themes, triggers, and metadata",
+      "properties": {
+        "feelings": {
+          "type": "array",
+          "description": "Emotional words / feeling-verbs extracted (lexicon-controlled)",
+          "items": {
+            "type": "object",
+            "required": ["term", "lemma", "confidence"],
+            "properties": {
+              "term": {
+                "type": "string",
+                "description": "Original word from entry"
+              },
+              "lemma": {
+                "type": "string",
+                "description": "Canonical form (infinitive for verbs)"
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "description": "Extraction confidence 0–1"
+              }
+            }
+          }
+        },
+        "side_effects": {
+          "type": "array",
+          "description": "Medication side effects extracted",
+          "items": {
+            "type": "object",
+            "required": ["symptom"],
+            "properties": {
+              "symptom": {
+                "type": "string",
+                "description": "Side effect reported"
+              },
+              "medication": {
+                "type": "string",
+                "description": "Associated medication if identified"
+              },
+              "severity": {
+                "type": "string",
+                "enum": ["mild", "moderate", "severe"],
+                "description": "Inferred severity"
+              }
+            }
+          }
+        },
+        "themes": {
+          "type": "array",
+          "description": "Detected themes (work, relationships, health, focus, etc.)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "triggers": {
+          "type": "array",
+          "description": "Identified mood/energy triggers",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence_flags": {
+          "type": "array",
+          "description": "Flags for uncertain extractions",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "description": "Entry quality and completeness metrics",
+      "properties": {
+        "baseline_completeness": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "% of baseline signals detected (mood/energy/focus/sleep)"
+        },
+        "structured_fields_present": {
+          "type": "array",
+          "description": "Which journal sections were addressed",
+          "items": {
+            "type": "string",
+            "enum": ["baseline", "whats_bothering", "whats_well", "worldview", "objectives"]
+          }
+        },
+        "word_count": {
+          "type": "integer",
+          "description": "Total words in entry"
+        },
+        "processing_notes": {
+          "type": "string",
+          "description": "Any caveats or processing notes (ambiguity, audio quality, etc.)"
+        }
+      }
+    }
+  }
+}

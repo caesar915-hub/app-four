@@ -16,6 +16,12 @@ xcuserdata/
 .build/
 .swiftpm/
 
+# Python virtualenvs (research spikes — regenerable, never track)
+#
+.venv/
+__pycache__/
+*.pyc
+
 # OS X
 #
 .DS_Store

@@ -1,0 +1,126 @@
+{
+  "activityEntities" : [
+    "experimentCreated",
+    [
+      {
+        "createdDate" : "2026-06-18T11:54:08Z",
+        "event" : "experimentCreated",
+        "id" : "F6331BCA-B0A3-4EC1-897A-9BB0621D56ED",
+        "subtitle" : "MyWordTagger 1",
+        "title" : "Model Source Created"
+      }
+    ]
+  ],
+  "contentDataResult" : {
+    "createdDate" : "2026-06-18T11:54:08Z"
+  },
+  "createdDate" : "2026-06-18T11:54:08Z",
+  "evaluationContainerEntity" : {
+    "createdDate" : "2026-06-18T11:54:09Z",
+    "evaluationEntities" : [
+
+    ],
+    "id" : "6098e5d4-906f-4ccf-bd8b-9a8a046ff41d",
+    "modifiedDate" : "2026-06-18T11:54:09Z",
+    "previewType" : "wordTagger",
+    "testingEvaluationEntity" : {
+      "analysedDataType" : "none",
+      "createdDate" : "2026-06-18T11:54:08Z",
+      "dataResult" : {
+        "createdDate" : "2026-06-18T11:54:08Z"
+      },
+      "id" : "04853623-b2f0-46a1-a906-2c67caecbb24"
+    },
+    "trainingEvaluationEntity" : {
+      "analysedDataType" : "none",
+      "createdDate" : "2026-06-18T11:54:08Z",
+      "dataResult" : {
+        "createdDate" : "2026-06-18T11:54:08Z"
+      },
+      "id" : "feecfa57-e718-4f06-a4a2-d0a32b34b2e5"
+    },
+    "validationEvaluationEntity" : {
+      "analysedDataType" : "auto",
+      "createdDate" : "2026-06-18T11:54:08Z",
+      "dataResult" : {
+        "createdDate" : "2026-06-18T11:54:08Z"
+      },
+      "id" : "32b91ee2-8d9d-463f-94a0-aaef617aa13a"
+    }
+  },
+  "evaluationEntity" : {
+    "analysedDataType" : "none",
+    "dataResult" : {
+
+    },
+    "id" : "155bd468-f3d2-4fb1-8068-ed063cd5add1"
+  },
+  "evaluationState" : "uninitialized",
+  "id" : "B1D22E4D-DD1E-465E-A6C6-1E8282FCF436",
+  "modelEntity" : {
+    "createdDate" : "2026-06-18T11:54:08Z",
+    "experimentID" : "B1D22E4D-DD1E-465E-A6C6-1E8282FCF436",
+    "id" : "E421802C-529C-48A3-93EF-3F84ECBE96CC",
+    "modifiedDate" : "2026-06-18T11:54:08Z",
+    "title" : "",
+    "version" : "1.0"
+  },
+  "modifiedDate" : "2026-06-18T11:54:09Z",
+  "preferredFilename" : "MyWordTagger 1",
+  "settingEntity" : {
+    "algorithmType" : "maxEnt",
+    "augmentations" : [
+
+    ],
+    "featureNames" : [
+
+    ],
+    "handActionClassifierAugmentations" : [
+
+    ],
+    "handPoseClassifierAugmentations" : [
+
+    ],
+    "harVideoAugmentations" : 0,
+    "seedType" : "default",
+    "styleTransferAlgorithmType" : "image",
+    "taskType" : "wordTagger",
+    "transferLearningEmbeddingType" : "dynamic",
+    "wtAlgorithmType" : "crf"
+  },
+  "snapshotRole" : {
+    "withoutSnapshots" : 0
+  },
+  "state" : "uninitialized",
+  "title" : "MyWordTagger 1",
+  "trainingEntity" : {
+    "analysedDataType" : "choose",
+    "checkpointMetrics" : {
+
+    },
+    "dataResult" : {
+      "createdDate" : "2026-06-18T11:54:08Z"
+    },
+    "featureExtractionCheckpointMayBeAvailable" : false,
+    "progress" : [
+
+    ],
+    "snapshottableCheckpoints" : {
+
+    }
+  },
+  "validationEntity" : {
+    "analysedDataType" : "auto",
+    "dataResult" : {
+      "createdDate" : "2026-06-18T11:54:08Z"
+    },
+    "splitOptions" : {
+      "strategy" : {
+        "automatic" : {
+
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

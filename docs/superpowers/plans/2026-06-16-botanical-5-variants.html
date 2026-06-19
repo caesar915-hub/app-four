@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Botanical lifecycle — 5 variants — Squirl</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F6F1E7;--surface:#FCF8EF;--surface2:#EFE8D8;--ink:#221E16;--muted:#7A7361;--hair:#E3DAC7;--accent:#B8842A}
+  [data-theme="dark"]{--bg:#14130F;--surface:#1E1C16;--surface2:#272419;--ink:#F3EEE0;--muted:#9A917C;--hair:#322E22;--accent:#D4A24A}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1060px;margin:0 auto;padding:36px 24px 96px}
+  h1,h2{font-family:"Fraunces",serif;font-weight:500;letter-spacing:-.01em;margin:0}
+  h1{font-size:32px}h2{font-size:21px}
+  p{margin:.5em 0;color:var(--muted);max-width:74ch;font-size:14px}
+  .lead{color:var(--ink);font-size:15px}
+  .toggle{position:fixed;top:16px;right:16px;z-index:9;border:1px solid var(--hair);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 16px;font:inherit;font-size:13px;cursor:pointer}
+  .dir{background:var(--surface);border:1px solid var(--hair);border-radius:18px;padding:20px 24px 24px;margin:18px 0;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .dirhead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:2px}
+  .tag{font-size:11px;font-weight:700;color:#fff;background:var(--accent);border-radius:999px;padding:2px 9px}
+  .note{font-size:13.5px;color:var(--muted);margin:5px 0 14px}
+  .note b{color:var(--ink)}
+  .trio{display:flex;gap:10px;justify-content:center;background:var(--surface2);border-radius:14px;padding:16px 12px;margin:4px 0 16px}
+  .trio .t{flex:1;text-align:center;max-width:150px}
+  .trio svg{width:58px;height:58px;display:block;margin:0 auto 4px}
+  .tl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+  @media(max-width:720px){.grid{grid-template-columns:1fr}}
+  .rtag{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin:0 0 4px}
+  .ramp{display:flex;gap:4px;align-items:flex-end}
+  .cell{flex:1;text-align:center}
+  .cell svg{width:40px;height:40px;display:block;margin:0 auto 2px}
+  .lvl{font-size:9.5px;color:var(--muted)}
+  .pill-row{display:flex;align-items:center;gap:12px;margin:16px 0 2px}
+  .ring{width:38px;height:38px;border-radius:999px;flex:none;display:grid;place-items:center;font-size:10px;font-weight:600;background:conic-gradient(#5FB36E 212deg,var(--hair) 0)}
+  .ring span{width:30px;height:30px;border-radius:999px;background:var(--surface);display:grid;place-items:center}
+  .pill{flex:1;display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:#F3CF9A;border-radius:999px;padding:7px 16px}
+  [data-theme="dark"] .pill{background:#5a4322}
+  .sig{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:#3a3324}
+  [data-theme="dark"] .sig{color:#e9e2d0}
+  .sig svg{width:22px;height:22px}
+</style>
+</head>
+<body>
+<button class="toggle" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'">◐ theme</button>
+<div class="wrap">
+  <p style="color:var(--accent);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:12px">Squirl · Botanical lifecycle · 5 variants · 2026-06-16</p>
+  <h1>Botanical lifecycle — five takes</h1>
+  <p class="lead">Same chosen direction (one plant world for Mood · Energy · Focus), five different botanical vocabularies. Each card: the trio at a glance, then the three 1→5 ramps, then the timeline pill. Pick the vocabulary that feels most like Squirl — I'll then resolve that one.</p>
+  <div id="board"></div>
+</div>
+
+<script>
+const M=['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'];
+const E=['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'];
+const F=['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'];
+const FO=[.18,.4,.62,.82,1];
+const svg=i=>`<svg viewBox="0 0 48 48">${i}</svg>`;
+const rot=(d,x,y)=>`rotate(${(+d).toFixed(1)} ${x} ${y})`;
+const teardrop=(cx,cy,w,h)=>{const t=cy-h/2,b=cy+h/2;return `M${cx},${t} C${cx+w/2},${t+h*0.32} ${cx+w/2},${b-w*0.25} ${cx},${b} C${cx-w/2},${b-w*0.25} ${cx-w/2},${t+h*0.32} ${cx},${t} Z`;};
+const leaf=(cx,cy,w,h)=>{const t=cy-h/2,b=cy+h/2;return `M${cx},${t} C${cx+w/2},${cy-h*0.15} ${cx+w/2},${cy+h*0.15} ${cx},${b} C${cx-w/2},${cy+h*0.15} ${cx-w/2},${cy-h*0.15} ${cx},${t} Z`;};
+const halfOval=(cx,cy,w,h,side)=>{const t=cy-h/2,b=cy+h/2,ox=cx+side*w;return `M${cx},${t} C${ox},${t-h*0.05} ${ox},${b+h*0.05} ${cx},${b} Z`;};
+function spiralD(cx,cy,r0,rEnd,turns,steps){let d='';for(let i=0;i<=steps;i++){const t=i/steps,r=r0+(rEnd-r0)*t,a=(-90+turns*360*t)*Math.PI/180;d+=(i?'L':'M')+(cx+Math.cos(a)*r).toFixed(1)+' '+(cy+Math.sin(a)*r).toFixed(1)+' ';}return d;}
+const fl=(d,c,fo)=>`<path d="${d}" fill="${c}" fill-opacity="${fo}" stroke="${c}" stroke-width="2.3" stroke-linejoin="round"/>`;
+const st=(d,c,w)=>`<path d="${d}" fill="none" stroke="${c}" stroke-width="${w||2.3}" stroke-linecap="round" stroke-linejoin="round"/>`;
+const ln=(x1,y1,x2,y2,c,w)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w||2.2}" stroke-linecap="round"/>`;
+const ci=(x,y,r,c,fo)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}"${fo!=null?` fill-opacity="${fo}"`:''}/>`;
+
+/* ===== V1 · BUD (sprout / pod / seedhead) ===== */
+function v1m(l){const c=M[l-1],fo=FO[l-1],cy=[23,21,19,17,16][l-1],w=[7,9,11,17,21][l-1],h=[13,15,16,15,15][l-1];
+  const crown=l<=3?fl(teardrop(24,cy,w,h),c,fo):`<ellipse cx="24" cy="${cy}" rx="${w/2}" ry="${h/2}" fill="${c}" fill-opacity="${fo}" stroke="${c}" stroke-width="2.4"/>`;
+  return svg(ln(24,42,24,(cy+h*0.28).toFixed(1),c,3)+crown);}
+function v1e(l){const c=E[l-1],fo=FO[l-1],hw=[5,5.5,6,6.5,6.5][l-1],h=[12,13,14,14,14][l-1],gap=[0,0,2,4,5.5][l-1],cy=25,b=cy+h/2;
+  let s=ln(24,43,24,(b-1).toFixed(1),c,2.2)+fl(halfOval(24-gap/2,cy,hw,h,-1),c,fo)+fl(halfOval(24+gap/2,cy,hw,h,1),c,fo);
+  const seeds=[0,0,2,4,5][l-1],sp=[[18,11],[30,11],[24,6],[14,16],[34,16]];for(let i=0;i<seeds;i++)s+=ci(sp[i][0],sp[i][1],1.5,c);
+  return svg(s);}
+function v1f(l){const c=F[l-1],rad=[12,11,10,9,8][l-1],n=[5,6,7,8,9][l-1],dr=[1.4,1.5,1.6,1.7,1.8][l-1],op=[.5,.65,.78,.9,1][l-1],core=[0,0,1.4,2,2.8][l-1];
+  let s='';for(let i=0;i<n;i++){const a=(i*360/n-90)*Math.PI/180;s+=ci((24+Math.cos(a)*rad).toFixed(1),(24+Math.sin(a)*rad).toFixed(1),dr,c,op);}
+  if(core>0)s+=ci(24,24,core,c);return svg(s);}
+
+/* ===== V2 · BLOOM (opening flower / dispersing puff / flower-core) ===== */
+function v2m(l){const c=M[l-1],fo=FO[l-1],n=[2,3,4,5,5][l-1],pl=[8,10,12,13,14][l-1],pw=[4.5,5,5.5,6,6.5][l-1],spread=[44,110,200,300,360][l-1];
+  let s='';for(let i=0;i<n;i++){const ang=spread>=360?(i*360/n):(-spread/2+i*(spread/(n-1)));
+    s+=`<g transform="${rot(ang,24,26)}">${fl(teardrop(24,26-pl/2,pw,pl),c,fo)}</g>`;}
+  s+=ci(24,26,[1.2,1.6,2,2.4,2.8][l-1],c);return svg(s);}
+function v2e(l){const c=E[l-1],sl=[3,4,6,8,10][l-1];let s=ci(24,24,2,c);
+  for(let a=0;a<360;a+=45){const r=a*Math.PI/180,c1=Math.cos(r),s1=Math.sin(r);
+    s+=ln((24+c1*3).toFixed(1),(24+s1*3).toFixed(1),(24+c1*(3+sl)).toFixed(1),(24+s1*(3+sl)).toFixed(1),c,1.5)+ci((24+c1*(3.5+sl)).toFixed(1),(24+s1*(3.5+sl)).toFixed(1),1.2,c);}
+  if(l>=4){for(let a=22;a<360;a+=90){const r=a*Math.PI/180;s+=ci((24+Math.cos(r)*(7+sl)).toFixed(1),(24+Math.sin(r)*(7+sl)).toFixed(1),1.1,c,.7);}}
+  return svg(s);}
+function v2f(l){const c=F[l-1];let s=`<circle cx="24" cy="24" r="10" fill="none" stroke="${c}" stroke-width="1.6" stroke-opacity=".55"/>`;
+  const r1=[7.5,7.5,7.5,7.5,7.5],n1=[4,6,8,9,10][l-1];for(let i=0;i<n1;i++){const a=(i*360/n1-90)*Math.PI/180;s+=ci((24+Math.cos(a)*7.5).toFixed(1),(24+Math.sin(a)*7.5).toFixed(1),1.4,c);}
+  if(l>=3){const n2=[0,0,4,6,7][l-1];for(let i=0;i<n2;i++){const a=(i*360/n2-90+30)*Math.PI/180;s+=ci((24+Math.cos(a)*4).toFixed(1),(24+Math.sin(a)*4).toFixed(1),1.4,c);}}
+  if(l>=4)s+=ci(24,24,[0,0,0,1.6,2.4][l-1],c);return svg(s);}
+
+/* ===== V3 · SPIRAL (unfurling frond / fiddlehead spring / tightening coil) ===== */
+function v3m(l){const c=M[l-1],topY=[31,27,23,19,16][l-1],cr=[6,5,4.2,3.4,2.8][l-1],ct=[1.5,1.3,1.1,0.9,0.7][l-1];
+  let s=ln(24,42,24,topY,c,2.6)+st(spiralD(24,topY-cr,cr,1,ct,34),c,2.2);
+  if(l>=3){const lv=l-1;for(let k=0;k<lv;k++){const y=42-(42-topY)*(0.3+0.5*k/Math.max(1,lv));const sd=k%2?1:-1;s+=ln(24,y.toFixed(1),(24+sd*5).toFixed(1),(y-4).toFixed(1),c,2);}}
+  return svg(s);}
+function v3e(l){const c=E[l-1],ct=[2.2,1.8,1.4,1,0.7][l-1],whip=[0,3,6,9,12][l-1];
+  const coilCy=34;let s=st(spiralD(24,coilCy,5,1.6,ct,34),c,2.3);
+  const topOfCoil=coilCy-5;if(whip>0)s+=ln(24,topOfCoil,24,(topOfCoil-whip).toFixed(1),c,2.3);
+  if(l>=4){const ty=topOfCoil-whip;s+=ln(24,ty,(24-4).toFixed(1),(ty-4).toFixed(1),c,2)+ln(24,ty,(24+4).toFixed(1),(ty-4).toFixed(1),c,2);}
+  return svg(s);}
+function v3f(l){const c=F[l-1],turns=[1,1.4,1.8,2.2,2.6][l-1],r0=[11,11,10,9.5,9][l-1];
+  return svg(st(spiralD(24,24,r0,1.6,turns,52),c,2.2)+ci(24,24,[1.2,1.6,2,2.4,2.8][l-1],c));}
+
+/* ===== V4 · LEAF (single leaf / compound shoot / rosette) ===== */
+function v4m(l){const c=M[l-1],fo=FO[l-1],w=[5,8,11,14,16][l-1],h=[11,15,18,21,23][l-1],cy=[35,32,29,26,24][l-1];
+  return svg(ln(24,42,24,(cy+h/2-1).toFixed(1),c,2.4)+fl(leaf(24,cy,w,h),c,fo)+ln(24,(cy-h/2+2).toFixed(1),24,(cy+h/2-2).toFixed(1),c,1.3));}
+function v4e(l){const c=E[l-1],fo=FO[l-1],pairs=[1,2,3,4,5][l-1],top=[30,27,23,19,15][l-1];
+  let s=ln(24,43,24,top,c,2.4);
+  for(let k=0;k<pairs;k++){const y=43-(43-top)*(0.25+0.7*k/Math.max(1,pairs-1||1));const lw=4.5,lh=8;
+    s+=`<g transform="${rot(-42,24,y)}">${fl(leaf(24+5.5,y-1,lw,lh),c,fo)}</g><g transform="${rot(42,24,y)}">${fl(leaf(24-5.5,y-1,lw,lh),c,fo)}</g>`;}
+  if(l>=4){s+=ln(24,top,(24-3).toFixed(1),(top-4).toFixed(1),c,1.6)+ln(24,top,(24+3).toFixed(1),(top-4).toFixed(1),c,1.6);}
+  return svg(s);}
+function v4f(l){const c=F[l-1],fo=FO[l-1],n=[3,4,5,6,7][l-1],ll=[8,9,10,10,10][l-1];
+  let s='';for(let i=0;i<n;i++){const ang=i*360/n;s+=`<g transform="${rot(ang,24,24)}">${fl(leaf(24,24-ll/2,4.5,ll),c,fo)}</g>`;}
+  s+=ci(24,24,[1.4,1.6,1.8,2,2.2][l-1],c);return svg(s);}
+
+/* ===== V5 · SEED (germinating seed / ballistic burst / seeded core) ===== */
+function v5m(l){const c=M[l-1],fo=FO[l-1];let s=fl(leaf(24,30,[7,8,9,9,9][l-1],[6,6.5,7,7,7][l-1]),c,fo);
+  if(l>=2){s+=ln(24,33,21,38,c,2)+ln(24,33,27,38,c,2)+ln(24,33,24,40,c,2);}
+  if(l>=3){const up=[0,0,8,12,15][l-1];s+=ln(24,27,24,(30-up).toFixed(1),c,2.2);}
+  if(l>=4){const ty=30-[0,0,8,12,15][l-1];s+=`<g transform="${rot(-35,24,ty)}">${fl(leaf(24+3.5,ty,4,6),c,fo)}</g><g transform="${rot(35,24,ty)}">${fl(leaf(24-3.5,ty,4,6),c,fo)}</g>`;}
+  return svg(s);}
+function v5e(l){const c=E[l-1],fo=FO[l-1],hw=[5,5.5,6,6.5,7][l-1],h=[12,13,14,14,14][l-1],gap=[0,2,5,8,11][l-1],cy=26,b=cy+h/2;
+  let s=ln(24,43,24,(b-1).toFixed(1),c,2.2)+fl(halfOval(24-gap/2,cy,hw,h,-1),c,fo)+fl(halfOval(24+gap/2,cy,hw,h,1),c,fo);
+  const nstreak=[0,0,3,5,6][l-1],len=[0,0,5,8,10][l-1];
+  for(let i=0;i<nstreak;i++){const a=(-150+i*(120/Math.max(1,nstreak-1)))*Math.PI/180,ox=24+Math.cos(a)*6,oy=(cy-h/2)+Math.sin(a)*2;
+    s+=ln(ox.toFixed(1),oy.toFixed(1),(ox+Math.cos(a)*len).toFixed(1),(oy+Math.sin(a)*len).toFixed(1),c,1.5)+ci((ox+Math.cos(a)*(len+2)).toFixed(1),(oy+Math.sin(a)*(len+2)).toFixed(1),1.2,c);}
+  return svg(s);}
+function v5f(l){const c=F[l-1];let s=`<circle cx="24" cy="24" r="11" fill="none" stroke="${c}" stroke-width="1.8" stroke-opacity=".6"/>`;
+  const counts=[4,7,10,14,18][l-1];const rings=[[8,Math.min(counts,8)],[4.5,Math.max(0,counts-8)]];let placed=0;
+  for(const [rr,cnt] of rings){for(let i=0;i<cnt;i++){const a=(i*360/cnt-90+(rr<6?30:0))*Math.PI/180;s+=`<g transform="${rot(i*360/cnt-90+90,24+Math.cos(a)*rr,24+Math.sin(a)*rr)}">${ci((24+Math.cos(a)*rr).toFixed(1),(24+Math.sin(a)*rr).toFixed(1),1.5,c)}</g>`;placed++;}}
+  if(l>=4)s+=ci(24,24,[0,0,0,1.6,2.2][l-1],c);return svg(s);}
+
+const VARIANTS=[
+  {key:'v1',name:'Bud',tag:'the baseline',note:'Stem-and-bud language. Mood sprout (bud→bloom), Energy a seed pod that swells and bursts, Focus a seedhead packing tighter. Vertical growth, calm.',m:v1m,e:v1e,f:v1f},
+  {key:'v2',name:'Bloom',tag:'floral / radial',note:'Flowers. Mood petals opening, Energy a dandelion-puff dispersing (kinetic release), Focus a flower-core packing dense. Softest, most expressive.',m:v2m,e:v2e,f:v2f},
+  {key:'v3',name:'Spiral',tag:'curvilinear / kinetic',note:'Fern logic. Mood an unfurling frond, Energy a fiddlehead spring uncoiling (stored→released = energy), Focus a coil tightening to a point. Most distinctive, most motion.',m:v3m,e:v3e,f:v3f},
+  {key:'v4',name:'Leaf',tag:'foliage',note:'Flat leaves. Mood a single leaf greening, Energy a compound shoot throwing leaflets up, Focus a rosette tightening. Grounded, herbal.',m:v4m,e:v4e,f:v4f},
+  {key:'v5',name:'Seed',tag:'granular / harvest',note:'Seeds. Mood a seed germinating (root+shoot), Energy a pod firing seeds outward (ballistic), Focus a fruit cross-section packed with seeds. Most literal lifecycle.',m:v5m,e:v5e,f:v5f},
+];
+const words={m:['low','meh','okay','good','great'],e:['drained','tired','steady','alert','wired'],f:['scattered','foggy','steady','sharp','locked-in']};
+const lab={m:'Mood',e:'Energy',f:'Focus'};
+let html='';
+for(const v of VARIANTS){
+  html+=`<div class="dir"><div class="dirhead"><h2>${v.name}</h2><span class="tag">${v.tag}</span></div><p class="note">${v.note}</p>`;
+  html+=`<div class="trio">`+['m','e','f'].map(s=>`<div class="t">${v[s](4)}<div class="tl">${lab[s]}</div></div>`).join('')+`</div>`;
+  html+=`<div class="grid">`+['m','e','f'].map(s=>`<div><div class="rtag">${lab[s]}</div><div class="ramp">`+[1,2,3,4,5].map(l=>`<div class="cell">${v[s](l)}<div class="lvl">${l}</div></div>`).join('')+`</div></div>`).join('')+`</div>`;
+  html+=`<div class="pill-row"><div class="ring"><span>59%</span></div><div class="pill"><span class="sig">${v.m(2)} low</span><span class="sig">${v.e(2)} tired</span><span class="sig">${v.f(4)} sharp</span></div></div></div>`;
+}
+document.getElementById('board').innerHTML=html;
+</script>
+</body>
+</html>

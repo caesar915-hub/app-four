@@ -1,0 +1,109 @@
+{
+  "activityEntities" : [
+    "dataSourceMetrics",
+    [
+      {
+        "createdDate" : "2026-06-17T23:46:14Z",
+        "event" : "dataSourceMetrics",
+        "id" : "C3BDDD4A-FE7C-4FC1-BDE5-04FA6058E8C9",
+        "subtitle" : "6 Classes, 125 Items",
+        "title" : "Data Summary"
+      },
+      {
+        "createdDate" : "2026-06-17T23:56:01Z",
+        "event" : "dataSourceMetrics",
+        "id" : "BAC13E58-2BF9-42AF-9425-89F849097463",
+        "subtitle" : "6 Classes, 486 Items",
+        "title" : "Data Summary"
+      }
+    ],
+    "dataSourceTrainingStarted",
+    [
+      {
+        "createdDate" : "2026-06-17T23:46:14Z",
+        "event" : "dataSourceTrainingStarted",
+        "id" : "F37DB124-DD74-4225-9DA8-9004370A4DC7",
+        "subtitle" : "createml-test1 1",
+        "title" : "Used By"
+      },
+      {
+        "createdDate" : "2026-06-17T23:56:01Z",
+        "event" : "dataSourceTrainingStarted",
+        "id" : "ADD22224-274D-430B-9A1E-0B34B7001B71",
+        "subtitle" : "createml-test1 1 copy",
+        "title" : "Used By"
+      }
+    ],
+    "dataSourceCreated",
+    [
+      {
+        "createdDate" : "2026-06-17T23:44:28Z",
+        "event" : "dataSourceCreated",
+        "id" : "63A53DA1-2383-4C3A-82E5-C65FE01C0698",
+        "subtitle" : "mood.json",
+        "title" : "Data Source Created"
+      }
+    ]
+  ],
+  "createdDate" : "2026-06-17T23:44:28Z",
+  "dataPathRelativeToProjectURL" : "../mood.json/",
+  "dataResult" : {
+    "classesCount" : 6,
+    "createdDate" : "2026-06-17T23:44:28Z",
+    "dataAnalysis" : {
+      "classifierAnalysis" : {
+        "labelStats" : {
+          "flat" : 69,
+          "good" : 70,
+          "great" : 70,
+          "low" : 70,
+          "none" : 138,
+          "okay" : 69
+        }
+      },
+      "issues" : [
+        {
+          "description" : "6 classes found, including none, low, great",
+          "severity" : "debug"
+        },
+        {
+          "description" : "486 texts found, automatically creating validation set",
+          "severity" : "good"
+        },
+        {
+          "description" : "Smallest class is \"flat\" with 69 texts",
+          "severity" : "debug"
+        },
+        {
+          "description" : "Largest class is \"none\" with 138 text",
+          "severity" : "debug"
+        }
+      ],
+      "objectDetectorAnalysis" : {
+        "details" : {
+
+        }
+      },
+      "summary" : {
+        "canUseValidation" : 1,
+        "classCount" : 6,
+        "sampleCount" : 486
+      }
+    },
+    "dataSourceID" : "4D0A31A4-7631-4BAE-8CE4-00766983BD2E",
+    "dataURL" : "file:///Users/caesargrey/Projects/app-four/spikes/createml-nlmodel/corpus/mood.json",
+    "itemsCount" : 486
+  },
+  "dataURL" : "file:///Users/caesargrey/Projects/app-four/spikes/createml-nlmodel/corpus/mood.json",
+  "experimentIDs" : [
+    "DF833571-1E30-41A1-BD82-7BEF45E1ADE4",
+    "2BA41F2F-FEC4-4612-8BEC-9CF5629C51BD",
+    "32D15610-9DE8-41FE-8F55-BE12653EBC39"
+  ],
+  "id" : "4D0A31A4-7631-4BAE-8CE4-00766983BD2E",
+  "modifiedDate" : "2026-06-17T23:59:21Z",
+  "pathType" : 0,
+  "preferredFilename" : "mood.json",
+  "title" : "mood.json",
+  "version" : "1.0"
+}

@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Squirl · Calendar Day-Card — 22 proposals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F1E7; --surface:#FCF8EF; --surface2:#EFE8D8; --ink:#221E16; --muted:#7A7361;
+    --hair:#E3DAC7; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#7E5CA8; --sleep:#5683B8;
+  }
+  [data-theme="dark"]{
+    --bg:#14130F; --surface:#1E1C16; --surface2:#272419; --ink:#F3EEE0; --muted:#9A917C;
+    --hair:#322E22; --green:#6E9A58; --amber:#E8B255; --accent:#D4A24A; --med:#9277BE; --sleep:#6E8DAE;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;line-height:1.5;transition:background .35s,color .35s}
+
+  /* ---- page chrome ---- */
+  .topbar{position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:14px 26px;background:color-mix(in srgb,var(--bg) 86%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--hair)}
+  .topbar h1{font-family:"Fraunces",serif;font-weight:500;font-size:22px;letter-spacing:-.01em;margin:0}
+  .topbar .sub{font-size:12.5px;color:var(--muted)}
+  .toggle{font-family:"DM Sans";font-size:12.5px;font-weight:600;color:var(--ink);background:var(--surface);border:1px solid var(--hair);border-radius:999px;padding:8px 15px;cursor:pointer}
+  .legend{display:flex;flex-wrap:wrap;gap:7px;padding:14px 26px 4px;max-width:1500px;margin:0 auto}
+  .lg{display:flex;align-items:center;gap:7px;font-size:11.5px;color:var(--muted);background:var(--surface);border:1px solid var(--hair);border-radius:999px;padding:5px 11px}
+  .lg b{color:var(--ink);font-weight:700}
+  .lg .dn{font-family:"IBM Plex Mono",monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--accent)}
+
+  /* ---- section bands ---- */
+  .section-band{max-width:1500px;margin:10px auto 0;padding:24px 26px 2px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-top:1px solid var(--hair)}
+  .section-band:first-of-type{border-top:none}
+  .section-band h2{font-family:"Fraunces",serif;font-weight:500;font-size:26px;margin:0;letter-spacing:-.01em}
+  .section-band span{font-size:12.5px;color:var(--muted);max-width:62ch}
+
+  /* ---- proposal grid ---- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:30px 26px;max-width:1500px;margin:0 auto;padding:18px 26px 30px}
+  .proposal{display:flex;flex-direction:column;gap:12px}
+  .phd{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+  .phd .ltr{font-family:"Fraunces",serif;font-weight:600;font-size:19px;color:var(--accent)}
+  .phd .nm{font-family:"Fraunces",serif;font-weight:500;font-size:19px;letter-spacing:-.01em}
+  .phd .dn{font-family:"IBM Plex Mono",monospace;font-size:9.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border:1px solid var(--hair);border-radius:5px;padding:2px 6px}
+  .phd .desc{flex-basis:100%;font-size:12.5px;color:var(--muted);margin-top:-1px}
+
+  /* phone canvas — paper bg, the screen the cards live on */
+  .canvas{background:var(--bg);border:1px solid var(--hair);border-radius:26px;padding:16px 14px 22px;
+    box-shadow:0 1px 0 color-mix(in srgb,var(--ink) 4%,transparent),0 18px 40px -24px color-mix(in srgb,var(--ink) 40%,transparent)}
+  .canvas-h{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:2px 6px 12px;display:flex;justify-content:space-between}
+  .stack{display:flex;flex-direction:column;gap:14px}
+
+  /* ---- shared card primitives ---- */
+  .card{position:relative;border-radius:20px;background:var(--surface);border:1px solid var(--hair);
+    box-shadow:0 1px 2px color-mix(in srgb,var(--ink) 5%,transparent);overflow:hidden}
+  .card .wash{position:absolute;inset:0;pointer-events:none}
+  .card .pad{position:relative;padding:16px}
+  .dlabel{font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+  .summary{font-size:13.5px;color:var(--ink);line-height:1.42}
+  .summary.muted{color:var(--muted)}
+  .time{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted)}
+  .ttl{font-size:14px;font-weight:600}
+  .word{font-size:14.5px;font-weight:600}
+  .gstrip{display:flex;align-items:flex-end;gap:9px}
+  .gcell{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .gcell .gn{font-family:"IBM Plex Mono",monospace;font-size:9px;color:var(--muted)}
+  .gline{display:inline-flex;align-items:flex-end;gap:6px}
+
+  /* chips */
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--surface2);border:1px solid var(--hair);color:var(--muted)}
+  .chip.fe{color:var(--green);background:color-mix(in srgb,var(--green) 10%,transparent);border-color:color-mix(in srgb,var(--green) 26%,transparent)}
+  .chip.se{color:var(--amber);background:color-mix(in srgb,var(--amber) 12%,transparent);border-color:color-mix(in srgb,var(--amber) 30%,transparent)}
+  .gchip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500}
+  .medpill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;
+    padding:4px 11px 4px 8px;border-radius:999px;color:var(--med);background:color-mix(in srgb,var(--med) 13%,transparent);border:1px solid color-mix(in srgb,var(--med) 32%,transparent)}
+  .ic{width:15px;height:15px;display:inline-flex;flex:0 0 auto}
+  .medpill .ic{width:15px;height:15px;display:flex}
+  .sleep{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted)}
+  .sleep .ic{width:16px;height:16px;display:flex;color:var(--sleep)}
+
+  /* timeline bead + disc */
+  .bead{display:flex;flex-direction:column;align-items:center}
+  .dot{width:11px;height:11px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1.5px currentColor}
+  .conn{width:1.5px;flex:1;background:var(--hair);margin-top:2px;min-height:18px}
+  .row{display:flex;gap:12px}
+  .mooddot{width:9px;height:9px;border-radius:50%;flex:0 0 auto}
+  .disc{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;flex:0 0 auto}
+
+  /* metric bars (Daylio expanded) */
+  .bars{display:flex;flex-direction:column;gap:7px}
+  .mbar{display:flex;align-items:center;gap:9px}
+  .mbar .ml{font-size:11px;font-weight:600;color:var(--muted);width:48px;flex:0 0 48px}
+  .mbar .mt{flex:1;height:6px;border-radius:4px;background:var(--surface2);overflow:hidden}
+  .mbar .mf{display:block;height:100%;border-radius:4px}
+  .mbar .mv{font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--muted);width:26px;text-align:right}
+
+  /* time-gutter / rail (Structured) */
+  .rail{display:flex;flex-direction:column;align-items:center;flex:0 0 auto}
+  .rconn{width:1.5px;flex:1;background:var(--hair);margin-top:3px;min-height:14px}
+  .railrow{display:flex;gap:11px;align-items:flex-start}
+  .railrow .tcol{width:42px;flex:0 0 42px;padding-top:13px}
+  .railrow .rbody{flex:1;padding-bottom:14px}
+  .nowline{display:flex;align-items:center;gap:7px;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--accent);margin:2px 0 8px 53px}
+  .nowline::before{content:"";flex:1;height:1px;background:color-mix(in srgb,var(--accent) 40%,transparent)}
+
+  /* pill node (Structured) */
+  .pillnode{display:flex;align-items:center;gap:11px;background:var(--surface2);border:1px solid var(--hair);border-radius:16px;padding:9px 12px}
+
+  /* part-of-day (Tiimo) */
+  .pod{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.05em;color:var(--muted);background:var(--surface2);border:1px solid var(--hair);border-radius:999px;padding:4px 11px}
+  .pod .podic{display:flex;color:var(--accent)}
+
+  /* two-up tiles */
+  .twoup{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .tile{display:flex;flex-direction:column;background:var(--surface2);border:1px solid var(--hair);border-radius:14px;padding:11px}
+
+  /* ribbon edge */
+  .ribbonrow{display:flex;gap:11px;align-items:stretch}
+  .ribbon{width:4px;border-radius:999px;flex:0 0 4px}
+
+  /* nested mini-card */
+  .subcard{background:var(--surface2);border:1px solid var(--hair);border-radius:14px;padding:12px}
+
+  /* segmented stat strip */
+  .segs{display:flex;gap:14px;margin-top:9px}
+  .seg{display:inline-flex;align-items:center;gap:4px}
+  .seg .sl{font-size:10px;font-weight:700;color:var(--muted)}
+  .seg .sd{width:7px;height:7px;border-radius:2px}
+
+  /* ---- Round 3 · Structured continuous spine ---- */
+  .lsup{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .ltitle{font-family:"Fraunces",serif;font-weight:600;font-size:19px;letter-spacing:-.01em;line-height:1.1;margin-top:1px}
+  .lmeta{font-size:11.5px;color:var(--muted);margin-top:5px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .lmeta .gline{transform:translateY(2px)}
+  /* W Ledger */
+  .wled{display:flex;flex-direction:column}
+  .wrow{display:flex;gap:12px}
+  .wrail{width:22px;flex:0 0 22px;display:flex;flex-direction:column;align-items:center}
+  .wdisc{border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .wconn{width:2px;flex:1;background:var(--hair);margin-top:3px;min-height:10px}
+  .wconn.med{background:color-mix(in srgb,var(--med) 50%,var(--hair))}
+  .wmark{display:flex;gap:12px;align-items:stretch}
+  .wmark .wrail{justify-content:center}
+  .wdash{width:0;border-left:2px dashed var(--hair)}
+  .wdash.med{border-left-color:color-mix(in srgb,var(--med) 55%,var(--hair))}
+  .wlbl{display:flex;align-items:center;gap:6px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-style:italic;color:var(--muted);padding:5px 0}
+  .wbody{flex:1;padding-bottom:4px}
+  /* X On-Board */
+  .xrow{display:flex;gap:12px}
+  .xrail{width:30px;flex:0 0 30px;display:flex;flex-direction:column;align-items:center}
+  .xpill{border-radius:999px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;border:1px solid var(--hair)}
+  .xconn{width:3px;flex:1;min-height:16px;border-radius:3px;background:repeating-linear-gradient(var(--hair) 0 3px,transparent 3px 7px);margin-top:3px}
+  .xconn.med{background:repeating-linear-gradient(color-mix(in srgb,var(--med) 60%,transparent) 0 3px,transparent 3px 7px);box-shadow:0 0 9px 3px color-mix(in srgb,var(--med) 24%,transparent)}
+  .xbody{flex:1;min-width:0;padding-bottom:8px}
+  .xtop{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--muted)}
+  .xtop .ic{width:15px;height:15px;display:inline-flex;color:var(--sleep)}
+  /* Y Capsule rail */
+  .ycap{display:flex;flex-direction:column}
+  .yrow{display:flex;gap:13px}
+  .yrail{width:30px;flex:0 0 30px;display:flex;flex-direction:column;align-items:center}
+  .ybulge{border-radius:999px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;z-index:1}
+  .ypinch{width:3px;flex:1;min-height:18px;border-radius:3px;background:var(--surface2)}
+  .ypinch.med{background:linear-gradient(color-mix(in srgb,var(--med) 42%,var(--surface2)),color-mix(in srgb,var(--med) 18%,var(--surface2)))}
+  .ybody{flex:1;min-width:0;padding-bottom:8px}
+  .yfoot{display:flex;gap:13px;align-items:center;margin-top:2px}
+  .ybedfoot{width:30px;flex:0 0 30px;display:flex;justify-content:center}
+  .ybedcap{width:18px;border-radius:999px;background:color-mix(in srgb,var(--sleep) 20%,var(--surface));display:inline-flex;align-items:center;justify-content:center;color:var(--sleep);padding:9px 0}
+  .ybedcap .ic{width:15px;height:15px;display:inline-flex}
+
+  /* ---- Round 4/5 · X & Y family variations ---- */
+  .mi{display:inline-flex;align-items:center;gap:4px}
+  .r4conn{width:3px;flex:1;min-height:14px;border-radius:3px;background:var(--hair);margin-top:3px}
+  .r4conn.dash{background:repeating-linear-gradient(var(--hair) 0 3px,transparent 3px 7px)}
+  .r4conn.med{background:color-mix(in srgb,var(--med) 52%,transparent);box-shadow:0 0 9px 3px color-mix(in srgb,var(--med) 20%,transparent)}
+  .r4conn.med.dash{background:repeating-linear-gradient(color-mix(in srgb,var(--med) 55%,transparent) 0 3px,transparent 3px 7px)}
+  .rnode{border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:transparent}
+  .rnode.dose{box-shadow:0 0 13px 4px color-mix(in srgb,var(--med) 38%,transparent)}
+  /* X3 band */
+  .bandconn{width:6px;flex:1;min-height:16px;border-radius:6px;margin-top:0;background:linear-gradient(color-mix(in srgb,var(--med) 10%,transparent),color-mix(in srgb,var(--med) 42%,transparent) 20%,color-mix(in srgb,var(--med) 42%,transparent) 82%,color-mix(in srgb,var(--med) 8%,transparent));box-shadow:0 0 10px 3px color-mix(in srgb,var(--med) 16%,transparent)}
+  .bandhead{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--med);display:inline-flex;align-items:center;gap:5px}
+  .bandhead .ic{width:13px;height:13px}
+  /* Y1 riverbed */
+  .yneck{width:18px;flex:1;min-height:16px;background:var(--surface2);clip-path:polygon(28% 0,72% 0,58% 50%,72% 100%,28% 100%,42% 50%)}
+  .yneck.med{background:linear-gradient(color-mix(in srgb,var(--med) 34%,var(--surface2)),color-mix(in srgb,var(--med) 20%,var(--surface2)))}
+  .ydawn{width:18px;height:20px;border-radius:999px;background:color-mix(in srgb,var(--sleep) 24%,var(--surface));display:inline-flex;align-items:center;justify-content:center;color:var(--sleep);flex:0 0 auto}
+  .ydawn .ic{width:13px;height:13px}
+  /* Y2 bookend */
+  .yfat{width:8px;flex:1;min-height:12px;background:var(--surface2)}
+  .yfat.med{box-shadow:inset 0 0 0 1.6px color-mix(in srgb,var(--med) 50%,transparent)}
+  .ynotch{width:8px;flex:1;min-height:18px;background:var(--surface2);position:relative}
+  .ynotch.med{box-shadow:inset 0 0 0 1.6px color-mix(in srgb,var(--med) 45%,transparent)}
+  .ynotch::before{content:"";position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:50%;background:var(--surface);transform:translate(-50%,-50%)}
+  .ycap2{width:8px;height:13px;border-radius:999px;background:color-mix(in srgb,var(--sleep) 26%,var(--surface));flex:0 0 auto}
+  /* Y3 vine */
+  .vstem{width:5px;flex:1;min-height:16px;border-radius:3px;background:color-mix(in srgb,var(--green) 26%,var(--surface2));margin-top:0}
+  .vstem.med{background:linear-gradient(color-mix(in srgb,var(--med) 40%,var(--surface2)),color-mix(in srgb,var(--med) 18%,var(--surface2)))}
+  .vbud{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .vroot{width:22px;height:18px;border-radius:55% 55% 50% 50%;background:color-mix(in srgb,var(--sleep) 26%,var(--surface));display:inline-flex;align-items:center;justify-content:center;color:var(--sleep);flex:0 0 auto}
+  .vroot .ic{width:13px;height:13px}
+
+  .note{font-size:12px;color:var(--muted);font-style:italic;font-family:"Fraunces",serif}
+</style>
+</head>
+<body>
+  <div class="topbar">
+    <div>
+      <h1>Calendar · Day-card</h1>
+      <div class="sub">31 proposals · day-aggregate · Paper &amp; Pollen · same example data · R3 = Structured spine · R4 = X (On-Board) variations · R5 = Y (Capsule) variations</div>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">☾ Dark</button>
+  </div>
+
+  <div class="legend">
+    <span class="lg"><span class="dn">unit</span> <b>1 card = 1 day</b>, check-ins inside</span>
+    <span class="lg"><span class="dn">posture</span> no faces · no streaks · no “days missing” nags · meds never alarm</span>
+    <span class="lg"><span class="dn">fixed</span> calendar grid above is unchanged (DESIGN.md)</span>
+    <span class="lg"><span class="dn">tip</span> hit Dark to check both schemes</span>
+  </div>
+
+  <div id="board"></div>
+
+<script>
+/* ============================================================
+   DESIGN-SYSTEM GLYPHS  (verbatim from squirl-design-system.html)
+   ============================================================ */
+function gMood(hex,level,base){ const s=base+level*3, fo=(0.42+level*0.145).toFixed(2), o=level>=4, w=o?Math.round(s*1.15):s; return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${level>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${level>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`; }
+function gEnergy(hex,level,base){ const s=base+level*2.8, op=(0.35+level*0.15).toFixed(2), sw=(0.9+level*0.16).toFixed(2); return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`; }
+function gFocus(hex,level,base){ const s=base+level*2.4, cx=12, cy=13, d=level<=2?'stroke-dasharray="3 3"':''; let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+level*0.12).toFixed(2)}" ${d}/>`; if(level>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+level*0.11).toFixed(2)}"/>`; if(level>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`; if(level>=3){const dr=((level-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+level*0.1).toFixed(2)}"/>`;} return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`; }
+function ic_capsule(c){ return `<svg viewBox="0 0 24 24" width="100%" height="100%"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.7"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.3"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.22"/></g></svg>`; }
+function ic_bed(c){ return `<svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a2 2 0 0 1 2-2h9a4 4 0 0 1 4 4v4"/><path d="M3 14h18"/><path d="M6.5 10V8.6a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V10"/></svg>`; }
+
+/* part-of-day glyphs (Paper & Pollen line style) */
+const podIcon={
+  sun:`<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.5 5.5l1.4 1.4M17.1 17.1l1.4 1.4M18.5 5.5l-1.4 1.4M6.9 17.1l-1.4 1.4"/></svg>`,
+  sunset:`<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h18"/><path d="M7.5 18a4.5 4.5 0 0 1 9 0"/><path d="M12 4v3M4.8 10.8l1.4 1.4M19.2 10.8l-1.4 1.4"/></svg>`,
+  moon:`<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A8 8 0 1 1 11.2 3a6 6 0 0 0 9.8 9.8z"/></svg>`
+};
+
+/* ramps + named scales (DESIGN.md) */
+const RAMP={
+  mood:['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'],
+  energy:['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'],
+  focus:['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'],
+};
+const NAMES={
+  mood:['Rough','Low','Okay','Good','Great'],
+  energy:['Drained','Low','Steady','High','Wired'],
+  focus:['Foggy','Scattered','Okay','Sharp','Locked in'],
+};
+const mC=l=>RAMP.mood[l-1], eC=l=>RAMP.energy[l-1], fC=l=>RAMP.focus[l-1];
+const avg=arr=>arr.reduce((a,b)=>a+b,0)/arr.length;
+const avgMoodLvl=ci=>Math.round(avg(ci.map(c=>c.mood)));
+const moodWord=l=>NAMES.mood[l-1];
+const sleepLevel=c=>c.sleepQ?({Restless:2,Light:3,Fair:3,Good:4,Deep:5}[c.sleepQ]||3):null;
+const POD=t=>{const h=+t.slice(0,2);return h<12?['Morning','sun']:h<17?['Afternoon','sunset']:['Evening','moon'];};
+
+/* inline glyph helpers */
+const gM=(l,b=13)=>gMood(mC(l),l,b);
+const gE=(l,b=13)=>gEnergy(eC(l),l,b);
+const gF=(l,b=13)=>gFocus(fC(l),l,b);
+const cap=()=>`<span class="ic">${ic_capsule('currentColor')}</span>`;
+const bed=()=>`<span class="ic" style="width:15px;height:15px;display:inline-flex;color:var(--sleep)">${ic_bed('currentColor')}</span>`;
+
+/* composite helpers */
+function disc(level,size){const c=mC(level);return `<span class="disc" style="width:${size}px;height:${size}px;background:${c}22;color:${c}">${gMood(c,level,Math.round(size*0.40))}</span>`;}
+function token(level,size){const c=mC(level),r=(size-6)/2,circ=2*Math.PI*r,frac=level/5;return `<span class="disc" style="position:relative;width:${size}px;height:${size}px;background:${c}1A;color:${c}"><svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="position:absolute;inset:0"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--hair)" stroke-width="3"/><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${c}" stroke-width="3" stroke-linecap="round" stroke-dasharray="${(circ*frac).toFixed(1)} ${circ.toFixed(1)}" transform="rotate(-90 ${size/2} ${size/2})"/></svg>${gMood(c,level,Math.round(size*0.34))}</span>`;}
+function bar(label,level,hex){return `<div class="mbar"><span class="ml">${label}</span><span class="mt"><span class="mf" style="width:${(level/5*100).toFixed(0)}%;background:${hex}"></span></span><span class="mv">${level}/5</span></div>`;}
+function seg(label,level,hex){return `<span class="seg"><span class="sl">${label}</span>${[1,2,3,4,5].map(i=>`<span class="sd" style="background:${i<=level?hex:'var(--hair)'}"></span>`).join('')}</span>`;}
+function spark(levels){const w=64,h=18,n=levels.length;if(n<2)return '';const x=i=>(i/(n-1)*w).toFixed(1),y=l=>(h-(l-1)/4*h).toFixed(1);const pts=levels.map((l,i)=>`${x(i)},${y(l)}`).join(' ');return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><polyline points="${pts}" fill="none" stroke="var(--accent)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>${levels.map((l,i)=>`<circle cx="${x(i)}" cy="${y(l)}" r="2.1" fill="${mC(l)}"/>`).join('')}</svg>`;}
+
+/* header colour: deep on light, bright on dark (mix with --ink, which flips by theme) */
+const headColor=l=>`color-mix(in srgb, ${mC(l)} 80%, var(--ink))`;
+const washStyle=l=>`background:${mC(l)};opacity:.14`;
+function card(avgLvl,inner){return `<div class="card"><div class="wash" style="${washStyle(avgLvl)}"></div><div class="pad">${inner}</div></div>`;}
+
+/* ============================================================
+   EXAMPLE DATA — one busy day (3 check-ins + a dose) + one quiet day
+   ============================================================ */
+const DAYS=[
+  { label:'Today · Tue 16 Jun',
+    checkins:[
+      {time:'08:40', title:'Morning', mood:2, energy:2, focus:2, sleepH:6, sleepQ:'Restless',
+       feelings:['anxious','foggy'], side:[], med:null,
+       summary:'Woke up groggy, dreading the standup. Slept badly.'},
+      {time:'13:15', title:'Midday', mood:4, energy:4, focus:4, sleepH:null, sleepQ:null,
+       feelings:['focused','calm'], side:[], med:{name:'Concerta',dose:'36mg'},
+       summary:'Meds kicked in — knocked out the whole backlog.'},
+      {time:'21:30', title:'Evening', mood:3, energy:2, focus:3, sleepH:null, sleepQ:null,
+       feelings:['restless'], side:['appetite loss'], med:null,
+       summary:'Wired but tired by night, couldn’t eat much dinner.'},
+    ]},
+  { label:'Mon 15 Jun',
+    checkins:[
+      {time:'19:50', title:'Evening', mood:5, energy:4, focus:3, sleepH:8, sleepQ:'Deep',
+       feelings:['grateful'], side:[], med:null,
+       summary:'Great day — long walk by the river, felt like myself.'},
+    ]},
+];
+
+/* ============================================================
+   ROUND 1 — A–H  (minimal → rich)
+   ============================================================ */
+function A(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:12px">${day.label}</div>
+  ${day.checkins.map(c=>`
+    <div class="row" style="align-items:center;padding:6px 0">
+      <span class="gline">${gM(c.mood,13)}</span><span class="word">${moodWord(c.mood)}</span>
+      <span style="flex:1"></span><span class="time">${c.time}</span>
+    </div>`).join('')}
+`);}
+
+function H(day){const a=avgMoodLvl(day.checkins);const ci=day.checkins;const sleep=ci.find(c=>c.sleepH);const dose=ci.find(c=>c.med);
+  return card(a,`
+  <div class="row" style="align-items:center;gap:11px;margin-bottom:13px">
+    <span class="gline">${gM(a,18)}</span>
+    <div style="flex:1">
+      <div class="dlabel" style="color:${headColor(a)};font-size:12px">${day.label}</div>
+      <div style="font-size:12px;color:var(--muted)">Mostly ${moodWord(a).toLowerCase()} · ${ci.length} check-in${ci.length>1?'s':''}</div>
+    </div>
+    ${sleep?`<span class="sleep">${bed()} ${sleep.sleepH}h</span>`:''}
+    ${dose?`<span class="medpill" style="padding:4px 9px">${cap()}</span>`:''}
+  </div>
+  <div style="display:flex;flex-direction:column;gap:9px">
+  ${ci.map(c=>`
+    <div class="row" style="align-items:center;gap:9px">
+      <span class="mooddot" style="background:${mC(c.mood)}"></span><span class="word" style="font-size:13px">${moodWord(c.mood)}</span>
+      <span class="gline" style="opacity:.9">${gE(c.energy,10)}${gF(c.focus,10)}</span>
+      <span style="flex:1"></span><span class="time">${c.time}</span>
+    </div>`).join('')}
+  </div>
+`);}
+
+function B(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:13px">
+    <span class="dlabel" style="color:${headColor(a)}">${day.label}</span>
+    <span class="time">${day.checkins.length} check-in${day.checkins.length>1?'s':''}</span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:15px">
+  ${day.checkins.map(c=>`
+    <div class="row">
+      <span class="gline" style="padding-top:1px">${gM(c.mood,15)}</span>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span class="ttl">${moodWord(c.mood)}</span><span class="time">${c.time}</span></div>
+        <div class="summary muted" style="margin-top:2px">${c.summary}</div>
+      </div>
+    </div>`).join('')}
+  </div>
+`);}
+
+function C(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:14px">${day.label}</div>
+  ${day.checkins.map((c,i)=>`
+    <div class="row">
+      <div class="bead" style="color:${mC(c.mood)}"><span class="dot"></span>${i<day.checkins.length-1?'<span class="conn"></span>':''}</div>
+      <div style="flex:1;padding-bottom:${i<day.checkins.length-1?'16px':'0'}">
+        <div style="display:flex;align-items:center;gap:10px"><span class="gline">${gM(c.mood,13)}${gE(c.energy,12)}${gF(c.focus,12)}</span><span style="flex:1"></span><span class="time">${c.time}</span></div>
+        ${c.med?`<div style="margin-top:9px"><span class="medpill">${cap()} Taken ${c.med.name} ${c.med.dose}</span></div>`:''}
+      </div>
+    </div>`).join('')}
+`);}
+
+function D(day){const a=avgMoodLvl(day.checkins);const sleep=day.checkins.find(c=>c.sleepH);return card(a,`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <span class="dlabel" style="color:${headColor(a)}">${day.label}</span>
+    ${sleep?`<span class="sleep">${bed()} ${sleep.sleepH}h · ${sleep.sleepQ}</span>`:''}
+  </div>
+  <div style="display:flex;flex-direction:column;gap:14px">
+  ${day.checkins.map(c=>`
+    <div>
+      <div style="display:flex;align-items:flex-end;gap:14px">
+        <span class="time" style="width:42px">${c.time}</span>
+        <div class="gstrip" style="flex:1;justify-content:space-around">
+          <span class="gcell">${gM(c.mood,12)}<span class="gn">${c.mood} mood</span></span>
+          <span class="gcell">${gE(c.energy,12)}<span class="gn">${c.energy} engy</span></span>
+          <span class="gcell">${gF(c.focus,12)}<span class="gn">${c.focus} focus</span></span>
+        </div>
+      </div>
+      <div class="summary muted" style="margin-top:8px;font-size:12.5px">${c.summary}</div>
+    </div>`).join('')}
+  </div>
+`);}
+
+function E(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:14px">${day.label}</div>
+  <div style="display:flex;flex-direction:column;gap:16px">
+  ${day.checkins.map(c=>`
+    <div>
+      <div style="font-family:'Fraunces',serif;font-weight:500;font-size:16.5px;line-height:1.28;letter-spacing:-.01em">${c.summary}</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:7px"><span class="mooddot" style="background:${mC(c.mood)}"></span><span style="font-size:12px;color:var(--muted)">${moodWord(c.mood)}</span><span class="gline" style="opacity:.85">${gE(c.energy,10)}${gF(c.focus,10)}</span><span style="flex:1"></span><span class="time">${c.time}</span></div>
+    </div>`).join('')}
+  </div>
+`);}
+
+function G(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:14px">${day.label}</div>
+  <div style="display:flex;flex-direction:column;gap:13px">
+  ${day.checkins.map(c=>`
+    <div style="display:flex;gap:13px;align-items:stretch">
+      <div style="flex:0 0 50px;display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:2px;border-right:1px solid var(--hair)"><span class="time">${c.time}</span><span class="gline">${gM(c.mood,16)}</span></div>
+      <div style="flex:1;min-width:0">
+        <div class="summary">${c.summary}</div>
+        <div style="display:flex;align-items:center;gap:9px;margin-top:8px;flex-wrap:wrap">
+          <span class="gline" style="opacity:.9">${gE(c.energy,11)}${gF(c.focus,11)}</span>
+          ${c.med?`<span class="medpill">${cap()} ${c.med.name} ${c.med.dose}</span>`:''}
+          ${c.feelings.map(f=>`<span class="chip fe">${f}</span>`).join('')}
+          ${c.side.map(s=>`<span class="chip se">${s}</span>`).join('')}
+        </div>
+      </div>
+    </div>`).join('')}
+  </div>
+`);}
+
+function F(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px">
+    <span class="dlabel" style="color:${headColor(a)}">${day.label}</span>
+    <span class="time">${day.checkins.length} check-in${day.checkins.length>1?'s':''}</span>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:16px">
+  ${day.checkins.map((c,i)=>`
+    <div style="${i<day.checkins.length-1?'border-bottom:1px solid var(--hair);padding-bottom:16px':''}">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:9px"><span class="gline">${gM(c.mood,15)}</span><span class="ttl">${moodWord(c.mood)}</span><span style="flex:1"></span><span class="time">${c.time}</span></div>
+      <div class="gstrip" style="gap:16px;margin-bottom:9px">
+        <span class="gcell">${gE(c.energy,12)}<span class="gn">${NAMES.energy[c.energy-1]}</span></span>
+        <span class="gcell">${gF(c.focus,12)}<span class="gn">${NAMES.focus[c.focus-1]}</span></span>
+        ${c.sleepH?`<span class="gcell">${bed()}<span class="gn">${c.sleepH}h ${c.sleepQ}</span></span>`:''}
+      </div>
+      <div class="summary muted" style="margin-bottom:9px">${c.summary}</div>
+      <div class="chips">
+        ${c.med?`<span class="medpill">${cap()} Taken ${c.med.name} ${c.med.dose}</span>`:''}
+        ${c.feelings.map(f=>`<span class="chip fe">${f}</span>`).join('')}
+        ${c.side.map(s=>`<span class="chip se">${s}</span>`).join('')}
+      </div>
+    </div>`).join('')}
+  </div>
+`);}
+
+/* ============================================================
+   ROUND 2 — I–V  (inspired by Structured · Tiimo · Daylio)
+   ============================================================ */
+
+// I · Mood-word hero (Daylio)
+function I(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:13px">${day.label}</div>
+  <div style="display:flex;flex-direction:column;gap:16px">
+  ${day.checkins.map(c=>`
+    <div>
+      <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:'Fraunces',serif;font-weight:600;font-size:22px;color:${mC(c.mood)};letter-spacing:-.01em">${moodWord(c.mood).toLowerCase()}</span><span class="time">${c.time}</span></div>
+      <div class="chips" style="margin-top:8px;gap:10px">
+        ${c.feelings.map(f=>`<span class="gchip" style="color:${mC(c.mood)}">${gM(c.mood,8)} ${f}</span>`).join('')}
+        ${c.med?`<span class="medpill">${cap()} ${c.med.name} ${c.med.dose}</span>`:''}
+        ${c.side.map(s=>`<span class="chip se">${s}</span>`).join('')}
+      </div>
+    </div>`).join('')}
+  </div>
+`);}
+
+// J · Metric bars (Daylio expanded)
+function J(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:13px">${day.label}</div>
+  <div style="display:flex;flex-direction:column;gap:15px">
+  ${day.checkins.map((c,i)=>{const sl=sleepLevel(c);return `
+    <div style="${i<day.checkins.length-1?'border-bottom:1px solid var(--hair);padding-bottom:14px':''}">
+      <div style="display:flex;align-items:baseline;gap:9px;margin-bottom:10px"><span style="font-family:'Fraunces',serif;font-weight:600;font-size:19px;color:${mC(c.mood)}">${moodWord(c.mood).toLowerCase()}</span><span class="time">${c.time}</span><span style="flex:1"></span>${c.med?`<span class="medpill">${cap()} ${c.med.name}</span>`:''}</div>
+      <div class="bars">
+        ${bar('Mood',c.mood,mC(c.mood))}
+        ${bar('Energy',c.energy,eC(c.energy))}
+        ${bar('Focus',c.focus,fC(c.focus))}
+        ${sl?bar('Sleep',sl,'var(--sleep)'):''}
+      </div>
+    </div>`;}).join('')}
+  </div>
+`);}
+
+// K · Disc-node timeline (Structured)
+function K(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:14px">${day.label}</div>
+  ${day.checkins.map((c,i)=>`
+    <div class="row">
+      <span class="rail">${disc(c.mood,44)}${i<day.checkins.length-1?'<span class="rconn"></span>':''}</span>
+      <div style="flex:1;padding-bottom:${i<day.checkins.length-1?'16px':'0'}">
+        <div style="display:flex;align-items:baseline;gap:8px"><span class="word" style="font-size:16px;color:${mC(c.mood)}">${moodWord(c.mood)}</span><span style="flex:1"></span><span class="time">${c.time}</span></div>
+        <div class="summary muted" style="margin-top:4px">${c.summary}</div>
+        ${c.med?`<div style="margin-top:8px"><span class="medpill">${cap()} ${c.med.name} ${c.med.dose}</span></div>`:''}
+      </div>
+    </div>`).join('')}
+`);}
+
+// L · Time-gutter + calm now-line (Structured)
+function L(day){const a=avgMoodLvl(day.checkins);const today=/Today/.test(day.label);let nl=false;
+  const rows=day.checkins.map((c,i)=>{let pre='';if(today&&!nl&&c.time>'19:21'){nl=true;pre=`<div class="nowline">now · 19:21</div>`;}
+    return pre+`
+    <div class="railrow">
+      <span class="time tcol">${c.time}</span>
+      <span class="rail">${disc(c.mood,38)}${i<day.checkins.length-1?'<span class="rconn"></span>':''}</span>
+      <div class="rbody">
+        <div style="display:flex;align-items:baseline;gap:8px"><span class="word" style="color:${mC(c.mood)}">${moodWord(c.mood)}</span>${c.med?`<span class="time">· ${c.med.name} ${c.med.dose}</span>`:''}</div>
+        <div class="summary muted" style="margin-top:3px;font-size:12.5px">${c.summary}</div>
+      </div>
+    </div>`;}).join('');
+  return card(a,`<div class="dlabel" style="color:${headColor(a)};margin-bottom:14px">${day.label}</div>${rows}`);}
+
+// M · Pill-node agenda (Structured)
+function M(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:13px">${day.label}</div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+  ${day.checkins.map(c=>`
+    <div class="pillnode">
+      ${disc(c.mood,40)}
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:baseline;gap:8px"><span class="word" style="color:${mC(c.mood)}">${moodWord(c.mood)}</span><span class="time">${c.time}</span></div>
+        <div class="summary muted" style="margin-top:2px;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.summary}</div>
+      </div>
+      ${c.med?`<span class="medpill" style="flex:0 0 auto;padding:4px 9px">${cap()}</span>`:''}
+    </div>`).join('')}
+  </div>
+`);}
+
+// N · Part-of-day sections (Tiimo)
+function N(day){const a=avgMoodLvl(day.checkins);const groups={};
+  day.checkins.forEach(c=>{const r=POD(c.time);if(!groups[r[0]])groups[r[0]]={ic:r[1],items:[]};groups[r[0]].items.push(c);});
+  return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:12px">${day.label}</div>
+  ${Object.entries(groups).map(([lab,g])=>`
+    <div class="pod"><span class="podic">${podIcon[g.ic]}</span>${lab.toUpperCase()} · ${g.items.length}</div>
+    <div style="display:flex;flex-direction:column;gap:8px;margin:8px 0 14px">
+    ${g.items.map(c=>`
+      <div class="row" style="align-items:center;gap:10px"><span class="gline">${gM(c.mood,12)}</span><span class="word" style="font-size:13.5px">${moodWord(c.mood)}</span><span class="gline" style="opacity:.85">${gE(c.energy,9)}${gF(c.focus,9)}</span><span style="flex:1"></span><span class="time">${c.time}</span></div>`).join('')}
+    </div>`).join('')}
+`);}
+
+// O · Day sparkline (new)
+function O(day){const a=avgMoodLvl(day.checkins);const lv=day.checkins.map(c=>c.mood);return card(a,`
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <span class="dlabel" style="color:${headColor(a)}">${day.label}</span>
+    ${lv.length>1?spark(lv):`<span class="gline">${gM(a,12)}</span>`}
+  </div>
+  <div style="display:flex;flex-direction:column;gap:11px">
+  ${day.checkins.map(c=>`
+    <div class="row" style="align-items:center;gap:10px"><span class="mooddot" style="background:${mC(c.mood)}"></span><span class="word" style="font-size:13.5px">${moodWord(c.mood)}</span><span style="flex:1"></span><span class="time">${c.time}</span></div>`).join('')}
+  </div>
+`);}
+
+// P · Mood ribbon edge (new)
+function P(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:13px">${day.label}</div>
+  <div style="display:flex;flex-direction:column;gap:10px">
+  ${day.checkins.map(c=>`
+    <div class="ribbonrow">
+      <span class="ribbon" style="background:${mC(c.mood)}"></span>
+      <div style="flex:1;min-width:0;padding:2px 0">
+        <div style="display:flex;align-items:baseline;gap:8px"><span class="word" style="font-size:14px">${moodWord(c.mood)}</span><span class="gline" style="opacity:.85">${gE(c.energy,9)}${gF(c.focus,9)}</span><span style="flex:1"></span><span class="time">${c.time}</span></div>
+        <div class="summary muted" style="margin-top:3px;font-size:12.5px">${c.summary}</div>
+      </div>
+    </div>`).join('')}
+  </div>
+`);}
+
+// Q · Two-up tiles (new)
+function Q(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:12px">${day.label}</div>
+  <div class="twoup">
+  ${day.checkins.map(c=>`
+    <div class="tile">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start"><span class="gline">${gM(c.mood,15)}</span><span class="time">${c.time}</span></div>
+      <span class="word" style="color:${mC(c.mood)};font-size:14px;margin-top:6px">${moodWord(c.mood)}</span>
+      <span class="gline" style="opacity:.85;margin-top:5px">${gE(c.energy,10)}${gF(c.focus,10)}</span>
+    </div>`).join('')}
+  </div>
+`);}
+
+// R · Headline + dek (Daylio × editorial)
+function R(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:14px">${day.label}</div>
+  <div style="display:flex;flex-direction:column;gap:17px">
+  ${day.checkins.map(c=>`
+    <div>
+      <div style="display:flex;align-items:baseline;gap:9px"><span style="font-family:'Fraunces',serif;font-weight:600;font-size:20px;color:${mC(c.mood)};letter-spacing:-.01em">${moodWord(c.mood)}</span><span style="flex:1"></span><span class="time">${c.time}</span></div>
+      <div class="summary" style="margin-top:5px">${c.summary}</div>
+      <div class="gline" style="margin-top:8px;opacity:.9;align-items:center">${gM(c.mood,11)}${gE(c.energy,11)}${gF(c.focus,11)}${c.med?`<span class="medpill" style="margin-left:6px">${cap()} ${c.med.name}</span>`:''}</div>
+    </div>`).join('')}
+  </div>
+`);}
+
+// S · Single-glance row (new, max frictionless)
+function S(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:11px">${day.label}</div>
+  <div style="display:flex;flex-direction:column">
+  ${day.checkins.map((c,i)=>{const sl=sleepLevel(c);return `
+    <div class="row" style="align-items:center;gap:10px;padding:9px 0;${i<day.checkins.length-1?'border-bottom:1px solid var(--hair)':''}">
+      ${disc(c.mood,30)}
+      <span class="word" style="font-size:13.5px;min-width:50px;color:${mC(c.mood)}">${moodWord(c.mood)}</span>
+      <span class="gline" style="opacity:.85;align-items:center">${gE(c.energy,9)}${gF(c.focus,9)}${sl?bed():''}</span>
+      <span style="flex:1"></span>
+      ${c.med?`<span class="medpill" style="padding:3px 8px">${cap()}</span>`:''}
+      <span class="time">${c.time}</span>
+    </div>`;}).join('')}
+  </div>
+`);}
+
+// T · Nested mini-cards (new)
+function T(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:11px">${day.label}</div>
+  <div style="display:flex;flex-direction:column;gap:9px">
+  ${day.checkins.map(c=>`
+    <div class="subcard">
+      <div style="display:flex;align-items:center;gap:9px"><span class="gline">${gM(c.mood,13)}</span><span class="word" style="font-size:13.5px;color:${mC(c.mood)}">${moodWord(c.mood)}</span><span style="flex:1"></span><span class="time">${c.time}</span></div>
+      <div class="summary muted" style="margin-top:6px;font-size:12.5px">${c.summary}</div>
+      ${(c.feelings.length||c.med||c.side.length)?`<div class="chips" style="margin-top:8px">${c.med?`<span class="medpill">${cap()} ${c.med.name} ${c.med.dose}</span>`:''}${c.feelings.map(f=>`<span class="chip fe">${f}</span>`).join('')}${c.side.map(s=>`<span class="chip se">${s}</span>`).join('')}</div>`:''}
+    </div>`).join('')}
+  </div>
+`);}
+
+// U · Segmented stats (Daylio × digest)
+function U(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="dlabel" style="color:${headColor(a)};margin-bottom:13px">${day.label}</div>
+  <div style="display:flex;flex-direction:column;gap:15px">
+  ${day.checkins.map(c=>{const sl=sleepLevel(c);return `
+    <div>
+      <div style="display:flex;align-items:baseline;gap:9px"><span class="word" style="font-size:14px;color:${mC(c.mood)}">${moodWord(c.mood)}</span><span style="flex:1"></span><span class="time">${c.time}</span></div>
+      <div class="summary muted" style="margin-top:3px;font-size:12.5px">${c.summary}</div>
+      <div class="segs">${seg('E',c.energy,eC(c.energy))}${seg('F',c.focus,fC(c.focus))}${sl?seg('S',sl,'var(--sleep)'):''}</div>
+    </div>`;}).join('')}
+  </div>
+`);}
+
+// V · Day token + rows (new — token reusable in the calendar grid)
+function V(day){const a=avgMoodLvl(day.checkins);return card(a,`
+  <div class="row" style="align-items:center;gap:12px;margin-bottom:13px">
+    ${token(a,48)}
+    <div><div class="dlabel" style="color:${headColor(a)};font-size:12.5px">${day.label}</div><div style="font-size:12px;color:var(--muted)">Avg ${moodWord(a).toLowerCase()} · ${day.checkins.length} check-in${day.checkins.length>1?'s':''}</div></div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:9px">
+  ${day.checkins.map(c=>`
+    <div class="row" style="align-items:center;gap:10px"><span class="mooddot" style="background:${mC(c.mood)}"></span><span class="word" style="font-size:13px">${moodWord(c.mood)}</span><span class="gline" style="opacity:.8">${gE(c.energy,9)}${gF(c.focus,9)}</span><span style="flex:1"></span><span class="time">${c.time}</span></div>`).join('')}
+  </div>
+`);}
+
+/* ============================================================
+   ROUND 3 — W·X·Y  (Structured continuous spine)
+   ============================================================ */
+const PODname=t=>POD(t)[0];
+function discWhite(level,size){const c=mC(level);return `<span class="wdisc" style="width:${size}px;height:${size}px;background:${c}">${gMood('#FFF8EE',level,Math.round(size*0.34))}</span>`;}
+function pillNode(level,w,h){const c=mC(level);return `<span class="xpill" style="width:${w}px;height:${h}px;background:${c}22;border-color:${c}66">${gMood(c,level,Math.round(h*0.32))}</span>`;}
+function bulge(level,w,h){const c=mC(level);return `<span class="ybulge" style="width:${w}px;height:${h}px;background:${c}">${gMood('#FFF8EE',level,Math.round(h*0.30))}</span>`;}
+const gapHrs=(t1,t2)=>{const p=s=>{const[a,b]=s.split(':').map(Number);return a*60+b;};return Math.max(0,Math.floor((p(t2)-p(t1))/60));};
+const titleTint=l=>`color-mix(in srgb, ${mC(l)} 80%, var(--ink))`;
+function metaText(c){const parts=[];
+  parts.push(`<span class="gline">${gE(c.energy,10)}</span> ${NAMES.energy[c.energy-1]}`);
+  parts.push(`<span class="gline">${gF(c.focus,10)}</span> ${NAMES.focus[c.focus-1]}`);
+  if(c.feelings.length)parts.push(c.feelings.join(' · '));
+  if(c.med)parts.push(`<span class="gline" style="color:var(--med)">${cap()}</span> ${c.med.name} ${c.med.dose}`);
+  if(c.side.length)parts.push(c.side.join(' · '));
+  return parts.map(p=>`<span style="display:inline-flex;align-items:center;gap:4px">${p}</span>`).join('<span style="opacity:.4">·</span>');
+}
+
+// W · Ledger Spine — hairline + discs, dashed gaps (length ∝ duration), purple med overdraw, inline markers
+function W(day){const a=avgMoodLvl(day.checkins);const ci=day.checkins;const doseIdx=ci.findIndex(c=>c.med);const sleep=ci.find(c=>c.sleepH);
+  let rows='';
+  if(sleep)rows+=`<div class="wmark"><div class="wrail"><span class="wdash" style="min-height:18px"></span></div><div class="wlbl">${bed()} ${sleep.sleepH}h ${sleep.sleepQ.toLowerCase()}</div></div>`;
+  ci.forEach((c,i)=>{const onboard=doseIdx>=0&&i>=doseIdx;const last=i===ci.length-1;
+    rows+=`<div class="wrow"><div class="wrail">${discWhite(c.mood,20)}${!last?`<span class="wconn ${onboard?'med':''}"></span>`:''}</div>
+      <div class="wbody"><div class="lsup">${c.time} · ${PODname(c.time).toUpperCase()}</div><div class="ltitle" style="color:${titleTint(c.mood)}">${moodWord(c.mood)}</div><div class="lmeta">${metaText(c)}</div></div></div>`;
+    if(!last){const h=gapHrs(c.time,ci[i+1].time);const ml=Math.min(44,Math.max(16,h*4));
+      rows+=`<div class="wmark"><div class="wrail"><span class="wdash ${onboard?'med':''}" style="min-height:${ml}px"></span></div><div class="wlbl">— ${h}h quiet —</div></div>`;}
+  });
+  return card(a,`<div class="dlabel" style="color:${headColor(a)};margin-bottom:12px">${day.label}</div><div class="wled">${rows}</div>`);
+}
+
+// X · On-Board Spine — single rail that turns medication-purple (with haze) across the dose window
+function X(day){const a=avgMoodLvl(day.checkins);const ci=day.checkins;const doseIdx=ci.findIndex(c=>c.med);const sleep=ci.find(c=>c.sleepH);
+  let rows='';
+  if(sleep)rows+=`<div class="xtop"><span class="ic">${ic_bed('currentColor')}</span> slept ${sleep.sleepH}h ${sleep.sleepQ.toLowerCase()}</div>`;
+  ci.forEach((c,i)=>{const onboard=doseIdx>=0&&i>=doseIdx;const last=i===ci.length-1;
+    rows+=`<div class="xrow"><div class="xrail">${pillNode(c.mood,22,32)}${c.med?`<span style="width:13px;height:13px;color:var(--med);margin-top:-5px;z-index:2">${ic_capsule('currentColor')}</span>`:''}${!last?`<span class="xconn ${onboard?'med':''}"></span>`:''}</div>
+      <div class="xbody"><div class="lsup">${PODname(c.time).toUpperCase()} · ${c.time}</div><div class="ltitle" style="font-size:17px;color:${titleTint(c.mood)}">${moodWord(c.mood)}</div>
+        <div class="summary muted" style="font-size:12.5px;margin-top:2px">${c.summary}</div>
+        <div class="lmeta" style="margin-top:6px">${c.med?`<span style="display:inline-flex;align-items:center;gap:4px"><span class="gline" style="color:var(--med)">${cap()}</span> ${c.med.name} ${c.med.dose}</span>`:''}${c.feelings.map(f=>`<span class="chip fe">${f}</span>`).join('')}${c.side.map(s=>`<span class="chip se">${s}</span>`).join('')}</div>
+      </div></div>`;
+  });
+  return card(a,`<div class="dlabel" style="color:${headColor(a)};margin-bottom:12px">${day.label}</div>${rows}`);
+}
+
+// Y · Margin-Rail Capsule — fat capsule rail; pills bulge out, gaps pinch the waist, day rests on a blue bed-foot
+function Y(day){const a=avgMoodLvl(day.checkins);const ci=day.checkins;const doseIdx=ci.findIndex(c=>c.med);const sleep=ci.find(c=>c.sleepH);
+  let rows='';
+  ci.forEach((c,i)=>{const onboard=doseIdx>=0&&i>=doseIdx;const last=i===ci.length-1;const h=last?0:gapHrs(c.time,ci[i+1].time);
+    rows+=`<div class="yrow"><div class="yrail">${bulge(c.mood,24,32)}${c.med?`<span style="width:12px;height:12px;color:var(--med);margin-top:-4px;z-index:2">${ic_capsule('currentColor')}</span>`:''}${!last?`<span class="ypinch ${onboard?'med':''}" style="min-height:${Math.min(46,Math.max(18,h*4))}px"></span>`:''}</div>
+      <div class="ybody" style="padding-bottom:${last?'2px':'8px'}"><div class="lsup">${PODname(c.time).toUpperCase()} · ${c.time}</div><div class="ltitle" style="font-size:17px">${moodWord(c.mood)}</div>
+        <div class="summary muted" style="font-size:12.5px;margin-top:2px">${c.summary}</div>
+        ${(c.med||c.side.length)?`<div class="lmeta" style="margin-top:6px">${c.med?`<span style="display:inline-flex;align-items:center;gap:4px"><span class="gline" style="color:var(--med)">${cap()}</span> ${c.med.name} ${c.med.dose}</span>`:''}${c.side.map(s=>`<span class="chip se">${s}</span>`).join('')}</div>`:''}
+      </div></div>`;
+  });
+  if(sleep)rows+=`<div class="yfoot"><div class="ybedfoot"><span class="ybedcap"><span class="ic">${ic_bed('currentColor')}</span></span></div><div class="ybody"><div class="lsup" style="color:var(--sleep)">Slept</div><div style="font-size:13px;font-weight:600">${sleep.sleepH}h · ${sleep.sleepQ.toLowerCase()}</div></div></div>`;
+  return card(a,`<div class="dlabel" style="color:${headColor(a)};margin-bottom:12px">${day.label}</div><div class="ycap">${rows}</div>`);
+}
+
+/* ============================================================
+   ROUND 4 & 5 — X-family (X1·X2·X3) and Y-family (Y1·Y2·Y3)
+   ============================================================ */
+function ringNode(level,size,thick){const c=mC(level);return `<span class="rnode" style="width:${size}px;height:${size}px;border:${thick}px solid ${c}">${gMood(c,level,Math.round(size*0.28))}</span>`;}
+function doseRing(level,size,thick){const c=mC(level);return `<span class="rnode dose" style="width:${size}px;height:${size}px;border:${thick}px solid ${c}"><span style="width:${Math.round(size*0.46)}px;height:${Math.round(size*0.46)}px;color:var(--med);display:inline-flex">${ic_capsule('currentColor')}</span></span>`;}
+function loz(level){const c=mC(level);return `<span style="width:12px;height:34px;border-radius:999px;flex:0 0 auto;background:linear-gradient(${c},color-mix(in srgb,var(--med) 50%,${c}) 42%,color-mix(in srgb,var(--med) 48%,transparent))"></span>`;}
+function leafBud(level,side){const c=mC(level);const r=side?'60% 60% 60% 12%':'60% 60% 12% 60%';return `<span class="vbud" style="width:22px;height:26px;border-radius:${r};background:${c}">${gMood('#FFF8EE',level,8)}</span>`;}
+function metaInline(c){
+  const E=`<span class="mi"><span class="gline">${gE(c.energy,10)}</span> ${NAMES.energy[c.energy-1]}</span>`;
+  const F=`<span class="mi"><span class="gline">${gF(c.focus,10)}</span> ${NAMES.focus[c.focus-1]}</span>`;
+  const M=c.med?`<span class="mi" style="color:var(--med)"><span class="gline" style="color:var(--med)">${cap()}</span> ${c.med.name} ${c.med.dose}</span>`:'';
+  const FE=c.feelings.map(f=>`<span class="chip fe">${f}</span>`).join('');
+  const SE=c.side.map(s=>`<span class="chip se">${s}</span>`).join('');
+  return E+F+M+FE+SE;
+}
+function rowBody(c){return `<div class="lsup">${PODname(c.time).toUpperCase()} · ${c.time}</div><div class="ltitle" style="font-size:17px;color:${titleTint(c.mood)}">${moodWord(c.mood)}</div><div class="summary muted" style="font-size:12.5px;margin-top:2px">${c.summary}</div><div class="lmeta" style="margin-top:6px">${metaInline(c)}</div>`;}
+const sleepTop=s=>s?`<div class="xtop"><span class="ic">${ic_bed('currentColor')}</span> slept ${s.sleepH}h ${s.sleepQ.toLowerCase()}</div>`:'';
+
+// X1 · Dose Bloom Ring — open rings; dose ring blooms purple, rail runs purple downstream
+function X1(day){const a=avgMoodLvl(day.checkins);const ci=day.checkins;const di=ci.findIndex(c=>c.med);const sleep=ci.find(c=>c.sleepH);
+  let rows=sleepTop(sleep);
+  ci.forEach((c,i)=>{const onb=di>=0&&i>=di;const last=i===ci.length-1;
+    rows+=`<div class="xrow"><div class="xrail">${c.med?doseRing(c.mood,26,2.5):ringNode(c.mood,20,2)}${!last?`<span class="r4conn ${onb?'med':''}"></span>`:''}</div><div class="xbody">${rowBody(c)}</div></div>`;});
+  return card(a,`<div class="dlabel" style="color:${headColor(a)};margin-bottom:10px">${day.label}</div>${rows}`);
+}
+
+// X2 · Inline Capsule Seam — the rail swells into a purple capsule at the dose (neutral→purple seam)
+function X2(day){const a=avgMoodLvl(day.checkins);const ci=day.checkins;const di=ci.findIndex(c=>c.med);const sleep=ci.find(c=>c.sleepH);
+  let rows=sleepTop(sleep);
+  ci.forEach((c,i)=>{const onb=di>=0&&i>=di;const last=i===ci.length-1;
+    rows+=`<div class="xrow"><div class="xrail">${c.med?loz(c.mood):discWhite(c.mood,16)}${!last?`<span class="r4conn ${onb?'med':''}"></span>`:''}</div><div class="xbody">${rowBody(c)}</div></div>`;});
+  return card(a,`<div class="dlabel" style="color:${headColor(a)};margin-bottom:10px">${day.label}</div>${rows}`);
+}
+
+// X3 · Dose-Band Spine — each dose = one discrete feathered purple band; count the bands
+function X3(day){const a=avgMoodLvl(day.checkins);const ci=day.checkins;const di=ci.findIndex(c=>c.med);const sleep=ci.find(c=>c.sleepH);
+  let rows=sleepTop(sleep);
+  ci.forEach((c,i)=>{const onb=di>=0&&i>=di;const last=i===ci.length-1;
+    const conn=last?'':(onb?`<span class="bandconn"></span>`:`<span class="r4conn dash"></span>`);
+    rows+=`<div class="xrow"><div class="xrail">${pillNode(c.mood,22,30)}${c.med?`<span style="width:12px;height:12px;color:var(--med);margin-top:-4px;z-index:2">${ic_capsule('currentColor')}</span>`:''}${conn}</div>
+      <div class="xbody">${rowBody(c)}${c.med?`<div style="margin-top:5px"><span class="bandhead"><span class="ic">${ic_capsule('currentColor')}</span> on board</span></div>`:''}</div></div>`;});
+  return card(a,`<div class="dlabel" style="color:${headColor(a)};margin-bottom:10px">${day.label}</div>${rows}`);
+}
+
+// Y1 · Riverbed Rail — fat rail flows, swelling at pills, necking between, from a blue dawn-source
+function Y1(day){const a=avgMoodLvl(day.checkins);const ci=day.checkins;const di=ci.findIndex(c=>c.med);const sleep=ci.find(c=>c.sleepH);
+  let rows='';
+  if(sleep)rows+=`<div class="xrow"><div class="xrail"><span class="ydawn"><span class="ic">${ic_bed('currentColor')}</span></span><span class="yneck"></span></div><div class="xbody" style="justify-content:center"><div class="lsup" style="color:var(--sleep)">Dawn · slept</div><div style="font-size:13px;font-weight:600">${sleep.sleepH}h ${sleep.sleepQ.toLowerCase()}</div></div></div>`;
+  ci.forEach((c,i)=>{const onb=di>=0&&i>=di;const last=i===ci.length-1;
+    rows+=`<div class="xrow"><div class="xrail">${bulge(c.mood,20,30)}${!last?`<span class="yneck ${onb?'med':''}"></span>`:''}</div><div class="xbody">${rowBody(c)}</div></div>`;});
+  return card(a,`<div class="dlabel" style="color:${headColor(a)};margin-bottom:10px">${day.label}</div>${rows}`);
+}
+
+// Y2 · Bookend Lozenge — one sealed lozenge, blue caps both ends, notch gaps, purple rim on the med
+function Y2(day){const a=avgMoodLvl(day.checkins);const ci=day.checkins;const di=ci.findIndex(c=>c.med);const sleep=ci.find(c=>c.sleepH);
+  let rows='';
+  if(sleep)rows+=`<div class="xrow"><div class="xrail"><span class="ycap2"></span><span class="yfat"></span></div><div class="xbody" style="justify-content:center"><div class="lsup" style="color:var(--sleep)"><span class="ic" style="width:13px;height:13px;vertical-align:-2px;display:inline-flex">${ic_bed('currentColor')}</span> slept</div><div style="font-size:12.5px">${sleep.sleepH}h ${sleep.sleepQ.toLowerCase()}</div></div></div>`;
+  ci.forEach((c,i)=>{const onb=di>=0&&i>=di;const last=i===ci.length-1;
+    rows+=`<div class="xrow"><div class="xrail"><span class="yfat ${onb?'med':''}" style="flex:0 0 auto;height:6px"></span>${bulge(c.mood,22,30)}${!last?`<span class="ynotch ${onb?'med':''}"></span>`:''}</div><div class="xbody">${rowBody(c)}</div></div>`;});
+  rows+=`<div class="xrow"><div class="xrail"><span class="yfat"></span><span class="ycap2"></span></div><div class="xbody"></div></div>`;
+  return card(a,`<div class="dlabel" style="color:${headColor(a)};margin-bottom:10px">${day.label}</div>${rows}`);
+}
+
+// Y3 · Growing Vine — leaf-buds off a green stem, growing up from a blue sleep root; dose = rising purple sap
+function Y3(day){const a=avgMoodLvl(day.checkins);const ci=day.checkins;const di=ci.findIndex(c=>c.med);const doseT=di>=0?ci[di].time:null;const sleep=ci.find(c=>c.sleepH);
+  const onb=c=>!!doseT&&c.time>=doseT;
+  const R=[...ci].reverse();
+  let rows='';
+  R.forEach((c,i)=>{const last=i===R.length-1;const side=i%2===0;const nx=R[i+1];const medSeg=onb(c)||(!!nx&&onb(nx));
+    rows+=`<div class="xrow"><div class="xrail">${leafBud(c.mood,side)}${!last?`<span class="vstem ${medSeg?'med':''}"></span>`:''}</div><div class="xbody">${rowBody(c)}</div></div>`;});
+  if(sleep)rows+=`<div class="xrow"><div class="xrail"><span class="vstem"></span><span class="vroot"><span class="ic">${ic_bed('currentColor')}</span></span></div><div class="xbody" style="justify-content:center"><div class="lsup" style="color:var(--sleep)">Rooted · slept</div><div style="font-size:12.5px">${sleep.sleepH}h ${sleep.sleepQ.toLowerCase()}</div></div></div>`;
+  return card(a,`<div class="dlabel" style="color:${headColor(a)};margin-bottom:10px">${day.label}</div>${rows}`);
+}
+
+/* ============================================================
+   ASSEMBLE
+   ============================================================ */
+const ROUND1=[
+  ['A','Whisper','Minimal','One line per check-in — sprout, mood word, time. The quietest scan.',A],
+  ['H','Day digest','Light','Day-level summary (avg mood, count, sleep, dose) then terse mini-rows.',H],
+  ['B','Daylio wash','Light','Refined current — mood sprout + a one-line summary, mood-tinted card.',B],
+  ['E','Editorial','Medium','The AI summary in Fraunces is the hero; signals demoted to a meta strip.',E],
+  ['C','Timeline thread','Medium','Closest to today — bead+connector, mood·energy·focus trio, “Taken” pill.',C],
+  ['D','Signal trio','Med-rich','Aligned glyph columns with numerals; sleep in header.',D],
+  ['G','Split rail','Rich','Left rail (time + sprout) vs right (summary + signals + chips).',G],
+  ['F','Full signal','Rich','Everything visible — banner, signal row, sleep, med pill, feeling & side chips.',F],
+];
+const ROUND2=[
+  ['I','Mood-word hero','Light','Daylio core — the mood word, big and colored, with glyph feeling-chips. (Daylio)',I],
+  ['J','Metric bars','Rich','Mood / energy / focus / sleep as labeled ramp-colored bars. (Daylio expanded)',J],
+  ['K','Disc-node timeline','Medium','Big mood-glyph disc nodes + connector; word + summary. (Structured)',K],
+  ['L','Time-gutter + now-line','Medium','Left time column anchored to when it happened, with a calm “now” marker. (Structured)',L],
+  ['M','Pill-node agenda','Light','Each check-in a horizontal pill: disc + mood word + one-line summary. (Structured)',M],
+  ['N','Part-of-day sections','Medium','Check-ins grouped under Morning / Afternoon / Evening. (Tiimo)',N],
+  ['O','Day sparkline','Light','Header carries a mini mood sparkline — the day’s arc at a glance. (new)',O],
+  ['P','Mood ribbon edge','Medium','A colored mood band on each row’s left edge; scan the day by color. (new)',P],
+  ['Q','Two-up tiles','Light','Check-ins as compact square tiles; busy days stay short. (new)',Q],
+  ['R','Headline + dek','Medium','Fraunces mood word as headline, summary as dek, glyph footer. (Daylio × editorial)',R],
+  ['S','Single-glance row','Minimal','One line each: disc · word · mini glyphs · time. Max frictionless. (new)',S],
+  ['T','Nested mini-cards','Medium','Each check-in its own inset card inside the day. Clear separation. (new)',T],
+  ['U','Segmented stats','Med-rich','Word + summary + a compact E / F / S segmented strip. (Daylio × digest)',U],
+  ['V','Day token + rows','Light','A radial mood token (reusable in the calendar grid) + terse rows. (new)',V],
+];
+
+function cardCol([ltr,nm,dn,desc,fn]){return `
+  <div class="proposal">
+    <div class="phd"><span class="ltr">${ltr}</span><span class="nm">${nm}</span><span class="dn">${dn}</span><span class="desc">${desc}</span></div>
+    <div class="canvas"><div class="canvas-h"><span>9:41</span><span>Calendar</span></div><div class="stack">${DAYS.map(d=>fn(d)).join('')}</div></div>
+  </div>`;}
+
+const ROUND3=[
+  ['W','Ledger Spine','Type-led','Hairline spine + tiny mood discs; gray time-supheadings over bold mood-word titles. Gaps go dashed (length ∝ duration), the med window tints the spine purple, sleep/quiet sit inline. (Structured)',W],
+  ['X','On-Board Spine','Color-led','One rail that turns medication-purple (with a soft outside haze) across the dose window — the connecting line IS the med instrument. Pill nodes, sleep at top, dashed quiet gaps. (Structured)',X],
+  ['Y','Margin-Rail Capsule','Form-led','A fat capsule rail: check-ins bulge out as pills, quiet gaps pinch the waist, the day rests on a blue bed-foot; the med dose is a purple band inside the rail. (Structured)',Y],
+];
+const ROUND4=[
+  ['X1','Dose Bloom Ring','On-Board · X','Open mood rings; the dose ring blooms purple (point-source) and the rail runs purple downstream. (X variation)',X1],
+  ['X2','Inline Capsule Seam','On-Board · X','The rail itself swells into a purple capsule at the dose — onset is the neutral→purple seam. (X variation)',X2],
+  ['X3','Dose-Band Spine','On-Board · X','Each dose = one discrete feathered purple band on the rail; count the bands, no numbers. (X variation)',X3],
+];
+const ROUND5=[
+  ['Y1','Riverbed Rail','Capsule · Y','One fat rail flows like a river: swells at each check-in, necks between, springs from a wide blue dawn-source. (Y variation)',Y1],
+  ['Y2','Bookend Lozenge','Capsule · Y','One sealed lozenge capped blue at BOTH ends; pills bulge, quiet gaps notch, the med dips the rim purple. (Y variation)',Y2],
+  ['Y3','Growing Vine','Capsule · Y','A living stem: check-ins are leaf-buds, growing up from a blue sleep root; the dose rises as purple sap. (Y variation)',Y3],
+];
+const GROUPS=[
+  ['Round 1','Your first 8 — minimal → rich.',ROUND1],
+  ['Round 2','14 new — IA mined from Structured · Tiimo · Daylio, translated into Paper & Pollen. No faces, no streak/“days-missing” nags, no urgency.',ROUND2],
+  ['Round 3','3 takes on the Structured full-timeline — a continuous spine with solid / dashed / pinched gaps, inline sleep & quiet markers, and a medication-purple spine that feathers to nothing. Distinct heroes: typography (W) · color (X) · form (Y).',ROUND3],
+  ['Round 4 · X family','3 variations on On-Board Spine (X) — the connecting rail encodes the medication window by colour. Three different instruments: point-source bloom (X1) · rail-geometry seam (X2) · countable feathered bands (X3).',ROUND4],
+  ['Round 5 · Y family','3 variations on Margin-Rail Capsule (Y) — one fat continuous rail read as a single organism. Three different forms: flowing river (Y1) · sealed bookend lozenge (Y2) · climbing vine (Y3).',ROUND5],
+];
+
+document.getElementById('board').innerHTML = GROUPS.map(([t,s,list])=>`
+  <div class="section-band"><h2>${t}</h2><span>${s}</span></div>
+  <div class="grid">${list.map(cardCol).join('')}</div>
+`).join('');
+
+function toggleTheme(){
+  const b=document.body, dark=b.getAttribute('data-theme')==='dark';
+  b.setAttribute('data-theme',dark?'light':'dark');
+  document.querySelector('.toggle').textContent=dark?'☾ Dark':'☀ Light';
+}
+</script>
+</body>
+</html>

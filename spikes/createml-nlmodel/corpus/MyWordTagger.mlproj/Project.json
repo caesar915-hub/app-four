@@ -1,0 +1,29 @@
+{
+  "activityEntities" : [
+    "projectCreated",
+    [
+      {
+        "createdDate" : "2026-06-18T11:54:08Z",
+        "event" : "projectCreated",
+        "id" : "79B7602E-3358-4920-839C-ED3DE6D781B0",
+        "subtitle" : "MyWordTagger",
+        "title" : "Project Created"
+      }
+    ]
+  ],
+  "authorName" : "Joao Cesar",
+  "createdDate" : "2026-06-18T11:54:08Z",
+  "description" : "",
+  "id" : "121D35EA-443B-495F-96B3-0D2111E4D6D1",
+  "license" : "",
+  "location" : "",
+  "modifiedDate" : "2026-06-18T11:54:08Z",
+  "projectName" : "MyWordTagger",
+  "settingsEntity" : {
+    "snapshotOnExtendTraining" : true,
+    "snapshotOnResumeTraining" : false
+  },
+  "taskType" : "wordTagger",
+  "title" : "Word Tagging",
+  "version" : "1.1"
+}

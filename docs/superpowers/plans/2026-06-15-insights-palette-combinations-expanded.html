@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Palette combinations — expanded (hue-checked) — 2026-06-15</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; background: #2b2b2e; color: #eee; padding: 32px 24px 80px; }
+  h1 { font-size: 22px; margin-bottom: 4px; }
+  h2.sect { font-size: 18px; margin: 40px 0 6px; }
+  p.sub { color: #aaa; font-size: 14px; margin-bottom: 18px; max-width: 860px; line-height: 1.5; }
+  p.sub b { color: #fff; }
+  code { background: #2e2e33; padding: 1px 6px; border-radius: 5px; font-size: 13px; color: #9ad0ff; }
+
+  .controls { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 14px 0 8px; }
+  .controls label { font-size: 13px; color: #cfcfd6; display: flex; align-items: center; gap: 8px; }
+  .controls input[type=range] { width: 200px; }
+  .pill { background: #1c1c20; border: 1px solid #34343c; border-radius: 999px; padding: 5px 12px; font-size: 12.5px; color: #cfcfd6; }
+  .pill b { color: #8eda9f; }
+
+  /* component library */
+  .lib { display: flex; gap: 24px; flex-wrap: wrap; }
+  .libcol { flex: 1; min-width: 300px; background: #000; border-radius: 20px; padding: 20px; }
+  .libcol h3 { font-family: "New York", "Iowan Old Style", Georgia, serif; font-size: 19px; margin-bottom: 14px; }
+  .ramp { margin-bottom: 14px; }
+  .ramp .head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+  .ramp .id { font-size: 14px; font-weight: 800; color: #fff; }
+  .ramp .id small { color: rgba(235,235,245,.6); font-weight: 600; margin-left: 6px; }
+  .ramp .steps { display: flex; gap: 4px; }
+  .ramp .steps i { flex: 1; height: 30px; border-radius: 8px; }
+
+  /* curated systems */
+  .row { display: flex; gap: 20px; flex-wrap: wrap; }
+  .sys { width: 360px; background: #000; border-radius: 22px; padding: 20px;
+         --text2: rgba(235,235,245,.6); }
+  .sys h3 { font-family: "New York", "Iowan Old Style", Georgia, serif; font-size: 20px; margin-bottom: 2px; }
+  .sys .combo { font-size: 12px; color: #9ad0ff; font-weight: 700; letter-spacing: .04em; margin-bottom: 10px; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .tag { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+  .tag.ship { background: rgba(142,218,159,.16); color: #8eda9f; }
+  .tag.recolor { background: rgba(232,176,106,.16); color: #e8b06a; }
+  .tag.head { background: rgba(154,208,255,.14); color: #9ad0ff; }
+  .test { background: #161618; border-radius: 14px; padding: 14px; }
+  .s { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+  .s .n { width: 52px; font-size: 12px; font-weight: 700; color: #fff; }
+  .beads { display: flex; gap: 4px; flex: 1; }
+  .beads i { flex: 1; height: 26px; border-radius: 8px; }
+  .medline { display: flex; align-items: center; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid #2a2a2e; }
+  .ring { width: 30px; height: 30px; border-radius: 50%; border: 3px solid #BF5AF2; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #BF5AF2; font-weight: 700; flex-shrink: 0; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 13px; font-size: 12px; font-weight: 600; background: rgba(191,90,242,.16); color: #BF5AF2; }
+  .chip::before { content: "💊"; font-size: 11px; }
+  .meta { font-size: 12.5px; color: var(--text2); margin-top: 12px; line-height: 1.45; }
+
+  .notes { max-width: 900px; margin-top: 40px; background: #1c1c20; border-radius: 16px; padding: 26px 30px; font-size: 14px; line-height: 1.65; color: #ccc; }
+  .notes h2 { font-size: 16px; margin-bottom: 10px; color: #fff; }
+  .notes b { color: #fff; }
+</style>
+</head>
+<body>
+
+<h1>Palette combinations — expanded</h1>
+<p class="sub">
+  8 mood × 8 energy × 8 focus ramps = <b>512 raw combinations</b>, filtered to those with no hue clash
+  between mood, energy, focus, <b>or the fixed medication purple</b>. Clash = any chromatic step within the
+  threshold° of another signal's step on the hue wheel — computed live from the hex values, not hand-picked.
+  Each card shows its <b>headroom</b> (the tightest gap between its signals): bigger = safer.
+</p>
+
+<div class="controls">
+  <label>Hue clash threshold
+    <input type="range" id="thresh" min="10" max="34" value="16" step="1">
+    <span class="pill"><b id="threshVal">16</b>°</span>
+  </label>
+  <label>Max per mood
+    <input type="range" id="permood" min="2" max="8" value="4" step="1">
+    <span class="pill"><b id="permoodVal">4</b></span>
+  </label>
+  <span class="pill" id="count">—</span>
+</div>
+
+<h2 class="sect">Part 1 — Component library (8 per signal)</h2>
+<p class="sub">Mood reads Low → Flat → Okay → Good → Great. Energy: Sluggish → Charged. Focus: Foggy → Locked-in.</p>
+<div class="lib" id="lib"></div>
+
+<h2 class="sect">Part 2 — Collision-free systems</h2>
+<p class="sub">Sorted by mood, then by headroom (cleanest first). <b>M1 Coast</b> is your shipped mood palette — M1 systems ship fastest; any other mood re-colors the calendar/library too. Call out a code (e.g. <code>M6 + E5 + F2</code>) and I'll render the full Insights screen in it.</p>
+<div class="row" id="systems"></div>
+
+<div class="notes">
+  <h2>How to use this page</h2>
+  1. Drag <b>threshold</b> up to be stricter (fewer, bolder-separated systems) or down to see tighter, more adventurous pairings.<br>
+  2. Each card's <span class="tag head" style="display:inline">headroom</span> is the smallest hue gap between its three signals + med purple. ≥45° very clean · 30–45° clean · &lt;30° relies on saturation + labels.<br>
+  3. <span class="tag ship" style="display:inline">ships fast</span> = M1 mood (already in production). <span class="tag recolor" style="display:inline">re-colors shipped views</span> = a new mood ramp, which also restyles the calendar timeline + mood library.<br>
+  4. Reply with a combo code and I'll build the complete Insights screen (dark + light) so finalists compete in real context — then we wire it into <code>Palette.swift</code> for v0.8.1.
+</div>
+
+<script>
+  // ---------- Ramp data (5 steps, low→high) ----------
+  const MOODS = {
+    M1: { name: "Coast",  c: ["#DA7964","#E89178","#7BCDB1","#85B9DF","#5179A8"] },
+    M2: { name: "Meadow", c: ["#C2503F","#DE8050","#E5C46A","#94C56F","#4CAF6E"] },
+    M3: { name: "Dusk",   c: ["#474A66","#5C6A8C","#7390AE","#8FB7D1","#B5DCEF"] },
+    M4: { name: "Heat",   c: ["#6E2F3C","#A6444A","#D4664E","#EF9355","#FFC97A"] },
+    M5: { name: "Bloom",  c: ["#B5536B","#E0856E","#ECC58A","#8FC9A0","#57B6A8"] },
+    M6: { name: "Tide",   c: ["#2E3A6E","#3D5C9A","#4E86B8","#5FB0C9","#82D9D0"] },
+    M7: { name: "Ember",  c: ["#41414A","#6E4038","#9E5538","#D07A45","#F2A95C"] },
+    M8: { name: "Sage",   c: ["#5A5E3A","#7E8B4E","#9DB36A","#79C49A","#57D0B4"] },
+  };
+  const ENERGIES = {
+    E1: { name: "Amber",   c: ["#7A5A40","#A1713F","#C98B43","#ECA64E","#FFC069"] },
+    E2: { name: "Voltage", c: ["#44546E","#4E6F94","#5889BA","#63A4E0","#79C4FF"] },
+    E3: { name: "Garnet",  c: ["#6B3A30","#8F4634","#B55438","#DA653E","#F97D4B"] },
+    E4: { name: "Gold",    c: ["#6E5A2E","#927839","#B89742","#DCB84C","#FBDA60"] },
+    E5: { name: "Lime",    c: ["#4A5A30","#65803C","#86A845","#A9CC52","#C9F062"] },
+    E6: { name: "Coral",   c: ["#6E4040","#9E5050","#C86464","#E87C7C","#FF9E9E"] },
+    E7: { name: "Cyan",    c: ["#365A5E","#3F7E80","#48A2A0","#52C4BE","#6BE6DC"] },
+    E8: { name: "Magenta", c: ["#5E3A52","#84466F","#B5548C","#DA63A6","#F97DBF"] },
+  };
+  const FOCUSES = {
+    F1: { name: "Teal",     c: ["#3A5258","#3F6E74","#44918F","#4BB8B4","#5FE0DA"] },
+    F2: { name: "Graphite", c: ["#3A3A3E","#58585E","#7E7E86","#ABABB5","#ECECF4"] },
+    F3: { name: "Jade",     c: ["#2F5240","#3A7355","#46966B","#54BA83","#69E09F"] },
+    F4: { name: "Ice",      c: ["#3D4E66","#4E6A8A","#6188AC","#79A8CE","#97CCF2"] },
+    F5: { name: "Emerald",  c: ["#244A38","#2E6A4C","#3A8C62","#48B07C","#5AD49A"] },
+    F6: { name: "Steel",    c: ["#404852","#566270","#6E7E90","#93A3B5","#C2D0E0"] },
+    F7: { name: "Pine",     c: ["#2C4A48","#356360","#3E827C","#4AA89E","#5CCEBE"] },
+    F8: { name: "Sand",     c: ["#4A463E","#6B6354","#928873","#BBB099","#E6DCC4"] },
+  };
+  const MED_HEX = "#BF5AF2"; // fixed medication purple
+
+  // ---------- Color math ----------
+  function toHSL(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    const r = (n >> 16) / 255, g = ((n >> 8) & 255) / 255, b = (n & 255) / 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+    let h = 0;
+    if (d !== 0) {
+      if (max === r) h = ((g - b) / d) % 6;
+      else if (max === g) h = (b - r) / d + 2;
+      else h = (r - g) / d + 4;
+      h *= 60; if (h < 0) h += 360;
+    }
+    const l = (max + min) / 2;
+    const s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+    return { h, s, l };
+  }
+  // hues of the chromatic steps only (skip near-gray / near-black / near-white)
+  function chromaticHues(ramp) {
+    return ramp.map(toHSL).filter(x => x.s > 0.22 && x.l > 0.18 && x.l < 0.92).map(x => x.h);
+  }
+  function circDist(a, b) { const d = Math.abs(a - b) % 360; return Math.min(d, 360 - d); }
+  function minGap(huesA, huesB) {
+    let m = 360;
+    for (const a of huesA) for (const b of huesB) m = Math.min(m, circDist(a, b));
+    return m;
+  }
+
+  const MED_HUES = chromaticHues([MED_HEX]);
+  // precompute hue sets
+  for (const dict of [MOODS, ENERGIES, FOCUSES]) for (const k in dict) dict[k].hues = chromaticHues(dict[k].c);
+
+  // ---------- Part 1: library ----------
+  function rampHTML(id, r) {
+    return `<div class="ramp">
+      <div class="head"><span class="id">${id}<small>${r.name}</small></span></div>
+      <div class="steps">${r.c.map(c => `<i style="background:${c}" title="${c}"></i>`).join("")}</div>
+    </div>`;
+  }
+  document.getElementById("lib").innerHTML = `
+    <div class="libcol"><h3>Mood</h3>${Object.entries(MOODS).map(([k,v]) => rampHTML(k,v)).join("")}</div>
+    <div class="libcol"><h3>Energy</h3>${Object.entries(ENERGIES).map(([k,v]) => rampHTML(k,v)).join("")}</div>
+    <div class="libcol"><h3>Focus</h3>${Object.entries(FOCUSES).map(([k,v]) => rampHTML(k,v)).join("")}</div>`;
+
+  // ---------- Part 2: generate ----------
+  const SEQ_MOOD   = [2,0,3,4,1,2,3];
+  const SEQ_ENERGY = [3,1,4,2,3,2,4];
+  const SEQ_FOCUS  = [3,0,4,2,3,4,2];
+  function lighten(hex, amt) {
+    const n = parseInt(hex.slice(1), 16);
+    const r = Math.min(255, (n >> 16) + amt), g = Math.min(255, ((n >> 8) & 255) + amt), b = Math.min(255, (n & 255) + amt);
+    return `rgb(${r},${g},${b})`;
+  }
+  function beadRow(label, ramp, seq) {
+    const beads = seq.map(i => `<i style="background:linear-gradient(160deg,${lighten(ramp[i],24)},${ramp[i]})"></i>`).join("");
+    return `<div class="s"><span class="n">${label}</span><div class="beads">${beads}</div></div>`;
+  }
+
+  function build() {
+    const THRESH = +document.getElementById("thresh").value;
+    const PERMOOD = +document.getElementById("permood").value;
+    document.getElementById("threshVal").textContent = THRESH;
+    document.getElementById("permoodVal").textContent = PERMOOD;
+
+    const valid = [];
+    for (const [mk, m] of Object.entries(MOODS)) {
+      for (const [ek, e] of Object.entries(ENERGIES)) {
+        for (const [fk, f] of Object.entries(FOCUSES)) {
+          // cross-signal gaps (mood↔energy, mood↔focus, energy↔focus) + each vs med
+          const gaps = [
+            minGap(m.hues, e.hues), minGap(m.hues, f.hues), minGap(e.hues, f.hues),
+            minGap(m.hues, MED_HUES), minGap(e.hues, MED_HUES), minGap(f.hues, MED_HUES),
+          ];
+          const headroom = Math.min(...gaps);
+          if (headroom >= THRESH) valid.push({ mk, ek, fk, m, e, f, headroom });
+        }
+      }
+    }
+    valid.sort((a, b) => a.mk === b.mk ? b.headroom - a.headroom : a.mk.localeCompare(b.mk));
+
+    // diversity cap: at most PERMOOD per mood
+    const perMoodCount = {}; const shown = [];
+    for (const v of valid) {
+      perMoodCount[v.mk] = (perMoodCount[v.mk] || 0) + 1;
+      if (perMoodCount[v.mk] <= PERMOOD) shown.push(v);
+    }
+
+    document.getElementById("count").innerHTML =
+      `<b>${shown.length}</b> shown · ${valid.length} collision-free of 512`;
+
+    document.getElementById("systems").innerHTML = shown.map(s => {
+      const ship = s.mk === "M1";
+      const cleanWord = s.headroom >= 45 ? "very clean" : s.headroom >= 30 ? "clean" : "tight";
+      return `<div class="sys">
+        <h3>${s.m.name} · ${s.e.name}/${s.f.name}</h3>
+        <div class="combo">${s.mk} + ${s.ek} + ${s.fk}</div>
+        <div class="tags">
+          <span class="tag ${ship ? "ship" : "recolor"}">${ship ? "ships fast" : "re-colors shipped views"}</span>
+          <span class="tag head">${Math.round(s.headroom)}° headroom · ${cleanWord}</span>
+        </div>
+        <div class="test">
+          ${beadRow("Mood", s.m.c, SEQ_MOOD)}
+          ${beadRow("Energy", s.e.c, SEQ_ENERGY)}
+          ${beadRow("Focus", s.f.c, SEQ_FOCUS)}
+          <div class="medline"><div class="ring">36</div><span class="chip">Concerta 36</span></div>
+        </div>
+        <div class="meta">${s.m.name} mood · ${s.e.name} energy · ${s.f.name} focus.</div>
+      </div>`;
+    }).join("");
+  }
+
+  document.getElementById("thresh").addEventListener("input", build);
+  document.getElementById("permood").addEventListener("input", build);
+  build();
+</script>
+
+</body>
+</html>

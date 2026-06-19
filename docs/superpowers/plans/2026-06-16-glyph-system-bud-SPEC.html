@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Squirl glyph system — Bud (botanical) — decision spec</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F6F1E7;--surface:#FCF8EF;--surface2:#EFE8D8;--ink:#221E16;--muted:#7A7361;--hair:#E3DAC7;--accent:#B8842A;--green:#5F8A4C;--med:#7E5CA8}
+  [data-theme="dark"]{--bg:#14130F;--surface:#1E1C16;--surface2:#272419;--ink:#F3EEE0;--muted:#9A917C;--hair:#322E22;--accent:#D4A24A;--green:#6E9A58;--med:#9277BE}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"DM Sans",system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:36px 24px 96px}
+  h1,h2,h3{font-family:"Fraunces",serif;font-weight:500;letter-spacing:-.01em;margin:0}
+  h1{font-size:34px}h2{font-size:22px;margin:0 0 4px}h3{font-size:15px;font-weight:600;margin:0}
+  p{margin:.5em 0;color:var(--muted);font-size:14px;max-width:76ch}
+  .lead{color:var(--ink);font-size:15px}
+  .status{display:inline-block;font-size:12px;font-weight:700;color:#fff;background:var(--green);border-radius:999px;padding:4px 12px;letter-spacing:.03em}
+  .toggle{position:fixed;top:16px;right:16px;z-index:9;border:1px solid var(--hair);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 16px;font:inherit;font-size:13px;cursor:pointer}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:18px;padding:22px 24px;margin:18px 0;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .num{font-family:"Fraunces",serif;color:var(--accent)}
+  .trio{display:flex;gap:10px;justify-content:center;background:var(--surface2);border-radius:14px;padding:18px 12px;margin:6px 0 16px}
+  .trio .t{flex:1;text-align:center;max-width:140px}
+  .trio svg{width:58px;height:58px;display:block;margin:0 auto 4px}
+  .tl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+  @media(max-width:760px){.grid3{grid-template-columns:1fr}}
+  .rtag{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 4px}
+  .ramp{display:flex;gap:4px;align-items:flex-end}
+  .cell{flex:1;text-align:center}
+  .cell svg{width:38px;height:38px;display:block;margin:0 auto 2px}
+  .lvl{font-size:9.5px;color:var(--muted)}
+  .lvl b{display:block;color:var(--ink);font-weight:600}
+  .construct{font-size:12.5px;color:var(--muted);margin-top:8px}
+  .swrow{display:flex;gap:3px;margin-top:6px}
+  .sw{flex:1;height:14px;border-radius:3px}
+  .single{display:flex;gap:24px;flex-wrap:wrap}
+  .single .s{display:flex;gap:14px;align-items:center;background:var(--surface2);border-radius:12px;padding:12px 18px}
+  .single svg{width:48px;height:48px}
+  .views{display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start}
+  /* phone frame */
+  .phone{width:300px;border-radius:30px;border:1px solid var(--hair);background:var(--surface);padding:14px 12px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+  .phone.dark{--surface:#1E1C16;--surface2:#272419;--ink:#F3EEE0;--muted:#9A917C;--hair:#322E22;--bg:#14130F;background:#14130F;color:#F3EEE0}
+  .phlabel{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:0 0 6px 4px}
+  .monthhdr{font-family:"Fraunces",serif;font-size:18px;margin:4px 6px 8px}
+  .weekstrip{display:flex;justify-content:space-between;padding:0 6px 10px;border-bottom:1px solid var(--hair);margin-bottom:10px}
+  .wd{text-align:center;font-size:11px;color:var(--muted);width:30px}
+  .wd .n{display:block;color:var(--ink);font-weight:600;margin-top:2px;font-size:13px}
+  .wd.sel .n{background:var(--ink);color:var(--surface);border-radius:999px;width:24px;height:24px;line-height:24px;margin:2px auto 0}
+  .entry{display:flex;gap:10px;align-items:flex-start;margin:12px 4px}
+  .ering{width:42px;height:42px;border-radius:999px;flex:none;display:grid;place-items:center;font-size:10px;font-weight:600}
+  .ering span{width:33px;height:33px;border-radius:999px;background:var(--surface);display:grid;place-items:center;font-size:9px}
+  .etime{font-size:10px;color:var(--muted);text-align:center;width:42px;flex:none;margin-top:3px}
+  .epill{flex:1}
+  .sigpill{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-radius:999px;padding:6px 12px}
+  .sig{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600}
+  .sig svg{width:20px;height:20px}
+  .tags{display:flex;gap:5px;flex-wrap:wrap;margin:6px 0 0 2px}
+  .tg{font-size:10.5px;color:var(--muted);background:var(--surface2);border-radius:999px;padding:3px 9px}
+  .tg.medtag{color:var(--med);background:color-mix(in srgb,var(--med) 14%,transparent)}
+  .tg.medtag svg{width:15px;height:15px;vertical-align:-3px;margin-right:3px}
+  /* picker */
+  .picker{display:flex;gap:6px;justify-content:space-between;max-width:300px}
+  .pk{text-align:center;flex:1}
+  .pk .ph{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;margin:0 auto}
+  .pk.cur .ph{box-shadow:0 0 0 2px var(--accent)}
+  .pk svg{width:38px;height:38px}
+  .pk .pl{font-size:10px;color:var(--muted);margin-top:3px}
+  .pickerlbl{font-size:13px;color:var(--ink);margin-top:8px}
+  .pickerlbl b{font-family:"Fraunces",serif}
+  .syn{color:var(--muted);font-size:12.5px}
+  table{border-collapse:collapse;width:100%;font-size:13px;margin-top:6px}
+  th,td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--hair);vertical-align:top}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .decided{color:var(--green);font-weight:600}
+  .proposed{color:var(--accent);font-weight:600}
+  ul{margin:.4em 0;padding-left:1.2em;font-size:14px;color:var(--muted)}
+  hr{height:1px;background:var(--hair);border:0;margin:30px 0}
+</style>
+</head>
+<body>
+<button class="toggle" onclick="document.documentElement.dataset.theme=document.documentElement.dataset.theme==='dark'?'light':'dark'">◐ theme</button>
+<div class="wrap">
+  <p style="color:var(--accent);font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:12px">Squirl · glyph system · decision spec · 2026-06-16</p>
+  <h1>The Bud glyph language</h1>
+  <p style="margin:10px 0"><span class="status">DECIDED · Bud botanical</span></p>
+  <p class="lead">One plant world for the three self-state signals: <b style="color:var(--ink)">Mood = sprout</b>, <b style="color:var(--ink)">Energy = seed pod</b>, <b style="color:var(--ink)">Focus = seedhead</b>. Replaces the old sprout/lightning/aperture set — the lightning and aperture came from unrelated visual worlds (weather, optics) and the aperture miscued as a camera. Bud makes the three read as one designed family while every glyph keeps its 1→5 ramp encoded by shape + hue + fill. This doc is the source for the SwiftUI build; it carries the locked self-state glyphs, the Sleep (bed) and Medication (horizontal capsule) icons, and every view they live in.</p>
+
+  <div class="card">
+    <h2><span class="num">1</span> The three signal glyphs</h2>
+    <div class="trio" data-trio></div>
+    <div class="grid3" data-grid></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> Sleep &amp; Medication</h2>
+    <p>The two functionally-different signals keep literal icons — a Sleep state (ramp deferred) and a Medication treatment shown as a chip. They sit outside the self-state lifecycle; single, non-varying.</p>
+    <div class="single">
+      <div class="s"><span data-single="sleep"></span><div><h3>Sleep</h3><div class="syn">bed · cool indigo <b style="color:#5566A6">#5566A6</b> · single icon, ramp deferred</div></div></div>
+      <div class="s"><span data-single="med"></span><div><h3>Medication</h3><div class="syn">horizontal capsule · medication purple <b style="color:var(--med)">#7E5CA8</b> · chip, not a ramp</div></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span> Views — where the glyphs live</h2>
+    <p>The glyph always sits beside its word. Below: the Calendar timeline (light + dark), the Check-in / Edit signal picker, the Insights ramp, and the Edit-sheet row.</p>
+
+    <h3 style="margin:18px 0 8px">Calendar · timeline</h3>
+    <div class="views">
+      <div><p class="phlabel">Light</p><div class="phone" data-cal></div></div>
+      <div><p class="phlabel">Dark</p><div class="phone dark" data-cal></div></div>
+    </div>
+
+    <h3 style="margin:24px 0 8px">Check-in / Edit · signal picker (tap 1→5)</h3>
+    <div data-pickers></div>
+
+    <h3 style="margin:24px 0 8px">Insights · signal ramps</h3>
+    <div class="grid3" data-insights></div>
+
+    <h3 style="margin:24px 0 8px">Edit sheet · named level + synonym</h3>
+    <div data-editrows style="max-width:520px"></div>
+  </div>
+
+  <hr/>
+  <div class="card">
+    <h2><span class="num">4</span> Decisions log (this exploration)</h2>
+    <table>
+      <tr><th>Decision</th><th>Status</th><th>Why</th></tr>
+      <tr><td>Botanical lifecycle as the glyph language</td><td class="decided">decided</td><td>One plant world makes the set read as a designed family, not three borrowed symbols.</td></tr>
+      <tr><td>Bud variant — sprout / pod / seedhead</td><td class="decided">decided</td><td>Owner pick from 5 botanical variants (Bud · Bloom · Spiral · Leaf · Seed). Calm, vertical, cleanest.</td></tr>
+      <tr><td>Energy: lightning bolt → seed pod</td><td class="decided">decided</td><td>Bolt was the only conventional/elemental mark in an organic system; pod swells→bursts to encode level.</td></tr>
+      <tr><td>Focus: aperture → seedhead</td><td class="decided">decided</td><td>Aperture miscued as a camera and was mechanical/optical; seedhead packs tighter to encode level.</td></tr>
+      <tr><td>Mood: sprout</td><td class="decided">kept</td><td>Already botanical and on-brand; unchanged.</td></tr>
+      <tr><td>Sleep = bed icon (cool indigo)</td><td class="decided">kept</td><td>Functionally distinct from the self-state signals; literal bed, ramp deferred. Owner call.</td></tr>
+      <tr><td>Medication = horizontal capsule (purple)</td><td class="decided">kept</td><td>Reads instantly as a dose; two-tone horizontal capsule, chip not a ramp. Owner call.</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">5</span> Open / next steps</h2>
+    <ul>
+      <li>All glyphs decided (Sleep = bed, Medication = horizontal capsule). Moving to Spec Kit planning.</li>
+      <li>Small-size legibility: cap the seedhead dot count so it never fuses to a blob at ~22px; keep Focus dots solid (opacity not load-bearing).</li>
+      <li>Motion: one shared "resolution" level-change transition (≈220ms ease, cross-fade discrete additions; honor Reduce Motion).</li>
+      <li>Lock into DESIGN.md §Iconography + reverse the 2026-06-15 sprout/lightning/aperture row (done in this commit).</li>
+      <li>Spec Kit → SwiftUI <code>Shape</code>s per glyph, then wire into the picker / timeline / Insights views above.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const M=['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'];
+const E=['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'];
+const F=['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'];
+const SLEEP='#5566A6',MED='#7E5CA8',FO=[.18,.4,.62,.82,1];
+const svg=i=>`<svg viewBox="0 0 48 48">${i}</svg>`;
+const teardrop=(cx,cy,w,h)=>{const t=cy-h/2,b=cy+h/2;return `M${cx},${t} C${cx+w/2},${t+h*0.32} ${cx+w/2},${b-w*0.25} ${cx},${b} C${cx-w/2},${b-w*0.25} ${cx-w/2},${t+h*0.32} ${cx},${t} Z`;};
+const halfOval=(cx,cy,w,h,side)=>{const t=cy-h/2,b=cy+h/2,ox=cx+side*w;return `M${cx},${t} C${ox},${t-h*0.05} ${ox},${b+h*0.05} ${cx},${b} Z`;};
+const ci=(x,y,r,c,fo)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${c}"${fo!=null?` fill-opacity="${fo}"`:''}/>`;
+const ln=(x1,y1,x2,y2,c,w)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w||2.2}" stroke-linecap="round"/>`;
+
+function mood(l){const c=M[l-1],fo=FO[l-1],cy=[23,21,19,17,16][l-1],w=[7,9,11,17,21][l-1],h=[13,15,16,15,15][l-1];
+  const crown=l<=3?`<path d="${teardrop(24,cy,w,h)}" fill="${c}" fill-opacity="${fo}" stroke="${c}" stroke-width="2.4" stroke-linejoin="round"/>`:`<ellipse cx="24" cy="${cy}" rx="${w/2}" ry="${h/2}" fill="${c}" fill-opacity="${fo}" stroke="${c}" stroke-width="2.4"/>`;
+  return svg(ln(24,42,24,(cy+h*0.28).toFixed(1),c,3)+crown);}
+function energy(l){const c=E[l-1],fo=FO[l-1],hw=[5,5.5,6,6.5,6.5][l-1],h=[12,13,14,14,14][l-1],gap=[0,0,2,4,5.5][l-1],cy=25,b=cy+h/2;
+  let s=ln(24,43,24,(b-1).toFixed(1),c,2.2)+`<path d="${halfOval(24-gap/2,cy,hw,h,-1)}" fill="${c}" fill-opacity="${fo}" stroke="${c}" stroke-width="2.2" stroke-linejoin="round"/>`+`<path d="${halfOval(24+gap/2,cy,hw,h,1)}" fill="${c}" fill-opacity="${fo}" stroke="${c}" stroke-width="2.2" stroke-linejoin="round"/>`;
+  const seeds=[0,0,2,4,5][l-1],sp=[[18,11],[30,11],[24,6],[14,16],[34,16]];for(let i=0;i<seeds;i++)s+=ci(sp[i][0],sp[i][1],1.5,c);return svg(s);}
+function focus(l){const c=F[l-1],rad=[12,11,10,9,8.5][l-1],n=[5,6,7,8,8][l-1],dr=[1.5,1.6,1.7,1.8,1.9][l-1],core=[0,1,1.6,2.2,2.8][l-1];
+  let s=`<circle cx="24" cy="24" r="12.5" fill="none" stroke="${c}" stroke-width="1.5" stroke-opacity=".75"/>`;
+  for(let i=0;i<n;i++){const a=(i*360/n-90)*Math.PI/180;s+=ci((24+Math.cos(a)*rad).toFixed(1),(24+Math.sin(a)*rad).toFixed(1),dr,c);}
+  if(l===5)for(let i=0;i<5;i++){const a=(i*72-54)*Math.PI/180;s+=ci((24+Math.cos(a)*4.6).toFixed(1),(24+Math.sin(a)*4.6).toFixed(1),1.4,c);}
+  if(core>0)s+=ci(24,24,core,c);return svg(s);}
+function sleep(){const c=SLEEP;return svg(
+  ln(9,19,9,34,c,2.4)+ln(39,27,39,34,c,2.4)+
+  `<rect x="9" y="27" width="30" height="6.5" rx="3" fill="${c}" fill-opacity=".4" stroke="${c}" stroke-width="2.2"/>`+
+  `<rect x="11.5" y="22.5" width="9.5" height="5.5" rx="2.6" fill="${c}" fill-opacity=".55" stroke="${c}" stroke-width="1.8"/>`+
+  ln(11,33.5,11,37.5,c,2.2)+ln(37,33.5,37,37.5,c,2.2));}
+function med(){const c=MED;return svg(
+  `<rect x="8" y="19" width="32" height="10" rx="5" fill="${c}" fill-opacity=".22"/>`+
+  `<path d="M24 19 H13 A5 5 0 0 0 13 29 H24 Z" fill="${c}" fill-opacity=".5"/>`+
+  `<rect x="8" y="19" width="32" height="10" rx="5" fill="none" stroke="${c}" stroke-width="2.3"/>`+
+  ln(24,20,24,28,c,1.6));}
+
+const SIG={mood,energy,focus};
+const RAMP=[['mood','Mood',M],['energy','Energy',E],['focus','Focus',F]];
+const words={mood:['low','meh','okay','good','great'],energy:['drained','tired','steady','alert','wired'],focus:['scattered','foggy','steady','sharp','locked-in']};
+const syns={mood:['flat','muted','steady','bright','thriving'],energy:['empty','low','even','charged','wired'],focus:['scattered','hazy','holding','sharp','locked in']};
+const construct={mood:'Stem + crown. Bud (l1) → split → open canopy (l5). Width is the dominant ordinal cue; fill deepens.',energy:'Two-lobe pod on a stem. Sealed (l1) → cracks and throws seeds (l5). Calyx base separates it from the sprout.',focus:'Seedhead: rim + ring of solid dots tightening, count climbs, a packed core appears (l3+). No opacity-only steps.'};
+
+// 1 · trio + ramps
+document.querySelector('[data-trio]').innerHTML=RAMP.map(([k,L])=>`<div class="t">${SIG[k](4)}<div class="tl">${L}</div></div>`).join('');
+document.querySelector('[data-grid]').innerHTML=RAMP.map(([k,L,ramp])=>
+  `<div><div class="rtag">${L}</div><div class="ramp">`+[1,2,3,4,5].map(l=>`<div class="cell">${SIG[k](l)}<div class="lvl"><b>${l}</b>${words[k][l-1]}</div></div>`).join('')+
+  `</div><div class="swrow">`+ramp.map(c=>`<div class="sw" style="background:${c}"></div>`).join('')+`</div><div class="construct">${construct[k]}</div></div>`).join('');
+
+// 2 · singles
+document.querySelectorAll('[data-single]').forEach(el=>{el.innerHTML=el.dataset.single==='sleep'?sleep():med();});
+
+// 3a · calendar timeline
+const ENTRIES=[
+  {time:'18:09',pct:85,m:2,e:2,f:4,tags:['General','Symptoms'],med:null},
+  {time:'15:35',pct:60,m:3,e:4,f:2,tags:['General'],med:null},
+  {time:'12:54',pct:33,m:2,e:2,f:5,tags:['Appetite loss'],med:'Concerta 36mg'},
+];
+function tint(l){return ['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'][l-1];}
+document.querySelectorAll('[data-cal]').forEach(ph=>{
+  let h=`<div class="monthhdr">June 2026 ›</div><div class="weekstrip">`+
+    ['M·15','T·16','W·17','T·18','F·19','S·20','S·21'].map((d,i)=>{const [w,n]=d.split('·');return `<div class="wd${i===1?' sel':''}">${w}<span class="n">${n}</span></div>`;}).join('')+`</div>`;
+  for(const en of ENTRIES){
+    const mc=tint(en.m);
+    h+=`<div class="entry"><div style="display:flex;flex-direction:column;align-items:center"><div class="ering" style="background:conic-gradient(${mc} ${en.pct*3.6}deg,var(--hair) 0)"><span>${en.pct}%</span></div><div class="etime">${en.time}</div></div>`+
+      `<div class="epill"><div class="sigpill" style="background:color-mix(in srgb,${mc} 30%,var(--surface2))">`+
+      `<span class="sig" style="color:var(--ink)">${SIG.mood(en.m)} ${words.mood[en.m-1]}</span>`+
+      `<span class="sig" style="color:var(--ink)">${SIG.energy(en.e)} ${words.energy[en.e-1]}</span>`+
+      `<span class="sig" style="color:var(--ink)">${SIG.focus(en.f)} ${words.focus[en.f-1]}</span></div>`+
+      `<div class="tags">`+(en.med?`<span class="tg medtag">${med()} ${en.med}</span>`:'')+en.tags.map(t=>`<span class="tg">${t}</span>`).join('')+`</div></div></div>`;
+  }
+  ph.innerHTML=h;
+});
+
+// 3b · pickers (current level highlighted)
+const PICK={mood:2,energy:3,focus:4};
+document.querySelector('[data-pickers]').innerHTML=RAMP.map(([k,L])=>{
+  const cur=PICK[k];
+  return `<div style="margin:14px 0"><div class="rtag">${L}</div><div class="picker">`+
+    [1,2,3,4,5].map(l=>`<div class="pk${l===cur?' cur':''}"><div class="ph">${SIG[k](l)}</div><div class="pl">${l}</div></div>`).join('')+
+    `</div><div class="pickerlbl"><b>${cur} · ${words[k][cur-1]}</b> <span class="syn">— ${syns[k][cur-1]}</span></div></div>`;
+}).join('');
+
+// 3c · insights ramps
+document.querySelector('[data-insights]').innerHTML=RAMP.map(([k,L])=>
+  `<div><div class="rtag">${L}</div><div class="ramp">`+[1,2,3,4,5].map(l=>`<div class="cell">${SIG[k](l)}<div class="lvl">${l}</div></div>`).join('')+`</div></div>`).join('');
+
+// 3d · edit rows (named level + synonym)
+document.querySelector('[data-editrows]').innerHTML=RAMP.map(([k,L])=>{
+  const cur=PICK[k];
+  return `<div style="display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--hair)"><div style="width:60px;font-size:13px;font-weight:600">${L}</div><div class="ph" style="width:42px;height:42px;border-radius:12px;display:grid;place-items:center;box-shadow:0 0 0 2px var(--accent)">${SIG[k](cur)}</div><div><div style="font-size:14px"><b style="font-family:'Fraunces'">${cur} · ${words[k][cur-1]}</b></div><div class="syn">${syns[k][cur-1]}</div></div></div>`;
+}).join('');
+</script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+{
+  "activityEntities" : [
+    "dataSourceCreated",
+    [
+      {
+        "createdDate" : "2026-06-17T23:59:46Z",
+        "event" : "dataSourceCreated",
+        "id" : "EAE974A2-D492-4413-A905-F5D9BA28FCB8",
+        "subtitle" : "focus.json",
+        "title" : "Data Source Created"
+      }
+    ],
+    "dataSourceMetrics",
+    [
+      {
+        "createdDate" : "2026-06-18T00:01:05Z",
+        "event" : "dataSourceMetrics",
+        "id" : "2C96537D-9434-47AA-A05B-6A0F1700AF76",
+        "subtitle" : "6 Classes, 420 Items",
+        "title" : "Data Summary"
+      }
+    ],
+    "dataSourceTrainingStarted",
+    [
+      {
+        "createdDate" : "2026-06-18T00:01:05Z",
+        "event" : "dataSourceTrainingStarted",
+        "id" : "2E954727-63AB-448D-BECF-8AB9763A39EA",
+        "subtitle" : "createml-test1 1 copy 2",
+        "title" : "Used By"
+      }
+    ]
+  ],
+  "createdDate" : "2026-06-17T23:59:46Z",
+  "dataPathRelativeToProjectURL" : "../focus.json/",
+  "dataResult" : {
+    "classesCount" : 6,
+    "createdDate" : "2026-06-17T23:59:46Z",
+    "dataAnalysis" : {
+      "classifierAnalysis" : {
+        "labelStats" : {
+          "distracted" : 79,
+          "foggy" : 78,
+          "lockedIn" : 55,
+          "none" : 353,
+          "present" : 75,
+          "sharp" : 66
+        }
+      },
+      "issues" : [
+        {
+          "description" : "6 classes found, including none, distracted, foggy",
+          "severity" : "debug"
+        },
+        {
+          "description" : "706 texts found, automatically creating validation set",
+          "severity" : "good"
+        },
+        {
+          "description" : "Smallest class is \"lockedIn\" with 55 texts",
+          "severity" : "debug"
+        },
+        {
+          "description" : "Largest class is \"none\" with 353 text",
+          "severity" : "debug"
+        }
+      ],
+      "objectDetectorAnalysis" : {
+        "details" : {
+
+        }
+      },
+      "summary" : {
+        "canUseValidation" : 1,
+        "classCount" : 6,
+        "sampleCount" : 706
+      }
+    },
+    "dataSourceID" : "105A6A0A-3E81-4FB3-A420-2143DD674FB7",
+    "dataURL" : "file:///Users/caesargrey/Projects/app-four/spikes/createml-nlmodel/corpus/focus.json",
+    "itemsCount" : 706
+  },
+  "dataURL" : "file:///Users/caesargrey/Projects/app-four/spikes/createml-nlmodel/corpus/focus.json",
+  "experimentIDs" : [
+    "FDA1C35C-7D7F-4B10-A8CC-5169C5F6A641",
+    "D7EEA7F6-B900-43E3-B1E5-F23640D0D164"
+  ],
+  "id" : "105A6A0A-3E81-4FB3-A420-2143DD674FB7",
+  "modifiedDate" : "2026-06-18T11:52:52Z",
+  "pathType" : 0,
+  "preferredFilename" : "focus.json",
+  "title" : "focus.json",
+  "version" : "1.0"
+}
