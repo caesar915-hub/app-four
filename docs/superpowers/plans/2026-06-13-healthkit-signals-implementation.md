@@ -14,7 +14,7 @@
 
 ## Conventions (apply to every task)
 
-- **Tests use Swift Testing**, not XCTest: `import Testing`, `@Test`, `#expect`, `@MainActor` on the test where it touches `ModelContext`. Match the existing `app-twoTests` suite if it already standardizes on one — check `app-twoTests/` before the first test and follow what's there. This plan assumes Swift Testing; if the suite is XCTest, translate `@Test func x()` → `func testX()` and `#expect(a == b)` → `XCTAssertEqual(a, b)`.
+- **Tests use Swift Testing**, not XCTest: `import Testing`, `@Test`, `#expect`, `@MainActor` on the test where it touches `ModelContext`. Match the existing `app-fourTests` suite if it already standardizes on one — check `app-fourTests/` before the first test and follow what's there. This plan assumes Swift Testing; if the suite is XCTest, translate `@Test func x()` → `func testX()` and `#expect(a == b)` → `XCTAssertEqual(a, b)`.
 - **In-memory container for model/coordinator tests**: `ModelConfiguration(isStoredInMemoryOnly: true)`.
 - **Never cross `ModelContext` or `@Model` instances across actors** (swiftdata-pro core rule). The HealthKit actor returns value-type DTOs only; the coordinator runs on `@MainActor` with the main context.
 - **No `@unchecked Sendable`** (swift-concurrency-pro). DTOs are structs of value types → automatically `Sendable`.
@@ -24,9 +24,9 @@
 - **Build/test command** (from memory `test-env-recovery`): the CLI needs `env -u GIT_CONFIG_*` and the erased simulator. Use:
   ```bash
   env -u GIT_CONFIG_COUNT -u GIT_CONFIG_KEY_0 -u GIT_CONFIG_VALUE_0 \
-    xcodebuild test -scheme app-two \
+    xcodebuild test -scheme app-four \
     -destination 'platform=iOS Simulator,name=iPhone 16 Pro' \
-    -only-testing:app-twoTests/<SuiteName> 2>&1 | tail -40
+    -only-testing:app-fourTests/<SuiteName> 2>&1 | tail -40
   ```
   If the named simulator/scheme differs locally, list with `xcodebuild -list` and `xcrun simctl list devices available` and substitute. Real HealthKit reads are **device-only** (simulator has no Health data) — those are manual verification steps, flagged where they occur.
 
@@ -37,29 +37,29 @@
 New files (grouped by feature, per project convention):
 
 ```
-app-two/app-two/Models/
+app-four/Models/
   DailySignals.swift              // @Model, source of truth (Task 1)
   SignalSource.swift              // enum (Task 1)
   MenstrualFlow.swift             // enum (Task 1)
 
-app-two/app-two/Services/HealthKit/
+app-four/Services/HealthKit/
   HealthSignalsDTO.swift          // Sendable DTOs + SignalDay key helper (Task 2)
   HealthDataReading.swift         // protocol (Task 3)
   HealthKitServiceImpl.swift      // actor, the ONLY HealthKit importer (Task 7)
   HealthKitSampleMapping.swift    // pure mapping funcs, unit-tested (Task 6)
 
-app-two/app-two/Store/
+app-four/Store/
   SignalsStore.swift              // upsert/fetch DailySignals by day (Task 4)
   SignalSyncCoordinator.swift     // provenance merge + sync orchestration (Task 5, 8)
 
-app-two/app-two/ViewModels/
+app-four/ViewModels/
   DaySignalsEditorViewModel.swift // manual edit, flips source to .manual (Task 9)
 
-app-two/app-two/Views/Signals/
+app-four/Views/Signals/
   DaySignalsEditorSheet.swift     // editor UI (Task 11, after HTML mockup gate Task 10)
   DaySignalsSummaryView.swift     // compact read surface (Task 12)
 
-app-twoTests/
+app-fourTests/
   Mocks/MockHealthDataReading.swift   // canned DTOs (Task 3)
   DailySignalsTests.swift             // (Task 1)
   SignalDayKeyTests.swift             // timezone day-key (Task 2)
@@ -70,28 +70,28 @@ app-twoTests/
 ```
 
 Modified files:
-- `app-two/app-two/App/AppModelContainer.swift` — register `DailySignals.self` (Task 1).
-- `app-two/app-two/Store/AppServices.swift` — add `healthService` (Task 3).
-- `app-two/app-two/Store/AppDependencies.swift` — construct `HealthKitServiceImpl` + `SignalSyncCoordinator` (Task 7, 8).
-- `app-twoTests/Mocks/MockAppServices.swift` — add `MockHealthDataReading` (Task 3).
-- `app-two/app-two/Info.plist` — `NSHealthShareUsageDescription` (Task 7).
-- `app-two/app-two.xcodeproj` — HealthKit capability + `.entitlements` (Task 7, manual Xcode step).
+- `app-four/App/AppModelContainer.swift` — register `DailySignals.self` (Task 1).
+- `app-four/Store/AppServices.swift` — add `healthService` (Task 3).
+- `app-four/Store/AppDependencies.swift` — construct `HealthKitServiceImpl` + `SignalSyncCoordinator` (Task 7, 8).
+- `app-fourTests/Mocks/MockAppServices.swift` — add `MockHealthDataReading` (Task 3).
+- `app-four/Info.plist` — `NSHealthShareUsageDescription` (Task 7).
+- `app-four/app-four.xcodeproj` — HealthKit capability + `.entitlements` (Task 7, manual Xcode step).
 
 ---
 
 ## Task 1: `DailySignals` model + value enums + schema registration
 
 **Files:**
-- Create: `app-two/app-two/Models/SignalSource.swift`
-- Create: `app-two/app-two/Models/MenstrualFlow.swift`
-- Create: `app-two/app-two/Models/DailySignals.swift`
-- Modify: `app-two/app-two/App/AppModelContainer.swift` (two `Schema([...])` arrays)
-- Test: `app-twoTests/DailySignalsTests.swift`
+- Create: `app-four/Models/SignalSource.swift`
+- Create: `app-four/Models/MenstrualFlow.swift`
+- Create: `app-four/Models/DailySignals.swift`
+- Modify: `app-four/App/AppModelContainer.swift` (two `Schema([...])` arrays)
+- Test: `app-fourTests/DailySignalsTests.swift`
 
 - [ ] **Step 1: Write the failing test**
 
 ```swift
-// app-twoTests/DailySignalsTests.swift
+// app-fourTests/DailySignalsTests.swift
 import Testing
 import SwiftData
 @testable import app_two
@@ -132,13 +132,13 @@ struct DailySignalsTests {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run the test command for `-only-testing:app-twoTests/DailySignalsTests`.
+Run the test command for `-only-testing:app-fourTests/DailySignalsTests`.
 Expected: FAIL — `DailySignals`, `SignalSource` not found (compile error).
 
 - [ ] **Step 3: Write the enums**
 
 ```swift
-// app-two/app-two/Models/SignalSource.swift
+// app-four/Models/SignalSource.swift
 import Foundation
 
 /// Provenance of a signal group on a given day. Drives the merge rule in
@@ -152,7 +152,7 @@ enum SignalSource: String, Codable, Sendable {
 ```
 
 ```swift
-// app-two/app-two/Models/MenstrualFlow.swift
+// app-four/Models/MenstrualFlow.swift
 import Foundation
 
 enum MenstrualFlow: String, Codable, Sendable, CaseIterable {
@@ -167,7 +167,7 @@ enum MenstrualFlow: String, Codable, Sendable, CaseIterable {
 - [ ] **Step 4: Write the model**
 
 ```swift
-// app-two/app-two/Models/DailySignals.swift
+// app-four/Models/DailySignals.swift
 import Foundation
 import SwiftData
 
@@ -236,7 +236,7 @@ extension DailySignals {
 
 - [ ] **Step 5: Register in the schema (both arrays)**
 
-In `app-two/app-two/App/AppModelContainer.swift`, add `DailySignals.self` to **both** `Schema([...])` literals (production container near line 9, preview container near line 63):
+In `app-four/App/AppModelContainer.swift`, add `DailySignals.self` to **both** `Schema([...])` literals (production container near line 9, preview container near line 63):
 
 ```swift
 let schema = Schema([
@@ -252,13 +252,13 @@ let schema = Schema([
 
 - [ ] **Step 6: Run test to verify it passes**
 
-Run `-only-testing:app-twoTests/DailySignalsTests`.
+Run `-only-testing:app-fourTests/DailySignalsTests`.
 Expected: PASS (2 tests). The `#if DEBUG` wipe-on-schema-conflict path in AppModelContainer covers the dev store; no migration needed yet.
 
 - [ ] **Step 7: Commit**
 
 ```bash
-git add app-two/app-two/Models/DailySignals.swift app-two/app-two/Models/SignalSource.swift app-two/app-two/Models/MenstrualFlow.swift app-two/app-two/App/AppModelContainer.swift app-twoTests/DailySignalsTests.swift
+git add app-four/Models/DailySignals.swift app-four/Models/SignalSource.swift app-four/Models/MenstrualFlow.swift app-four/App/AppModelContainer.swift app-fourTests/DailySignalsTests.swift
 git commit -m "feat(signals): DailySignals model + provenance enums, register in schema"
 ```
 
@@ -267,15 +267,15 @@ git commit -m "feat(signals): DailySignals model + provenance enums, register in
 ## Task 2: DTOs + timezone-safe day key
 
 **Files:**
-- Create: `app-two/app-two/Services/HealthKit/HealthSignalsDTO.swift`
-- Test: `app-twoTests/SignalDayKeyTests.swift`
+- Create: `app-four/Services/HealthKit/HealthSignalsDTO.swift`
+- Test: `app-fourTests/SignalDayKeyTests.swift`
 
 The DTOs are what crosses the actor boundary (Sendable value types). `SignalDayKey.dayStart(for:calendar:)` normalizes any instant to that day's start — the single source of day identity, unit-tested across timezones.
 
 - [ ] **Step 1: Write the failing test**
 
 ```swift
-// app-twoTests/SignalDayKeyTests.swift
+// app-fourTests/SignalDayKeyTests.swift
 import Testing
 import Foundation
 @testable import app_two
@@ -311,13 +311,13 @@ struct SignalDayKeyTests {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run `-only-testing:app-twoTests/SignalDayKeyTests`.
+Run `-only-testing:app-fourTests/SignalDayKeyTests`.
 Expected: FAIL — `SignalDayKey` not found.
 
 - [ ] **Step 3: Write the DTOs + day key**
 
 ```swift
-// app-two/app-two/Services/HealthKit/HealthSignalsDTO.swift
+// app-four/Services/HealthKit/HealthSignalsDTO.swift
 import Foundation
 
 /// The single source of day identity. Normalizes any instant to the start of its
@@ -364,13 +364,13 @@ struct DaySignalsDTO: Sendable, Equatable {
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run `-only-testing:app-twoTests/SignalDayKeyTests`.
+Run `-only-testing:app-fourTests/SignalDayKeyTests`.
 Expected: PASS (2 tests).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add app-two/app-two/Services/HealthKit/HealthSignalsDTO.swift app-twoTests/SignalDayKeyTests.swift
+git add app-four/Services/HealthKit/HealthSignalsDTO.swift app-fourTests/SignalDayKeyTests.swift
 git commit -m "feat(signals): Sendable health DTOs + timezone-safe day key"
 ```
 
@@ -379,17 +379,17 @@ git commit -m "feat(signals): Sendable health DTOs + timezone-safe day key"
 ## Task 3: `HealthDataReading` protocol + mock + DI wiring
 
 **Files:**
-- Create: `app-two/app-two/Services/HealthKit/HealthDataReading.swift`
-- Create: `app-twoTests/Mocks/MockHealthDataReading.swift`
-- Modify: `app-two/app-two/Store/AppServices.swift`
-- Modify: `app-twoTests/Mocks/MockAppServices.swift`
+- Create: `app-four/Services/HealthKit/HealthDataReading.swift`
+- Create: `app-fourTests/Mocks/MockHealthDataReading.swift`
+- Modify: `app-four/Store/AppServices.swift`
+- Modify: `app-fourTests/Mocks/MockAppServices.swift`
 
 No new behavior to test here directly; this defines the seam and keeps the build green with the mock wired in. Verification is "the test target compiles and existing tests still pass."
 
 - [ ] **Step 1: Write the protocol**
 
 ```swift
-// app-two/app-two/Services/HealthKit/HealthDataReading.swift
+// app-four/Services/HealthKit/HealthDataReading.swift
 import Foundation
 
 /// Authorization status we care about, decoupled from HKAuthorizationStatus so
@@ -418,7 +418,7 @@ protocol HealthDataReading: Sendable {
 - [ ] **Step 2: Write the mock**
 
 ```swift
-// app-twoTests/Mocks/MockHealthDataReading.swift
+// app-fourTests/Mocks/MockHealthDataReading.swift
 import Foundation
 @testable import app_two
 
@@ -443,7 +443,7 @@ final class MockHealthDataReading: HealthDataReading, @unchecked Sendable {
 
 - [ ] **Step 3: Add `healthService` to `AppServices`**
 
-In `app-two/app-two/Store/AppServices.swift`, add the stored property, the init parameter, and the assignment:
+In `app-four/Store/AppServices.swift`, add the stored property, the init parameter, and the assignment:
 
 ```swift
 // add to stored properties
@@ -458,7 +458,7 @@ let healthService: HealthDataReading
 
 - [ ] **Step 4: Wire the mock into `MockAppServices`**
 
-In `app-twoTests/Mocks/MockAppServices.swift`, add the mock and pass it into the `AppServices(...)` construction:
+In `app-fourTests/Mocks/MockAppServices.swift`, add the mock and pass it into the `AppServices(...)` construction:
 
 ```swift
 let health = MockHealthDataReading()
@@ -469,13 +469,13 @@ let health = MockHealthDataReading()
 
 - [ ] **Step 5: Verify the test target compiles and existing tests pass**
 
-Run a broad test (e.g. `-only-testing:app-twoTests/DailySignalsTests` plus one existing suite).
+Run a broad test (e.g. `-only-testing:app-fourTests/DailySignalsTests` plus one existing suite).
 Expected: PASS — no behavior changed; the seam compiles. (Production `AppDependencies` still doesn't construct `healthService` yet → app target won't compile until Task 7. That's fine; tests use `MockAppServices`. If your setup compiles the app target during `xcodebuild test`, jump to Task 7 Step for the production wiring before running, then return here.)
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add app-two/app-two/Services/HealthKit/HealthDataReading.swift app-twoTests/Mocks/MockHealthDataReading.swift app-two/app-two/Store/AppServices.swift app-twoTests/Mocks/MockAppServices.swift
+git add app-four/Services/HealthKit/HealthDataReading.swift app-fourTests/Mocks/MockHealthDataReading.swift app-four/Store/AppServices.swift app-fourTests/Mocks/MockAppServices.swift
 git commit -m "feat(signals): HealthDataReading protocol + mock + AppServices seam"
 ```
 
@@ -484,15 +484,15 @@ git commit -m "feat(signals): HealthDataReading protocol + mock + AppServices se
 ## Task 4: `SignalsStore` (upsert/fetch by day)
 
 **Files:**
-- Create: `app-two/app-two/Store/SignalsStore.swift`
-- Test: `app-twoTests/SignalsStoreTests.swift`
+- Create: `app-four/Store/SignalsStore.swift`
+- Test: `app-fourTests/SignalsStoreTests.swift`
 
 Mirrors the existing `RecordingStore` pattern: a `@MainActor` class holding a `ModelContext`, no `@Query` (that's view-only per swiftdata-pro).
 
 - [ ] **Step 1: Write the failing test**
 
 ```swift
-// app-twoTests/SignalsStoreTests.swift
+// app-fourTests/SignalsStoreTests.swift
 import Testing
 import SwiftData
 import Foundation
@@ -530,13 +530,13 @@ struct SignalsStoreTests {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run `-only-testing:app-twoTests/SignalsStoreTests`.
+Run `-only-testing:app-fourTests/SignalsStoreTests`.
 Expected: FAIL — `SignalsStore` not found.
 
 - [ ] **Step 3: Write the store**
 
 ```swift
-// app-two/app-two/Store/SignalsStore.swift
+// app-four/Store/SignalsStore.swift
 import Foundation
 import SwiftData
 
@@ -585,13 +585,13 @@ final class SignalsStore {
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run `-only-testing:app-twoTests/SignalsStoreTests`.
+Run `-only-testing:app-fourTests/SignalsStoreTests`.
 Expected: PASS (2 tests).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add app-two/app-two/Store/SignalsStore.swift app-twoTests/SignalsStoreTests.swift
+git add app-four/Store/SignalsStore.swift app-fourTests/SignalsStoreTests.swift
 git commit -m "feat(signals): SignalsStore upsert/fetch by day key"
 ```
 
@@ -600,15 +600,15 @@ git commit -m "feat(signals): SignalsStore upsert/fetch by day key"
 ## Task 5: `SignalSyncCoordinator` — the provenance merge rule (core risk)
 
 **Files:**
-- Create: `app-two/app-two/Store/SignalSyncCoordinator.swift`
-- Test: `app-twoTests/SignalSyncCoordinatorTests.swift`
+- Create: `app-four/Store/SignalSyncCoordinator.swift`
+- Test: `app-fourTests/SignalSyncCoordinatorTests.swift`
 
 This is the highest-risk unit. We test the merge function in isolation first (Task 5), then the full sync orchestration with the mock reader (Task 8). The merge applies per signal group: `.none` → fill+`.healthKit`; `.healthKit` → overwrite+`.healthKit`; `.manual` → untouched.
 
 - [ ] **Step 1: Write the failing tests (table-driven over source states)**
 
 ```swift
-// app-twoTests/SignalSyncCoordinatorTests.swift
+// app-fourTests/SignalSyncCoordinatorTests.swift
 import Testing
 import SwiftData
 import Foundation
@@ -685,13 +685,13 @@ struct SignalSyncCoordinatorTests {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run `-only-testing:app-twoTests/SignalSyncCoordinatorTests`.
+Run `-only-testing:app-fourTests/SignalSyncCoordinatorTests`.
 Expected: FAIL — `SignalSyncCoordinator` not found.
 
 - [ ] **Step 3: Write the coordinator (merge functions only for now)**
 
 ```swift
-// app-two/app-two/Store/SignalSyncCoordinator.swift
+// app-four/Store/SignalSyncCoordinator.swift
 import Foundation
 import SwiftData
 
@@ -754,13 +754,13 @@ final class SignalSyncCoordinator {
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run `-only-testing:app-twoTests/SignalSyncCoordinatorTests`.
+Run `-only-testing:app-fourTests/SignalSyncCoordinatorTests`.
 Expected: PASS (4 tests).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add app-two/app-two/Store/SignalSyncCoordinator.swift app-twoTests/SignalSyncCoordinatorTests.swift
+git add app-four/Store/SignalSyncCoordinator.swift app-fourTests/SignalSyncCoordinatorTests.swift
 git commit -m "feat(signals): SignalSyncCoordinator merge rule (HealthKit-wins-unless-edited)"
 ```
 
@@ -769,15 +769,15 @@ git commit -m "feat(signals): SignalSyncCoordinator merge rule (HealthKit-wins-u
 ## Task 6: HealthKit sample mapping (pure functions)
 
 **Files:**
-- Create: `app-two/app-two/Services/HealthKit/HealthKitSampleMapping.swift`
-- Test: `app-twoTests/HealthKitSampleMappingTests.swift`
+- Create: `app-four/Services/HealthKit/HealthKitSampleMapping.swift`
+- Test: `app-fourTests/HealthKitSampleMappingTests.swift`
 
 Pull the value-mapping logic out of the actor so it's testable without an `HKHealthStore`. These functions take primitive inputs (the numbers HealthKit yields) and produce DTOs — no HealthKit types in their signatures, so they import nothing health-specific.
 
 - [ ] **Step 1: Write the failing test**
 
 ```swift
-// app-twoTests/HealthKitSampleMappingTests.swift
+// app-fourTests/HealthKitSampleMappingTests.swift
 import Testing
 import Foundation
 @testable import app_two
@@ -809,13 +809,13 @@ struct HealthKitSampleMappingTests {
 
 - [ ] **Step 2: Run test to verify it fails**
 
-Run `-only-testing:app-twoTests/HealthKitSampleMappingTests`.
+Run `-only-testing:app-fourTests/HealthKitSampleMappingTests`.
 Expected: FAIL — `HealthKitSampleMapping` not found.
 
 - [ ] **Step 3: Write the mapping**
 
 ```swift
-// app-two/app-two/Services/HealthKit/HealthKitSampleMapping.swift
+// app-four/Services/HealthKit/HealthKitSampleMapping.swift
 import Foundation
 
 /// Pure value mapping for HealthKit reads. Deliberately imports no HealthKit
@@ -850,13 +850,13 @@ enum HealthKitSampleMapping {
 
 - [ ] **Step 4: Run test to verify it passes**
 
-Run `-only-testing:app-twoTests/HealthKitSampleMappingTests`.
+Run `-only-testing:app-fourTests/HealthKitSampleMappingTests`.
 Expected: PASS (3 tests). If `flowMappingCoversAllRawValues` fails because the target SDK numbers differ, update both the `switch` and the test's expected pairs together, then re-run to green.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add app-two/app-two/Services/HealthKit/HealthKitSampleMapping.swift app-twoTests/HealthKitSampleMappingTests.swift
+git add app-four/Services/HealthKit/HealthKitSampleMapping.swift app-fourTests/HealthKitSampleMappingTests.swift
 git commit -m "feat(signals): pure HealthKit sample-mapping helpers (sleep quality, flow)"
 ```
 
@@ -865,24 +865,24 @@ git commit -m "feat(signals): pure HealthKit sample-mapping helpers (sleep quali
 ## Task 7: `HealthKitServiceImpl` actor + entitlement + Info.plist + production DI
 
 **Files:**
-- Create: `app-two/app-two/Services/HealthKit/HealthKitServiceImpl.swift`
-- Modify: `app-two/app-two/Info.plist`
-- Modify: `app-two/app-two/Store/AppDependencies.swift`
-- Xcode (manual): add HealthKit capability → generates `app-two.entitlements`
+- Create: `app-four/Services/HealthKit/HealthKitServiceImpl.swift`
+- Modify: `app-four/Info.plist`
+- Modify: `app-four/Store/AppDependencies.swift`
+- Xcode (manual): add HealthKit capability → generates `app-four.entitlements`
 
 This is the only file importing HealthKit. It is **device-verified**, not unit-tested (simulator lacks Health data). The pure mapping it relies on is already covered (Task 6).
 
 - [ ] **Step 1: Add the HealthKit capability in Xcode (manual)**
 
-In Xcode: select the `app-two` target → Signing & Capabilities → **+ Capability** → **HealthKit**. This creates `app-two/app-two/app-two.entitlements` with `com.apple.developer.healthkit = true`. Do **not** enable "Clinical Health Records" or background delivery (out of scope for v1).
+In Xcode: select the `app-four` target → Signing & Capabilities → **+ Capability** → **HealthKit**. This creates `app-four/app-four.entitlements` with `com.apple.developer.healthkit = true`. Do **not** enable "Clinical Health Records" or background delivery (out of scope for v1).
 
 - [ ] **Step 2: Add the read usage description to Info.plist**
 
-In `app-two/app-two/Info.plist`, inside the top `<dict>`, add:
+In `app-four/Info.plist`, inside the top `<dict>`, add:
 
 ```xml
 <key>NSHealthShareUsageDescription</key>
-<string>app-two reads your sleep, activity, heart, and cycle data from Apple Health so you can see them alongside your check-ins. This stays on your device.</string>
+<string>app-four reads your sleep, activity, heart, and cycle data from Apple Health so you can see them alongside your check-ins. This stays on your device.</string>
 ```
 
 (No `NSHealthUpdateUsageDescription` — v1 does not write to Health.)
@@ -890,7 +890,7 @@ In `app-two/app-two/Info.plist`, inside the top `<dict>`, add:
 - [ ] **Step 3: Write the actor**
 
 ```swift
-// app-two/app-two/Services/HealthKit/HealthKitServiceImpl.swift
+// app-four/Services/HealthKit/HealthKitServiceImpl.swift
 import Foundation
 import HealthKit
 
@@ -1092,7 +1092,7 @@ actor HealthKitServiceImpl: HealthDataReading {
 
 - [ ] **Step 4: Wire production DI in `AppDependencies`**
 
-In `app-two/app-two/Store/AppDependencies.swift`, add the service and coordinator, and pass `healthService` into the `services` bundle:
+In `app-four/Store/AppDependencies.swift`, add the service and coordinator, and pass `healthService` into the `services` bundle:
 
 ```swift
     static let healthService: HealthDataReading = HealthKitServiceImpl()
@@ -1105,7 +1105,7 @@ In `app-two/app-two/Store/AppDependencies.swift`, add the service and coordinato
 
 - [ ] **Step 5: Build the app target + run the existing test suite**
 
-Build the app (`xcodebuild build -scheme app-two -destination '...simulator...'`) to confirm the actor compiles, the entitlement resolves, and DI wires. Then run a known existing suite to confirm nothing regressed.
+Build the app (`xcodebuild build -scheme app-four -destination '...simulator...'`) to confirm the actor compiles, the entitlement resolves, and DI wires. Then run a known existing suite to confirm nothing regressed.
 Expected: BUILD SUCCEEDED; existing tests PASS.
 
 - [ ] **Step 6: Manual device verification (HealthKit reads)**
@@ -1115,7 +1115,7 @@ On a physical device with Health data: run the app, trigger `requestAuthorizatio
 - [ ] **Step 7: Commit**
 
 ```bash
-git add app-two/app-two/Services/HealthKit/HealthKitServiceImpl.swift app-two/app-two/Info.plist app-two/app-two/Store/AppDependencies.swift app-two/app-two/app-two.entitlements
+git add app-four/Services/HealthKit/HealthKitServiceImpl.swift app-four/Info.plist app-four/Store/AppDependencies.swift app-four/app-four.entitlements
 git commit -m "feat(signals): HealthKitServiceImpl actor + entitlement + Info.plist + DI"
 ```
 
@@ -1124,8 +1124,8 @@ git commit -m "feat(signals): HealthKitServiceImpl actor + entitlement + Info.pl
 ## Task 8: `SignalSyncCoordinator.sync(...)` orchestration (with mock reader)
 
 **Files:**
-- Modify: `app-two/app-two/Store/SignalSyncCoordinator.swift`
-- Modify: `app-twoTests/SignalSyncCoordinatorTests.swift`
+- Modify: `app-four/Store/SignalSyncCoordinator.swift`
+- Modify: `app-fourTests/SignalSyncCoordinatorTests.swift`
 
 Now wire the merge functions into a full sync: request days, upsert rows, merge each DTO group, save once. Tested end-to-end with `MockHealthDataReading` — no real HealthKit.
 
@@ -1178,7 +1178,7 @@ Append to `SignalSyncCoordinatorTests`:
 
 - [ ] **Step 2: Run to verify failure**
 
-Run `-only-testing:app-twoTests/SignalSyncCoordinatorTests`.
+Run `-only-testing:app-fourTests/SignalSyncCoordinatorTests`.
 Expected: FAIL — `sync(from:to:)` not found.
 
 - [ ] **Step 3: Add `sync` to the coordinator**
@@ -1221,13 +1221,13 @@ Append inside `SignalSyncCoordinator`:
 
 - [ ] **Step 4: Run to verify pass**
 
-Run `-only-testing:app-twoTests/SignalSyncCoordinatorTests`.
+Run `-only-testing:app-fourTests/SignalSyncCoordinatorTests`.
 Expected: PASS (6 tests total).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add app-two/app-two/Store/SignalSyncCoordinator.swift app-twoTests/SignalSyncCoordinatorTests.swift
+git add app-four/Store/SignalSyncCoordinator.swift app-fourTests/SignalSyncCoordinatorTests.swift
 git commit -m "feat(signals): SignalSyncCoordinator.sync orchestration (range + lastDays)"
 ```
 
@@ -1236,15 +1236,15 @@ git commit -m "feat(signals): SignalSyncCoordinator.sync orchestration (range + 
 ## Task 9: `DaySignalsEditorViewModel` (manual edit flips source to .manual)
 
 **Files:**
-- Create: `app-two/app-two/ViewModels/DaySignalsEditorViewModel.swift`
-- Test: `app-twoTests/DaySignalsEditorViewModelTests.swift`
+- Create: `app-four/ViewModels/DaySignalsEditorViewModel.swift`
+- Test: `app-fourTests/DaySignalsEditorViewModelTests.swift`
 
 `@Observable @MainActor` view model matching the existing VM convention (`CheckInViewModel`). Loads a day's row, exposes editable fields, and on save writes them back, setting the relevant source to `.manual` for any group the user changed. Clearing a field to nil resets that group to `.none` (Assumption A5) so HealthKit can refill it.
 
 - [ ] **Step 1: Write the failing test**
 
 ```swift
-// app-twoTests/DaySignalsEditorViewModelTests.swift
+// app-fourTests/DaySignalsEditorViewModelTests.swift
 import Testing
 import SwiftData
 import Foundation
@@ -1311,13 +1311,13 @@ struct DaySignalsEditorViewModelTests {
 
 - [ ] **Step 2: Run to verify failure**
 
-Run `-only-testing:app-twoTests/DaySignalsEditorViewModelTests`.
+Run `-only-testing:app-fourTests/DaySignalsEditorViewModelTests`.
 Expected: FAIL — `DaySignalsEditorViewModel` not found.
 
 - [ ] **Step 3: Write the view model**
 
 ```swift
-// app-two/app-two/ViewModels/DaySignalsEditorViewModel.swift
+// app-four/ViewModels/DaySignalsEditorViewModel.swift
 import Foundation
 import Observation
 
@@ -1406,13 +1406,13 @@ final class DaySignalsEditorViewModel {
 
 - [ ] **Step 4: Run to verify pass**
 
-Run `-only-testing:app-twoTests/DaySignalsEditorViewModelTests`.
+Run `-only-testing:app-fourTests/DaySignalsEditorViewModelTests`.
 Expected: PASS (3 tests).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add app-two/app-two/ViewModels/DaySignalsEditorViewModel.swift app-twoTests/DaySignalsEditorViewModelTests.swift
+git add app-four/ViewModels/DaySignalsEditorViewModel.swift app-fourTests/DaySignalsEditorViewModelTests.swift
 git commit -m "feat(signals): DaySignalsEditorViewModel (manual edit sets provenance)"
 ```
 
@@ -1450,14 +1450,14 @@ git commit -m "docs(signals): HTML mockups for Day Signals editor + summary"
 ## Task 11: `DaySignalsEditorSheet` (SwiftUI, after mockup approval)
 
 **Files:**
-- Create: `app-two/app-two/Views/Signals/DaySignalsEditorSheet.swift`
+- Create: `app-four/Views/Signals/DaySignalsEditorSheet.swift`
 
 No unit test (SwiftUI view); verify via Preview + manual run. Follows swiftui-pro: small focused view, `@State` for the VM, no business logic in the view.
 
 - [ ] **Step 1: Write the view (structure mirrors approved mockup)**
 
 ```swift
-// app-two/app-two/Views/Signals/DaySignalsEditorSheet.swift
+// app-four/Views/Signals/DaySignalsEditorSheet.swift
 import SwiftUI
 
 struct DaySignalsEditorSheet: View {
@@ -1593,7 +1593,7 @@ Expected: BUILD SUCCEEDED; sheet renders four sections with source pills; editin
 - [ ] **Step 4: Commit**
 
 ```bash
-git add app-two/app-two/Views/Signals/DaySignalsEditorSheet.swift
+git add app-four/Views/Signals/DaySignalsEditorSheet.swift
 git commit -m "feat(signals): DaySignalsEditorSheet UI"
 ```
 
@@ -1602,14 +1602,14 @@ git commit -m "feat(signals): DaySignalsEditorSheet UI"
 ## Task 12: `DaySignalsSummaryView` + sync trigger on appear
 
 **Files:**
-- Create: `app-two/app-two/Views/Signals/DaySignalsSummaryView.swift`
+- Create: `app-four/Views/Signals/DaySignalsSummaryView.swift`
 
 Compact read surface for one day. Reads `DailySignals` via the store (passed in), shows values + source glyphs, opens the editor on tap, and kicks the sync coordinator on appear (read-on-open, v1).
 
 - [ ] **Step 1: Write the view**
 
 ```swift
-// app-two/app-two/Views/Signals/DaySignalsSummaryView.swift
+// app-four/Views/Signals/DaySignalsSummaryView.swift
 import SwiftUI
 
 struct DaySignalsSummaryView: View {
@@ -1714,7 +1714,7 @@ On a device with Health data: open a day, grant authorization when prompted, con
 - [ ] **Step 4: Commit**
 
 ```bash
-git add app-two/app-two/Views/Signals/DaySignalsSummaryView.swift
+git add app-four/Views/Signals/DaySignalsSummaryView.swift
 git commit -m "feat(signals): DaySignalsSummaryView read surface + read-on-open sync"
 ```
 
@@ -1723,15 +1723,15 @@ git commit -m "feat(signals): DaySignalsSummaryView read surface + read-on-open 
 ## Task 13: Optional note→day sleep bridge (Assumption A2)
 
 **Files:**
-- Modify: `app-two/app-two/Store/RecordingStore.swift` (or wherever `createCheckInNote`/`applySummary` is finalized)
-- Test: `app-twoTests/SignalSyncCoordinatorTests.swift` (add a bridge test) or a new `NoteSleepBridgeTests.swift`
+- Modify: `app-four/Store/RecordingStore.swift` (or wherever `createCheckInNote`/`applySummary` is finalized)
+- Test: `app-fourTests/SignalSyncCoordinatorTests.swift` (add a bridge test) or a new `NoteSleepBridgeTests.swift`
 
 When a check-in note produces a sleep value for a day whose `DailySignals.sleepSource == .none`, seed the day's sleep and mark it `.manual`. Never overwrites HealthKit/manual. This preserves "add sleep as implemented today" while `DailySignals` is the dashboard truth. **If the user vetoed A2, skip this task entirely.**
 
 - [ ] **Step 1: Write the failing test**
 
 ```swift
-// app-twoTests/NoteSleepBridgeTests.swift
+// app-fourTests/NoteSleepBridgeTests.swift
 import Testing
 import SwiftData
 import Foundation
@@ -1775,7 +1775,7 @@ struct NoteSleepBridgeTests {
 
 - [ ] **Step 2: Run to verify failure**
 
-Run `-only-testing:app-twoTests/NoteSleepBridgeTests`.
+Run `-only-testing:app-fourTests/NoteSleepBridgeTests`.
 Expected: FAIL — `bridgeNoteSleep` not found.
 
 - [ ] **Step 3: Add the static bridge helper**
@@ -1815,13 +1815,13 @@ SignalSyncCoordinator.bridgeNoteSleep(
 
 - [ ] **Step 5: Run to verify pass**
 
-Run `-only-testing:app-twoTests/NoteSleepBridgeTests`.
+Run `-only-testing:app-fourTests/NoteSleepBridgeTests`.
 Expected: PASS (2 tests).
 
 - [ ] **Step 6: Commit**
 
 ```bash
-git add app-two/app-two/Store/SignalSyncCoordinator.swift app-two/app-two/Store/RecordingStore.swift app-twoTests/NoteSleepBridgeTests.swift
+git add app-four/Store/SignalSyncCoordinator.swift app-four/Store/RecordingStore.swift app-fourTests/NoteSleepBridgeTests.swift
 git commit -m "feat(signals): one-way note->day sleep bridge (does not overwrite HK/manual)"
 ```
 
@@ -1830,7 +1830,7 @@ git commit -m "feat(signals): one-way note->day sleep bridge (does not overwrite
 ## Task 14: Permission primer + authorization trigger
 
 **Files:**
-- Create: `app-two/app-two/Views/Signals/HealthAccessPrimerView.swift`
+- Create: `app-four/Views/Signals/HealthAccessPrimerView.swift`
 - (Optional) Modify wherever Signals first becomes visible to present the primer once.
 
 A lightweight one-time primer before the system HealthKit sheet (App Review + UX best practice): explain what's read and that it stays on-device, then call `requestAuthorization()`. If denied/unavailable, the editor/manual path still works — no broken state.
@@ -1838,7 +1838,7 @@ A lightweight one-time primer before the system HealthKit sheet (App Review + UX
 - [ ] **Step 1: Write the primer view**
 
 ```swift
-// app-two/app-two/Views/Signals/HealthAccessPrimerView.swift
+// app-four/Views/Signals/HealthAccessPrimerView.swift
 import SwiftUI
 
 struct HealthAccessPrimerView: View {
@@ -1854,7 +1854,7 @@ struct HealthAccessPrimerView: View {
                 .font(.system(size: 56)).foregroundStyle(.pink)
             Text("Connect Apple Health")
                 .font(.title2.bold())
-            Text("app-two can show your sleep, activity, heart, and cycle data next to your check-ins. It's read-only and stays on your device — nothing is uploaded.")
+            Text("app-four can show your sleep, activity, heart, and cycle data next to your check-ins. It's read-only and stays on your device — nothing is uploaded.")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)
@@ -1890,7 +1890,7 @@ Expected: BUILD SUCCEEDED; both buttons behave; no crash when HealthKit unavaila
 - [ ] **Step 3: Commit**
 
 ```bash
-git add app-two/app-two/Views/Signals/HealthAccessPrimerView.swift
+git add app-four/Views/Signals/HealthAccessPrimerView.swift
 git commit -m "feat(signals): one-time Apple Health access primer"
 ```
 
@@ -1900,14 +1900,14 @@ git commit -m "feat(signals): one-time Apple Health access primer"
 
 - [ ] **Step 1: Run the full test suite**
 
-Run the entire `app-twoTests` target (drop `-only-testing`).
+Run the entire `app-fourTests` target (drop `-only-testing`).
 Expected: ALL PASS, including the pre-existing suites (no regressions). Record the count.
 
 - [ ] **Step 2: Build the app target clean**
 
 ```bash
 env -u GIT_CONFIG_COUNT -u GIT_CONFIG_KEY_0 -u GIT_CONFIG_VALUE_0 \
-  xcodebuild build -scheme app-two -destination 'platform=iOS Simulator,name=iPhone 16 Pro' 2>&1 | tail -20
+  xcodebuild build -scheme app-four -destination 'platform=iOS Simulator,name=iPhone 16 Pro' 2>&1 | tail -20
 ```
 Expected: BUILD SUCCEEDED, no new warnings (the repo tracks actor-isolation warnings at zero — keep it there).
 
