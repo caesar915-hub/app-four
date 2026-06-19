@@ -1,0 +1,191 @@
+{
+  "activityEntities" : [
+    "trainingDataAdded",
+    [
+      {
+        "createdDate" : "2026-06-18T11:52:52Z",
+        "event" : "trainingDataAdded",
+        "id" : "8C1A7B0B-367C-4D38-9315-8EE7DA1FDB0D",
+        "subtitle" : "focus.json",
+        "title" : "Training Data Added"
+      }
+    ],
+    "experimentCreated",
+    [
+      {
+        "createdDate" : "2026-06-18T11:52:52Z",
+        "event" : "experimentCreated",
+        "id" : "F8D0E269-AA33-46E0-95D8-901A3E4F5FAC",
+        "subtitle" : "createml-test1 1 copy 3",
+        "title" : "Model Source Created"
+      }
+    ]
+  ],
+  "contentDataResult" : {
+    "createdDate" : "2026-06-17T23:44:28Z"
+  },
+  "createdDate" : "2026-06-18T11:52:52Z",
+  "evaluationContainerEntity" : {
+    "createdDate" : "2026-06-18T11:52:53Z",
+    "evaluationEntities" : [
+
+    ],
+    "id" : "4903204e-cdc9-4ffe-9bd8-2885589be8a6",
+    "modifiedDate" : "2026-06-18T11:52:53Z",
+    "previewType" : "textClassifier",
+    "testingEvaluationEntity" : {
+      "analysedDataType" : "none",
+      "createdDate" : "2026-06-18T11:52:52Z",
+      "dataResult" : {
+        "createdDate" : "2026-06-18T11:52:52Z"
+      },
+      "id" : "9374479b-9c0e-4d06-96fe-7f87e8229f91"
+    },
+    "trainingEvaluationEntity" : {
+      "analysedDataType" : "none",
+      "createdDate" : "2026-06-18T11:52:52Z",
+      "dataResult" : {
+        "createdDate" : "2026-06-18T11:52:52Z",
+        "dataSourceID" : "105A6A0A-3E81-4FB3-A420-2143DD674FB7",
+        "dataURL" : "file:///Users/caesargrey/Projects/app-four/spikes/createml-nlmodel/corpus/focus.json"
+      },
+      "dataSourceID" : "105A6A0A-3E81-4FB3-A420-2143DD674FB7",
+      "id" : "e34d3a52-6e23-4eee-afb2-091dd11dc80f"
+    },
+    "validationEvaluationEntity" : {
+      "analysedDataType" : "auto",
+      "createdDate" : "2026-06-18T11:52:52Z",
+      "dataResult" : {
+        "createdDate" : "2026-06-18T11:52:52Z"
+      },
+      "id" : "6b40d0fd-f7be-4d37-8727-b2c7b6619a4b"
+    }
+  },
+  "evaluationEntity" : {
+    "analysedDataType" : "none",
+    "dataResult" : {
+
+    },
+    "id" : "f53cd091-4bde-4f23-a744-5998afd7d118"
+  },
+  "evaluationState" : "uninitialized",
+  "id" : "D7EEA7F6-B900-43E3-B1E5-F23640D0D164",
+  "modelEntity" : {
+    "createdDate" : "2026-06-18T11:52:52Z",
+    "experimentID" : "63510A34-18AB-48B5-9675-8C57865FCA38",
+    "id" : "BE5432BB-CF60-4695-8990-5AB624A58080",
+    "modifiedDate" : "2026-06-18T11:52:52Z",
+    "title" : "",
+    "version" : "1.0"
+  },
+  "modifiedDate" : "2026-06-18T11:52:53Z",
+  "preferredFilename" : "createml-test1 1 copy 3",
+  "settingEntity" : {
+    "algorithmType" : "transferLearning",
+    "augmentations" : [
+
+    ],
+    "featureNames" : [
+
+    ],
+    "handActionClassifierAugmentations" : [
+
+    ],
+    "handPoseClassifierAugmentations" : [
+
+    ],
+    "harVideoAugmentations" : 0,
+    "iterationCount" : 200,
+    "seedType" : "default",
+    "styleTransferAlgorithmType" : "image",
+    "taskType" : "textClassifier",
+    "textClassifierArabicLanguage" : "automatic",
+    "textClassifierCJKLanguage" : "automatic",
+    "textClassifierCyrillicLanguage" : "automatic",
+    "textClassifierIndicLanguage" : "automatic",
+    "textClassifierLatin" : "english",
+    "textClassifierScript" : "latin",
+    "textClassifierThaiLanguage" : "automatic",
+    "transferLearningEmbeddingType" : "bert"
+  },
+  "snapshotRole" : {
+    "withoutSnapshots" : 0
+  },
+  "state" : "ready",
+  "title" : "createml-test1 1 copy 3",
+  "trainingEntity" : {
+    "analysedDataType" : "datasource",
+    "checkpointMetrics" : {
+
+    },
+    "dataResult" : {
+      "classesCount" : 6,
+      "createdDate" : "2026-06-18T11:52:52Z",
+      "dataAnalysis" : {
+        "classifierAnalysis" : {
+          "labelStats" : {
+            "distracted" : 79,
+            "foggy" : 78,
+            "lockedIn" : 55,
+            "none" : 353,
+            "present" : 75,
+            "sharp" : 66
+          }
+        },
+        "issues" : [
+          {
+            "description" : "6 classes found, including none, distracted, foggy",
+            "severity" : "debug"
+          },
+          {
+            "description" : "706 texts found, automatically creating validation set",
+            "severity" : "good"
+          },
+          {
+            "description" : "Smallest class is \"lockedIn\" with 55 texts",
+            "severity" : "debug"
+          },
+          {
+            "description" : "Largest class is \"none\" with 353 text",
+            "severity" : "debug"
+          }
+        ],
+        "objectDetectorAnalysis" : {
+          "details" : {
+
+          }
+        },
+        "summary" : {
+          "canUseValidation" : 1,
+          "classCount" : 6,
+          "sampleCount" : 706
+        }
+      },
+      "dataSourceID" : "105A6A0A-3E81-4FB3-A420-2143DD674FB7",
+      "dataURL" : "file:///Users/caesargrey/Projects/app-four/spikes/createml-nlmodel/corpus/focus.json",
+      "itemsCount" : 706
+    },
+    "dataSourceID" : "105A6A0A-3E81-4FB3-A420-2143DD674FB7",
+    "featureExtractionCheckpointMayBeAvailable" : false,
+    "progress" : [
+
+    ],
+    "snapshottableCheckpoints" : {
+
+    }
+  },
+  "validationEntity" : {
+    "analysedDataType" : "auto",
+    "dataResult" : {
+      "createdDate" : "2026-06-18T11:52:52Z"
+    },
+    "splitOptions" : {
+      "strategy" : {
+        "automatic" : {
+
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "great-day",
+    "note": "short · single positive mood",
+    "transcript": "Today was great, honestly one of the best days in ages. I felt happy and light, like everything was clicking into place."
+  },
+  {
+    "id": "med-timing-confusion",
+    "note": "med · timing question, mild anxiety",
+    "transcript": "I think I took my Concerta late, maybe 10am instead of 8, and now I'm worried I won't sleep tonight. Restless about it all evening."
+  },
+  {
+    "id": "task-paralysis",
+    "note": "focus · executive dysfunction, can't start",
+    "transcript": "I knew exactly what I needed to do but I just could not start any of it, sat staring at the screen for an hour. My head was all over the place and I felt restless and useless."
+  },
+  {
+    "id": "anxious-then-calm",
+    "note": "ARC · emotional settle after action",
+    "transcript": "I was panicking about the deadline all morning, stomach in knots. Once I finally sent the email it was like a weight lifted and I could breathe again."
+  },
+  {
+    "id": "not-as-bad",
+    "note": "negation · hedged, better than expected",
+    "transcript": "Honestly not as bad as I expected. I braced for a terrible day but it turned out fine, pretty steady actually."
+  },
+  {
+    "id": "voice-architecture-appcore",
+    "note": "voice import · 2026-06-18_14-30_demo-session.md",
+    "transcript": "So I'm thinking about the architecture for the new feature set. The main problem we're trying to solve is improving the test coverage for the AppCore Swift Package. Right now we've got the TDD loop set up on the Linux VM, which is working pretty well with swift test. The key thing is keeping the logic testable and separated from the iOS UI layer. That's why we're using the AppCore package — it's basically a pure Swift library that doesn't have any UIKit dependencies. I was looking at some patterns for organizing the test structure. We could do it by feature or by layer. I think by feature makes more sense because it keeps the tests closer to the actual implementation. Another thing to consider is the CI/CD pipeline. We need to make sure tests run automatically on every push. With the GCP VM setup, we can hook that into GitHub Actions pretty cleanly. One more thing — I should probably set up a memory system for tracking all the architectural decisions we're making. Something like an ADR folder would be helpful for documenting why we chose certain patterns over others."
+  }
+]

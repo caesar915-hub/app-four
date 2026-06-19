@@ -1,0 +1,94 @@
+{
+  "activityEntities" : [
+    "dataSourceTrainingStarted",
+    [
+      {
+        "createdDate" : "2026-06-17T23:59:36Z",
+        "event" : "dataSourceTrainingStarted",
+        "id" : "BF6BE59F-58CC-42B6-8E8A-1B21E691F591",
+        "subtitle" : "createml-test1 1 copy 1",
+        "title" : "Used By"
+      }
+    ],
+    "dataSourceMetrics",
+    [
+      {
+        "createdDate" : "2026-06-17T23:59:36Z",
+        "event" : "dataSourceMetrics",
+        "id" : "0F69599D-DEA5-4E3D-94A5-FF9F03E8C227",
+        "subtitle" : "6 Classes, 428 Items",
+        "title" : "Data Summary"
+      }
+    ],
+    "dataSourceCreated",
+    [
+      {
+        "createdDate" : "2026-06-17T23:59:33Z",
+        "event" : "dataSourceCreated",
+        "id" : "974CB641-3D38-4B18-A8FE-37751CB54962",
+        "subtitle" : "energy.json",
+        "title" : "Data Source Created"
+      }
+    ]
+  ],
+  "createdDate" : "2026-06-17T23:59:33Z",
+  "dataPathRelativeToProjectURL" : "../energy.json/",
+  "dataResult" : {
+    "classesCount" : 6,
+    "createdDate" : "2026-06-17T23:59:33Z",
+    "dataAnalysis" : {
+      "classifierAnalysis" : {
+        "labelStats" : {
+          "alert" : 70,
+          "charged" : 70,
+          "none" : 79,
+          "sluggish" : 70,
+          "steady" : 69,
+          "tired" : 70
+        }
+      },
+      "issues" : [
+        {
+          "description" : "6 classes found, including none, tired, charged",
+          "severity" : "debug"
+        },
+        {
+          "description" : "428 texts found, automatically creating validation set",
+          "severity" : "good"
+        },
+        {
+          "description" : "Smallest class is \"steady\" with 69 texts",
+          "severity" : "debug"
+        },
+        {
+          "description" : "Largest class is \"none\" with 79 text",
+          "severity" : "debug"
+        }
+      ],
+      "objectDetectorAnalysis" : {
+        "details" : {
+
+        }
+      },
+      "summary" : {
+        "canUseValidation" : 1,
+        "classCount" : 6,
+        "sampleCount" : 428
+      }
+    },
+    "dataSourceID" : "43BEAE61-100B-4BDC-93FC-6ABA0F6E733D",
+    "dataURL" : "file:///Users/caesargrey/Projects/app-four/spikes/createml-nlmodel/corpus/energy.json",
+    "itemsCount" : 428
+  },
+  "dataURL" : "file:///Users/caesargrey/Projects/app-four/spikes/createml-nlmodel/corpus/energy.json",
+  "experimentIDs" : [
+    "32D15610-9DE8-41FE-8F55-BE12653EBC39",
+    "FDA1C35C-7D7F-4B10-A8CC-5169C5F6A641"
+  ],
+  "id" : "43BEAE61-100B-4BDC-93FC-6ABA0F6E733D",
+  "modifiedDate" : "2026-06-17T23:59:39Z",
+  "pathType" : 0,
+  "preferredFilename" : "energy.json",
+  "title" : "energy.json",
+  "version" : "1.0"
+}

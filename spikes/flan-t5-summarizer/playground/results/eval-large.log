@@ -1,0 +1,7 @@
+Loading google/flan-t5-large (float32) on cpu...
+Loading weights:   0%|          | 0/558 [00:00<?, ?it/s]Loading weights:  76%|███████▋  | 426/558 [00:00<00:00, 4257.01it/s]Loading weights: 100%|██████████| 558/558 [00:00<00:00, 4291.45it/s]
+[transformers] The tied weights mapping and config for this model specifies to tie shared.weight to lm_head.weight, but both are present in the checkpoints with different values, so we will NOT tie them. You should update the config with `tie_word_embeddings=False` to silence this warning.
+Ready.
+
+/Users/caesargrey/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '

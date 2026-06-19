@@ -1,0 +1,134 @@
+[
+  {
+    "text": "I felt genuinely well today.",
+    "label": "none"
+  },
+  {
+    "text": "I couldn't stay on one thing for more than a minute.",
+    "label": "distracted"
+  },
+  {
+    "text": "Consistent energy from morning to evening.",
+    "label": "none"
+  },
+  {
+    "text": "I kept losing the thread.",
+    "label": "distracted"
+  },
+  {
+    "text": "I felt my energy sapping as the day went on.",
+    "label": "none"
+  },
+  {
+    "text": "I couldn't connect the dots today.",
+    "label": "distracted"
+  },
+  {
+    "text": "It was an okay kind of day.",
+    "label": "none"
+  },
+  {
+    "text": "Zero focus today.",
+    "label": "distracted"
+  },
+  {
+    "text": "A bit exhausted by the end of the day.",
+    "label": "none"
+  },
+  {
+    "text": "Physical energy was as expected.",
+    "label": "none"
+  },
+  {
+    "text": "My thoughts are scattered and fuzzy.",
+    "label": "distracted"
+  },
+  {
+    "text": "Not thriving but not struggling either.",
+    "label": "none"
+  },
+  {
+    "text": "I was present in my work and conversations.",
+    "label": "present"
+  },
+  {
+    "text": "I bounced between tasks without finishing any.",
+    "label": "distracted"
+  },
+  {
+    "text": "Not energetic at all today.",
+    "label": "none"
+  },
+  {
+    "text": "My thinking is crisp and fast.",
+    "label": "sharp"
+  },
+  {
+    "text": "Energy was on the lower side today.",
+    "label": "none"
+  },
+  {
+    "text": "I felt mentally blunted today.",
+    "label": "distracted"
+  },
+  {
+    "text": "Physical output was steady and reliable.",
+    "label": "none"
+  },
+  {
+    "text": "I felt highly mentally competent today.",
+    "label": "sharp"
+  },
+  {
+    "text": "Everything feels equally unimportant.",
+    "label": "none"
+  },
+  {
+    "text": "I'm switched on right now.",
+    "label": "none"
+  },
+  {
+    "text": "Today i experienced real, deep hyperfocus.",
+    "label": "sharp"
+  },
+  {
+    "text": "Kind of a blah day but not in a bad way.",
+    "label": "none"
+  },
+  {
+    "text": "I couldn't form a coherent sentence in my head.",
+    "label": "distracted"
+  },
+  {
+    "text": "I felt mentally here today.",
+    "label": "present"
+  },
+  {
+    "text": "Mood was high today, feeling good.",
+    "label": "none"
+  },
+  {
+    "text": "I needed a nap but even that didn't help.",
+    "label": "none"
+  },
+  {
+    "text": "Woke up sad and stayed that way.",
+    "label": "none"
+  },
+  {
+    "text": "The exhaustion was bone-deep.",
+    "label": "none"
+  },
+  {
+    "text": "My mind cut through everything easily today.",
+    "label": "sharp"
+  },
+  {
+    "text": "Incredible mood, rare feeling.",
+    "label": "none"
+  },
+  {
+    "text": "Not focused at all.",
+    "label": "distracted"
+  }
+]
