@@ -9,6 +9,7 @@ struct MockAppServices {
     let transcription = MockTestTranscriptionService()
     let aiModel = MockAIModelService()
     let summarization = MockSummarizationService()
+    let health = MockHealthDataReading()
 
     var services: AppServices {
         AppServices(
@@ -16,7 +17,8 @@ struct MockAppServices {
             storageService: storage,
             transcriptionService: transcription,
             aiModelService: aiModel,
-            summarizationService: summarization
+            summarizationService: summarization,
+            healthService: health
         )
     }
 }

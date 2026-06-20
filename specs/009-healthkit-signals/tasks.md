@@ -77,25 +77,25 @@ description: "Task list for 009-healthkit-signals"
 
 ### Setup for US2
 
-- [ ] T018 [US2] In Xcode, add the **HealthKit** capability to the `app-four` target (generates `app-four/app-four.entitlements`, `com.apple.developer.healthkit`); do **not** enable Clinical Records or background delivery. Add `NSHealthShareUsageDescription` (read, on-device rationale) to `app-four/Info.plist`; do **not** add `NSHealthUpdateUsageDescription` (read-only, FR-017).
+- [X] T018 [US2] In Xcode, add the **HealthKit** capability to the `app-four` target (generates `app-four/app-four.entitlements`, `com.apple.developer.healthkit`); do **not** enable Clinical Records or background delivery. Add `NSHealthShareUsageDescription` (read, on-device rationale) to `app-four/Info.plist`; do **not** add `NSHealthUpdateUsageDescription` (read-only, FR-017).
 
 ### Tests (test-first · RED — MANDATORY) ⚠️
 
-- [ ] T019 [P] [US2] RED: `HealthKitSampleMappingTests` in `app-fourTests/HealthKitSampleMappingTests.swift` — flow mapping `2→.light, 3→.medium, 4→.heavy`, `1/5/unknown→nil` (D2 corrected integers); sleep efficiency→`SleepLevel` at the committed cutoffs and `nil` when `inBed ≤ 0`/non-finite (D5). Run; MUST FAIL.
-- [ ] T020 [US2] RED: `SignalSyncCoordinatorTests` (merge + sync) in `app-fourTests/SignalSyncCoordinatorTests.swift` — the full merge matrix: `.none`→fill+`.healthKit`; `.healthKit`→overwrite; `.manual`→untouched; activity/heart merge independently; `sync(from:to:)` fills rows from the mock reader and saves once; `syncPreservesManualEdits`. Run; MUST FAIL. (deps: T021 for the mock)
+- [X] T019 [P] [US2] RED: `HealthKitSampleMappingTests` in `app-fourTests/HealthKitSampleMappingTests.swift` — flow mapping `2→.light, 3→.medium, 4→.heavy`, `1/5/unknown→nil` (D2 corrected integers); sleep efficiency→`SleepLevel` at the committed cutoffs and `nil` when `inBed ≤ 0`/non-finite (D5). Run; MUST FAIL.
+- [X] T020 [US2] RED: `SignalSyncCoordinatorTests` (merge + sync) in `app-fourTests/SignalSyncCoordinatorTests.swift` — the full merge matrix: `.none`→fill+`.healthKit`; `.healthKit`→overwrite; `.manual`→untouched; activity/heart merge independently; `sync(from:to:)` fills rows from the mock reader and saves once; `syncPreservesManualEdits`. Run; MUST FAIL. (deps: T021 for the mock)
 
 ### Implementation
 
-- [ ] T021 [P] [US2] Create `MockHealthDataReading` (stubbed state + `[DaySignalsDTO]`, `readCallCount`) in `app-fourTests/Mocks/MockHealthDataReading.swift` (the one sanctioned single-threaded test-double `@unchecked Sendable`).
-- [ ] T022 [US2] Create `HealthDataReading` protocol + `HealthAuthorizationState` in `app-four/Services/HealthKit/HealthDataReading.swift` (per [contracts/interfaces.md](contracts/interfaces.md) C1).
-- [ ] T023 [US2] Implement `HealthKitSampleMapping` pure funcs (corrected flow integers; efficiency→`SleepLevel`) in `app-four/Services/HealthKit/HealthKitSampleMapping.swift`. Turns T019 GREEN.
-- [ ] T024 [US2] Implement `SignalSyncCoordinator` (`@MainActor`) merge funcs + `sync(from:to:)`/`sync(lastDays:)` in `app-four/Store/SignalSyncCoordinator.swift` — per-group provenance gate; upsert→merge→save once. Turns T020 GREEN. (deps: T011, T022)
-- [ ] T025 [US2] Add `healthService: HealthDataReading` to `app-four/Store/AppServices.swift` (after `summarizationService`) and wire `MockHealthDataReading` into `app-fourTests/Mocks/MockAppServices.swift`; keep existing suites green. (deps: T022)
-- [ ] T026 [US2] Implement `HealthKitServiceImpl` actor (the **only** `import HealthKit`) in `app-four/Services/HealthKit/HealthKitServiceImpl.swift` — `isHealthDataAvailable` gate; `requestAuthorization(toShare:[],read:)`; per-day reads via `HKSampleQueryDescriptor`/`HKStatisticsQueryDescriptor` `.result(for:)`; sleep = sum of `asleepCore/Deep/REM/Unspecified` + `inBed`; activity sums; heart averages; flow via `HKCategoryValueVaginalBleeding` (D2/D3); returns DTOs only. Device-verified (not unit-tested). (deps: T022, T023)
-- [ ] T027 [US2] Wire production DI in `app-four/Store/AppDependencies.swift` — construct `HealthKitServiceImpl`, `SignalsStore`, `SignalSyncCoordinator`; pass `healthService` into the `AppServices(...)` bundle; build the app target. (deps: T024, T025, T026)
-- [ ] T028 [US2] Implement `HealthAccessPrimerView` in `app-four/Views/Signals/HealthAccessPrimerView.swift` — one-time plain-language primer before the system sheet (FR-005); "Connect" calls `requestAuthorization()`, "Not now" leaves the manual path usable. Build + Preview. (deps: T022)
-- [ ] T029 [US2] Wire read-on-open + pull-to-refresh into `DaySignalsSummaryView` (`coordinator.sync(lastDays: 30)` in `.task`/`.refreshable`, then re-fetch the day). Build + run on simulator (sync returns empty → manual path intact). (deps: T016, T024, T027)
-- [ ] T030 [US2] Manual device verification: grant access → recent days populate with the Apple Health source; first grant backfills ~30 days (SC-002, SC-003). Record in the PR.
+- [X] T021 [P] [US2] Create `MockHealthDataReading` (stubbed state + `[DaySignalsDTO]`, `readCallCount`) in `app-fourTests/Mocks/MockHealthDataReading.swift` (the one sanctioned single-threaded test-double `@unchecked Sendable`).
+- [X] T022 [US2] Create `HealthDataReading` protocol + `HealthAuthorizationState` in `app-four/Services/HealthKit/HealthDataReading.swift` (per [contracts/interfaces.md](contracts/interfaces.md) C1).
+- [X] T023 [US2] Implement `HealthKitSampleMapping` pure funcs (corrected flow integers; efficiency→`SleepLevel`) in `app-four/Services/HealthKit/HealthKitSampleMapping.swift`. Turns T019 GREEN.
+- [X] T024 [US2] Implement `SignalSyncCoordinator` (`@MainActor`) merge funcs + `sync(from:to:)`/`sync(lastDays:)` in `app-four/Store/SignalSyncCoordinator.swift` — per-group provenance gate; upsert→merge→save once. Turns T020 GREEN. (deps: T011, T022)
+- [X] T025 [US2] Add `healthService: HealthDataReading` to `app-four/Store/AppServices.swift` (after `summarizationService`) and wire `MockHealthDataReading` into `app-fourTests/Mocks/MockAppServices.swift`; keep existing suites green. (deps: T022)
+- [X] T026 [US2] Implement `HealthKitServiceImpl` actor (the **only** `import HealthKit`) in `app-four/Services/HealthKit/HealthKitServiceImpl.swift` — `isHealthDataAvailable` gate; `requestAuthorization(toShare:[],read:)`; per-day reads via `HKSampleQueryDescriptor`/`HKStatisticsQueryDescriptor` `.result(for:)`; sleep = sum of `asleepCore/Deep/REM/Unspecified` + `inBed`; activity sums; heart averages; flow via `HKCategoryValueVaginalBleeding` (D2/D3); returns DTOs only. Device-verified (not unit-tested). (deps: T022, T023)
+- [X] T027 [US2] Wire production DI in `app-four/Store/AppDependencies.swift` — construct `HealthKitServiceImpl`, `SignalsStore`, `SignalSyncCoordinator`; pass `healthService` into the `AppServices(...)` bundle; build the app target. (deps: T024, T025, T026)
+- [X] T028 [US2] Implement `HealthAccessPrimerView` in `app-four/Views/Signals/HealthAccessPrimerView.swift` — one-time plain-language primer before the system sheet (FR-005); "Connect" calls `requestAuthorization()`, "Not now" leaves the manual path usable. Build + Preview. (deps: T022)
+- [X] T029 [US2] Wire read-on-open + pull-to-refresh into `DaySignalsSummaryView` (`coordinator.sync(lastDays: 30)` in `.task`/`.refreshable`, then re-fetch the day). Build + run on simulator (sync returns empty → manual path intact). (deps: T016, T024, T027)
+- [ ] T030 [US2] ⏳ DEVICE-ONLY (no physical device in this environment) — Manual device verification: grant access → recent days populate with the Apple Health source; first grant backfills ~30 days (SC-002, SC-003). Record in the PR.
 
 **Checkpoint**: US2 functional — Apple Health import fills days; manual path still works; denied/unavailable degrade to empty editable fields (FR-014).
 
@@ -109,13 +109,13 @@ description: "Task list for 009-healthkit-signals"
 
 ### Tests (test-first · RED — MANDATORY) ⚠️
 
-- [ ] T031 [P] [US3] RED: add a mixed-provenance round-trip case to `app-fourTests/SignalSyncCoordinatorTests.swift` — one day seeded with a `.manual` sleep group, a `.none` activity group, and a `.healthKit` heart group; run `sync` with conflicting DTOs for all three; assert manual preserved, none→filled+`.healthKit`, healthKit→refreshed (FR-009/010/011). Run; MUST FAIL if any gap, else confirms the invariant end-to-end. (deps: T024)
+- [X] T031 [P] [US3] RED: add a mixed-provenance round-trip case to `app-fourTests/SignalSyncCoordinatorTests.swift` — one day seeded with a `.manual` sleep group, a `.none` activity group, and a `.healthKit` heart group; run `sync` with conflicting DTOs for all three; assert manual preserved, none→filled+`.healthKit`, healthKit→refreshed (FR-009/010/011). Run; MUST FAIL if any gap, else confirms the invariant end-to-end. (deps: T024)
 
 ### Implementation
 
-- [ ] T032 [US3] Ensure the merge rule fully satisfies T031 (manual sticky across a full sync round-trip); add code only if the test exposes a gap. (deps: T024)
-- [ ] T033 [US3] Finalize source indicators to the approved mockup across `DaySignalsEditorSheet` (per-section "From Apple Health" / "Added by you" / "Not set" pills) and `DaySignalsSummaryView` (source glyphs), with accessibility labels (FR-013/SC-006). Build + run. (deps: T015, T016, T029)
-- [ ] T034 [US3] Manual device verification: edit an imported value → it flips to "Added by you" and **survives pull-to-refresh** (SC-004). Record in the PR.
+- [X] T032 [US3] Ensure the merge rule fully satisfies T031 (manual sticky across a full sync round-trip); add code only if the test exposes a gap. (deps: T024)
+- [X] T033 [US3] Finalize source indicators to the approved mockup across `DaySignalsEditorSheet` (per-section "From Apple Health" / "Added by you" / "Not set" pills) and `DaySignalsSummaryView` (source glyphs), with accessibility labels (FR-013/SC-006). Build + run. (deps: T015, T016, T029)
+- [ ] T034 [US3] ⏳ DEVICE-ONLY (no physical device in this environment) — Manual device verification: edit an imported value → it flips to "Added by you" and **survives pull-to-refresh** (SC-004). Record in the PR.
 
 **Checkpoint**: All three stories independently functional; provenance correct and visible.
 

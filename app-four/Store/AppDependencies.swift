@@ -15,6 +15,8 @@ enum AppDependencies {
     static let diagnosticsStore = DiagnosticsStore()
     static let screenTracker = ScreenTracker()
     static let summarizationService: SummarizationService = NLSummarizationService()
+    static let healthService: HealthDataReading = HealthKitServiceImpl()
+    static let signalSyncCoordinator = SignalSyncCoordinator(reader: healthService, store: signalsStore)
 
     /// Observable bundle for environment injection into ViewModels.
     static let services = AppServices(
@@ -22,7 +24,8 @@ enum AppDependencies {
         storageService: storageService,
         transcriptionService: transcriptionService,
         aiModelService: aiModelService,
-        summarizationService: summarizationService
+        summarizationService: summarizationService,
+        healthService: healthService
     )
 
     private static let sharedWhisperKitService = WhisperKitTranscriptionService(

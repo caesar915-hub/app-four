@@ -8,6 +8,7 @@ import SwiftData
 struct DaySignalsSummaryView: View {
     let dayStart: Date
     let store: SignalsStore
+    let coordinator: SignalSyncCoordinator
 
     @State private var row: DailySignals?
     @State private var showingEditor = false
@@ -28,12 +29,20 @@ struct DaySignalsSummaryView: View {
             signalRow("Cycle", value: cycleText, source: row?.cycleSource ?? .none)
         }
         .padding()
-        .task { refresh() }
+        .task { await syncAndRefresh() }
+        .refreshable { await syncAndRefresh() }
         .sheet(isPresented: $showingEditor, onDismiss: refresh) {
             DaySignalsEditorSheet(
                 viewModel: DaySignalsEditorViewModel(dayStart: dayStart, store: store)
             )
         }
+    }
+
+    /// Read-on-open: pull the last 30 days from Apple Health (no-op when unavailable /
+    /// unauthorized), then show this day. Manual data is unaffected.
+    private func syncAndRefresh() async {
+        try? await coordinator.sync(lastDays: 30)
+        refresh()
     }
 
     private func refresh() {
@@ -97,5 +106,6 @@ struct DaySignalsSummaryView: View {
 
 #Preview {
     let store = SignalsStore(context: AppModelContainer.previewContainer.mainContext)
-    return DaySignalsSummaryView(dayStart: SignalDayKey.dayStart(for: .now), store: store)
+    let coordinator = SignalSyncCoordinator(reader: HealthKitServiceImpl(), store: store)
+    return DaySignalsSummaryView(dayStart: SignalDayKey.dayStart(for: .now), store: store, coordinator: coordinator)
 }

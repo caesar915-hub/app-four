@@ -14,5 +14,7 @@
 		<string>IBMPlexMono-Regular.ttf</string>
 		<string>IBMPlexMono-Medium.ttf</string>
 	</array>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Squirl reads your sleep, activity, heart, and cycle data from Apple Health so you can see them alongside your check-ins. This is read-only and stays on your device.</string>
 </dict>
 </plist>
