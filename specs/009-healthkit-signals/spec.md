@@ -104,7 +104,7 @@ A person who both imports from Apple Health and corrects values by hand needs co
 ### Key Entities *(include if feature involves data)*
 
 - **Daily Signals**: one record per local calendar day; the source of truth for that day's four signal groups. Holds, per group, the recorded values plus that group's provenance and a last-updated timestamp.
-- **Signal group — Sleep**: hours slept and a coarse quality rating (poor / okay / good).
+- **Signal group — Sleep**: hours slept and a 5-step sleep-quality rating (restless / light / okay / good / deep), rendered through the app's existing 5-step bead grammar (A6).
 - **Signal group — Activity**: steps, active energy, exercise minutes.
 - **Signal group — Heart**: resting heart rate, heart-rate variability.
 - **Signal group — Menstrual cycle**: flow level (none / light / medium / heavy / spotting) and a small set of symptom tags.

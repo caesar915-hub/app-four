@@ -125,7 +125,7 @@ description: "Task list for 009-healthkit-signals"
 
 - [ ] T035 Run the **full** `app-fourTests` target (no `-only-testing`) → all GREEN, no regressions; record the count (Constitution II).
 - [ ] T036 Build the app target clean (`xcodebuild build -scheme app-four …`) → BUILD SUCCEEDED, no new warnings (keep actor-isolation warnings at zero).
-- [ ] T037 Run the [quickstart.md](quickstart.md) validation scenarios end-to-end.
+- [ ] T037 Run the [quickstart.md](quickstart.md) validation scenarios end-to-end — including SC-007: confirm no health values leave the device (no network egress was added; FR-016).
 - [ ] T038 [P] File a backlog item: strip the pre-existing `@Attribute(.unique) var id: UUID` from `Recording`/`AppSettings`/`ModelMetadata`/`TranscriptionSegment` (Constitution IX CloudKit cleanup; research D1) in `docs/BACKLOG.md` — separate feature, not this PR.
 - [ ] T039 [P] Move the "HealthKit signals" row 📐 Plan → 🔨 In code in `docs/BACKLOG.md` (branch `feat/healthkit-signals` + plan link); add a `docs/DEVLOG.md` checkpoint entry.
 - [ ] T040 Open the PR and run `/code-review`; attach the manual device-verification results (T030, T034).
