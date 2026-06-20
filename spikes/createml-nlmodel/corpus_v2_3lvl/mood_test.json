@@ -1,134 +1,422 @@
 [
   {
-    "text": "I felt genuinely well today.",
-    "label": "good"
-  },
-  {
-    "text": "I couldn't stay on one thing for more than a minute.",
+    "text": "I hope my brain cooperates tomorrow.",
     "label": "none"
   },
   {
-    "text": "Consistent energy from morning to evening.",
+    "text": "Nothing is getting retained, i keep walking into rooms not knowing why i'm there.",
     "label": "none"
   },
   {
-    "text": "I kept losing the thread.",
+    "text": "Managed to stay on track for the most part.",
     "label": "none"
   },
   {
-    "text": "I felt my energy sapping as the day went on.",
+    "text": "The worst night i've had in a while, maybe 3 hours.",
     "label": "none"
   },
   {
-    "text": "I couldn't connect the dots today.",
+    "text": "Let's see if the second cup of coffee helps.",
     "label": "none"
   },
   {
-    "text": "It was an okay kind of day.",
-    "label": "okay"
-  },
-  {
-    "text": "Zero focus today.",
+    "text": "Tired today, the sleep debt is catching up.",
     "label": "none"
   },
   {
-    "text": "A bit exhausted by the end of the day.",
+    "text": "I need to figure out a better bedtime routine.",
     "label": "none"
   },
   {
-    "text": "Physical energy was as expected.",
+    "text": "Had a great start to the day energy-wise.",
     "label": "none"
   },
   {
-    "text": "My thoughts are scattered and fuzzy.",
+    "text": "Low on dopamine and executive function just didn't show up at all.",
     "label": "none"
   },
   {
-    "text": "Not thriving but not struggling either.",
-    "label": "okay"
-  },
-  {
-    "text": "I was present in my work and conversations.",
+    "text": "Took my concerta 36mg this morning.",
     "label": "none"
   },
   {
-    "text": "I bounced between tasks without finishing any.",
+    "text": "Not a drop of energy left.",
     "label": "none"
   },
   {
-    "text": "Not energetic at all today.",
+    "text": "Focus was excellent, things just clicked.",
     "label": "none"
   },
   {
-    "text": "My thinking is crisp and fast.",
+    "text": "Want to get back into a routine.",
     "label": "none"
   },
   {
-    "text": "Energy was on the lower side today.",
+    "text": "Couldn't stop moving, in a good way.",
     "label": "none"
   },
   {
-    "text": "I felt mentally blunted today.",
+    "text": "Attention well enough managed today.",
     "label": "none"
   },
   {
-    "text": "Physical output was steady and reliable.",
+    "text": "Fatigue setting in earlier than usual.",
     "label": "none"
   },
   {
-    "text": "I felt highly mentally competent today.",
+    "text": "Held it together focus-wise.",
     "label": "none"
   },
   {
-    "text": "Everything feels equally unimportant.",
+    "text": "Planning to block my schedule better next week.",
+    "label": "none"
+  },
+  {
+    "text": "Late night, probably only 5 hours.",
+    "label": "none"
+  },
+  {
+    "text": "Really dialed in today.",
+    "label": "none"
+  },
+  {
+    "text": "Ritalin 10mg this morning.",
+    "label": "none"
+  },
+  {
+    "text": "Totally absorbed in what i was doing.",
+    "label": "none"
+  },
+  {
+    "text": "Concentration was completely gone.",
+    "label": "none"
+  },
+  {
+    "text": "The meds kept things level today.",
+    "label": "none"
+  },
+  {
+    "text": "Doing okay cognitively, brain cooperating.",
+    "label": "none"
+  },
+  {
+    "text": "Scattered all day, nothing stuck.",
+    "label": "none"
+  },
+  {
+    "text": "I was actually working, things were getting done.",
+    "label": "none"
+  },
+  {
+    "text": "Felt like i was moving through mud all day.",
+    "label": "none"
+  },
+  {
+    "text": "Energy levels well above baseline today.",
+    "label": "none"
+  },
+  {
+    "text": "The kind of focus where you look up and it's suddenly 3pm.",
+    "label": "none"
+  },
+  {
+    "text": "Had energy when the meds were at their peak.",
+    "label": "none"
+  },
+  {
+    "text": "No ability to concentrate today.",
+    "label": "none"
+  },
+  {
+    "text": "Might try a different time for my meds next week.",
+    "label": "none"
+  },
+  {
+    "text": "I kept zoning out on calls.",
+    "label": "none"
+  },
+  {
+    "text": "Couldn't stay in one task for more than a few minutes.",
+    "label": "none"
+  },
+  {
+    "text": "Brain fog all morning.",
+    "label": "none"
+  },
+  {
+    "text": "Picked up my phone between every sentence.",
+    "label": "none"
+  },
+  {
+    "text": "Called my sister for the first time in weeks.",
+    "label": "none"
+  },
+  {
+    "text": "Energy held reasonably well.",
+    "label": "none"
+  },
+  {
+    "text": "Going to try and sleep earlier tonight.",
+    "label": "none"
+  },
+  {
+    "text": "Slept badly, racing thoughts kept me up.",
+    "label": "none"
+  },
+  {
+    "text": "Nothing was sticking, couldn't concentrate.",
+    "label": "none"
+  },
+  {
+    "text": "Going to try to recharge over the weekend.",
+    "label": "none"
+  },
+  {
+    "text": "Hoping tomorrow is better mood-wise.",
+    "label": "none"
+  },
+  {
+    "text": "Hoping to get some focus back tomorrow.",
+    "label": "none"
+  },
+  {
+    "text": "Medication wearing off around 5, as usual.",
+    "label": "none"
+  },
+  {
+    "text": "Couldn't even make it to my desk until noon.",
+    "label": "none"
+  },
+  {
+    "text": "Absolutely nothing landed cognitively.",
+    "label": "none"
+  },
+  {
+    "text": "I had decent energy this morning.",
+    "label": "none"
+  },
+  {
+    "text": "All i wanted to do was lay on the couch and scroll.",
+    "label": "none"
+  },
+  {
+    "text": "Been active and alert all morning.",
+    "label": "none"
+  },
+  {
+    "text": "Could really use a nap but can't take one.",
+    "label": "none"
+  },
+  {
+    "text": "Dead tired, barely keeping my eyes open.",
+    "label": "none"
+  },
+  {
+    "text": "Spent the morning answering emails.",
+    "label": "none"
+  },
+  {
+    "text": "Heeby-jeebies all day but couldn't turn it into work.",
+    "label": "none"
+  },
+  {
+    "text": "My energy disappeared after lunch.",
+    "label": "none"
+  },
+  {
+    "text": "Hit the ground running this morning.",
+    "label": "none"
+  },
+  {
+    "text": "Want to prep my tasks the night before.",
+    "label": "none"
+  },
+  {
+    "text": "Had a lot of good energy to work with.",
+    "label": "none"
+  },
+  {
+    "text": "Grocery delivery arrived, that's as productive as it got.",
+    "label": "none"
+  },
+  {
+    "text": "Felt capable and energised today.",
+    "label": "none"
+  },
+  {
+    "text": "The rebound hit me around 4:30 like clockwork.",
+    "label": "none"
+  },
+  {
+    "text": "So yeah.",
+    "label": "none"
+  },
+  {
+    "text": "Present enough, managed to complete things.",
+    "label": "none"
+  },
+  {
+    "text": "Insomnia hit bad last night.",
+    "label": "none"
+  },
+  {
+    "text": "Ended up on my phone for most of the evening.",
+    "label": "none"
+  },
+  {
+    "text": "Hope tomorrow's a better one.",
+    "label": "none"
+  },
+  {
+    "text": "Planning to reach out to my psychiatrist about the dose.",
+    "label": "none"
+  },
+  {
+    "text": "Finally sorted out some paperwork.",
+    "label": "none"
+  },
+  {
+    "text": "Maybe an early night will fix my energy.",
+    "label": "none"
+  },
+  {
+    "text": "Spent the afternoon on admin.",
+    "label": "none"
+  },
+  {
+    "text": "Tired despite sleeping okay, which is annoying.",
+    "label": "none"
+  },
+  {
+    "text": "Completely in control of my attention today.",
+    "label": "none"
+  },
+  {
+    "text": "Woke up feeling surprisingly ready.",
+    "label": "none"
+  },
+  {
+    "text": "Started okay but fell off a cliff energy-wise.",
+    "label": "none"
+  },
+  {
+    "text": "No gas in the tank.",
+    "label": "none"
+  },
+  {
+    "text": "Meds gave me a nice steady boost.",
+    "label": "none"
+  },
+  {
+    "text": "Two weeks on the new medication, still seeing how it goes.",
+    "label": "none"
+  },
+  {
+    "text": "Zoning out constantly, couldn't stay on task.",
+    "label": "none"
+  },
+  {
+    "text": "Focused in a way i haven't been in a while.",
+    "label": "none"
+  },
+  {
+    "text": "Got through my tasks without too much trouble.",
+    "label": "none"
+  },
+  {
+    "text": "Nothing remarkable but consistent.",
+    "label": "none"
+  },
+  {
+    "text": "Nothing landing emotionally, positive or negative.",
     "label": "low"
   },
   {
-    "text": "I'm switched on right now.",
-    "label": "none"
-  },
-  {
-    "text": "Today i experienced real, deep hyperfocus.",
-    "label": "none"
-  },
-  {
-    "text": "Kind of a blah day but not in a bad way.",
-    "label": "okay"
-  },
-  {
-    "text": "I couldn't form a coherent sentence in my head.",
-    "label": "none"
-  },
-  {
-    "text": "I felt mentally here today.",
-    "label": "none"
-  },
-  {
-    "text": "Mood was high today, feeling good.",
-    "label": "good"
-  },
-  {
-    "text": "I needed a nap but even that didn't help.",
-    "label": "none"
-  },
-  {
-    "text": "Woke up sad and stayed that way.",
+    "text": "Flat affect day, which is fine, just noticeable.",
     "label": "low"
   },
   {
-    "text": "The exhaustion was bone-deep.",
-    "label": "none"
+    "text": "Felt like everything is hopeless, brain's broken kind of feeling.",
+    "label": "low"
   },
   {
-    "text": "My mind cut through everything easily today.",
-    "label": "none"
+    "text": "Felt kind of gray all day, like nothing landed.",
+    "label": "low"
   },
   {
-    "text": "Incredible mood, rare feeling.",
+    "text": "The emotional dysregulation was real today, crying at random things.",
+    "label": "low"
+  },
+  {
+    "text": "More irritable than sad but definitely not okay.",
+    "label": "low"
+  },
+  {
+    "text": "The inner critic was loud today, just couldn't shake it.",
+    "label": "low"
+  },
+  {
+    "text": "Low-key today, nothing wrong but nothing right.",
+    "label": "low"
+  },
+  {
+    "text": "Mood was not great, putting it mildly.",
+    "label": "low"
+  },
+  {
+    "text": "Mood was rough from the moment i woke up.",
+    "label": "low"
+  },
+  {
+    "text": "Coping well enough, mood on the okay side.",
+    "label": "okay"
+  },
+  {
+    "text": "Mood is okay, nothing to write home about.",
+    "label": "okay"
+  },
+  {
+    "text": "Somewhere in the middle, which is honestly a win.",
+    "label": "okay"
+  },
+  {
+    "text": "Mood is fine, stable, no major wobbles.",
+    "label": "okay"
+  },
+  {
+    "text": "Holding steady emotionally.",
+    "label": "okay"
+  },
+  {
+    "text": "Enjoyed myself today more than i expected.",
     "label": "good"
   },
   {
-    "text": "Not focused at all.",
-    "label": "none"
+    "text": "Mood is brilliant, one of those rare good days.",
+    "label": "good"
+  },
+  {
+    "text": "Mood has been good, things clicked.",
+    "label": "good"
+  },
+  {
+    "text": "Genuinely thriving today, not just coping.",
+    "label": "good"
+  },
+  {
+    "text": "Feel amazing, everything just clicked emotionally.",
+    "label": "good"
+  },
+  {
+    "text": "Happy from the moment i woke up, not sure why but accepting it.",
+    "label": "good"
+  },
+  {
+    "text": "Felt like myself, fully, for the first time in weeks.",
+    "label": "good"
+  },
+  {
+    "text": "Felt light today, in a good way.",
+    "label": "good"
   }
 ]

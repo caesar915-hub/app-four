@@ -60,6 +60,141 @@ PROMPTS = {
         "Journal entry:\n{transcript}\n\nBullet points:"
     ),
 
+    # ── T5Gemma-specific prompts ──────────────────────────────────────────────
+    # T5Gemma -it variants are Gemma-2 chat-tuned; run.py wraps these as a user
+    # turn via apply_chat_template. So phrase as a NATURAL instruction, not the
+    # T5 task-prefix style ("Summarize the following...") that FLAN was tuned on.
+    # The prior T5Gemma eval used the FLAN task-prefix prompt — an unfair test.
+    "gemma-faithful": (
+        "Here is a personal journal entry:\n\n{transcript}\n\n"
+        "Summarise it as a few short bullet points (around 3 to 6) in the "
+        "person's own words. Don't add anything they didn't say. Keep every "
+        "medication name, dose, time, sleep detail, side-effect, and how they "
+        'felt exactly as written. Start each bullet with "- ".'
+    ),
+
+    "gemma-faithful-fewshot": (
+        "You turn personal journal entries into short, faithful bullet points "
+        "in the person's own words. Never add anything they didn't say. Keep "
+        "medications, doses, times, sleep, side-effects, and feelings exact.\n\n"
+        "Entry: Took my Concerta 36mg at 8am. Razor sharp till lunch, then "
+        "crashed hard and felt wiped out by 3pm.\n"
+        "Bullets:\n"
+        "- Took my Concerta 36mg at 8am\n"
+        "- Razor sharp till lunch\n"
+        "- Crashed hard, wiped out by 3pm\n\n"
+        "Entry: {transcript}\n"
+        "Bullets:"
+    ),
+
+    # ── Rematch prompts (per-model, from the Phase-A failure taxonomy) ────────
+    # flan-base: ~94% meta-language ("The journal entry is about…") + invents a
+    # profession/diagnosis. Ban both; force first-person content; few-shot anchor
+    # (base follows demonstrations far more reliably than instructions).
+    "base-strict": (
+        "Rewrite this journal entry as up to 4 short bullet points of its actual content.\n"
+        "- Never write 'The journal entry is about', 'The narrator', or 'The person'. Write the content itself.\n"
+        "- Do not state any profession, diagnosis, or condition unless those exact words appear in the entry.\n"
+        "- Keep every medication name, dose, time, sleep duration, mood, and side-effect exactly as written.\n"
+        "- Use the writer's own first-person words. Do not repeat any line.\n"
+        'Start each bullet with "- ".\n\n'
+        "Journal entry:\n{transcript}\n\nBullet points:"
+    ),
+
+    "base-fewshot": (
+        "Turn each journal entry into up to 4 short first-person bullets of its real content. "
+        "Keep medications, doses, times, sleep, mood, and side-effects exactly. Never describe the "
+        "entry and never invent a profession or diagnosis.\n\n"
+        "Entry: Took my Concerta 36mg at 8am after six hours of broken sleep. Foggy until it kicked in. "
+        "Crashed by 3 with a dry mouth. Mood low all evening.\n"
+        "Bullets:\n"
+        "- Took Concerta 36mg at 8am\n"
+        "- Six hours of broken sleep, foggy until it kicked in\n"
+        "- Crashed by 3 with a dry mouth\n"
+        "- Mood low all evening\n\n"
+        "Entry: {transcript}\n"
+        "Bullets:"
+    ),
+
+    # flan-large: extractive & safe but truncates to the first 1-4 sentences,
+    # dropping late signals (sleep/mood/food/coping) and one negation flip
+    # (drug-holiday → "took Concerta"). Force whole-entry coverage by signal slot
+    # + the closing line, and lock negation literally.
+    "large-coverage": (
+        "Summarize the ENTIRE journal entry as 3 to 8 short bullet points — cover the whole entry, "
+        "not just the first few sentences. Include every one of these that appears: medication "
+        "(name, dose, time), sleep (hours/quality), mood, energy, focus, food/water, social, and what "
+        "the person did about it (coping or resolution — often the last sentence).\n"
+        "Use the person's own words. Copy medications, doses, times, and sleep numbers exactly. "
+        "If a medication was NOT taken or was skipped, say so explicitly — never turn 'didn't take' into 'took'. "
+        "Do not add anything not in the entry. Do not repeat a bullet.\n"
+        'Start each bullet with "- ".\n\n'
+        "Journal entry:\n{transcript}\n\nBullet points:"
+    ),
+
+    "large-coverage-fewshot": (
+        "Summarize the ENTIRE journal entry as 3 to 8 short bullets covering the whole entry — never stop "
+        "after the first few sentences. Keep medications/doses/times and sleep numbers exact, keep negations "
+        "('didn't', 'skipped', 'no'), and always include the final outcome or what the person did.\n\n"
+        "Entry: Took my Concerta at 8 after six hours of broken sleep. Focus held until 1, then I crashed "
+        "around 2:30. Mood went flat after. Forgot lunch again. Overall the morning was good and I want to keep that.\n"
+        "Bullets:\n"
+        "- Took Concerta at 8\n"
+        "- Six hours of broken sleep\n"
+        "- Focus held until 1, crashed around 2:30\n"
+        "- Mood went flat after the crash\n"
+        "- Forgot lunch\n"
+        "- Overall the morning was good and wants to keep that\n\n"
+        "Entry: Weekend drug holiday, no Concerta today. Woke naturally at 9:30. Calmer but scattered.\n"
+        "Bullets:\n"
+        "- Drug holiday, did not take Concerta today\n"
+        "- Woke naturally at 9:30\n"
+        "- Calmer but scattered\n\n"
+        "Entry: {transcript}\n"
+        "Bullets:"
+    ),
+
+    # T5Gemma: fabricates clock specifics (appends am/pm, invents durations),
+    # flips negations, and barely compresses. Lock times/numbers/negation, force
+    # genuine compression. Run with --no-repeat-ngram 3 --repetition-penalty 1.3.
+    "gemma-strict": (
+        "Here is a personal journal entry:\n\n{transcript}\n\n"
+        "Summarise it as at most 4 short bullets in the person's own words — aim for about one-third the length.\n"
+        "- Copy every clock time exactly. If the entry gives a bare time like '2:30' or 'at 8', never add 'am' or 'pm'.\n"
+        "- Never invent a number, dose, or duration that is not in the entry.\n"
+        "- 'Slept N hours' means time asleep — never rewrite it as 'tired for N hours'.\n"
+        "- Keep every 'not'/'didn't'/'no' exactly; never flip a negative into a positive. Keep emotional words as written.\n"
+        "- Do not add symptoms or events not in the entry. Do not repeat a bullet.\n"
+        'Start each bullet with "- ".'
+    ),
+
+    "gemma-strict-fewshot": (
+        "You summarise personal journal entries into at most 4 short, faithful bullets in the person's own "
+        "words. Copy times and numbers exactly (never add am/pm to a bare time), keep negations, never "
+        "invent symptoms, never repeat a bullet.\n\n"
+        "Entry: Took my Concerta at 8. Crash came early, maybe 2:30. Meeting at 3 was rough. Slept maybe 5 "
+        "hours. Didn't eat lunch.\n"
+        "Bullets:\n"
+        "- Took Concerta at 8\n"
+        "- Crash came early, maybe 2:30\n"
+        "- Meeting at 3 was rough\n"
+        "- Slept maybe 5 hours; didn't eat lunch\n\n"
+        "Entry: {transcript}\n"
+        "Bullets:"
+    ),
+
+    # T5Gemma-prefixlm: loops eat the medication before the decoder reaches it
+    # (32% med-drop). Emit the medication slot FIRST so it can't be lost to a loop.
+    "gemma-medslot": (
+        "Here is a personal journal entry:\n\n{transcript}\n\n"
+        "First, if any medication is mentioned, write one line copying its name, dose, and time exactly "
+        "(e.g. 'Meds: Elvanse 50mg at 7:30'); if none, write 'Meds: none mentioned'. "
+        "Then write at most 4 more short bullets for the other facts, in the person's own words. "
+        "Copy all times and numbers exactly (never add am/pm to a bare time, never invent a ':30'). "
+        "Keep every negation. Do not invent symptoms. Never repeat a line.\n"
+        'Start each bullet with "- ".'
+    ),
+
     # ── Large-model-specific prompts ──────────────────────────────────────────
     # Base copies; Large paraphrases and drops details. These prompts try to
     # force Large to behave more like Base: extractive, detail-preserving.

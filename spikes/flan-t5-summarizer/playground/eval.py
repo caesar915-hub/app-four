@@ -27,6 +27,17 @@ import run as run_mod
 HERE = Path(__file__).parent
 RESULTS_DIR = HERE / "results"
 
+# Compression band for a genuine summary: condensed but not collapsed/copied.
+# Below the lower bound the model echoed the source (coverage/halluc look perfect
+# but it isn't summarizing); above the upper bound it collapsed the entry.
+COMPRESSION_BAND = (1.5, 5.0)
+
+
+def _ratio(s: str) -> tuple[int, int]:
+    """Parse an 'h/t' recall string (e.g. '2/3') into (hits, total)."""
+    h, t = s.split("/")
+    return int(h), int(t)
+
 # ── Lazy-loaded contradiction detector (NLI) ────────────────────────────────
 _NLI = None
 
@@ -354,12 +365,22 @@ def main():
     p.add_argument("--prompt", default="faithful", help="prompt template name (see prompts.py)")
     p.add_argument("--model", default=None, help="HF model id (overrides config)")
     p.add_argument("--save", action="store_true")
+    p.add_argument("--no-repeat-ngram", type=int, dest="no_repeat_ngram",
+                   help="forbid repeating any n-gram (e.g. 3) — curbs decoder loops")
+    p.add_argument("--repetition-penalty", type=float, dest="repetition_penalty",
+                   help=">1.0 discourages repeats (e.g. 1.3)")
     args = p.parse_args()
 
     cfg = run_mod.cfg_mod.DEFAULT
     if args.model:
         cfg = run_mod.replace(cfg, model_name=args.model)
     cfg = run_mod.replace(cfg, prompt=args.prompt)
+    g = run_mod.replace(cfg.gen)
+    if args.no_repeat_ngram is not None:
+        g = run_mod.replace(g, no_repeat_ngram_size=args.no_repeat_ngram)
+    if args.repetition_penalty is not None:
+        g = run_mod.replace(g, repetition_penalty=args.repetition_penalty)
+    cfg = run_mod.replace(cfg, gen=g)
 
     # Warm the model cache so per-entry latency is generate-only, not load+generate.
     device = run_mod.pick_device(cfg.device)
@@ -378,10 +399,11 @@ def main():
     sink(f"# {cfg.prompt} prompt evaluation")
     sink(f"model={cfg.model_name} | prompt={cfg.prompt} | run={time.strftime('%Y-%m-%d %H:%M:%S')}")
     sink("")
-    sink("| id | input | tags | raw model output | post-processed | fallback | quality |")
-    sink("|---|---|---|---|---|---|---|")
+    sink("| id | input | tags | raw model output | post-processed | fallback | raw_quality | proc_quality |")
+    sink("|---|---|---|---|---|---|---|---|")
 
     latencies = []
+    rows_data = []
     for case in cases:
         cid = case.get("id", "?")
         src = case["transcript"]
@@ -389,7 +411,13 @@ def main():
         latencies.append(latency)
         proc_summary, reason = post_process(src, raw_summary)
         tags = extract_tags(src)
-        m = evaluate(src, proc_summary)
+        # Metrics on RAW output expose true model quality; metrics on PROCESSED
+        # output measure the post-processor (which echoes the source on fallback,
+        # forcing halluc=0). Report both; aggregate over raw, non-fallback only.
+        m_raw = evaluate(src, raw_summary)
+        m_proc = evaluate(src, proc_summary)
+        in_band = COMPRESSION_BAND[0] <= m_raw["compression"] <= COMPRESSION_BAND[1]
+        rows_data.append({"reason": reason, "m_raw": m_raw, "in_band": in_band})
 
         short_input = src[:90] + "…" if len(src) > 90 else src
         # Escape pipe chars in summary for markdown table
@@ -398,7 +426,7 @@ def main():
         input_cell = short_input.replace("|", "\\|")
 
         sink(
-            f"| {cid} | {input_cell} | {fmt_tags(tags)} | {raw_cell} | {proc_cell} | {reason} | {fmt_metrics(m)} |"
+            f"| {cid} | {input_cell} | {fmt_tags(tags)} | {raw_cell} | {proc_cell} | {reason} | {fmt_metrics(m_raw)} | {fmt_metrics(m_proc)} |"
         )
 
     total_gen = sum(latencies)
@@ -413,6 +441,44 @@ def main():
     sink(f"- max generate/entry: {max(latencies):.2f}s" if n else "- max generate/entry: n/a")
     print(f"[timing] {cfg.model_name}: load {load_time:.1f}s | "
           f"gen total {total_gen:.1f}s | avg {total_gen/max(n,1):.2f}s/entry", file=sys.stderr)
+
+    # ── Aggregate (stratified by fallback) ───────────────────────────────
+    # Headline = fallback rate: how often the model failed and the heuristic
+    # took over. Quality metrics are averaged over NON-fallback rows only, using
+    # raw output, so they measure the model — not the post-processor.
+    from collections import Counter
+    n_rows = len(rows_data)
+    clean = [r for r in rows_data if r["reason"] == "none"]
+    n_fb = n_rows - len(clean)
+    sink("")
+    sink("## Aggregate")
+    sink(f"- model: {cfg.model_name} | prompt: {cfg.prompt}")
+    sink(f"- entries: {n_rows}")
+    sink(f"- **fallback rate: {n_fb}/{n_rows} = {n_fb/n_rows:.0%}** (model failed → heuristic took over)")
+    sink(f"- usable (non-fallback) outputs: {len(clean)}/{n_rows} = {len(clean)/n_rows:.0%}")
+    if clean:
+        def cavg(key):
+            return sum(r["m_raw"][key] for r in clean) / len(clean)
+        med_h = sum(_ratio(r["m_raw"]["med_recall"])[0] for r in clean)
+        med_t = sum(_ratio(r["m_raw"]["med_recall"])[1] for r in clean)
+        fx_h = sum(_ratio(r["m_raw"]["side_effect_recall"])[0] for r in clean)
+        fx_t = sum(_ratio(r["m_raw"]["side_effect_recall"])[1] for r in clean)
+        n_band = sum(1 for r in clean if r["in_band"])
+        n_sleep = sum(1 for r in clean if r["m_raw"]["sleep_hour_ok"])
+        n_arc = sum(1 for r in clean if r["m_raw"]["arc_ok"])
+        sink("- non-fallback quality (raw model output):")
+        sink(f"  - coverage: {cavg('coverage'):.2f}")
+        sink(f"  - hallucination: {cavg('hallucination'):.2f}")
+        sink(f"  - compression: {cavg('compression'):.2f}x")
+        sink(f"  - in band {COMPRESSION_BAND}: {n_band}/{len(clean)} = {n_band/len(clean):.0%}")
+        sink(f"  - med recall: {med_h}/{med_t}" + (f" = {med_h/med_t:.0%}" if med_t else ""))
+        sink(f"  - fx recall: {fx_h}/{fx_t}" + (f" = {fx_h/fx_t:.0%}" if fx_t else ""))
+        sink(f"  - sleep ok: {n_sleep}/{len(clean)}")
+        sink(f"  - arc ok: {n_arc}/{len(clean)}")
+    sink("")
+    sink("### Fallback breakdown (failure modes)")
+    for reason, c in Counter(r["reason"] for r in rows_data).most_common():
+        sink(f"- {reason}: {c} ({c/n_rows:.0%})")
 
     sink("")
     sink("## Metric definitions")
