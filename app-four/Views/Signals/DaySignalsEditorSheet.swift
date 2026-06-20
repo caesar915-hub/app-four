@@ -6,6 +6,7 @@ import SwiftData
 /// activity/heart/cycle are plain fields. Each section shows its provenance.
 struct DaySignalsEditorSheet: View {
     @State private var viewModel: DaySignalsEditorViewModel
+    @State private var saveError: String?
     @Environment(\.dismiss) private var dismiss
 
     init(viewModel: DaySignalsEditorViewModel) {
@@ -28,10 +29,22 @@ struct DaySignalsEditorSheet: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        try? viewModel.save()
-                        dismiss()
+                        do {
+                            try viewModel.save()
+                            dismiss()
+                        } catch {
+                            // Do NOT dismiss on failure — that would present data loss as
+                            // success. Keep the sheet open and surface the error.
+                            AppLogger.log("DaySignals save failed: \(error)")
+                            saveError = error.localizedDescription
+                        }
                     }
                 }
+            }
+            .alert("Couldn't save", isPresented: Binding(get: { saveError != nil }, set: { if !$0 { saveError = nil } })) {
+                Button("OK", role: .cancel) { saveError = nil }
+            } message: {
+                Text(saveError ?? "")
             }
         }
     }

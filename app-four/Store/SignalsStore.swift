@@ -21,7 +21,14 @@ final class SignalsStore {
             predicate: #Predicate { $0.dayStart == key }
         )
         descriptor.fetchLimit = 1
-        return try? modelContext.fetch(descriptor).first
+        do {
+            return try modelContext.fetch(descriptor).first
+        } catch {
+            // Distinguish a genuine fetch failure from "no row": a thrown error here that
+            // returned nil would let `upsert` insert a duplicate day (no unique constraint).
+            AppLogger.log("SignalsStore.fetch failed for \(key): \(error)")
+            return nil
+        }
     }
 
     /// Returns the row for `dayStart` (normalized to start-of-day), inserting one if
@@ -43,7 +50,12 @@ final class SignalsStore {
             predicate: #Predicate { $0.dayStart >= start && $0.dayStart <= end },
             sortBy: [SortDescriptor(\.dayStart, order: .reverse)]
         )
-        return (try? modelContext.fetch(descriptor)) ?? []
+        do {
+            return try modelContext.fetch(descriptor)
+        } catch {
+            AppLogger.log("SignalsStore.fetchRange failed [\(start)…\(end)]: \(error)")
+            return []
+        }
     }
 
     func save() throws {

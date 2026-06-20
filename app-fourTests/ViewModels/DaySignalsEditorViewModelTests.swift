@@ -64,4 +64,47 @@ struct DaySignalsEditorViewModelTests {
         #expect(updated.activitySource == .healthKit)   // untouched group keeps its source (FR-009)
         #expect(updated.sleepSource == .manual)
     }
+
+    // MARK: Non-sleep group branches (save() per-group change-detection)
+
+    @Test func editingThenClearingActivityResetsSource() throws {
+        let (vm, store, container) = try makeVM(day: day); _ = container
+        vm.steps = 8000
+        vm.activeEnergyKcal = 420
+        try vm.save()
+        #expect(try #require(store.fetch(dayStart: day)).activitySource == .manual)
+
+        vm.load()
+        vm.steps = nil
+        vm.activeEnergyKcal = nil
+        vm.exerciseMinutes = nil
+        try vm.save()
+        #expect(try #require(store.fetch(dayStart: day)).activitySource == .none)
+    }
+
+    @Test func editingHeartFlipsSourceToManual() throws {
+        let (vm, store, container) = try makeVM(day: day); _ = container
+        vm.restingHeartRate = 60
+        try vm.save()
+        let row = try #require(store.fetch(dayStart: day))
+        #expect(row.restingHeartRate == 60)
+        #expect(row.heartSource == .manual)
+    }
+
+    @Test func editingThenClearingCycleResetsSource() throws {
+        let (vm, store, container) = try makeVM(day: day); _ = container
+        vm.menstrualFlow = .medium
+        vm.cycleSymptoms = ["cramps"]
+        try vm.save()
+        let saved = try #require(store.fetch(dayStart: day))
+        #expect(saved.menstrualFlow == .medium)
+        #expect(saved.cycleSymptoms == ["cramps"])
+        #expect(saved.cycleSource == .manual)
+
+        vm.load()
+        vm.menstrualFlow = nil
+        vm.cycleSymptoms = []
+        try vm.save()
+        #expect(try #require(store.fetch(dayStart: day)).cycleSource == .none)
+    }
 }

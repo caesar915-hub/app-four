@@ -57,4 +57,30 @@ struct SignalsStoreTests {
         #expect(range.count == 2)
         #expect(range.first?.dayStart == d2)            // newest first
     }
+
+    @Test func fetchRangeBoundariesAreInclusiveExclusive() throws {
+        let (store, container) = try makeStore(); _ = container
+        let start = SignalDayKey.dayStart(for: Date(timeIntervalSince1970: 5_000_000))
+        let end = SignalDayKey.dayStart(for: start.addingTimeInterval(86_400 * 2))   // start + 2 days
+        let before = SignalDayKey.dayStart(for: start.addingTimeInterval(-86_400))   // out (below)
+        let after = SignalDayKey.dayStart(for: start.addingTimeInterval(86_400 * 3)) // out (above)
+        _ = store.upsert(dayStart: before)
+        _ = store.upsert(dayStart: start)   // on lower boundary
+        _ = store.upsert(dayStart: end)     // on upper boundary
+        _ = store.upsert(dayStart: after)
+        try store.save()
+
+        let range = store.fetchRange(from: start, to: end)
+        #expect(range.count == 2)                              // both boundaries included, others excluded
+        #expect(range.contains { $0.dayStart == start })
+        #expect(range.contains { $0.dayStart == end })
+        #expect(!range.contains { $0.dayStart == before })
+        #expect(!range.contains { $0.dayStart == after })
+    }
+
+    @Test func fetchRangeEmptyWhenNoRows() throws {
+        let (store, container) = try makeStore(); _ = container
+        let day = SignalDayKey.dayStart(for: Date(timeIntervalSince1970: 9_000_000))
+        #expect(store.fetchRange(from: day, to: day).isEmpty)
+    }
 }

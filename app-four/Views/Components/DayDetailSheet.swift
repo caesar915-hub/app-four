@@ -22,7 +22,8 @@ struct DayDetailSheet: View {
                     DaySignalsSummaryView(
                         dayStart: SignalDayKey.dayStart(for: day.date),
                         store: AppDependencies.signalsStore,
-                        coordinator: AppDependencies.signalSyncCoordinator
+                        coordinator: AppDependencies.signalSyncCoordinator,
+                        health: AppDependencies.healthService
                     )
                     ForEach(day.recordings) { recording in
                         Button {

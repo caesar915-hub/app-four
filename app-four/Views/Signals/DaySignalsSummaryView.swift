@@ -9,9 +9,12 @@ struct DaySignalsSummaryView: View {
     let dayStart: Date
     let store: SignalsStore
     let coordinator: SignalSyncCoordinator
+    let health: HealthDataReading
 
     @State private var row: DailySignals?
     @State private var showingEditor = false
+    @State private var showingPrimer = false
+    @AppStorage("didOfferHealthAccess") private var didOfferHealthAccess = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -29,19 +32,49 @@ struct DaySignalsSummaryView: View {
             signalRow("Cycle", value: cycleText, source: row?.cycleSource ?? .none)
         }
         .padding()
-        .task { await syncAndRefresh() }
-        .refreshable { await syncAndRefresh() }
+        .task { await onAppear() }
+        .refreshable { await forceSyncAndRefresh() }
         .sheet(isPresented: $showingEditor, onDismiss: refresh) {
             DaySignalsEditorSheet(
                 viewModel: DaySignalsEditorViewModel(dayStart: dayStart, store: store)
             )
         }
+        .sheet(isPresented: $showingPrimer, onDismiss: { Task { await forceSyncAndRefresh() } }) {
+            HealthAccessPrimerView(health: health) { _ in didOfferHealthAccess = true }
+        }
     }
 
-    /// Read-on-open: pull the last 30 days from Apple Health (no-op when unavailable /
-    /// unauthorized), then show this day. Manual data is unaffected.
-    private func syncAndRefresh() async {
-        try? await coordinator.sync(lastDays: 30)
+    /// Cached-first: render stored data immediately, then — if HealthKit is available —
+    /// either offer the one-time access primer (first run, FR-005) or run the once-per-day
+    /// sync. The manual path is fully usable regardless.
+    private func onAppear() async {
+        refresh()
+        guard await health.authorizationState() != .unavailable else { return }
+        if didOfferHealthAccess {
+            await syncRecentAndRefresh()
+        } else {
+            showingPrimer = true
+        }
+    }
+
+    private func syncRecentAndRefresh() async {
+        do {
+            try await coordinator.syncRecentIfNeeded(lastDays: 30)
+        } catch is CancellationError {
+        } catch {
+            AppLogger.log("DaySignals sync failed: \(error)")
+        }
+        refresh()
+    }
+
+    /// Pull-to-refresh / post-grant: force a fresh 30-day read.
+    private func forceSyncAndRefresh() async {
+        do {
+            try await coordinator.sync(lastDays: 30)
+        } catch is CancellationError {
+        } catch {
+            AppLogger.log("DaySignals sync failed: \(error)")
+        }
         refresh()
     }
 
@@ -106,6 +139,12 @@ struct DaySignalsSummaryView: View {
 
 #Preview {
     let store = SignalsStore(context: AppModelContainer.previewContainer.mainContext)
-    let coordinator = SignalSyncCoordinator(reader: HealthKitServiceImpl(), store: store)
-    return DaySignalsSummaryView(dayStart: SignalDayKey.dayStart(for: .now), store: store, coordinator: coordinator)
+    let health = HealthKitServiceImpl()
+    let coordinator = SignalSyncCoordinator(reader: health, store: store)
+    return DaySignalsSummaryView(
+        dayStart: SignalDayKey.dayStart(for: .now),
+        store: store,
+        coordinator: coordinator,
+        health: health
+    )
 }

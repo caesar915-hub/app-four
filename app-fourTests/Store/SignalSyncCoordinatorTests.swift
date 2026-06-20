@@ -127,4 +127,64 @@ struct SignalSyncCoordinatorTests {
         #expect(updated.restingHeartRate == 62)          // healthKit → refreshed
         #expect(updated.heartSource == .healthKit)
     }
+
+    // MARK: Cycle merge (was only ever exercised with cycle: nil)
+
+    @Test func cycleMergeWritesFlowAndSymptoms() throws {
+        let (coordinator, store, container, _) = try makeFixture(); _ = container
+        let row = store.upsert(dayStart: day)
+        coordinator.merge(CycleDTO(flow: .medium, symptoms: ["cramps", "headache"]), into: row)
+        #expect(row.menstrualFlow == .medium)
+        #expect(row.cycleSymptoms == ["cramps", "headache"])
+        #expect(row.cycleSource == .healthKit)
+    }
+
+    // MARK: Auth-aware sync
+
+    @Test func syncReturnsUnavailableWhenHealthKitUnavailable() async throws {
+        let (coordinator, _, container, reader) = try makeFixture(); _ = container
+        await reader.setState(.unavailable)
+        let result = try await coordinator.sync(from: day, to: day)
+        #expect(result == .unavailable)
+        let count = await reader.readCallCount
+        #expect(count == 0)                              // short-circuits before reading
+    }
+
+    // MARK: sync(lastDays:) window math
+
+    @Test func syncLastDaysRequestsInclusiveWindowEndingToday() async throws {
+        let (coordinator, _, container, reader) = try makeFixture(); _ = container
+        let cal = Calendar.current
+
+        try await coordinator.sync(lastDays: 30)
+        let r30 = try #require(await reader.lastRequestedRange)
+        #expect(cal.dateComponents([.day], from: r30.start, to: r30.end).day == 29)  // 30 days inclusive
+        #expect(cal.isDateInToday(r30.end))
+
+        try await coordinator.sync(lastDays: 1)
+        let r1 = try #require(await reader.lastRequestedRange)
+        #expect(cal.dateComponents([.day], from: r1.start, to: r1.end).day == 0)     // today only
+
+        try await coordinator.sync(lastDays: 0)
+        let r0 = try #require(await reader.lastRequestedRange)
+        #expect(cal.dateComponents([.day], from: r0.start, to: r0.end).day == 0)     // clamped to 1
+    }
+
+    // MARK: Multi-day assembly
+
+    @Test func syncFillsEachDayInMultiDayPayload() async throws {
+        let (coordinator, store, container, reader) = try makeFixture(); _ = container
+        let d0 = day
+        let d1 = SignalDayKey.dayStart(for: day.addingTimeInterval(86_400))
+        await reader.setSignals([
+            DaySignalsDTO(dayStart: d0, sleep: SleepDTO(hours: 7, level: .good), activity: nil, heart: nil, cycle: nil),
+            DaySignalsDTO(dayStart: d1, sleep: nil,
+                          activity: ActivityDTO(steps: 5000, activeEnergyKcal: nil, exerciseMinutes: nil),
+                          heart: nil, cycle: nil)
+        ])
+        let result = try await coordinator.sync(from: d0, to: d1)
+        #expect(result == .completed(daysWritten: 2))
+        #expect(store.fetch(dayStart: d0)?.sleepHours == 7)
+        #expect(store.fetch(dayStart: d1)?.steps == 5000)
+    }
 }

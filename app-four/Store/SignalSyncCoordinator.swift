@@ -63,6 +63,9 @@ final class SignalSyncCoordinator {
     /// per-group provenance. Saves once at the end.
     @discardableResult
     func sync(from startDay: Date, to endDay: Date) async throws -> SyncResult {
+        // Short-circuit when HealthKit isn't available, so a missing-HealthKit device is
+        // distinguishable from "synced, no data" (FR-014 / SyncResult.unavailable).
+        guard await reader.authorizationState() != .unavailable else { return .unavailable }
         let start = SignalDayKey.dayStart(for: startDay, calendar: calendar)
         let end = SignalDayKey.dayStart(for: endDay, calendar: calendar)
         let dtos = try await reader.readSignals(from: start, to: end)
@@ -83,5 +86,19 @@ final class SignalSyncCoordinator {
         let today = SignalDayKey.dayStart(for: Date(), calendar: calendar)
         let start = calendar.date(byAdding: .day, value: -(max(days, 1) - 1), to: today) ?? today
         return try await sync(from: start, to: today)
+    }
+
+    private var lastFullSyncDay: Date?
+
+    /// Runs the `lastDays` sync at most once per calendar day (in-memory), so opening the
+    /// day surface repeatedly doesn't repeat the full sweep. Pull-to-refresh should call
+    /// `sync(lastDays:)` directly to force a re-read.
+    @discardableResult
+    func syncRecentIfNeeded(lastDays days: Int = 30) async throws -> SyncResult {
+        let today = SignalDayKey.dayStart(for: Date(), calendar: calendar)
+        if lastFullSyncDay == today { return .completed(daysWritten: 0) }
+        let result = try await sync(lastDays: days)
+        if case .completed = result { lastFullSyncDay = today }
+        return result
     }
 }

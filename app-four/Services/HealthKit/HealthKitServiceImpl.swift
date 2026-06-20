@@ -155,12 +155,14 @@ actor HealthKitServiceImpl: HealthDataReading {
         let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
         let flowDescriptor = HKSampleQueryDescriptor(
             predicates: [.categorySample(type: HKCategoryType(.menstrualFlow), predicate: predicate)],
-            sortDescriptors: []
+            sortDescriptors: [SortDescriptor(\.endDate, order: .reverse)]
         )
-        // `.value` raw int maps via HealthKitSampleMapping (2/3/4 → light/medium/heavy);
-        // the deprecated HKCategoryValueMenstrualFlow enum is never referenced.
+        // Read `.value` as a raw Int and map it (2/3/4 → light/medium/heavy). The raw
+        // integers are stable across the `menstrualFlow` category's value enum and its
+        // iOS-18 successor, so we never reference the enum type directly. Take the latest
+        // sample of the day (sorted by endDate desc) for a deterministic result.
         let flowSamples = try await flowDescriptor.result(for: store)
-        let flow = flowSamples.last.flatMap { HealthKitSampleMapping.flow(fromHKValue: $0.value) }
+        let flow = flowSamples.first.flatMap { HealthKitSampleMapping.flow(fromHKValue: $0.value) }
 
         var symptoms: [String] = []
         for (id, label) in symptomMap {
@@ -168,8 +170,14 @@ actor HealthKitServiceImpl: HealthDataReading {
                 predicates: [.categorySample(type: HKCategoryType(id), predicate: predicate)],
                 sortDescriptors: []
             )
-            if let samples = try? await descriptor.result(for: store), !samples.isEmpty {
-                symptoms.append(label)
+            do {
+                if try await descriptor.result(for: store).isEmpty == false {
+                    symptoms.append(label)
+                }
+            } catch {
+                // One symptom query failing shouldn't drop the whole day — but log it so a
+                // systematic failure is visible (was a silent `try?`).
+                AppLogger.log("HealthKit symptom read failed (\(label)): \(error)")
             }
         }
         if flow == nil, symptoms.isEmpty { return nil }
