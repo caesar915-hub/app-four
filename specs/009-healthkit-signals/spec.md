@@ -104,7 +104,7 @@ A person who both imports from Apple Health and corrects values by hand needs co
 ### Key Entities *(include if feature involves data)*
 
 - **Daily Signals**: one record per local calendar day; the source of truth for that day's four signal groups. Holds, per group, the recorded values plus that group's provenance and a last-updated timestamp.
-- **Signal group — Sleep**: hours slept and a 5-step sleep-quality rating (restless / light / okay / good / deep), rendered through the app's existing 5-step bead grammar (A6).
+- **Signal group — Sleep**: hours slept and a named 5-step sleep-quality rating (restless / light / okay / good / deep), shown with the bed icon + sleep indigo (the colour bead ramp stays deferred per DESIGN.md; A6).
 - **Signal group — Activity**: steps, active energy, exercise minutes.
 - **Signal group — Heart**: resting heart rate, heart-rate variability.
 - **Signal group — Menstrual cycle**: flow level (none / light / medium / heavy / spotting) and a small set of symptom tags.
@@ -132,7 +132,7 @@ These were decided in the design phase. The three scope-significant items were c
 - **A3**: Sleep quality is derived from a heuristic over Apple Health sleep data; when it cannot be computed, sleep imports without a quality rating rather than guessing.
 - **A4**: First-grant backfill window is the most recent 30 days.
 - **A5**: Clearing a user-entered field to empty resets that group to "not set," re-enabling Apple Health fill on the next import.
-- **A6**: Only sleep renders through the app's existing 5-step signal visual grammar; activity, heart, and cycle render as plain values/labels. *(Confirmed 2026-06-20.)*
+- **A6**: Sleep is shown with the bed icon, the sleep indigo, and the named 5-step `SleepLevel` scale (Restless→Deep) as text/hours; the colour **bead ramp stays deferred** per DESIGN.md (the 5-step `SignalLevel` colour grammar remains mood/energy/focus only). Activity, heart, and cycle render as plain values/labels. *(Confirmed 2026-06-20; reconciled with DESIGN.md — colored beads for sleep rejected.)*
 - **A7**: No write-back to Apple Health in this version (read + local manual entry only).
 - **A8**: All four signal groups (sleep, activity, heart, menstrual cycle) are built end-to-end (import + manual + minimal display) in this version, rather than shipping a subset first. *(Confirmed 2026-06-20.)*
 - Import is read-on-open + manual refresh only; background/automatic delivery is explicitly out of scope (named follow-up).

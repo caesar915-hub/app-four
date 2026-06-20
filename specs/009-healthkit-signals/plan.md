@@ -6,7 +6,7 @@
 
 ## Summary
 
-Add four passive health signals — sleep, activity, heart, menstrual cycle — read read-only from Apple Health, mirrored into a day-keyed SwiftData model (`DailySignals`) that the user can also edit by hand, including when Apple Health has no data. HealthKit access is quarantined behind a `HealthDataReading` protocol implemented by one `actor` that returns Sendable DTOs; a `@MainActor SignalSyncCoordinator` applies a "HealthKit-wins-unless-edited" per-group provenance merge and upserts rows via a `SignalsStore`. SwiftData is the source of truth; the UI never reads HealthKit directly. All four groups ship end-to-end (A8); the check-in→sleep bridge is excluded (A2); sleep renders through the existing 5-step `SleepLevel`/`SignalLevel` bead grammar (A6). See [research.md](research.md), [data-model.md](data-model.md), [contracts/interfaces.md](contracts/interfaces.md), [quickstart.md](quickstart.md).
+Add four passive health signals — sleep, activity, heart, menstrual cycle — read read-only from Apple Health, mirrored into a day-keyed SwiftData model (`DailySignals`) that the user can also edit by hand, including when Apple Health has no data. HealthKit access is quarantined behind a `HealthDataReading` protocol implemented by one `actor` that returns Sendable DTOs; a `@MainActor SignalSyncCoordinator` applies a "HealthKit-wins-unless-edited" per-group provenance merge and upserts rows via a `SignalsStore`. SwiftData is the source of truth; the UI never reads HealthKit directly. All four groups ship end-to-end (A8); the check-in→sleep bridge is excluded (A2); sleep renders with the bed icon + indigo + named `SleepLevel` scale, with the colour bead ramp deferred per DESIGN.md (A6). See [research.md](research.md), [data-model.md](data-model.md), [contracts/interfaces.md](contracts/interfaces.md), [quickstart.md](quickstart.md).
 
 ## Technical Context
 
@@ -64,7 +64,7 @@ app-four/Models/
   DailySignals.swift            # @Model, source of truth (no @Attribute(.unique))
   SignalSource.swift            # enum
   MenstrualFlow.swift           # enum
-  SleepLevel+SignalLevel.swift  # conformance for 5-step bead rendering (A6/D5)
+  # (SleepLevel+SignalLevel.swift CUT — sleep colour ramp deferred per DESIGN.md; A6/D5)
 
 app-four/Services/HealthKit/
   HealthSignalsDTO.swift        # Sendable DTOs + SignalDayKey

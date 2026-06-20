@@ -42,9 +42,9 @@ enum MenstrualFlow: String, Codable, Sendable, CaseIterable { case light, medium
 - `SignalSource` drives the merge rule (below). Stored as a defaulted raw value.
 - `MenstrualFlow` maps to/from `HKCategoryValueVaginalBleeding` **inside the HealthKit actor only** (D2): HK `light=2→.light`, `medium=3→.medium`, `heavy=4→.heavy`; `unspecified=1`/`none=5`/unknown → no flow. (`spotting` is a manual-entry-only value; HK has no distinct spotting case in this enum.)
 
-## `SleepLevel` → `SignalLevel` conformance (new, D5)
+## Sleep rendering (reconciled with DESIGN.md, 2026-06-20)
 
-`SleepLevel` (existing: `restless/light/okay/good/deep`, `numericValue` 1–5) gains a `SignalLevel` conformance in an extension — `displayLabel` (use `rawValue.capitalized`), `color`, `gradientPartner` (a sleep ramp consistent with the design system) — so the read surface renders sleep beads via the shared `fillGradient`/`bubbleFill`. No change to the enum cases.
+Sleep renders with the **bed icon + sleep indigo (`#5566A6`) + the named `SleepLevel` scale** (Restless→Deep) as text/hours. The colour bead ramp is **deferred** per DESIGN.md (L49, L106), so **no `SleepLevel: SignalLevel` conformance is added** — the 5-step `SignalLevel` colour grammar stays mood/energy/focus only. `DailySignals.sleepLevel` (computed accessor over `sleepLevelValue`) supplies the named level for display and the manual picker.
 
 ## Sendable DTOs (cross the actor boundary)
 
