@@ -60,10 +60,10 @@ description: "Task list for 009-healthkit-signals"
 ### Implementation
 
 - [X] T013 [US1] Implement `DaySignalsEditorViewModel` (`@Observable @MainActor`) in `app-four/ViewModels/DaySignalsEditorViewModel.swift` — `load()` from the store, `save()` writes per-group values and sets source `.manual` when a group has any value / `.none` when fully cleared. Turns T012 GREEN. (deps: T011)
-- [ ] T014 [US1] HTML mockup gate (Constitution I): create `docs/superpowers/plans/2026-06-13-signals-editor-mockup.html` and `…-signals-summary-mockup.html` (four sections, per-field **source indicator**, sleep 5-step `SleepLevel` control, Paper & Pollen tokens) and **STOP for approval**. Blocks T015–T016.
-- [ ] T015 [US1] Implement `DaySignalsEditorSheet` in `app-four/Views/Signals/DaySignalsEditorSheet.swift` — four sections; sleep uses a 5-step `SleepLevel` picker (D5); each section shows a source indicator; bound to the VM. Verify by build + Preview/simulator. (deps: T013, T014)
-- [ ] T016 [US1] Implement `DaySignalsSummaryView` in `app-four/Views/Signals/DaySignalsSummaryView.swift` — reads `DailySignals` via the store, renders sleep with the bed icon + sleep indigo + named `SleepLevel` (per DESIGN.md; no colour beads) and activity/heart/cycle as plain values, each with a source glyph; opens the editor; **no sync yet** (manual-only). Build + run on simulator (no Health data) → shows "—" then persists manual edits (SC-001/SC-005). (deps: T013, T014)
-- [ ] T017 [US1] Surface the summary/editor from an existing day surface (where a day is viewed) so the MVP is reachable; build + run. (deps: T016)
+- [X] T014 [US1] HTML mockup gate (Constitution I): create `docs/superpowers/plans/2026-06-13-signals-editor-mockup.html` and `…-signals-summary-mockup.html` (four sections, per-field **source indicator**, sleep 5-step `SleepLevel` control, Paper & Pollen tokens) and **STOP for approval**. Blocks T015–T016.
+- [X] T015 [US1] Implement `DaySignalsEditorSheet` in `app-four/Views/Signals/DaySignalsEditorSheet.swift` — four sections; sleep uses a 5-step `SleepLevel` picker (D5); each section shows a source indicator; bound to the VM. Verify by build + Preview/simulator. (deps: T013, T014)
+- [X] T016 [US1] Implement `DaySignalsSummaryView` in `app-four/Views/Signals/DaySignalsSummaryView.swift` — reads `DailySignals` via the store, renders sleep with the bed icon + sleep indigo + named `SleepLevel` (per DESIGN.md; no colour beads) and activity/heart/cycle as plain values, each with a source glyph; opens the editor; **no sync yet** (manual-only). Build + run on simulator (no Health data) → shows "—" then persists manual edits (SC-001/SC-005). (deps: T013, T014)
+- [X] T017 [US1] Surface the summary/editor from an existing day surface (where a day is viewed) so the MVP is reachable; build + run. (deps: T016)
 
 **Checkpoint**: US1 fully functional — manual entry + per-day view + persistence, zero HealthKit. Shippable MVP.
 

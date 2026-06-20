@@ -7,6 +7,7 @@ import SwiftData
 enum AppDependencies {
     static let store = RecordingStore(context: AppModelContainer.container.mainContext)
     static let medicationBarViewModel = MedicationBarViewModel(context: AppModelContainer.container.mainContext)
+    static let signalsStore = SignalsStore(context: AppModelContainer.container.mainContext)
     static let audioService: AudioRecordingService = AudioRecordingServiceImpl()
     static let storageService: AudioFileStorageService = AudioFileStorageServiceImpl(context: AppModelContainer.container.mainContext)
     static let transcriptionService: TranscriptionService = sharedWhisperKitService
