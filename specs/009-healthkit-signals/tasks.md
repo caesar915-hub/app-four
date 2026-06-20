@@ -128,7 +128,7 @@ description: "Task list for 009-healthkit-signals"
 - [X] T037 Run the [quickstart.md](quickstart.md) validation scenarios end-to-end — including SC-007: confirm no health values leave the device (no network egress was added; FR-016).
 - [X] T038 [P] File a backlog item: strip the pre-existing `@Attribute(.unique) var id: UUID` from `Recording`/`AppSettings`/`ModelMetadata`/`TranscriptionSegment` (Constitution IX CloudKit cleanup; research D1) in `docs/BACKLOG.md` — separate feature, not this PR.
 - [X] T039 [P] Move the "HealthKit signals" row 📐 Plan → 🔨 In code in `docs/BACKLOG.md` (branch `feat/healthkit-signals` + plan link); add a `docs/DEVLOG.md` checkpoint entry.
-- [ ] T040 Open the PR and run `/code-review`; attach the manual device-verification results (T030, T034).
+- [X] T040 PR **#8** opened (push + body with results). `/code-review` is owner-triggered (no CodeRabbit per memory; `/code-review ultra` is billed/user-launched). Attach device-verification results (T030, T034) before merge.
 
 ---
 
