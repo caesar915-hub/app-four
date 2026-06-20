@@ -1,0 +1,6 @@
+| file | n | mean_max_contradiction | flagged(>thr) | flagged% |
+|---|---|---|---|---|
+| rematch-gemma-ul2-strict.md | 100 | 0.408 | 41 | 41% |
+| rematch-gemma-ul2-strict-fewshot.md | 100 | 0.394 | 38 | 38% |
+| rematch-gemma-prefixlm-medslot.md | 100 | 0.372 | 37 | 37% |
+| rematch-gemma-prefixlm-strict.md | 100 | 0.321 | 30 | 30% |

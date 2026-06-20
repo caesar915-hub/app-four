@@ -1,0 +1,114 @@
+[1.0] g011: Lost focus at 3 pm, missed call by an hour and lost track of time due to lack of food/water in the car (2:48 PM).
+  SRC: Went into hyperfocus around 10am on a tangent project that has nothing to do with my actual deadline. Completely locked in for two and a half hours. No food, no water, forgot I had a call. The focus was perfect — I just couldn't aim it. Came out of it at 12:30 with great work on the wrong thing, no food in me, and a missed call. Race car brain, bicycle brakes.
+
+[1.0] g021: Took Concerta at 8
+  SRC: Was completely stuck by 2pm. Couldn't start anything, brain not cooperating. Set up a body doubling call with a colleague and within twenty minutes of having another person on the screen I was actually working. Got through more in two hours than the whole morning. I don't fully understand the mechanism — something about the social presence raises whatever the starting threshold is — but it worked and I'm starting to build it into the schedule.
+
+[1.0] g024: This time of day aligns perfectly with a typical work schedule starting nine.
+  SRC: It's 10pm and my brain has finally switched on. Sharp, engaged, ideas coming. This is when I'm naturally at my best and it is completely incompatible with having a job that starts at nine. I could work for three hours right now. Instead I should sleep. If I sleep I'll be exhausted tomorrow. If I work I'll be exhausted tomorrow. Night owl ADHD is a scheduling problem with no clean solution.
+
+[1.0] g036: * Morning productive but unproductive - gave up around noon to take a nap (used to refuse)
+  SRC: Morning was grey and unproductive. Gave up at noon and took a 20-minute nap — something I used to refuse to do because it felt like giving up. Woke up genuinely different. Clearer, lighter, more focused. Did my best work of the week in the ninety minutes after. I need to stop treating a nap as a failure and start treating it as a tool.
+
+[1.0] g076: Took Concerta at 8
+  SRC: One week on the higher dose of Elvanse. I can feel a difference in the mornings — the start-up is faster, the initiation problem is slightly less severe. But there's also more of an edge: slightly more irritable in the afternoons, sleep is harder than before. The psychiatrist said give it three weeks. I'm tracking mood, focus, and sleep daily now. This is the part that nobody tells you — finding the right dose is a long experiment.
+
+[1.0] g082: Hyperfocus on project around midnight.
+  SRC: Got into hyperfocus on a project around 9pm. The zone that doesn't exist in the world. Hours disappeared. My wife went to bed, I didn't notice. Looked up and it was 2am. The work was good but the cost will be tomorrow. I don't always choose when hyperfocus arrives — it arrived and I followed it. This is the upside and the downside in the same event. The focus is extraordinary when it comes. The timing is never right.
+
+[1.0] g087: Morning routine happened without friction - sat down at 14:36 to start work — no staring or opening irrelevant tabs first.
+  SRC: Experiment: took the Elvanse at 7 instead of 8:30. Got out of bed easier. Morning routine happened without friction. Sat down at 8:30 and started work — without staring at the screen or opening irrelevant tabs first. The medication timing change is doing something real. Going to run this for two weeks and see if the pattern holds.
+
+[1.0] g096: Took Concerta at 8
+  SRC: Made the mistake again of having a double coffee on the Vyvanse. By 10am I was too activated — jittery, couldn't channel the energy into work, heart going. More alert than focused. Switched to water for the rest of the morning and it settled by noon. The focus came in properly once the caffeine-on-stimulant edge wore off. One coffee maximum on Vyvanse days, and only with breakfast.
+
+[1.0] g099: Slept perhaps 5 hours and didn't eat lunch
+  SRC: Deadline at 5pm today. The whole day was structured by it. The 'now not-now' thing that explains ADHD time — the deadline made it NOW and the brain activated in a way it won't for distant future things. Focus was sharp all day. Got through it with fifteen minutes to spare. The problem is this isn't sustainable — running everything on urgency, manufacturing the feeling of emergency to get started. It works. It's not a strategy. It's a coping mechanism that's slowly burning me out.
+
+[0.99] g005: Slept perhaps 5 hours (didn't eat lunch).
+  SRC: Eight hours and woke up before the alarm. The difference in my focus today was immediate. I could actually hold a thought long enough to do something with it. Stayed on one task from 9 to 11:30 without drifting. Energy was stable all morning, no slumps. This is what sleep deprivation costs me and I forget it constantly until a good night reminds me.
+
+[0.99] g043: Took Concerta at 8
+  SRC: Was completely in it for ninety minutes this morning — writing, ideas flowing, fully absorbed. Then a Slack message broke it. I answered it, tried to go back, and it was gone. Sat there for forty minutes not able to re-enter the state. That's the context switching cost for me — once the flow breaks, it's gone, and rebuilding takes so long that I often don't bother. Started something different and did mediocre work for the rest of the morning.
+
+[0.99] g066: Slept probably 5 hours and didn't eat lunch
+  SRC: Dinner with friends and I talked too much again. I can feel it while it's happening — the dominating the conversation, the interrupting, the talking over the punchline of someone's story. I tried to pull back twice and managed to stay quiet for about ninety seconds each time. The guilt afterwards is real and the behaviour is also real and I don't know how to close the gap between them.
+
+[0.99] g079: Slept properly for two consecutive nights
+  SRC: Slept properly for two consecutive nights and the Elvanse is doing something different because of it. The focus window lasted from 9am to past 2pm — longer than usual by at least an hour. Used every minute of it. The medication doesn't create attention, I think it amplifies whatever capacity sleep built. On depleted sleep it has less to work with.
+
+[0.99] g081: Slept for about five hours and didn't eat lunch today.
+  SRC: Asked the same question twice in ten minutes today — genuinely didn't remember asking the first time. My partner noticed before I did. Working memory failures are embarrassing in relationships because they look like not caring or not paying attention and it's the opposite. I care. I pay attention. And then the information just doesn't stick. We've built some workarounds. The embarrassment is still there every time.
+
+[0.99] g084: Crash came early, maybe 2:30; meeting at 3 was rough.
+  SRC: Seven snoozes. Not exaggerating. Each time I genuinely meant to get up. The executive function to actually do the thing — to put feet on floor, to stand, to move — isn't there first thing without medication. Got up finally at 9:30. By then the morning was gone, the medication was late, and the day started on the back foot. I need to take my meds while still in bed — that's the only way the morning works.
+
+[0.99] g091: Exercise is doing nothing that can be done outside a workout
+  SRC: Made myself go to the gym before work even though I didn't want to. Twenty-five minutes. Felt pointless the whole time. Got to my desk an hour later and something had shifted — clearer, more settled, the edge off the usual morning anxiety. Got through three hours of solid work before the medication even fully kicked in. Exercise is doing something that I can't manufacture any other way. Need to protect the morning gym.
+
+[0.98] g009: Took Concerta at 8
+  SRC: Vyvanse 40mg and focus was excellent all morning — really locked in, productive stretch, got through the backlog I'd been avoiding. But I didn't eat until 6pm. Didn't drink water. Forgot to take breaks. By evening I was shaky, headachy, and irritable. The medication does its job but it completely suppresses the signals that tell me I need food and water. I have to set external reminders or I just forget my body exists.
+
+[0.98] g044: I fell asleep around midnight when my world starts at 9am.
+  SRC: Went to bed at 2am. This is not a choice. I was in bed at 11 trying to sleep and I just couldn't. My circadian rhythm is shifted by a few hours and no amount of sleep hygiene completely fixes it. I've tried the wind-down routine, the no-screens, the fixed wake time. 2am is when I fall asleep. The world starts at 8. I've been running on a sleep debt for years and I can't figure out how to close it.
+
+[0.98] g058: Slept probably 5 hours and didn't eat lunch
+  SRC: Was in deep focus on the main project from 9 to 11. Had to stop for admin. Admin took 45 minutes. Tried to go back to the project and couldn't re-enter. Spent the rest of the afternoon doing nothing well. The context switch cost me the afternoon. I've started treating deep work sessions as inviolable and putting all admin after 3pm when the focus is already diminished anyway.
+
+[0.98] g067: Crash came early, maybe 2:30; Meeting at 3 was rough.
+  SRC: Took 0.5mg melatonin at 9:30, fell asleep by 10:45. Seven and a half hours. Woke before the alarm at 6:30. Took Concerta at 7. By 9 I was clear in a way that's become rare. Went through the morning tasks without friction. Mood was genuinely good — not medicated-flat, actually good. These days feel like a promise of what's possible. The sleep and the medication and the timing all have to be right simultaneously.
+
+[0.98] g092: We agreed we would stay off this dosage over another two
+  SRC: Psychiatrist today. I told her honestly how the six weeks on the new dose had gone: better initiation, better mornings, mood more stable, sleep slightly worse but manageable. She said the sleep issue is common and suggested keeping the timing earlier. We agreed to stay on the current dose for another six weeks and check in. I feel clearer about what we're doing than I have in any previous appointment. Progress.
+
+[0.98] g093: Crash came early, maybe 2:30; Meeting at 3 was rough.
+  SRC: Didn't sleep at all. Not intentionally — went to bed at midnight and was still awake at 5am. After 5 I gave up. Took my medication at 8, which I probably shouldn't have on zero sleep. Functional until noon on pure stimulant and adrenaline. Then completely crashed. Couldn't hold a thought, couldn't follow a sentence. Went to bed at 7pm. This is the ADHD sleep problem at its most extreme — not choosing to stay up but being unable to stop being awake.
+
+[0.97] g012: The gap between knowing what should happen AND starting has been huge lately so far.
+  SRC: Second week on stimulants. Slept better last night than I have in months — still don't know if that's a coincidence. Took the medication at 8 and by 9:30 I had started the task I'd been avoiding for three weeks. Just started it. The gap between knowing I should start and actually starting has been the story of my life and this morning the gap just wasn't there. I didn't know it could work like that.
+
+[0.97] g041: Two hours of work
+  SRC: Cleared the doom pile on my desk today. Two hours. Every item required a decision: keep, bin, file, action. For each of those categories another set of decisions. I had to do it standing up with music on to stay in it. But I got through the whole pile. Felt something afterwards that I can only describe as relief — physical relief, like a weight had been in my peripheral vision for weeks and now it's gone. The pile was exactly as bad as I feared and also fine.
+
+[0.96] g003: (No specific time mentioned)
+  SRC: Barely five hours of sleep but took my Ritalin 10mg as usual. Body felt alert enough — I wasn't dragging physically. But the cognitive side was completely offline. Kept trying to work and hitting a wall. The stimulant gave me physical energy with no mental traction. Sat at my desk feeling ready and being useless. That combination is uniquely frustrating.
+
+[0.95] g027: Took Concerta at 8
+  SRC: Tried 0.5mg melatonin at nine last night and it actually worked. Fell asleep by 10:30, slept through until 7. Woke up before the alarm feeling actually clear. Mood was good from the start, which is unusual. Energy held all morning. I think I've been taking too high a melatonin dose for years. The low dose works better and the morning is completely different when the sleep was real.
+
+[0.94] g017: Slept perhaps 5 hours and didn't eat lunch
+  SRC: Eleven hours of sleep and I still feel wrecked. That's more demoralising than the bad nights because I can't blame the sleep. Mood is flat, energy is low, everything feels effortful. I genuinely don't know why. Dragged myself through a few small tasks. Didn't go anywhere. The mystery of still being exhausted after sleeping enough makes me feel like something is fundamentally broken.
+
+[0.94] g022: Slept for about five hours and didn't eat lunch.
+  SRC: Couldn't fall asleep until 1am. Brain was going — like having 59 televisions blaring — tomorrow's meeting, an email from last week, something I said two months ago that I shouldn't have. Managed four hours. Morning was fog. Executive function completely offline — couldn't decide what to do first, couldn't start anything. Mood was fragile all day. The bad sleep didn't just affect energy, it affected everything downstream.
+
+[0.94] g046: * Spent the morning in a group project session with similar work done by both of us (same amount).
+  SRC: Spent the morning in a group project session and the afternoon working alone. Same amount of work got done in both. But the morning cost twice as much. Every input from someone else required me to reorient. Conversations moved faster than I could process without losing my thread. Working alone is just less expensive. I don't know how to explain that to teams without sounding antisocial.
+
+[0.94] g077: * Insomnia until 1 am (9) then group project work starting from 9am by 11 am  (by noon).
+  SRC: Insomnia until 2am and then group project work starting at 9. By 11am I was a ghost — nodding in the right places, contributing nothing real. The context switching cost of a group was too high on top of the sleep debt. My co-worker asked if I was okay. I said yes. I should have said 'I slept two hours and group work costs three times what solo work does on a bad sleep.' But I said yes.
+
+[0.93] g014: No Concerta today
+  SRC: Weekend drug holiday — psychiatrist's suggestion. No Concerta today. Woke naturally at 9:30, which felt good. Then just drifted. By noon I'd done nothing — not even showered. The external structure that medication provides was just absent and everything in me expanded to fill the unstructured time with nothing. Not sad, just inert. Ate finally at 2pm. Stayed up until 1am for no reason. Harder than a medicated weekday.
+
+[0.89] g032: Took Concerta at 8
+  SRC: By 2pm I genuinely couldn't make decisions. Not big ones — small ones. What to work on next. What to eat. Which email to open. Each small choice during the day drains something, and by mid-afternoon it's gone. The executive function for choosing shuts down before the energy runs out. Switched to a list I'd made this morning where everything was already decided. That helped.
+
+[0.89] g078: Meeting at 3 was rough; Slept perhaps 5 hours.
+  SRC: Nothing dramatic tonight but I did the three small things I'd been avoiding for weeks: paid the bill, replied to the difficult email, booked the appointment. Each one took under five minutes. The dread around them had taken weeks of mental energy. Paid the bill — I'm fully aware that I did it and didn't leave it on the side. I know that sounds like the bare minimum. For me this week it was the win.
+
+[0.86] g025: Took Concerta at 8
+  SRC: Woke anxious for no specific reason, just that baseline dread. Made coffee and the first thing I saw was the pile on the desk. Every unresolved item demanding a decision I didn't have the energy to make. The anxiety and the pile amplified each other. Closed the laptop, sat on the couch for an hour. Eventually made myself do one small thing — posted a letter. That was the whole morning's output. One letter.
+
+[0.82] g008: Crash came early, maybe 2:30; meeting at 3 was rough.
+  SRC: Family event this afternoon. Performed being well the whole time — conversation, smiling, remembering to ask questions. It went fine from the outside. Got home and immediately sat in silence. Completely empty. Social performance for four hours costs me in a way that's hard to quantify. Mood dipped after, not sad, just depleted. Needed the evening alone.
+
+[0.66] g050: Slept probably 5 hours and didn't eat lunch
+  SRC: Terrible sleep but went for a run anyway at 7am. Hated every step of it. Finished and within twenty minutes felt measurably different — clearer, mood lifted, less of the flatness. The exercise doing something neurochemical that the sleep couldn't do. Still took my meds at 8. The combination of run and medication was unusually effective today. I forget that moving the body changes what the brain can do.
+
+[0.55] g090: Slept perhaps 5 hours and didn't eat lunch
+  SRC: Ten days of basically nothing working. Bad sleep, medication not landing right, low mood, focus offline. And then today something lifted. I don't know if it was the sleep last night (seven hours, actual sleep) or if it was just time. Started work at 8:30 and just kept going. Got through a backlog that had been building for two weeks. Mood lifted as things got done. The breakthrough didn't announce itself. I just looked up at 3pm and realised it had happened.
+
+[0.53] g035: Meeting at 3 was rough; Slept perhaps 5 hours before noon (didn't eat lunch).
+  SRC: Morning was genuinely euphoric — ideas firing, energy high, everything felt possible, got more done before noon than most days combined. Then wondered if the dose was too high because this didn't feel like normal productivity, it felt like something else. Kept going. Afternoon came down naturally. Probably fine. But I'm aware enough now to notice when the good feels too good.
+

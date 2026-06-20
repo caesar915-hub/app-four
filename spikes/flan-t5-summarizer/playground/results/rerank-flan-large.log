@@ -1,0 +1,43 @@
+Loading google/flan-t5-large (float32) on cpu...
+/Users/caesargrey/Projects/app-four-spikes-local/spikes/flan-t5-summarizer/.venv/lib/python3.11/site-packages/huggingface_hub/file_download.py:1132: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Ready.
+
+/Users/caesargrey/Projects/app-four-spikes-local/spikes/flan-t5-summarizer/.venv/lib/python3.11/site-packages/huggingface_hub/file_download.py:1132: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+g001: greedy_faith=0.819 -> rerank_faith=0.819
+g002: greedy_faith=0.966 -> rerank_faith=0.966
+g010: greedy_faith=0.884 -> rerank_faith=0.942
+g011: greedy_faith=0.776 -> rerank_faith=0.776
+g012: greedy_faith=0.793 -> rerank_faith=0.89
+g020: greedy_faith=0.933 -> rerank_faith=0.933
+g021: greedy_faith=0.833 -> rerank_faith=0.833
+g022: greedy_faith=0.301 -> rerank_faith=0.343
+g030: greedy_faith=0.754 -> rerank_faith=0.754
+g031: greedy_faith=0.869 -> rerank_faith=0.869
+g032: greedy_faith=0.664 -> rerank_faith=0.844
+g040: greedy_faith=0.965 -> rerank_faith=0.947
+g041: greedy_faith=0.88 -> rerank_faith=0.88
+g042: greedy_faith=0.899 -> rerank_faith=0.95
+g050: greedy_faith=0.893 -> rerank_faith=0.857
+g051: greedy_faith=0.839 -> rerank_faith=0.839
+g052: greedy_faith=0.254 -> rerank_faith=0.866
+g060: greedy_faith=0.359 -> rerank_faith=0.359
+g061: greedy_faith=0.777 -> rerank_faith=0.777
+g062: greedy_faith=0.862 -> rerank_faith=0.946
+g070: greedy_faith=0.155 -> rerank_faith=0.237
+g071: greedy_faith=0.8 -> rerank_faith=0.935
+g072: greedy_faith=0.884 -> rerank_faith=0.894
+g080: greedy_faith=0.614 -> rerank_faith=0.657
+g081: greedy_faith=0.308 -> rerank_faith=0.308
+g082: greedy_faith=0.181 -> rerank_faith=0.939
+g090: greedy_faith=0.423 -> rerank_faith=0.423
+g091: greedy_faith=0.661 -> rerank_faith=0.661
+g092: greedy_faith=0.762 -> rerank_faith=0.762
+g100: greedy_faith=0.828 -> rerank_faith=0.89
+
+=== summary (test set) ===
+entries: 30
+greedy  : mean_faith=0.698  mean_cov=0.826
+reranked: mean_faith=0.770  mean_cov=0.858
+entries where rerank improved faithfulness: 13/30

@@ -1,0 +1,10 @@
+| file | n | mean_max_contradiction | flagged(>thr) | flagged% |
+|---|---|---|---|---|
+| multi-flan-base.md | 100 | 0.086 | 8 | 8% |
+| multi-flan-large.md | 100 | 0.197 | 18 | 18% |
+| multi-gemma-ul2.md | 100 | 0.290 | 28 | 28% |
+| multi-gemma-prefixlm.md | 100 | 0.326 | 32 | 32% |
+| rematch-flan-base-strict.md | 100 | 0.230 | 22 | 22% |
+| rematch-flan-base-fewshot.md | 100 | 0.112 | 11 | 11% |
+| rematch-flan-large-coverage.md | 100 | 0.190 | 18 | 18% |
+| rematch-flan-large-coverage-fewshot.md | 100 | 0.185 | 19 | 19% |

@@ -1,0 +1,123 @@
+[1.0] g008: I was feeling good all day, talking to my family and laughing.
+  SRC: Family event this afternoon. Performed being well the whole time — conversation, smiling, remembering to ask questions. It went fine from the outside. Got home and immediately sat in silence. Completely empty. Social performance for four hours costs me in a way that's hard to quantify. Mood dipped after, not sad, just depleted. Needed the evening alone.
+
+[1.0] g009: **Not:** The medications did their job; they helped with overall well-being by providing information on how much energy is needed in different
+  SRC: Vyvanse 40mg and focus was excellent all morning — really locked in, productive stretch, got through the backlog I'd been avoiding. But I didn't eat until 6pm. Didn't drink water. Forgot to take breaks. By evening I was shaky, headachy, and irritable. The medication does its job but it completely suppresses the signals that tell me I need food and water. I have to set external reminders or I just forget my body exists.
+
+[1.0] g024: I'm naturally at my best, and it doesn’t matter if a job starts nine hours away or not!
+  SRC: It's 10pm and my brain has finally switched on. Sharp, engaged, ideas coming. This is when I'm naturally at my best and it is completely incompatible with having a job that starts at nine. I could work for three hours right now. Instead I should sleep. If I sleep I'll be exhausted tomorrow. If I work I'll be exhausted tomorrow. Night owl ADHD is a scheduling problem with no clean solution.
+
+[1.0] g036: Didn't need sleep at noon...
+  SRC: Morning was grey and unproductive. Gave up at noon and took a 20-minute nap — something I used to refuse to do because it felt like giving up. Woke up genuinely different. Clearer, lighter, more focused. Did my best work of the week in the ninety minutes after. I need to stop treating a nap as a failure and start treating it as a tool.
+
+[1.0] g044: **Not:** No problem; everything works in harmony with me.
+  SRC: Went to bed at 2am. This is not a choice. I was in bed at 11 trying to sleep and I just couldn't. My circadian rhythm is shifted by a few hours and no amount of sleep hygiene completely fixes it. I've tried the wind-down routine, the no-screens, the fixed wake time. 2am is when I fall asleep. The world starts at 8. I've been running on a sleep debt for years and I can't figure out how to close it.
+
+[1.0] g050: * My exercise didn't work as well either - it wasn’t helping me feel good enough to take medication again today.
+  SRC: Terrible sleep but went for a run anyway at 7am. Hated every step of it. Finished and within twenty minutes felt measurably different — clearer, mood lifted, less of the flatness. The exercise doing something neurochemical that the sleep couldn't do. Still took my meds at 8. The combination of run and medication was unusually effective today. I forget that moving the body changes what the brain can do.
+
+[1.0] g072: It went noticeably faster without my medication compared to yesterday’s unstructured holidays where things were scattered out like leaves on a windswept field.
+  SRC: Tried the medication holiday today but with a structure in place this time — written schedule, times for each thing, meals planned. It went noticeably better than last month's unstructured holiday. Still slower and more scattered without the medication. But the external structure partially replaces what the medication provides internally. The lesson: I need both.
+
+[1.0] g079: **Not:** Not slept properly at all after a double shift in bed and an extended focus window period last week.
+  SRC: Slept properly for two consecutive nights and the Elvanse is doing something different because of it. The focus window lasted from 9am to past 2pm — longer than usual by at least an hour. Used every minute of it. The medication doesn't create attention, I think it amplifies whatever capacity sleep built. On depleted sleep it has less to work with.
+
+[0.99] g022: Four hours passed in bed without any sleepiness or fogging up.
+  SRC: Couldn't fall asleep until 1am. Brain was going — like having 59 televisions blaring — tomorrow's meeting, an email from last week, something I said two months ago that I shouldn't have. Managed four hours. Morning was fog. Executive function completely offline — couldn't decide what to do first, couldn't start anything. Mood was fragile all day. The bad sleep didn't just affect energy, it affected everything downstream.
+
+[0.99] g025: It all came together into something beautiful: just writing about this day's thoughts.
+  SRC: Woke anxious for no specific reason, just that baseline dread. Made coffee and the first thing I saw was the pile on the desk. Every unresolved item demanding a decision I didn't have the energy to make. The anxiety and the pile amplified each other. Closed the laptop, sat on the couch for an hour. Eventually made myself do one small thing — posted a letter. That was the whole morning's output. One letter.
+
+[0.99] g041: Every item required a decision: keep, bin, file, action.
+  SRC: Cleared the doom pile on my desk today. Two hours. Every item required a decision: keep, bin, file, action. For each of those categories another set of decisions. I had to do it standing up with music on to stay in it. But I got through the whole pile. Felt something afterwards that I can only describe as relief — physical relief, like a weight had been in my peripheral vision for weeks and now it's gone. The pile was exactly as bad as I feared and also fine.
+
+[0.99] g046: **Not:** not **not**, didn’t need no words...
+  SRC: Spent the morning in a group project session and the afternoon working alone. Same amount of work got done in both. But the morning cost twice as much. Every input from someone else required me to reorient. Conversations moved faster than I could process without losing my thread. Working alone is just less expensive. I don't know how to explain that to teams without sounding antisocial.
+
+[0.99] g047: **Not:**  I don't feel shame about things that are forgotten.
+  SRC: Three months on Concerta. What's better: I start tasks more reliably. I'm less impulsive in conversations. The time blindness is slightly improved. What's the same: emotional regulation still a problem. Weekend structure still collapses. The shame about things I forget is still there. What's worse: sleep is consistently worse than before. I expected medication to fix more than it has. I'm adjusting my expectations toward 'makes the work possible' rather than 'does the work for me.'
+
+[0.99] g054: * Not feeling guilty about cancelling and not shrinking my social circle by doing this.
+  SRC: Cancelled the dinner. Couldn't face it after the week I've had. Sleep has been bad for five days, energy is at rock bottom, and I knew I'd spend the whole evening performing okay rather than being okay. Made the call. Relief immediately followed by guilt. I keep shrinking the social circle by doing this. But showing up as a ghost isn't actually showing up. I'm trying to reframe cancelling as self-management rather than failure.
+
+[0.99] g064: The performance review was positive, but it didn't mention my development goals at all during the 25 minutes of reviewing me and asking about them in detail after eight hours spent preparing for a disaster that wasn’t there to happen.
+  SRC: Lay awake until midnight catastrophising about this morning's performance review. Went through every possible bad outcome in detail. Felt sick when I woke up. The review lasted 25 minutes, was entirely positive, and they asked about my development goals. My brain had spent eight hours preparing for a disaster that didn't happen. This is the anxiety amplification that comes with ADHD and I'm trying to get better at recognising it before it eats my sleep.
+
+[0.99] g068: A text draft was sent yesterday – something important for me right now.
+  SRC: Walked around the flat tonight counting things I'd started and not finished. Laundry half folded on the bed. A form I need to send with one section completed. Three browser tabs with things I was going to look into. A text draft I never sent. A plant I watered once and forgot. The doom pile now also has the kitchen counter. I'm not careless or lazy — each of these things got interrupted by something or required a decision I couldn't make in the moment. But the pattern is there and it's getting worse.
+
+[0.99] g069: No more feeling anything at all!
+  SRC: Second week on stimulants and the emotional landscape feels slightly different. Not flat — I still feel things. But the big swings are smaller. The RSD response yesterday when someone's message felt cold — I noticed it, felt the chest thing, and then it settled within about 20 minutes instead of two hours. I don't know if that's the medication or me managing it better. Either way, the return time is shorter and that's something.
+
+[0.99] g073: **Not:** Not at all; not about anything that feels wrong
+  SRC: My therapist gave me homework to notice when I was in a shame spiral this week and write it down. Did it. Six entries in three days. Three were about productivity, two were about something I said to someone, one was about forgetting something. They all followed the same structure: thing happened, I reflexively heard it as 'you're a bad person', I went into defensive or shutdown mode. Seeing the pattern clearly doesn't make it stop but it's different from being inside it without knowing where you are.
+
+[0.99] g076: The mornings feel faster, the initiation problem is less severe than before.
+  SRC: One week on the higher dose of Elvanse. I can feel a difference in the mornings — the start-up is faster, the initiation problem is slightly less severe. But there's also more of an edge: slightly more irritable in the afternoons, sleep is harder than before. The psychiatrist said give it three weeks. I'm tracking mood, focus, and sleep daily now. This is the part that nobody tells you — finding the right dose is a long experiment.
+
+[0.99] g077: My co-worker asked if I was okay with that situation but said no.
+  SRC: Insomnia until 2am and then group project work starting at 9. By 11am I was a ghost — nodding in the right places, contributing nothing real. The context switching cost of a group was too high on top of the sleep debt. My co-worker asked if I was okay. I said yes. I should have said 'I slept two hours and group work costs three times what solo work does on a bad sleep.' But I said yes.
+
+[0.99] g087: *- The medication timing change is doing something real and will be running for two weeks.
+  SRC: Experiment: took the Elvanse at 7 instead of 8:30. Got out of bed easier. Morning routine happened without friction. Sat down at 8:30 and started work — without staring at the screen or opening irrelevant tabs first. The medication timing change is doing something real. Going to run this for two weeks and see if the pattern holds.
+
+[0.99] g091: * Exercise is doing nothing that can be done outside a workout place...
+  SRC: Made myself go to the gym before work even though I didn't want to. Twenty-five minutes. Felt pointless the whole time. Got to my desk an hour later and something had shifted — clearer, more settled, the edge off the usual morning anxiety. Got through three hours of solid work before the medication even fully kicked in. Exercise is doing something that I can't manufacture any other way. Need to protect the morning gym.
+
+[0.99] g092: **Not:** Not feeling much improvement in terms of morning routines or overall well being after this dosage change.
+  SRC: Psychiatrist today. I told her honestly how the six weeks on the new dose had gone: better initiation, better mornings, mood more stable, sleep slightly worse but manageable. She said the sleep issue is common and suggested keeping the timing earlier. We agreed to stay on the current dose for another six weeks and check in. I feel clearer about what we're doing than I have in any previous appointment. Progress.
+
+[0.98] g021: Couldn't start anything, brain didn't cooperate.
+  SRC: Was completely stuck by 2pm. Couldn't start anything, brain not cooperating. Set up a body doubling call with a colleague and within twenty minutes of having another person on the screen I was actually working. Got through more in two hours than the whole morning. I don't fully understand the mechanism — something about the social presence raises whatever the starting threshold is — but it worked and I'm starting to build it into the schedule.
+
+[0.97] g005: * This is what sleep deprivation costs me every day until something happens again that reminds me how much better things are when they happen now.
+  SRC: Eight hours and woke up before the alarm. The difference in my focus today was immediate. I could actually hold a thought long enough to do something with it. Stayed on one task from 9 to 11:30 without drifting. Energy was stable all morning, no slumps. This is what sleep deprivation costs me and I forget it constantly until a good night reminds me.
+
+[0.97] g093: This is what ADHD people do with their bodies; they can't stop being asleep without getting tired themselves out!
+  SRC: Didn't sleep at all. Not intentionally — went to bed at midnight and was still awake at 5am. After 5 I gave up. Took my medication at 8, which I probably shouldn't have on zero sleep. Functional until noon on pure stimulant and adrenaline. Then completely crashed. Couldn't hold a thought, couldn't follow a sentence. Went to bed at 7pm. This is the ADHD sleep problem at its most extreme — not choosing to stay up but being unable to stop being awake.
+
+[0.96] g096: The focus came back properly after caffeine wore off.
+  SRC: Made the mistake again of having a double coffee on the Vyvanse. By 10am I was too activated — jittery, couldn't channel the energy into work, heart going. More alert than focused. Switched to water for the rest of the morning and it settled by noon. The focus came in properly once the caffeine-on-stimulant edge wore off. One coffee maximum on Vyvanse days, and only with breakfast.
+
+[0.93] g011: No thanks - no need to call back now...
+  SRC: Went into hyperfocus around 10am on a tangent project that has nothing to do with my actual deadline. Completely locked in for two and a half hours. No food, no water, forgot I had a call. The focus was perfect — I just couldn't aim it. Came out of it at 12:30 with great work on the wrong thing, no food in me, and a missed call. Race car brain, bicycle brakes.
+
+[0.93] g099: * It doesn’t work as a strategy; instead of being sustainable in my life, this coping mechanism is burning out quickly.
+  SRC: Deadline at 5pm today. The whole day was structured by it. The 'now not-now' thing that explains ADHD time — the deadline made it NOW and the brain activated in a way it won't for distant future things. Focus was sharp all day. Got through it with fifteen minutes to spare. The problem is this isn't sustainable — running everything on urgency, manufacturing the feeling of emergency to get started. It works. It's not a strategy. It's a coping mechanism that's slowly burning me out.
+
+[0.92] g039: Took Elvanse at noon instead of 7:35.
+  SRC: Slept until 9:30, which threw off the whole medication timing. Took Elvanse at 10 instead of 7:30. By the time it kicked in properly it was after noon. The productive window shifted by three hours and ran into the evening instead of the workday. Afternoon work was good but then I was wide awake at 11pm. The medication schedule and the sleep schedule are locked together and I keep disrupting one with the other.
+
+[0.92] g086: I woke up feeling energized.
+  SRC: Good energy day — slept okay, medication smooth, physically felt good. Had two social interactions in the afternoon and came home tired in a specific way. Not physically tired. Cognitively tired. The effort of tracking conversations, of not interrupting, of staying present without drifting — it's real work and it doesn't get easier when the physical energy is good. Two different kinds of energy and I keep confusing them.
+
+[0.91] g016: Going to mention this at next appointment or medication switch?
+  SRC: Can't feel the Elvanse working the way I used to. Six months ago there was a clear window — quiet brain, better focus. Now I can't really tell when it's kicked in. I'm still more functional than without it but the transition is invisible. Energy is flat regardless. Going to mention it at the next appointment. Dose adjustment or medication switch, I don't know.
+
+[0.91] g090: The mood felt down after a long day of working hard for two weeks.
+  SRC: Ten days of basically nothing working. Bad sleep, medication not landing right, low mood, focus offline. And then today something lifted. I don't know if it was the sleep last night (seven hours, actual sleep) or if it was just time. Started work at 8:30 and just kept going. Got through a backlog that had been building for two weeks. Mood lifted as things got done. The breakthrough didn't announce itself. I just looked up at 3pm and realised it had happened.
+
+[0.87] g043: A message broke my focus for ninety minutes before it returned to me.
+  SRC: Was completely in it for ninety minutes this morning — writing, ideas flowing, fully absorbed. Then a Slack message broke it. I answered it, tried to go back, and it was gone. Sat there for forty minutes not able to re-enter the state. That's the context switching cost for me — once the flow breaks, it's gone, and rebuilding takes so long that I often don't bother. Started something different and did mediocre work for the rest of the morning.
+
+[0.84] g029: **Not tired**
+  SRC: Bad sleep last night and even with my Elvanse this morning I couldn't read properly. Kept going over the same paragraph without retaining anything. Words bouncing off. The medication gives me focus capacity but apparently not enough to override the sleep deficit. Switched to a task that didn't require reading — answered emails, did admin. Saved the actual reading for tomorrow when I'm rested.
+
+[0.84] g032: Small choices drain my energy and power down by mid afternoon.
+  SRC: By 2pm I genuinely couldn't make decisions. Not big ones — small ones. What to work on next. What to eat. Which email to open. Each small choice during the day drains something, and by mid-afternoon it's gone. The executive function for choosing shuts down before the energy runs out. Switched to a list I'd made this morning where everything was already decided. That helped.
+
+[0.8] g056: For an hour, my brain didn't get the information.
+  SRC: Had a reminder set. Saw the reminder. Said to myself 'I'll do it in five minutes.' Did something else for an hour. Missed it. I don't know how to explain this to people who don't have ADHD. The information reached me. The intention was genuine. The translation from intention to action just didn't happen. And then the guilt about it is its own spiral that takes more time than the original task would have.
+
+[0.62] g057: Sleep wasn't bad Tuesday and Thursday; the other nights were fine as well.
+  SRC: End of week. Honest summary: took meds every day, which is a win. Managed not to miss any actual deadlines. Sleep was bad Tuesday and Thursday, fine the other nights. Mood averaged around 5 or 6 — not bad enough to be a problem but not good. Focus was inconsistent — brilliant some hours, offline others. Social stuff happened but I came home depleted after everything. A functional week that cost more than it should.
+
+[0.61] g066: Tried to pull back twice but managed a few hundred seconds each time.
+  SRC: Dinner with friends and I talked too much again. I can feel it while it's happening — the dominating the conversation, the interrupting, the talking over the punchline of someone's story. I tried to pull back twice and managed to stay quiet for about ninety seconds each time. The guilt afterwards is real and the behaviour is also real and I don't know how to close the gap between them.
+
+[0.54] g085: Not yet at my age (34).
+  SRC: I didn't know that was possible. That's all I keep thinking. I didn't know the gap between knowing I should start and actually starting could just not be there. The medication doesn't make me want to do things more. It removes the friction between wanting and doing. I'm still deciding what to do. But once I decide, I start. That's new. I'm 34 years old and that is new.
+
+[0.53] g052: {- No food is optional.}
+  SRC: Took Elvanse without breakfast because I was in a rush — forgot the rule. Onset was harsher than usual, slightly jittery, headache starting around 10am. Focus kicked in but with an anxious edge. By noon I'd eaten and it settled down. The medication manual says food with every dose and I always think I can skip it. I can't. The food isn't optional.
+

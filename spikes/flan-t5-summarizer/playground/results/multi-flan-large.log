@@ -1,0 +1,6 @@
+Loading google/flan-t5-large (float32) on cpu...
+/Users/caesargrey/Projects/app-four-spikes-local/spikes/flan-t5-summarizer/.venv/lib/python3.11/site-packages/huggingface_hub/file_download.py:1132: FutureWarning: `resume_download` is deprecated and will be removed in version 1.0.0. Downloads always resume when possible. If you want to force a new download, use `force_download=True`.
+  warnings.warn(
+Ready.
+
+[timing] google/flan-t5-large: load 9.1s | gen total 647.7s | avg 6.48s/entry

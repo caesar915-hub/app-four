@@ -1,0 +1,54 @@
+[1.0] g011: I was unable to focus on a project for two and a half hours.
+  SRC: Went into hyperfocus around 10am on a tangent project that has nothing to do with my actual deadline. Completely locked in for two and a half hours. No food, no water, forgot I had a call. The focus was perfect — I just couldn't aim it. Came out of it at 12:30 with great work on the wrong thing, no food in me, and a missed call. Race car brain, bicycle brakes.
+
+[1.0] g014: Taking Concerta.
+  SRC: Weekend drug holiday — psychiatrist's suggestion. No Concerta today. Woke naturally at 9:30, which felt good. Then just drifted. By noon I'd done nothing — not even showered. The external structure that medication provides was just absent and everything in me expanded to fill the unstructured time with nothing. Not sad, just inert. Ate finally at 2pm. Stayed up until 1am for no reason. Harder than a medicated weekday.
+
+[1.0] g076: Describe the medication.
+  SRC: One week on the higher dose of Elvanse. I can feel a difference in the mornings — the start-up is faster, the initiation problem is slightly less severe. But there's also more of an edge: slightly more irritable in the afternoons, sleep is harder than before. The psychiatrist said give it three weeks. I'm tracking mood, focus, and sleep daily now. This is the part that nobody tells you — finding the right dose is a long experiment.
+
+[0.99] g021: I set up a body doubling call with a colleague.
+  SRC: Was completely stuck by 2pm. Couldn't start anything, brain not cooperating. Set up a body doubling call with a colleague and within twenty minutes of having another person on the screen I was actually working. Got through more in two hours than the whole morning. I don't fully understand the mechanism — something about the social presence raises whatever the starting threshold is — but it worked and I'm starting to build it into the schedule.
+
+[0.99] g079: Slept properly for two consecutive nights.
+  SRC: Slept properly for two consecutive nights and the Elvanse is doing something different because of it. The focus window lasted from 9am to past 2pm — longer than usual by at least an hour. Used every minute of it. The medication doesn't create attention, I think it amplifies whatever capacity sleep built. On depleted sleep it has less to work with.
+
+[0.99] g087: Describe the medication.
+  SRC: Experiment: took the Elvanse at 7 instead of 8:30. Got out of bed easier. Morning routine happened without friction. Sat down at 8:30 and started work — without staring at the screen or opening irrelevant tabs first. The medication timing change is doing something real. Going to run this for two weeks and see if the pattern holds.
+
+[0.99] g093: Describe the person's symptoms.
+  SRC: Didn't sleep at all. Not intentionally — went to bed at midnight and was still awake at 5am. After 5 I gave up. Took my medication at 8, which I probably shouldn't have on zero sleep. Functional until noon on pure stimulant and adrenaline. Then completely crashed. Couldn't hold a thought, couldn't follow a sentence. Went to bed at 7pm. This is the ADHD sleep problem at its most extreme — not choosing to stay up but being unable to stop being awake.
+
+[0.98] g024: Describe the symptoms of ADHD.
+  SRC: It's 10pm and my brain has finally switched on. Sharp, engaged, ideas coming. This is when I'm naturally at my best and it is completely incompatible with having a job that starts at nine. I could work for three hours right now. Instead I should sleep. If I sleep I'll be exhausted tomorrow. If I work I'll be exhausted tomorrow. Night owl ADHD is a scheduling problem with no clean solution.
+
+[0.98] g043: Then a Slack message broke it.
+  SRC: Was completely in it for ninety minutes this morning — writing, ideas flowing, fully absorbed. Then a Slack message broke it. I answered it, tried to go back, and it was gone. Sat there for forty minutes not able to re-enter the state. That's the context switching cost for me — once the flow breaks, it's gone, and rebuilding takes so long that I often don't bother. Started something different and did mediocre work for the rest of the morning.
+
+[0.98] g046: I spent the morning working alone and the afternoon working in a group project session.
+  SRC: Spent the morning in a group project session and the afternoon working alone. Same amount of work got done in both. But the morning cost twice as much. Every input from someone else required me to reorient. Conversations moved faster than I could process without losing my thread. Working alone is just less expensive. I don't know how to explain that to teams without sounding antisocial.
+
+[0.93] g064: I slept until midnight catastrophising about this morning's performance review.
+  SRC: Lay awake until midnight catastrophising about this morning's performance review. Went through every possible bad outcome in detail. Felt sick when I woke up. The review lasted 25 minutes, was entirely positive, and they asked about my development goals. My brain had spent eight hours preparing for a disaster that didn't happen. This is the anxiety amplification that comes with ADHD and I'm trying to get better at recognising it before it eats my sleep.
+
+[0.91] g008: Social performance for four hours costs me in a way that's hard to quantify.
+  SRC: Family event this afternoon. Performed being well the whole time — conversation, smiling, remembering to ask questions. It went fine from the outside. Got home and immediately sat in silence. Completely empty. Social performance for four hours costs me in a way that's hard to quantify. Mood dipped after, not sad, just depleted. Needed the evening alone.
+
+[0.89] g009: Taken medication.
+  SRC: Vyvanse 40mg and focus was excellent all morning — really locked in, productive stretch, got through the backlog I'd been avoiding. But I didn't eat until 6pm. Didn't drink water. Forgot to take breaks. By evening I was shaky, headachy, and irritable. The medication does its job but it completely suppresses the signals that tell me I need food and water. I have to set external reminders or I just forget my body exists.
+
+[0.88] g047: Describe the sleep quality.
+  SRC: Three months on Concerta. What's better: I start tasks more reliably. I'm less impulsive in conversations. The time blindness is slightly improved. What's the same: emotional regulation still a problem. Weekend structure still collapses. The shame about things I forget is still there. What's worse: sleep is consistently worse than before. I expected medication to fix more than it has. I'm adjusting my expectations toward 'makes the work possible' rather than 'does the work for me.'
+
+[0.86] g036: Take a nap.
+  SRC: Morning was grey and unproductive. Gave up at noon and took a 20-minute nap — something I used to refuse to do because it felt like giving up. Woke up genuinely different. Clearer, lighter, more focused. Did my best work of the week in the ninety minutes after. I need to stop treating a nap as a failure and start treating it as a tool.
+
+[0.82] g096: Had a double coffee on the Vyvanse.
+  SRC: Made the mistake again of having a double coffee on the Vyvanse. By 10am I was too activated — jittery, couldn't channel the energy into work, heart going. More alert than focused. Switched to water for the rest of the morning and it settled by noon. The focus came in properly once the caffeine-on-stimulant edge wore off. One coffee maximum on Vyvanse days, and only with breakfast.
+
+[0.8] g091: Exercise is doing something that I can't manufacture any other way.
+  SRC: Made myself go to the gym before work even though I didn't want to. Twenty-five minutes. Felt pointless the whole time. Got to my desk an hour later and something had shifted — clearer, more settled, the edge off the usual morning anxiety. Got through three hours of solid work before the medication even fully kicked in. Exercise is doing something that I can't manufacture any other way. Need to protect the morning gym.
+
+[0.73] g058: Spent the rest of the afternoon doing nothing well.
+  SRC: Was in deep focus on the main project from 9 to 11. Had to stop for admin. Admin took 45 minutes. Tried to go back to the project and couldn't re-enter. Spent the rest of the afternoon doing nothing well. The context switch cost me the afternoon. I've started treating deep work sessions as inviolable and putting all admin after 3pm when the focus is already diminished anyway.
+

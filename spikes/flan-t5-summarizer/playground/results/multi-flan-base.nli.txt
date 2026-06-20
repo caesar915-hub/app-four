@@ -1,0 +1,24 @@
+[1.0] g079: On depleted sleep it has less to work with.
+  SRC: Slept properly for two consecutive nights and the Elvanse is doing something different because of it. The focus window lasted from 9am to past 2pm — longer than usual by at least an hour. Used every minute of it. The medication doesn't create attention, I think it amplifies whatever capacity sleep built. On depleted sleep it has less to work with.
+
+[0.98] g024: The narrator is having a hard time focusing on work.
+  SRC: It's 10pm and my brain has finally switched on. Sharp, engaged, ideas coming. This is when I'm naturally at my best and it is completely incompatible with having a job that starts at nine. I could work for three hours right now. Instead I should sleep. If I sleep I'll be exhausted tomorrow. If I work I'll be exhausted tomorrow. Night owl ADHD is a scheduling problem with no clean solution.
+
+[0.98] g076: The journal entry is about a person who is taking a higher dose of Elvanse.
+  SRC: One week on the higher dose of Elvanse. I can feel a difference in the mornings — the start-up is faster, the initiation problem is slightly less severe. But there's also more of an edge: slightly more irritable in the afternoons, sleep is harder than before. The psychiatrist said give it three weeks. I'm tracking mood, focus, and sleep daily now. This is the part that nobody tells you — finding the right dose is a long experiment.
+
+[0.68] g043: The journal entry is about a person who is in a state of apathy.
+  SRC: Was completely in it for ninety minutes this morning — writing, ideas flowing, fully absorbed. Then a Slack message broke it. I answered it, tried to go back, and it was gone. Sat there for forty minutes not able to re-enter the state. That's the context switching cost for me — once the flow breaks, it's gone, and rebuilding takes so long that I often don't bother. Started something different and did mediocre work for the rest of the morning.
+
+[0.67] g070: The journal entry is about a person's mood.
+  SRC: Ran out of steam at 2pm. Not unusual — it's clockwork some weeks. Mood went slightly flat with it but not badly. Switched to the tasks that don't require real cognitive effort — filing, emails I can template, calendar management. Got through the afternoon without pretending I was capable of more than I was. Managing to the energy level I have rather than the one I want is a skill I'm slowly learning.
+
+[0.65] g096: The narrator had a double coffee on the Vyvanse.
+  SRC: Made the mistake again of having a double coffee on the Vyvanse. By 10am I was too activated — jittery, couldn't channel the energy into work, heart going. More alert than focused. Switched to water for the rest of the morning and it settled by noon. The focus came in properly once the caffeine-on-stimulant edge wore off. One coffee maximum on Vyvanse days, and only with breakfast.
+
+[0.56] g087: The journal entry is about a person's experience.
+  SRC: Experiment: took the Elvanse at 7 instead of 8:30. Got out of bed easier. Morning routine happened without friction. Sat down at 8:30 and started work — without staring at the screen or opening irrelevant tabs first. The medication timing change is doing something real. Going to run this for two weeks and see if the pattern holds.
+
+[0.54] g093: The journal entry is about a person who has ADHD.
+  SRC: Didn't sleep at all. Not intentionally — went to bed at midnight and was still awake at 5am. After 5 I gave up. Took my medication at 8, which I probably shouldn't have on zero sleep. Functional until noon on pure stimulant and adrenaline. Then completely crashed. Couldn't hold a thought, couldn't follow a sentence. Went to bed at 7pm. This is the ADHD sleep problem at its most extreme — not choosing to stay up but being unable to stop being awake.
+

@@ -1,0 +1,6 @@
+Loading google/t5gemma-b-b-prefixlm-it (float32) on cpu...
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/340 [00:00<?, ?it/s]Loading weights:   0%|          | 1/340 [00:01<08:50,  1.57s/it]Loading weights:  61%|██████    | 207/340 [00:01<00:00, 164.95it/s]Loading weights: 100%|██████████| 340/340 [00:01<00:00, 196.80it/s]
+Ready.
+
+[timing] google/t5gemma-b-b-prefixlm-it: load 90.9s | gen total 716.4s | avg 7.16s/entry

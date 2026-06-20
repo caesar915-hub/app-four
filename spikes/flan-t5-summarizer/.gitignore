@@ -1,0 +1,24 @@
+# Raw forum data — never commit (real user posts, PII risk)
+addrec-data/
+
+# Derived training data (contains clean_text from forum posts)
+playground/lora-train.jsonl
+playground/lora-test.json
+
+# Model weights and adapters (large binaries)
+playground/adapters/
+*.bin
+*.safetensors
+*.gguf
+*.mlmodel
+
+# Venvs
+.venv/
+.venv-gemma/
+.venv-lora/
+
+# Logs
+playground/logs/
+
+# HF cache
+.cache/

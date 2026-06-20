@@ -1,0 +1,8 @@
+| file | n | mean_min_support | flagged(<thr) | flagged% |
+|---|---|---|---|---|
+| rematch-flan-base-fewshot.md | 30 | 0.551 | 11 | 37% |
+| multi-flan-large.md | 30 | 0.789 | 5 | 17% |
+| multi-gemma-ul2.md | 30 | 0.460 | 15 | 50% |
+| rematch-gemma-ul2-strict.md | 30 | 0.087 | 29 | 97% |
+| multi-gemma-prefixlm.md | 30 | 0.395 | 19 | 63% |
+| rematch-gemma-prefixlm-medslot.md | 30 | 0.317 | 21 | 70% |

@@ -15,6 +15,19 @@ Tradeoff axis (see DEVLOG / the FLAN-T5 plan):
 """
 
 PROMPTS = {
+    # Fine-tuning + inference prompt for the LoRA'd flan-t5-large. Short (no few-shot)
+    # so the transcript fits flan-t5's 512-token encoder. Use the SAME string in
+    # build_lora_data.py (to form training `input`) and at eval (--prompt lora-short),
+    # or train/inference drift silently degrades the model.
+    "lora-short": (
+        "Write a faithful summary of this ADHD post as 3-6 bullet points.\n"
+        "- Only include dimensions actually described: mood, energy, focus (plus triggers, coping).\n"
+        '- Each bullet starts with its label: "- Mood:", "- Energy:", "- Focus:", "- Trigger:", or "- Coping:".\n'
+        "- State only what is described; do not infer, embellish, or add anything not in the text.\n"
+        "- Omit any dimension not present.\n\n"
+        "Post:\n{transcript}\n\nSummary:"
+    ),
+
     "faithful": (
         "Summarize the following journal entry as 3 short bullet points.\n"
         "Use the person's own words and key phrases. Do not add anything that is "

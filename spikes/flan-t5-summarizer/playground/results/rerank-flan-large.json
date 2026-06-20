@@ -1,0 +1,272 @@
+[
+{
+"id": "g001",
+"greedy": "Slept about four and a half hours \u2014 brain wouldn't stop after midnight. Took my Elvanse 50mg at 7:30 anyway. It took longer to kick in than usual, which makes sense when I'm already running on empty. Mood was fragile most of the morning but didn't fully crash. By noon I was functional enough. The medication can't manufacture energy that sleep didn't provide but it helped me stay afloat.",
+"greedy_faith": 0.819,
+"greedy_cov": 1.0,
+"reranked": "Slept about four and a half hours \u2014 brain wouldn't stop after midnight. Took my Elvanse 50mg at 7:30 anyway. It took longer to kick in than usual, which makes sense when I'm already running on empty. Mood was fragile most of the morning but didn't fully crash. By noon I was functional enough. The medication can't manufacture energy that sleep didn't provide but it helped me stay afloat.",
+"rerank_faith": 0.819,
+"rerank_cov": 1.0
+},
+{
+"id": "g002",
+"greedy": "I zoned out in the team meeting for about ten minutes. Someone asked me a direct question and I had no idea what it was. I had to ask them to repeat it. The shame of that moment lasted the rest of the day.",
+"greedy_faith": 0.966,
+"greedy_cov": 0.514,
+"reranked": "I zoned out in the team meeting for about ten minutes. Someone asked me a direct question and I had no idea what it was. I had to ask them to repeat it. The shame of that moment lasted the rest of the day.",
+"rerank_faith": 0.966,
+"rerank_cov": 0.514
+},
+{
+"id": "g010",
+"greedy": "Woke at 5am from a stress dream and couldn't get back to sleep. Lay there until the alarm with the dream anxiety mixing into real things I'm worried about. All day there was an irritable undercurrent. Snapped at my partner over something minor in the evening and then felt awful about it.",
+"greedy_faith": 0.884,
+"greedy_cov": 0.775,
+"reranked": "Woke at 5am from a stress dream and couldn't get back to sleep. Lay there until the alarm with the dream anxiety mixing into real things I'm worried about. All day there was an irritable undercurrent. Snapped at my partner over something minor in the evening. The anxiety from poor sleep doesn't stay contained \u2014 it spreads into how I treat people.",
+"rerank_faith": 0.942,
+"rerank_cov": 0.925
+},
+{
+"id": "g011",
+"greedy": "Went into hyperfocus around 10am on a tangent project that has nothing to do with my actual deadline. Completely locked in for two and a half hours. No food, no water, forgot I had a call. The focus was perfect \u2014 I just couldn't aim it.",
+"greedy_faith": 0.776,
+"greedy_cov": 0.658,
+"reranked": "Went into hyperfocus around 10am on a tangent project that has nothing to do with my actual deadline. Completely locked in for two and a half hours. No food, no water, forgot I had a call. The focus was perfect \u2014 I just couldn't aim it. Came out of it at 12:30 with great work on the wrong thing.",
+"rerank_faith": 0.776,
+"rerank_cov": 0.842
+},
+{
+"id": "g012",
+"greedy": "Slept better last night than I have in months \u2014 still don't know if that's a coincidence. Took the medication at 8 and by 9:30 I had started the task I'd been avoiding for three weeks. Just started it. The gap between knowing I should start and actually starting has been the story of my life and this morning the gap just wasn't there.",
+"greedy_faith": 0.793,
+"greedy_cov": 0.846,
+"reranked": "Second week on stimulants. Slept better last night than I have in months. Took the medication at 8 and by 9:30 I had started the task I'd been avoiding for three weeks. Just started it. The gap between knowing I should start and actually starting has been the story of my life and this morning the gap just wasn't there. I didn't know it could work like that.",
+"rerank_faith": 0.89,
+"rerank_cov": 0.872
+},
+{
+"id": "g020",
+"greedy": "Nothing was interesting today. Nothing I wanted to do, nothing that pulled at me. The interest-based nervous system had nothing to lock onto. Made myself eat. Did the minimum work. Didn't cancel anything but also didn't engage with anything. Low energy without a cause.",
+"greedy_faith": 0.933,
+"greedy_cov": 0.548,
+"reranked": "Nothing was interesting today. Not sad, just flat. Nothing I wanted to do, nothing that pulled at me. The interest-based nervous system had nothing to lock onto. Made myself eat. Did the minimum work. Didn't cancel anything but also didn't engage with anything. Low energy without a cause. Not every flat day has an explanation and that's one of the harder things to accept.",
+"rerank_faith": 0.933,
+"rerank_cov": 0.833
+},
+{
+"id": "g021",
+"greedy": "Was completely stuck by 2pm. Couldn't start anything, brain not cooperating. Set up a body doubling call with a colleague and within twenty minutes of having another person on the screen I was actually working. Got through more in two hours than the whole morning. I don't fully understand the mechanism \u2014 something about the social presence raises whatever the starting threshold is \u2014 but it worked and I'm starting to build it into the schedule.",
+"greedy_faith": 0.833,
+"greedy_cov": 1.0,
+"reranked": "Was completely stuck by 2pm. Couldn't start anything, brain not cooperating. Set up a body doubling call with a colleague and within twenty minutes of having another person on the screen I was actually working. Got through more in two hours than the whole morning. I don't fully understand the mechanism \u2014 something about the social presence raises whatever the starting threshold is \u2014 but it worked and I'm starting to build it into the schedule.",
+"rerank_faith": 0.833,
+"rerank_cov": 1.0
+},
+{
+"id": "g022",
+"greedy": "Couldn't fall asleep until 1am. Brain was going \u2014 like having 59 televisions blaring \u2014 tomorrow's meeting, an email from last week, something I said two months ago that I shouldn't have. Managed four hours. Morning was fog. Executive function completely offline \u2014 couldn't decide what to do first, couldn't start anything. Mood was fragile all day. The bad sleep didn't just affect energy, it affected everything downstream.",
+"greedy_faith": 0.301,
+"greedy_cov": 1.0,
+"reranked": "Couldn't fall asleep until 1am. Brain was going \u2014 like having 59 televisions blaring \u2014 tomorrow's meeting, an email from last week, something I shouldn't have. Managed four hours. Morning was fog. Executive function completely offline \u2014 couldn't decide what to do first, couldn't start anything. Mood was fragile all day. The bad sleep didn't just affect energy, it affected everything downstream.",
+"rerank_faith": 0.343,
+"rerank_cov": 0.92
+},
+{
+"id": "g030",
+"greedy": "Got feedback in the afternoon that was completely reasonable \u2014 one piece of work needed revision, the points were fair. Immediately heard it as 'you're not good enough' and went into defensive mode. Spent the next two hours unable to work, going over everything I might have done wrong, catastrophising about the job. By 5pm I'd talked myself down.",
+"greedy_faith": 0.754,
+"greedy_cov": 0.844,
+"reranked": "Got feedback in the afternoon that was completely reasonable \u2014 one piece of work needed revision, the points were fair. Immediately heard it as 'you're not good enough' and went into defensive mode. Spent the next two hours unable to work, going over everything I might have done wrong, catastrophising about the job. By 5pm I'd talked myself down.",
+"rerank_faith": 0.754,
+"rerank_cov": 0.844
+},
+{
+"id": "g031",
+"greedy": "Pharmacy switched me to generic methylphenidate this month instead of the brand. Supposed to be identical. It doesn't feel identical. The onset is harsher, there's more of an anxious edge to the first two hours, and the comedown is slightly worse. Mood feels more volatile. I know the active compound is the same on paper but something is different. Asking for the brand name back at the next prescription.",
+"greedy_faith": 0.869,
+"greedy_cov": 1.0,
+"reranked": "Pharmacy switched me to generic methylphenidate this month instead of the brand. Supposed to be identical. It doesn't feel identical. The onset is harsher, there's more of an anxious edge to the first two hours, and the comedown is slightly worse. Mood feels more volatile. I know the active compound is the same on paper but something is different. Asking for the brand name back at the next prescription.",
+"rerank_faith": 0.869,
+"rerank_cov": 1.0
+},
+{
+"id": "g032",
+"greedy": "By 2pm I genuinely couldn't make decisions. Not big ones \u2014 small ones. What to work on next. What to eat. Which email to open. Each small choice during the day drains something, and by mid-afternoon it's gone. The executive function for choosing shuts down before the energy runs out. Switched to a list I'd made this morning where everything was already decided. That helped.",
+"greedy_faith": 0.664,
+"greedy_cov": 1.0,
+"reranked": "By 2pm I genuinely couldn't make decisions. Not big ones \u2014 small ones. What to work on next. What to eat. Which email to open. Each small choice during the day drains something, and by mid-afternoon it's gone. Switched to a list I'd made this morning where everything was already decided. That helped.",
+"rerank_faith": 0.844,
+"rerank_cov": 0.8
+},
+{
+"id": "g040",
+"greedy": "My partner pointed out that I'd asked the same question twice in five minutes without realising. That's the working memory. They said they wished they'd understood it earlier. That conversation helped.",
+"greedy_faith": 0.965,
+"greedy_cov": 0.478,
+"reranked": "My partner pointed out that I'd asked the same question twice in five minutes without realising. That's the working memory. We talked about it properly later. They said they wished they'd understood it earlier. That conversation helped. Having someone who understands the pattern rather than just the symptom makes a real difference.",
+"rerank_faith": 0.947,
+"rerank_cov": 0.783
+},
+{
+"id": "g041",
+"greedy": "Cleared the doom pile on my desk today. Two hours. Every item required a decision: keep, bin, file, action. For each of those categories another set of decisions. I had to do it standing up with music on to stay in it.",
+"greedy_faith": 0.88,
+"greedy_cov": 0.511,
+"reranked": "Cleared the doom pile on my desk today. Every item required a decision: keep, bin, file, action. For each of those categories another set of decisions. I had to do it standing up with music on to stay in it. The pile was exactly as bad as I feared and also fine.",
+"rerank_faith": 0.88,
+"rerank_cov": 0.574
+},
+{
+"id": "g042",
+"greedy": "Two weeks since adding Wellbutrin alongside the Concerta. The evenings are better. The drop at 4pm is softer. Mood is holding more steadily through the day rather than dipping hard when the stimulant clears. Sleep is slightly improved \u2014 I think the Wellbutrin is helping with the evening agitation that used to keep me up.",
+"greedy_faith": 0.899,
+"greedy_cov": 0.825,
+"reranked": "Two weeks since adding Wellbutrin alongside the Concerta. The evenings are better. The drop at 4pm is softer. Mood is holding more steadily through the day rather than dipping hard when the stimulant clears. Sleep is slightly improved. I think the Wellbutrin is helping with the evening agitation that used to keep me up.",
+"rerank_faith": 0.95,
+"rerank_cov": 0.8
+},
+{
+"id": "g050",
+"greedy": "Terrible sleep but went for a run anyway at 7am. Hated every step of it. Finished and within twenty minutes felt measurably different. The exercise doing something neurochemical that the sleep couldn't do.",
+"greedy_faith": 0.893,
+"greedy_cov": 0.512,
+"reranked": "Terrible sleep but went for a run anyway at 7am. Hated every step of it. Finished and within twenty minutes felt measurably different \u2014 clearer, mood lifted, less of the flatness. The exercise doing something neurochemical that the sleep couldn't do. Still took my meds at 8. The combination of run and medication was unusually effective today.",
+"rerank_faith": 0.857,
+"rerank_cov": 0.878
+},
+{
+"id": "g051",
+"greedy": "Spent 40 minutes making a very organised, colour-coded task list. While avoiding every task on it. I've noticed I do this \u2014 the planning feels like progress. Writing things down, reorganising priorities, creating the perfect system. Then the system sits there and I still can't start. The list is avoidance dressed up as productivity and I catch myself doing it almost every time.",
+"greedy_faith": 0.839,
+"greedy_cov": 1.0,
+"reranked": "Spent 40 minutes making a very organised, colour-coded task list. While avoiding every task on it. I've noticed I do this \u2014 the planning feels like progress. Writing things down, reorganising priorities, creating the perfect system. Then the system sits there and I still can't start. The list is avoidance dressed up as productivity and I catch myself doing it almost every time.",
+"rerank_faith": 0.839,
+"rerank_cov": 1.0
+},
+{
+"id": "g052",
+"greedy": "Took Elvanse without breakfast because I was in a rush \u2014 forgot the rule. Onset was harsher than usual, slightly jittery, headache starting around 10am. Focus kicked in but with an anxious edge. By noon I'd eaten and it settled down. The medication manual says food with every dose and I always think I can skip it. I can't. The food isn't optional.",
+"greedy_faith": 0.254,
+"greedy_cov": 1.0,
+"reranked": "Took Elvanse without breakfast because I was in a rush. Onset was harsher than usual, slightly jittery, headache starting around 10am. Focus kicked in but with an anxious edge. By noon I'd eaten and it settled down.",
+"rerank_faith": 0.866,
+"rerank_cov": 0.615
+},
+{
+"id": "g060",
+"greedy": "The to-do list, the inbox, the things I said I'd do last week arrived at once this morning and I just stopped. Couldn't prioritise. Everything equal, everything urgent, none of it started. Sat on the couch. Made tea I didn't drink. The complete paralysis from overwhelm is different from laziness and it's hard to explain from the outside. By 4pm I'd done one thing. One. But one is not zero.",
+"greedy_faith": 0.359,
+"greedy_cov": 0.953,
+"reranked": "The to-do list, the inbox, the things I said I'd do last week - it all arrived at once this morning and I just stopped. Couldn't prioritise. Everything equal, everything urgent, none of it started. Sat on the couch. Made tea I didn't drink. The complete paralysis from overwhelm is different from laziness and it's hard to explain from the outside. By 4pm I'd done one thing. One. But one is not zero.",
+"rerank_faith": 0.359,
+"rerank_cov": 0.977
+},
+{
+"id": "g061",
+"greedy": "Had to write the difficult email I'd been avoiding for two weeks. Set up a body doubling call specifically for it. Ten minutes into the call, with someone else just quietly working, I wrote the email. Sent it. It took eight minutes. I had spent two weeks in a loop around something that took eight minutes.",
+"greedy_faith": 0.777,
+"greedy_cov": 0.778,
+"reranked": "Had to write the difficult email I'd been avoiding for two weeks. Set up a body doubling call specifically for it. Ten minutes into the call, with someone else just quietly working, I wrote the email. Sent it. It took eight minutes. I had spent two weeks in a loop around something that took eight minutes. The presence of another nervous system changed the activation cost completely.",
+"rerank_faith": 0.777,
+"rerank_cov": 1.0
+},
+{
+"id": "g062",
+"greedy": "The new 60mg dose felt like too much today. Anxious from about 10am. Couldn't settle into tasks even though I wanted to. Restless and wired without the focus that's supposed to come with it. Going to call the clinic.",
+"greedy_faith": 0.862,
+"greedy_cov": 0.641,
+"reranked": "The new 60mg dose felt like too much today. Anxious from about 10am. Couldn't settle into tasks even though I wanted to. Restless and wired without the focus that's supposed to come with it.",
+"rerank_faith": 0.946,
+"rerank_cov": 0.564
+},
+{
+"id": "g070",
+"greedy": "Ran out of steam at 2pm. Not unusual \u2014 it's clockwork some weeks. Mood went slightly flat with it but not badly. Switched to the tasks that don't require real cognitive effort \u2014 filing, emails I can template, calendar management. Got through the afternoon without pretending I was capable of more than I was. Managing to the energy level I have rather than the one I want is a skill I'm slowly learning.",
+"greedy_faith": 0.155,
+"greedy_cov": 1.0,
+"reranked": "Ran out of steam at 2pm. Not unusual \u2014 it's clockwork some weeks. Mood went slightly flat with it but not badly. Switched to the tasks that don't require real cognitive effort. Got through the afternoon without pretending I was capable of more than I was. Managing to the energy level I have rather than the one I want is a skill I'm slowly learning.",
+"rerank_faith": 0.237,
+"rerank_cov": 0.889
+},
+{
+"id": "g071",
+"greedy": "Didn't apply for the project I wanted. Told myself it was because the timing wasn't right. It wasn't timing. It was the fear of rejection \u2014 specifically the feeling of 'a chair being taken out from beneath you' that I know will come if I apply and don't get it. So I pre-emptively rejected myself to avoid being rejected. The rejection sensitivity is quietly shaping my life and I'm only now seeing the shape.",
+"greedy_faith": 0.8,
+"greedy_cov": 0.868,
+"reranked": "Didn't apply for the project I wanted. Told myself it was because the timing wasn't right. It wasn't timing. It was the fear of rejection \u2014 specifically the feeling of 'a chair being taken out from beneath you' that I know will come if I apply and don't get it. So I pre-emptively rejected myself to avoid being rejected. I've done this with jobs, with friendships, with things I wanted. The rejection sensitivity is quietly shaping my life.",
+"rerank_faith": 0.935,
+"rerank_cov": 0.868
+},
+{
+"id": "g072",
+"greedy": "Tried the medication holiday today but with a structure in place this time \u2014 written schedule, times for each thing, meals planned. It went noticeably better than last month's unstructured holiday. Still slower and more scattered without the medication. But the external structure partially replaces what the medication provides internally. The lesson: I need both.",
+"greedy_faith": 0.884,
+"greedy_cov": 1.0,
+"reranked": "Tried the medication holiday today with a structure in place this time \u2014 written schedule, times for each thing, meals planned. It went noticeably better than last month's unstructured holiday. Still slower and more scattered without the medication. But the external structure partially replaces what the medication provides internally. The lesson: I need both.",
+"rerank_faith": 0.894,
+"rerank_cov": 1.0
+},
+{
+"id": "g080",
+"greedy": "Nothing happened, nothing triggered it. Just flat from the start of the day. These unexplained low days are the ones I find hardest because there's nothing to fix. I didn't sleep badly, the meds were fine, nothing went wrong. The brain just decided not today. Ate, moved around a bit, got through the minimum. Tomorrow is a different data point.",
+"greedy_faith": 0.614,
+"greedy_cov": 0.923,
+"reranked": "Low energy, low mood. Nothing happened, nothing triggered it. Just flat from the start of the day. These unexplained low days are the ones I find hardest because there's nothing to fix. I didn't sleep badly, the meds were fine, nothing went wrong. The brain just decided not today. I ate, moved around a bit, got through the minimum. Let the day be what it was. Tomorrow is a different data point.",
+"rerank_faith": 0.657,
+"rerank_cov": 1.0
+},
+{
+"id": "g081",
+"greedy": "Asked the same question twice in ten minutes today \u2014 genuinely didn't remember asking the first time. My partner noticed before I did. Working memory failures are embarrassing in relationships because they look like not caring or not paying attention and it's the opposite. I care. I pay attention. And then the information just doesn't stick. We've built some workarounds. The embarrassment is still there every time.",
+"greedy_faith": 0.308,
+"greedy_cov": 1.0,
+"reranked": "Asked the same question twice in ten minutes today \u2014 genuinely didn't remember asking the first time. My partner noticed before I did. Working memory failures are embarrassing in relationships because they look like not caring or not paying attention and it's the opposite. I care. I pay attention. And then the information just doesn't stick. We've built some workarounds. The embarrassment is still there every time.",
+"rerank_faith": 0.308,
+"rerank_cov": 1.0
+},
+{
+"id": "g082",
+"greedy": "Got into hyperfocus on a project around 9pm. The zone that doesn't exist in the world. Hours disappeared. My wife went to bed, I didn't notice. Looked up and it was 2am. The work was good but the cost will be tomorrow.",
+"greedy_faith": 0.181,
+"greedy_cov": 0.575,
+"reranked": "Got into hyperfocus on a project around 9pm. Hours disappeared. My wife went to bed. Looked up and it was 2am. The work was good but the cost will be tomorrow.",
+"rerank_faith": 0.939,
+"rerank_cov": 0.425
+},
+{
+"id": "g090",
+"greedy": "Ten days of basically nothing working. Bad sleep, medication not landing right, low mood, focus offline. And then today something lifted. I don't know if it was the sleep last night (seven hours, actual sleep) or if it was just time. Started work at 8:30 and just kept going. Got through a backlog that had been building for two weeks. Mood lifted as things got done.",
+"greedy_faith": 0.423,
+"greedy_cov": 0.816,
+"reranked": "Ten days of basically nothing working. Bad sleep, medication not landing right, low mood, focus offline. And then today something lifted. I don't know if it was the sleep last night (seven hours, actual sleep) or if it was just time. Started work at 8:30 and just kept going. Got through a backlog that had been building for two weeks. Mood lifted as things got done. The breakthrough didn't announce itself. I just looked up at 3pm and realised it had happened.",
+"rerank_faith": 0.423,
+"rerank_cov": 1.0
+},
+{
+"id": "g091",
+"greedy": "Made myself go to the gym before work even though I didn't want to. Felt pointless the whole time. Got to my desk an hour later and something had shifted \u2014 clearer, more settled, the edge off the usual morning anxiety. Got through three hours of solid work before the medication even fully kicked in. Exercise is doing something that I can't manufacture any other way. Need to protect the morning gym.",
+"greedy_faith": 0.661,
+"greedy_cov": 0.952,
+"reranked": "Made myself go to the gym before work even though I didn't want to. Twenty-five minutes. Felt pointless the whole time. Got to my desk an hour later and something had shifted \u2014 clearer, more settled, the edge off the usual morning anxiety. Got through three hours of solid work before the medication even fully kicked in. Exercise is doing something that I can't manufacture any other way. Need to protect the morning gym.",
+"rerank_faith": 0.661,
+"rerank_cov": 1.0
+},
+{
+"id": "g092",
+"greedy": "Psychiatrist today. I told her honestly how the six weeks on the new dose had gone: better initiation, better mornings, mood more stable, sleep slightly worse but manageable. She said the sleep issue is common and suggested keeping the timing earlier. We agreed to stay on the current dose for another six weeks and check in. I feel clearer about what we're doing than I have in any previous appointment.",
+"greedy_faith": 0.762,
+"greedy_cov": 0.976,
+"reranked": "Psychiatrist today. I told her honestly how the six weeks on the new dose had gone: better initiation, better mornings, mood more stable, sleep slightly worse but manageable. She said the sleep issue is common and suggested keeping the timing earlier. We agreed to stay on the current dose for another six weeks and check in. I feel clearer about what we're doing than I have in any previous appointment.",
+"rerank_faith": 0.762,
+"rerank_cov": 0.976
+},
+{
+"id": "g100",
+"greedy": "Recording this driving home. Took my Concerta at 8, which was good. Focus held until about 1pm \u2014 solid morning. Crash came in early, maybe 2:30, which is earlier than usual. The meeting at 3 was rough because I was already out of the window. Said something twice which I noticed. Mood went flat after the crash. Sleep last night was maybe 5 hours so that didn't help. Food was bad today \u2014 forgot lunch again.",
+"greedy_faith": 0.828,
+"greedy_cov": 0.8,
+"reranked": "Took Concerta at 8, which was good. Focus held until about 1pm \u2014 solid morning. Crash came in early, maybe 2:30, which is earlier than usual. Meeting at 3 was rough because I was already out of the window. Said something twice which I noticed. Mood went flat after the crash. Sleep last night was maybe 5 hours so that didn't help. Food was bad today \u2014 forgot lunch again. Have to fix that. Overall the morning was actually good. I need to hold onto that part.",
+"rerank_faith": 0.89,
+"rerank_cov": 0.85
+}
+]

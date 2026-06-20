@@ -1,0 +1,6 @@
+Loading google/t5gemma-b-b-ul2-it (float32) on cpu...
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/340 [00:00<?, ?it/s]Loading weights:   0%|          | 1/340 [00:02<14:20,  2.54s/it]Loading weights:   1%|          | 2/340 [00:02<06:31,  1.16s/it]Loading weights:  61%|██████    | 207/340 [00:02<00:01, 130.34it/s]Loading weights: 100%|██████████| 340/340 [00:02<00:00, 115.69it/s]
+Ready.
+
+[timing] google/t5gemma-b-b-ul2-it: load 10.4s | gen total 888.5s | avg 8.88s/entry
