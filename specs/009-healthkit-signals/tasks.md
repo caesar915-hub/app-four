@@ -17,7 +17,7 @@ description: "Task list for 009-healthkit-signals"
 
 ## Phase 1: Setup
 
-- [ ] T001 Confirm `feat/healthkit-signals` is checked out and establish a green baseline by running one existing suite (e.g. `-only-testing:app-fourTests/Store` or `CheckInViewModelTests`); record the pass count.
+- [X] T001 Confirm `feat/healthkit-signals` is checked out and establish a green baseline by running one existing suite (e.g. `-only-testing:app-fourTests/Store` or `CheckInViewModelTests`); record the pass count.
 
 ---
 
@@ -29,19 +29,19 @@ description: "Task list for 009-healthkit-signals"
 
 ### Tests (test-first · RED — MANDATORY) ⚠️
 
-- [ ] T002 [P] RED: `DailySignalsTests` in `app-fourTests/DailySignalsTests.swift` — assert a new `DailySignals` defaults all four sources to `.none` and all signal fields to `nil`; assert the type compiles with no `@Attribute(.unique)`. Run; MUST FAIL (type not found).
-- [ ] T003 [P] RED: `SignalDayKeyTests` in `app-fourTests/SignalDayKeyTests.swift` — `dayStart(for:calendar:)` zeroes time components and yields the same key for different times on the same local day (timezone/DST cases). Run; MUST FAIL.
+- [X] T002 [P] RED: `DailySignalsTests` in `app-fourTests/DailySignalsTests.swift` — assert a new `DailySignals` defaults all four sources to `.none` and all signal fields to `nil`; assert the type compiles with no `@Attribute(.unique)`. Run; MUST FAIL (type not found).
+- [X] T003 [P] RED: `SignalDayKeyTests` in `app-fourTests/SignalDayKeyTests.swift` — `dayStart(for:calendar:)` zeroes time components and yields the same key for different times on the same local day (timezone/DST cases). Run; MUST FAIL.
 
 ### Implementation
 
-- [ ] T004 [P] Create `SignalSource` enum (`case none, healthKit, manual`; `String, Codable, Sendable`) in `app-four/Models/SignalSource.swift`.
-- [ ] T005 [P] Create `MenstrualFlow` enum (`case light, medium, heavy, spotting`; `String, Codable, Sendable, CaseIterable`) in `app-four/Models/MenstrualFlow.swift`.
-- [ ] T006 Create `DailySignals` `@Model` in `app-four/Models/DailySignals.swift` — per [data-model.md](data-model.md): **no `@Attribute(.unique)`**; every attribute optional or defaulted (`dayStart: Date = .distantPast`, `updatedAt: Date = .now`, `sleepSource: SignalSource = .none`, …, `isMockData: Bool = false`); `sleepLevelValue: String?`; `cycleSymptomsJSON: String?` with a computed `cycleSymptoms: [String]` accessor. Turns T002 GREEN. (deps: T004, T005)
-- [ ] T007 Register `DailySignals.self` in **both** `Schema([...])` arrays in `app-four/App/AppModelContainer.swift` (container ~L9–16 and previewContainer ~L63–70). (deps: T006)
-- [ ] T008 [P] Create `SignalDayKey.dayStart(for:calendar:)` and the Sendable DTOs (`SleepDTO{hours,level:SleepLevel?}`, `ActivityDTO`, `HeartDTO`, `CycleDTO`, `DaySignalsDTO`) in `app-four/Services/HealthKit/HealthSignalsDTO.swift`. Turns T003 GREEN.
-- [ ] T009 [P] Add `SleepLevel: SignalLevel` conformance in `app-four/Models/SleepLevel+SignalLevel.swift` — `displayLabel`/`color`/`gradientPartner` so sleep renders via the shared 5-step bead grammar (A6/D5). No change to `SleepLevel` cases.
-- [ ] T010 RED: `SignalsStoreTests` in `app-fourTests/SignalsStoreTests.swift` — `upsert(dayStart:)` returns the same row on repeat (count stays 1; idempotent, FR-003); `fetch` returns nil for a missing day. Run; MUST FAIL. (deps: T006)
-- [ ] T011 Implement `SignalsStore` (`@MainActor @Observable`, injected `ModelContext`, `fetch`/`upsert`/`fetchRange`/`save`; `upsert` normalizes via `SignalDayKey`, `fetchLimit = 1`) in `app-four/Store/SignalsStore.swift`. Turns T010 GREEN. (deps: T006, T008)
+- [X] T004 [P] Create `SignalSource` enum (`case none, healthKit, manual`; `String, Codable, Sendable`) in `app-four/Models/SignalSource.swift`.
+- [X] T005 [P] Create `MenstrualFlow` enum (`case light, medium, heavy, spotting`; `String, Codable, Sendable, CaseIterable`) in `app-four/Models/MenstrualFlow.swift`.
+- [X] T006 Create `DailySignals` `@Model` in `app-four/Models/DailySignals.swift` — per [data-model.md](data-model.md): **no `@Attribute(.unique)`**; every attribute optional or defaulted (`dayStart: Date = .distantPast`, `updatedAt: Date = .now`, `sleepSource: SignalSource = .none`, …, `isMockData: Bool = false`); `sleepLevelValue: String?`; `cycleSymptomsJSON: String?` with a computed `cycleSymptoms: [String]` accessor. Turns T002 GREEN. (deps: T004, T005)
+- [X] T007 Register `DailySignals.self` in **both** `Schema([...])` arrays in `app-four/App/AppModelContainer.swift` (container ~L9–16 and previewContainer ~L63–70). (deps: T006)
+- [X] T008 [P] Create `SignalDayKey.dayStart(for:calendar:)` and the Sendable DTOs (`SleepDTO{hours,level:SleepLevel?}`, `ActivityDTO`, `HeartDTO`, `CycleDTO`, `DaySignalsDTO`) in `app-four/Services/HealthKit/HealthSignalsDTO.swift`. Turns T003 GREEN.
+- [ ] T009 [P] Add `SleepLevel: SignalLevel` conformance in `app-four/Models/SleepLevel+SignalLevel.swift` — `displayLabel`/`color`/`gradientPartner` so sleep renders via the shared 5-step bead grammar (A6/D5). No change to `SleepLevel` cases. **⛔ BLOCKED / DEFERRED (2026-06-20): conflicts with DESIGN.md — the sleep colour ramp is explicitly deferred (DESIGN.md:49,106; sleep = single `sleepIndigo #5566A6` + bed icon, the 5-step `SignalLevel` ramp is mood/energy/focus only). Needs a design decision before the US1 render phase: either (a) interpret A6 as the named 5-step `SleepLevel` scale rendered with the bed icon + indigo (per DESIGN.md, drop this task), or (b) the owner approves creating the deferred sleep ramp. Data layer is unaffected (sleep stored as `SleepLevel` + hours).**
+- [X] T010 RED: `SignalsStoreTests` in `app-fourTests/SignalsStoreTests.swift` — `upsert(dayStart:)` returns the same row on repeat (count stays 1; idempotent, FR-003); `fetch` returns nil for a missing day. Run; MUST FAIL. (deps: T006)
+- [X] T011 Implement `SignalsStore` (`@MainActor @Observable`, injected `ModelContext`, `fetch`/`upsert`/`fetchRange`/`save`; `upsert` normalizes via `SignalDayKey`, `fetchLimit = 1`) in `app-four/Store/SignalsStore.swift`. Turns T010 GREEN. (deps: T006, T008)
 
 **Checkpoint**: Foundational suites (`DailySignalsTests`, `SignalDayKeyTests`, `SignalsStoreTests`) all GREEN. Model + store ready; no `@Attribute(.unique)`; schema registered.
 
