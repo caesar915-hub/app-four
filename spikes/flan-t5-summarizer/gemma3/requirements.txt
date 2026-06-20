@@ -1,0 +1,12 @@
+# Edge-Gemma summarization arm — SEPARATE env from the LoRA track.
+# The LoRA .venv-lora pins transformers>=4.40,<4.46 (T5 Seq2SeqTrainer regression),
+# which predates Gemma 3/4. This arm needs transformers ~5.x.
+#
+# torch is NOT pinned here: on the T4 VM install the CUDA wheel first
+#   pip install torch --index-url https://download.pytorch.org/whl/cu118
+# (setup_vm_gemma.sh does this). bitsandbytes NF4 requires a CUDA build of torch.
+transformers>=5.0,<6.0
+bitsandbytes>=0.43        # int4 NF4 (CUDA only)
+accelerate>=0.30         # device_map="auto" weight placement
+sentencepiece>=0.2.0     # Gemma tokenizer
+huggingface-hub>=0.23.0  # snapshot_download + gated auth
