@@ -1,0 +1,41 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: gemma-chat-ollama
+    restart: unless-stopped
+    environment:
+      - OLLAMA_MAX_LOADED_MODELS=2   # keep both Gemma models resident on the T4
+      - OLLAMA_KEEP_ALIVE=-1         # never idle-unload between turns
+    volumes:
+      - ollama:/root/.ollama         # GGUF model blobs persist here
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    # Ollama API is NOT published to the host; only open-webui reaches it over the
+    # compose network. The single public surface is open-webui's port below.
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: gemma-chat-webui
+    restart: unless-stopped
+    depends_on:
+      - ollama
+    ports:
+      - "${WEBUI_PORT:-8080}:8080"   # gated by the GCloud firewall allowlist (see README)
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - WEBUI_AUTH=true              # login required; first account becomes admin, signup then closes
+      - WEBUI_NAME=Gemma Bake-off
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
+      - WEBUI_ADMIN_EMAIL=${WEBUI_ADMIN_EMAIL}
+      - WEBUI_ADMIN_PASSWORD=${WEBUI_ADMIN_PASSWORD}
+    volumes:
+      - open-webui:/app/backend/data # chat history, accounts, config persist here
+
+volumes:
+  ollama:
+  open-webui:
