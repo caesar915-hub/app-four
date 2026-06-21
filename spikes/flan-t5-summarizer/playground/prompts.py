@@ -297,6 +297,23 @@ PROMPTS = {
         "Journal entry:\n{transcript}\n\nBullet points:"
     ),
 
+    # ── addrec teacher prompt (mirrors generate_summaries.py exactly) ─────────
+    # This is the SAME prompt Claude used to generate addrec_500_summaries.jsonl.
+    # {signals} must be passed as a comma-joined string from the input metadata;
+    # use build_addrec() below instead of build() for this prompt.
+    "addrec-structured": (
+        "Generate a structured summary of the following r/ADHD Reddit post for LoRA fine-tuning data.\n\n"
+        "Output ONLY bullet points. No preamble, no explanation, no insight blocks, no prose. Just bullets.\n\n"
+        "Rules:\n"
+        "- Each bullet must start with exactly one of: \"- Mood:\", \"- Energy:\", \"- Focus:\", \"- Trigger:\", \"- Coping:\"\n"
+        "- Only include a dimension if it is explicitly described in the post. Omit it entirely if absent.\n"
+        "- Do not infer, embellish, or add anything not stated in the text.\n"
+        "- 3-6 bullets total.\n"
+        "- If the post contains no symptom content at all, output only: \"- No extractable symptom content.\"\n\n"
+        "Signals detected in this post: {signals}\n\n"
+        "Post:\n{transcript}\n\nBullets:"
+    ),
+
     # A single-sentence variant — useful to compare against bullets.
     "one_line": (
         "Summarize this journal entry in one short sentence using the person's "
@@ -421,3 +438,11 @@ def build(name: str, transcript: str) -> str:
     if name not in PROMPTS:
         raise KeyError(f"Unknown prompt '{name}'. Available: {', '.join(PROMPTS)}")
     return PROMPTS[name].format(transcript=transcript.strip())
+
+
+def build_addrec(transcript: str, signals: list) -> str:
+    """addrec-structured requires a signals list in addition to the transcript."""
+    return PROMPTS["addrec-structured"].format(
+        transcript=transcript.strip(),
+        signals=", ".join(signals) if signals else "none detected",
+    )

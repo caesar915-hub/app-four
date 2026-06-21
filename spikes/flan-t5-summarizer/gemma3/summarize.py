@@ -189,13 +189,35 @@ def write_aggregate(sink, rows_data, spec: GemmaSpec, prompt_name: str):
 def load_inputs(input_file: str, limit: int) -> list[dict]:
     path = Path(input_file)
     if not path.is_absolute() and not path.exists():
-        # convenience: resolve bare names against the playground dir
         alt = PLAYGROUND / input_file
         if alt.exists():
             path = alt
     with open(path) as f:
         cases = json.load(f)
     return cases[:limit] if limit else cases
+
+
+def load_signals(signals_file: str) -> dict:
+    """Load id->signals map.
+
+    Accepts two formats:
+    - JSONL  (addrec_*_summaries.jsonl): one {"id":..., "signals":[...]} per line
+    - JSON   (addrec-signals.json):      plain {id: [signals]} dict
+    """
+    path = Path(signals_file)
+    with open(path) as f:
+        raw = f.read()
+    first = raw.lstrip()[:1]
+    if first == "{":
+        return json.loads(raw)
+    out = {}
+    for line in raw.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        r = json.loads(line)
+        out[r["id"]] = r.get("signals", [])
+    return out
 
 
 def main():
@@ -205,6 +227,8 @@ def main():
     p.add_argument("--input-file", default=str(DEFAULT_INPUT),
                    help="JSON list of {id, transcript}; default inputs-test30.json")
     p.add_argument("--prompt", default="gemma-faithful", help="prompt template (see prompts.py)")
+    p.add_argument("--signals-file", default="", dest="signals_file",
+                   help="JSONL with id+signals fields (required for --prompt addrec-structured)")
     p.add_argument("--max-new-tokens", type=int, default=120)
     p.add_argument("--no-repeat-ngram", type=int, default=0, dest="no_repeat_ngram",
                    help="forbid repeating any n-gram (e.g. 3) — curbs decoder loops")
@@ -214,6 +238,12 @@ def main():
     p.add_argument("--device", default="auto", help="auto | cpu | cuda")
     p.add_argument("--save", action="store_true", help="write results/<key>-<prompt>-<stamp>.md")
     args = p.parse_args()
+
+    signals_map = {}
+    if args.prompt == "addrec-structured":
+        if not args.signals_file:
+            raise SystemExit("--prompt addrec-structured requires --signals-file <addrec_500_summaries.jsonl>")
+        signals_map = load_signals(args.signals_file)
 
     spec = REGISTRY[args.model]
     device = args.device
@@ -245,7 +275,10 @@ def main():
     for case in cases:
         cid = case.get("id", "?")
         src = case["transcript"]
-        prompt = prompt_mod.build(args.prompt, src)
+        if args.prompt == "addrec-structured":
+            prompt = prompt_mod.build_addrec(src, signals_map.get(cid, []))
+        else:
+            prompt = prompt_mod.build(args.prompt, src)
         raw, latency, n_in, n_out = generate_summary(kind, tok_or_proc, model, prompt, gen_kwargs)
         latencies.append(latency)
         proc, reason = eval_mod.post_process(src, raw)
