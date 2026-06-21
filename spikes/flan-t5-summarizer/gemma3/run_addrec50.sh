@@ -14,6 +14,10 @@
 #   g3-1b-addrec-structured-<stamp>.md
 #   g4-e4b-addrec-structured-<stamp>.md
 set -euo pipefail
+# torch 2.12+ on Python 3.11.0rc1 (the VM's Python) has a dynamo regression.
+# Disabling dynamo at the env level avoids the import error with no effect on
+# inference quality — we're doing greedy decoding, dynamo is never invoked.
+export TORCHDYNAMO_DISABLE=1
 
 SPIKE="$HOME/app-four-spikes/spikes/flan-t5-summarizer"
 VENV="$SPIKE/.venv-gemma"
