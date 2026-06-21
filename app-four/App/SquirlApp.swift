@@ -26,11 +26,11 @@ struct SquirlApp: App {
             .environment(AppDependencies.services)
             .environment(\.diagnosticsStore, AppDependencies.diagnosticsStore)
             .overlay(alignment: .bottomTrailing) {
-                #if DEBUG || TESTFLIGHT
-                FeedbackButton()
-                    .padding(.trailing, Spacing.l)
-                    .padding(.bottom, 120) // clears tab bar (49) + home indicator (~34) + extra breathing room
-                #endif
+                if AppEnvironment.showsBetaTools {
+                    FeedbackButton()
+                        .padding(.trailing, Spacing.l)
+                        .padding(.bottom, 120) // clears tab bar (49) + home indicator (~34) + extra breathing room
+                }
             }
             .onOpenURL { url in
                 guard url.scheme == "whispernotes", url.host == "checkin" else { return }

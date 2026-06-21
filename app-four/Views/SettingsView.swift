@@ -25,6 +25,7 @@ struct SettingsView: View {
                     medicationBarSection
                     accessibilitySection
                     dangerSection
+                    aboutSection
                     versionSection
                 }
                 .listStyle(.insetGrouped)
@@ -131,6 +132,14 @@ struct SettingsView: View {
         return "\(name) v\(version)"
     }
 
+    private var aboutSection: some View {
+        Section {
+            Link(destination: URL(string: "https://squirl.co/privacy")!) {
+                Label("Privacy Policy", systemImage: "hand.raised")
+            }
+        }
+    }
+
     private var versionSection: some View {
         Section {
             HStack {
@@ -138,9 +147,9 @@ struct SettingsView: View {
                 Text(versionLabel)
                     .font(Typography.caption)
                     .foregroundStyle(.secondary)
-                    #if DEBUG || TESTFLIGHT
-                    .onTapGesture(count: 5) { showingDebug = true }
-                    #endif
+                    .onTapGesture(count: 5) {
+                        if AppEnvironment.showsBetaTools { showingDebug = true }
+                    }
                 Spacer()
             }
         }

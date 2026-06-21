@@ -1,9 +1,7 @@
 import SwiftUI
 
-#if DEBUG || TESTFLIGHT
-
-/// A small floating button present on all screens when compiled for Debug
-/// or TestFlight builds. Tapping it opens the issue report sheet.
+/// A small floating button shown on all screens in Debug and TestFlight builds
+/// (see `AppEnvironment.showsBetaTools`). Tapping it opens the issue report sheet.
 ///
 /// The button hides itself during screenshot capture so it never appears
 /// in user-submitted screenshots.
@@ -28,5 +26,3 @@ struct FeedbackButton: View {
         }
     }
 }
-
-#endif
