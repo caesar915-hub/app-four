@@ -51,3 +51,18 @@ docs/superpowers/plans/2026-06-16-focus-glyph-swap-family.html
 docs/superpowers/plans/2026-06-16-glyph-family-directions.html
 docs/superpowers/plans/2026-06-16-glyph-family-proposals.html
 docs/superpowers/plans/2026-06-16-seedform-hardened.html
+
+# Python virtualenvs, bytecode & test caches (spikes/)
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Obsidian vault config (repo doubles as an Obsidian vault)
+.obsidian/
+
+# AI-tooling output — generated, not hand-authored repo source
+.impeccable/
+impeccable-design/
+/PRODUCT.md
+testflight/
