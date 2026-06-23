@@ -44,7 +44,6 @@ struct SquirlApp: App {
 private struct RootContainerView: View {
     @Binding var selectedTab: Tab
     @Binding var shouldAutoStartRecording: Bool
-    @Environment(AppServices.self) private var services
     @Query private var settingsQuery: [AppSettings]
     @State private var showOnboarding: Bool = false
 
@@ -58,7 +57,7 @@ private struct RootContainerView: View {
             shouldAutoStartRecording: $shouldAutoStartRecording
         )
         .fullScreenCover(isPresented: $showOnboarding) {
-            OnboardingView(services: services)
+            WelcomeView(onComplete: { showOnboarding = false })
         }
         .task {
             #if DEBUG
