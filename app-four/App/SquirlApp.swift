@@ -44,8 +44,10 @@ struct SquirlApp: App {
 private struct RootContainerView: View {
     @Binding var selectedTab: Tab
     @Binding var shouldAutoStartRecording: Bool
+    @Environment(AppServices.self) private var services
     @Query private var settingsQuery: [AppSettings]
     @State private var showOnboarding: Bool = false
+    @State private var downloadKicked = false
 
     private var hasCompletedOnboarding: Bool {
         settingsQuery.first?.hasCompletedOnboarding ?? false
@@ -65,8 +67,52 @@ private struct RootContainerView: View {
             #endif
             showOnboarding = !hasCompletedOnboarding
         }
+        // Background model download — kept off the first-run path (FR-007): it
+        // never gates UI; the welcome dismisses immediately while the model
+        // arrives on its own schedule.
+        .task { await startBackgroundModelDownloadIfNeeded() }
         .onChange(of: hasCompletedOnboarding) { _, completed in
             if completed { showOnboarding = false }
         }
+    }
+
+    /// Fetch the model in the background, honoring `downloadOverCellular`.
+    /// If the model is already installed, do nothing (FR-008). When the active
+    /// interface forbids the download (cellular + preference off, or no usable
+    /// path), wait for a permitted interface and resume automatically (FR-009).
+    private func startBackgroundModelDownloadIfNeeded() async {
+        guard !downloadKicked else { return }
+        downloadKicked = true
+
+        let aiModelService = services.aiModelService
+        let connectivity = services.connectivity
+        guard aiModelService.localPath(for: .whisper) == nil else { return }
+
+        if !shouldStartDownload(interface: await connectivity.currentInterface) {
+            for await interface in connectivity.interfaceChanges where shouldStartDownload(interface: interface) {
+                break
+            }
+        }
+
+        // The model may have landed (or been installed elsewhere) while we waited.
+        guard aiModelService.localPath(for: .whisper) == nil else { return }
+
+        do {
+            let progress = try await aiModelService.download(.whisper)
+            for await _ in progress {}
+        } catch {
+            // A background download failure must not surface as a first-run error
+            // (FR-010); the model stays retryable from its Settings home.
+            AppLogger.log("Background model download failed: \(error)")
+        }
+    }
+
+    /// Re-reads the live `downloadOverCellular` preference each call so toggling
+    /// it on while deferred on cellular also unblocks the download.
+    private func shouldStartDownload(interface: NetworkInterface) -> Bool {
+        NetworkConnectivity.shouldStartDownload(
+            overCellular: settingsQuery.first?.downloadOverCellular ?? false,
+            interface: interface
+        )
     }
 }
