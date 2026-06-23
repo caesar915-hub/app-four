@@ -594,16 +594,36 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
     /// Compiled once: require a sleep-duration phrase, not just any "N hours" in a
     /// sentence that mentions sleep ("couldn't sleep, worked 12 hours" must NOT
     /// yield 12h). A duration verb/phrase must precede the number.
+    private static let numberWords: [String: Double] = [
+        "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+        "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12
+    ]
+    // This runs ONLY on a sentence that already mentions sleep (caller-gated), so a
+    // trigger verb is not required — a bare "<n> hours" / "sleep <n>" is safe here and
+    // "three-hour lab session" never reaches this (it lives in a non-sleep sentence).
+    // Accepts digits OR spelled-out numbers, optional "and a half", hrs/hr/h units.
     private static let sleepHoursRegex = try? NSRegularExpression(
-        pattern: #"(?i)\b(?:slept|in bed(?: for)?|got|had|asleep for)\s+(?:about |around |roughly |maybe |only |a good )?(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)\b"#
+        pattern: #"(?i)\b(\d{1,2}(?:\.\d)?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)(\s+and\s+a\s+half)?\s*(?:hours?|hrs?|hr|h)\b"#
+    )
+    // Fallback for the terse "sleep 7" / "slept 7" phrasing (no unit).
+    private static let sleepBareRegex = try? NSRegularExpression(
+        pattern: #"(?i)\b(?:sleep|slept)\s+(\d{1,2}(?:\.\d)?)\b"#
     )
 
     private func extractSleepHours(from text: String) -> Double? {
-        guard let regex = Self.sleepHoursRegex else { return nil }
-        let range = NSRange(text.startIndex..., in: text)
-        if let match = regex.firstMatch(in: text, options: [], range: range),
-           let hoursRange = Range(match.range(at: 1), in: text) {
-            return Double(text[hoursRange])
+        let ns = text as NSString
+        let full = NSRange(location: 0, length: ns.length)
+        if let regex = Self.sleepHoursRegex,
+           let m = regex.firstMatch(in: text, options: [], range: full) {
+            let token = ns.substring(with: m.range(at: 1)).lowercased()
+            if let base = Double(token) ?? Self.numberWords[token] {
+                let half = m.range(at: 2).location != NSNotFound
+                return half ? base + 0.5 : base
+            }
+        }
+        if let regex = Self.sleepBareRegex,
+           let m = regex.firstMatch(in: text, options: [], range: full) {
+            return Double(ns.substring(with: m.range(at: 1)))
         }
         return nil
     }
