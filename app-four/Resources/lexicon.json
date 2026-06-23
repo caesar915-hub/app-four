@@ -475,7 +475,14 @@
     "ten out of ten energy",
     "going a hundred miles an hour",
     "so much juice right now",
-    "peaking"
+    "peaking",
+    "full of energy",
+    "loads of energy",
+    "lots of energy",
+    "so much energy",
+    "tons of energy",
+    "plenty of energy",
+    "energetic"
   ],
   "energyAlert": [
     "alert",
@@ -484,7 +491,9 @@
     "clear headed",
     "refreshed",
     "perked up",
-    "switched on"
+    "switched on",
+    "good energy",
+    "decent energy"
   ],
   "energySteady": [
     "steady",
@@ -514,7 +523,16 @@
     "just so weary",
     "can barely lift my arms",
     "totally zonked",
-    "flat as a pancake"
+    "flat as a pancake",
+    "exhausted",
+    "no energy",
+    "zero energy",
+    "worn out",
+    "knackered",
+    "shattered",
+    "dead tired",
+    "bone tired",
+    "so tired"
   ],
   "energySluggish": [
     "sluggish",
@@ -553,7 +571,11 @@
     "engine won't turn over",
     "low battery",
     "need a reboot",
-    "feel like i waded through honey all day"
+    "feel like i waded through honey all day",
+    "can't get going",
+    "can't get moving",
+    "no get up and go",
+    "no motivation to move"
   ],
   "focusLockedIn": [
     "locked in",
@@ -1110,16 +1132,149 @@
     }
   ],
   "activityKeywords": [
-    {"category": "Resting",     "keywords": ["resting", "relaxing", "chilling", "laying down", "lying down", "rest", "taking it easy"]},
-    {"category": "Hobbies",     "keywords": ["hobby", "reading", "gaming", "drawing", "playing", "painting", "crafting", "writing"]},
-    {"category": "Hanging Out", "keywords": ["hanging out", "with friends", "socializing", "party", "gathering", "meeting up"]},
-    {"category": "Fitness",     "keywords": ["gym", "running", "workout", "exercise", "walking", "jogging", "cycling", "swimming", "yoga"]},
-    {"category": "Eating",      "keywords": ["eating", "breakfast", "lunch", "dinner", "snack", "cooking", "meal", "food"]},
-    {"category": "Driving",     "keywords": ["driving", "commuting", "in the car", "on the bus", "on the train", "traveling"]},
-    {"category": "Work",        "keywords": ["work", "meeting", "meetings", "deadline", "email", "emails", "office", "standup", "presentation", "shift"]},
-    {"category": "Chores",      "keywords": ["laundry", "dishes", "cleaning", "tidying", "tidied", "vacuum", "vacuuming", "groceries", "grocery run"]},
-    {"category": "Errands",     "keywords": ["errand", "errands", "post office", "bank", "pharmacy", "dry cleaner", "returns"]},
-    {"category": "Outdoors",    "keywords": ["outside", "park", "nature", "fresh air", "hike", "hiking", "garden", "gardening", "walk in the park", "long walk"]},
-    {"category": "Screen Time", "keywords": ["scrolling", "doomscrolling", "netflix", "youtube", "tiktok", "instagram", "binge watched", "binged", "screen time"]}
+    {
+      "category": "Resting",
+      "keywords": [
+        "resting",
+        "relaxing",
+        "chilling",
+        "laying down",
+        "lying down",
+        "rest",
+        "taking it easy"
+      ]
+    },
+    {
+      "category": "Hobbies",
+      "keywords": [
+        "hobby",
+        "reading",
+        "gaming",
+        "drawing",
+        "playing",
+        "painting",
+        "crafting",
+        "writing"
+      ]
+    },
+    {
+      "category": "Hanging Out",
+      "keywords": [
+        "hanging out",
+        "with friends",
+        "socializing",
+        "party",
+        "gathering",
+        "meeting up"
+      ]
+    },
+    {
+      "category": "Fitness",
+      "keywords": [
+        "gym",
+        "running",
+        "workout",
+        "exercise",
+        "walking",
+        "jogging",
+        "cycling",
+        "swimming",
+        "yoga"
+      ]
+    },
+    {
+      "category": "Eating",
+      "keywords": [
+        "eating",
+        "breakfast",
+        "lunch",
+        "dinner",
+        "snack",
+        "cooking",
+        "meal",
+        "food"
+      ]
+    },
+    {
+      "category": "Driving",
+      "keywords": [
+        "driving",
+        "commuting",
+        "in the car",
+        "on the bus",
+        "on the train",
+        "traveling"
+      ]
+    },
+    {
+      "category": "Work",
+      "keywords": [
+        "work",
+        "meeting",
+        "meetings",
+        "deadline",
+        "email",
+        "emails",
+        "office",
+        "standup",
+        "presentation",
+        "shift"
+      ]
+    },
+    {
+      "category": "Chores",
+      "keywords": [
+        "laundry",
+        "dishes",
+        "cleaning",
+        "tidying",
+        "tidied",
+        "vacuum",
+        "vacuuming",
+        "groceries",
+        "grocery run"
+      ]
+    },
+    {
+      "category": "Errands",
+      "keywords": [
+        "errand",
+        "errands",
+        "post office",
+        "bank",
+        "pharmacy",
+        "dry cleaner",
+        "returns"
+      ]
+    },
+    {
+      "category": "Outdoors",
+      "keywords": [
+        "outside",
+        "park",
+        "nature",
+        "fresh air",
+        "hike",
+        "hiking",
+        "garden",
+        "gardening",
+        "walk in the park",
+        "long walk"
+      ]
+    },
+    {
+      "category": "Screen Time",
+      "keywords": [
+        "scrolling",
+        "doomscrolling",
+        "netflix",
+        "youtube",
+        "tiktok",
+        "instagram",
+        "binge watched",
+        "binged",
+        "screen time"
+      ]
+    }
   ]
 }
