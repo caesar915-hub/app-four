@@ -15,12 +15,21 @@
 - [x] 010 eval-infra: Track B ordinal QWK/MAE/1-off + buckets + slices (`cfd9b97`), Track A detection JSONL+dedup over 1082 (`c705d07`).
 - [x] 011 batch 1 (`c204bc5`): temporal weighting energy/focus (#1), middle-tier negation flip (#2), sleep worded-numbers (#24, sleepHours R 0.29→0.57). + coupled lexicon fix "couldn't focus"→distracted. No floor regression.
 - [x] 012 energy coverage (`6c21509`): added exhausted/no energy/full of energy/etc. Energy detection recall 0.35→0.39 (addrec-1037); 40-case energy R 0.25→0.50, P 0.67→0.80.
-- [~] **IN FLIGHT: LLM-judge workflow** `wc3mesdcy` (run `wf_d71f906a-ad7`). 20 agents, each reads `spikes/extractor-eval/out/judge_batches/batch_NN.json` (~24 records of the 468), returns per-record verdicts {mood,energy,focus,meds ∈ correct/partial/missed/false_positive/na, overall, note} via schema. Script: `…/workflows/scripts/judge-nlp-extractions-wf_d71f906a-ad7.js`.
+- [x] **LLM-judge DONE** (`wc3mesdcy`): 467 verdicts over 468 posts. Results → `NLP_EVALUATION_RESULTS.md`, raw verdicts → `results/judge_verdicts.json`, stats → `results/judge_stats.md`.
 
-## NEXT (when judge workflow completes)
-1. Aggregate the returned `verdicts` (count=468 expected): per-signal % correct/partial/missed/fp, common notes, good/bad examples.
-2. Write `spikes/extractor-eval/NLP_EVALUATION_RESULTS.md`: baseline-vs-improved quantitative table (below) + the LLM-judge qualitative aggregate + per-record verdict table.
-3. Final commit + update this STATUS to DONE.
+## RESULT — the headline finding
+On real ADHD forum text the extractor's dominant error is **FALSE POSITIVES**, not misses:
+mood fp=123 (vs missed 55), focus fp=113 (vs 19) — asserting affect that belongs to *someone else*,
+is quoted/hypothetical, or vents about externals. Meds stay strong (0.82). **BUT** this is Reddit
+register (advice/3rd-person), not the app's first-person check-ins — a worst-case stress test. On the
+40 on-register cases the extractor is decent (meds 1.0, feelings 0.94, mood P0.75, energy P0.80).
+**Takeaway: the #1 next lever is the deferred experiencer/quote/clause gating (011 #3/#23 + experiencer),
+not more lexicon coverage.** Full writeup + tables: `NLP_EVALUATION_RESULTS.md`.
+
+## RUN COMPLETE — overnight goals met
+Specs (3) + eval-infra (2 tracks) + 011 batch 1 + 012 energy coverage shipped & measured; 500-record
+extraction + LLM-judge + evaluation document delivered. All committed on `spike-nlp-performance`.
+No merge to main (awaiting owner review).
 
 ## Quantitative baseline → improved (for the doc)
 | metric | baseline | improved |

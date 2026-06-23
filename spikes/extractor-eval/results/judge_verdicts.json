@@ -1,0 +1,4205 @@
+[
+ {
+  "id": "d90a0c80-0eaa-48ba-942e-62eae1a0c66f",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "mood=good is unsupported (post is a dry generic-comparison); focus=foggy misreads 'brain fog' that Sandoz *cleared*, not a current state."
+ },
+ {
+  "id": "39b916fd-21b9-49a4-9da7-14ecc0c73223",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=sharp nails 'focus has gone through the roof'; mood reads more excited/elated than plain 'good'."
+ },
+ {
+  "id": "ab581be1-edfb-40b9-a997-392c9e21a81d",
+  "mood": "correct",
+  "energy": "false_positive",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "energy=steady invented — text describes hyperfocus, says nothing about energy level."
+ },
+ {
+  "id": "863018b6-196b-44a3-93d2-9627cda4324b",
+  "mood": "missed",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "Clear low energy ('tiredness') and low/depressive mood ('homeless wouldn't be so bad') both returned null."
+ },
+ {
+  "id": "4aa5b28f-214e-40ff-801c-11f18ffbe101",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Inverted: an overwhelmed, can't-focus, procrastinating post scored mood=great / focus=present / energy=steady."
+ },
+ {
+  "id": "0874484b-a872-43a7-946c-001679aac7ef",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=okay weak — writer is reassuring someone else; the guilt is the addressee's, not a stated mood of the author."
+ },
+ {
+  "id": "a914ed9a-bb0d-4813-9285-f9d222341fd0",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "'I am broken' + guilt is an unmistakable low mood, returned null."
+ },
+ {
+  "id": "13992874-93a0-4463-9f94-213a42b43466",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp inverted — writer 'really needs to focus' and is asking whether to try a pill; no sharp focus present."
+ },
+ {
+  "id": "7e3daf76-8035-4236-8996-a986cc9e8b4b",
+  "mood": "partial",
+  "energy": "partial",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp wrong — the post describes focus *deficits* ('lagging in focus, executive functioning'), not sharpness."
+ },
+ {
+  "id": "8ea8440b-addf-44d0-be11-3532be524982",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "Pure coffee+Adderall advice; mood=okay and focus=present both fabricated. Meds also duplicated (Adderall x2)."
+ },
+ {
+  "id": "886f7d6d-efce-4e04-9fee-525c502aab3d",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=distracted matches 'become distractible and unproductive'. Clean."
+ },
+ {
+  "id": "1fd60f2e-2b49-48a2-8659-52f2087b3f70",
+  "mood": "partial",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "energy=tired is misattributed to the *kids* ('they were all tired'); author's own state is guilt/distress, so mood=okay also understates."
+ },
+ {
+  "id": "bae58e6c-5fcc-4ac4-866f-44747835b4a5",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "mood=low fits the depressed comedown; but 'not much desire to do anything' is low energy and was missed."
+ },
+ {
+  "id": "75c10258-5d3b-4b69-b6d0-b439b055a910",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood=great matches warm nostalgia ('all time favourites'). Clean."
+ },
+ {
+  "id": "87bdc5e4-a623-4bc1-9233-902579b2654e",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp wrong — a study tip about *forcing* semi-focus while reading, not a sharp-focus state."
+ },
+ {
+  "id": "40284567-f3d0-40b8-b370-ffc99a6382b4",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "A teacher-bashing rant; focus=present comes from quoting the addressee's worry, and mood=okay is unsupported."
+ },
+ {
+  "id": "d0f0f2bc-26fe-437f-9de2-fd26e70d3b59",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "'endlessly frustrating' is a genuine frustrated mood that was returned null; meds correct (Adderall, dup)."
+ },
+ {
+  "id": "652b7c6c-7b9c-4aae-93d2-39e33a78bbf5",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood=okay is a fair read of a calm reflective post ending 'it set me free'. Clean."
+ },
+ {
+  "id": "81fceb3a-f628-4805-b807-230a1897bbfe",
+  "mood": "false_positive",
+  "energy": "missed",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "Inverted: social anxiety + anhedonia ('sit around and do nothing', won't leave house) scored mood=good; that line is missed low energy, not focus=present."
+ },
+ {
+  "id": "3c2d9ed3-43b7-4388-93a1-5b71aeafa130",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Negative valence is right but the affect is anger/'blinded with rage' (irritable), which mood=low only loosely captures."
+ },
+ {
+  "id": "5c6151f1-0cd5-454e-8101-723ec9779fd1",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "good",
+  "note": "mood=great matches 'cheerful, playful, joyous, happy'; meds=Guanfacine correctly named. Clean."
+ },
+ {
+  "id": "44fa233d-9254-4f69-b701-56e1d150460c",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=great badly inverted — 'Retail fucking blows' is a frustrated/venting post, not a positive one."
+ },
+ {
+  "id": "8a7cb6dc-1b06-41c6-b928-915cdca82b7c",
+  "mood": "na",
+  "energy": "missed",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp wrong — text is about *managing* distraction/fidgeting; the restlessness it describes (an energy hint) was missed."
+ },
+ {
+  "id": "bc424e02-669e-4a80-91cf-8c965d1ebc96",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=lockedIn matches 'hyperfocus will kick in'; mood=good is defensible but thin against the self-deprecating opener."
+ },
+ {
+  "id": "52e762df-86e2-488d-99a2-367b9fd55cf7",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "Text is descriptive/neutral about eating troubles ('a bit' helped by Vyvanse); no low mood ('low') nor tiredness — both are present-tense FPs from the word 'tired of chewing' and 'bored/frustrated' quotes the brain says about food."
+ },
+ {
+  "id": "e02dade0-bbce-4b14-996a-7b36871212b7",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "missed",
+  "overall": "ok",
+  "note": "Mood 'good' is right (found path to happiness, anxiety shut off); but meds=[] misses the clearly central 'stimulant therapy' the whole post is about."
+ },
+ {
+  "id": "fc09745b-3d7b-4a51-9cc7-2be2b529f167",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Gold marks focus; text explicitly discusses executive dysfunction/EF problems (focus signal) yet focus=null — missed; mood 'good' is defensible from 'positive change/improvement' but the post is mixed/analytical, so weak."
+ },
+ {
+  "id": "3a93f18f-7a55-4fa1-b822-e66a6f8b5cde",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "focus='sharp' is unsupported — text warns of losing 'discipline/motivation' and 'extreme mood swings' off Adderall, the opposite of sharp focus; mood swings/'shouted them down' signal is missed (gold: mood, energy)."
+ },
+ {
+  "id": "64e8bea2-12ab-4b09-9fea-bd6655496fe5",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Post contrasts last-week hyperfocus vs today 'struggling to string sentences, zoning out :(' — single focus='distracted' captures only today, ignoring the hyperfocus; sad ':(' low mood missed (gold: focus only, but mood is clearly present)."
+ },
+ {
+  "id": "1cf05e8d-da0c-4a6d-9f60-5fad8c63c439",
+  "mood": "na",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus='sharp' — author literally says 'keeps me sharp,' but the dominant theme is uncontrollable distraction ('every distraction fighting for attention'); sharp is the self-claimed upside, so partial at best."
+ },
+ {
+  "id": "a18ae7f7-b27b-4111-936b-5521f3f829ae",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "missed",
+  "overall": "ok",
+  "note": "Mood 'good' fits ('anxiety a LOT better', 'miraculous difference'); but Lexapro is named and meds=[] misses it."
+ },
+ {
+  "id": "57f79204-1641-4261-b6a2-94bb5bed9352",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus='sharp' is well-supported — whole post is about music redirecting/controlling focus; mood/energy correctly null. Clean."
+ },
+ {
+  "id": "5ec61338-b958-497d-8037-1184946b6803",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "missed",
+  "overall": "poor",
+  "note": "mood='good' unsupported — post is ambivalent/negative about meds making him 'not me'/withdrawn; gold flags focus ('concentrate more') and energy ('productive'), both missed; meds discussed but []."
+ },
+ {
+  "id": "a6db7582-12f1-4406-929c-9cbf7d66b8a2",
+  "mood": "correct",
+  "energy": "partial",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "good",
+  "note": "Strong: 'improvement in mood, focus, and motivation', 'calmer, more capable' → mood good, focus present, meds all three correct; energy/motivation present in text but energy=null (gold flags energy) — minor miss."
+ },
+ {
+  "id": "8a368056-491a-4d4c-aa98-542b790dfbad",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood='great' is wrong — author says still a 'struggle', 'still not good enough', never feels satisfied; the 'great job' is a hypothetical you-still-won't-feel. Gold flags mood+focus; focus (40hr work, never enough) arguably missed."
+ },
+ {
+  "id": "389a0a04-bf3b-4986-9723-ad1b8e73a7c3",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Post is actually positive about the trainer solution ('so enjoyable and focused'); mood='low' overweights past 'overwhelmed', focus='sharp' overweights present-tense ('focused' with trainer) — both directionally off for the post's upbeat resolution."
+ },
+ {
+  "id": "4c5b9aa4-ad5b-4384-bb66-1d0f1727e103",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Clear low mood ('endless loop of self destruction', 'so scared') but mood=null; gold flags focus ('couldn't function without it') also null — extractor returned no signals despite strong emotional content (caught feelings scared/misunderstood only)."
+ },
+ {
+  "id": "0074526b-26fd-41d4-bdeb-a32f7b038351",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Calm parenting/routine essay about her kids — mood='low', energy='alert', focus='sharp' all asserted with no first-person state support; this is advice/description, not a self-report of mood/energy/focus."
+ },
+ {
+  "id": "30343335-ad88-426e-87fe-97a11990ef2b",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood='great' unsupported — jokey/hyperbolic coping-tips post ('disowned & sold to animal welfare'); humor isn't a 'great' mood self-report. Gold flags mood but value is fabricated tone-reading."
+ },
+ {
+  "id": "102fb070-f94f-43ca-9e3f-472de6f19a38",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Reflective essay on oversharing in relationships; no clear mood/energy/focus state — all null is correct (feeling 'connected' captured). Gold hint mood is weak; null defensible. Clean."
+ },
+ {
+  "id": "d47a9143-beb6-4811-8cc1-759cb46594b9",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Empathetic, somewhat down post ('hard to be stuck with the body one has', 'misery loves company'); mood=null misses a mild-low lean (gold flags mood). 'loved' feeling tag is a stretch but mood signal under-called."
+ },
+ {
+  "id": "61d7282a-13dd-49d2-9e74-f87798a1fbb2",
+  "mood": "na",
+  "energy": "partial",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus='sharp'... actually text says focus 'fizzles very quickly' with no consequences — so 'sharp' is questionable; better read as distracted. Gold flags energy+focus; motivation/energy theme present but energy=null."
+ },
+ {
+  "id": "ef1d2390-24a1-456e-8c06-d51aae096944",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Reassuring 2nd-person advice ('you're doing the best you can'); mood='okay' is a reasonable read of the calm supportive tone but it's about the addressee, not author; focus='present' has no support — FP."
+ },
+ {
+  "id": "3b4ad6fb-1c79-4959-a6c1-2495cbe63241",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "correct",
+  "overall": "good",
+  "note": "mood='low' fits ('really angry I was not diagnosed', lost chances); 'adderal' captured; brain 'just calmed down' on meds is a focus/calm signal not encoded (gold flags focus) — minor under-call."
+ },
+ {
+  "id": "6958c672-7711-4ccd-905d-a338bde41bc6",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Strong low-mood narrative ('I wanted to die', burst into tears, frustrated) → mood='low' correct, 'frustrated' captured. Gold flags focus too; forgetting/overwhelm is arguably focus but null is tolerable. Solid."
+ },
+ {
+  "id": "8a194ae8-e4bc-462f-b6ad-077320f33c9f",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus='distracted' from 'lazy/distracted' descriptor — but that's how others perceive ADHDers generally, not the author's current state; gold flags mood ('hard getting NT person to get you', mild frustration) which is null. Adderall correct."
+ },
+ {
+  "id": "80671985-68b1-463d-97f6-59039e09eb9d",
+  "mood": "na",
+  "energy": "correct",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "Nuanced and right: 'exhausted and can't focus' → energy='tired'; but 'wide awake as soon as I hit the road' hyperfocus → focus='lockedIn' — captures the exhausted-yet-hyperfocused split well. Clean."
+ },
+ {
+  "id": "17af022e-e30c-482a-9915-d780be2a459c",
+  "mood": "missed",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Vivid distress ('suffocating', spiraling down, can't sit still) — mood is clearly low yet mood=null and no feelings captured at all; restless 'NEED to get up/tap feet' is a hyperarousal energy signal also missed (gold flags mood)."
+ },
+ {
+  "id": "413d65ca-5c8f-4b1d-a583-ff92cb3c60e9",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp is backwards — text describes fragile/breakable concentration (distractibility), not sharp focus."
+ },
+ {
+  "id": "e5c96d9f-ba68-43d9-80a0-a1156f8e687c",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp from a hypothetical about the mom 'not losing focus' — not the writer's own state."
+ },
+ {
+  "id": "c25dde4d-7e04-4bee-a388-00e6c004198a",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "mood=low and meds correct, but 'incredibly productive/run a marathon' energy missed and focus=present unsupported."
+ },
+ {
+  "id": "20b14d29-3194-466c-9c71-aa7ce6f5a637",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "energy=charged unsupported — 'hypoglycemic crashes' and mom 'drove me crazy' are not the writer's high energy."
+ },
+ {
+  "id": "cdf9cf19-28fa-43f0-ba17-a1818d73709c",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp from abstract burnout/obsession advice; no current focus state asserted."
+ },
+ {
+  "id": "9d1a7155-787d-48b5-a19b-c21b0451581c",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=great is wrong — writer is consoling a struggling student ('I feel for you'), not in a great mood."
+ },
+ {
+  "id": "4f6293c3-b53a-4f6f-8959-6462738b3b07",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Tone is pessimistic ('wish they didn't have it'); mood=okay wrong-direction and focus=sharp from negated hyperfocus."
+ },
+ {
+  "id": "9ec339c5-64a2-413a-bb8e-408c97c8854a",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "good",
+  "note": "clean — mood=low (frustrated/life hard) and Adderall+Ritalin correctly caught; no false energy/focus."
+ },
+ {
+  "id": "8ff19144-463b-49f2-849b-3156613d50b8",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Self-inventory of traits; mood=low and focus=sharp both cherry-picked from a mixed list (also forgetful/distracted/can't-focus)."
+ },
+ {
+  "id": "91cea816-d9b1-4bd5-a725-5a8f37b1a2e6",
+  "mood": "na",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=distracted is the right concept but drawn from a hypothetical 'if someone', not the writer's own state."
+ },
+ {
+  "id": "f59e171d-628d-49fd-9082-ef2f2c779318",
+  "mood": "missed",
+  "energy": "partial",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus=distracted and Adderall correct; energy=steady is a stretch and active depression ('taken over') left as no-mood."
+ },
+ {
+  "id": "1e683742-45bb-4410-b366-c51e292822de",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=okay on a purely informational post about euphoria/therapeutic doses; no personal mood expressed."
+ },
+ {
+  "id": "05263c75-8511-4d53-907d-f6e5e7c7e030",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "mood=great and Vyvanse correct, but 'ride the wave / really productive day / awesome feeling' energy missed."
+ },
+ {
+  "id": "97087091-7970-42ac-8016-f222c72611f7",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Strong low mood missed ('melancholic all the time', crying, never good enough); 'grounded' misread as a feeling when it means punished."
+ },
+ {
+  "id": "87547849-cde7-43c1-8366-38ebffa87573",
+  "mood": "na",
+  "energy": "missed",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp ('keeps me focused') correct, but clear energy gain ('gives me energy, no crashes') missed."
+ },
+ {
+  "id": "887b1637-14cb-41dc-9c58-250f74e48b94",
+  "mood": "na",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=lockedIn from 'hyperfocus' as a general parenting strength, not a current locked-in state."
+ },
+ {
+  "id": "139f0e91-30c3-49b7-a8b2-35c137cbb1f6",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good on an educational post about tolerance/medication holidays; no personal mood stated."
+ },
+ {
+  "id": "778969f4-86ea-4f6a-93c2-5f2c9cf20428",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=good (relief, 'feels so much better') correct; focus=present unsupported — text is about dose onset, not focus."
+ },
+ {
+  "id": "61a1ed2d-fa26-4b6b-9ee6-9e58851fff6e",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood=low captures the dominant depressed/crying tone of an emotionally labile post; no spurious signals."
+ },
+ {
+  "id": "f01ee212-9715-4f32-ac84-b760cc766804",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — mood=low ('a WRECK', emotional) and focus=distracted ('couldn't focus for shit') both right."
+ },
+ {
+  "id": "35be72c9-6fb6-4f39-b139-5e42716906a3",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "mood=great wrong — combative pharmacology info-dump, no positive mood; amphetamine/dex correctly caught."
+ },
+ {
+  "id": "b8a0b501-af37-4b03-a4a2-6d4e84d74cea",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood=good ('just happy I'm finally getting better') and focus=present ('organize my thoughts, engaged') both supported."
+ },
+ {
+  "id": "1818f144-33ce-4d2e-a492-e30ddd80db82",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — pure advice to help a brother; extractor correctly returned no mood/energy/focus/meds."
+ },
+ {
+  "id": "87182213-869f-4997-a994-47753d14f2ca",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "good",
+  "note": "focus=present ('Adderall keeps me focused') and Adderall both correct; reasonable to leave energy null."
+ },
+ {
+  "id": "c95a08e1-6538-48a8-9810-712492753fea",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "Retrospective advice; focus=distracted fairly tracks 'distracting yourself from coursework'."
+ },
+ {
+  "id": "aa696ee1-cbe3-4460-9211-ad4a11d5e1bb",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "'Completely freaked out' negative mood missed; Strattera captured (but duplicated)."
+ },
+ {
+  "id": "6eda2655-bed4-483a-bf00-e8b62fe97016",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Pure citation dump; focus=distracted triggered by 'the-distracted-couple' in a URL."
+ },
+ {
+  "id": "617af4b5-bb79-4a05-bfbf-e2fd21bddd55",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Meditation how-to: focus=distracted and mood=good both unsupported (text is about gaining focus)."
+ },
+ {
+  "id": "ee247063-49bc-4112-81b2-075efc419e72",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Subreddit-policy meta-comment; focus=sharp keyed off 'focus of the subreddit', mood=good unfounded."
+ },
+ {
+  "id": "0205dfcd-4d63-479d-a131-bfdd0d643317",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "mood=great unsupported (advice + hypothetical 'if you want to be anxious'); Adderall + focus correct."
+ },
+ {
+  "id": "1a277060-9749-432f-9176-b22fc78138f6",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Clearly negative ('so offended','feels shitty') mood missed; focus=distracted is correct."
+ },
+ {
+  "id": "281c143d-1e4f-4591-b07f-7abb890d585a",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood=low matches 'miserable','depressed' — clean."
+ },
+ {
+  "id": "489d9987-2332-463d-bf97-0d3c0fd1f150",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Strong depression/dread/despair mood missed; focus=distracted is a false positive."
+ },
+ {
+  "id": "cecc48d9-3221-4029-bebe-f50b9d1313bb",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Third-person about son's dysregulation; correctly emits no first-person signal."
+ },
+ {
+  "id": "28a59561-933d-4c0f-9f0c-8bfc137bd3fd",
+  "mood": "correct",
+  "energy": "partial",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Current state positive (mood=great ok); energy=steady captures recovery but ignores 'crashed and burned' history."
+ },
+ {
+  "id": "cdd887e9-f9f1-48e5-a1d0-ac186a0c23bf",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Relief/validation is real but past-tense about finding a therapist; mood=great overstates current state."
+ },
+ {
+  "id": "8e250e7f-5fe1-41e7-affa-a7a4b95c6051",
+  "mood": "false_positive",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "'Feel way better' after rest is an energy signal (missed); mood=good is unsupported."
+ },
+ {
+  "id": "7612ae81-e97f-40ad-b718-0f64b55652d5",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Empathy/advice only; mood=good asserted with no personal mood in text."
+ },
+ {
+  "id": "41266d05-28e8-45ad-827b-33e53e11242b",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp correct ('focused on that'); 'goal that excites me' mood signal missed."
+ },
+ {
+  "id": "d0b2b1d5-6288-4c1a-b4a0-a0eebd82c9eb",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp keyed off 'stimulation and focus' mechanism; author reports no current sharp focus."
+ },
+ {
+  "id": "d78372b5-328b-4d35-a3a9-ac09439f7295",
+  "mood": "na",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "false_positive",
+  "overall": "poor",
+  "note": "meds=['dex'] hallucinated (no med in text); 'can't find the energy' low-energy signal missed."
+ },
+ {
+  "id": "76f026b6-3fec-4d8e-a778-efee53a77838",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood=great matches 'I love when I'm in this state, it's amazing' — clean."
+ },
+ {
+  "id": "ae4e0efb-df9f-4184-8566-025a928ba53f",
+  "mood": "na",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Repeated 'ramped up my productivity'/'productivity boost' energy signal missed."
+ },
+ {
+  "id": "02123eac-c941-483a-bf1d-f8ae40474587",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Abstract dosage advice; correctly emits nothing despite energy gold hint."
+ },
+ {
+  "id": "5309012d-4ede-4281-8810-82b7950d9263",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'A lot happier','hopeful about the future' positive mood missed (only feeling 'hopeful' captured, no level)."
+ },
+ {
+  "id": "01b9e215-e62a-4127-9990-00e9cbdab408",
+  "mood": "na",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'Serious energy expenditure', can't do anything all day = low-energy/inertia, missed."
+ },
+ {
+  "id": "d42770b1-9f84-462c-9536-090461a2ff56",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp correct ('more focused than ever'); mood=okay undersells 'never been a better version of myself'."
+ },
+ {
+  "id": "d01f53f1-f6a3-4392-b0a8-d0dbc6c56a64",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=present has thin basis; post is about self-acceptance/time-tips, no clear present-focus state."
+ },
+ {
+  "id": "7c0d2d24-a6bc-42fd-9d6b-20357f59e1f8",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=great asserted on a post about chronic lost-item anxiety and the 'I did it again' shame cascade — wrong sign."
+ },
+ {
+  "id": "6d552d17-8af5-43f5-aeb7-e599fdf1da41",
+  "mood": "false_positive",
+  "energy": "correct",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "energy=tired and Vyvanse correct, but mood=good unsupported (writer is over-stimulated, planning a dose cut); also Vyvanse duplicated."
+ },
+ {
+  "id": "87c677ef-1c11-487f-aba4-48171231f18b",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low is defensible but the post is mostly consoling someone else; the writer's own low state is past-tense/muted."
+ },
+ {
+  "id": "60c12b54-cc83-465f-9972-c9742640048a",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=great latches onto 'doesn't seem all that great' (a negation) while the post lists stagnation, mess, stress, anxiety."
+ },
+ {
+  "id": "23fec1e1-1be7-463f-b11d-1d4b27d408cd",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=present is fabricated from a described Headspace coping ritual, not a current self-report; mood=okay is thin."
+ },
+ {
+  "id": "c9c8473e-bc7a-468f-a13c-920a00ab36ff",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=good rests only on 'made me feel better' about a relayed quote — mild and second-hand, not a clear mood report."
+ },
+ {
+  "id": "caabcf4d-a93b-4652-88e1-43cd0a15bc67",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good unsupported — the post is tough-love advice to someone else with no first-person current mood."
+ },
+ {
+  "id": "8ec4bde7-8e79-4a22-b4d9-a37e593f99af",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "good",
+  "note": "clean — 'so happy since' returning to correct dose supports mood=great; Adderall captured."
+ },
+ {
+  "id": "70d48ec1-8a38-477b-8442-90d6d908d060",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "explicit 'my mood has increased massively' returned no mood — a clear positive-mood miss."
+ },
+ {
+  "id": "c2fb21d3-4352-4820-a2d9-7d333591ce0c",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=distracted misreads social withdrawal ('drifted', 'pulled away') as attention; mood (frustrated/stuck) was missed."
+ },
+ {
+  "id": "6cccfa76-a593-46a6-8246-9cbfd03cfd2d",
+  "mood": "na",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'scattered mess at work' with email overload is a clear distracted-focus signal that was missed."
+ },
+ {
+  "id": "ff079a0f-19f7-4a32-9e00-01921032adef",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'becoming a massive frustration' / needing to 'regulate my emotions' is a low/frustrated mood that was missed; gold's focus tag is dubious."
+ },
+ {
+  "id": "f35e8e12-1b31-4f9d-9365-066c93d97c16",
+  "mood": "false_positive",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good contradicts a failure litany ('feel bad every single day', 'hate it'); low motivation/energy also missed."
+ },
+ {
+  "id": "0eddfe15-4abe-4258-925b-53a4e04709fd",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "good",
+  "note": "clean — 'ritalin changed my life', 'i can focus and be in control' map well to mood=great, focus=sharp, Ritalin."
+ },
+ {
+  "id": "d534a3fc-fff4-4084-a2da-a9d1b012551b",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood=good fits the warm, grateful tone toward a supportive partner."
+ },
+ {
+  "id": "5b7ddee8-f334-44ed-a1ef-5bae69f77bf2",
+  "mood": "na",
+  "energy": "missed",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus=distracted (afternoon 'can't concentrate') and Vyvanse correct, but the strong 'very sleepy/nap' tired-energy signal was missed."
+ },
+ {
+  "id": "cdcfa3ae-4c79-43e0-845a-d2d897061db1",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus=sharp ('clear thoughts') and Vyvanse correct, but 'bliss' positive mood was missed."
+ },
+ {
+  "id": "59f6853f-85af-47aa-8160-729af1afae37",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — 'every day is an enormous struggle', 'beyond frustrated' supports mood=low."
+ },
+ {
+  "id": "49dd1888-2c30-4843-92b7-512823036dc6",
+  "mood": "correct",
+  "energy": "partial",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "good",
+  "note": "strong record; energy=steady is a reasonable read of 'not running a million tabs' though only loosely stated."
+ },
+ {
+  "id": "17644f02-7069-4ff0-904b-78dc1d14efce",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — practical reward-system advice with no self-reported mood/energy/focus; null is correct."
+ },
+ {
+  "id": "2c575c22-2b84-42e7-a8c5-a0a9bf54c025",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=present fabricated from a childhood math anecdote; mood=low is mostly empathy toward another, thinly first-person."
+ },
+ {
+  "id": "1c60774a-5f92-4fde-ade9-90444c9654e5",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=present unsupported (bullet-journal how-to, no focus self-report); mild positive mood ('I really like it') missed."
+ },
+ {
+  "id": "bb7f8b3b-0951-46ad-b17e-b8a74a64b73d",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "both energy=sluggish and focus=sharp are pulled from a third-person discussion of CDD/SCT symptoms, not the writer's own state."
+ },
+ {
+  "id": "4fd0603b-d7a4-41c5-87bf-ca5e3a31e994",
+  "mood": "false_positive",
+  "energy": "missed",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp is inverted — text says 'I literally just can't' focus / mind 'doesn't process'; mood=good also wrong and low energy ('sit in bed') missed."
+ },
+ {
+  "id": "9a9e9420-26a2-4c31-866e-ef55e676cc94",
+  "mood": "na",
+  "energy": "missed",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Missed energy despite explicit 'give me mental energy'; focus=sharp correct."
+ },
+ {
+  "id": "7924bc4e-74fe-428a-80d0-fc56bad4ca47",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "energy=steady is lifted from 'steady light cardio' (exercise type), not the author's energy."
+ },
+ {
+  "id": "9b240567-6f7b-48b7-ab59-c18913946656",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "mood=good unsupported (only a hypothetical 'doing better'); Wellbutrin correctly captured."
+ },
+ {
+  "id": "1a626781-28e9-4aad-aecc-ef14aadce16d",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — grateful, glad tone supports mood=great."
+ },
+ {
+  "id": "9b6a244a-0ef2-49ca-9ec5-8ac871b61208",
+  "mood": "partial",
+  "energy": "correct",
+  "focus": "na",
+  "meds": "missed",
+  "overall": "ok",
+  "note": "Missed med 'adzenys'; mood=low overstates a past-tense stress, current tone is hopeful."
+ },
+ {
+  "id": "d62295d5-44dd-4af8-a342-f4597f35659b",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — 'really sad' (x2) supports mood=low."
+ },
+ {
+  "id": "402665c3-e56a-48e6-8dcf-8931489da389",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus=present unsupported (no focus claim); mood is empathized 'frustrated' advice, 'low' is a stretch."
+ },
+ {
+  "id": "491d3cc7-ac83-4624-bfe2-00f812e5f459",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — motivational 'gives me a high' supports mood=good (SSRI is generic, fine to skip)."
+ },
+ {
+  "id": "aeec1f22-6619-4b73-8fbc-05eb2d99c73e",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'now I have the motivation and focus' — focus=sharp correct but motivation/energy missed."
+ },
+ {
+  "id": "da61432c-c545-463a-8f8f-61bbc24a002f",
+  "mood": "correct",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "energy=sluggish from 'groggier' describes the drinking scenario (2nd person), not author's state."
+ },
+ {
+  "id": "ce10e711-f97a-4b32-aefe-47d971f0549c",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=okay understates 'so clean it feels so nice' + excited; should be good/great."
+ },
+ {
+  "id": "229a3e6b-6912-449f-af6c-bd737d51d537",
+  "mood": "false_positive",
+  "energy": "correct",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good is backwards — text is 'burnt-out', 'defeatist', 'really shitty path'."
+ },
+ {
+  "id": "0fc9ad76-49c2-4504-8526-47e9fcc56473",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp inverts the text: 'my concentration is very bad'."
+ },
+ {
+  "id": "25ff26ed-20ba-4bff-9cf6-f5ae97c5d982",
+  "mood": "false_positive",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Negation missed: 'no longer motivated' + 'utter hopelessness' read as mood=great/motivated."
+ },
+ {
+  "id": "96fcf50a-f97b-411f-a550-867d0a182eeb",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=great unsupported; only mood cue is conditional 'when I'm in a shitty mood'."
+ },
+ {
+  "id": "73d33b83-7d6a-4cb7-a6fa-10c2e1fa0818",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean for judged dims — pure advice, extractor correctly returned no mood/energy/focus (gold hints are noise)."
+ },
+ {
+  "id": "a450b591-e576-41d4-a089-63843b2a5183",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus=sharp matches 'focus has actually improved'; mood=okay weak (lifted from 'did okay' academics)."
+ },
+ {
+  "id": "2b25a208-0ce9-4a02-a8d2-c6ae4e0e7a8e",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Regretful/wistful 'I wish...' tone is a present low mood the extractor missed entirely."
+ },
+ {
+  "id": "703961c7-f989-4aca-8754-8d1bca25fbbe",
+  "mood": "na",
+  "energy": "correct",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "ok",
+  "note": "energy=tired correct; missed focus despite 'always missed important details' / attention complaints."
+ },
+ {
+  "id": "434ea1d7-df1c-4de5-bcee-997202caf5ea",
+  "mood": "correct",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "energy=steady unsupported (no energy cue); mood=great defensible from grateful arc."
+ },
+ {
+  "id": "688b2bc7-c715-41d8-91d2-1952d24e7449",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — 'stay on task more when I have a list' supports focus=sharp; light upbeat mood."
+ },
+ {
+  "id": "d3b2dc00-cdbb-43f2-93a4-c68e2a88dd43",
+  "mood": "na",
+  "energy": "correct",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus=present inverts 'I don't focus as well'; energy=tired and meds correct."
+ },
+ {
+  "id": "8714a89b-9789-4dcc-a590-ee6bedf9e1f9",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Missed high energy ('insane nervous energy', 'burst of motivation like nothing I've had'); mood=good ok."
+ },
+ {
+  "id": "f131a270-03d0-400e-a61c-4b4f2e03469e",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "good",
+  "note": "'I'm me again', 'equilibrium again' supports mood=great; Ritalin captured (Zoloft omitted, minor)."
+ },
+ {
+  "id": "83fabbde-22f3-45c4-ab09-a7f8122598ae",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Clean — reflective task-sorting post conveys no affect/energy/focus state; all-null is correct (gold 'energy' hint is task difficulty, not a felt level)."
+ },
+ {
+  "id": "89232b8a-4d32-4398-86c3-0b3feefe987f",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "Third-person advice about a friend's Adderall — author asserts no mood; mood=great and focus=sharp are unsupported fabrications."
+ },
+ {
+  "id": "9ddb41be-270a-4504-88da-e29f40c3710e",
+  "mood": "partial",
+  "energy": "partial",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Narrative is recovery/improvement; mood=low and energy=tired latch onto historical 'extremely low energy', and ongoing executive/attention struggle (focus) is missed."
+ },
+ {
+  "id": "3fbcd389-4186-48ce-a89e-33cd3a3ed124",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Second-person pep talk — 'overwhelmed' and 'focus hard' describe the addressee/imperatives, not the author; mood=good and focus=sharp are false positives."
+ },
+ {
+  "id": "e025b483-ca7b-40ac-b64d-b94a63a0bd33",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "correct",
+  "overall": "good",
+  "note": "mood=low (ongoing depression/meltdowns) and meds right; focus=present understates 'eliminated the brain fog' improvement but acceptable."
+ },
+ {
+  "id": "daebad57-3b50-4004-9eba-c96e9cdd47b7",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "Purely informational post about Strattera's effect on others; energy=steady ('calmer' is not energy) is a false positive."
+ },
+ {
+  "id": "09afc4d8-e968-4e50-a37b-51fc08ef23fc",
+  "mood": "partial",
+  "energy": "partial",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=foggy is inverted — text says medicated and 'less foggy'; mood=okay also understates the 'happier/more patience' improvement."
+ },
+ {
+  "id": "8550be4b-77f1-4ac4-b58d-290bceb25346",
+  "mood": "missed",
+  "energy": "correct",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "energy=tired right ('exhausting'), but strong low-mood signal ('depression and suicidal thoughts for years') is missed (mood=null)."
+ },
+ {
+  "id": "325d01ff-e3c9-4963-8b46-91d72e2f01c2",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=distracted correct ('scatty, distracted'), but mood=good is a false positive — the retrospective tone is regretful, no positive mood."
+ },
+ {
+  "id": "74c865c8-d9aa-41e7-b1f1-ad11565c0383",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Generic second-person advice; 'suddenly able to focus when adrenaline kicks in' is a generalization about ADHD, not the author's state — focus=sharp is a false positive."
+ },
+ {
+  "id": "5d940fc1-2acf-4ddb-bd69-f6cb1c85df84",
+  "mood": "partial",
+  "energy": "correct",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "focus=sharp directly contradicts 'helped with so much... except actual focus'; energy=tired and meds correct, mood=okay partial (anxiety/panic worse)."
+ },
+ {
+  "id": "a4554c4c-09c4-4028-9ac3-06123da6102e",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low correct ('debilitating, identity destroying'), but focus=present is inverted — 'daydream, zone out, miss entire lessons' is distracted/inattentive."
+ },
+ {
+  "id": "c5a7eb28-2d55-4f50-8777-74863e4a746c",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Clean — mood=great matches 'had a fucking blast' and 'you will be happy'."
+ },
+ {
+  "id": "35b4d8a7-aa18-431a-b697-db2ad4b2db59",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=distracted correct ('I was distracted, would draw instead of listen'), but energy=steady has no textual support — false positive."
+ },
+ {
+  "id": "e160d86b-7cfd-418c-a1e9-4c5369298843",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "mood=great is badly inverted — tone is anxious/distressed ('my life is fucked without it', 'devastating thought'); meds correct."
+ },
+ {
+  "id": "291e15d6-e82a-496d-967d-bfa0cad8bdb2",
+  "mood": "na",
+  "energy": "partial",
+  "focus": "partial",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus=present captures the nuance loosely (helped overall but 'can't easily pick what to focus on'); energy=steady leans on med 'slow and steady drop-off' not a felt energy state."
+ },
+ {
+  "id": "90cce2c0-7dfa-482a-a21b-d66614588899",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Both inverted — 'thoughts too jumbled... falling behind' is the opposite of focus=sharp and mood=good."
+ },
+ {
+  "id": "d1302a37-e993-40bc-961a-077d1532d6b5",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Informational post on ACT for anxiety; mood=great is unsupported — author is managing anxious thoughts, asserts no positive mood."
+ },
+ {
+  "id": "28589d00-3c23-4d17-a88d-6892abb120d0",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "mood=great inverted — 'sit and sulk about how worthless I feel', 'devastating'; meds correct."
+ },
+ {
+  "id": "c651c0fc-6a49-44e0-ae55-098c6694db2c",
+  "mood": "correct",
+  "energy": "partial",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "good",
+  "note": "mood=good fits the resolved 'relaxed and stable' end-state (anger captured in feelings); energy=steady loosely supported; meds correct."
+ },
+ {
+  "id": "713567a7-2856-4ced-bd0b-049c0b9efaac",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "Clean — focus=distracted ('a bit distracting') and mood=low ('became depressed and both went to shit') both correct."
+ },
+ {
+  "id": "11fc1424-c76d-4b2a-bb74-4ddf8400f5e9",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=great overstates — 'happy' refers to the author's mom; author is hopeful but frustrated ('I hate the fact that she doesnt believe')."
+ },
+ {
+  "id": "3893eca4-a79d-4c23-8ec0-a10b627329a7",
+  "mood": "na",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Clear fatigue/energy signal missed — 'coffee... to keep my eyes open', 'vitamin D... can cause fatigue'; extractor returned no energy."
+ },
+ {
+  "id": "5108b0fa-d2f4-4785-bb6b-3dfbaf4cae83",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good contradicts the captured 'sad' feeling and 'unbelievably sad from rejection' — the affect is sadness, reframing is coping not good mood."
+ },
+ {
+  "id": "9852039c-3a8c-4a55-ac47-7d17b4c1ee69",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "mood=low reads childhood narrative ('misunderstood','crying') as current; post is net grateful/positive ('worth it')."
+ },
+ {
+  "id": "0c84d700-86b9-4872-b4cc-826cdbf5a895",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "poor",
+  "note": "clear attention problem ('fall out of consciousness','missing a page') missed; mood=okay contradicts frustrated tone ('utterly sucks')."
+ },
+ {
+  "id": "22a3fc00-4cac-4c28-818e-dbc9ef998954",
+  "mood": "false_positive",
+  "energy": "partial",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "energy=alert but dominant report is 'really tired' then 'calm'; mood=good unsupported."
+ },
+ {
+  "id": "248cded6-ecba-44a7-99cd-46bff14ee45d",
+  "mood": "na",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'not getting the motivation and clarity' is a low-energy/motivation self-report the extractor dropped."
+ },
+ {
+  "id": "eee9a145-3421-43cd-8a18-a3b5faca6de9",
+  "mood": "correct",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "focus=sharp is backwards — text says med 'isnt working'/'not helping your focus'; energy=steady unsupported."
+ },
+ {
+  "id": "12270a9e-e396-4ad6-8886-dc79908fa22d",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=okay is a defensible net of a heavy panic/depression narrative that ends hopeful, but flattens severe distress."
+ },
+ {
+  "id": "97d1231d-f4e6-4811-a442-c64d84283c0c",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "all three signals describe 'him' (overwhelmed/exhausted), not the writer; mood=good directly contradicts the projected feelings."
+ },
+ {
+  "id": "3c7da5b9-af14-44de-8bea-52c143403a25",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=distracted inverts the text — distractions are 'disappearing'/'one less thing pulling my attention'; positive mood missed."
+ },
+ {
+  "id": "2f6882fb-e8fe-4421-9e47-4b1edfc8ab07",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=foggy matches explicit 'brain fog'/poor working memory; no real mood expressed."
+ },
+ {
+  "id": "c312cd17-6dc8-47a7-9787-f753a4f8faf0",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=present supported ('in the near present I can focus so well'); mood=great overshoots a mild 'I'm good'."
+ },
+ {
+  "id": "ea972e52-3783-4fdc-a01a-2449f378df5e",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=good unsupported — text is neutral descriptive talk about IQ/memory test scores."
+ },
+ {
+  "id": "e21c7486-a7e5-48c3-ac1c-1a4d8bb91ea2",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=distracted supported (phantom music 'distracting me'); no mood/energy claim."
+ },
+ {
+  "id": "1f8e3a73-b20d-4957-9232-1ce8a9557556",
+  "mood": "correct",
+  "energy": "correct",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "good",
+  "note": "clean — 'great', 'wide awake', 'great focus' all map correctly; Adderall captured."
+ },
+ {
+  "id": "141520af-1c2f-43f4-8120-674b8d91420d",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood=flat fits the 'numb detachment/empty' depression description; advice-framed but apt."
+ },
+ {
+  "id": "b5ec5114-7601-4bb2-962d-43029b08513f",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus=present matches son 'able to focus'; mood=okay not stated, unsupported."
+ },
+ {
+  "id": "38a658e1-ae27-4213-8d2c-9d6cf34ea652",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'super excited'/'Yay!' is high energy the extractor left null; mood=good correct."
+ },
+ {
+  "id": "2f94b641-a597-4c86-997f-282ced5ec8ab",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=sharp matches 'feel more focused'; positive mood ('so far so good', less guilty) not captured."
+ },
+ {
+  "id": "5537ff52-d9ad-4cb2-9324-74c08d9ebfdc",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=sharp supported ('could focus longer'); mood=good is the conflicted upside ('loved the results' but quitting)."
+ },
+ {
+  "id": "abf0695c-00fd-4cb3-a780-fa462b8b746b",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp is a keyword misfire on 'focusing solely on how ADD affects you' — book-scope, not attention."
+ },
+ {
+  "id": "e4b9e8bc-9efe-476c-993b-79f1e1819b23",
+  "mood": "partial",
+  "energy": "missed",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus=sharp ('all about focus') correct; 'feel kind of lazy' is a low-energy cue dropped; mood=great overshoots 'happy, just levels my mood'."
+ },
+ {
+  "id": "110f6a8e-373d-4abe-a023-38b740145f4a",
+  "mood": "missed",
+  "energy": "correct",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "energy=sluggish matches 'crashing'/'can't do anything'; irritable mood ('pain in the ass to be around') missed."
+ },
+ {
+  "id": "9879df20-804d-4552-b54d-efbe8f161257",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=okay contradicts self-critical distress ('horrible','struggling to control impulses'); 'playful' pulled from past behavior."
+ },
+ {
+  "id": "7eed0ef1-6ebe-4f22-a5be-41a25d600e41",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low captures the irritated/cynical tone direction, though it's more annoyance than sadness; no energy actually self-reported."
+ },
+ {
+  "id": "6e769008-c98e-40c4-8225-ed2e725172ab",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=okay is a false positive on a didactic diet/sugar advice post; 'gives me energy' is a generic claim, not a current state — nulls elsewhere correct."
+ },
+ {
+  "id": "2dcff8cc-2486-4916-90ae-57c1868c399a",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "Adderall captured correctly, but the relieved/validated 'feel less crazy' mood was missed (mood=null)."
+ },
+ {
+  "id": "545b6a12-80f4-4cdc-b802-6736b9cd152b",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Reflective/general musing on wittiness with no current-state signal; all-null output is defensible. Clean."
+ },
+ {
+  "id": "4500b5ad-a221-44d8-955c-d4943e9ef40a",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low overweights 'a little sad' against the dominant grateful/'life changing' turn; off-meds 'fog over your brain' focus signal missed."
+ },
+ {
+  "id": "0e57c501-cd96-49de-b3b6-526a9697d3d6",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good is wrong-direction (text is stressed, 'didn't enjoy myself'); heavy distraction/procrastination focus signal missed."
+ },
+ {
+  "id": "f8be873e-2793-4ebd-a87e-70eb0c59c0d0",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=present matches 'trying to be present' vs 'always in the clouds' baseline. Clean."
+ },
+ {
+  "id": "db666f8f-8a3e-40e4-81b3-206b7f80061f",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "anxiety-sensitivity content ('crippling anxiety') is a mild mood signal that was missed; IPP correctly not catalogued."
+ },
+ {
+  "id": "e083f47b-b3b9-4dc3-b0e4-6bd46df9164a",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Pure third-person advice about caffeine/energy with no personal state; all-null is correct despite gold hints."
+ },
+ {
+  "id": "a2ece712-9bb2-4322-b3fc-9d1b433892c1",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=low inverts a clearly positive post ('improved sooooo much','positive experience'); 'angry' is a role being acted, not the author's mood."
+ },
+ {
+  "id": "a32be327-0906-4917-8646-5b279b40cc55",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Second-person encouragement misread as the author's state: mood=good and focus=sharp are both misattributed ('feel proud' is told to the reader)."
+ },
+ {
+  "id": "ab5eab66-4354-466f-9478-f5a563e6cba3",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low is the right negative direction but 'freaked out/stressed' over physical symptoms is anxious, not depressive; 'tense' is a physical arm sensation."
+ },
+ {
+  "id": "94cdda32-7e11-45ff-b39e-b7dae70bc61e",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp inverts the self-state ('frazzled and unable to focus','distracted and lost'); the anxiety mood is also missed."
+ },
+ {
+  "id": "7218daae-c7a1-46a7-a6dd-c3638db792e3",
+  "mood": "correct",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good is fine, but energy=sluggish and focus=foggy both contradict a fast-paced/thriving post — two false positives."
+ },
+ {
+  "id": "884b4816-149d-4cd6-8bce-a1a150d06ff9",
+  "mood": "partial",
+  "energy": "missed",
+  "focus": "false_positive",
+  "meds": "false_positive",
+  "overall": "poor",
+  "note": "meds=amphetamine is wrong (drug is Medikinet=methylphenidate); focus=distracted inverts 'inability to focus... gone'; mood=okay understates 'calmer/well leveled'."
+ },
+ {
+  "id": "56fb8c4e-3dd2-4c52-b2a4-f703569f2798",
+  "mood": "correct",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low well supported (depression/'ouroboros of misery'), but energy=steady is unsupported — false positive."
+ },
+ {
+  "id": "51fd58b4-ab93-40f6-808b-59a386943ae5",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=great is a keyword artifact from 'great sex'; the post is about fear/hypervigilance. focus=distracted is generic-advisory, not a personal state."
+ },
+ {
+  "id": "c1df3833-d2e4-47d6-8afc-40a5dff6c1fc",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Reflective prioritization strategy ('all my energy into one thing') is figurative/general; all-null defensible. Clean."
+ },
+ {
+  "id": "4e6bf5d4-6377-4e19-996c-63458321a237",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp unsupported (exercise only 'helps, doesn't cure'); clear anger ('naysayers piss me off') missed as mood."
+ },
+ {
+  "id": "13315bf9-c2d1-4a8c-a3d8-dae1ae796f7b",
+  "mood": "missed",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "energy=sluggish misreads 'feel slow and dumb' (self-worth/external impatience, not energy); the clearly negative mood was missed."
+ },
+ {
+  "id": "4f00f18f-824f-464c-a8d2-e45d6b9b6d35",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=distracted strongly supported (chronic distraction on and off meds); jokey tone justifies null mood. Clean."
+ },
+ {
+  "id": "e5f84860-bc2d-43a5-9801-a88c7adc716a",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Warm/grateful tone ('lucky my husband','our little tribe') is a mild mood signal that was missed; otherwise thin and reassuring."
+ },
+ {
+  "id": "2c8e0853-8b77-4c79-b64f-a3250498e4ee",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Entirely advice to another person; mood=good and focus=present are misattributed coaching ('practice positive responses'), not the author's state."
+ },
+ {
+  "id": "4baa6bc5-8230-4bbd-bafd-db39b5ecc49d",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Negative self-conscious mood ('feel childish', cringe, 'ruined many opportunities') clearly present but returned null — missed."
+ },
+ {
+  "id": "35ea95db-f121-410f-b365-4965f4cf0fff",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good ignores the arc ending in anxiety 'so bad I couldn't function'; focus=sharp overstates (drawing aids focus, but net is memory/anxiety impairment)."
+ },
+ {
+  "id": "996b2ea3-eeaf-4b47-8f1c-e0ed2e2e68c3",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Advice to another about tapering; 'is your mood stable' is a question to the reader, not the author's mood. All-null correct; gold 'mood' is a false hint."
+ },
+ {
+  "id": "41cb6981-2dfd-456d-955c-7d85cd33460a",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=low is a false positive — post is an upbeat pep talk ('it gets easier', 'give fewer fucks'); 'MISERABLE'/'drag' refer to others, not the author."
+ },
+ {
+  "id": "ad702fbe-7fe5-49d5-9dc4-c32b63acf6ce",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Abstract take on productivity metrics; no self mood/energy/focus. All-null correct; gold 'energy' unsupported."
+ },
+ {
+  "id": "58a5343d-29d0-4b66-a76f-29dd03643065",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Warm post ('wouldn't change it for the world') — mood positive missed; 'we both hyperfocus' is trait-level, focus=present understates hyperfocus (partial)."
+ },
+ {
+  "id": "ffa3fbd1-64f3-434b-8aee-a513fe7e3d25",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — 'makes me happy', 'smart AND validated' → mood=great correct; HIIT/magnesium are questions to another, no med taken."
+ },
+ {
+  "id": "cc281045-6df6-4801-85e6-67f727e65ed5",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Dominant affect is guilt/frustration/'frustrating and hard' — mood=good is wrong direction; energy=alert has zero textual basis (gold lists mood only)."
+ },
+ {
+  "id": "a124a511-8a3f-4b08-86b6-81b80f9e6d19",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Pep talk; author's own pride ('feeling is more than sublime') supports mood=great; focus=sharp overstates 'it's harder to focus, but when I do' (partial)."
+ },
+ {
+  "id": "7ba0bb0b-681b-4845-a111-13bd98f6b1a2",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low correct (overwhelmed, 'depressing', 'feel worse'); 'couldn't even get out of bed' is clear low energy left unextracted (gold hints energy)."
+ },
+ {
+  "id": "2e79221b-fe98-4294-b976-d9c4f5eac49a",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=present misreads 'all I can do to NOT focus on this diagnosis' (rumination, not focus); mood mixed terror+hope, 'good' captures only the hopeful half."
+ },
+ {
+  "id": "23107031-9d3d-4d12-99ab-c3c5dc423d56",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "energy=alert is wrong direction — 'caffeine to stay awake through boring classes' implies low energy; rest is historical childhood recollection, no current state."
+ },
+ {
+  "id": "53eea397-7551-47cf-903b-153ed3937ac1",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=great false positive — 'happiness' is an example node in an associative-thinking diagram, not the author's mood; focus=sharp stretches a cognitive-style description."
+ },
+ {
+  "id": "a7758886-40da-47f2-af49-b2045fc69c25",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "false_positive",
+  "overall": "ok",
+  "note": "meds false positive — Strattera/Vyvanse are 'never heard of, will research', prospective not taken (plus duplicate Strattera); mood=good ok ('helping my anxiety greatly')."
+ },
+ {
+  "id": "f02977a8-9ce8-4477-89d9-3dfed9e1f790",
+  "mood": "partial",
+  "energy": "correct",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "energy=tired correct ('tired after a wrestling match'); mood=great overreads — 'I'm so happy I won' is a quoted example, the landing affect is 'I always feel dumb'."
+ },
+ {
+  "id": "b9f8c3a8-8677-4765-b550-3166b550549d",
+  "mood": "missed",
+  "energy": "missed",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp correct ('excited to focus', 'actually listen and absorb'); but 'energy to stay in the mode' (energy) and 'more good feelings' (mood) both missed."
+ },
+ {
+  "id": "ea15311e-7471-43ce-936c-8d9617ca4e57",
+  "mood": "correct",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=great ok — post resolves past anger into love/gratitude ('Thanks mom'); energy=steady has no basis (gold lists mood only)."
+ },
+ {
+  "id": "33b211b3-5e01-444a-986b-33614140e8c5",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=great is positive sentiment but directed at another ('beyond happy for you and your child'), not an author self-state log — partial."
+ },
+ {
+  "id": "9aab5b31-9f45-4429-bab8-eff6fb2085f4",
+  "mood": "partial",
+  "energy": "correct",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "energy=charged ('on fire') and focus=distracted ('can't get in the zone') correctly capture the two-day pattern; mood=great overstates given the burnout/'depression' theme."
+ },
+ {
+  "id": "39f930c3-830c-4968-981b-7c255285fbf3",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=distracted correct ('could not focus on the actors', fixated on background); energy=sluggish is a false positive — no fatigue/energy cue in the text."
+ },
+ {
+  "id": "57b5d19e-2e7f-4b05-b2f6-013ff26850da",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low correct (sad, 'bad funk', 'feel like shit'); 'lay in bed... don't want to do anything' is co-present low energy left unextracted."
+ },
+ {
+  "id": "7f078985-f4bc-4811-9dd4-5bf5f55adc5a",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "sideEffect=true correct (anxiety meds 'gave me more anxiety and depression'); mood=okay understates the depression/'failing everywhere' content (leans low)."
+ },
+ {
+  "id": "a88ef630-c639-498f-b096-c5e8d0f0a3e7",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Entirely advice to a newcomer; focus=foggy inverts the text ('you might find it easier to focus'), and mood=okay has no author self-state — two false positives."
+ },
+ {
+  "id": "49032331-e5aa-4263-b865-ecae0ed1b431",
+  "mood": "na",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=lockedIn overstates — dominant report is reread-struggle/skimming/restlessness, with hyperfocus only as a conditional exception ('whether I'm able to hyperfocus')."
+ },
+ {
+  "id": "59afbfb2-2a9c-4add-9301-b29800278c9b",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=good captures only the affirming resolution; the bulk is self-critical/'exhausting' RSD-perfectionism. focus correctly null (gold 'focus' unsupported)."
+ },
+ {
+  "id": "fa518820-ccf3-49c0-8626-ba87f32efa11",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "good",
+  "note": "clean — meds=[Ritalin] correct ('prescribed Ritalin', 'even with the medication'); diffuse stress only, null mood/energy/focus defensible (gold 'energy' unsupported)."
+ },
+ {
+  "id": "9051669d-0b93-46bb-b79f-7571b3e1a44e",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good fabricated from generic advice; only mood word is hypothetical 'shitty day' (negative)"
+ },
+ {
+  "id": "24f2f8a7-acd6-4c8c-828f-ad392dc8995f",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "energy=charged/mood=good invented from 2nd-person advice ('get all that energy out'); no author state"
+ },
+ {
+  "id": "9de91bab-b287-49d1-9dfa-56fa20649817",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "good",
+  "note": "'life VASTLY improved' supports great; focus=sharp only weakly inferred from advice about effects"
+ },
+ {
+  "id": "5c6cb4c2-16ac-40ef-a1a2-d6ae3eb2b3a9",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=foggy nails the drowsy/fuzzy first-person fog; mood=low overreaches (fog isn't sadness)"
+ },
+ {
+  "id": "b419dab2-4929-4213-87b8-9d3869fb9d09",
+  "mood": "correct",
+  "energy": "correct",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood/energy right (self-loathing, mentally exhausted); focus=present contradicts 'Just not the focus'"
+ },
+ {
+  "id": "4949187d-1fc1-4ce9-87a8-97f075ac76bf",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'great feeling' captured but it's one pole of a described oscillation that ends in 'shut down'"
+ },
+ {
+  "id": "e2ddb7ef-d8fc-4ba2-bb99-3ee475787bef",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "energy=tired pulled from a generic description of running ('feel tired and crappy'), not author's state"
+ },
+ {
+  "id": "0169579f-ab3e-4606-be4d-d1c8668471de",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=okay and focus=present both from 2nd-person advice ('be proud of yourself','break that focus')"
+ },
+ {
+  "id": "cf920adb-7ad5-4149-92c5-6c700bf936da",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=lockedIn fits 'always finding new things to master via hyperfocus'; mood/energy unsupported"
+ },
+ {
+  "id": "694ea465-3387-4193-9096-2925a76a61d1",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp is backwards — text reports a 'slight slowdown in ability and focus' on meds"
+ },
+ {
+  "id": "9fd6363b-567a-4ec9-bbbb-ceeeccf822e8",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "good",
+  "note": "'better overall mood' + 'more focused' + Strattera/Vyvanse all captured; dupes in meds harmless"
+ },
+ {
+  "id": "d0ece2cc-fcde-4e66-933b-ea9141d6bf48",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "meds+sideEffect right; mood=good refers to a convenient dosing schedule, not an actual mood state"
+ },
+ {
+  "id": "8ed5823a-4d60-4f57-8f47-e98165a62c74",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "correctly null — guilt is 2nd-person reassurance ('nothing to feel guilty about'), not author's mood"
+ },
+ {
+  "id": "b801409a-4230-4d03-8f54-2df3dc615975",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "anger present but qualified as transient/regulated; mood=low overstates a reflective, neutral post"
+ },
+ {
+  "id": "346c3fe5-9124-4a4a-88a0-a11be5e3645d",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "text explicitly says 'I was feeling low' yet mood=good (opposite); focus=present unsupported"
+ },
+ {
+  "id": "97906a8a-de94-4de3-8855-35957635ea8a",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "good",
+  "note": "mood/energy correctly null (author advising a parent); Concerta named so meds presence is fine"
+ },
+ {
+  "id": "f80461da-bd59-44a9-b05d-aebcdc60f166",
+  "mood": "na",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp largely from general mechanism/2nd-person ('browse reddit with more intense focus')"
+ },
+ {
+  "id": "d12fde49-cfc9-43d8-b2ae-9ad155e357ac",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood=low fits 'stressed, work suffering, felt guilty' despite a positive beach-day moment"
+ },
+ {
+  "id": "082e7ab8-04b6-4556-9988-b7df5f0eeef5",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "partial",
+  "overall": "ok",
+  "note": "clear positive ('really loving it') but mood=null; meds missed mitazapine/mirtazapine the author names"
+ },
+ {
+  "id": "e0aede30-1c1a-4399-8039-704da8b73560",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good invented from a general discussion of energy regulation and crashes; no author mood"
+ },
+ {
+  "id": "96bfa6e6-e301-4884-aeda-27324482cdb1",
+  "mood": "correct",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "missed",
+  "overall": "ok",
+  "note": "mood=low right (anxious/depressed mess); energy=steady unsupported; missed Amantadine named in text"
+ },
+ {
+  "id": "117e7772-2518-4784-9d0f-f7ec8eff6ce2",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "gratitude is real but mood=great ignores explicit shame/anger/anxiety and 'all I am doing is whining'"
+ },
+ {
+  "id": "90d35318-40fc-4dbe-9a0f-9059bf9a7c54",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "enthusiasm is about journaling's value ('game changer'), not a stated current mood; great is high"
+ },
+ {
+  "id": "cf9538b1-4093-4634-a4e2-10cd868e9f24",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=lockedIn fits 'recharge focus/perfect headspace'; mood=low describes the PAST, not improved present"
+ },
+ {
+  "id": "bbc0421e-f724-4e42-a2a0-1be8aeb74edc",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "\"amazing so far\" is about the relationship, not the writer's mood; mood=great over-reads an advice post."
+ },
+ {
+  "id": "2feac22c-2e26-42ad-b11d-8e8ee36d701c",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=good fits the relief; focus=present is unsupported (text recounts past work struggles, no current focus state)."
+ },
+ {
+  "id": "2f629b7a-f415-4f61-9924-134f0007fbd9",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "mild frustration + net-positive solidarity; mood=okay is a fair read. clean."
+ },
+ {
+  "id": "d3c1441e-ee2f-4fe8-af81-28e764efb01b",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "positive self-reflection; mood=good correct; energy=null right ('feeling productive' is conditional). clean."
+ },
+ {
+  "id": "9613121e-7d16-4746-a096-d59d994c798e",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "current state is anxious/'woke up anxious, threw up'; mood=good captures the hopeful framing but misses the salient negative self-state."
+ },
+ {
+  "id": "6f0fc68d-7d6e-4c25-b9f7-f5aea2df1cbf",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "pure parenting-advice post; mood=great and energy=charged/'wired' are fabricated ('socially wired' is an idiom, praise is to the addressee)."
+ },
+ {
+  "id": "06c03739-c10e-4a1f-8481-a1f9ad50a4ea",
+  "mood": "missed",
+  "energy": "missed",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp matches the programming hyperfocus, but clear depression/'doing nothing all day' low mood and depleted energy were both missed."
+ },
+ {
+  "id": "17ea8999-8b4d-4d7c-8d60-f62bf582be22",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'defeated' belongs to the addressee's loop; focus=sharp unsupported, mood=okay only weakly grounded in an advice post."
+ },
+ {
+  "id": "c3244630-6068-4e9b-8162-48ddced9bff5",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "affect is anger/contempt at a doctor; mood=low/'sad' gets negative valence but wrong texture ('sad' only appears mocking the doctor's script)."
+ },
+ {
+  "id": "07abd74e-9eaf-4564-970d-d5da7c06c1a4",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "explicit 'clarity and focus' after weed; focus=sharp correct. clean."
+ },
+ {
+  "id": "19215265-2684-43c0-b9e8-50b0204cb12d",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "abstract brainstorm of a new ADHD name; focus=lockedIn and energy=steady are fabricated from conceptual mentions of 'hyperfocus'."
+ },
+ {
+  "id": "03b972a6-5b96-4fc5-834b-0f05eb60efda",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "'makes me so angry' is a genuine current affect; mood=low captures negative valence. focus=null right (gold hint notwithstanding)."
+ },
+ {
+  "id": "287e3f06-0d2b-4892-9ba5-e8b01b034017",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=low fits frustrated/anxious, but focus=sharp is the OPPOSITE of the stated 'inability to focus / hard time paying attention'."
+ },
+ {
+  "id": "62a4937a-b803-4e88-9a6e-99193da85f63",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "explicit gratitude/'at my happiest' (mood=great) and 'I can hyper focus for hours' (focus=sharp) both supported despite the anxious framing. clean."
+ },
+ {
+  "id": "afd33efd-8cdc-4e85-ba1b-30b90e7ba59c",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "panic attacks + chronic worry/anxiety clearly convey a negative/anxious mood; extractor returned null mood."
+ },
+ {
+  "id": "dcf4257d-6aa6-4099-83e6-ee413e26b6fa",
+  "mood": "na",
+  "energy": "correct",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "'I'm just tired' (energy=tired) and 'I get distracted very easily' (focus=distracted) both stated. clean."
+ },
+ {
+  "id": "16127b51-6168-41e8-abc2-480f4b2fc38b",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "explicit hyperfocus/flow; focus=lockedIn correct. energy=null defensible (general trait description, not a current-state report)."
+ },
+ {
+  "id": "f803f091-2b6c-49c2-a8c8-5ae229d18d10",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "advice about a child's schooling, no writer self-state; all-null is correct. clean (gold mood hint is a false hint)."
+ },
+ {
+  "id": "86028205-5073-4200-a14a-ca3115967649",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "tone is defiant/empowering ('be proud', 'fuck their opinions'); 'frustrated' is a future hypothetical for OP, so mood=low mischaracterizes the post."
+ },
+ {
+  "id": "8e1a9365-7ef2-4ae3-a7fd-638ec27315f3",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "meds=Vyvanse correctly extracted, but mood=low is the OP's irritability quoted back by a helper asking questions, not the writer's mood."
+ },
+ {
+  "id": "d428bbec-cd85-45d5-9a71-86951e3a2e01",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "diagnosis-history narrative with no current energy; energy=steady is fabricated. mood=null defensible."
+ },
+ {
+  "id": "527198d6-40d2-45b9-85de-1449d7626a7a",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "post is about focus problems / 'falling apart' historically; focus=sharp contradicts the text."
+ },
+ {
+  "id": "de08a92d-e927-4a92-8abb-857387d4b3b4",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=great fits 'it feels amazing'; focus=sharp is weak — only meta references to 'how focused I seem at work', no clear current focus state."
+ },
+ {
+  "id": "e4d79a0d-e491-4f66-8679-4294b3275be0",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "reflective lifestyle essay; mood=good inferred from general positivity, not a stated current mood ('bored' is conditional)."
+ },
+ {
+  "id": "f18db485-3269-493c-a8a6-6f321881f630",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Clean — abstract essay on childhood emotional suppression; extractor correctly returned no mood/energy/focus/meds."
+ },
+ {
+  "id": "e13068a8-b62a-45c3-860e-e57e90d45c60",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "missed",
+  "overall": "poor",
+  "note": "mood=low and energy=sluggish are unsupported (writer is upbeat/helpful; 'heart raced/anxious' was a past dose anecdote, not current low/sluggish); a stimulant dose is clearly discussed yet meds=[]."
+ },
+ {
+  "id": "259b19a1-a84c-49e8-861c-5e61917b35d5",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=low and focus=present are fabricated — text is informational advice about Teva generic; 'angry posts' describes others online, not the writer."
+ },
+ {
+  "id": "6f22415e-0b61-4be3-9252-763b295abf3f",
+  "mood": "na",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Strong focus/task-initiation impairment ('can't start', exec dysfunction, staying up to 4AM) clearly conveyed but focus returned null — a miss; mood/energy reasonably null."
+ },
+ {
+  "id": "34d931cd-718e-4ee8-98ce-3dc3cb39fae8",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "false_positive",
+  "overall": "poor",
+  "note": "Pure how-to (index-card essay method); focus=lockedIn and meds=[dex,dex,dex] are both invented — no medication and no self-focus state in text."
+ },
+ {
+  "id": "6db12f5d-aed9-48cf-b133-a8459b325c4c",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Encouraging advice to a young stranger about studying abroad; mood=great, energy=steady, focus=sharp all unsupported — no current self-state expressed."
+ },
+ {
+  "id": "e6fbb9b7-d69c-4bc3-8375-9c2739fb616a",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=good is a false positive — 'settled' is a hypothetical wish about historical society, and writer says they'd 'love' such a life (implying current isn't); focus correctly null despite gold hint."
+ },
+ {
+  "id": "5aef95f8-0b33-4ce3-b8b5-9ea52cca060f",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood=good is defensible — writer describes diagnosis as 'positive and a relief,' more confident, got a promotion; 'frustrated' is a quoted fragment but net positive holds."
+ },
+ {
+  "id": "1b2f72f9-fb9f-45e1-b674-c383f0dfe87b",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp contradicts the text — writer recounts chronic distraction, procrastination, reading under the table; diagnosis let them 'know where to focus,' not that they are focused now."
+ },
+ {
+  "id": "6b7ace20-b576-42a3-8398-4719abbfdfff",
+  "mood": "partial",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood low-ish 'stupid/discouraged' is past-tense but directionally ok (partial); energy=steady and focus=sharp are wrong — text is about careless errors and difficulty focusing on math."
+ },
+ {
+  "id": "088a05ea-899d-482f-8d1d-a87069b2054d",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "meds=Ritalin correct and apathy supports a low-ish mood (partial), but focus=present is unsupported — writer notes apathy toward non-focus things, not a measured focus state."
+ },
+ {
+  "id": "f05a1996-20de-4076-8b22-26137a5a0578",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "partial",
+  "overall": "ok",
+  "note": "mood=okay fits 'feeling fine most of the day' plus frustration; meds missed — '20mgs' clearly refers to a stimulant being titrated but meds=[] (gold flagged energy, not captured)."
+ },
+ {
+  "id": "e8803837-5026-47fb-b0de-a1a394d7a730",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "meds (Concerta/Intuniv/Focalin) correct, but mood=low and energy=alert are unsupported — encouraging advice about med trials; no current low mood or alertness stated."
+ },
+ {
+  "id": "1656804d-954e-4733-8c54-c0b8e3e75176",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "good",
+  "note": "Solid — Strattera correct, hopeful/inspired mood=good fits, focus=sharp matches 'stay more focused' improvement; energy=steady is a mild over-reach but tolerable."
+ },
+ {
+  "id": "9b4997ab-96f5-4d03-b298-f29c2f8eb2a9",
+  "mood": "false_positive",
+  "energy": "correct",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "energy good — 'naturally have a lot of energy' supports it; but mood=great is unsupported (it's advice) and focus=sharp contradicts 'trouble focusing' framing."
+ },
+ {
+  "id": "caf0c196-49b9-4e31-9737-feed91bcfb9a",
+  "mood": "partial",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Depression diagnosis + 'felt like a fraud' supports a low mood, so mood=null is arguably a miss and energy=steady is an unsupported insertion in an otherwise reflective/down post."
+ },
+ {
+  "id": "eb9866e6-8beb-445b-8b11-a442b6b878f9",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "good",
+  "note": "Clean — clinical thyroid/med-interaction explainer; meds=Wellbutrin correct, no self mood/energy/focus asserted (correctly null)."
+ },
+ {
+  "id": "993a80f8-aadb-4712-b980-5eab3918e746",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Long childhood backstory (tantrums, disorganization, anxiety); mood=good/grateful is questionable for this narrative and focus=sharp directly contradicts 'trouble focusing/forgot homework.'"
+ },
+ {
+  "id": "38eaede1-b1cc-42e7-9fb0-a0012a095897",
+  "mood": "partial",
+  "energy": "partial",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=distracted is spot-on ('get distracted in my own thoughts', can't keep track); tired/exhausted is really conversational fatigue not low mood/energy, so mood=low and energy=tired are loose but directionally fair."
+ },
+ {
+  "id": "f2adf391-66af-477f-a437-62ad20c599e9",
+  "mood": "na",
+  "energy": "partial",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "energy=tired/'bored' draws on 'I get less tired since medicated' — that's a contrast about the past, not a current tired state, so it's a weak/partial read; mood/focus correctly null."
+ },
+ {
+  "id": "685f52d9-4dfe-470f-9407-a9e62a2aa115",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "good",
+  "note": "meds=Adderall XR correct; mood=great well-supported ('truly life changing', 'lost a lot of tension', 'more patient') — strong record."
+ },
+ {
+  "id": "3d3066f5-3a81-4356-894f-2634f8dba7da",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "meds (Ritalin/Dexedrine/Vyvanse) correct, but mood=good contradicts the content — advice to someone on RSD/depression/'feeling down/socially withdrawn'; if anything mood skews low."
+ },
+ {
+  "id": "efa963b9-1703-4f1d-b215-1dc45e803516",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood is unsupported — 'embarrassed/guilty' are speculations about the writer's doctor, not the writer's own state; no self-mood expressed (should be null)."
+ },
+ {
+  "id": "fd812c73-015c-4041-a35d-8183d4ee029c",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Cleaning tips post; mood=great and focus=present are invented — 'bored' refers to needing stimulation while cleaning and 'brain fog' is mentioned, no positive mood or present-focus state."
+ },
+ {
+  "id": "03243f84-ed9f-4e2e-8a4c-0063029758ed",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=great false_positive: text is net-down (despair/helplessness/'pits of despair'), only anger is described positively as motivating."
+ },
+ {
+  "id": "a667b772-883b-499b-9bfc-fb6637b10b45",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=great false_positive: 'happy moving from town to town?' is addressed to the reader, not the writer's own mood."
+ },
+ {
+  "id": "28cfb7d1-e074-4a9d-b524-52fb81ea8eb7",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=great right (super stoked/awesome); focus=sharp partial — text describes past hyperfocus on a project (lockedIn-ish), framed as a problem, not clean sharpness."
+ },
+ {
+  "id": "86aa1b2e-850d-4a7a-98ba-c86ce166c064",
+  "mood": "false_positive",
+  "energy": "missed",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "energy=missed — text explicitly says keto 'improves energy' yet no energy returned; focus=sharp correct, Adderall correct, but mood=good unsupported (diet benefits, no mood)."
+ },
+ {
+  "id": "9902096f-4dc6-41c1-b558-554e9179ab46",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=good false_positive: post is about a habit-tracking system and accomplishment, no mood expressed."
+ },
+ {
+  "id": "6607f538-a478-4f6b-8290-d813a249bbb5",
+  "mood": "partial",
+  "energy": "correct",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "energy=tired/exhausted right ('of course it's exhausting'), Ritalin right; mood=good partial — dominant tone is distress, only ends on defiant self-talk."
+ },
+ {
+  "id": "8e880306-d4fe-4211-9c82-46b5fffcbb47",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=lockedIn correct (hyperfocus on spreadsheets), but mood=okay false_positive — text conveys distress ('spinning wildly out of control', 'nasty ball')."
+ },
+ {
+  "id": "e96f4573-8fbf-47f5-af1a-83a6b6c32ad9",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "missed",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "mood=good and energy=tired both wrong: text is overwhelm/'madness'/'always on the move' (not tired, not good); impaired focus ('competing thoughts', 'paralyzed') missed."
+ },
+ {
+  "id": "3e46e324-d059-4273-b271-81250e74df68",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=great false_positive: 'pretty great life' describes circumstances; emotional content is overwhelm + eating disorder + low self-esteem. feelings=overwhelmed is the only right read."
+ },
+ {
+  "id": "a3d37582-c939-4a3d-a7ae-29366711c32c",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "Pure pharmacology info; null mood/energy/focus correct, meds right. But sleepHours=9 is a misread (9h is Concerta duration, not sleep)."
+ },
+ {
+  "id": "060d6d78-fae2-4132-8ef7-db58034ec840",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low right ('constantly stressing myself out'); 'I crash at the first opportunity' is an energy-crash signal that was missed."
+ },
+ {
+  "id": "4e1646b6-cf96-4b7b-88f9-37518f3c053e",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Both wrong: 'tired of trying to fight to focus' is idiomatic fed-up + he uses constant mental energy (not physically tired); he struggles to focus, so focus=sharp is inverted."
+ },
+ {
+  "id": "01c51bd9-d2a9-474f-810b-9daa638e2835",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — educational RSD/lizard-brain advice with no first-person current mood/energy/focus; correctly nulled."
+ },
+ {
+  "id": "c0fd58df-d268-43bc-be81-973f76a5c020",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Reflective questions about treatment; faint 'just my anxiety talking' aside is too weak to require a mood. Nulls acceptable."
+ },
+ {
+  "id": "c2a98864-a907-4524-8d0b-a6daccf4d824",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — friendly Asperger's-vs-ADHD discussion, no personal mood/energy/focus state; correctly nulled."
+ },
+ {
+  "id": "edd41885-40e8-4979-b553-c90a3a96b9f8",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp inverted: text is about a 'spacey feeling'/'clear the fog' (impaired focus) and is advice directed at the reader, not the writer."
+ },
+ {
+  "id": "61d83c59-aec7-446b-bbc4-8f60ac528c79",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "good",
+  "note": "mood=great defensible ('best thing I've ever done', 'medication has been great'), Ritalin right; feelings=frustrated points at the reader but mood read holds."
+ },
+ {
+  "id": "4c27bac5-77ef-4a36-a332-ff2017cc635f",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=great right (enthusiastic: 'I'm stoked', 'I love going to new places'); feelings=loved is a misread ('loved by some people' = theatre, not the writer), but that axis isn't judged here."
+ },
+ {
+  "id": "7a76f667-b6ba-49ce-a192-f76e0e6d387b",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus=sharp right ('increased focus'), Vyvanse + anxious right; mood=low partial — he's ambivalent and concludes 'the positives make it worth it', not clearly low."
+ },
+ {
+  "id": "ff0a3dc6-421a-470b-be1b-9603b9b741e6",
+  "mood": "na",
+  "energy": "correct",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "good",
+  "note": "energy=tired ('Dex made me tired') and focus=sharp ('the way I could focus on vyvanse') both explicit; Vyvanse/dex/Ritalin all captured. Strong record."
+ },
+ {
+  "id": "b5a5b6bf-71c2-4c14-bf91-66b85e21efd5",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Both inverted: text is 'not so good'/anxiety+depression so mood=okay overshoots; he can't get anything done, so focus=sharp is wrong ('okay-ish' was only bare-minimum function)."
+ },
+ {
+  "id": "31ce9a7a-48ce-4080-8443-96d383dc1375",
+  "mood": "na",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus missed: clear distractibility ('constantly losing things', 'can't keep up with patterns once meds wear off') should yield scattered/foggy, extractor returned none."
+ },
+ {
+  "id": "cdfd10be-033b-4a8e-acef-9367756b80cb",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=great unsupported ('great' modifies the teacher) and energy=charged inverted ('takes so much energy to continue' = drained); focus=sharp partial via med-aided study. Only feelings=frustrated is right."
+ },
+ {
+  "id": "6457a4a8-694e-4c20-aa62-b4c8d21bc0b5",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good inverted: text is explicitly sad ('I feel sadness, and frustration', 'It still hurts thinking about my past'); car/fuel line is a meds metaphor, not positive mood."
+ },
+ {
+  "id": "84370eaf-f751-421b-9751-b6fb216bad27",
+  "mood": "missed",
+  "energy": "correct",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Raw emotions/self-hatred/anxiety = clear low mood, returned null; energy 'sluggish' (shutdown) is right."
+ },
+ {
+  "id": "20040aa1-dc59-41fd-a528-25e03672c964",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Clean — 'restless' here is restless-leg-syndrome advice, not energy; correctly left all levels null."
+ },
+ {
+  "id": "3b2a621e-f130-438b-a1d9-3ce61f3dbc52",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Asserted mood 'great' on a purely informational ESA-vs-service-dog explainer with no first-person affect."
+ },
+ {
+  "id": "3382de9f-0162-4b9e-a37e-897f3db8e8de",
+  "mood": "correct",
+  "energy": "correct",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood low / energy tired right, but focus 'sharp' is wrong — writer describes procrastination, not sharp focus."
+ },
+ {
+  "id": "17855213-afbc-4bd6-a0bb-f4e4a5a5bce3",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'Discouraged by lack of progress' is a clear low-mood signal captured as a feeling but no mood level set."
+ },
+ {
+  "id": "364bee6e-0cd3-4904-9443-19881a6ffdde",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus 'present' unsupported (compulsive talking, not grounded focus); 'feel dumb' low-mood missed."
+ },
+ {
+  "id": "55759e18-ab33-4a9e-ab9e-576b8ed917ed",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "mood 'good' (calm/content) and Ritalin right, but focus 'foggy' contradicts text describing hyperfocus/less-distractible."
+ },
+ {
+  "id": "be1500bb-c2c5-4a54-b02d-136ceeee11a8",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "'It can feel good' + 'breakthrough' supports mood 'good'; rest correctly null. Clean."
+ },
+ {
+  "id": "ec991a99-c635-4cde-8eef-c11b915c4ea5",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus 'distracted' matches 'the distracted parts'; clinical recount has no clear mood, null correct."
+ },
+ {
+  "id": "d1acd743-d21b-40bb-b163-1d1798f607ef",
+  "mood": "missed",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "energy 'steady' fabricated (no energy cue); 'guilty' self-critical mood left unleveled."
+ },
+ {
+  "id": "bc9ae320-779a-4b09-9d04-8c54ae27a6f0",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "good",
+  "note": "mood low, focus distracted ('spacing out'), Adderall all correct — though Adderall duplicated in meds[]."
+ },
+ {
+  "id": "9ceac551-5319-44c1-b51c-21c2a55ff7c7",
+  "mood": "correct",
+  "energy": "partial",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "mood 'great' (loves vyvanse) right; energy 'steady' over-read; meds present but massively duplicated (Vyvanse x5)."
+ },
+ {
+  "id": "8b3765f2-ccd2-47c3-a09e-f8e6b6b171a5",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Both mood 'good' and focus 'sharp' read from 2nd-person gratitude/focus advice, not the writer's own state."
+ },
+ {
+  "id": "4fce5e34-cde2-4792-b400-2b2e94a45537",
+  "mood": "false_positive",
+  "energy": "partial",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood 'flat' unsupported (writer is encouraging/upbeat); energy 'tired' only weakly/occasionally supported."
+ },
+ {
+  "id": "0c436283-3728-46d7-b975-83766ca50d10",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus 'sharp' is the child's chess focus, not writer's; mood 'low' over-reads mild frustration in an otherwise positive post."
+ },
+ {
+  "id": "05a868d2-9925-42b7-b3a2-f567ade1bc92",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus 'sharp' right ('Of course I was focusing... I love puzzles'); but 'outraged/annoyed' negative mood missed."
+ },
+ {
+  "id": "88ad60f3-7079-4e5d-a0cd-e18bdf18090a",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "good",
+  "note": "mood 'flat' nails the zombie/'killed ups and downs' description; Adderall+Ritalin captured (Ritalin dup)."
+ },
+ {
+  "id": "684a9c30-c286-447f-82e0-3c1828f7f425",
+  "mood": "correct",
+  "energy": "false_positive",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood 'great'/happy and focus 'sharp' (focus problems 'solved') right; energy 'steady' has no textual support."
+ },
+ {
+  "id": "e062b054-320f-49cc-9d33-926abd5c8da4",
+  "mood": "false_positive",
+  "energy": "correct",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood 'okay' contradicts acute distress (sobbing, regrets, anxiety) — should be low; energy 'alert' (wired) is fine."
+ },
+ {
+  "id": "640be13b-eb26-4189-8140-4691b02dd496",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "mood low ('frustrated/hopeless') and Ritalin right; focus 'present' unsupported by media/wearing-off advice."
+ },
+ {
+  "id": "d45c78a0-26c3-4cc1-8b6b-68ebb1940ccd",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Clean — neutral advice about firing/proofing an employee; correctly returned no levels."
+ },
+ {
+  "id": "820f3704-a80a-46f9-a80b-03147a39bd07",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "Adderall XR right; mood 'okay' under-reads overwhelm/devastation; focus 'sharp' unsupported (post is about overwhelm)."
+ },
+ {
+  "id": "a480cba8-cf5d-4d0c-aa4c-37c974720121",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus 'distracted' matches 'on stimulants but still can't concentrate'; generic 'stimulants' (unnamed) correctly not in meds."
+ },
+ {
+  "id": "9b543ab0-dd13-470e-93db-31037aa50e4b",
+  "mood": "correct",
+  "energy": "correct",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood low + energy tired both match 'irritable/tired/overwhelmed'; 'medicated' unnamed so empty meds is fine."
+ },
+ {
+  "id": "3bd29615-c41d-46ea-a7a4-ff2dc85c6bdf",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Abstract third-person discussion (others' calm/focus/anxiety); mood=low and focus=sharp both fabricated from non-self content."
+ },
+ {
+  "id": "7896090e-0a6d-46ad-a9d6-8cd22de78f5d",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "Advice post with only faint 'sense of humor intact'; nulls are the safe, defensible call — clean."
+ },
+ {
+  "id": "2a646e66-146e-4d48-b87f-34b724d19998",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood=low ('miserable wretch') and focus=sharp (gaming 'hyper focus target') both well-supported."
+ },
+ {
+  "id": "ff7817da-a08f-4875-b380-4c12fac76372",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Pure opinion on degrees/'who you know'; mood=good and feelings=[content] are fabricated — no emotional content."
+ },
+ {
+  "id": "161bea97-8137-4bd0-82cb-a1d8436ff58f",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus=sharp ('fog lifted, think clearly') and meds=[Adderall] correct; mood=good is mostly recounted past relief/advice, weakly personal."
+ },
+ {
+  "id": "f7af7b15-ea2b-4d43-a6dc-0ee08c0d224b",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "'This is me right now', nervous/anxious/stressed → mood=low correct; clean."
+ },
+ {
+  "id": "435539a2-3213-429c-8fcd-e680e744d9e8",
+  "mood": "partial",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'feeling pretty well equipped' is mildly confident, not 'great'; energy=steady is a fabricated FP (no energy content)."
+ },
+ {
+  "id": "00f38837-1ca8-4d46-8f6b-6d38a9fa87af",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Dominant tone is insecurity/sadness ('everyone kinda hates me', depression); mood=great inverts it — 'happy' only refers to finding the sub."
+ },
+ {
+  "id": "9dd2473b-a118-4101-ae32-c9d5ac3e6b8d",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "false_positive",
+  "overall": "poor",
+  "note": "Text is a Wikipedia HSP bot definition with zero personal content; mood=great, focus=present, meds=[dex] all hallucinated."
+ },
+ {
+  "id": "898897fe-5a4b-4278-bf69-84093a731618",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "partial",
+  "overall": "ok",
+  "note": "meds captured but duplicated 6x and missed ritalin/biphentin; 'jumpy' is side-effect not mood — nulls otherwise fine."
+ },
+ {
+  "id": "28bc292b-faa7-4295-880a-2fdefdd5d25c",
+  "mood": "partial",
+  "energy": "correct",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "energy=tired ('ADHD is exhausting') and meds=[Adderall] correct; focus=present unsupported; mood=good weak (supportive tone, no personal positive)."
+ },
+ {
+  "id": "bbbcaad2-e49e-4cc0-8711-d4bc0770c2dd",
+  "mood": "partial",
+  "energy": "correct",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "good",
+  "note": "focus=sharp (caffeine 'boost my focus'), energy=steady ('better than baseline'), meds correct; mood=good only weakly supported."
+ },
+ {
+  "id": "371efc10-eb67-40a8-825b-ea2854a1dd55",
+  "mood": "missed",
+  "energy": "correct",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "ok",
+  "note": "energy=steady ('calmer, not wired') correct, but 'at my peak almost all the time' is a clear focus signal that was missed."
+ },
+ {
+  "id": "ba105b1e-feae-43aa-9ab6-1eab3ddbf100",
+  "mood": "missed",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "energy=steady fabricated (no energy content); self-critical 'guilty' tone is a mild mood signal extractor left null while still tagging feelings=[guilty]."
+ },
+ {
+  "id": "b90fd33f-fc77-404f-b11f-2478a651920e",
+  "mood": "correct",
+  "energy": "partial",
+  "focus": "missed",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "mood=low and meds=[Elvanse] correct; 'really struggling to write today'/meds-not-lasting is a clear focus signal that was missed."
+ },
+ {
+  "id": "3a2d9cf0-9346-4df6-ad3e-23fe38c1084a",
+  "mood": "na",
+  "energy": "partial",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=sharp ('everything was clear, made sense') correct; energy=steady only weakly inferable from caffeine/exercise mentions."
+ },
+ {
+  "id": "27e6f593-276d-41b1-803e-6b6454e4e458",
+  "mood": "na",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'I feel horrible at the end of the day' is an energy-depletion signal that was missed (gold=energy); rest defensibly null."
+ },
+ {
+  "id": "1cd252b0-66ff-4234-a9a2-2fe6f8471d97",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Narrative/advice with no current state; energy=steady is a fabricated FP, null mood is correct."
+ },
+ {
+  "id": "adbcd8c0-4f16-4b4e-88c0-c16e53ab6206",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "'I focus well in class' → focus=sharp correct; only faint 'good teacher' mood, null is fine."
+ },
+ {
+  "id": "0eb678e6-131e-468f-bd7b-e7e68900b9a8",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Tense error: depression is explicitly past ('last few years'); current state is 'absolutely loving it'/'glorious' → mood=low inverts the present."
+ },
+ {
+  "id": "a8d83858-922e-61aea22c5bde",
+  "mood": "false_positive",
+  "energy": "missed",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Post is about sleep/fatigue (energy, missed); extractor mis-assigned mood=good + focus=present, both fabricated."
+ },
+ {
+  "id": "bc33fb0d-b95d-463d-96b8-cd6077daa4b3",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Describes severe ADHD / exec function 'in the 20s' (impaired); focus=sharp is the exact opposite of the text."
+ },
+ {
+  "id": "3b1f0556-7cdf-4f88-a2a8-52a906676709",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low (defeated/depressed) correct, but 'nearly impossible to focus' → focus=sharp inverts it; energy depletion ('nothing left') missed."
+ },
+ {
+  "id": "a49c36bb-1c5f-411c-a757-f4c3ca3773fa",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "'noticeably cheerful and happy person... I'm happy' → mood=great correct; clean."
+ },
+ {
+  "id": "fcaf9277-65d8-4556-a525-3947aa93a716",
+  "mood": "false_positive",
+  "energy": "correct",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood:okay too neutral — writer conveys low/pained mood ('It hurts', resignation); energy:tired correct."
+ },
+ {
+  "id": "7aa470bc-cb9f-44e3-a322-0b4fb3e8c78b",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "missed",
+  "overall": "ok",
+  "note": "focus:distracted from generic 'you can't focus' framing; missed past meds (antidepressant/ADHD med/benzo)."
+ },
+ {
+  "id": "d11d7648-62c5-468e-a640-a3ed45bb2f9d",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "missed",
+  "overall": "ok",
+  "note": "focus:distracted correct ('haven't taken meds, not most attentive'); missed clear current med mention ('only been on meds 2 days')."
+ },
+ {
+  "id": "82c9f192-164d-438a-958f-b7e9f02e4a8a",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood:great overstates ambivalent self-view ('bothers me','laziness'); scatterbrain/procrastination = distracted focus missed."
+ },
+ {
+  "id": "c2694aec-2c48-465c-89e5-de12e2b98fb5",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "energy:steady contradicts text ('just exhausted','weakness','sleepless nights'); meds Vyvanse/Ritalin/Adderall correct."
+ },
+ {
+  "id": "e8ea3e8d-4c05-4238-9b29-074879a18324",
+  "mood": "missed",
+  "energy": "missed",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus:lockedIn is the opposite — text says 'zero ability to focus, gave up after 5 min'; hopeful mood and low energy both missed."
+ },
+ {
+  "id": "950d8b67-249d-4fd7-904f-9cd75ad07a94",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Pure advice to another person — mood:good and focus:present attribute the addressee's state to the writer."
+ },
+ {
+  "id": "82388ff3-061c-4b32-a6da-321ce2c13aff",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Advice to a parent; 'overwhelmed' is about teachers generally — mood:low and focus:present have no writer-state basis."
+ },
+ {
+  "id": "5c452230-07f4-4d1b-8e19-e005630b70d6",
+  "mood": "partial",
+  "energy": "missed",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus:present + Concerta correct; energy null despite 'motivated 8am-8pm' / 'jittery'; mood:good only fits current, ignores 'mood swings, it was bad'."
+ },
+ {
+  "id": "4b89a9df-4ecc-4459-865f-7fe522868eb6",
+  "mood": "missed",
+  "energy": "partial",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus:sharp matches 'head is clear, get shit done'; energy:tired reads the idiom 'tired of feeling lazy'; low/frustrated mood (lost lead role) missed."
+ },
+ {
+  "id": "a1ae1d69-0372-432a-b900-db26faac1c86",
+  "mood": "partial",
+  "energy": "correct",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus:sharp ('brain feels sharper') and energy:tired ('still get tired on meds') correct; mood:low describes the past paralysis, present is improved."
+ },
+ {
+  "id": "d1b5d677-003f-4207-b21c-0f19114206fa",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Abstract debate on ad revenue; mood:okay has no emotional-state basis ('interesting debate, not angry')."
+ },
+ {
+  "id": "e9c7a4b7-983f-4209-b8b0-a070c4cb2064",
+  "mood": "correct",
+  "energy": "correct",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "good",
+  "note": "clean — mood:great ('how happy I am'), energy:charged ('wired'), Ritalin/Vyvanse all correct."
+ },
+ {
+  "id": "9495e0b6-755b-4b03-ba1b-fcf780251d4e",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood:good fits ('it's magic'); energy null despite explicit 'can't muster the energy to brush my teeth'."
+ },
+ {
+  "id": "c853a919-61e7-4c06-8911-8ca298bdabc2",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood:low correct (frustrated/angry/annoyed); focus:sharp overreads 'grit my teeth in order to focus' — that's effortful tension, not sharp focus."
+ },
+ {
+  "id": "126e096c-199c-4a9b-90d5-7529463d261b",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "mood:low correct ('When I am depressed'); note feelings:[grateful] is a coping behavior, not positive mood."
+ },
+ {
+  "id": "7c936e4f-3627-4d27-aa6f-23376d3c402e",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus:sharp unsupported — cognitive reflection on acting vs observing thoughts; mood:low overstates mild 'frustrating/bugged me'."
+ },
+ {
+  "id": "8e130508-e7a1-4a58-9c0e-3bcc875ef476",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "meds:amphetamine correct (E404/U30 generics); mood:good wrong — tone is critical/annoyed ('those pills are crap'), no positive mood."
+ },
+ {
+  "id": "ddd92505-ec4b-4947-a8b1-5fe4ce95e399",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Entirely advice to the reader ('Stay strong, good luck'); mood:good reflects warmth toward addressee, not writer's own state."
+ },
+ {
+  "id": "fb1bf9bd-ea8e-4845-822e-442d9e179ee6",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "meds:amphetamine correct; focus:present unsupported — 'barely functional/high and focus' is generic dose-chasing warning, not writer's state."
+ },
+ {
+  "id": "2669baaa-7a70-428b-84f6-deb255ed1de1",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — encouraging reflection with no strong self-state; all-null is correct."
+ },
+ {
+  "id": "2a6403a5-9a6b-4e31-88f9-09b3aaea66b6",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus:sharp correct (hyperfocus, 'get so deeply focused'); energy:alert unsupported — no energy-state claim, only attention/hyperfocus."
+ },
+ {
+  "id": "c6270ef1-ca5e-4824-9a55-05c2c4ff5935",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood:okay is wrong direction — clearly low now ('I hate myself for it','never accomplish anything'); 'can't stay on a task >2 min' = distracted focus missed; feelings:[connected] misreads 'connected the dots'."
+ },
+ {
+  "id": "2f77dab2-9baa-4900-ae2f-6880dce7d118",
+  "mood": "na",
+  "energy": "partial",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Unnamed stimulant dose (3x10mg) so meds null defensible; productivity/'sweet spot' arguably an energy/output signal left null."
+ },
+ {
+  "id": "f8e043cf-f54a-4ddb-83c5-f964a8ea5a37",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "correct",
+  "overall": "good",
+  "note": "clean — first-person med-response post; mood/focus/meds all supported (\"calmer than in years\", \"clear head\", Adderall)."
+ },
+ {
+  "id": "5e4d9a3d-eeef-479f-9b42-669d9e05aa12",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Pure second-person advice with no author state; mood=low and focus=present are both invented."
+ },
+ {
+  "id": "4027dced-fdc2-48ac-8c01-f7821493be01",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — neurochemistry explainer; correctly returned no mood/energy/focus."
+ },
+ {
+  "id": "470f7150-06e5-43db-8ee1-05a9fa72ba14",
+  "mood": "missed",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Missed a clear first-person low state — \"burned out\", \"bad night's sleep\", \"not in the mood\" (mood+energy both present)."
+ },
+ {
+  "id": "ae90c754-5d2d-436d-93f8-b37692193027",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Describes distraction-blocking systems, not a felt state; energy=alert and mood=good unsupported."
+ },
+ {
+  "id": "70affdd2-7ce9-4b29-9c72-d985865e386d",
+  "mood": "na",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Keyword trap — energy=tired/\"exhausted\" from \"exhausting the budget\"; focus=sharp invented from work anecdote."
+ },
+ {
+  "id": "e39c7f92-6193-438e-9dfb-951ebb2fa704",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Reassuring advice to a parent; mood=great is not the author's state (false positive)."
+ },
+ {
+  "id": "367f3626-d469-4d21-97d6-e5cc51359b71",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Keyword trap — mood=okay lifted from \"icecream instead of dinner is okay\", not an emotional state."
+ },
+ {
+  "id": "1b609021-8401-4053-8565-1892edbd6d56",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Constructive cleaning advice; mood=low overstates (states feeling LESS overwhelmed), focus=sharp invented."
+ },
+ {
+  "id": "336776a5-f299-49c2-b83a-2ca619554be5",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Time-blindness struggle + gratitude is not \"great\" (partial); focus=sharp contradicts text (can't focus on convos)."
+ },
+ {
+  "id": "1977b30c-5cf4-4dda-bcaf-de80453e006a",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "\"You seem angry right now\" is the reader's state, not the author's; mood=low is a misattribution."
+ },
+ {
+  "id": "74144729-c525-41c6-99ea-4d76de6a8aba",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Abstract schedule advice; mood=great pulled from conditional \"I have to be happy with that schedule\"."
+ },
+ {
+  "id": "82bbbe69-a7b5-4376-892a-aba8c396862a",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Author is frustrated by interruptions, so mood=good is wrong direction; focus=sharp contradicts \"interrupt my focus\"."
+ },
+ {
+  "id": "8c4b20dd-63e9-4f82-b711-09e811ea20b6",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Retrospective on struggle (\"motivational well had run dry\"); mood=great and energy=steady both unsupported."
+ },
+ {
+  "id": "948900a9-4c09-44f7-9ada-d3c600fc86b8",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "Meds (Strattera) + sideEffect correct, but focus=sharp directly contradicts \"didn't do much for my concentration\"."
+ },
+ {
+  "id": "ecd63f73-1721-4fa2-bfce-3ac283230fa4",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Mood=low correct (\"feel absolutely awful\"), but missed energy despite \"not productive\" + explicitly naming uncontrollable energy."
+ },
+ {
+  "id": "25f20cf7-f20f-459f-b894-c2d83b3641b2",
+  "mood": "na",
+  "energy": "correct",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — focus=foggy (\"brain fog\") and energy=alert (\"completely alert\") both explicitly stated."
+ },
+ {
+  "id": "033fa929-f835-4242-98a5-dbb2ff87ac1d",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Mostly melancholic childhood reflection ending in self-acceptance; mood=good overstates, focus=distracted has no basis."
+ },
+ {
+  "id": "af5be936-cd4c-45dc-a525-2c0ef3463920",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "missed",
+  "overall": "poor",
+  "note": "Missed meds (\"antidepressants and now ADHD meds too\") and distressed mood; focus=sharp is the EX's trait, not author's."
+ },
+ {
+  "id": "cc131435-acd4-467a-b18b-c86ac6af26a0",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Advice to reduce course load \"so you can focus\"; focus=sharp is a goal in advice, not the author's state."
+ },
+ {
+  "id": "7d3edee8-89af-40c4-a9bb-8900343d496f",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Empathetic advice post; all three (mood=good, energy=steady, focus=foggy) invented with no author state."
+ },
+ {
+  "id": "367ccad5-fa90-48e2-bc70-eba6942edfce",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Mood=good unsupported (post is about guilt/attendance rules); no real emotional state expressed."
+ },
+ {
+  "id": "064a54c8-3285-47c9-bda2-370e76291dae",
+  "mood": "na",
+  "energy": "correct",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "ok",
+  "note": "Energy=charged/wired plus motor restlessness is fair, but missed clear inattention (\"zone out\", can't read a textbook)."
+ },
+ {
+  "id": "b0e223c0-9ad6-4b4f-9de6-40d725d0427d",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "Satirical post; mood=low and feelings=anxious are a keyword trap on \"the Anxious\" (a group, not the author)."
+ },
+ {
+  "id": "a1cfc610-6db5-41ed-8c18-e2735c9f1e5e",
+  "mood": "na",
+  "energy": "correct",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "energy=tired well-supported by 'low energy drive' and sitting in bed for hours; clean"
+ },
+ {
+  "id": "3717c93c-0c94-4bfc-8876-b890022fa49f",
+  "mood": "missed",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "returned nothing; 'huge lethargy overtakes you' is a clear energy=tired signal, plus anhedonia (no pleasure) implies low mood"
+ },
+ {
+  "id": "1ae052d2-a9a1-429b-b561-e75675801fff",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "'I feel guilty for doing so little' conveys low mood but mood left null (only captured as feeling); meds correctly empty (unmedicated)"
+ },
+ {
+  "id": "9fdeb050-57f3-4058-8833-6af4edae84a1",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "pure productivity advice, no first-person state; correctly returned nothing (gold over-marks energy)"
+ },
+ {
+  "id": "8065e8d5-f565-4423-8f26-4d06d5aeb976",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "second-person hypothetical therapy advice ('if you feel...'); no author mood; correctly empty"
+ },
+ {
+  "id": "73d2fc7b-415e-462b-959e-e7e8dfc0ad29",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "partial",
+  "overall": "poor",
+  "note": "mood=good unsupported — text is about med-induced anxiety and fear ('curious' is not good mood); meds duplicated Vyvanse x3 and missed Zoloft"
+ },
+ {
+  "id": "12bde789-b1d1-4e8a-9c5b-ec3bca6559b8",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=good fits 'extremely excited'; focus=sharp is wrong — 'I simply have to focus' is an intention, not a report of being focused"
+ },
+ {
+  "id": "0a132e3a-3f97-47b5-adf3-a48d9189b0db",
+  "mood": "partial",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low is right direction but understated given explicit suicidal ideation ('seriously thought about committing suicide')"
+ },
+ {
+  "id": "114c1711-b46a-4ecf-8690-492f7acf6683",
+  "mood": "false_positive",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good contradicts the post — dominant affect is an extreme stimulant 'crash'; that crash is also a missed low-energy signal"
+ },
+ {
+  "id": "27396503-019f-4f4b-b08b-41f4ee37972c",
+  "mood": "missed",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "energy=steady has no textual basis; meanwhile depression-management/regret context conveys low mood that was missed"
+ },
+ {
+  "id": "be00c005-f296-44ed-b636-3e67098d1095",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good is wrong — this is an abstract analytical essay on mental load in relationships, no positive personal mood"
+ },
+ {
+  "id": "9c14ea39-848c-4d60-bc73-449119c16ce4",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "missed",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low fits the anxiety; but explicit 'hyperfocusing'/'mental broken record' focus signal was returned as null"
+ },
+ {
+  "id": "52e6df30-a18d-4c7b-a0a0-64333d372377",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "descriptive essay on what hyperactivity looks like, not a current-state report; correctly empty (gold over-marks energy)"
+ },
+ {
+  "id": "3572269c-d45a-4696-9e6f-d741fb7cb4fd",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "partial",
+  "meds": "partial",
+  "overall": "ok",
+  "note": "meds: 'amphetamine' double-counts dex and 'Adderall' is only a comparison ('something similar like'); focus=present is aspirational, not a current state"
+ },
+ {
+  "id": "89836827-e5fb-4b5d-b76f-ce0e56726623",
+  "mood": "false_positive",
+  "energy": "partial",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "advice post: focus=sharp misreads 'focus on the waking up' (effort, not cognition); mood=good unsupported; energy=tired is only the intended bedtime tiredness; 'rits' unverifiable (text truncated)"
+ },
+ {
+  "id": "8ef32560-2bbf-4129-bfb7-c5a2492a97ff",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "focus=lockedIn and mood=good both well-supported; energy missed — 'struggling with motivation' + sleeping less marked in gold but null"
+ },
+ {
+  "id": "3e2f7f96-9da1-4063-af19-524b2cf95a1f",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "mood=low defensible from 'I'm hopeless'/'my own life is such a disaster'; but feelings=[overwhelmed] is misattributed (it's the client's state)"
+ },
+ {
+  "id": "bfd0ed4f-7779-4652-ab0e-acd3a9a2cf6e",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp is inverted — text says 'because I couldn't focus'; guilt/anhedonia (no satisfaction) is a missed low-mood signal"
+ },
+ {
+  "id": "e300d4a7-3588-4eaf-9c2e-e29040ff2e33",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp false — advice post saying it's 'very hard to absorb' and using 'focus' as a noun ('don't let your reward become your focus')"
+ },
+ {
+  "id": "7d45a6c9-09c4-49fb-8403-dd0eefe67260",
+  "mood": "missed",
+  "energy": "false_positive",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "energy=steady unsupported; personal disclosure 'hardest most brutal thing I've ever done' is a missed low-mood signal"
+ },
+ {
+  "id": "03d829b2-1bb9-4a05-be14-491caffcfca6",
+  "mood": "false_positive",
+  "energy": "false_positive",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "poor",
+  "note": "over-asserted: mood=great/energy=steady/focus=present all unsupported by a reflective mixed-history narrative; only meds=[Ritalin] is right"
+ },
+ {
+  "id": "2fca9609-a06e-4bc4-8c95-3d4470c21517",
+  "mood": "false_positive",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "all second-person encouragement to another person; mood=good and focus=sharp ('focusing on what will help YOU recover') are not the author's state"
+ },
+ {
+  "id": "acc52643-3f2c-4250-a2a4-3a57a1f9b3fb",
+  "mood": "false_positive",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "mood=low overreaches — 'angry' is about making OTHERS angry, not the author's mood; 'restlessness and boredom' is a missed energy signal; Dexedrine correct"
+ },
+ {
+  "id": "07fc790e-06c5-4ec4-955c-a12a6a256fe5",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp inverted — text explicitly cites 'my lack of focus'; mood=low fits the bittersweet ongoing-struggle tone"
+ },
+ {
+  "id": "e4a12cc9-df2c-40ce-922f-e7942bc0e772",
+  "mood": "na",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — meta-discussion about ADHD-as-squirrel, no personal state; all-null correct (gold 'energy' is the stereotype 'hyperactive', not the author)"
+ },
+ {
+  "id": "6254a2a0-77aa-4108-a6a6-8e12388763ba",
+  "mood": "correct",
+  "energy": "partial",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp is wrong — text says 'Focus is an issue'; 'sharp' was triggered by 'high energy songs' (the tool), and energy=charged describes the playlist not the author"
+ },
+ {
+  "id": "6145b98a-6e1c-4937-a185-62788e1a3d61",
+  "mood": "partial",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "ok",
+  "note": "missed low energy — 'hard to get motivated', 'lose a day', 'sitting in PJs'; mood=okay understates the ongoing struggle (meds=[] fine, no named drug)"
+ },
+ {
+  "id": "e5fc257d-de35-49b3-b233-8fbec7ddc847",
+  "mood": "false_positive",
+  "energy": "missed",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "mood=good is the opposite — winter post: 'no sun for months & I have no motivation'; that low motivation is also missed energy"
+ },
+ {
+  "id": "c6e36ab4-c396-45e5-b17b-6b5d243aadc1",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp false — text says focusing on 'overwhelming stuff' is hard; ambivalent mood ('baggage to carry', 'didn't want to be myself') was missed"
+ },
+ {
+  "id": "cbf5c47a-f9fd-4c58-92c1-56cb0d52f43e",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "correct",
+  "overall": "ok",
+  "note": "focus=sharp false — it's hypothetical hearsay about Strattera ('I've heard the focus is more natural'), not the author's state; meds=[Strattera] correct"
+ },
+ {
+  "id": "931d28a1-b9f9-4a8e-9e4f-7f58bbc4ca64",
+  "mood": "missed",
+  "energy": "na",
+  "focus": "na",
+  "meds": "na",
+  "overall": "poor",
+  "note": "missed mood — clear emotional distress/anger ('emotional pain', 'I blow', 'keep stumbling along'); matches gold 'mood', extractor returned nothing"
+ },
+ {
+  "id": "008badad-936d-4696-8e05-c294944793d9",
+  "mood": "na",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "poor",
+  "note": "focus=sharp false — keyword trap: 'focus on your mental health' means prioritize, not attentional sharpness; author's own state not asserted"
+ },
+ {
+  "id": "ecc9d9de-8134-47c8-901b-bdf4c0c40846",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp is backwards — the detached passage is about NOT focusing off-meds ('hard time doing my work'); mood=flat and sideEffect=true both fit"
+ },
+ {
+  "id": "f15ce59c-cc81-4efd-8502-a86ad2e48b05",
+  "mood": "correct",
+  "energy": "na",
+  "focus": "false_positive",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=present contradicts text — 'don't really have the focus/attention to read'; mood=good fits the upbeat tone ('high five!', ':)')"
+ },
+ {
+  "id": "76c08d92-17c5-4a3a-9e32-f12c7b628f0a",
+  "mood": "correct",
+  "energy": "missed",
+  "focus": "partial",
+  "meds": "na",
+  "overall": "ok",
+  "note": "focus=sharp only partial — author concentrates hard but 'just can't do it'; missed energy ('most exhausting thing'); mood=low correct"
+ },
+ {
+  "id": "639fc22e-e0c7-48d7-8df6-20d233aeac32",
+  "mood": "na",
+  "energy": "na",
+  "focus": "correct",
+  "meds": "na",
+  "overall": "good",
+  "note": "clean — focus=distracted nails it ('I just couldn't focus', 'get up every 10 minutes or check my phone')"
+ }
+]
