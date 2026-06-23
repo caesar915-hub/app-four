@@ -87,4 +87,37 @@ struct CheckInViewModelTests {
         #expect(store.recordings.isEmpty)
     }
 
+    // MARK: Record-before-model-ready (US3 / T018)
+
+    /// When the transcription model is NOT ready, finishing a recording must persist it
+    /// as `.pendingTranscription` (never `.transcribing`, never `.failed`) and still reach
+    /// the `.done`/"Captured." UI state — the audio queues for later draining (FR-011/012).
+    @Test func stopWhenModelNotReadyPersistsPendingAndStillReachesDone() async throws {
+        await mocks.aiModel.setStubIsDownloaded(false)  // localPath(for: .whisper) == nil
+
+        let task = viewModel.stopRecording()
+        await task.value
+        if let t = viewModel.transcriptionTask { await t.value }
+
+        let saved = try #require(viewModel.lastSavedRecording)
+        #expect(saved.status == .pendingTranscription)
+        #expect(saved.status != .transcribing)
+        #expect(saved.status != .failed)
+        #expect(viewModel.state == .done)
+    }
+
+    /// When the model IS ready, the stop path is unchanged: the recording transcribes as
+    /// today and ends `.completed` (guards that the pending branch doesn't leak in).
+    @Test func stopWhenModelReadyTranscribesAsToday() async throws {
+        await mocks.aiModel.setStubIsDownloaded(true)
+
+        let task = viewModel.stopRecording()
+        await task.value
+        if let t = viewModel.transcriptionTask { await t.value }
+        if let p = viewModel.processingViewModel.activeTask { await p.value }
+
+        let saved = try #require(viewModel.lastSavedRecording)
+        #expect(saved.status == .completed)
+        #expect(viewModel.state == .done)
+    }
 }

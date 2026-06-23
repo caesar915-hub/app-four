@@ -13,6 +13,7 @@ final class AppServices {
     let aiModelService: AIModelService
     let summarizationService: SummarizationService
     let connectivity: Connectivity
+    let pendingTranscriptionService: PendingTranscriptionService
 
     init(
         audioService: AudioRecordingService,
@@ -20,7 +21,8 @@ final class AppServices {
         transcriptionService: TranscriptionService,
         aiModelService: AIModelService,
         summarizationService: SummarizationService,
-        connectivity: Connectivity
+        connectivity: Connectivity,
+        pendingTranscriptionService: PendingTranscriptionService
     ) {
         self.audioService = audioService
         self.storageService = storageService
@@ -28,5 +30,6 @@ final class AppServices {
         self.aiModelService = aiModelService
         self.summarizationService = summarizationService
         self.connectivity = connectivity
+        self.pendingTranscriptionService = pendingTranscriptionService
     }
 }

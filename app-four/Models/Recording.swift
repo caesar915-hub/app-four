@@ -39,8 +39,14 @@ final class Recording {
 
     /// Name to show in lists/headers. While transcription is in progress the real title
     /// isn't known yet, so show a temporary "Transcribing…" placeholder (feedback §4.1).
+    /// A recording captured before the model was ready reads with a calm "ready shortly"
+    /// affordance instead of its provisional title — never error language (FR-017).
     var displayTitle: String {
-        status == .transcribing ? "Transcribing…" : title
+        switch status {
+        case .transcribing: "Transcribing…"
+        case .pendingTranscription: "Ready shortly…"
+        default: title
+        }
     }
 
     @Relationship(deleteRule: .cascade, inverse: \TranscriptionSegment.recording)

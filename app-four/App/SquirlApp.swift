@@ -45,6 +45,7 @@ private struct RootContainerView: View {
     @Binding var selectedTab: Tab
     @Binding var shouldAutoStartRecording: Bool
     @Environment(AppServices.self) private var services
+    @Environment(\.scenePhase) private var scenePhase
     @Query private var settingsQuery: [AppSettings]
     @State private var showOnboarding: Bool = false
     @State private var downloadKicked = false
@@ -69,8 +70,18 @@ private struct RootContainerView: View {
         }
         // Background model download — kept off the first-run path (FR-007): it
         // never gates UI; the welcome dismisses immediately while the model
-        // arrives on its own schedule.
+        // arrives on its own schedule. Drains the pending queue on completion.
         .task { await startBackgroundModelDownloadIfNeeded() }
+        // Drain any recordings captured before the model was ready (US3): on launch
+        // (a download that finished in a prior session) and on every foreground (one
+        // that finished while backgrounded). The service no-ops when the model isn't
+        // ready or when already draining (FR-013/016).
+        .task { await services.pendingTranscriptionService.drainIfModelReady() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                Task { await services.pendingTranscriptionService.drainIfModelReady() }
+            }
+        }
         .onChange(of: hasCompletedOnboarding) { _, completed in
             if completed { showOnboarding = false }
         }
@@ -100,6 +111,8 @@ private struct RootContainerView: View {
         do {
             let progress = try await aiModelService.download(.whisper)
             for await _ in progress {}
+            // Model just landed — drain anything captured while it was downloading (US3).
+            await services.pendingTranscriptionService.drainIfModelReady()
         } catch {
             // A background download failure must not surface as a first-run error
             // (FR-010); the model stays retryable from its Settings home.

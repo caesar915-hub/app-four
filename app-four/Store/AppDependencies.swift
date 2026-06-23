@@ -15,6 +15,12 @@ enum AppDependencies {
     static let screenTracker = ScreenTracker()
     static let summarizationService: SummarizationService = NLSummarizationService()
     static let connectivity: Connectivity = NetworkConnectivity()
+    static let pendingTranscriptionService: PendingTranscriptionService = PendingTranscriptionServiceImpl(
+        store: store,
+        transcriptionService: transcriptionService,
+        summarizationService: summarizationService,
+        aiModelService: aiModelService
+    )
 
     /// Observable bundle for environment injection into ViewModels.
     static let services = AppServices(
@@ -23,7 +29,8 @@ enum AppDependencies {
         transcriptionService: transcriptionService,
         aiModelService: aiModelService,
         summarizationService: summarizationService,
-        connectivity: connectivity
+        connectivity: connectivity,
+        pendingTranscriptionService: pendingTranscriptionService
     )
 
     private static let sharedWhisperKitService = WhisperKitTranscriptionService(

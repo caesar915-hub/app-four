@@ -67,6 +67,25 @@ struct RecordingStoreTests {
         #expect(untouchedDone.status == .completed)       // healthy one left alone
     }
 
+    // Launch-time orphan recovery sweeps `.transcribing` → `.failed`, but a recording
+    // captured before the model was ready is legitimately `.pendingTranscription` and
+    // MUST be left untouched so it can still drain once the model lands (FR-016 / T020).
+    @Test func orphanRecoveryLeavesPendingTranscriptionUntouched() throws {
+        let pending = Recording(audioFileName: "pending.m4a", status: .pendingTranscription)
+        let orphan = Recording(audioFileName: "orphan.m4a", status: .transcribing)
+        container.mainContext.insert(pending)
+        container.mainContext.insert(orphan)
+        try container.mainContext.save()
+
+        let recovered = RecordingStore(context: container.mainContext)
+
+        let sweptOrphan = try #require(recovered.recordings.first { $0.audioFileName == "orphan.m4a" })
+        let untouchedPending = try #require(recovered.recordings.first { $0.audioFileName == "pending.m4a" })
+        #expect(sweptOrphan.status == .failed)                       // orphan still swept
+        #expect(untouchedPending.status == .pendingTranscription)    // pending preserved
+        #expect(untouchedPending.fullTranscriptText.isEmpty)         // no error message stamped
+    }
+
     @Test func adhdFieldsPersistThroughSave() throws {
         let recording = Recording(
             audioFileName: "adhd.m4a",

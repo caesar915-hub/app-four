@@ -16,6 +16,7 @@ final class CheckInViewModel {
     @ObservationIgnored private let audioService: AudioRecordingService
     @ObservationIgnored private let storageService: AudioFileStorageService
     @ObservationIgnored private let transcriptionService: TranscriptionService
+    @ObservationIgnored private let aiModelService: AIModelService
     @ObservationIgnored private let store: RecordingStore
     private(set) var processingViewModel: ProcessingViewModel
 
@@ -36,6 +37,7 @@ final class CheckInViewModel {
         self.audioService = services.audioService
         self.storageService = services.storageService
         self.transcriptionService = services.transcriptionService
+        self.aiModelService = services.aiModelService
         self.processingViewModel = ProcessingViewModel(
             store: store,
             summarizationService: services.summarizationService
@@ -105,6 +107,15 @@ final class CheckInViewModel {
 
                 // Immediately show done; transcribe in background
                 self.state = .done
+
+                // Model not ready: persist as pending and skip transcription. The
+                // PendingTranscriptionService drains it through this exact path once the
+                // model lands — capture stays "Captured.", never a .failed (FR-011/012).
+                guard self.aiModelService.localPath(for: .whisper) != nil else {
+                    recording.status = .pendingTranscription
+                    self.store.save()
+                    return
+                }
 
                 self.transcriptionTask = Task {
                     // Let the prior transcription finish first (serialize on the single

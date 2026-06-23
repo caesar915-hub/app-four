@@ -18,6 +18,10 @@ final class RecordingStore {
     /// the app was killed or relaunched mid-transcription (e.g. its transcription was
     /// cancelled by a second recording and never finalized). Recover it to `.failed`
     /// so the detail view stops showing a permanent "Transcribing…" and offers retry.
+    ///
+    /// Scoped to `.transcribing` only: a `.pendingTranscription` recording (captured
+    /// before the model was ready) is legitimately waiting and MUST NOT be swept — it
+    /// drains via `PendingTranscriptionService` once the model lands (FR-016).
     private func recoverOrphanedTranscriptions() {
         let orphaned = recordings.filter { $0.status == .transcribing }
         guard !orphaned.isEmpty else { return }
