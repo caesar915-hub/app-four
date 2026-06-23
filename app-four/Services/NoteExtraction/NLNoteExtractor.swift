@@ -110,8 +110,8 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
         // 1. Mood (per-sentence, aggregated). Each signal has an explicit, documented
         //    policy (P1.2): mood = present-tense-wins, energy/focus = strongest-match-wins.
         var moodCandidates: [(label: String, temporalWeight: Double, sentenceIndex: Int)] = []
-        var energyCandidates: [(level: EnergyLevel, phraseLength: Int)] = []
-        var focusCandidates: [(level: FocusLevel, phraseLength: Int)] = []
+        var energyCandidates: [(level: EnergyLevel, weight: Double, phraseLength: Int)] = []
+        var focusCandidates: [(level: FocusLevel, weight: Double, phraseLength: Int)] = []
 
         // 2. Medications, tasks, wins, etc. collected per-sentence
         var medEvents: [MedEvent] = []
@@ -152,29 +152,32 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
             let lower = sentence.lowercased()
             let tokens = CueMatcher.tokenizeWithLemmas(sentence)
 
-            // Mood via exact lexicon seed (with targeted negation). Tag each
-            // candidate with its sentence's tense so present-tense moods win the
-            // headline (past moods are context).
+            // Tense weight for THIS sentence (present 1.0 > neutral 0.5 > past 0.2).
+            // Computed once and applied to mood, energy, AND focus so all three
+            // subjective signals prefer the present — energy/focus no longer ignore
+            // time, mirroring mood (spec 011 US1).
+            let tenseWeight = tenseClassifier.tense(of: sentence).temporalWeight
+
+            // Mood via exact lexicon seed (with targeted negation).
             if let moodMatch = nearestMood(tokens: tokens) {
                 let negated = isNegatedBefore(target: moodMatch.matchedPhrase, in: lower)
                 let effectiveMood = negated ? flipMood(moodMatch.label) : moodMatch.label
-                let weight = tenseClassifier.tense(of: sentence).temporalWeight
-                moodCandidates.append((effectiveMood, weight, sentenceIndex))
+                moodCandidates.append((effectiveMood, tenseWeight, sentenceIndex))
             }
 
-            // Energy (with targeted negation) — collect candidates; strongest match
-            // (longest exact lexicon phrase) wins after the loop, not the last sentence (P1.2).
+            // Energy (with targeted negation) — present-tense-wins, then strongest
+            // (longest exact lexicon phrase) match.
             if let energyMatch = nearestEnergy(tokens: tokens) {
                 let negated = isNegatedBefore(target: energyMatch.phrase, in: lower)
                 let effectiveEnergy = negated ? flipEnergy(energyMatch.level) : energyMatch.level
-                energyCandidates.append((effectiveEnergy, energyMatch.phrase.count))
+                energyCandidates.append((effectiveEnergy, tenseWeight, energyMatch.phrase.count))
             }
 
-            // Focus (with targeted negation) — same strongest-match-wins policy.
+            // Focus (with targeted negation) — same present-tense-then-strongest policy.
             if let focusMatch = nearestFocus(tokens: tokens) {
                 let negated = isNegatedBefore(target: focusMatch.phrase, in: lower)
                 let effectiveFocus = negated ? flipFocus(focusMatch.level) : focusMatch.level
-                focusCandidates.append((effectiveFocus, focusMatch.phrase.count))
+                focusCandidates.append((effectiveFocus, tenseWeight, focusMatch.phrase.count))
             }
 
             // Medications (can be multiple per sentence)
@@ -249,12 +252,17 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
             extraction.mood = bestMood.label
         }
 
-        // Energy / focus = strongest match wins: longest exact lexicon phrase across
-        // sentences, so a more specific multi-word hit beats a shorter one.
-        if let bestEnergy = energyCandidates.max(by: { $0.phraseLength < $1.phraseLength }) {
+        // Energy / focus = present-tense-wins, then strongest match: a present-tense
+        // value beats a past one (mirrors mood), and among equal-tense candidates the
+        // longest exact lexicon phrase wins (spec 011 US1).
+        if let bestEnergy = energyCandidates.max(by: { a, b in
+            a.weight != b.weight ? a.weight < b.weight : a.phraseLength < b.phraseLength
+        }) {
             extraction.energy = bestEnergy.level
         }
-        if let bestFocus = focusCandidates.max(by: { $0.phraseLength < $1.phraseLength }) {
+        if let bestFocus = focusCandidates.max(by: { a, b in
+            a.weight != b.weight ? a.weight < b.weight : a.phraseLength < b.phraseLength
+        }) {
             extraction.focus = bestFocus.level
         }
 
@@ -334,33 +342,37 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
         return false
     }
 
+    // Negating an ordinal lands on the adjacent/middle tier, not the polar opposite:
+    // "not great" ≈ okay, not low; "not sluggish" ≈ steady, not charged. Polar flips
+    // manufactured false extreme states (spec 011 US2).
     private func flipMood(_ mood: String) -> String {
         switch mood {
-        case "great", "good": return "low"
-        case "low": return "okay"
-        case "okay": return "low"
-        case "flat": return "okay"
-        default: return mood
+        case "great": return "okay"
+        case "good":  return "okay"
+        case "okay":  return "low"
+        case "low":   return "okay"
+        case "flat":  return "okay"
+        default:      return mood
         }
     }
 
     private func flipEnergy(_ energy: EnergyLevel) -> EnergyLevel {
         switch energy {
-        case .charged:  return .sluggish
-        case .alert:    return .tired
+        case .charged:  return .steady
+        case .alert:    return .steady
         case .steady:   return .tired
         case .tired:    return .steady
-        case .sluggish: return .alert
+        case .sluggish: return .steady
         }
     }
 
     private func flipFocus(_ focus: FocusLevel) -> FocusLevel {
         switch focus {
-        case .lockedIn:   return .foggy
-        case .sharp:      return .distracted
+        case .lockedIn:   return .present
+        case .sharp:      return .present
         case .present:    return .distracted
         case .distracted: return .present
-        case .foggy:      return .sharp
+        case .foggy:      return .present
         }
     }
 
@@ -597,13 +609,28 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
     private static let sleepHoursRegex = try? NSRegularExpression(
         pattern: #"(?i)\b(?:slept|in bed(?: for)?|got|had|asleep for)\s+(?:about |around |roughly |maybe |only |a good )?(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)\b"#
     )
+    // Worded sleep durations ("slept, maybe three hours", "a solid nine hours"). The
+    // digit regex matched numerals only, so worded amounts were a recall miss
+    // (spec 011 US4). The bridge tolerates a short qualifier/punctuation gap.
+    private static let sleepHoursWordRegex = try? NSRegularExpression(
+        pattern: #"(?i)\b(?:slept|in bed(?: for)?|got|had|asleep for)\b[^.\d]{0,22}?\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s+(?:hours?|hrs?)\b"#
+    )
+    private static let numberWords: [String: Double] = [
+        "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+        "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12
+    ]
 
     private func extractSleepHours(from text: String) -> Double? {
-        guard let regex = Self.sleepHoursRegex else { return nil }
         let range = NSRange(text.startIndex..., in: text)
-        if let match = regex.firstMatch(in: text, options: [], range: range),
+        if let regex = Self.sleepHoursRegex,
+           let match = regex.firstMatch(in: text, options: [], range: range),
            let hoursRange = Range(match.range(at: 1), in: text) {
             return Double(text[hoursRange])
+        }
+        if let regex = Self.sleepHoursWordRegex,
+           let match = regex.firstMatch(in: text, options: [], range: range),
+           let wordRange = Range(match.range(at: 1), in: text) {
+            return Self.numberWords[text[wordRange].lowercased()]
         }
         return nil
     }
