@@ -44,7 +44,7 @@ struct TimelineChip: View {
     HStack {
         TimelineChip(icon: "heart.fill", label: "Happy")
         TimelineChip(icon: "moon.fill", label: "5h sleep")
-        TimelineChip.medication("TAKEN CONCERTA 36MG")
+        TimelineChip.medication("Taken Concerta 36mg")
     }
     .padding()
 }

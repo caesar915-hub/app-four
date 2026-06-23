@@ -82,13 +82,13 @@ struct TimelineRow: View {
         }
     }
 
-    /// "TAKEN CONCERTA 36MG" for each distinct dose logged at this instant.
+    /// "Taken Concerta 36mg" for each distinct dose logged at this instant.
     private var takenLabels: [String] {
         var seen = Set<String>()
         return node.intakeDoses.compactMap { dose in
             guard seen.insert(dose.name).inserted else { return nil }
             let med = dose.dose.map { "\(dose.name) \($0)" } ?? dose.name
-            return "Taken \(med)".uppercased()
+            return "Taken \(med)"
         }
     }
 }

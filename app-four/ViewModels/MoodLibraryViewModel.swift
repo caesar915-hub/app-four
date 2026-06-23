@@ -152,9 +152,9 @@ final class MoodLibraryViewModel {
         store.recordings.first { $0.id == id }
     }
 
-    // MARK: - Private
+    // MARK: - Day labels
 
-    private func dayLabel(for date: Date) -> String {
+    func dayLabel(for date: Date) -> String {
         if calendar.isDateInToday(date) {
             return "Today, \(dayFormatter.string(from: date))"
         } else if calendar.isDateInYesterday(date) {

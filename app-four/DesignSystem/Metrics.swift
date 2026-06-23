@@ -17,6 +17,9 @@ enum Metrics {
     static let timeBead: CGFloat = 54
     /// Diameter of the mood-glyph circle in a folded day-card header
     static let headerMoodCircle: CGFloat = 58
+    /// Base size for the folded-card summary's inline signal glyph (fixed-point, decorative) and
+    /// its mood text (scales with Dynamic Type) — the two align at the default text size.
+    static let summarySignal: CGFloat = 15
 
     /// Decorative SF Symbol sizes (large hero glyphs, not Dynamic Type text).
     /// These use a fixed point size intentionally because they are imagery, not copy.

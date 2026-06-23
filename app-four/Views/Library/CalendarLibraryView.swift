@@ -14,8 +14,6 @@ struct CalendarLibraryView: View {
     @AppStorage("autoExpandOnSelection") private var autoExpandOnSelection = true
     @State private var isProgrammaticScroll = false
     @State private var scrollGuardTask: Task<Void, Never>?
-    @State private var scrollOffset: CGFloat = 0
-    @State private var headerHeight: CGFloat = 0
     @Environment(AppServices.self) private var services
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     private let store: RecordingStore
@@ -25,10 +23,6 @@ struct CalendarLibraryView: View {
         self.store = store
         _viewModel = State(wrappedValue: MoodLibraryViewModel(store: store))
         _selectedTab = selectedTab
-    }
-
-    private var currentHeaderOpacity: Double {
-        Self.headerOpacity(scrollOffset: scrollOffset, headerHeight: headerHeight)
     }
 
     var body: some View {
@@ -46,6 +40,8 @@ struct CalendarLibraryView: View {
                 if let recording = viewModel.recording(for: ref.id) {
                     RecordingDetailView(recording: recording, store: store, services: services)
                         .presentationDragIndicator(.visible)
+                } else {
+                    Color.clear.onAppear { detailRef = nil }   // recording deleted out from under the sheet → dismiss
                 }
             }
         }
@@ -60,17 +56,8 @@ struct CalendarLibraryView: View {
 
     // MARK: - Header
 
-    /// The header+divider block as a non-scrolling element (used only in the empty-state path).
     private var pinnedHeader: some View {
         headerBlock
-    }
-
-    /// The header+divider block that lives inside the ScrollView as first content.
-    private var scrollingHeader: some View {
-        headerBlock
-            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { headerHeight = $0 }
-            .opacity(currentHeaderOpacity)
-            .allowsHitTesting(currentHeaderOpacity > 0.05)
     }
 
     private var headerBlock: some View {
@@ -95,45 +82,51 @@ struct CalendarLibraryView: View {
     // MARK: - Timeline
 
     private var timelineList: some View {
-        ScrollView {
-            LazyVStack(spacing: Spacing.m) {
-                scrollingHeader
-                ForEach(viewModel.timelineDaysFilteredToSelectedDate(selectedDay)) { day in
-                    DayCard(
-                        day: day,
-                        isExpanded: expandedCards.contains(day.date),
-                        onToggleExpand: {
-                            withAnimation(reduceMotion ? nil : Motion.smooth) {
-                                expandedCards = expandedCards.toggling(day.date)
-                            }
-                        },
-                        onTapRecording: { detailRef = RecordingDetailRef(id: $0) }
-                    )
-                    .id(day.date)
+        VStack(spacing: 0) {
+            pinnedHeader
+            filterCaption
+            ScrollView {
+                LazyVStack(spacing: Spacing.m) {
+                    ForEach(viewModel.timelineDaysFilteredToSelectedDate(selectedDay)) { day in
+                        DayCard(
+                            day: day,
+                            isExpanded: expandedCards.contains(day.date),
+                            onToggleExpand: {
+                                withAnimation(reduceMotion ? nil : Motion.smooth) {
+                                    expandedCards = expandedCards.toggling(day.date)
+                                }
+                            },
+                            onTapRecording: { detailRef = RecordingDetailRef(id: $0) }
+                        )
+                        .id(day.date)
+                    }
                 }
+                .padding(.horizontal, Spacing.l)
+                .padding(.top, Spacing.m)
+                .padding(.bottom, Spacing.xxl)
             }
-            .padding(.horizontal, Spacing.l)
-            .padding(.top, Spacing.m)
-            .padding(.bottom, Spacing.xxl)
+            .scrollPosition(id: $topDayID, anchor: .top)
+            .onChange(of: topDayID) { _, newValue in
+                guard !isProgrammaticScroll, let day = newValue else { return }
+                selectedDay = day
+            }
+            .edgeFadeMask(top: 0, bottom: Spacing.section)
         }
-        .scrollPosition(id: $topDayID, anchor: .top)
-        .onScrollGeometryChange(for: CGFloat.self) { geo in
-            geo.contentOffset.y + geo.contentInsets.top   // 0 at rest, grows as scrolled up — inset-independent
-        } action: { _, new in
-            scrollOffset = new
-        }
-        .edgeFadeMask(top: 0, bottom: Spacing.section)
-        .onChange(of: topDayID) { _, newValue in
-            guard !isProgrammaticScroll, let day = newValue else { return }
-            selectedDay = day
-        }
+        .animation(reduceMotion ? nil : Motion.smooth, value: calendar.isDateInToday(selectedDay))
     }
 
-    // MARK: - Pure opacity mapping (testable)
-
-    static func headerOpacity(scrollOffset: CGFloat, headerHeight: CGFloat) -> Double {
-        guard headerHeight > 0 else { return 1.0 }
-        return Double(min(max(1 - scrollOffset / headerHeight, 0), 1))
+    /// Names the filter boundary so a list trimmed to "≤ selected day" (FR-010) never reads as
+    /// silently missing entries. Suppressed at today, when nothing is filtered out.
+    @ViewBuilder private var filterCaption: some View {
+        if !calendar.isDateInToday(selectedDay) {
+            Text("Entries up to \(viewModel.dayLabel(for: selectedDay))")
+                .font(Typography.caption)
+                .foregroundStyle(Theme.textSecondary)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, Spacing.l)
+                .padding(.top, Spacing.s)
+                .transition(.opacity)
+        }
     }
 
     // MARK: - Selection / navigation
@@ -157,7 +150,7 @@ struct CalendarLibraryView: View {
         }
         scrollGuardTask?.cancel()                       // a newer tap supersedes the previous guard
         scrollGuardTask = Task { @MainActor in
-            try? await Task.sleep(for: .seconds(0.45))  // ~ the scroll animation; clears the loop guard
+            try? await Task.sleep(for: .seconds(Motion.smoothDuration + 0.05))   // outlast the reposition animation, then clear the loop guard
             if !Task.isCancelled { isProgrammaticScroll = false }
         }
     }

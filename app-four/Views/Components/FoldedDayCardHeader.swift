@@ -17,7 +17,7 @@ struct FoldedDayCardHeader: View {
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 HStack(spacing: Spacing.s) {
                     Text(day.label)
-                        .font(.fraunces(19))
+                        .font(Typography.dayCardDate)
                         .foregroundStyle(.primary)
                         .lineLimit(1)
                     Spacer(minLength: Spacing.s)
@@ -57,15 +57,15 @@ struct FoldedDayCardHeader: View {
         } else {
             FlowLayout(spacing: Spacing.s) {
                 ForEach(Array(parts.enumerated()), id: \.offset) { idx, part in
-                    HStack(spacing: 3) {
+                    HStack(spacing: Spacing.xs) {
                         if idx > 0 {
                             Text("·").foregroundStyle(Theme.textSecondary)
                         }
                         if let kind = part.kind {
-                            SignalGlyph(kind, level: part.level, size: 15, decorative: true)
+                            SignalGlyph(kind, level: part.level, size: Metrics.summarySignal, decorative: true)
                         }
                         Text(part.text)
-                            .font(part.isMood ? .fraunces(15) : Typography.caption)
+                            .font(part.isMood ? .fraunces(Metrics.summarySignal) : Typography.caption)
                             .foregroundStyle(part.color)
                             .lineLimit(1)
                     }
