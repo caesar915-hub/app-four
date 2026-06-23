@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Calendar — hero direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4EEE2; --paper:#FBF6EC; --surface:#FFFDF7; --surface2:#EFE7D6; --ink:#221E16; --muted:#8A8270;
+    --hair:#E7DECB; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#7E5CA8;
+    --shadow-sm:0 1px 2px rgba(60,48,24,.04); --shadow:0 2px 6px rgba(60,48,24,.05),0 14px 34px rgba(60,48,24,.08);
+  }
+  [data-theme="dark"]{
+    --bg:#100F0B; --paper:#1A1812; --surface:#221F18; --surface2:#2C2920; --ink:#F3EEE0; --muted:#9A917C;
+    --hair:#34301F; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.3); --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:1060px;margin:0 auto;padding:48px 28px 120px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;margin-bottom:8px;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(36px,5vw,56px);line-height:1.02;margin:0;letter-spacing:-.025em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:19px;color:var(--accent);margin:16px 0 0;max-width:60ch;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:11px 18px;box-shadow:var(--shadow-sm);z-index:50;}
+  .stage{display:flex;gap:60px;flex-wrap:wrap;align-items:flex-start;margin-top:44px;}
+  .unit{width:392px;}
+  .state-label{font-family:'Fraunces',serif;font-size:17px;font-weight:600;margin-bottom:4px;}
+  .state-note{font-size:12.5px;color:var(--muted);margin-bottom:16px;}
+
+  .phone{width:392px;height:828px;background:var(--bg);border-radius:54px;border:1px solid var(--hair);box-shadow:var(--shadow);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:124px;height:30px;background:var(--ink);border-radius:0 0 18px 18px;opacity:.92;z-index:5;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:16px 30px 0;font-size:13px;color:var(--ink);font-weight:600;font-family:'DM Sans';}
+  .scroll{flex:1;overflow:hidden;padding:14px 22px 26px;}
+  .fr{font-family:'Fraunces',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+
+  /* med bar — first component */
+  .medcard{background:var(--surface);border:1px solid var(--hair);border-radius:24px;padding:18px 20px;box-shadow:var(--shadow-sm);}
+  .med-top{display:flex;align-items:center;gap:12px;}
+  .med-disc{width:42px;height:42px;border-radius:14px;background:color-mix(in srgb,var(--med) 14%,var(--surface));display:flex;align-items:center;justify-content:center;flex:0 0 42px;}
+  .track{position:relative;height:8px;border-radius:6px;background:var(--surface2);overflow:visible;margin-top:16px;}
+  .fill{position:absolute;left:0;top:0;height:100%;border-radius:6px;background:linear-gradient(90deg,color-mix(in srgb,var(--med) 55%,var(--surface)),var(--med));}
+  .knob{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:var(--med);transform:translate(-50%,-50%);box-shadow:0 0 0 4px color-mix(in srgb,var(--med) 22%,transparent);}
+
+  /* calendar */
+  .cal-head{display:flex;align-items:baseline;justify-content:space-between;margin:26px 2px 14px;}
+  .cal-title{font-family:'Fraunces',serif;font-size:24px;font-weight:500;letter-spacing:-.01em;}
+  .week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .day{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 0 8px;border-radius:18px;}
+  .day .dn{font-size:16px;font-weight:600;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .day .dl{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.02em;}
+  .day.today{background:var(--paper);box-shadow:var(--shadow-sm);}
+  .day.today .dn{background:var(--ink);color:var(--bg);}
+  .bead{width:7px;height:7px;border-radius:50%;}
+
+  /* section + day cards */
+  .sec{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--muted);margin:28px 2px 14px;}
+  .entry{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--hair);border-radius:22px;padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow-sm);}
+  .entry-disc{width:54px;height:54px;border-radius:18px;display:flex;align-items:center;justify-content:center;flex:0 0 54px;}
+  .entry .word{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-.01em;}
+  .entry .line{font-size:13px;color:var(--muted);margin-top:2px;}
+  .entry .time{margin-left:auto;font-family:'IBM Plex Mono';font-size:12px;color:var(--muted);align-self:flex-start;padding-top:3px;}
+
+  .quiet{background:var(--paper);border:1px dashed var(--hair);border-radius:24px;padding:30px 22px;text-align:center;}
+  .quiet .fr{font-size:20px;font-weight:500;}
+  .add{display:flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(90deg,var(--green),color-mix(in srgb,var(--amber) 60%,var(--green)));color:#fff;border-radius:999px;padding:15px;font-weight:700;font-size:15px;margin-top:18px;box-shadow:var(--shadow-sm);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · Paper &amp; Pollen · Calendar · hero direction</p>
+      <h1>Warm, spacious, unhurried</h1>
+      <p class="sub">One direction, built to the Tiimo / Reflectly / Fantastical bar. Medication bar first, calendar below, day cards beneath. Two states: a logged day, and a quiet day — to show the screen never shames you.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div class="stage" id="stage"></div>
+</div>
+
+<script>
+const moodRamp=['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'];
+const energyRamp=['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'];
+const focusRamp=['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.8,op=(0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.4,cx=12,cy=13,d=l<=2?'stroke-dasharray="3 3"':'';let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}" ${d}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.7"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.3"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.22"/></g></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p)=>`color-mix(in srgb, ${h} ${p}%, var(--surface))`;
+const mg=(l,b)=>`<span class="glyph">${gMood(cssv(moodRamp[l-1]),l,b||9)}</span>`;
+const MOODW=['Low','Flat','Okay','Good','Great'];
+
+const DAYS=[['M',15,3,true],['T',16,2,false],['W',17,null,true],['T',18,4,true],['F',19,4,true,'today'],['S',20,null,false,'future'],['S',21,null,false,'future']];
+function week(){
+  return DAYS.map(([wl,n,m,med,flag])=>{
+    const today=flag==='today',future=flag==='future';
+    return `<div class="day ${today?'today':''}"><span class="dl">${wl}</span><span class="dn" style="${!today?`color:${future?'var(--muted)':'var(--ink)'}`:''}">${n}</span><span style="display:flex;gap:3px">${m?`<span class="bead" style="background:${cssv(moodRamp[m-1])}"></span>`:`<span class="bead" style="background:var(--hair)"></span>`}${med?`<span class="bead" style="background:var(--med)"></span>`:''}</span></div>`;
+  }).join('');
+}
+function medbar(state){
+  const winding = state==='active';
+  return `<div class="medcard"><div class="med-top"><span class="med-disc">${icCapsule(cssv('var(--med)'),22)}</span><div style="flex:1"><div class="fr" style="font-size:18px;font-weight:600">Concerta 18 mg</div><div style="font-size:12.5px;color:var(--muted)">${winding?'Winding down · ends 02:34':'Taken 14:34 · winding down'}</div></div><span class="mono" style="font-size:12px;color:var(--med);font-weight:600">5h left</span></div><div class="track"><span class="fill" style="width:58%"></span><span class="knob" style="left:58%"></span></div></div>`;
+}
+function entry(time,mood,line){
+  const hex=cssv(moodRamp[mood-1]);
+  return `<div class="entry"><span class="entry-disc" style="background:${tint(hex,55)}">${mg(mood,12)}</span><div style="flex:1"><div class="word" style="color:${hex}">${MOODW[mood-1]}</div><div class="line">${line}</div></div><span class="time">${time}</span></div>`;
+}
+
+function phone(state){
+  const head=`<div class="notch"></div><div class="statusbar"><span>14:34</span><span>􀙇 􀉪 􀛨</span></div>`;
+  const cal=`<div class="cal-head"><span class="cal-title">June</span><span style="font-size:15px;color:var(--muted)">‹  ›</span></div><div class="week">${week()}</div>`;
+  if(state==='active'){
+    const body=`${medbar('active')}${cal}
+      <div class="sec" style="color:var(--green)">TODAY · FRIDAY 19</div>
+      ${entry('16:12',4,'Finally shipped it. Felt light after.')}
+      ${entry('12:05',3,'Steady — got the deep block in.')}
+      ${entry('09:15',3,'Slow start, foggy, but calm.')}`;
+    return `<div class="phone">${head}<div class="scroll">${body}</div></div>`;
+  } else {
+    const body=`${medbar('active')}${cal}
+      <div class="sec" style="color:var(--green)">TODAY · FRIDAY 19</div>
+      <div class="quiet"><div class="fr">No check-ins yet</div><div style="font-size:13px;color:var(--muted);margin-top:6px">That’s alright. Squirl’s here when you are.</div><div class="add">＋ Speak a check-in</div></div>
+      <div class="sec">YESTERDAY · THURSDAY 18</div>
+      ${entry('21:40',4,'Cooked, didn’t doomscroll. Good evening.')}`;
+    return `<div class="phone">${head}<div class="scroll">${body}</div></div>`;
+  }
+}
+
+function render(){
+  document.getElementById('stage').innerHTML=`
+    <div class="unit"><div class="state-label">A logged day</div><div class="state-note">Calm cards, one mood read each, generous air.</div>${phone('active')}</div>
+    <div class="unit"><div class="state-label">A quiet day</div><div class="state-note">Empty reads as permission, never red or overdue.</div>${phone('quiet')}</div>`;
+}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

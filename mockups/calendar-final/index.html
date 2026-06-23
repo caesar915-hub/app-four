@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Calendar — final (dynamic)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4EEE2; --paper:#FBF6EC; --surface:#FFFDF7; --surface2:#EFE7D6; --ink:#221E16; --muted:#8A8270;
+    --hair:#E7DECB; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#7E5CA8; --sleep:#5566A6;
+    --m-low:#DA7A2A; --m-flat:#EDA94A; --m-okay:#9FCB79; --m-good:#5FB36E; --m-great:#2E8B57;
+    --shadow:0 2px 6px rgba(60,48,24,.05),0 14px 34px rgba(60,48,24,.08); --shadow-sm:0 1px 2px rgba(60,48,24,.05);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  [data-theme="dark"]{
+    --bg:#100F0B; --paper:#1A1812; --surface:#221F18; --surface2:#2C2920; --ink:#F3EEE0; --muted:#9A917C;
+    --hair:#34301F; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC; --sleep:#7A8AC8;
+    --m-low:#E08A3C; --m-flat:#EFB860; --m-okay:#A9D183; --m-good:#6EC07C; --m-great:#43A268;
+    --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:780px;margin:0 auto;padding:48px 28px 110px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(34px,5vw,50px);line-height:1.02;margin:0;letter-spacing:-.025em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--accent);margin:14px 0 0;max-width:54ch;}
+  .hint{font-size:13px;color:var(--muted);margin:10px 0 0;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:11px 18px;box-shadow:var(--shadow-sm);z-index:50;}
+  .stage{display:flex;justify-content:center;margin-top:40px;}
+
+  .phone{width:360px;height:760px;background:#000;border-radius:52px;padding:10px;box-shadow:var(--shadow);}
+  .screen{position:relative;width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font-size:12px;font-weight:600;}
+  .fr{font-family:'Fraunces',serif;} .mono{font-family:'IBM Plex Mono',monospace;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+
+  .medbar{margin:6px 14px 0;padding:11px 15px;border-radius:22px;background:color-mix(in srgb,var(--surface) 78%,transparent);backdrop-filter:blur(16px);border:1px solid var(--hair);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:11px;}
+  .medbar .pill{width:32px;height:32px;border-radius:10px;background:color-mix(in srgb,var(--med) 14%,transparent);display:flex;align-items:center;justify-content:center;flex:none;}
+  .medbar .mname{font-size:13.5px;font-weight:700;} .medbar .mmeta{font-size:10.5px;color:var(--muted);margin-top:1px;}
+  .medbar .mtrack{width:56px;height:5px;border-radius:4px;background:var(--surface2);overflow:hidden;flex:none;}
+  .medbar .mtrack span{display:block;height:100%;width:58%;background:var(--med);border-radius:4px;}
+
+  .hdr{padding:12px 18px 0;} .hdr .top{display:flex;align-items:center;justify-content:space-between;}
+  .hdr .month{font-family:'Fraunces',serif;font-size:18px;font-weight:600;} .hdr .chev{color:var(--muted);font-size:13px;}
+  .hdr .today{font-size:11px;font-weight:700;color:var(--accent);border:1.2px solid var(--accent);border-radius:20px;padding:3px 10px;cursor:pointer;}
+  .wcaps{display:flex;margin-top:11px;} .wcaps span{flex:1;text-align:center;font-size:11px;color:var(--muted);font-weight:600;}
+  .drow{display:flex;margin-top:4px;}
+  .day{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:3px;cursor:pointer;}
+  .day .n{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:14px;font-weight:600;transition:background .2s var(--ease),color .2s var(--ease);}
+  .day.today .n{border:1.6px solid var(--ink);}
+  .day.sel .n{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+  .day.future .n{color:var(--muted);}
+  .day .dot{width:6px;height:6px;border-radius:50%;}
+  .divider{height:1px;background:var(--hair);margin:11px 18px 0;}
+
+  .list{flex:1;overflow-y:auto;padding:13px 16px 78px;scrollbar-width:none;-webkit-mask-image:linear-gradient(transparent,#000 12px,#000 calc(100% - 60px),transparent);mask-image:linear-gradient(transparent,#000 12px,#000 calc(100% - 60px),transparent);scroll-behavior:smooth;}
+  .list::-webkit-scrollbar{display:none;}
+  .daycard{background:var(--surface);border:1px solid var(--hair);border-radius:16px;overflow:hidden;margin-bottom:11px;box-shadow:var(--shadow-sm);transition:border-color .25s var(--ease),box-shadow .25s var(--ease);scroll-margin-top:8px;}
+  .daycard.today{border-color:color-mix(in srgb,var(--accent) 45%,var(--hair));}
+  .daycard.sel{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 55%,transparent),var(--shadow-sm);border-color:color-mix(in srgb,var(--accent) 55%,var(--hair));}
+  .wash{padding:12px 15px;display:flex;align-items:center;gap:10px;cursor:pointer;user-select:none;}
+  .wash .dl{font-family:'Fraunces',serif;font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px;}
+  .wash .meta{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);font-weight:600;}
+  .wash .chev{font-size:13px;color:var(--muted);transition:transform .26s var(--ease);}
+  .daycard.open .wash .chev{transform:rotate(180deg);}
+  .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s var(--ease);}
+  .daycard.open .body{grid-template-rows:1fr;}
+  .body>.inner{overflow:hidden;}
+  .tlrow{display:flex;gap:11px;padding:11px 15px;border-top:1px solid var(--hair);}
+  .tlrow .bcol{display:flex;flex-direction:column;align-items:center;flex:none;padding-top:1px;}
+  .tlrow .line{width:2px;flex:1;background:var(--hair);margin-top:3px;}
+  .tlrow .time{font-size:10.5px;color:var(--muted);}
+  .tlrow .summary{font-size:13.5px;font-weight:600;margin-top:2px;}
+  .tlrow .chips{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;}
+  .chip{font-size:9.5px;font-weight:700;letter-spacing:.3px;padding:3px 8px;border-radius:20px;text-transform:uppercase;}
+  .chip.med{background:color-mix(in srgb,var(--med) 14%,transparent);color:var(--med);}
+  .chip.sleep{background:color-mix(in srgb,var(--sleep) 16%,transparent);color:var(--sleep);}
+  .empty{padding:18px 15px;border-top:1px solid var(--hair);text-align:center;}
+  .empty .t{font-size:12.5px;color:var(--muted);}
+  .speak{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,var(--green),color-mix(in srgb,var(--amber) 55%,var(--green)));color:#fff;border-radius:999px;padding:10px 16px;font-weight:700;font-size:13px;margin-top:12px;cursor:pointer;}
+
+  .tabbar{position:absolute;left:18px;right:18px;bottom:12px;height:54px;border-radius:27px;background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(16px);border:1px solid var(--hair);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:space-around;}
+  .tb{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:9.5px;font-weight:600;} .tb.on{color:var(--accent);}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;} .list{scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · Paper &amp; Pollen · Calendar · final · dynamic</p>
+      <h1>Fold, unfold, jump</h1>
+      <p class="sub">Days rest folded and unfold on tap. Tapping a date in the row selects it, opens its card, and scrolls it into view.</p>
+      <p class="hint">Try: tap <b>11</b>, <b>13</b>, or <b>10</b> in the day row · tap any card to fold/unfold · tap <b>Today</b> to jump back.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div class="stage"><div class="phone"><div class="screen" id="screen"></div></div></div>
+</div>
+
+<script>
+const RAMP={1:'--m-low',2:'--m-flat',3:'--m-okay',4:'--m-good',5:'--m-great'};
+const MOODW=['Low','Flat','Okay','Good','Great'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.7"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.3"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.22"/></g></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const mc=l=>cssv('var('+RAMP[l]+')');
+const tint=(h,p)=>`color-mix(in srgb, ${h} ${p}%, var(--surface))`;
+const mg=(l,b)=>`<span class="glyph">${gMood(mc(l),l,b||8)}</span>`;
+const cap=(sz)=>`<span class="glyph">${icCapsule(cssv('var(--med)'),sz||13)}</span>`;
+function ringBead(mood,doses){const S=32,c=16;doses=doses||[];const n=Math.min(3,doses.length);let r='';for(let i=0;i<n;i++){const rr=7.5+(n-1-i)*3;const C=2*Math.PI*rr;const p=Math.min(0.99,doses[i]);r+=`<circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="2" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${c} ${c})" opacity="0.9"/>`;}const ctr=mood?`<circle cx="${c}" cy="${c}" r="5" fill="${mc(mood)}"/>`:`<circle cx="${c}" cy="${c}" r="4.6" fill="var(--bg)" stroke="${cssv('var(--muted)')}" stroke-width="1.5"/>`;return `<span class="glyph"><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">${r}${ctr}</svg></span>`;}
+
+// week Mon..Sun = 9..15
+const WEEK=[9,10,11,12,13,14,15];
+// day data keyed by date
+const DAY={
+  9:{wd:'Mon',mood:3,meds:true,entries:[{time:'08:50',mood:3,summary:'Ordinary start to the week',chips:['med'],doses:[0.4]}]},
+  10:{wd:'Tue',mood:null,meds:false,entries:[]},
+  11:{wd:'Wed',mood:2,meds:false,entries:[{time:'14:00',mood:2,summary:'Off day, low energy',chips:[],doses:[]}]},
+  12:{wd:'Thu',mood:4,meds:true,entries:[{time:'09:30',mood:4,summary:'Productive morning',chips:['med'],doses:[0.5]},{time:'18:00',mood:3,summary:'Faded in the evening',chips:[],doses:[]}]},
+  13:{wd:'Fri',mood:5,meds:true,entries:[{time:'10:00',mood:5,summary:'Best day in a while',chips:['med'],doses:[0.3]},{time:'17:30',mood:4,summary:'Stayed sharp',chips:['sleep'],doses:[0.85]}]},
+  14:{wd:'Sat',mood:3,meds:false,entries:[{time:'20:10',mood:3,summary:'Quiet evening, even keel',chips:[],doses:[]}]},
+  15:{wd:'Sun',mood:4,meds:true,today:true,entries:[{time:'09:12',mood:4,summary:'Steady after the morning walk',chips:['med'],doses:[0.62]},{time:'12:40',mood:3,summary:'Deep work block',chips:[],doses:[]},{time:'19:05',mood:4,summary:'Good evening, cooked dinner',chips:[],doses:[]}]},
+};
+const ORDER=[15,14,13,12,11,10,9]; // list shows most recent first
+const CHIP={med:'<span class="chip med">Taken · Concerta</span>',sleep:'<span class="chip sleep">Slept 7h30</span>'};
+const TODAY=15;
+const _params=new URLSearchParams(location.search);
+const _initDay=Math.min(15,Math.max(9,parseInt(_params.get('day'))||15));
+const state={sel:_initDay, open:{[_initDay]:true}};
+
+function dayCard(n){
+  const d=DAY[n];
+  const wash=d.mood?tint(mc(d.mood),42):'var(--surface)';
+  const left=d.mood?`${mg(d.mood,8)} ${d.wd} ${n} · ${MOODW[d.mood-1]}`:`${ringBead(null,[])} ${d.wd} ${n}`;
+  const meta=d.entries.length?`${d.entries.length}${d.meds?' · '+cap(13):''}`:'—';
+  let body;
+  if(d.entries.length){
+    body=d.entries.map((e,i)=>`<div class="tlrow"><div class="bcol">${ringBead(e.mood,e.doses)}${i<d.entries.length-1?'<span class="line"></span>':''}</div><div style="flex:1"><div class="time">${e.time}</div><div class="summary">${e.summary}</div>${e.chips.length?`<div class="chips">${e.chips.map(c=>CHIP[c]).join('')}</div>`:''}</div></div>`).join('');
+  } else {
+    body=`<div class="empty"><div class="t">No check-ins this day. That’s alright.</div><div class="speak">◍ Speak a check-in</div></div>`;
+  }
+  const cls=['daycard', n===TODAY?'today':'', state.open[n]?'open':'', n===state.sel?'sel':''].filter(Boolean).join(' ');
+  return `<div class="${cls}" data-n="${n}"><div class="wash" style="background:${wash}"><span class="dl">${left}</span><span class="meta">${meta}<span class="chev">⌄</span></span></div><div class="body"><div class="inner">${body}</div></div></div>`;
+}
+function dayPip(n){
+  const d=DAY[n],fut=n>TODAY;
+  const cls=['day', n===TODAY?'today':'', n===state.sel?'sel':'', fut?'future':''].filter(Boolean).join(' ');
+  return `<div class="${cls}" data-n="${n}"><span class="n">${n}</span><span class="dot" style="background:${d.mood&&!fut?mc(d.mood):'transparent'}"></span></div>`;
+}
+function render(){
+  document.getElementById('screen').innerHTML=`
+    <div class="statusbar"><span>14:34</span><span>􀙇 􀉪 54</span></div>
+    <div class="medbar"><span class="pill">${cap(16)}</span><div style="flex:1"><div class="mname">Concerta 18 mg</div><div class="mmeta">Winding down · ends 02:34</div></div><span class="mtrack"><span></span></span></div>
+    <div class="hdr"><div class="top"><span class="month">June 2026 <span class="chev">›</span></span><span class="today" id="todayBtn">Today</span></div>
+      <div class="wcaps"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+      <div class="drow">${WEEK.map(dayPip).join('')}</div></div>
+    <div class="divider"></div>
+    <div class="list" id="list">${ORDER.map(dayCard).join('')}</div>
+    <div class="tabbar"><div class="tb on">◷<span>Calendar</span></div><div class="tb">◍<span>Check-in</span></div><div class="tb">◳<span>Insights</span></div><div class="tb">⚙<span>Settings</span></div></div>`;
+  wire();
+}
+function selectDay(n,{scroll=true}={}){
+  state.sel=n; state.open[n]=true;
+  // update day pips
+  document.querySelectorAll('.drow .day').forEach(d=>d.classList.toggle('sel',+d.dataset.n===n));
+  // update cards
+  document.querySelectorAll('.daycard').forEach(c=>{const cn=+c.dataset.n;c.classList.toggle('sel',cn===n);if(cn===n)c.classList.add('open');});
+  if(scroll){const card=document.querySelector('.daycard[data-n="'+n+'"]');if(card)card.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+function wire(){
+  document.querySelectorAll('.drow .day').forEach(el=>el.onclick=()=>selectDay(+el.dataset.n));
+  document.querySelectorAll('.daycard .wash').forEach(w=>w.onclick=()=>{
+    const c=w.parentElement,n=+c.dataset.n;
+    const willOpen=!c.classList.contains('open');
+    state.open[n]=willOpen; c.classList.toggle('open',willOpen);
+    // selecting on tap keeps row + card in sync
+    state.sel=n; document.querySelectorAll('.drow .day').forEach(d=>d.classList.toggle('sel',+d.dataset.n===n));
+    document.querySelectorAll('.daycard').forEach(x=>x.classList.toggle('sel',+x.dataset.n===n));
+  });
+  const tb=document.getElementById('todayBtn'); if(tb)tb.onclick=()=>selectDay(TODAY);
+}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme', _params.get('theme')==='dark'?'dark':'light');
+render();
+// on load, bring the initial day's card into view (for ?day= screenshots)
+requestAnimationFrame(()=>{const card=document.querySelector('.daycard[data-n="'+_initDay+'"]');if(card)card.scrollIntoView({block:'start'});});
+</script>
+</body>
+</html>

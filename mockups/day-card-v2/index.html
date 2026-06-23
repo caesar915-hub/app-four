@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Day Card v2 — B/D/E/G elaborations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F6F1E7;--surface:#FCF8EF;--surface2:#EFE8D8;--ink:#221E16;--muted:#7A7361;--hair:#E3DAC7;--green:#5F8A4C;--amber:#E0A33A;--accent:#B8842A;--med:#7E5CA8;--shadow:0 1px 2px rgba(34,30,22,.05),0 8px 24px rgba(34,30,22,.07);}
+  [data-theme="dark"]{--bg:#14130F;--surface:#1E1C16;--surface2:#272419;--ink:#F3EEE0;--muted:#9A917C;--hair:#322E22;--green:#6E9A58;--amber:#E8B255;--accent:#D4A24A;--med:#9277BE;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:1340px;margin:0 auto;padding:40px 28px 120px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 12px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(34px,5vw,54px);line-height:1.03;margin:0;letter-spacing:-.02em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:19px;color:var(--accent);margin:14px 0 0;max-width:68ch;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:10px 16px;box-shadow:var(--shadow);z-index:50;}
+  .row{display:flex;gap:36px;flex-wrap:wrap;align-items:flex-start;margin-top:38px;}
+  .col{width:320px;}
+  .cap{margin-bottom:12px;}
+  .cap .t{font-family:'Fraunces',serif;font-size:18px;font-weight:600;}
+  .cap .lineage{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.05em;color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:middle;}
+  .cap .exp{background:color-mix(in srgb,var(--green) 16%,transparent);color:var(--green);}
+  .cap .d{font-size:12.5px;color:var(--muted);margin-top:5px;}
+  .phone{width:320px;height:700px;background:var(--bg);border-radius:42px;border:1px solid var(--hair);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;}
+  .statusbar{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:14px 24px 6px;font-weight:600;font-family:'IBM Plex Mono',monospace;}
+  .screen{padding:8px 16px 16px;overflow:hidden;flex:1;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .fr{font-family:'Fraunces',serif;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+  .daylbl{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--muted);margin:14px 0 8px;}
+  .daylbl.green{color:var(--green);}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--shadow);padding:13px;margin-bottom:10px;}
+  .ribbonrow{display:grid;grid-template-columns:repeat(7,1fr);row-gap:6px;text-align:center;}
+  .pill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · Paper &amp; Pollen · Day card v2 · 10 elaborations of B / D / E / G</p>
+      <h1>Signals, time &amp; dose — ten ways</h1>
+      <p class="sub">Cross-breeding the four you liked: B signal pills, D intraday timeline, E dose-aware, G expandable. Spine is fixed on every screen — medication bar first, then calendar, then the day-card list. Three cards (marked ⊕ EXPANDABLE) actually expand on tap.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div class="row" id="board"></div>
+</div>
+
+<script>
+// ===== glyphs =====
+const moodRamp=['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'];
+const energyRamp=['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'];
+const focusRamp=['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.8,op=(0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.4,cx=12,cy=13,d=l<=2?'stroke-dasharray="3 3"':'';let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}" ${d}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.7"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.3"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.22"/></g></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p)=>`color-mix(in srgb, ${h} ${p}%, var(--surface))`;
+const mg=(l,b)=>`<span class="glyph">${gMood(cssv(moodRamp[l-1]),l,b||7)}</span>`;
+const eg=(l,b)=>`<span class="glyph">${gEnergy(cssv(energyRamp[l-1]),l,b||7)}</span>`;
+const fg=(l,b)=>`<span class="glyph">${gFocus(cssv(focusRamp[l-1]),l,b||7)}</span>`;
+const cap=(sz)=>`<span class="glyph">${icCapsule(cssv('var(--med)'),sz||16)}</span>`;
+const MOODW=['Low','Flat','Okay','Good','Great'],ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Scattered','Present','Sharp','Locked'];
+function smooth(pts){if(pts.length<2)return'';let d=`M${pts[0][0]} ${pts[0][1]}`;for(let i=0;i<pts.length-1;i++){const p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2;const c1x=p1[0]+(p2[0]-p0[0])/6,c1y=p1[1]+(p2[1]-p0[1])/6,c2x=p2[0]-(p3[0]-p1[0])/6,c2y=p2[1]-(p3[1]-p1[1])/6;d+=` C${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2[0]} ${p2[1]}`;}return d;}
+
+// ===== data (time as decimal hours) =====
+const DOW=['M','T','W','T','F','S','S'];
+const WEEK=[{n:15,m:3,med:true},{n:16,m:2,med:false},{n:17,m:null,med:true},{n:18,m:4,med:true},{n:19,m:4,med:true,today:true},{n:20,future:true},{n:21,future:true}];
+const DOSE=14.57;
+const TODAY=[{t:9.25,time:'09:15',mood:3,energy:2,focus:3},{t:12.08,time:'12:05',mood:3,energy:3,focus:5},{t:16.2,time:'16:12',mood:4,energy:5,focus:3}];
+const YDAY=[{t:13.5,time:'13:30',mood:2,energy:2,focus:2},{t:21.67,time:'21:40',mood:4,energy:3,focus:4}];
+
+// shared frame: MED BAR -> CALENDAR -> list
+function ribbon(){let h='<div class="ribbonrow">';DOW.forEach(d=>h+=`<div style="font-size:11px;font-weight:600;color:var(--muted)">${d}</div>`);WEEK.forEach(d=>{h+=`<div style="display:flex;flex-direction:column;align-items:center;gap:3px"><span style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;background:${d.today?'var(--ink)':'transparent'};color:${d.today?'var(--bg)':(d.future?'var(--muted)':'var(--ink)')}">${d.n}</span><span style="display:flex;gap:2px"><span style="width:5px;height:5px;border-radius:50%;background:${d.m?cssv(moodRamp[d.m-1]):'transparent'}"></span><span style="width:5px;height:5px;border-radius:50%;background:${d.med?'var(--med)':'transparent'}"></span></span></div>`;});return h+'</div>';}
+const MEDBAR=`<div style="background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:9px 12px"><div style="display:flex;justify-content:space-between;align-items:center"><span class="fr" style="font-size:14px">Concerta 18 mg</span><span style="font-size:11px;color:var(--med);font-weight:600">active · ends 02:34</span></div><div style="display:flex;align-items:center;gap:8px;margin-top:7px">${cap(18)}<span style="flex:1;height:5px;border-radius:4px;background:var(--surface2);overflow:hidden"><span style="display:block;height:100%;width:48%;background:var(--med);border-radius:4px"></span></span></div></div>`;
+const SB=`<div class="statusbar"><span>14:34</span><span>54</span></div>`;
+function frame(inner){return `${SB}<div class="screen">${MEDBAR}<div style="margin-top:14px">${ribbon()}</div><div style="height:1px;background:var(--hair);margin:14px -16px"></div>${inner}</div>`;}
+const dom=es=>Math.round(es.reduce((a,e)=>a+e.mood,0)/es.length);
+
+// ===== reusable card pieces =====
+// horizontal dose strip with mood beads at check-in times (E/D)
+function doseStrip(es,h){
+  const t0=7,t1=24,W=288; const X=t=>((t-t0)/(t1-t0))*100;
+  const beads=es.map(e=>`<span style="position:absolute;left:${X(e.t)}%;top:-3px;transform:translateX(-50%)">${mg(e.mood,7)}</span>`).join('');
+  return `<div style="position:relative;height:${h||34}px;margin:6px 0 4px"><div style="position:absolute;left:0;right:0;top:18px;height:7px;border-radius:5px;background:linear-gradient(90deg,${tint('var(--med)',18)} 0%, var(--med) 45%, ${tint('var(--med)',18)} 100%)"></div><span style="position:absolute;left:${X(DOSE)}%;top:9px;transform:translateX(-50%)">${cap(16)}</span>${beads}<span class="mono" style="position:absolute;left:0;top:25px;font-size:8px;color:var(--muted)">07:00</span><span class="mono" style="position:absolute;right:0;top:25px;font-size:8px;color:var(--muted)">24:00</span></div>`;
+}
+// small energy arc curve with mood dots (E)
+function arcCurve(es){
+  const t0=7,t1=24,W=288,H=70,padT=8,padB=4; const X=t=>((t-t0)/(t1-t0))*W; const Y=v=>padT+(H-padT-padB)*(1-v/5);
+  const pts=[];for(let t=t0;t<=t1;t+=0.5){let base=2+Math.sin((t-7)/4)*0.5,d=0;if(t>=DOSE){const dt=t-DOSE;d=3*Math.exp(-Math.pow((dt-1.6)/2.2,2))*(dt<0.6?dt/0.6:1);}pts.push([X(t),Y(Math.min(5,base+d))]);}
+  const curve=smooth(pts),area=curve+` L${W} ${Y(0)} L0 ${Y(0)} Z`;
+  const dots=es.map(e=>`<circle cx="${X(e.t)}" cy="${Y(e.mood+1.3)}" r="5" fill="${cssv(moodRamp[e.mood-1])}"/>`).join('');
+  return `<svg width="100%" viewBox="0 0 ${W} ${H}" style="margin:4px 0"><defs><linearGradient id="ac" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cssv('var(--med)')}" stop-opacity=".22"/><stop offset="1" stop-color="${cssv('var(--med)')}" stop-opacity="0"/></linearGradient></defs><path d="${area}" fill="url(#ac)"/><path d="${curve}" fill="none" stroke="var(--med)" stroke-width="1.8"/><line x1="${X(DOSE)}" y1="${padT}" x2="${X(DOSE)}" y2="${H-padB}" stroke="var(--med)" stroke-width="1" stroke-dasharray="3 3"/>${dots}</svg>`;
+}
+// triple sparkline (B/D)
+function sparkRow(es){
+  const W=200,H=22; const xs=es.map((e,i)=>i*(W/(es.length-1||1)));
+  const line=(key,ramp)=>{const pts=es.map((e,i)=>[xs[i],H-2-((e[key]-1)/4)*(H-4)]);return `<svg width="${W}" height="${H}" style="overflow:visible"><polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${cssv(ramp[3])}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>${pts.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="2.5" fill="${cssv(ramp[3])}"/>`).join('')}</svg>`;};
+  const r=(label,key,ramp,endIdx,words)=>`<div style="display:flex;align-items:center;gap:10px;padding:5px 0"><span style="font-size:10px;font-weight:700;color:var(--muted);width:46px">${label}</span>${line(key,ramp)}<span style="font-size:11px;font-weight:700;margin-left:auto">${words[es[es.length-1][key]-1]}</span></div>`;
+  return r('Mood','mood',moodRamp,0,MOODW)+r('Energy','energy',energyRamp,0,ENW)+r('Focus','focus',focusRamp,0,FOW);
+}
+// full pill rows (B)
+function pillRows(es){return es.map(e=>{const mh=cssv(moodRamp[e.mood-1]);return `<div style="display:flex;gap:9px;align-items:center;padding:6px 0"><span class="mono" style="font-size:10px;color:var(--muted);width:34px">${e.time}</span><span style="flex:1;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center;background:${tint(mh,40)};border-radius:11px;padding:7px 10px"><span class="pill">${mg(e.mood)}${MOODW[e.mood-1]}</span><span class="pill">${eg(e.energy)}${ENW[e.energy-1]}</span><span class="pill">${fg(e.focus)}${FOW[e.focus-1]}</span></span></div>`;}).join('');}
+// dot timeline (D)
+function dotTimeline(es){const sorted=[...es].sort((a,b)=>a.t-b.t);return `<div style="position:relative;height:50px;margin-top:6px"><div style="position:absolute;left:6px;right:6px;top:18px;height:2px;background:var(--hair)"></div>${sorted.map(e=>{const x=((e.t-7)/(24-7))*100;return `<div style="position:absolute;left:${Math.max(3,Math.min(97,x))}%;top:0;transform:translateX(-50%);text-align:center">${mg(e.mood,7)}<div class="mono" style="font-size:8px;color:var(--muted);margin-top:16px">${e.time}</div></div>`;}).join('')}</div>`;}
+
+// ===== 10 elaborations =====
+const VARS=[
+{ t:'1 · Pills, expandable', lineage:'B×G', exp:true, d:'Collapsed: dominant mood + count. Tap → full pill rows.',
+  card:(lbl,es,id)=>`<div class="card xc" data-id="${id}" style="cursor:pointer"><div style="display:flex;align-items:center;gap:11px">${mg(dom(es),10)}<div style="flex:1"><div style="font-size:13.5px;font-weight:700">${lbl} · ${MOODW[dom(es)-1]}</div><div style="font-size:11.5px;color:var(--muted)">${es.length} check-ins · tap to open</div></div><span class="chev" style="color:var(--muted)">⌄</span></div><div class="xbody" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s"><div style="overflow:hidden"><div style="padding-top:8px">${pillRows(es)}</div></div></div></div>` },
+
+{ t:'2 · Dose timeline', lineage:'D×E', d:'Check-ins as mood beads dropped onto the dose arc, by time.',
+  card:(lbl,es)=>`<div class="card"><div style="font-size:13px;font-weight:700">${lbl}</div>${doseStrip(es,38)}<div style="font-size:11.5px;color:var(--muted);margin-top:4px">Steady before the dose, sharper on the peak.</div></div>` },
+
+{ t:'3 · Dose, expandable', lineage:'E×G', exp:true, d:'Collapsed: dose arc + mood. Tap → per-check-in detail.',
+  card:(lbl,es,id)=>`<div class="card xc" data-id="${id}" style="cursor:pointer"><div style="display:flex;align-items:center;gap:10px"><div style="flex:1"><div style="font-size:13.5px;font-weight:700">${lbl} · ${MOODW[dom(es)-1]}</div></div>${cap(16)}<span class="chev" style="color:var(--muted)">⌄</span></div>${doseStrip(es,30)}<div class="xbody" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s"><div style="overflow:hidden"><div style="padding-top:6px">${es.map(e=>`<div style="display:flex;align-items:center;gap:9px;padding:5px 0;border-top:1px solid var(--hair)"><span class="mono" style="font-size:10px;color:var(--muted);width:34px">${e.time}</span>${mg(e.mood)}${eg(e.energy)}${fg(e.focus)}<span style="font-size:11px;color:var(--muted);margin-left:auto">${MOODW[e.mood-1]}</span></div>`).join('')}</div></div></div></div>` },
+
+{ t:'4 · Spine + pills', lineage:'D×B', d:'Left time-spine; each check-in dot opens onto its pill cluster.',
+  card:(lbl,es)=>`<div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:8px">${lbl}</div><div style="position:relative;padding-left:44px">${es.map((e,i)=>{const mh=cssv(moodRamp[e.mood-1]);return `<div style="position:relative;padding-bottom:${i<es.length-1?'12px':'0'}">${i<es.length-1?`<span style="position:absolute;left:-28px;top:14px;bottom:-2px;width:2px;background:var(--hair)"></span>`:''}<span style="position:absolute;left:-44px;top:0;width:30px;height:30px;border-radius:50%;background:${mh};display:flex;align-items:center;justify-content:center">${mg(e.mood,6)}</span><span class="mono" style="position:absolute;left:-44px;top:32px;font-size:8px;color:var(--muted);width:34px;text-align:center">${e.time}</span><div style="display:flex;flex-wrap:wrap;gap:3px 9px;background:${tint(mh,38)};border-radius:11px;padding:7px 10px"><span class="pill">${eg(e.energy)}${ENW[e.energy-1]}</span><span class="pill">${fg(e.focus)}${FOW[e.focus-1]}</span></div></div>`;}).join('')}</div></div>` },
+
+{ t:'5 · Dot timeline, expandable', lineage:'D×G', exp:true, d:'Collapsed: a day of mood dots. Tap → pills per check-in.',
+  card:(lbl,es,id)=>`<div class="card xc" data-id="${id}" style="cursor:pointer"><div style="display:flex;align-items:center"><div style="font-size:13.5px;font-weight:700;flex:1">${lbl}</div><span style="font-size:11px;color:var(--green);font-weight:700;margin-right:8px">${es.length} check-ins</span><span class="chev" style="color:var(--muted)">⌄</span></div>${dotTimeline(es)}<div class="xbody" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows .22s"><div style="overflow:hidden"><div style="padding-top:4px">${pillRows(es)}</div></div></div></div>` },
+
+{ t:'6 · Dose beads', lineage:'E', d:'A pure dose bar with mood beads — the calmest dose read.',
+  card:(lbl,es)=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:700">${lbl}</span><span style="font-size:11px;color:var(--muted)">${MOODW[dom(es)-1]} overall</span></div>${doseStrip(es,40)}</div>` },
+
+{ t:'7 · Compact pills', lineage:'B', d:'One tight line per check-in: time + three glyph chips.',
+  card:(lbl,es)=>`<div class="card">${es.map(e=>`<div style="display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--hair)"><span class="mono" style="font-size:10px;color:var(--muted);width:34px">${e.time}</span><span class="pill">${mg(e.mood)}</span><span class="pill">${eg(e.energy)}</span><span class="pill">${fg(e.focus)}</span><span style="font-size:11px;font-weight:700;margin-left:auto;color:${cssv(moodRamp[e.mood-1])}">${MOODW[e.mood-1]}</span></div>`).join('')}</div>` },
+
+{ t:'8 · Energy arc', lineage:'E', d:'A real felt-energy curve with the dose bump; mood dots ride it.',
+  card:(lbl,es)=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:13px;font-weight:700">${lbl}</span><span class="mono" style="font-size:9px;color:var(--med)">peak ~16:10</span></div>${arcCurve(es)}<div style="display:flex;gap:14px;font-size:9px;color:var(--muted);margin-top:2px"><span>07:00</span><span style="margin-left:auto">24:00</span></div></div>` },
+
+{ t:'9 · Dual lanes', lineage:'D×E', d:'Two micro-lanes share a time axis: dose strip + mood dots.',
+  card:(lbl,es)=>`<div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:6px">${lbl}</div><div style="font-size:9px;font-weight:700;color:var(--med);letter-spacing:.04em">DOSE</div>${doseStrip(es.filter(()=>false),22).replace('07:00','').replace('24:00','')}<div style="font-size:9px;font-weight:700;color:var(--green);letter-spacing:.04em;margin-top:2px">MOOD</div>${dotTimeline(es)}</div>` },
+
+{ t:'10 · Triple sparkline', lineage:'B×D', d:'Mood / energy / focus each as a tiny line across the day.',
+  card:(lbl,es)=>`<div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:4px">${lbl}</div>${sparkRow(es)}</div>` },
+];
+
+function render(){
+  document.getElementById('board').innerHTML=VARS.map((v,vi)=>{
+    const list=`<div class="daylbl green">TODAY · 19 JUN</div>${v.card('Today',TODAY,'t'+vi)}<div class="daylbl">YESTERDAY · 18 JUN</div>${v.card('Yesterday',YDAY,'y'+vi)}`;
+    const badge=`<span class="lineage">${v.lineage}</span>`+(v.exp?`<span class="lineage exp">⊕ EXPANDABLE</span>`:'');
+    return `<div class="col"><div class="cap"><div class="t">${v.t}${badge}</div><div class="d">${v.d}</div></div><div class="phone">${frame(list)}</div></div>`;
+  }).join('');
+  document.querySelectorAll('.xc').forEach(c=>{ c.onclick=()=>{ const b=c.querySelector('.xbody'),ch=c.querySelector('.chev'),open=b.style.gridTemplateRows==='1fr'; b.style.gridTemplateRows=open?'0fr':'1fr'; if(ch)ch.textContent=open?'⌄':'⌃'; }; });
+}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

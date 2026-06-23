@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Calendar — 6 New Concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F6F1E7;--surface:#FCF8EF;--surface2:#EFE8D8;--ink:#221E16;--muted:#7A7361;--hair:#E3DAC7;--green:#5F8A4C;--amber:#E0A33A;--accent:#B8842A;--med:#7E5CA8;--shadow:0 1px 2px rgba(34,30,22,.05),0 8px 24px rgba(34,30,22,.07);}
+  [data-theme="dark"]{--bg:#14130F;--surface:#1E1C16;--surface2:#272419;--ink:#F3EEE0;--muted:#9A917C;--hair:#322E22;--green:#6E9A58;--amber:#E8B255;--accent:#D4A24A;--med:#9277BE;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:1320px;margin:0 auto;padding:40px 28px 120px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 12px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(34px,5vw,54px);line-height:1.03;margin:0;letter-spacing:-.02em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:19px;color:var(--accent);margin:14px 0 0;max-width:66ch;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:10px 16px;box-shadow:var(--shadow);z-index:50;}
+  .row{display:flex;gap:38px;flex-wrap:wrap;align-items:flex-start;margin-top:42px;}
+  .col{width:340px;}
+  .cap{margin-bottom:12px;}
+  .cap .t{font-family:'Fraunces',serif;font-size:19px;font-weight:600;}
+  .cap .d{font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .cap .why{font-size:12px;color:var(--accent);margin-top:5px;font-style:italic;font-family:'Fraunces',serif;}
+  .phone{width:340px;height:720px;background:var(--bg);border-radius:42px;border:1px solid var(--hair);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;}
+  .statusbar{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:14px 24px 6px;font-weight:600;font-family:'IBM Plex Mono',monospace;}
+  .screen{padding:8px 18px 18px;overflow:hidden;flex:1;display:flex;flex-direction:column;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .fr{font-family:'Fraunces',serif;}
+  .scr-title{font-family:'Fraunces',serif;font-size:21px;font-weight:500;}
+  .scr-sub{font-size:12px;color:var(--muted);margin-top:1px;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+  .seg{display:inline-flex;background:var(--surface2);border-radius:999px;padding:3px;gap:2px;}
+  .seg button{border:none;background:transparent;color:var(--muted);font-family:'DM Sans';font-size:11px;font-weight:700;padding:5px 11px;border-radius:999px;cursor:pointer;}
+  .seg button.on{background:var(--bg);color:var(--ink);box-shadow:var(--shadow);}
+  .detail{margin-top:auto;border-top:1px solid var(--hair);padding-top:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · Paper &amp; Pollen · Calendar · 6 new concepts</p>
+      <h1>Not a grid of days</h1>
+      <p class="sub">Each concept changes the primary object and the question the screen answers — growth, trend, the dose arc, your own words, why your good days are good, and you vs. your own baseline. Tap inside the phones; toggle light/dark.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div class="row" id="board"></div>
+</div>
+
+<script>
+// ===== glyphs (ported from Squirl .dc.html) =====
+const moodRamp=['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'];
+const energyRamp=['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'];
+const focusRamp=['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.8,op=(0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.4,cx=12,cy=13,d=l<=2?'stroke-dasharray="3 3"':'';let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}" ${d}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.7"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.3"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.22"/></g></svg>`;}
+function sproutAt(x,y,h,hex,bloom){ // h=height px, bloom 0..1
+  const top=y-h, lw=2.4+bloom*2.2, lh=4+bloom*3.5, fo=(0.45+bloom*0.4).toFixed(2);
+  let s=`<path d="M${x} ${y} C ${x-1} ${y-h*0.5}, ${x+1} ${y-h*0.7}, ${x} ${top}" stroke="${hex}" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;
+  s+=`<ellipse cx="${x-lw-0.5}" cy="${top+lh}" rx="${lw}" ry="${lh}" fill="${hex}" fill-opacity="${fo}" transform="rotate(-40 ${x-lw-0.5} ${top+lh})"/>`;
+  s+=`<ellipse cx="${x+lw+0.5}" cy="${top+lh}" rx="${lw}" ry="${lh}" fill="${hex}" fill-opacity="${fo}" transform="rotate(40 ${x+lw+0.5} ${top+lh})"/>`;
+  if(bloom>0.7) s+=`<circle cx="${x}" cy="${top}" r="${1.5+bloom*1.6}" fill="${hex}"/>`;
+  return s;
+}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(hex,pct)=>`color-mix(in srgb, ${hex} ${pct}%, var(--surface))`;
+
+// smooth path from [[x,y]...] via Catmull-Rom -> cubic bezier
+function smooth(pts){ if(pts.length<2)return''; let d=`M${pts[0][0]} ${pts[0][1]}`; for(let i=0;i<pts.length-1;i++){ const p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2; const c1x=p1[0]+(p2[0]-p0[0])/6,c1y=p1[1]+(p2[1]-p0[1])/6,c2x=p2[0]-(p3[0]-p1[0])/6,c2y=p2[1]-(p3[1]-p1[1])/6; d+=` C${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2[0]} ${p2[1]}`;} return d; }
+
+// ===== sample data =====
+const DOW=['M','T','W','T','F','S','S'];
+// 28 days mood/energy/focus, last = today (19th feels arbitrary; treat idx 27 as today)
+const SERIES=[]; for(let i=0;i<28;i++){ const phase=Math.sin(i/4)*1.3; SERIES.push({ d:i, mood:Math.max(1,Math.min(5,Math.round(3+phase+((i*3)%3-1)*0.6))), energy:Math.max(1,Math.min(5,Math.round(3+Math.sin(i/3+1)*1.2))), focus:Math.max(1,Math.min(5,Math.round(3+Math.cos(i/5)*1.1))), logged:!( (i*7)%9===0 && i<27 ), med:i%7!==2 }); }
+SERIES.forEach((s,i)=>{ if(!s.logged){s.mood=null;} });
+const TODAY=SERIES[27]; TODAY.logged=true; TODAY.mood=4; TODAY.energy=5; TODAY.focus=3;
+const QUOTES=[
+  {date:'Fri 19 Jun',time:'16:12',mood:4,text:'Finally shipped the thing I’d been circling for a week. Felt light after.',dur:'0:38'},
+  {date:'Fri 19 Jun',time:'09:15',mood:3,text:'Slow to start. Coffee’s not touching it yet, but I’m not anxious, just foggy.',dur:'0:22'},
+  {date:'Thu 18 Jun',time:'21:40',mood:4,text:'Good evening. Cooked, didn’t doomscroll. The meds wore off gentle today.',dur:'0:51'},
+  {date:'Tue 16 Jun',time:'13:02',mood:2,text:'Crashed hard after lunch. Couldn’t hold a thought. Wrote it down anyway.',dur:'0:17'},
+];
+
+const SB=`<div class="statusbar"><span>14:34</span><span>54</span></div>`;
+
+// ===== CONCEPTS =====
+const CONCEPTS=[
+{
+  id:'meadow', t:'1 · The Meadow', d:'No grid. A month is a field of sprouts; each check-in grows one. Better days bloom taller, empty days are quiet seeds — never red, never blamed.',
+  why:'A calendar that rewards by growing, not punishes with empty cells.',
+  build(root){
+    const W=304,H=300,ground=H-26, cols=7, gapx=W/cols, rows=4;
+    let plants='';
+    let idx=0;
+    for(let r=0;r<rows;r++){ for(let c=0;c<cols;c++){ if(idx>=28)break; const s=SERIES[idx]; const x=22+c*((W-44)/(cols-1)); const y=70+r*((ground-70)/(rows-1)); const isToday=idx===27;
+      if(s.mood){ const h=14+s.mood*9; const hex=cssv(moodRamp[s.mood-1]); plants+=`<g class="mw-p" data-i="${idx}" style="cursor:pointer">${sproutAt(x,y+12,h,hex,(s.mood-1)/4)}${isToday?`<circle cx="${x}" cy="${y+12}" r="3.4" fill="var(--accent)"/>`:''}</g>`; }
+      else { plants+=`<g class="mw-p" data-i="${idx}" style="cursor:pointer"><circle cx="${x}" cy="${y+10}" r="2.6" fill="var(--muted)" fill-opacity=".4"/></g>`; }
+      idx++; } }
+    root.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:baseline"><div><div class="scr-title">Your June</div><div class="scr-sub">a meadow, 28 days</div></div><span class="fr" style="font-size:13px;color:var(--muted)">‹ May</span></div>
+      <div style="margin-top:8px;background:linear-gradient(180deg,transparent,${tint('var(--green)',7)});border-radius:18px;border:1px solid var(--hair);overflow:hidden">
+        <svg width="100%" viewBox="0 0 ${W} ${H}"><line x1="14" y1="${ground+14}" x2="${W-14}" y2="${ground+14}" stroke="var(--hair)" stroke-width="1.5"/>${plants}</svg></div>
+      <div class="detail" id="mw-det"></div>`;
+    const det=root.querySelector('#mw-det');
+    const show=i=>{ const s=SERIES[i]; const today=i===27;
+      det.innerHTML = s.mood ? `<div style="display:flex;align-items:center;gap:11px"><span class="glyph">${gMood(cssv(moodRamp[s.mood-1]),s.mood,9)}</span><div><div style="font-size:13px;font-weight:700">${today?'Today':'Jun '+(i+1)} · ${['Low','Flat','Okay','Good','Great'][s.mood-1]}</div><div style="font-size:11px;color:var(--muted)">${s.med?'Concerta taken':'no medication'} · tap a sprout to wander</div></div></div>`
+        : `<div style="font-size:12px;color:var(--muted)">Jun ${i+1} — a quiet day, nothing logged. That’s allowed.</div>`;
+    };
+    root.querySelectorAll('.mw-p').forEach(p=>p.onclick=()=>show(+p.dataset.i));
+    show(27);
+  }
+},
+{
+  id:'stream', t:'2 · The Stream', d:'Mood, energy, focus as three flowing ribbons across four weeks. You read the shape of a trend — “focus climbed since the dose change” — which a grid of cells can’t show.',
+  why:'Time is continuous. Patterns live in the curve, not the cells.',
+  build(root){
+    const W=304,H=240,n=28,padL=10,padR=10,padT=14,padB=26; const xw=(W-padL-padR)/(n-1);
+    const bands=[['focus',focusRamp,'Focus'],['energy',energyRamp,'Energy'],['mood',moodRamp,'Mood']];
+    let st={focus:1,energy:1,mood:1};
+    function draw(){
+      // stacked streamgraph centered
+      const vals=SERIES.map(s=>({focus:s.focus||1,energy:s.energy||1,mood:s.mood||1}));
+      let layers='';
+      // compute stacked with center baseline
+      const totals=vals.map(v=>v.focus+v.energy+v.mood);
+      let acc=vals.map(()=>0);
+      let order=['focus','energy','mood'];
+      let lowers=vals.map((v,i)=>-totals[i]/2);
+      let cum=lowers.slice();
+      order.forEach(key=>{
+        const ramp = key==='focus'?focusRamp:key==='energy'?energyRamp:moodRamp;
+        const hex=cssv(ramp[3]);
+        const top=[], bot=[];
+        for(let i=0;i<n;i++){ const x=padL+i*xw; const yb=cum[i]; const yt=cum[i]+vals[i][key]; bot.push([x,yb]); top.push([x,yt]); cum[i]=yt; }
+        // map data-units to px: scale
+        const maxTot=Math.max(...totals); const scale=(H-padT-padB)/maxTot; const midY=padT+(H-padT-padB)/2;
+        const toPx=p=>[p[0], midY + p[1]*scale];
+        const topPx=top.map(toPx), botPx=bot.map(toPx).reverse();
+        const dPath=smooth(topPx)+' L'+botPx.map(p=>p.join(' ')).join(' L')+' Z';
+        const dim = st[key]?1:0.18;
+        layers+=`<path d="${dPath}" fill="${hex}" fill-opacity="${0.78*dim}" stroke="${hex}" stroke-width="0.6" stroke-opacity="${dim}"/>`;
+      });
+      const nowx=padL+(n-1)*xw;
+      root.querySelector('#str-svg').innerHTML=`${layers}<line x1="${nowx}" y1="${padT}" x2="${nowx}" y2="${H-padB}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="2 2"/><text x="${nowx-2}" y="${H-padB+14}" text-anchor="end" font-family="IBM Plex Mono" font-size="9" fill="var(--accent)">now</text><text x="${padL}" y="${H-padB+14}" font-family="IBM Plex Mono" font-size="9" fill="var(--muted)">4 wks ago</text>`;
+    }
+    root.innerHTML=`<div class="scr-title">Trends</div><div class="scr-sub">mood · energy · focus, last 4 weeks</div>
+      <div class="seg" style="margin-top:10px" id="str-seg">${bands.map(b=>`<button data-k="${b[0]}" class="on">${b[2]}</button>`).join('')}</div>
+      <svg id="str-svg" width="100%" viewBox="0 0 ${W} ${H}" style="margin-top:8px"></svg>
+      <div class="detail"><div style="font-size:12.5px;color:var(--muted)"><span style="color:var(--green);font-weight:700">Mood</span> steady. <span style="color:#3E73B0;font-weight:700">Focus</span> trending up the last 9 days. <span style="color:#C2B25A;font-weight:700">Energy</span> dips midweek.</div></div>`;
+    root.querySelectorAll('#str-seg button').forEach(b=>b.onclick=()=>{ st[b.dataset.k]=!st[b.dataset.k]; b.classList.toggle('on',st[b.dataset.k]); draw(); });
+    draw();
+  }
+},
+{
+  id:'dose', t:'3 · Dose Rhythm', d:'The day organized by the medication arc, not the clock. A felt-energy curve: onset → peak → wear-off, with check-ins plotted where they actually landed on it.',
+  why:'Built for stimulant ADHD reality, not a 9-to-5 agenda.',
+  build(root){
+    const W=304,H=210,padL=8,padR=8,padT=16,padB=24; const t0=7,t1=24; const xw=(W-padL-padR)/(t1-t0);
+    const X=t=>padL+(t-t0)*xw; const Y=v=>padT+(H-padT-padB)*(1-v/5);
+    // baseline energy + dose bump (taken 14:34)
+    const taken=14.57;
+    const pts=[]; for(let t=t0;t<=t1;t+=0.5){ let base=2 + Math.sin((t-7)/4)*0.5; let dose=0; if(t>=taken){ const dt=t-taken; dose=3.0*Math.exp(-Math.pow((dt-1.6)/2.2,2)) * (dt<0.6?dt/0.6:1); } pts.push([X(t),Y(Math.min(5,base+dose))]); }
+    const curve=smooth(pts);
+    const area=curve+` L${X(t1)} ${Y(0)} L${X(t0)} ${Y(0)} Z`;
+    const checkins=[[9.25,3],[12.08,3],[16.2,4]];
+    let dots=checkins.map(([t,m])=>`<circle cx="${X(t)}" cy="${Y(m+1.4)}" r="6" fill="${cssv(moodRamp[m-1])}"/>`).join('');
+    const ticks=[8,12,16,20].map(t=>`<text x="${X(t)}" y="${H-padB+14}" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--muted)">${t}:00</text>`).join('');
+    root.innerHTML=`<div class="scr-title">Today’s arc</div><div class="scr-sub">Fri 19 Jun · Concerta 18mg @ 14:34</div>
+      <svg width="100%" viewBox="0 0 ${W} ${H}" style="margin-top:10px">
+        <defs><linearGradient id="dg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cssv('var(--med)')}" stop-opacity="0.28"/><stop offset="1" stop-color="${cssv('var(--med)')}" stop-opacity="0"/></linearGradient></defs>
+        <path d="${area}" fill="url(#dg)"/>
+        <path d="${curve}" fill="none" stroke="var(--med)" stroke-width="2"/>
+        <line x1="${X(taken)}" y1="${padT}" x2="${X(taken)}" y2="${H-padB}" stroke="var(--med)" stroke-width="1" stroke-dasharray="3 3"/>
+        <g transform="translate(${X(taken)-9},${padT-2})">${icCapsule(cssv('var(--med)'),18)}</g>
+        ${dots}${ticks}
+        <text x="${X(taken)+4}" y="${padT+34}" font-family="DM Sans" font-size="9" fill="var(--med)" font-weight="700">peak ~16:10</text>
+      </svg>
+      <div class="detail">${[['16:12',4,'Good · sharper — rode the peak'],['12:05',3,'Okay · steady before the dose'],['09:15',3,'Okay · slow, foggy start']].map(e=>`<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span class="mono" style="font-size:10px;color:var(--muted);width:34px">${e[0]}</span><span class="glyph">${gMood(cssv(moodRamp[e[1]-1]),e[1],7)}</span><span style="font-size:12px">${e[2]}</span></div>`).join('')}</div>`;
+  }
+},
+{
+  id:'echoes', t:'4 · Echoes', d:'The timeline is made of your own words, not your scores. Transcribed pull-quotes from each voice log; tap to replay the audio. Only Squirl has the recording — this refuses to throw it away.',
+  why:'Foregrounds the journal — the one thing only this app holds.',
+  build(root){
+    root.innerHTML=`<div class="scr-title">Echoes</div><div class="scr-sub">what you said, lately</div>
+      <div style="margin-top:12px;overflow:hidden;flex:1" id="ec-list">${QUOTES.map((q,i)=>`
+        <div class="ec-q" data-i="${i}" style="padding:13px 2px;border-bottom:1px solid var(--hair);cursor:pointer">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+            <span class="glyph">${gMood(cssv(moodRamp[q.mood-1]),q.mood,6)}</span>
+            <span class="mono" style="font-size:10px;color:var(--muted)">${q.date} · ${q.time}</span>
+            <span style="margin-left:auto;display:inline-flex;align-items:center;gap:6px">
+              <span class="ec-play" style="width:24px;height:24px;border-radius:50%;background:${tint('var(--green)',16)};display:flex;align-items:center;justify-content:center;color:var(--green);font-size:10px">▶</span>
+              <span class="mono" style="font-size:10px;color:var(--muted)">${q.dur}</span>
+            </span>
+          </div>
+          <div class="fr" style="font-style:italic;font-size:16px;line-height:1.4;color:var(--ink)">“${q.text}”</div>
+          <div class="ec-wave" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows .2s"><div style="overflow:hidden"></div></div>
+        </div>`).join('')}</div>`;
+    root.querySelectorAll('.ec-q').forEach(el=>{ el.onclick=()=>{ const w=el.querySelector('.ec-wave'); const inner=w.firstElementChild; const p=el.querySelector('.ec-play'); const open=w.style.gridTemplateRows==='1fr';
+      root.querySelectorAll('.ec-wave').forEach(x=>x.style.gridTemplateRows='0fr'); root.querySelectorAll('.ec-play').forEach(x=>x.textContent='▶');
+      if(!open){ let bars=''; for(let i=0;i<46;i++){ const h=4+Math.abs(Math.sin(i*0.7))*16+(i%3)*3; bars+=`<span style="display:inline-block;width:2px;height:${h}px;margin-right:2px;border-radius:1px;background:${i<18?cssv('var(--green)'):cssv('var(--hair)')}"></span>`; } inner.innerHTML=`<div style="display:flex;align-items:center;height:30px;margin-top:8px">${bars}</div>`; w.style.gridTemplateRows='1fr'; p.textContent='⏸'; }
+    }; });
+  }
+},
+{
+  id:'constellations', t:'5 · Constellations', d:'The screen answers “why,” not “when.” It surfaces what your good days have in common — sleep, dose timing, what you skipped — as plain sentences plus a small map of days as stars, good ones clustered.',
+  why:'This is literally the product promise: patterns, not date lookup.',
+  build(root){
+    const W=304,H=170; // scatter: x=sleep, y=mood, good days cluster top-right
+    let stars=''; SERIES.forEach((s,i)=>{ if(!s.mood)return; const sleep=2+((i*5)%8)*0.35 + (s.mood>3?1.2:0); const x=20+sleep*30; const y=H-20-(s.mood)*22; const good=s.mood>=4; stars+=`<circle cx="${Math.min(W-14,x)}" cy="${y}" r="${good?4:2.6}" fill="${good?cssv('var(--green)'):'var(--muted)'}" fill-opacity="${good?1:0.5}"/>`; });
+    root.innerHTML=`<div class="scr-title">Patterns</div><div class="scr-sub">what your good days share</div>
+      <div style="margin-top:12px;display:flex;flex-direction:column;gap:9px">
+        ${[['Slept 7h+','9 of your 11 good days','var(--green)','92%'],['Meds before 9am','good days vs 1pm+ doses','var(--med)','strong'],['Logged in the morning','correlates with steadier afternoons','var(--accent)','moderate']].map(c=>`
+          <div style="background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:12px 13px;display:flex;align-items:center;gap:11px;box-shadow:var(--shadow)">
+            <span style="width:8px;height:8px;border-radius:50%;background:${c[2]};flex:0 0 8px"></span>
+            <div style="flex:1"><div style="font-size:13.5px;font-weight:700">${c[0]}</div><div style="font-size:11px;color:var(--muted)">${c[1]}</div></div>
+            <span class="mono" style="font-size:10px;color:var(--muted)">${c[3]}</span>
+          </div>`).join('')}
+      </div>
+      <div class="detail"><div style="font-size:10px;color:var(--muted);letter-spacing:.06em;font-weight:700;margin-bottom:6px">SLEEP × MOOD · each star a day</div>
+        <svg width="100%" viewBox="0 0 ${W} ${H}"><line x1="14" y1="${H-18}" x2="${W-10}" y2="${H-18}" stroke="var(--hair)"/><line x1="16" y1="10" x2="16" y2="${H-18}" stroke="var(--hair)"/>${stars}<text x="${W-12}" y="${H-6}" text-anchor="end" font-size="9" fill="var(--muted)" font-family="IBM Plex Mono">more sleep →</text></svg></div>`;
+  }
+},
+{
+  id:'baseline', t:'6 · Baseline (you vs you)', d:'Every day plotted against your own rolling average. Not “was this good” (absolute) but “was this you” (relative). A calm centre band; gentle dots above and below.',
+  why:'Reframes judgement: deviation from your normal, not from anyone’s ideal.',
+  build(root){
+    const W=304,H=200,padL=10,padR=10,padT=20,padB=24,n=28; const xw=(W-padL-padR)/(n-1);
+    const vals=SERIES.map(s=>s.mood||3); const avg=vals.reduce((a,b)=>a+b,0)/vals.length;
+    const Y=v=>padT+(H-padT-padB)*(1-(v-1)/4); const bandY=Y(avg);
+    let dots=''; vals.forEach((v,i)=>{ const x=padL+i*xw; const above=v>=avg-0.01; const hex=above?cssv('var(--green)'):cssv('#C98A3A'); dots+=`<line x1="${x}" y1="${bandY}" x2="${x}" y2="${Y(v)}" stroke="${hex}" stroke-opacity=".3" stroke-width="1.5"/><circle cx="${x}" cy="${Y(v)}" r="${i===n-1?5:3}" fill="${hex}"/>`; });
+    root.innerHTML=`<div class="scr-title">You vs you</div><div class="scr-sub">28 days against your own average</div>
+      <svg width="100%" viewBox="0 0 ${W} ${H}" style="margin-top:12px">
+        <rect x="${padL}" y="${bandY-12}" width="${W-padL-padR}" height="24" fill="${tint('var(--accent)',12)}" rx="6"/>
+        <line x1="${padL}" y1="${bandY}" x2="${W-padR}" y2="${bandY}" stroke="var(--accent)" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="${W-padR}" y="${bandY-15}" text-anchor="end" font-size="9" font-family="IBM Plex Mono" fill="var(--accent)">your normal</text>
+        ${dots}
+        <text x="${padL}" y="${H-8}" font-size="9" font-family="IBM Plex Mono" fill="var(--muted)">4 wks ago</text>
+        <text x="${W-padR}" y="${H-8}" text-anchor="end" font-size="9" font-family="IBM Plex Mono" fill="var(--muted)">today</text>
+      </svg>
+      <div class="detail"><div style="display:flex;align-items:center;gap:11px"><span class="glyph">${gMood(cssv(moodRamp[3]),4,9)}</span><div><div style="font-size:13px;font-weight:700">Today is a little above you</div><div style="font-size:11px;color:var(--muted)">+0.8 over your 28-day average. No streaks, no score.</div></div></div></div>`;
+  }
+},
+];
+
+function render(){
+  const board=document.getElementById('board');
+  board.innerHTML=CONCEPTS.map(c=>`<div class="col"><div class="cap"><div class="t">${c.t}</div><div class="d">${c.d}</div><div class="why">→ ${c.why}</div></div><div class="phone">${SB}<div class="screen" id="scr-${c.id}"></div></div></div>`).join('');
+  CONCEPTS.forEach(c=>c.build(document.getElementById('scr-'+c.id)));
+}
+function toggleTheme(){ const r=document.documentElement; r.setAttribute('data-theme', r.getAttribute('data-theme')==='dark'?'light':'dark'); render(); }
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

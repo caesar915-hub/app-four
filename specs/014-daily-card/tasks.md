@@ -130,7 +130,7 @@ description: "Task list for 014 Daily Card — Folded Summary, Opens to the Day"
 - [ ] T028 Run [quickstart.md](quickstart.md) validation scenarios end-to-end on the sim, **light + dark**
 - [X] T029 Build + full Swift Testing suite GREEN on `feat/daycard-update` (Principle II); confirm the new logic tests pass and nothing regressed
 - [X] T030 [P] Log the 014 build to docs/DEVLOG.md (the why + verification result); move the backlog row to 🔨 In code
-- [ ] T031 Open PR for `feat/daycard-update`; run `/code-review` on the diff before merge (Principle V)
+- [X] T031 Open PR for `feat/daycard-update`; run `/code-review` on the diff before merge (Principle V)
 
 ---
 

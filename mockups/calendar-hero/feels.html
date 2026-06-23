@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Calendar — 3 feels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4EEE2; --paper:#FBF6EC; --surface:#FFFDF7; --surface2:#EFE7D6; --ink:#221E16; --muted:#8A8270;
+    --hair:#E7DECB; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#7E5CA8;
+    --shadow-sm:0 1px 2px rgba(60,48,24,.04); --shadow:0 2px 6px rgba(60,48,24,.05),0 14px 34px rgba(60,48,24,.08);
+  }
+  [data-theme="dark"]{
+    --bg:#100F0B; --paper:#1A1812; --surface:#221F18; --surface2:#2C2920; --ink:#F3EEE0; --muted:#9A917C;
+    --hair:#34301F; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.3); --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:1400px;margin:0 auto;padding:48px 28px 120px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(36px,5vw,54px);line-height:1.02;margin:0;letter-spacing:-.025em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:19px;color:var(--accent);margin:16px 0 0;max-width:62ch;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:11px 18px;box-shadow:var(--shadow-sm);z-index:50;}
+  .stage{display:flex;gap:56px;flex-wrap:wrap;align-items:flex-start;margin-top:44px;}
+  .unit{width:392px;}
+  .feel-name{font-family:'Fraunces',serif;font-size:19px;font-weight:600;}
+  .feel-desc{font-size:12.5px;color:var(--muted);margin:3px 0 16px;min-height:32px;}
+
+  .phone{width:392px;height:830px;background:var(--bg);border-radius:54px;border:1px solid var(--hair);box-shadow:var(--shadow);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:124px;height:30px;background:var(--ink);border-radius:0 0 18px 18px;opacity:.92;z-index:5;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:16px 30px 0;font-size:13px;color:var(--ink);font-weight:600;}
+  .scroll{flex:1;overflow:hidden;padding:16px 22px 26px;}
+  .fr{font-family:'Fraunces',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+  .week{display:grid;grid-template-columns:repeat(7,1fr);}
+  .bead{width:7px;height:7px;border-radius:50%;}
+
+  /* ============ FEEL A · PRESSED PAPER ============ */
+  .A .medcard{background:var(--surface);border:1px solid var(--hair);border-radius:24px;padding:18px 20px;box-shadow:var(--shadow-sm);}
+  .A .med-disc{width:42px;height:42px;border-radius:14px;background:color-mix(in srgb,var(--med) 14%,var(--surface));display:flex;align-items:center;justify-content:center;flex:0 0 42px;}
+  .A .track{position:relative;height:8px;border-radius:6px;background:var(--surface2);margin-top:16px;}
+  .A .fill{position:absolute;left:0;top:0;height:100%;width:58%;border-radius:6px;background:linear-gradient(90deg,color-mix(in srgb,var(--med) 55%,var(--surface)),var(--med));}
+  .A .knob{position:absolute;top:50%;left:58%;width:14px;height:14px;border-radius:50%;background:var(--med);transform:translate(-50%,-50%);box-shadow:0 0 0 4px color-mix(in srgb,var(--med) 22%,transparent);}
+  .A .cal-head{display:flex;align-items:baseline;justify-content:space-between;margin:26px 2px 14px;}
+  .A .cal-title{font-family:'Fraunces',serif;font-size:24px;font-weight:500;}
+  .A .week{gap:4px;}
+  .A .day{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 0 8px;border-radius:18px;}
+  .A .day .dl{font-size:11px;font-weight:700;color:var(--muted);}
+  .A .day .dn{font-size:16px;font-weight:600;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .A .day.today{background:var(--paper);box-shadow:var(--shadow-sm);}
+  .A .day.today .dn{background:var(--ink);color:var(--bg);}
+  .A .sec{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--green);margin:28px 2px 14px;}
+  .A .entry{display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--hair);border-radius:22px;padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow-sm);}
+  .A .entry-disc{width:54px;height:54px;border-radius:18px;display:flex;align-items:center;justify-content:center;flex:0 0 54px;}
+  .A .word{font-family:'Fraunces',serif;font-size:19px;font-weight:600;}
+  .A .line{font-size:13px;color:var(--muted);margin-top:2px;}
+  .A .time{margin-left:auto;font-family:'IBM Plex Mono';font-size:12px;color:var(--muted);align-self:flex-start;padding-top:3px;}
+
+  /* ============ FEEL B · FIELD JOURNAL ============ */
+  .B .scroll{padding:18px 26px 26px;}
+  .B .medstrip{display:flex;align-items:center;gap:11px;padding-bottom:13px;border-bottom:1.5px solid var(--ink);}
+  .B .medstrip .cap{color:var(--med);display:flex;}
+  .B .med-name{font-family:'Fraunces',serif;font-style:italic;font-size:17px;font-weight:500;}
+  .B .med-meta{margin-left:auto;font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);}
+  .B .medrule{height:3px;background:var(--surface2);position:relative;margin-top:0;}
+  .B .medrule span{position:absolute;left:0;top:0;height:100%;width:58%;background:var(--med);}
+  .B .cal-title{font-family:'Fraunces',serif;font-size:30px;font-weight:400;letter-spacing:-.02em;margin:26px 0 4px;}
+  .B .cal-sub{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:16px;}
+  .B .week{gap:0;}
+  .B .day{display:flex;flex-direction:column;align-items:center;gap:9px;padding:6px 0;}
+  .B .day .dl{font-size:10px;font-weight:700;color:var(--muted);letter-spacing:.05em;}
+  .B .day .dn{font-family:'Fraunces',serif;font-size:19px;font-weight:500;width:34px;height:34px;display:flex;align-items:center;justify-content:center;}
+  .B .day.today .dn{border-bottom:2.5px solid var(--accent);}
+  .B .day.future .dn{color:var(--muted);}
+  .B .sec{font-family:'Fraunces',serif;font-style:italic;font-size:16px;color:var(--accent);margin:30px 0 6px;}
+  .B .entry{display:flex;gap:16px;align-items:baseline;padding:18px 0;border-bottom:1px solid var(--hair);}
+  .B .entry .marg{flex:0 0 30px;display:flex;justify-content:center;padding-top:4px;}
+  .B .word{font-family:'Fraunces',serif;font-size:26px;font-weight:500;line-height:1;letter-spacing:-.01em;}
+  .B .line{font-size:13.5px;color:var(--muted);margin-top:7px;max-width:30ch;}
+  .B .time{margin-left:auto;font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);}
+
+  /* ============ FEEL C · QUIET GLASS ============ */
+  .C{ --glass:color-mix(in srgb,var(--surface) 70%, transparent); }
+  .C .scroll{padding:14px 20px 26px;}
+  .C .medcard{background:var(--glass);border:1px solid var(--hair);border-radius:18px;padding:15px 16px;backdrop-filter:blur(12px);}
+  .C .med-disc{width:36px;height:36px;border-radius:11px;background:color-mix(in srgb,var(--med) 12%,transparent);display:flex;align-items:center;justify-content:center;flex:0 0 36px;}
+  .C .track{position:relative;height:5px;border-radius:3px;background:var(--surface2);margin-top:13px;}
+  .C .fill{position:absolute;left:0;top:0;height:100%;width:58%;border-radius:3px;background:var(--med);}
+  .C .calcard{background:var(--glass);border:1px solid var(--hair);border-radius:18px;padding:14px;margin-top:12px;backdrop-filter:blur(12px);}
+  .C .cal-head{display:flex;align-items:center;justify-content:space-between;margin:0 2px 12px;}
+  .C .cal-title{font-size:15px;font-weight:700;letter-spacing:.01em;}
+  .C .week{gap:2px;}
+  .C .day{display:flex;flex-direction:column;align-items:center;gap:6px;padding:7px 0;border-radius:12px;}
+  .C .day .dl{font-size:10px;font-weight:600;color:var(--muted);}
+  .C .day .dn{font-size:14px;font-weight:600;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;}
+  .C .day.today .dn{background:var(--accent);color:#fff;}
+  .C .day.future .dn{color:var(--muted);}
+  .C .sec{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:24px 4px 10px;}
+  .C .entry{display:flex;align-items:center;gap:13px;background:var(--glass);border:1px solid var(--hair);border-radius:16px;padding:13px 15px;margin-bottom:9px;backdrop-filter:blur(12px);}
+  .C .dot{width:10px;height:10px;border-radius:50%;flex:0 0 10px;}
+  .C .word{font-size:15px;font-weight:700;}
+  .C .line{font-size:12.5px;color:var(--muted);margin-top:1px;}
+  .C .time{margin-left:auto;font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);}
+  .C .gtag{display:inline-flex;gap:3px;align-items:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · Paper &amp; Pollen · Calendar · 3 feels</p>
+      <h1>Same screen, three feels</h1>
+      <p class="sub">Identical structure and content — medication bar, calendar, day cards — rendered in three visual languages. Pick the feel; I’ll build it out fully. Toggle light/dark.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div class="stage" id="stage"></div>
+</div>
+
+<script>
+const moodRamp=['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.7"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.3"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.22"/></g></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p)=>`color-mix(in srgb, ${h} ${p}%, var(--surface))`;
+const mg=(l,b)=>`<span class="glyph">${gMood(cssv(moodRamp[l-1]),l,b||9)}</span>`;
+const MOODW=['Low','Flat','Okay','Good','Great'];
+const DAYS=[['M',15,3,true],['T',16,2,false],['W',17,null,true],['T',18,4,true],['F',19,4,true,'today'],['S',20,null,false,'future'],['S',21,null,false,'future']];
+const ENTRIES=[[ '16:12',4,'Finally shipped it. Felt light after.'],['12:05',3,'Steady — got the deep block in.'],['09:15',3,'Slow start, foggy, but calm.']];
+const cap=(sz)=>`<span class="glyph">${icCapsule(cssv('var(--med)'),sz||18)}</span>`;
+const SB=`<div class="notch"></div><div class="statusbar"><span>14:34</span><span>􀙇 􀉪 􀛨</span></div>`;
+
+function feelA(){
+  const days=DAYS.map(([wl,n,m,med,f])=>`<div class="day ${f==='today'?'today':''}"><span class="dl">${wl}</span><span class="dn" style="${f!=='today'?`color:${f==='future'?'var(--muted)':'var(--ink)'}`:''}">${n}</span><span style="display:flex;gap:3px">${m?`<span class="bead" style="background:${cssv(moodRamp[m-1])}"></span>`:`<span class="bead" style="background:var(--hair)"></span>`}${med?`<span class="bead" style="background:var(--med)"></span>`:''}</span></div>`).join('');
+  const med=`<div class="medcard"><div style="display:flex;align-items:center;gap:12px"><span class="med-disc">${cap(22)}</span><div style="flex:1"><div class="fr" style="font-size:18px;font-weight:600">Concerta 18 mg</div><div style="font-size:12.5px;color:var(--muted)">Winding down · ends 02:34</div></div><span class="mono" style="font-size:12px;color:var(--med);font-weight:600">5h left</span></div><div class="track"><span class="fill"></span><span class="knob"></span></div></div>`;
+  const cal=`<div class="cal-head"><span class="cal-title">June</span><span style="font-size:15px;color:var(--muted)">‹  ›</span></div><div class="week">${days}</div>`;
+  const ent=ENTRIES.map(([t,m,l])=>{const h=cssv(moodRamp[m-1]);return `<div class="entry"><span class="entry-disc" style="background:${tint(h,55)}">${mg(m,12)}</span><div style="flex:1"><div class="word" style="color:${h}">${MOODW[m-1]}</div><div class="line">${l}</div></div><span class="time">${t}</span></div>`;}).join('');
+  return `<div class="A"><div class="phone">${SB}<div class="scroll">${med}${cal}<div class="sec">TODAY · FRIDAY 19</div>${ent}</div></div></div>`;
+}
+function feelB(){
+  const days=DAYS.map(([wl,n,m,med,f])=>`<div class="day ${f==='today'?'today':''} ${f==='future'?'future':''}"><span class="dl">${wl}</span><span class="dn">${n}</span><span style="display:flex;gap:3px;height:7px">${m?`<span class="bead" style="background:${cssv(moodRamp[m-1])}"></span>`:''}${med?`<span class="bead" style="background:var(--med)"></span>`:''}</span></div>`).join('');
+  const med=`<div class="medstrip"><span class="cap">${icCapsule(cssv('var(--med)'),20)}</span><span class="med-name">Concerta 18 mg</span><span class="med-meta">winding down · 5h left</span></div><div class="medrule"><span></span></div>`;
+  const cal=`<div class="cal-title">June</div><div class="cal-sub">Week of the 15th</div><div class="week">${days}</div>`;
+  const ent=ENTRIES.map(([t,m,l])=>`<div class="entry"><span class="marg">${mg(m,9)}</span><div style="flex:1"><div class="word" style="color:${cssv(moodRamp[m-1])}">${MOODW[m-1]}</div><div class="line fr" style="font-style:italic">“${l}”</div></div><span class="time">${t}</span></div>`).join('');
+  return `<div class="B"><div class="phone">${SB}<div class="scroll">${med}${cal}<div class="sec">Today, Friday the 19th</div>${ent}</div></div></div>`;
+}
+function feelC(){
+  const days=DAYS.map(([wl,n,m,med,f])=>`<div class="day ${f==='today'?'today':''} ${f==='future'?'future':''}"><span class="dl">${wl}</span><span class="dn">${n}</span><span style="display:flex;gap:3px;height:7px">${m?`<span class="bead" style="background:${cssv(moodRamp[m-1])}"></span>`:''}${med?`<span class="bead" style="background:var(--med)"></span>`:''}</span></div>`).join('');
+  const med=`<div class="medcard"><div style="display:flex;align-items:center;gap:11px"><span class="med-disc">${cap(18)}</span><div style="flex:1"><div style="font-size:14px;font-weight:700">Concerta 18 mg</div><div style="font-size:11.5px;color:var(--muted)">Winding down · ends 02:34</div></div><span class="mono" style="font-size:11px;color:var(--med);font-weight:600">5h</span></div><div class="track"><span class="fill"></span></div></div>`;
+  const cal=`<div class="calcard"><div class="cal-head"><span class="cal-title">June 2026</span><span style="font-size:13px;color:var(--muted)">‹  ›</span></div><div class="week">${days}</div></div>`;
+  const ent=ENTRIES.map(([t,m,l])=>`<div class="entry"><span class="dot" style="background:${cssv(moodRamp[m-1])}"></span><div style="flex:1"><div class="word">${MOODW[m-1]} <span class="gtag">${mg(m,6)}</span></div><div class="line">${l}</div></div><span class="time">${t}</span></div>`).join('');
+  return `<div class="C"><div class="phone">${SB}<div class="scroll">${med}${cal}<div class="sec">Today</div>${ent}</div></div></div>`;
+}
+
+const FEELS=[
+  ['A · Pressed Paper','Cozy and rounded. Filled cards, soft shadows, warm tinted mood discs. Tiimo-soft, comforting.',feelA],
+  ['B · Field Journal','Editorial and serif-led. No card boxes — hairline rules, big Fraunces, your words in italic. An almanac that listens.',feelB],
+  ['C · Quiet Glass','Crisp and airy. Translucent flat surfaces, tight radii, restrained color. iOS-26 refined, premium-minimal.',feelC],
+];
+function render(){
+  document.getElementById('stage').innerHTML=FEELS.map(([n,d,fn])=>`<div class="unit"><div class="feel-name">${n}</div><div class="feel-desc">${d}</div>${fn()}</div>`).join('');
+}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>
