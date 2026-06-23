@@ -10,6 +10,8 @@ struct CalendarLibraryView: View {
     @State private var selectedDay = Calendar.current.startOfDay(for: Date())
     @State private var isCalendarExpanded = false
     @State private var topDayID: Date?
+    @State private var expandedCards = ExpandedDayCards()
+    @AppStorage("autoExpandOnSelection") private var autoExpandOnSelection = true
     @State private var isProgrammaticScroll = false
     @State private var scrollGuardTask: Task<Void, Never>?
     @State private var scrollOffset: CGFloat = 0
@@ -96,9 +98,18 @@ struct CalendarLibraryView: View {
         ScrollView {
             LazyVStack(spacing: Spacing.m) {
                 scrollingHeader
-                ForEach(viewModel.timelineDays) { day in
-                    DayCard(day: day, onTapRecording: { detailRef = RecordingDetailRef(id: $0) })
-                        .id(day.date)
+                ForEach(viewModel.timelineDaysFilteredToSelectedDate(selectedDay)) { day in
+                    DayCard(
+                        day: day,
+                        isExpanded: expandedCards.contains(day.date),
+                        onToggleExpand: {
+                            withAnimation(reduceMotion ? nil : Motion.smooth) {
+                                expandedCards = expandedCards.toggling(day.date)
+                            }
+                        },
+                        onTapRecording: { detailRef = RecordingDetailRef(id: $0) }
+                    )
+                    .id(day.date)
                 }
             }
             .padding(.horizontal, Spacing.l)
@@ -140,7 +151,10 @@ struct CalendarLibraryView: View {
         let target = calendar.startOfDay(for: day)
         selectedDay = target
         isProgrammaticScroll = true
-        withAnimation(reduceMotion ? nil : Motion.smooth) { topDayID = target }
+        withAnimation(reduceMotion ? nil : Motion.smooth) {
+            topDayID = target
+            expandedCards = expandedCards.selecting(target, autoExpand: autoExpandOnSelection)   // collapse all, open selected (FR-009/FR-019)
+        }
         scrollGuardTask?.cancel()                       // a newer tap supersedes the previous guard
         scrollGuardTask = Task { @MainActor in
             try? await Task.sleep(for: .seconds(0.45))  // ~ the scroll animation; clears the loop guard

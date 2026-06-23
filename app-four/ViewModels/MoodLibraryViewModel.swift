@@ -99,6 +99,16 @@ final class MoodLibraryViewModel {
         return result.sorted { $0.date > $1.date }   // newest first
     }
 
+    /// `timelineDays` with every day strictly more recent than `selectedDate` removed
+    /// (FR-010): a pure transform of the existing month-scoped, newest-first list. The
+    /// selected day becomes the top entry when it has data in the current month; older days
+    /// remain and scroll below. The calendar week-row is NOT filtered by this — it greys
+    /// more-recent days in place instead (FR-011).
+    func timelineDaysFilteredToSelectedDate(_ selectedDate: Date) -> [TimelineDay] {
+        let cap = calendar.startOfDay(for: selectedDate)
+        return timelineDays.filter { $0.date <= cap }
+    }
+
     init(store: RecordingStore) {
         self.store = store
         loadMedicationEvents()

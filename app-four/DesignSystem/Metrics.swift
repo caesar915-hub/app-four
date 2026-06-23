@@ -13,6 +13,11 @@ enum Metrics {
     /// Standard minimum row height
     static let rowMinHeight: CGFloat = 44
 
+    /// Diameter of the time-bead circle (wrapped by the medication-phase ring) in a check-in row
+    static let timeBead: CGFloat = 54
+    /// Diameter of the mood-glyph circle in a folded day-card header
+    static let headerMoodCircle: CGFloat = 58
+
     /// Decorative SF Symbol sizes (large hero glyphs, not Dynamic Type text).
     /// These use a fixed point size intentionally because they are imagery, not copy.
     enum IconSize {

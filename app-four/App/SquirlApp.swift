@@ -61,6 +61,9 @@ private struct RootContainerView: View {
             OnboardingView(services: services)
         }
         .task {
+            #if DEBUG
+            if CommandLine.arguments.contains("-skipOnboarding") { showOnboarding = false; return }
+            #endif
             showOnboarding = !hasCompletedOnboarding
         }
         .onChange(of: hasCompletedOnboarding) { _, completed in

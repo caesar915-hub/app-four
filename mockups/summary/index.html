@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Calendar &amp; Day Card · Design Summary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EAF0DB; --paper:#F1F4E6; --surface:#FCFBF4; --surface2:#E4E9D2; --ink:#23271C; --muted:#7C8270;
+    --hair:#D7DEC4; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#8466B5;
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    --e1:#A9A079; --e2:#C2B25A; --e3:#D8C53E; --e4:#EAD22A; --e5:#E6C21E;
+    --f1:#7E8B96; --f2:#6E8DAE; --f3:#5683B8; --f4:#3E73B0; --f5:#2C5E9E;
+    --shadow:0 2px 6px rgba(40,48,24,.05),0 14px 34px rgba(40,48,24,.08); --shadow-sm:0 1px 2px rgba(40,48,24,.06);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  [data-theme="dark"]{
+    --bg:#131510; --paper:#1B1E16; --surface:#23271C; --surface2:#2D3122; --ink:#EDF0E2; --muted:#9AA088;
+    --hair:#363B2A; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC;
+    --m1:#E08A3C; --m2:#EFB860; --m3:#A9D183; --m4:#6EC07C; --m5:#43A268;
+    --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:1180px;margin:0 auto;padding:50px 30px 130px;}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(38px,6vw,64px);line-height:1.0;margin:0;letter-spacing:-.03em;}
+  .lede{font-family:'Fraunces',serif;font-style:italic;font-size:20px;color:var(--accent);margin:16px 0 0;max-width:60ch;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:11px 18px;box-shadow:var(--shadow-sm);z-index:50;}
+  section{margin-top:64px;}
+  h2{font-family:'Fraunces',serif;font-weight:500;font-size:30px;letter-spacing:-.02em;margin:0 0 6px;}
+  .sectsub{color:var(--muted);font-size:14px;margin:0 0 24px;max-width:74ch;}
+  .num{font-family:'IBM Plex Mono';font-size:12px;color:var(--accent);font-weight:600;letter-spacing:.1em;}
+  .grid2{display:flex;gap:48px;flex-wrap:wrap;align-items:flex-start;}
+  .col{flex:1;min-width:300px;}
+  .label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+  .fr{font-family:'Fraunces',serif;} .mono{font-family:'IBM Plex Mono',monospace;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+
+  /* phone */
+  .phone{width:340px;background:#000;border-radius:48px;padding:9px;box-shadow:var(--shadow);}
+  .screen{position:relative;border-radius:40px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:14px 24px 4px;font-size:11px;font-weight:600;}
+  .medbar{margin:6px 13px 0;padding:11px 15px;border-radius:22px;background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(14px);border:1px solid var(--hair);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:11px;}
+  .medbar .pill{width:30px;height:30px;border-radius:9px;background:color-mix(in srgb,var(--med) 14%,transparent);display:flex;align-items:center;justify-content:center;flex:none;}
+  .medbar .mname{font-size:13px;font-weight:700;} .medbar .mmeta{font-size:10px;color:var(--muted);}
+  .medbar .mtrack{width:48px;height:5px;border-radius:4px;background:var(--surface2);overflow:hidden;flex:none;}
+  .medbar .mtrack span{display:block;height:100%;width:58%;background:var(--med);border-radius:4px;}
+  .hdr{padding:12px 16px 0;} .hdr .top{display:flex;align-items:center;justify-content:space-between;}
+  .hdr .month{font-family:'Fraunces',serif;font-size:16px;font-weight:600;} .hdr .today{font-size:10px;font-weight:700;color:var(--accent);border:1.2px solid var(--accent);border-radius:20px;padding:2px 8px;}
+  .wcaps{display:flex;margin-top:9px;} .wcaps span{flex:1;text-align:center;font-size:10px;color:var(--muted);font-weight:600;}
+  .drow{display:flex;margin-top:3px;}
+  .day{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding-top:3px;}
+  .day .n{width:27px;height:27px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:13.5px;font-weight:600;}
+  .day.sel .n{background:var(--ink);color:var(--bg);} .day.future .n{color:var(--muted);} .day.above .n{opacity:.34;}
+  .day .dot{width:6px;height:6px;border-radius:50%;}
+  .divider{height:1px;background:var(--hair);margin:11px 16px;}
+  .clist{padding:0 14px 16px;display:flex;flex-direction:column;gap:11px;}
+
+  /* day card (final) */
+  .card{border:1px solid var(--hair);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm);background:var(--surface);}
+  .wash{padding:15px 16px;cursor:default;}
+  .hrow{display:flex;align-items:center;gap:14px;}
+  .gcircle{flex:none;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .rcol{flex:1;min-width:0;}
+  .toprow{display:flex;align-items:center;gap:10px;}
+  .daytitle{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-.01em;}
+  .chev{margin-left:auto;font-size:13px;color:var(--muted);}
+  .fline{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;margin-top:6px;}
+  .fl-mood{font-family:'Fraunces',serif;font-size:18px;font-weight:600;}
+  .fl-s{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;}
+  .fl-med{color:var(--med);}
+  .cbody{border-top:1px solid var(--hair);padding:4px 16px 12px;}
+  .row{display:flex;gap:11px;align-items:flex-start;padding:11px 0;}
+  .row+.row{border-top:1px solid var(--hair);}
+  .ringcol{flex:none;width:52px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .medpill{font-family:'IBM Plex Mono';font-size:10px;font-weight:600;color:var(--med);background:color-mix(in srgb,var(--med) 14%,var(--surface));border-radius:999px;padding:2px 6px;}
+  .ct{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+  .mhead{display:flex;align-items:baseline;gap:8px;}
+  .mword{font-family:'Fraunces',serif;font-size:16px;font-weight:600;}
+  .rtime{margin-left:auto;font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);}
+  .subsig{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .sg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:6px 10px;border-radius:15px;background:var(--surface2);}
+  .chip.med{background:color-mix(in srgb,var(--med) 14%,var(--surface));color:var(--med);font-weight:700;}
+
+  /* ramp + token panels */
+  .panel{background:var(--surface);border:1px solid var(--hair);border-radius:18px;padding:20px 22px;box-shadow:var(--shadow-sm);}
+  .ramprow{display:flex;align-items:center;gap:16px;padding:14px 0;border-top:1px solid var(--hair);}
+  .ramprow:first-child{border-top:none;}
+  .ramprow .meta{width:160px;flex:none;}
+  .ramprow .nm{font-size:14px;font-weight:700;} .ramprow .nt{font-size:11.5px;color:var(--muted);}
+  .ramprow .glyphs{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;}
+  .ramprow .gc{display:flex;flex-direction:column;align-items:center;gap:5px;} .ramprow .gc .lv{font-family:'IBM Plex Mono';font-size:9px;color:var(--muted);}
+  .swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:11px;}
+  .sw{border:1px solid var(--hair);border-radius:12px;overflow:hidden;background:var(--surface);}
+  .sw .chip2{height:54px;} .sw .meta2{padding:9px 11px;} .sw .n2{font-size:12.5px;font-weight:600;} .sw .h2{font-family:'IBM Plex Mono';font-size:10.5px;color:var(--muted);text-transform:uppercase;}
+
+  table.dec{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--hair);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-sm);}
+  table.dec td{padding:14px 16px;border-top:1px solid var(--hair);vertical-align:top;font-size:14px;}
+  table.dec tr:first-child td{border-top:none;}
+  table.dec td.k{font-weight:700;width:210px;}
+  table.dec td.v{color:var(--muted);}
+  table.dec td.v b{color:var(--ink);font-weight:600;}
+  .note{display:flex;gap:10px;align-items:flex-start;background:color-mix(in srgb,var(--accent) 8%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 22%,var(--hair));border-radius:14px;padding:14px 16px;margin-top:18px;font-size:13.5px;color:var(--ink);}
+  .cap-meta{font-size:12px;color:var(--muted);margin-top:10px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <p class="eyebrow">Squirl · Paper &amp; Pollen · Calendar &amp; Day Card · Design Summary</p>
+      <h1>The calendar, decided</h1>
+      <p class="lede">Every decision from the exploration, with the final design it produced: the screen, the day card, the check-in, and the signal language behind them.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </div>
+
+  <section>
+    <div class="num">THE SCREEN</div>
+    <h2>Medication bar, calendar, then the days</h2>
+    <p class="sectsub">Fixed order: the medication bar is the first component, the calendar day-row sits below it, the day-card list below that. Selecting a date filters out the days above it, so the chosen day jumps to the top, already expanded; older days stay below. Only the med bar is pinned.</p>
+    <div class="grid2">
+      <div style="flex:none"><div id="phone"></div></div>
+      <div class="col">
+        <div class="label">Why this shape</div>
+        <table class="dec">
+          <tr><td class="k">Med bar first</td><td class="v">It’s the one always-relevant control; pinned so it never scrolls away.</td></tr>
+          <tr><td class="k">Calendar below it</td><td class="v">Week row with mood + medication dots. <b>No ring around today</b>,today is shown only by the “Today” pill.</td></tr>
+          <tr><td class="k">Filter-above</td><td class="v">Tap a date → days more recent than it are filtered out (greyed in the row); the day jumps to top and <b>auto-expands</b>. Scroll down for older days.</td></tr>
+          <tr><td class="k">No accent border</td><td class="v">The selected day carries <b>no gold/amber border</b>,position + expansion are enough.</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="num">THE DAY CARD</div>
+    <h2>Folded big, opens to the day</h2>
+    <p class="sectsub">Folded, the card reads the whole day in one line. A circle (the mood glyph) sits left; to its right, the weekday on top and, just below, mood · energy · focus · medication on a single line. Medication is the name only. Opening collapses that line so only the circle + weekday remain, and the check-ins take over.</p>
+    <div class="grid2">
+      <div class="col"><div class="label">Folded</div><div id="cardFolded"></div>
+        <div class="cap-meta">Circle = mood glyph · one line: mood · energy · focus · medication name · bottom of the circle aligns with that line.</div></div>
+      <div class="col"><div class="label">Unfolded</div><div id="cardOpen"></div>
+        <div class="cap-meta">The summary line collapses; circle + weekday stay; check-ins appear with the medication-phase ring.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="num">THE CHECK-IN</div>
+    <h2>Time-circle, phase ring, signals</h2>
+    <p class="sectsub">Each check-in is a circle holding the time, wrapped in the purple medication-phase ring with its % below. To the right: the mood word, then energy + focus as ramp glyphs that encode their own level, then chips for medication, feelings and side-effects.</p>
+    <div class="grid2">
+      <div style="flex:none"><div class="panel" style="width:360px" id="checkin"></div></div>
+      <div class="col">
+        <div class="label">Decisions</div>
+        <table class="dec">
+          <tr><td class="k">Circle = medication %</td><td class="v">The ring shows dose phase; the % sits under it. <b>Time is a label</b>, not inside the ring.</td></tr>
+          <tr><td class="k">Signals = glyphs</td><td class="v">Mood word leads; energy + focus shown as ramp glyphs (shape + hue + fill carry the level). Partial check-ins show only what was logged.</td></tr>
+          <tr><td class="k">Chips</td><td class="v">Medication (name), feelings, side-effects. Light pills below the signals.</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="num">SIGNAL LANGUAGE</div>
+    <h2>Four signals, one glyph system</h2>
+    <p class="sectsub">Each signal is a distinct shape + hue + fill, legible by form alone (colour is never the only cue). Mood, energy and focus climb 1→5; medication is a single capsule, shown by name and dose.</p>
+    <div class="panel" id="ramps"></div>
+  </section>
+
+  <section>
+    <div class="num">DESIGN TOKENS</div>
+    <h2>Paper &amp; Pollen</h2>
+    <p class="sectsub">Warm paper, never pure white or black. Fraunces for display and big numbers, DM Sans for UI, IBM Plex Mono for data. Calm, unhurried, made for ADHD: summary first, detail on tap, nothing ever shaming a quiet day.</p>
+    <div class="grid2">
+      <div class="col"><div class="label">Palette</div><div class="swatches" id="palette"></div></div>
+      <div class="col"><div class="label">Type</div>
+        <div class="panel">
+          <div style="padding-bottom:16px;border-bottom:1px solid var(--hair)"><div class="label">Display · Fraunces</div><div class="fr" style="font-size:32px;font-weight:500;letter-spacing:-.01em">What’s today been like?</div></div>
+          <div style="padding:16px 0;border-bottom:1px solid var(--hair)"><div class="label">UI · DM Sans</div><div style="font-size:15px">Steady after the morning walk · 3 check-ins</div></div>
+          <div style="padding-top:16px"><div class="label">Data · IBM Plex Mono</div><div class="mono" style="font-size:14px">14:34 · 58% · Concerta 18mg</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="num">PRINCIPLES &amp; INTERACTION</div>
+    <h2>How it behaves</h2>
+    <table class="dec">
+      <tr><td class="k">Summary first</td><td class="v">Folded cards carry the read; detail appears only on tap.</td></tr>
+      <tr><td class="k">Shrink on open</td><td class="v">The folded summary collapses as the rows open, so detail isn’t competing with a tall header.</td></tr>
+      <tr><td class="k">No shame</td><td class="v">A quiet day reads as permission (“that’s alright”), never red or overdue. No streaks, no scores.</td></tr>
+      <tr><td class="k">Time made visible</td><td class="v">Medication-phase ring + timestamps externalise time, built for time-blindness.</td></tr>
+      <tr><td class="k">Redundant encoding</td><td class="v">Every signal = shape + hue + fill, so it survives colour-blindness and greyscale.</td></tr>
+      <tr><td class="k">Predictable</td><td class="v">Layout never reshuffles; the calendar is always under the med bar.</td></tr>
+    </table>
+    <div class="note">★ The references that set the bar: <b>Tiimo</b> (App of the Year, calm, anti-shame, time-visible), <b>Reflectly</b> (beautiful journaling), <b>Fantastical / Amie</b> (calendar craft), <b>Daylio</b> (seconds to log), <b>Bearable / Structured</b> (legible timelines).</div>
+  </section>
+</div>
+
+<script>
+const mC=['var(--m1)','var(--m2)','var(--m3)','var(--m4)','var(--m5)'];
+const eC=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
+const fC=['var(--f1)','var(--f2)','var(--f3)','var(--f4)','var(--f5)'];
+const MOODW=['Low','Flat','Okay','Good','Great'],ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Scattered','Present','Sharp','Locked'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.7,op=(0.4+l*0.13).toFixed(2),sw=(1+l*0.14).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.3,cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.32+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.4" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.5" opacity="0.95"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.8"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.4"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.25"/></g></svg>`;}
+function icHeart(c,s){return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${c}" stroke="${c}" stroke-width="1.4" stroke-linejoin="round"><path d="M19 14c1.5-1.6 2.5-3.3 2.5-5.2A4 4 0 0 0 12 6 4 4 0 0 0 2.5 8.8c0 1.9 1 3.6 2.5 5.2l7 7Z"/></svg>`;}
+function icBandage(c,s){return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="8" rx="4" transform="rotate(-45 12 12)"/><circle cx="12" cy="12" r="1"/></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p,base)=>`color-mix(in srgb, ${h} ${p}%, ${base||'var(--surface)'})`;
+const mg=(l,b)=>`<span class="glyph">${gMood(cssv(mC[l-1]),l,b||9)}</span>`;
+const eg=(l,b)=>`<span class="glyph">${gEnergy(cssv(eC[l-1]),l,b||9)}</span>`;
+const fg=(l,b)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,b||9)}</span>`;
+const cap=(s)=>`<span class="glyph">${icCapsule(cssv('var(--med)'),s||14)}</span>`;
+function ring(r,S){S=S||52;const c=S/2,rr=S/2-4,C=2*Math.PI*rr,p=r.med||0;const inner=tint(mC[r.m-1],45,'var(--surface)');
+  const arc=r.med!=null?`<circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="var(--hair)" stroke-width="3.3"/><circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="3.3" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${c} ${c})"/>`:'';
+  const showTime=r.time&&S>=64;
+  return `<div class="ringcol"><div style="position:relative;width:${S}px;height:${S}px;display:flex;align-items:center;justify-content:center"><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" style="position:absolute;inset:0">${arc}<circle cx="${c}" cy="${c}" r="${S*0.34}" fill="${inner}"/></svg>${showTime?`<span class="mono" style="position:relative;font-size:13px;font-weight:600">${r.time}</span>`:`<span style="position:relative">${mg(r.m,9)}</span>`}</div>${r.med!=null?`<span class="medpill">${Math.round(r.med*100)}%</span>`:''}</div>`;}
+function rowHTML(r){let sig='';if(r.e!=null)sig+=`<span class="sg">${eg(r.e)} ${ENW[r.e-1]}</span>`;if(r.f!=null)sig+=`<span class="sg">${fg(r.f)} ${FOW[r.f-1]}</span>`;
+  return `<div class="row">${ring(r)}<div class="ct"><div class="mhead"><span class="mword" style="color:${cssv(mC[r.m-1])}">${MOODW[r.m-1]}</span><span class="rtime">${r.time}</span></div>${sig?`<div class="subsig">${sig}</div>`:''}</div></div>`;}
+
+const R3=[{time:'16:12',m:4,e:5,f:3,med:0.58},{time:'12:40',m:3,e:3,f:null,med:null},{time:'09:15',m:3,e:null,f:null,med:null}];
+
+// folded / open day card
+function dayCard(open){
+  const m=4;const headBg=tint(mC[m-1],46,'var(--surface)'),gBg=tint(mC[m-1],70,'var(--surface)');
+  const fline=`<div class="fline"><span class="fl-mood" style="color:${cssv(mC[m-1])}">Good</span><span class="fl-s">${eg(5,11)} Charged</span><span class="fl-s">${fg(3,11)} Present</span><span class="fl-s fl-med">${cap(13)} Concerta</span></div>`;
+  return `<div class="card">
+    <div class="wash" style="background:${headBg}">
+      <div class="hrow"><span class="gcircle" style="background:${gBg}">${mg(m,16)}</span>
+        <div class="rcol"><div class="toprow"><span class="daytitle">Monday 8</span><span class="chev">${open?'⌃':'⌄'}</span></div>${open?'':fline}</div></div>
+    </div>
+    ${open?`<div class="cbody">${R3.map(rowHTML).join('')}</div>`:''}
+  </div>`;
+}
+
+// check-in component (big ring with time + signals + chips)
+function checkin(){
+  const r={time:'16:12',m:4,e:5,f:3,med:0.58};
+  const chips=`<div class="chips"><span class="chip med">${cap(13)} Concerta</span><span class="chip">${icHeart(cssv('var(--ink)'),12)} Grateful</span><span class="chip">${icBandage(cssv('var(--ink)'),13)} Dry mouth</span></div>`;
+  return `<div class="row" style="border:none;padding:4px 0">${ring(r,72)}<div class="ct"><div class="mhead"><span class="mword" style="font-size:19px;color:${cssv(mC[r.m-1])}">Good</span><span class="rtime">16:12</span></div><div class="subsig"><span class="sg">${eg(5)} Charged</span><span class="sg">${fg(3)} Present</span></div>${chips}</div></div>`;
+}
+
+// phone screen: med bar + calendar + folded cards (filter-above shown: today 15 selected, future greyed)
+function phone(){
+  const WEEK=[[9,3],[10,null],[11,2],[12,4],[13,5],[14,3],[15,4]];
+  const days=WEEK.map(([n,m])=>{const sel=n===15,fut=n>15;return `<div class="day ${sel?'sel':''} ${fut?'future':''}"><span class="n">${n}</span><span class="dot" style="background:${m&&!fut?cssv(mC[m-1]):'transparent'}"></span></div>`;}).join('');
+  const fcard=(day,m,e,f,med,od)=>{const headBg=tint(mC[m-1],46,'var(--surface)'),gBg=tint(mC[m-1],70,'var(--surface)');
+    let fl=`<span class="fl-mood" style="color:${cssv(mC[m-1])};font-size:16px">${MOODW[m-1]}</span>`;if(e)fl+=`<span class="fl-s">${eg(e,10)} ${ENW[e-1]}</span>`;if(f)fl+=`<span class="fl-s">${fg(f,10)} ${FOW[f-1]}</span>`;if(med)fl+=`<span class="fl-s fl-med">${cap(12)} ${med}</span>`;
+    return `<div class="card"><div class="wash" style="background:${headBg};padding:13px 14px"><div class="hrow" style="gap:12px"><span class="gcircle" style="background:${gBg};width:50px;height:50px">${mg(m,13)}</span><div class="rcol"><div class="toprow"><span class="daytitle" style="font-size:17px">${day}</span><span class="chev">${od?'⌃':'⌄'}</span></div><div class="fline" style="margin-top:5px">${fl}</div></div></div></div></div>`;};
+  return `<div class="phone"><div class="screen">
+    <div class="statusbar"><span>14:34</span><span>􀙇 54</span></div>
+    <div class="medbar"><span class="pill">${cap(15)}</span><div style="flex:1"><div class="mname">Concerta 18 mg</div><div class="mmeta">Winding down · ends 02:34</div></div><span class="mtrack"><span></span></span></div>
+    <div class="hdr"><div class="top"><span class="month">June 2026 ›</span><span class="today">Today</span></div><div class="wcaps"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="drow">${days}</div></div>
+    <div class="divider"></div>
+    <div class="clist">
+      ${fcard('Sunday 15',4,5,3,'Concerta',false)}
+      ${fcard('Saturday 14',3,3,null,null,false)}
+      ${fcard('Friday 13',5,4,4,'Vyvanse',false)}
+    </div>
+  </div></div>`;
+}
+
+function ramps(){
+  const rows=[['Mood','sprout · Meadow·Burnt',gMood,mC],['Energy','lightning · Lemon',gEnergy,eC],['Focus','aperture · Voltage blue',gFocus,fC]];
+  let h=rows.map(([nm,nt,fn,cols])=>`<div class="ramprow"><div class="meta"><div class="nm">${nm}</div><div class="nt">${nt}</div></div><div class="glyphs">${[1,2,3,4,5].map(l=>`<div class="gc"><span class="glyph">${fn(cssv(cols[l-1]),l,16)}</span><span class="lv">${l}</span></div>`).join('')}</div></div>`).join('');
+  h+=`<div class="ramprow"><div class="meta"><div class="nm">Medication</div><div class="nt">capsule · purple, by name</div></div><div class="glyphs"><span class="glyph">${icCapsule(cssv('var(--med)'),26)}</span><span style="font-size:13px;color:var(--med);font-weight:700;align-self:center">Concerta 18mg</span></div></div>`;
+  return h;
+}
+function palette(){
+  const T=[['Paper','--bg'],['Surface','--surface'],['Ink','--ink'],['Muted','--muted'],['Hairline','--hair'],['Mood','--m4'],['Energy','--e3'],['Focus','--f4'],['Medication','--med'],['Accent','--accent']];
+  return T.map(([n,v])=>`<div class="sw"><div class="chip2" style="background:${cssv('var('+v+')')}"></div><div class="meta2"><div class="n2">${n}</div><div class="h2">${cssv('var('+v+')')}</div></div></div>`).join('');
+}
+
+function render(){
+  document.getElementById('phone').innerHTML=phone();
+  document.getElementById('cardFolded').innerHTML=dayCard(false);
+  document.getElementById('cardOpen').innerHTML=dayCard(true);
+  document.getElementById('checkin').innerHTML=checkin();
+  document.getElementById('ramps').innerHTML=ramps();
+  document.getElementById('palette').innerHTML=palette();
+}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

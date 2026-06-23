@@ -22,6 +22,7 @@ struct SettingsView: View {
                         .id(Self.topID)
                     systemSection
                     checkInSection
+                    dayCardSection
                     medicationBarSection
                     accessibilitySection
                     dangerSection
@@ -102,6 +103,10 @@ struct SettingsView: View {
     @ViewBuilder
     private var medicationBarSection: some View {
         MedicationBarSettingsSection()
+    }
+
+    private var dayCardSection: some View {
+        DayCardSettingsSection()
     }
 
     private var accessibilitySection: some View {

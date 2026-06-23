@@ -110,4 +110,42 @@ struct MoodLibraryViewModelTests {
         #expect(vm.hasAnyEntries == false)
         #expect(vm.timelineDays.isEmpty)              // first-launch: empty → view shows ContentUnavailableView
     }
+
+    // MARK: - Filter-above (FR-009, FR-010, FR-016)
+
+    @Test func filterToSelectedDateDropsMoreRecentDays() throws {
+        for d in [5, 10, 15] {
+            let rec = Recording(audioFileName: "\(d).m4a", duration: 0, title: "t", mood: "good")
+            rec.createdAt = date(2020, 1, d)
+            context.insert(rec)
+        }
+        try context.save()
+        store.loadRecordings()
+
+        let vm = MoodLibraryViewModel(store: store)
+        vm.currentMonth = date(2020, 1, 15)
+
+        let jan10 = Calendar.current.startOfDay(for: date(2020, 1, 10))
+        let filtered = vm.timelineDaysFilteredToSelectedDate(date(2020, 1, 10))
+
+        #expect(filtered.allSatisfy { $0.date <= jan10 })                              // FR-010: nothing newer than selected
+        #expect(filtered.first?.date == jan10)                                         // FR-009: selected day is top
+        #expect(!filtered.contains { Calendar.current.isDate($0.date, inSameDayAs: date(2020, 1, 15)) }) // Jan 15 dropped
+        #expect(filtered.contains { Calendar.current.isDate($0.date, inSameDayAs: date(2020, 1, 5)) })   // Jan 5 retained
+        #expect(filtered.map(\.date) == filtered.map(\.date).sorted(by: >))            // FR-016: newest-first order preserved
+    }
+
+    @Test func filterAtLatestDayEqualsFullList() throws {
+        let rec = Recording(audioFileName: "r.m4a", duration: 0, title: "t", mood: "good")
+        rec.createdAt = date(2020, 1, 10)
+        context.insert(rec)
+        try context.save()
+        store.loadRecordings()
+
+        let vm = MoodLibraryViewModel(store: store)
+        vm.currentMonth = date(2020, 1, 15)
+
+        // Capping at the newest visible day is a no-op (same subsequence).
+        #expect(vm.timelineDaysFilteredToSelectedDate(date(2020, 1, 31)).map(\.date) == vm.timelineDays.map(\.date))
+    }
 }

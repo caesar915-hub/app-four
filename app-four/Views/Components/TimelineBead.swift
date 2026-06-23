@@ -10,9 +10,9 @@ import SwiftUI
 struct TimelineBead: View {
     let node: DayTimeline.Node
 
-    private let beadSize: CGFloat = 56
-    private let circleSize: CGFloat = 54    // the mood/time circle (fills the bead bar a hair)
-    private let ringWidth: CGFloat = 4
+    private let beadSize: CGFloat = Metrics.timeBead + 2
+    private let circleSize: CGFloat = Metrics.timeBead    // the mood/time circle (fills the bead bar a hair)
+    private let ringWidth: CGFloat = Spacing.ringStroke
 
     /// Diameter of the effect ring — sits just inside the circle's edge.
     private var ringDiameter: CGFloat { circleSize - ringWidth }
@@ -61,7 +61,7 @@ struct TimelineBead: View {
 
     private var innerLabel: some View {
         Text(node.time, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits))
-            .font(.system(size: 14, weight: .bold).monospacedDigit())
+            .font(.plexMono(14).weight(.bold))
             .foregroundStyle(timeColor)
             .minimumScaleFactor(0.7)   // single-line guard for the circular badge
             .lineLimit(1)
@@ -84,7 +84,7 @@ struct TimelineBead: View {
     private var carryoverBadge: some View {
         if let ring = carryoverRing {
             Text("\(Int(ring.progress * 100))%")
-                .font(.system(size: 10, weight: .heavy).monospacedDigit())
+                .font(.plexMono(10).weight(.heavy))
                 .foregroundStyle(Palette.medication)   // systemPurple brightens in dark mode
                 .padding(.horizontal, Spacing.xs + 2)
                 .padding(.vertical, 1)

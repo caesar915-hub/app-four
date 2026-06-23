@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Calendar prototype — working</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EAF0DB; --paper:#F1F4E6; --surface:#FCFBF4; --surface2:#E4E9D2; --ink:#23271C; --muted:#7C8270;
+    --hair:#D7DEC4; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#8466B5;
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    --e1:#A9A079; --e2:#C2B25A; --e3:#D8C53E; --e4:#EAD22A; --e5:#E6C21E;
+    --f1:#7E8B96; --f2:#6E8DAE; --f3:#5683B8; --f4:#3E73B0; --f5:#2C5E9E;
+    --shadow:0 2px 6px rgba(40,48,24,.05),0 14px 34px rgba(40,48,24,.08); --shadow-sm:0 1px 2px rgba(40,48,24,.06);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  [data-theme="dark"]{
+    --bg:#131510; --paper:#1B1E16; --surface:#23271C; --surface2:#2D3122; --ink:#EDF0E2; --muted:#9AA088;
+    --hair:#363B2A; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC;
+    --m1:#E08A3C; --m2:#EFB860; --m3:#A9D183; --m4:#6EC07C; --m5:#43A268;
+    --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:760px;margin:0 auto;padding:48px 28px 110px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(30px,5vw,44px);line-height:1.04;margin:0;letter-spacing:-.025em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:17px;color:var(--accent);margin:13px 0 0;max-width:52ch;}
+  .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:14px;}
+  .tg{font-size:12.5px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:9px 14px;box-shadow:var(--shadow-sm);}
+  .tg.on{background:var(--ink);color:var(--bg);border-color:var(--ink);}
+  .hintline{font-size:12.5px;color:var(--muted);margin-top:8px;}
+  .stage{display:flex;justify-content:center;margin-top:30px;}
+
+  .phone{width:362px;height:760px;background:#000;border-radius:52px;padding:10px;box-shadow:var(--shadow);}
+  .screen{position:relative;width:100%;height:100%;border-radius:42px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column;}
+  .statusbar{flex:none;display:flex;justify-content:space-between;align-items:center;padding:15px 26px 4px;font-size:12px;font-weight:600;}
+  .fr{font-family:'Fraunces',serif;} .mono{font-family:'IBM Plex Mono',monospace;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+
+  /* pinned med bar — first component */
+  .medbar{flex:none;position:relative;z-index:20;margin:6px 14px 8px;padding:11px 15px;border-radius:22px;background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(16px);border:1px solid var(--hair);box-shadow:0 6px 16px rgba(40,48,24,.10);display:flex;align-items:center;gap:11px;}
+  [data-theme=dark] .medbar{box-shadow:0 6px 18px rgba(0,0,0,.5);}
+  .medbar .pill{width:32px;height:32px;border-radius:10px;background:color-mix(in srgb,var(--med) 14%,transparent);display:flex;align-items:center;justify-content:center;flex:none;}
+  .medbar .mname{font-size:13.5px;font-weight:700;} .medbar .mmeta{font-size:10.5px;color:var(--muted);}
+  .medbar .mtrack{width:54px;height:5px;border-radius:4px;background:var(--surface2);overflow:hidden;flex:none;}
+  .medbar .mtrack span{display:block;height:100%;width:58%;background:var(--med);border-radius:4px;}
+
+  /* scroll zone: calendar + cards scroll together under the pinned med bar */
+  .scrollzone{flex:1;overflow-y:auto;scrollbar-width:none;scroll-behavior:smooth;-webkit-mask-image:linear-gradient(transparent,#000 10px,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(transparent,#000 10px,#000 calc(100% - 56px),transparent);}
+  .scrollzone::-webkit-scrollbar{display:none;}
+  .cal{padding:6px 18px 0;}
+  .cal .top{display:flex;align-items:center;justify-content:space-between;}
+  .cal .month{font-family:'Fraunces',serif;font-size:17px;font-weight:600;}
+  .cal .today{font-size:11px;font-weight:700;color:var(--accent);border:1.2px solid var(--accent);border-radius:20px;padding:3px 10px;cursor:pointer;}
+  .wcaps{display:flex;margin-top:10px;} .wcaps span{flex:1;text-align:center;font-size:11px;color:var(--muted);font-weight:600;}
+  .drow{display:flex;margin-top:4px;}
+  .day{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:3px;cursor:pointer;}
+  .day .n{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:14px;font-weight:600;transition:background .2s var(--ease),color .2s var(--ease);}
+  .day.sel .n{background:var(--ink);color:var(--bg);}
+  .day.above .n{opacity:.34;}
+  .day .dot{width:6px;height:6px;border-radius:50%;}
+  .divider{height:1px;background:var(--hair);margin:11px 18px;}
+  .clist{padding:0 16px 80px;display:flex;flex-direction:column;gap:13px;}
+
+  /* final card — constant top */
+  .card{border:1px solid var(--hair);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-sm);background:var(--surface);}
+  .wash{padding:15px 17px;cursor:pointer;user-select:none;}
+  .hrow{display:flex;align-items:flex-start;gap:14px;}  /* circle top-aligned: same position whatever the card height */
+  .gcircle{flex:none;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .rcol{flex:1;min-width:0;}
+  .toprow{display:flex;align-items:center;gap:10px;}
+  .daytitle{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-.01em;}
+  .chev{margin-left:auto;font-size:13px;color:var(--muted);transition:transform .26s var(--ease);}
+  .card.open .chev{transform:rotate(180deg);}
+  .fline{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;margin-top:6px;}
+  .fl-s{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;}
+  .fl-med{color:var(--med);}
+  .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s var(--ease);}
+  .card.open .body{grid-template-rows:1fr;}
+  .body>.inner{overflow:hidden;}
+  .rows{padding:2px 17px 12px;border-top:1px solid var(--hair);}
+  .row{display:flex;gap:12px;align-items:flex-start;padding:12px 0;}
+  .row+.row{border-top:1px solid var(--hair);}
+  .ringcol{flex:none;width:52px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .medpill{font-family:'IBM Plex Mono';font-size:10px;font-weight:600;color:var(--med);background:color-mix(in srgb,var(--med) 14%,var(--surface));border-radius:999px;padding:2px 6px;}
+  .ct{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+  .mhead{display:flex;align-items:baseline;gap:2px;}
+  .mword{font-family:'Fraunces',serif;font-size:16px;font-weight:600;}
+  .rtime{margin-left:6px;font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);}
+  .subsig{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .sg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;}
+  .empty{padding:6px 0 10px;color:var(--muted);font-size:13px;}
+
+  .tabbar{flex:none;position:absolute;left:18px;right:18px;bottom:12px;height:52px;border-radius:26px;background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(16px);border:1px solid var(--hair);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:space-around;z-index:20;}
+  .tb{display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--muted);font-size:9.5px;font-weight:600;} .tb.on{color:var(--accent);}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;} .scrollzone{scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · Paper &amp; Pollen · Calendar · working prototype</p>
+      <h1>It all works together</h1>
+      <p class="sub">Pinned medication bar, calendar day selection (filter-above), and the final fold/unfold card — live.</p>
+      <div class="controls">
+        <span class="tg" id="themeBtn" onclick="toggleTheme()">◐ Light / Dark</span>
+        <span class="tg" id="medBtn" onclick="toggleMed()">💊 Medication: on</span>
+        <span class="tg" id="autoBtn" onclick="toggleAuto()">Auto-expand selected: on</span>
+      </div>
+      <p class="hintline">Tap a date in the row → it filters to that day &amp; older, jumps to top, opens. Tap a card header to fold/unfold. “Today” jumps back.</p>
+    </div>
+  </header>
+  <div class="stage"><div class="phone"><div class="screen" id="screen"></div></div></div>
+</div>
+
+<script>
+const mC=['var(--m1)','var(--m2)','var(--m3)','var(--m4)','var(--m5)'];
+const eC=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
+const fC=['var(--f1)','var(--f2)','var(--f3)','var(--f4)','var(--f5)'];
+const MOODW=['Low','Flat','Okay','Good','Great'],ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Scattered','Present','Sharp','Locked'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.7,op=(0.4+l*0.13).toFixed(2),sw=(1+l*0.14).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.3,cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.32+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.4" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.5" opacity="0.95"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.8"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.4"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.25"/></g></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p,base)=>`color-mix(in srgb, ${h} ${p}%, ${base||'var(--surface)'})`;
+const mg=(l,b)=>`<span class="glyph">${gMood(cssv(mC[l-1]),l,b||9)}</span>`;
+const eg=(l,b)=>`<span class="glyph">${gEnergy(cssv(eC[l-1]),l,b||9)}</span>`;
+const fg=(l,b)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,b||9)}</span>`;
+const cap=(s)=>`<span class="glyph">${icCapsule(cssv('var(--med)'),s||14)}</span>`;
+function ring(r){const S=54,c=27,rr=23,C=2*Math.PI*rr,p=r.med||0;const inner=tint(mC[r.m-1],45,'var(--surface)');
+  const arc=r.med!=null?`<circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="var(--hair)" stroke-width="3.3"/><circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="3.3" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${c} ${c})"/>`:'';
+  return `<div class="ringcol"><div style="position:relative;width:${S}px;height:${S}px;display:flex;align-items:center;justify-content:center"><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" style="position:absolute;inset:0">${arc}<circle cx="${c}" cy="${c}" r="18.5" fill="${inner}"/></svg><span style="position:relative">${mg(r.m,9)}</span></div>${r.med!=null?`<span class="medpill">${Math.round(r.med*100)}%</span>`:''}</div>`;}
+
+// week 9..15, today = 15 (Sun)
+const WD={9:'Monday',10:'Tuesday',11:'Wednesday',12:'Thursday',13:'Friday',14:'Saturday',15:'Sunday'};
+const TODAY=15;
+const DAY={
+ 9:{m:3,e:3,f:null,med:'Concerta',rows:[{time:'08:50',m:3,e:3,f:null,med:0.40}]},
+ 10:{m:null,e:null,f:null,med:null,rows:[]},
+ 11:{m:2,e:2,f:2,med:null,rows:[{time:'14:00',m:2,e:2,f:2,med:null}]},
+ 12:{m:4,e:4,f:null,med:'Concerta',rows:[{time:'09:30',m:4,e:4,f:null,med:0.50},{time:'18:00',m:3,e:null,f:null,med:null}]},
+ 13:{m:5,e:4,f:4,med:'Vyvanse',rows:[{time:'17:30',m:5,e:4,f:4,med:0.85},{time:'10:00',m:4,e:5,f:3,med:0.30}]},
+ 14:{m:3,e:3,f:null,med:null,rows:[{time:'20:10',m:3,e:3,f:null,med:null}]},
+ 15:{m:4,e:5,f:3,med:'Concerta',rows:[{time:'16:12',m:4,e:5,f:3,med:0.58},{time:'12:40',m:3,e:3,f:null,med:null},{time:'09:15',m:3,e:null,f:null,med:null}]},
+};
+const ORDER=[15,14,13,12,11,10,9];
+
+let sel=15, open={15:true}, medOn=true, auto=true;
+
+function rowHTML(r,medName){let sig='';if(r.e!=null)sig+=`<span class="sg">${eg(r.e)} ${ENW[r.e-1]}</span>`;if(r.f!=null)sig+=`<span class="sg">${fg(r.f)} ${FOW[r.f-1]}</span>`;
+  if(medOn&&r.med!=null&&medName)sig+=`<span class="sg fl-med">${cap(13)} ${medName}</span>`;
+  return `<div class="row">${ring(r)}<div class="ct"><div class="mhead"><span class="mword" style="color:${cssv(mC[r.m-1])}">${MOODW[r.m-1]}</span><span class="rtime">· ${r.time}</span></div>${sig?`<div class="subsig">${sig}</div>`:''}</div></div>`;}
+function dayCard(n){
+  const d=DAY[n], isOpen=!!open[n];
+  const quiet=d.m==null;
+  const headBg=quiet?'var(--surface)':tint(mC[d.m-1],46,'var(--surface)');
+  const gBg=quiet?'var(--surface2)':tint(mC[d.m-1],70,'var(--surface)');
+  const glyph=quiet?`<svg width="20" height="22" viewBox="0 0 24 26"><circle cx="12" cy="13" r="3" fill="none" stroke="${cssv('var(--muted)')}" stroke-width="1.5"/></svg>`:gMood(cssv(mC[d.m-1]),d.m,16);
+  const title=quiet?`${WD[n]} ${n}`:`<span style="color:${cssv(mC[d.m-1])}">${MOODW[d.m-1]}</span> · ${WD[n]} ${n}`;
+  let fl='';
+  if(!quiet){
+    if(d.e!=null)fl+=`<span class="fl-s">${eg(d.e,11)} ${ENW[d.e-1]}</span>`;
+    if(d.f!=null)fl+=`<span class="fl-s">${fg(d.f,11)} ${FOW[d.f-1]}</span>`;
+    if(medOn&&d.med)fl+=`<span class="fl-s fl-med">${cap(13)} ${d.med}</span>`;
+  }
+  const body=d.rows.length?d.rows.map(r=>rowHTML(r,d.med)).join(''):`<div class="empty">No check-ins this day. That’s alright.</div>`;
+  return `<div class="card ${isOpen?'open':''}" data-n="${n}">
+    <div class="wash" data-toggle style="background:${headBg}">
+      <div class="hrow"><span class="gcircle" style="background:${gBg}">${glyph}</span>
+        <div class="rcol"><div class="toprow"><span class="daytitle">${title}</span><span class="chev">⌄</span></div>
+          ${fl?`<div class="fline">${fl}</div>`:''}</div></div>
+    </div>
+    <div class="body"><div class="inner"><div class="rows">${body}</div></div></div>
+  </div>`;
+}
+function calRow(){
+  return ORDER.slice().reverse().map(n=>{const d=DAY[n];const isSel=n===sel,above=n>sel;
+    const cls=['day',isSel?'sel':'',above?'above':''].filter(Boolean).join(' ');
+    return `<div class="${cls}" data-day="${n}"><span class="n">${n}</span><span class="dot" style="background:${d.m!=null?cssv(mC[d.m-1]):'transparent'}"></span></div>`;}).join('');
+}
+function render(){
+  const visible=ORDER.filter(n=>n<=sel);   // filter-above
+  document.getElementById('screen').innerHTML=`
+    <div class="statusbar"><span>14:34</span><span>􀙇 􀉪 54</span></div>
+    ${medOn?`<div class="medbar"><span class="pill">${cap(16)}</span><div style="flex:1"><div class="mname">Concerta 18 mg</div><div class="mmeta">Winding down · ends 02:34</div></div><span class="mtrack"><span></span></span></div>`:''}
+    <div class="scrollzone" id="scrollzone">
+      <div class="cal"><div class="top"><span class="month">June 2026 ›</span><span class="today" id="todayBtn">Today</span></div>
+        <div class="wcaps"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+        <div class="drow">${calRow()}</div></div>
+      <div class="divider"></div>
+      <div class="clist">${visible.map(dayCard).join('')}</div>
+    </div>
+    <div class="tabbar"><div class="tb on">◷<span>Calendar</span></div><div class="tb">◍<span>Check-in</span></div><div class="tb">◳<span>Insights</span></div><div class="tb">⚙<span>Settings</span></div></div>`;
+  // wire (event delegation — robust across re-renders)
+  const scr=document.getElementById('screen');
+  scr.onclick=(ev)=>{
+    if(ev.target.closest('#todayBtn')){selectDay(TODAY);return;}
+    const day=ev.target.closest('.day'); if(day){selectDay(+day.dataset.day);return;}
+    const wash=ev.target.closest('.wash'); if(wash){const c=wash.closest('.card');const n=+c.dataset.n;open[n]=!open[n];c.classList.toggle('open',open[n]);return;}
+  };
+}
+function selectDay(n){ sel=n; open={}; if(auto)open[n]=true; render(); const sz=document.getElementById('scrollzone'); if(sz)sz.scrollTop=0; }
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+function toggleMed(){medOn=!medOn;document.getElementById('medBtn').textContent='💊 Medication: '+(medOn?'on':'off');document.getElementById('medBtn').classList.toggle('on',!medOn);render();}
+function toggleAuto(){auto=!auto;document.getElementById('autoBtn').textContent='Auto-expand selected: '+(auto?'on':'off');document.getElementById('autoBtn').classList.toggle('on',!auto);}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>
