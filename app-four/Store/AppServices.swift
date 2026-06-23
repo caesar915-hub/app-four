@@ -12,18 +12,21 @@ final class AppServices {
     let transcriptionService: TranscriptionService
     let aiModelService: AIModelService
     let summarizationService: SummarizationService
+    let connectivity: Connectivity
 
     init(
         audioService: AudioRecordingService,
         storageService: AudioFileStorageService,
         transcriptionService: TranscriptionService,
         aiModelService: AIModelService,
-        summarizationService: SummarizationService
+        summarizationService: SummarizationService,
+        connectivity: Connectivity
     ) {
         self.audioService = audioService
         self.storageService = storageService
         self.transcriptionService = transcriptionService
         self.aiModelService = aiModelService
         self.summarizationService = summarizationService
+        self.connectivity = connectivity
     }
 }
