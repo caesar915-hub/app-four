@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Welcome (Feature 015) — Paper & Pollen mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Fraunces:opsz,wght@9..144,400;9..144,500&display=swap" rel="stylesheet">
+<style>
+  /* Paper & Pollen tokens — mirrors DESIGN.md (§color, §type) and the SwiftUI
+     Theme / Typography / Spacing / Radius enums. Mockup only; the SwiftUI
+     WelcomeView is the source of truth, tokens-only. */
+  :root {
+    --paper:        #F6F1E7;  /* Theme.background light */
+    --card:         #FCF8EF;
+    --ink:          #221E16;  /* Theme.textPrimary light */
+    --muted-ink:    #7A7361;  /* Theme.textSecondary light */
+    --meadow-green: #5F8A4C;
+    --meadow-amber: #E0A33A;
+    --hairline:     #E3DAC7;
+    --radius-button: 16px;    /* Radius.button */
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:        #14130F;
+      --card:         #1E1C16;
+      --ink:          #F3EEE0;
+      --muted-ink:    #9A917C;
+      --meadow-green: #6E9A58;
+      --meadow-amber: #E8B255;
+      --hairline:     #322E22;
+    }
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "DM Sans", system-ui, sans-serif;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+  }
+
+  /* iPhone-proportioned device frame, clamped to maxContentWidth (600). */
+  .device {
+    width: 100%;
+    max-width: 390px;
+    aspect-ratio: 390 / 844;
+    background: var(--paper);
+    border-radius: 44px;
+    border: 1px solid var(--hairline);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.18);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* generous breathing room; one screen, no scroll */
+    padding: 64px 32px 40px;     /* Spacing.hero top-ish / Spacing.xxl sides / Spacing.hero bottom */
+  }
+
+  /* ── Hero: the breathing crescent (CrescentRing placeholder) ──
+     ~295° arc (0.82 trim), green→amber angular sweep, round caps.
+     At rest it BREATHES (scale 1.0↔1.035, opacity .94↔1.0) — matches CrescentRing idle. */
+  .crescent-wrap {
+    flex: 1 1 auto;
+    display: grid;
+    place-items: center;
+    width: 100%;
+  }
+  .crescent {
+    width: 232px;
+    height: 232px;
+    animation: breathe 5s ease-in-out infinite;
+  }
+  .crescent .arc {
+    fill: none;
+    stroke: url(#meadow);
+    stroke-width: 22;
+    stroke-linecap: round;
+    /* 0.82 of the circumference visible, rest is the gap (≈295° sweep) */
+    stroke-dasharray: 562 686;          /* 0.82·2πr  /  total, r≈109 */
+    transform: rotate(135deg);
+    transform-origin: center;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1.0);   opacity: 0.94; }
+    50%      { transform: scale(1.035); opacity: 1.0;  }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    /* Reduce Motion: crescent collapses to a static glow (CrescentRing honors this). */
+    .crescent { animation: none; opacity: 1; }
+  }
+
+  /* ── Copy block ── */
+  .copy {
+    flex: 0 0 auto;
+    text-align: center;
+    width: 100%;
+    max-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;                 /* Spacing.m */
+    margin-bottom: 32px;       /* Spacing.section */
+  }
+  .headline {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 500;          /* Typography.largeTitle weight(.medium) */
+    font-size: 34px;           /* Typography.largeTitle */
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .privacy {
+    font-size: 16px;           /* Typography.body */
+    line-height: 1.45;
+    color: var(--muted-ink);
+  }
+
+  /* ── One primary action: Meadow gradient pill ── */
+  .actions {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 360px;
+  }
+  .btn-primary {
+    width: 100%;
+    min-height: 44px;          /* Metrics.minTapTarget */
+    padding: 14px 16px;        /* Spacing.l horizontal */
+    border: none;
+    border-radius: var(--radius-button);
+    background: linear-gradient(135deg, var(--meadow-green), var(--meadow-amber));
+    color: #fff;
+    font-family: "DM Sans", sans-serif;
+    font-weight: 600;          /* Typography.headline */
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 5px 12px rgba(224,163,58,0.34);
+    transition: opacity 0.15s ease;
+  }
+  .btn-primary:active { opacity: 0.9; }
+
+  .annotation {
+    margin-top: 28px;
+    max-width: 390px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--muted-ink);
+    text-align: center;
+    opacity: 0.85;
+  }
+</style>
+</head>
+<body>
+
+  <div class="device" role="img" aria-label="Squirl welcome screen mockup">
+    <!-- Hero: breathing crescent (stand-in for SwiftUI CrescentRing) -->
+    <div class="crescent-wrap">
+      <svg class="crescent" viewBox="0 0 232 232" aria-hidden="true">
+        <defs>
+          <!-- green → amber → fade, mirroring CrescentRing's AngularGradient stops -->
+          <linearGradient id="meadow" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="var(--meadow-green)"/>
+            <stop offset="65%"  stop-color="var(--meadow-amber)"/>
+            <stop offset="100%" stop-color="var(--meadow-amber)"/>
+          </linearGradient>
+        </defs>
+        <circle class="arc" cx="116" cy="116" r="100"/>
+      </svg>
+    </div>
+
+    <!-- ONE Fraunces headline + ONE calm privacy sentence -->
+    <div class="copy">
+      <h1 class="headline">Welcome to&nbsp;Squirl</h1>
+      <p class="privacy">A calm place to speak your day. Everything stays on this&nbsp;device.</p>
+    </div>
+
+    <!-- ONE primary action → lands on the Check-in hub -->
+    <div class="actions">
+      <button class="btn-primary" type="button">Start</button>
+    </div>
+  </div>
+
+  <p class="annotation">
+    Feature&nbsp;015 · US1 — the single warm welcome. Tapping <strong>Start</strong> persists
+    <code>hasCompletedOnboarding&nbsp;=&nbsp;true</code> and drops the user on the Check-in hub.
+    No microphone step, no model-download gate (permission is just-in-time; the model downloads
+    in the background). Hero = the live breathing <code>CrescentRing</code>; Reduce&nbsp;Motion freezes it.
+  </p>
+
+</body>
+</html>
