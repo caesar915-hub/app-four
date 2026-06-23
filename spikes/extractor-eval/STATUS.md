@@ -1,53 +1,42 @@
 # NLP Extractor Improvement — Overnight Run STATUS / Resume Guide
 
-**Branch**: `spike-nlp-performance` · **Started**: 2026-06-23 · **Owner directive**: improve the
-rule-based `NLNoteExtractor` (no new features), measure it, judge it, have it ready by morning.
+**Branch**: `spike-nlp-performance` · **Updated**: 2026-06-23 (mid-run, pre-compact)
 
-> **This is the resume point.** If the run stops (credits/session), re-read this file + `git log`
-> + the todo list, then continue from "NEXT" below. Everything is committed in checkpoints — nothing
-> is lost on a hard stop. The agent does NOT auto-resume; you re-engage it and it picks up here.
+> Resume point. If the run stops, re-read this + `git log` + todos and continue from NEXT.
+> The agent does not auto-resume; re-engage it on THIS Mac (extractor needs Apple
+> NaturalLanguage — cloud/Linux cannot run it). Everything is committed in checkpoints.
 
-## Locked decisions (from owner Q&A)
-- **Themed specs** 010 (eval-infra) → 011 (logic) → 012 (lexicon), **depth-first, in order**.
-- **Eval-first**: 010 builds the rulers before any extractor change.
-- **Detection-recall proxy** on addrec data (presence-only labels); 40-case set = value gold.
-- **Verify via standalone swiftc harness** (app Xcode suite may not run headless); flag app-suite items for morning.
-- **No merge to main, no PRs** overnight. Commit checkpoints to `spike-nlp-performance` only.
-- `swiftui-pro` was the wrong skill (no SwiftUI here) → use `swift-concurrency-pro` + manual review.
+## Locked decisions
+- Themed specs 010→011→012, depth-first; eval-first; detection-recall proxy on addrec; 40-case = value gold.
+- Verify via standalone swiftc harness (Xcode app suite deferred to morning). NO merge to main / no PRs.
 
-## Pipeline & progress
-- [x] Specs 010, 011, 012 written + committed (`3f7aa3e`).
-- [x] 010 plan (`specs/010-eval-infrastructure/plan.md`).
-- [x] 010 Track B (value): ordinal metrics QWK/MAE/1-off + error buckets + slices — `evalmetrics.py`
-      (+ `test_evalmetrics.py`, test-first GREEN), wired into `analyze.py`. Runs via `run.sh`.
-- [ ] 010 Track A (detection): generalize `detect500.swift` → JSONL + dedup-by-id; run over
-      `addrec_1082_summaries.jsonl` (1037 unique). **← NEXT**
-- [ ] 011 logic fixes (temporal energy/focus, negation flip/scope/token-anchor, clause scoping,
-      sleep worded-numbers, tense), test-first, measured.
-- [ ] 012 lexicon (energy/focus coverage, activity blocklists, JSON/Swift de-dup, determinism), measured.
-- [ ] 40-case baseline-vs-improved review.
-- [ ] 500-case extraction over original `text`.
-- [ ] LLM-judge over 500 → `NLP_EVALUATION_RESULTS.md`.
-- [ ] Final commit + this STATUS updated.
+## Progress
+- [x] Specs 010/011/012 written + committed (`3f7aa3e`).
+- [x] 010 eval-infra: Track B ordinal QWK/MAE/1-off + buckets + slices (`cfd9b97`), Track A detection JSONL+dedup over 1082 (`c705d07`).
+- [x] 011 batch 1 (`c204bc5`): temporal weighting energy/focus (#1), middle-tier negation flip (#2), sleep worded-numbers (#24, sleepHours R 0.29→0.57). + coupled lexicon fix "couldn't focus"→distracted. No floor regression.
+- [x] 012 energy coverage (`6c21509`): added exhausted/no energy/full of energy/etc. Energy detection recall 0.35→0.39 (addrec-1037); 40-case energy R 0.25→0.50, P 0.67→0.80.
+- [~] **IN FLIGHT: LLM-judge workflow** `wc3mesdcy` (run `wf_d71f906a-ad7`). 20 agents, each reads `spikes/extractor-eval/out/judge_batches/batch_NN.json` (~24 records of the 468), returns per-record verdicts {mood,energy,focus,meds ∈ correct/partial/missed/false_positive/na, overall, note} via schema. Script: `…/workflows/scripts/judge-nlp-extractions-wf_d71f906a-ad7.js`.
 
-## Baseline numbers (pre-improvement, 40-case, captured this run)
-- mood P0.75/R0.60, energy P0.67/R0.25, focus P0.40/R0.33, activities P0.30/R0.43, meds 1.0/1.0.
-- Ordinal: mood QWK 0.97 (33% nil), energy QWK 1.00 (75% nil), focus QWK 0.40 (50% nil)
-  → **failure is detection/coverage, not level**. Buckets: lexicon-gap 35, polysemy-FP 15.
-- addrec-500 detection recall (earlier run): mood 0.69, energy **0.31**, focus 0.81.
+## NEXT (when judge workflow completes)
+1. Aggregate the returned `verdicts` (count=468 expected): per-signal % correct/partial/missed/fp, common notes, good/bad examples.
+2. Write `spikes/extractor-eval/NLP_EVALUATION_RESULTS.md`: baseline-vs-improved quantitative table (below) + the LLM-judge qualitative aggregate + per-record verdict table.
+3. Final commit + update this STATUS to DONE.
 
-## How to run
-- Value track:     `sh spikes/extractor-eval/run.sh`
-- Detection track: `sh spikes/extractor-eval/run_detect.sh`   (currently 500; being generalized to 1082)
-- Metric tests:    `python3 spikes/extractor-eval/test_evalmetrics.py`
+## Quantitative baseline → improved (for the doc)
+| metric | baseline | improved |
+|---|---|---|
+| 40-case energy P/R | 0.67 / 0.25 | 0.80 / 0.50 |
+| 40-case sleepHours R | 0.29 | 0.57 |
+| addrec-1037 energy detection recall | 0.35 | 0.39 |
+| addrec-1037 focus detection recall | 0.79 | 0.80 |
+| addrec-1037 micro recall | 0.64 | 0.65 |
+| meds (unchanged) | 1.0 / 1.0 | 1.0 / 1.0 |
+Ordinal (improved, 40-case): mood QWK 0.97, energy QWK 1.00, focus QWK 0.40 — failure is detection/coverage not level.
 
-## Key paths
-- Extractor (live, compiled by harness): `app-four/Services/NoteExtraction/*.swift`
-- Lexicon data: `app-four/Resources/lexicon.json`
-- Value gold: `app-fourTests/Eval/EvalSet.swift` (40 cases)
-- Detection data: `spikes/extractor-eval/data/addrec_500_clean.json` (+ 1082 to be copied)
-- Research/reports: `spikes/extractor-eval/research/`
+## DEFERRED to next session (specced, not built)
+- 011: negation token-anchoring (#23, Principle VII substring), clause-scoped negation (#3), clause scoping for mood/energy/focus (#4), tense hardening (#5), extract aggregation policy (#14).
+- 012: activity blocklists (precision 0.30), JSON/Swift lexicon de-dup (#6), sim/device determinism (#10), canonicalInflections expansion (#9), overlay de-dup (#13), lemma policy (#12), highlight weights (#16).
 
-## NEXT
-1. Copy `addrec_1082_summaries.jsonl` into `data/`; generalize `detect500.swift` (JSONL + dedup); run.
-2. Then 011 logic fixes (start with temporal energy/focus — lowest risk, code exists).
+## Commands
+- `sh spikes/extractor-eval/run.sh` (40-case value) · `sh spikes/extractor-eval/run_detect.sh` (detection 1082) · `python3 spikes/extractor-eval/test_evalmetrics.py`
+- Full 500 extraction: `spikes/extractor-eval/out/extract_dump …` → `out/extractions_500.json` (468 deduped).
