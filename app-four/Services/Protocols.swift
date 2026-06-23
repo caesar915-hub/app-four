@@ -2,6 +2,43 @@ import Foundation
 import AVFoundation
 import SwiftData
 
+// MARK: - Connectivity
+
+/// The active network interface class, used only to honor `downloadOverCellular`
+/// when deciding whether a background model download may start.
+enum NetworkInterface: Sendable, Equatable {
+    case wifi
+    case cellular
+    case other
+    case unsatisfied
+}
+
+/// A live, on-device connectivity check (no permission, no user data) behind a
+/// protocol so the download decision is mockable.
+protocol Connectivity: Sendable {
+    /// The current interface class at the moment of the call.
+    var currentInterface: NetworkInterface { get async }
+
+    /// A stream of interface changes so a deferred download can resume when
+    /// Wi-Fi returns. The current value is emitted on subscription.
+    var interfaceChanges: AsyncStream<NetworkInterface> { get }
+}
+
+// MARK: - Pending-Transcription Queue
+
+/// Drains recordings captured before the transcription model was ready.
+/// Driven on app launch/foreground and on background-download completion.
+/// (Seam only — the draining implementation lands with the queue story.)
+protocol PendingTranscriptionService: Sendable {
+    /// Fast-path hint that a recording is awaiting the model. Draining also
+    /// discovers pending recordings via a fetch, so this is best-effort.
+    func enqueue(_ recordingID: PersistentIdentifier) async
+
+    /// Fetch `.pendingTranscription` recordings in capture order; if the model
+    /// is ready, transcribe + extract each, serialized on the single engine.
+    func drainIfModelReady() async
+}
+
 /// Data Transfer Object for transcription segments, ensuring Sendable compliance for Swift 6.
 struct TranscriptionSegmentDTO: Sendable {
     let id: UUID
