@@ -106,7 +106,9 @@ struct ModelDownloadRow: View {
                 .font(Typography.caption)
                 .foregroundStyle(Theme.danger)
                 .fixedSize(horizontal: false, vertical: true)
-            HStack(spacing: Spacing.s) {
+            // Reflows to extra rows at large Dynamic Type so the three actions never
+            // clip off a fixed single-line HStack.
+            FlowLayout(spacing: Spacing.s) {
                 ghostPill("Try again", action: onRetry)
                 if canAllowCellular {
                     ghostPill("Allow on cellular", action: onAllowCellular)
