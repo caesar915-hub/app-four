@@ -108,6 +108,8 @@ Ranked shortlist — what to pick up next, not everything in flight. Reorder fre
 
 ## 🔨 In code (on a branch, not on `main`)
 
+> **⚠️ Landed on `main` 2026-06-24 (investor-demo build):** `feat/ux-improvements-015-017` (**015** onboarding · **016** check-in capture-feel · **017** settings recovery/privacy) and the **day-card 019** redesign were merged to `main` (`3229d986`), plus the 4 cherry-picked review-blocker fixes (deleted-`@Model` crash, calendar scroll→filter ratchet, stale med-bar, export OOM guard) and the test-isolation fix. **Not gated by a `/code-review` PR** — reviewed post-hoc (see the 🧹 cleanup item in 💡 Ideas). Pending: on-device smoke-test → tag `v0.8.1`. The In-code rows below predate this merge and are now on `main`.
+
 | Item | Branch / PR | Artifacts | Notes |
 |---|---|---|---|
 | **Day-card mood-block redesign (#4, A4)** | `feat/019-daycard-mood-block` | [spec/plan/tasks](019-daycard-mood-block/) · [mockup](../mockups/summary/index.html) | **Built 2026-06-24** (Spec Kit `019`, full pipeline specify→plan→tasks→implement): ported the **"#4 Divided · Cream disc"** mockup to the SwiftUI `DayCard` — folded **mood-tinted block** + cream-disc badge + divider; unfolded **mood strip** over cream rows (mood glyph in the med-phase ring, inline time, details chevron); `MoodBanner` deleted; tint average→representative; test-first palette helper (`DayCardPaletteTests` RED→GREEN). **Build green; full serial suite 317 green** (SC-007); token audit clean (SC-006). Visual-only (no data/behaviour change). _Pending:_ owner on-device QA (this env couldn't skip onboarding via simctl + no tap MCP), then `/code-review` → PR. The deferred **A4** from [018](018-qa-review-fixes/spec.md). See DEVLOG 2026-06-24. |
