@@ -12,8 +12,6 @@ struct CalendarLibraryView: View {
     @State private var topDayID: Date?
     @State private var expandedCards = ExpandedDayCards()
     @AppStorage("autoExpandOnSelection") private var autoExpandOnSelection = true
-    @State private var isProgrammaticScroll = false
-    @State private var scrollGuardTask: Task<Void, Never>?
     @Environment(AppServices.self) private var services
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     private let store: RecordingStore
@@ -106,10 +104,6 @@ struct CalendarLibraryView: View {
                 .padding(.bottom, Spacing.xxl)
             }
             .scrollPosition(id: $topDayID, anchor: .top)
-            .onChange(of: topDayID) { _, newValue in
-                guard !isProgrammaticScroll, let day = newValue else { return }
-                selectedDay = day
-            }
             .edgeFadeMask(top: 0, bottom: Spacing.section)
         }
         .animation(reduceMotion ? nil : Motion.smooth, value: calendar.isDateInToday(selectedDay))
@@ -140,18 +134,14 @@ struct CalendarLibraryView: View {
         scrollList(to: cell.date)
     }
 
+    /// Selection (the filter boundary) is tap/jump-only — scrolling never re-filters, so
+    /// browsing older days can't ratchet newer days out of the list.
     private func scrollList(to day: Date) {
         let target = calendar.startOfDay(for: day)
         selectedDay = target
-        isProgrammaticScroll = true
         withAnimation(reduceMotion ? nil : Motion.smooth) {
             topDayID = target
             expandedCards = expandedCards.selecting(target, autoExpand: autoExpandOnSelection)   // collapse all, open selected (FR-009/FR-019)
-        }
-        scrollGuardTask?.cancel()                       // a newer tap supersedes the previous guard
-        scrollGuardTask = Task { @MainActor in
-            try? await Task.sleep(for: .seconds(Motion.smoothDuration + 0.05))   // outlast the reposition animation, then clear the loop guard
-            if !Task.isCancelled { isProgrammaticScroll = false }
         }
     }
 
