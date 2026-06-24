@@ -138,6 +138,16 @@ struct ExportServiceImpl: ExportService {
     private static func snapshot(_ context: ModelContext) throws -> JournalArchive {
         let descriptor = FetchDescriptor<Recording>(sortBy: [SortDescriptor(\.createdAt)])
         let recordings = try context.fetch(descriptor)
+
+        // The whole archive is buffered in memory at once (audio base64 + JSON + AES-GCM
+        // seal ≈ 3-4x raw audio), so guard against an uncatchable OOM on the A14 minimum
+        // target and surface a recoverable error instead.
+        let totalAudioBytes = recordings.reduce(Int64(0)) { $0 + max(0, $1.fileSize) }
+        let limitBytes: Int64 = 200 * 1_024 * 1_024
+        guard totalAudioBytes <= limitBytes else {
+            throw ExportError.audioTooLarge(totalBytes: totalAudioBytes, limitBytes: limitBytes)
+        }
+
         return JournalArchive(
             formatVersion: JournalArchive.currentFormatVersion,
             exportedAt: .now,
@@ -218,4 +228,8 @@ enum ExportError: Error, Sendable {
     /// AES-GCM `combined` is only nil for a non-default (>12-byte) nonce, which we
     /// never set — defensive, should not occur.
     case sealFailed
+    /// Total audio exceeds the safe in-memory export budget. The archive is held whole
+    /// (audio base64 + JSON + AES-GCM ≈ 3-4x raw), so a clear error beats an uncatchable
+    /// OOM on the A14 minimum target.
+    case audioTooLarge(totalBytes: Int64, limitBytes: Int64)
 }
