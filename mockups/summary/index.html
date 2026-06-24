@@ -61,20 +61,24 @@
   .divider{height:1px;background:var(--hair);margin:11px 16px;}
   .clist{padding:0 14px 16px;display:flex;flex-direction:column;gap:11px;}
 
-  /* day card (final) */
-  .card{border:1px solid var(--hair);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm);background:var(--surface);}
-  .wash{padding:15px 16px;cursor:default;}
-  .hrow{display:flex;align-items:center;gap:14px;}
-  .gcircle{flex:none;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
-  .rcol{flex:1;min-width:0;}
-  .toprow{display:flex;align-items:center;gap:10px;}
-  .daytitle{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-.01em;}
-  .chev{margin-left:auto;font-size:13px;color:var(--muted);}
-  .fline{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;margin-top:6px;}
-  .fl-mood{font-family:'Fraunces',serif;font-size:18px;font-weight:600;}
+  /* day card (final · #4 Divided · Cream disc): Meadow block folds/opens; cream-disc mood badge */
+  .card{border:1px solid var(--hair);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm);background:var(--surface);transition:background .35s var(--ease);}
+  .rail{display:flex;align-items:center;gap:12px;min-height:56px;padding:8px 14px;cursor:pointer;user-select:none;transition:border-color .3s;}
+  .gdisc{flex:none;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:0;}
+  .otitle{flex:1;min-width:0;display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;font-family:'Fraunces',serif;font-size:18px;font-weight:600;letter-spacing:-.01em;}
+  .t-mood{font-family:'Fraunces',serif;font-weight:600;letter-spacing:-.01em;}
+  .t-sep{color:var(--muted);font-weight:600;}
+  .oday{color:var(--ink);}
+  .ochev{flex:none;align-self:center;font-size:13px;color:var(--muted);transition:transform .34s var(--ease);}
+  .dcard[data-open="1"] .ochev{transform:rotate(180deg);}
+  .dcard[data-open="0"].divided .rail{border-bottom:1px solid color-mix(in srgb,var(--ink) 9%,transparent);}
+  .dcard[data-open="1"] .rail{border-bottom:1px solid var(--hair);}
+  .bwrap{height:auto;overflow:hidden;transition:height .42s var(--ease);}
+  .fline{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;}
   .fl-s{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;}
   .fl-med{color:var(--med);}
-  .cbody{border-top:1px solid var(--hair);padding:4px 16px 12px;}
+  .cbody{padding:4px 16px 12px;}
+  .cbody.fold{padding:9px 16px 13px;}
   .row{display:flex;gap:11px;align-items:flex-start;padding:11px 0;}
   .row+.row{border-top:1px solid var(--hair);}
   .ringcol{flex:none;width:52px;display:flex;flex-direction:column;align-items:center;gap:4px;}
@@ -82,7 +86,8 @@
   .ct{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
   .mhead{display:flex;align-items:baseline;gap:8px;}
   .mword{font-family:'Fraunces',serif;font-size:16px;font-weight:600;}
-  .rtime{margin-left:auto;font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);}
+  .rtime{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);}
+  .rmore{margin-left:auto;align-self:center;display:inline-flex;align-items:center;color:var(--muted);cursor:pointer;}
   .subsig{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
   .sg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;}
   .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
@@ -142,28 +147,29 @@
 
   <section>
     <div class="num">THE DAY CARD</div>
-    <h2>Folded big, opens to the day</h2>
-    <p class="sectsub">Folded, the card reads the whole day in one line. A circle (the mood glyph) sits left; to its right, the weekday on top and, just below, mood · energy · focus · medication on a single line. Medication is the name only. Opening collapses that line so only the circle + weekday remain, and the check-ins take over.</p>
+    <h2>A Meadow block that opens to the day</h2>
+    <p class="sectsub">Folded, the card is a soft Meadow block (the day's mood tint) that reads the whole day at a glance: the mood glyph sits in a cream badge, the mood word + weekday on one line, a divider, then energy · focus · medication (name only). Opening keeps the Meadow strip as the header and drops the check-in rows onto cream below. <b>Tap either card to fold / unfold.</b></p>
     <div class="grid2">
       <div class="col"><div class="label">Folded</div><div id="cardFolded"></div>
-        <div class="cap-meta">Circle = mood glyph · one line: mood · energy · focus · medication name · bottom of the circle aligns with that line.</div></div>
+        <div class="cap-meta">Meadow block · cream badge = mood glyph · title: mood word · weekday · divider · then energy · focus · medication name. Tap to open.</div></div>
       <div class="col"><div class="label">Unfolded</div><div id="cardOpen"></div>
-        <div class="cap-meta">The summary line collapses; circle + weekday stay; check-ins appear with the medication-phase ring.</div></div>
+        <div class="cap-meta">The Meadow strip stays as the header (cream badge + mood word + weekday); check-in rows drop onto cream below — time inline beside the mood, details chevron on the trailing edge. Tap to fold.</div></div>
     </div>
   </section>
 
   <section>
     <div class="num">THE CHECK-IN</div>
     <h2>Time-circle, phase ring, signals</h2>
-    <p class="sectsub">Each check-in is a circle holding the time, wrapped in the purple medication-phase ring with its % below. To the right: the mood word, then energy + focus as ramp glyphs that encode their own level, then chips for medication, feelings and side-effects.</p>
+    <p class="sectsub">Each check-in is a circle holding the mood glyph, wrapped in the purple medication-phase ring with its % below. To the right: the mood word with the time inline beside it, then energy + focus as ramp glyphs that encode their own level, then chips for medication, feelings and side-effects. A details chevron on the trailing edge opens the full entry.</p>
     <div class="grid2">
       <div style="flex:none"><div class="panel" style="width:360px" id="checkin"></div></div>
       <div class="col">
         <div class="label">Decisions</div>
         <table class="dec">
-          <tr><td class="k">Circle = medication %</td><td class="v">The ring shows dose phase; the % sits under it. <b>Time is a label</b>, not inside the ring.</td></tr>
+          <tr><td class="k">Circle = medication %</td><td class="v">The ring shows dose phase; the % sits under it. The circle holds the <b>mood glyph</b>; <b>time is a label</b> inline by the mood word, never inside the ring.</td></tr>
           <tr><td class="k">Signals = glyphs</td><td class="v">Mood word leads; energy + focus shown as ramp glyphs (shape + hue + fill carry the level). Partial check-ins show only what was logged.</td></tr>
           <tr><td class="k">Chips</td><td class="v">Medication (name), feelings, side-effects. Light pills below the signals.</td></tr>
+          <tr><td class="k">Details affordance</td><td class="v">A chevron on the <b>trailing edge</b> opens the full check-in; time moved inline next to the mood word to free that edge.</td></tr>
         </table>
       </div>
     </div>
@@ -218,6 +224,7 @@ function gFocus(hex,l,base){const s=base+l*2.3,cx=12,cy=13;let o=`<circle cx="${
 function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.8"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.4"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.25"/></g></svg>`;}
 function icHeart(c,s){return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${c}" stroke="${c}" stroke-width="1.4" stroke-linejoin="round"><path d="M19 14c1.5-1.6 2.5-3.3 2.5-5.2A4 4 0 0 0 12 6 4 4 0 0 0 2.5 8.8c0 1.9 1 3.6 2.5 5.2l7 7Z"/></svg>`;}
 function icBandage(c,s){return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="8" rx="4" transform="rotate(-45 12 12)"/><circle cx="12" cy="12" r="1"/></svg>`;}
+function icMore(c,s){return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>`;}
 const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
 const tint=(h,p,base)=>`color-mix(in srgb, ${h} ${p}%, ${base||'var(--surface)'})`;
 const mg=(l,b)=>`<span class="glyph">${gMood(cssv(mC[l-1]),l,b||9)}</span>`;
@@ -226,49 +233,50 @@ const fg=(l,b)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,b||9)}</span>`;
 const cap=(s)=>`<span class="glyph">${icCapsule(cssv('var(--med)'),s||14)}</span>`;
 function ring(r,S){S=S||52;const c=S/2,rr=S/2-4,C=2*Math.PI*rr,p=r.med||0;const inner=tint(mC[r.m-1],45,'var(--surface)');
   const arc=r.med!=null?`<circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="var(--hair)" stroke-width="3.3"/><circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="3.3" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${c} ${c})"/>`:'';
-  const showTime=r.time&&S>=64;
-  return `<div class="ringcol"><div style="position:relative;width:${S}px;height:${S}px;display:flex;align-items:center;justify-content:center"><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" style="position:absolute;inset:0">${arc}<circle cx="${c}" cy="${c}" r="${S*0.34}" fill="${inner}"/></svg>${showTime?`<span class="mono" style="position:relative;font-size:13px;font-weight:600">${r.time}</span>`:`<span style="position:relative">${mg(r.m,9)}</span>`}</div>${r.med!=null?`<span class="medpill">${Math.round(r.med*100)}%</span>`:''}</div>`;}
+  return `<div class="ringcol"><div style="position:relative;width:${S}px;height:${S}px;display:flex;align-items:center;justify-content:center"><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" style="position:absolute;inset:0">${arc}<circle cx="${c}" cy="${c}" r="${S*0.34}" fill="${inner}"/></svg><span style="position:relative">${mg(r.m,S>=64?12:9)}</span></div>${r.med!=null?`<span class="medpill">${Math.round(r.med*100)}%</span>`:''}</div>`;}
 function rowHTML(r){let sig='';if(r.e!=null)sig+=`<span class="sg">${eg(r.e)} ${ENW[r.e-1]}</span>`;if(r.f!=null)sig+=`<span class="sg">${fg(r.f)} ${FOW[r.f-1]}</span>`;
-  return `<div class="row">${ring(r)}<div class="ct"><div class="mhead"><span class="mword" style="color:${cssv(mC[r.m-1])}">${MOODW[r.m-1]}</span><span class="rtime">${r.time}</span></div>${sig?`<div class="subsig">${sig}</div>`:''}</div></div>`;}
+  return `<div class="row">${ring(r)}<div class="ct"><div class="mhead"><span class="mword" style="color:${cssv(mC[r.m-1])}">${MOODW[r.m-1]}</span><span class="rtime">${r.time}</span><span class="rmore" title="Details">${icMore(cssv('var(--muted)'),16)}</span></div>${sig?`<div class="subsig">${sig}</div>`:''}</div></div>`;}
 
 const R3=[{time:'16:12',m:4,e:5,f:3,med:0.58},{time:'12:40',m:3,e:3,f:null,med:null},{time:'09:15',m:3,e:null,f:null,med:null}];
 
-// folded / open day card
-function dayCard(open){
-  const m=4;const headBg=tint(mC[m-1],46,'var(--surface)'),gBg=tint(mC[m-1],70,'var(--surface)');
-  const fline=`<div class="fline"><span class="fl-mood" style="color:${cssv(mC[m-1])}">Good</span><span class="fl-s">${eg(5,11)} Charged</span><span class="fl-s">${fg(3,11)} Present</span><span class="fl-s fl-med">${cap(13)} Concerta</span></div>`;
-  return `<div class="card">
-    <div class="wash" style="background:${headBg}">
-      <div class="hrow"><span class="gcircle" style="background:${gBg}">${mg(m,16)}</span>
-        <div class="rcol"><div class="toprow"><span class="daytitle">Monday 8</span><span class="chev">${open?'⌃':'⌄'}</span></div>${open?'':fline}</div></div>
-    </div>
-    ${open?`<div class="cbody">${R3.map(rowHTML).join('')}</div>`:''}
-  </div>`;
-}
+// day card (final · #4): Meadow block + cream-disc mood badge; click the rail to fold / unfold
+const DEMO_M=4,DEMO_DAY='Monday 8';
+function moodBadge(m,sz,gb){return `<span class="gdisc" style="width:${sz}px;height:${sz}px;background:${tint(mC[m-1],50,'var(--surface)')}">${mg(m,gb)}</span>`;}
+function railHTML(m,day){const meadow=tint(mC[m-1],24,'var(--surface)'),word=tint(mC[m-1],72,'var(--ink)');
+  return `<div class="rail" style="background:${meadow}" onclick="toggleCard(this)">${moodBadge(m,42,12)}<span class="otitle"><span class="t-mood" style="color:${word}">${MOODW[m-1]}</span><span class="t-sep">·</span><span class="oday">${day}</span></span><span class="ochev">⌄</span></div>`;}
+const demoFold=()=>`<div class="cbody fold"><div class="fline"><span class="fl-s">${eg(5,11)} Charged</span><span class="fl-s">${fg(3,11)} Present</span><span class="fl-s fl-med">${cap(13)} Concerta</span></div></div>`;
+const demoOpen=()=>`<div class="cbody">${R3.map(rowHTML).join('')}</div>`;
+function dayCard(open){const m=DEMO_M,meadow=tint(mC[m-1],24,'var(--surface)');
+  return `<div class="card dcard divided" data-open="${open?1:0}" data-meadow="${meadow}" style="background:${open?'var(--surface)':meadow}">${railHTML(m,DEMO_DAY)}<div class="bwrap"><div class="bwrap-in">${open?demoOpen():demoFold()}</div></div></div>`;}
+function toggleCard(rail){const card=rail.closest('.card'),nowOpen=card.dataset.open!=='1';card.dataset.open=nowOpen?'1':'0';
+  card.style.background=nowOpen?'var(--surface)':card.dataset.meadow;
+  const wrap=card.querySelector('.bwrap'),inner=card.querySelector('.bwrap-in'),startH=wrap.getBoundingClientRect().height;
+  inner.innerHTML=nowOpen?demoOpen():demoFold();wrap.style.height=startH+'px';void wrap.offsetHeight;wrap.style.height=inner.scrollHeight+'px';
+  wrap.addEventListener('transitionend',e=>{if(e.propertyName==='height')wrap.style.height='auto';},{once:true});}
 
 // check-in component (big ring with time + signals + chips)
 function checkin(){
   const r={time:'16:12',m:4,e:5,f:3,med:0.58};
   const chips=`<div class="chips"><span class="chip med">${cap(13)} Concerta</span><span class="chip">${icHeart(cssv('var(--ink)'),12)} Grateful</span><span class="chip">${icBandage(cssv('var(--ink)'),13)} Dry mouth</span></div>`;
-  return `<div class="row" style="border:none;padding:4px 0">${ring(r,72)}<div class="ct"><div class="mhead"><span class="mword" style="font-size:19px;color:${cssv(mC[r.m-1])}">Good</span><span class="rtime">16:12</span></div><div class="subsig"><span class="sg">${eg(5)} Charged</span><span class="sg">${fg(3)} Present</span></div>${chips}</div></div>`;
+  return `<div class="row" style="border:none;padding:4px 0">${ring(r,72)}<div class="ct"><div class="mhead"><span class="mword" style="font-size:19px;color:${cssv(mC[r.m-1])}">Good</span><span class="rtime" style="font-size:12px">16:12</span><span class="rmore" title="Details">${icMore(cssv('var(--muted)'),18)}</span></div><div class="subsig"><span class="sg">${eg(5)} Charged</span><span class="sg">${fg(3)} Present</span></div>${chips}</div></div>`;
 }
 
 // phone screen: med bar + calendar + folded cards (filter-above shown: today 15 selected, future greyed)
 function phone(){
   const WEEK=[[9,3],[10,null],[11,2],[12,4],[13,5],[14,3],[15,4]];
   const days=WEEK.map(([n,m])=>{const sel=n===15,fut=n>15;return `<div class="day ${sel?'sel':''} ${fut?'future':''}"><span class="n">${n}</span><span class="dot" style="background:${m&&!fut?cssv(mC[m-1]):'transparent'}"></span></div>`;}).join('');
-  const fcard=(day,m,e,f,med,od)=>{const headBg=tint(mC[m-1],46,'var(--surface)'),gBg=tint(mC[m-1],70,'var(--surface)');
-    let fl=`<span class="fl-mood" style="color:${cssv(mC[m-1])};font-size:16px">${MOODW[m-1]}</span>`;if(e)fl+=`<span class="fl-s">${eg(e,10)} ${ENW[e-1]}</span>`;if(f)fl+=`<span class="fl-s">${fg(f,10)} ${FOW[f-1]}</span>`;if(med)fl+=`<span class="fl-s fl-med">${cap(12)} ${med}</span>`;
-    return `<div class="card"><div class="wash" style="background:${headBg};padding:13px 14px"><div class="hrow" style="gap:12px"><span class="gcircle" style="background:${gBg};width:50px;height:50px">${mg(m,13)}</span><div class="rcol"><div class="toprow"><span class="daytitle" style="font-size:17px">${day}</span><span class="chev">${od?'⌃':'⌄'}</span></div><div class="fline" style="margin-top:5px">${fl}</div></div></div></div></div>`;};
+  const fcard=(day,m,e,f,med)=>{const meadow=tint(mC[m-1],24,'var(--surface)'),word=tint(mC[m-1],72,'var(--ink)');
+    let fl='';if(e)fl+=`<span class="fl-s">${eg(e,10)} ${ENW[e-1]}</span>`;if(f)fl+=`<span class="fl-s">${fg(f,10)} ${FOW[f-1]}</span>`;if(med)fl+=`<span class="fl-s fl-med">${cap(11)} ${med}</span>`;
+    return `<div class="card" style="background:${meadow}"><div class="rail" style="background:${meadow};min-height:46px;padding:7px 12px;cursor:default;border-bottom:1px solid color-mix(in srgb,var(--ink) 9%,transparent)">${moodBadge(m,36,10)}<span class="otitle" style="font-size:15px"><span class="t-mood" style="color:${word}">${MOODW[m-1]}</span><span class="t-sep">·</span><span class="oday">${day}</span></span><span class="ochev">⌄</span></div><div class="cbody fold" style="padding:6px 12px 10px"><div class="fline">${fl}</div></div></div>`;};
   return `<div class="phone"><div class="screen">
     <div class="statusbar"><span>14:34</span><span>􀙇 54</span></div>
     <div class="medbar"><span class="pill">${cap(15)}</span><div style="flex:1"><div class="mname">Concerta 18 mg</div><div class="mmeta">Winding down · ends 02:34</div></div><span class="mtrack"><span></span></span></div>
     <div class="hdr"><div class="top"><span class="month">June 2026 ›</span><span class="today">Today</span></div><div class="wcaps"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="drow">${days}</div></div>
     <div class="divider"></div>
     <div class="clist">
-      ${fcard('Sunday 15',4,5,3,'Concerta',false)}
-      ${fcard('Saturday 14',3,3,null,null,false)}
-      ${fcard('Friday 13',5,4,4,'Vyvanse',false)}
+      ${fcard('Sunday 15',4,5,3,'Concerta')}
+      ${fcard('Saturday 14',3,3,null,null)}
+      ${fcard('Friday 13',5,4,4,'Vyvanse')}
     </div>
   </div></div>`;
 }

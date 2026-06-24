@@ -47,6 +47,14 @@ extension MoodLevel {
     /// Deeper, legible shade of the same hue — used for the day header text.
     var deepFill: Color { color }
 
+    /// Day-card mood-block tint (spec 019, "#4 Divided · Cream disc"): the representative-mood base
+    /// colour at `Opacity.moodBlock`, filling the folded card and the open-state strip header.
+    var blockTint: Color { color.opacity(Opacity.moodBlock) }
+    /// Cream-disc mood badge behind the mood glyph (folded header + check-in bead).
+    var badgeTint: Color { color.opacity(Opacity.moodBadge) }
+    /// Mood-word colour on the block tint — the deeper, legible shade.
+    var wordColor: Color { deepFill }
+
     var displayLabel: String {
         switch self {
         case .low:   "Low"
@@ -79,9 +87,6 @@ extension MoodLevel {
         let mean = (Double(values.reduce(0, +)) / Double(values.count)).rounded()
         return MoodLevel(numericValue: Int(mean))
     }
-
-    /// Rounded-average pastel fill of several moods, for the day-card tint.
-    static func averageFill(of moods: [String?]) -> Color? { average(moods)?.fill }
 
     /// Rounded-average deep shade of several moods, for the day header.
     static func averageDeep(of moods: [String?]) -> Color? { average(moods)?.deepFill }

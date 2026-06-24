@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// The circular "bead" for one timeline node: a mood-coloured (recording) or
-/// hollow (med-only / neutral) centre with the time inside.
+/// The circular "bead" for one timeline node: the mood glyph on a soft mood disc (recording) or a
+/// hollow (med-only / neutral) centre. The time moved out to the row head (spec 019); the bead now
+/// carries the mood glyph + the medication-phase ring.
 ///
 /// A dose still active from earlier (carry-over) draws its purple effect ring
 /// just *inside* the circle's edge, and its percentage in a small badge whose
@@ -26,7 +27,6 @@ struct TimelineBead: View {
             if let ring = carryoverRing {
                 ringArc(ring)
             }
-            innerLabel
         }
         .frame(width: beadSize, height: beadSize)
         .overlay(alignment: .bottom) { carryoverBadge }
@@ -38,8 +38,12 @@ struct TimelineBead: View {
 
     @ViewBuilder
     private var centre: some View {
-        if let recording = node.recording {
-            Circle().fill(recording.moodColor)   // gray for nil mood (moodColor handles it)
+        if node.recording != nil {
+            ZStack {
+                Circle().fill(MoodLevel(name: node.recording?.mood)?.badgeTint ?? Color(.systemGray5))
+                SignalGlyph(.mood, level: MoodLevel(name: node.recording?.mood)?.numericValue,
+                            size: circleSize * 0.5, decorative: true)
+            }
         } else {
             Circle()
                 .fill(Theme.background)
@@ -55,21 +59,6 @@ struct TimelineBead: View {
             .stroke(Palette.medication, style: StrokeStyle(lineWidth: ringWidth, lineCap: .round))
             .rotationEffect(.degrees(-90))                   // start at 12 o'clock
             .frame(width: ringDiameter, height: ringDiameter)
-    }
-
-    // MARK: - Inner label (time, centred)
-
-    private var innerLabel: some View {
-        Text(node.time, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits))
-            .font(.plexMono(14).weight(.bold))
-            .foregroundStyle(timeColor)
-            .minimumScaleFactor(0.7)   // single-line guard for the circular badge
-            .lineLimit(1)
-    }
-
-    /// Dark ink on the pastel mood fill; purple on a hollow med-only bead.
-    private var timeColor: Color {
-        node.recording != nil ? MoodLevel.onColor : Palette.medication
     }
 
     // MARK: - Carry-over badge (lower edge flush with the circle)

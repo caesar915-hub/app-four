@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Slim Tinted Rail · 6 bar colours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EAF0DB; --paper:#F1F4E6; --surface:#FCFBF4; --surface2:#E4E9D2; --ink:#23271C; --muted:#7C8270;
+    --hair:#D7DEC4; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#8466B5;
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    --e1:#A9A079; --e2:#C2B25A; --e3:#D8C53E; --e4:#EAD22A; --e5:#E6C21E;
+    --f1:#7E8B96; --f2:#6E8DAE; --f3:#5683B8; --f4:#3E73B0; --f5:#2C5E9E;
+    --shadow:0 2px 6px rgba(40,48,24,.05),0 14px 34px rgba(40,48,24,.08); --shadow-sm:0 1px 2px rgba(40,48,24,.06);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  [data-theme="dark"]{
+    --bg:#131510; --paper:#1B1E16; --surface:#23271C; --surface2:#2D3122; --ink:#EDF0E2; --muted:#9AA088;
+    --hair:#363B2A; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC;
+    --m1:#E08A3C; --m2:#EFB860; --m3:#A9D183; --m4:#6EC07C; --m5:#43A268;
+    --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1180px;margin:0 auto;padding:46px 28px 120px;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 12px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(30px,5vw,48px);line-height:1.02;margin:0;letter-spacing:-.03em;}
+  .lede{font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--accent);margin:14px 0 0;max-width:60ch;}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 4px;}
+  .btn{font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:9px 16px;box-shadow:var(--shadow-sm);}
+  .btn:hover{border-color:var(--muted);}
+  .hint{font-size:13px;color:var(--muted);margin:6px 0 26px;}
+  .hint b{color:var(--ink);font-weight:700;}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:26px 24px;align-items:start;}
+  .cell .lab{display:flex;align-items:baseline;gap:8px;margin:0 0 9px;}
+  .cell .num{font-family:'IBM Plex Mono';font-size:12px;font-weight:600;color:var(--accent);}
+  .cell .nm{font-family:'Fraunces',serif;font-size:18px;font-weight:600;letter-spacing:-.01em;}
+  .cell .rc{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);margin-top:-4px;margin-bottom:9px;}
+
+  /* card + interactive rail */
+  .card{border:1px solid var(--hair);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm);background:var(--surface);}
+  .rail{display:flex;align-items:center;gap:11px;min-height:46px;padding:9px 16px;cursor:pointer;user-select:none;border-bottom:1px solid var(--hair);transition:background .35s var(--ease);}
+  .rail:active{filter:brightness(.99);}
+  .oglyph{flex:none;display:flex;align-items:center;justify-content:center;line-height:0;}
+  .otitle{flex:1;min-width:0;display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;font-family:'Fraunces',serif;font-size:18px;font-weight:600;letter-spacing:-.01em;}
+  .omood{color:var(--m4);}
+  .t-sep{color:var(--muted);font-weight:600;}
+  .oday{color:var(--ink);}
+  .ochev{flex:none;align-self:center;font-size:13px;color:var(--muted);transition:transform .34s var(--ease);}
+  .dcard[data-open="1"] .ochev{transform:rotate(180deg);}
+
+  /* the 6 bar colours */
+  .r1{background:color-mix(in srgb,var(--m4) 8%,var(--surface));}
+  .r2{background:color-mix(in srgb,var(--m4) 14%,var(--surface));}
+  .r3{background:color-mix(in srgb,var(--m4) 24%,var(--surface));}
+  .r4{background:var(--surface2);}
+  .r5{background:linear-gradient(90deg,color-mix(in srgb,var(--m4) 22%,var(--surface)),var(--surface));}
+  .r6{background:color-mix(in srgb,var(--m4) 7%,var(--surface));border-bottom:2px solid var(--m4);}
+
+  /* fold/unfold body */
+  .bwrap{height:auto;overflow:hidden;transition:height .42s var(--ease);}
+  .bwrap-in{}
+  .cbody{padding:4px 16px 12px;}
+  .cbody.fold{padding:9px 16px 13px;}
+  .sline{display:flex;align-items:center;gap:6px 14px;flex-wrap:wrap;}
+  .fl-s{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;}
+  .fl-med{color:var(--med);}
+  .row{display:flex;gap:11px;align-items:flex-start;padding:11px 0;}
+  .row+.row{border-top:1px solid var(--hair);}
+  .ringcol{flex:none;width:52px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .medpill{font-family:'IBM Plex Mono';font-size:10px;font-weight:600;color:var(--med);background:color-mix(in srgb,var(--med) 14%,var(--surface));border-radius:999px;padding:2px 6px;}
+  .ct{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+  .mhead{display:flex;align-items:baseline;gap:8px;}
+  .mword{font-family:'Fraunces',serif;font-size:16px;font-weight:600;}
+  .rtime{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);}
+  .rmore{margin-left:auto;align-self:center;display:inline-flex;align-items:center;color:var(--muted);}
+  .subsig{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .sg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Squirl · Paper &amp; Pollen · Slim Tinted Rail</p>
+  <h1>Six bars, one rail</h1>
+  <p class="lede">Proposal 1, iterated: the same slim unfolded rail, six small colour treatments. The rail stays as the header in both states, so its colour reads whether the card is open or shut.</p>
+  <div class="controls">
+    <button class="btn" onclick="setAll(true)">Unfold all</button>
+    <button class="btn" onclick="setAll(false)">Fold all</button>
+    <button class="btn" onclick="toggleTheme()">◐ light / dark</button>
+  </div>
+  <p class="hint"><b>Click any rail</b> to fold / unfold it. Folded shows the one-line signal summary; unfolded shows the check-ins.</p>
+  <div class="grid" id="grid"></div>
+</div>
+
+<script>
+const mC=['var(--m1)','var(--m2)','var(--m3)','var(--m4)','var(--m5)'];
+const eC=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
+const fC=['var(--f1)','var(--f2)','var(--f3)','var(--f4)','var(--f5)'];
+const MOODW=['Low','Flat','Okay','Good','Great'],ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Scattered','Present','Sharp','Locked'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.7,op=(0.4+l*0.13).toFixed(2),sw=(1+l*0.14).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.3,cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.32+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.4" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.5" opacity="0.95"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.8"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.4"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.25"/></g></svg>`;}
+function icMore(c,s){return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p,base)=>`color-mix(in srgb, ${h} ${p}%, ${base||'var(--surface)'})`;
+const mg=(l,b)=>`<span class="glyph">${gMood(cssv(mC[l-1]),l,b||9)}</span>`;
+const eg=(l,b)=>`<span class="glyph">${gEnergy(cssv(eC[l-1]),l,b||9)}</span>`;
+const fg=(l,b)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,b||9)}</span>`;
+const cap=(s)=>`<span class="glyph">${icCapsule(cssv('var(--med)'),s||14)}</span>`;
+function ring(r,S){S=S||52;const c=S/2,rr=S/2-4,C=2*Math.PI*rr,p=r.med||0;const inner=tint(mC[r.m-1],45,'var(--surface)');
+  const arc=r.med!=null?`<circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="var(--hair)" stroke-width="3.3"/><circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="3.3" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${c} ${c})"/>`:'';
+  return `<div class="ringcol"><div style="position:relative;width:${S}px;height:${S}px;display:flex;align-items:center;justify-content:center"><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" style="position:absolute;inset:0">${arc}<circle cx="${c}" cy="${c}" r="${S*0.34}" fill="${inner}"/></svg><span style="position:relative">${mg(r.m,S>=64?12:9)}</span></div>${r.med!=null?`<span class="medpill">${Math.round(r.med*100)}%</span>`:''}</div>`;}
+function rowHTML(r){let sig='';if(r.e!=null)sig+=`<span class="sg">${eg(r.e)} ${ENW[r.e-1]}</span>`;if(r.f!=null)sig+=`<span class="sg">${fg(r.f)} ${FOW[r.f-1]}</span>`;
+  return `<div class="row">${ring(r)}<div class="ct"><div class="mhead"><span class="mword" style="color:${cssv(mC[r.m-1])}">${MOODW[r.m-1]}</span><span class="rtime">${r.time}</span><span class="rmore">${icMore(cssv('var(--muted)'),16)}</span></div>${sig?`<div class="subsig">${sig}</div>`:''}</div></div>`;}
+const R3=[{time:'16:12',m:4,e:5,f:3,med:0.58},{time:'12:40',m:3,e:3,f:null,med:null},{time:'09:15',m:3,e:null,f:null,med:null}];
+
+const foldBody=()=>`<div class="cbody fold"><div class="sline"><span class="fl-s">${eg(5,11)} Charged</span><span class="fl-s">${fg(3,11)} Present</span><span class="fl-s fl-med">${cap(13)} Concerta</span></div></div>`;
+const openBody=()=>`<div class="cbody">${R3.map(rowHTML).join('')}</div>`;
+
+const VS=[
+  {id:'r1',name:'Whisper',rc:'mood · 8% tint'},
+  {id:'r2',name:'Soft',rc:'mood · 14% tint  (current)'},
+  {id:'r3',name:'Meadow',rc:'mood · 24% tint'},
+  {id:'r4',name:'Sage',rc:'neutral surface2 · no mood hue'},
+  {id:'r5',name:'Gradient',rc:'mood 22% → surface fade'},
+  {id:'r6',name:'Edge-lit',rc:'mood 7% + 2px mood underline'},
+];
+
+function cardHTML(v,i){
+  return `<div class="cell">
+    <div class="lab"><span class="num">${i+1}</span><span class="nm">${v.name}</span></div>
+    <div class="rc">${v.rc}</div>
+    <div class="card dcard" data-id="${v.id}" data-open="1">
+      <div class="rail ${v.id}" onclick="onTap('${v.id}')">
+        <span class="oglyph">${mg(4,18)}</span>
+        <span class="otitle"><span class="omood">Good</span><span class="t-sep">·</span><span class="oday">Monday 8</span></span>
+        <span class="ochev">&#8964;</span>
+      </div>
+      <div class="bwrap"><div class="bwrap-in">${openBody()}</div></div>
+    </div>
+  </div>`;
+}
+
+function animateTo(card){
+  const wrap=card.querySelector('.bwrap'),inner=card.querySelector('.bwrap-in');
+  const open=card.dataset.open==='1';
+  const startH=wrap.getBoundingClientRect().height;
+  inner.innerHTML=open?openBody():foldBody();
+  wrap.style.height=startH+'px';
+  void wrap.offsetHeight;            // force reflow so the start height sticks
+  wrap.style.height=inner.scrollHeight+'px';
+  const done=(e)=>{if(e.propertyName!=='height')return;wrap.style.height='auto';wrap.removeEventListener('transitionend',done);};
+  wrap.addEventListener('transitionend',done);
+}
+function onTap(id){
+  const card=document.querySelector(`.dcard[data-id="${id}"]`);
+  card.dataset.open=card.dataset.open==='1'?'0':'1';
+  animateTo(card);
+}
+function setAll(open){
+  document.querySelectorAll('.dcard').forEach(card=>{
+    const isOpen=card.dataset.open==='1';
+    if(isOpen!==open){card.dataset.open=open?'1':'0';animateTo(card);}
+  });
+}
+function render(){
+  document.getElementById('grid').innerHTML=VS.map(cardHTML).join('');
+}
+function toggleTheme(){
+  const r=document.documentElement;
+  r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');
+  render(); // re-render so the SVG glyph colours pick up the new theme
+}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

@@ -13,13 +13,20 @@ enum Metrics {
     /// Standard minimum row height
     static let rowMinHeight: CGFloat = 44
 
-    /// Diameter of the time-bead circle (wrapped by the medication-phase ring) in a check-in row
-    static let timeBead: CGFloat = 54
-    /// Diameter of the mood-glyph circle in a folded day-card header
-    static let headerMoodCircle: CGFloat = 58
+    /// Diameter of the time-bead circle (wrapped by the medication-phase ring) in a check-in row.
+    /// Matches `headerMoodBadge` so the row ring never out-sizes the header badge (spec 019 / "#5 Balanced").
+    static let timeBead: CGFloat = 42
+    /// Diameter of the cream-disc mood badge in the day-card header (folded block + open strip)
+    static let headerMoodBadge: CGFloat = 42
     /// Base size for the folded-card summary's inline signal glyph (fixed-point, decorative) and
     /// its mood text (scales with Dynamic Type) — the two align at the default text size.
     static let summarySignal: CGFloat = 15
+    /// Check-in row type ("#5 Balanced"): the mood word (Fraunces, scales), the inline time (mono),
+    /// and the energy/focus signal glyph — kept below the folded-summary sizes so the rows read as
+    /// detail beneath the header, not peers of it.
+    static let rowMoodText: CGFloat = 14
+    static let rowTime: CGFloat = 11
+    static let rowSignal: CGFloat = 13
 
     /// Decorative SF Symbol sizes (large hero glyphs, not Dynamic Type text).
     /// These use a fixed point size intentionally because they are imagery, not copy.

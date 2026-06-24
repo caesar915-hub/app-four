@@ -53,5 +53,5 @@ Solo dev; all code written by Claude. PRs exist to give a review surface and kee
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/014-daily-card/plan.md`
+`specs/019-daycard-mood-block/plan.md`
 <!-- SPECKIT END -->

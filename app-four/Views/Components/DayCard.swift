@@ -1,11 +1,10 @@
 import SwiftUI
 
-/// A folding card for a single day's check-ins. Folded, it shows only the constant header
-/// (`FoldedDayCardHeader`: mood circle + weekday + one-line summary). Tapping the header
-/// toggles expansion (FR-005): the summary collapses and the day's check-ins are revealed as
-/// a time-ordered timeline. The card is washed with the day's *average* mood colour so it
-/// reads as a tinted surface in both light and dark mode. Selection carries no border — the
-/// selected day is conveyed by top-position + expansion only (FR-012).
+/// A folding card for a single day's check-ins (Paper & Pollen "#4 Divided · Cream disc", spec 019).
+/// The card surface is cream; the day's *representative* mood tint lives on the header
+/// (`FoldedDayCardHeader`), so folded the whole card reads as one mood-tinted block and expanded the
+/// tint becomes a strip with the check-in rows dropping onto the cream surface below. Tapping the
+/// header toggles expansion. Selection carries no border — top-position + expansion convey it (FR-012).
 struct DayCard: View {
     let day: MoodLibraryViewModel.TimelineDay
     let isExpanded: Bool
@@ -31,23 +30,14 @@ struct DayCard: View {
                         )
                     }
                 }
+                .padding(.horizontal, Spacing.l)
                 .padding(.top, Spacing.m)
+                .padding(.bottom, Spacing.l)
             }
         }
-        .padding(Spacing.l)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background {
-            ZStack {
-                shape.fill(Theme.cardBackground)
-                if let tint = MoodLevel.averageFill(of: moods) {
-                    shape.fill(tint.opacity(Opacity.moodWash))   // mood wash layered over the surface
-                }
-            }
-        }
-    }
-
-    private var moods: [String?] {
-        day.nodes.compactMap(\.recording).map(\.mood)
+        .background(Theme.cardBackground)
+        .clipShape(shape)
     }
 }
 

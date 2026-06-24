@@ -1,35 +1,40 @@
 import SwiftUI
 
-/// The always-visible top of a `DayCard`: a mood-glyph circle, the weekday, and a one-line
-/// summary (`mood · energy · focus · medication-name`) derived from the day's most-recent
-/// check-in via the pure `DayCardSummary`. The summary line collapses when the card is
-/// expanded (shrink-on-open, FR-005); an empty day keeps its calm copy (FR-004). Exposed to
-/// VoiceOver as a single combined element (FR-017); the mood glyph is decorative.
+/// The always-visible top of a `DayCard` (Paper & Pollen "#4 Divided · Cream disc", spec 019): a
+/// mood-tinted block holding a cream-disc mood badge, the mood word + weekday on one line, and —
+/// folded — a full-width divider above the one-line summary (energy · focus · medication-name) from
+/// the pure `DayCardSummary`. The summary collapses when expanded, leaving the tinted strip as the
+/// day's header (an empty day keeps its calm copy). Exposed to VoiceOver as one combined element
+/// (FR-017); the mood glyph is decorative.
 struct FoldedDayCardHeader: View {
     let day: MoodLibraryViewModel.TimelineDay
     let isExpanded: Bool
 
     private var summary: DayCardSummary { DayCardSummary(day: day) }
+    private var level: MoodLevel? { MoodLevel(name: summary.mood) }
+    private var showsSummary: Bool { !isExpanded || summary.isEmpty }
 
     var body: some View {
-        HStack(alignment: .center, spacing: Spacing.m) {
-            moodCircle
-            VStack(alignment: .leading, spacing: Spacing.xs) {
-                HStack(spacing: Spacing.s) {
-                    Text(day.label)
-                        .font(Typography.dayCardDate)
-                        .foregroundStyle(.primary)
-                        .lineLimit(1)
-                    Spacer(minLength: Spacing.s)
-                    Image(systemName: "chevron.down")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(Theme.textSecondary)
-                        .rotationEffect(.degrees(isExpanded ? 180 : 0))
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            titleRow
+                .padding(.horizontal, Spacing.l)
+            if showsSummary {
+                if !summary.isEmpty {
+                    Rectangle().fill(Theme.separator).frame(height: 1)   // full-width divider
                 }
-                if !isExpanded || summary.isEmpty { summaryLine }
+                summaryLine
+                    .padding(.horizontal, Spacing.l)
             }
         }
-        .frame(minHeight: Metrics.minTapTarget)
+        .padding(.vertical, Spacing.l)
+        .frame(maxWidth: .infinity, minHeight: Metrics.minTapTarget, alignment: .leading)
+        .background {
+            // Inset the tint within a cream frame so the card reads as a mood-tinted panel,
+            // not a full-card stain. Inner radius = card radius − inset → concentric corners.
+            RoundedRectangle(cornerRadius: Radius.card - Spacing.s, style: .continuous)
+                .fill(level?.blockTint ?? .clear)
+                .padding(Spacing.s)
+        }
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
@@ -37,14 +42,35 @@ struct FoldedDayCardHeader: View {
         .accessibilityHint(isExpanded ? "Expanded, double tap to collapse" : "Double tap to expand")
     }
 
-    private var moodCircle: some View {
-        let level = summary.mood.flatMap { MoodLevel(name: $0)?.numericValue }
-        let fill = summary.mood.flatMap { MoodLevel(name: $0)?.fill } ?? Color(.systemGray5)
-        return ZStack {
-            Circle().fill(fill.opacity(Opacity.moodCircle))
-            SignalGlyph(.mood, level: level, size: Metrics.headerMoodCircle * 0.5, decorative: true)
+    private var titleRow: some View {
+        HStack(alignment: .center, spacing: Spacing.m) {
+            moodBadge
+            title
+                .font(Typography.dayCardDate)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Image(systemName: "chevron.down")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(Theme.textSecondary)
+                .rotationEffect(.degrees(isExpanded ? 180 : 0))
         }
-        .frame(width: Metrics.headerMoodCircle, height: Metrics.headerMoodCircle)
+    }
+
+    /// Mood word (deepened mood colour) · weekday, concatenated as one `Text` so it wraps — never
+    /// truncating the mood word — at large Dynamic Type (FR-013). Weekday only when mood is unknown.
+    private var title: Text {
+        let weekday = Text(day.label).foregroundColor(.primary)
+        guard let level else { return weekday }
+        return Text(level.displayLabel).foregroundColor(level.wordColor)
+            + Text(" · ").foregroundColor(Theme.textSecondary)
+            + weekday
+    }
+
+    private var moodBadge: some View {
+        ZStack {
+            Circle().fill(level?.badgeTint ?? Color(.systemGray5))
+            SignalGlyph(.mood, level: level?.numericValue, size: Metrics.headerMoodBadge * 0.5, decorative: true)
+        }
+        .frame(width: Metrics.headerMoodBadge, height: Metrics.headerMoodBadge)
         .accessibilityHidden(true)
     }
 
@@ -65,7 +91,7 @@ struct FoldedDayCardHeader: View {
                             SignalGlyph(kind, level: part.level, size: Metrics.summarySignal, decorative: true)
                         }
                         Text(part.text)
-                            .font(part.isMood ? .fraunces(Metrics.summarySignal) : Typography.caption)
+                            .font(Typography.caption)
                             .foregroundStyle(part.color)
                             .lineLimit(1)
                     }
@@ -80,24 +106,22 @@ struct FoldedDayCardHeader: View {
         let level: Int?
         let text: String
         let color: Color
-        let isMood: Bool
     }
 
+    /// Summary signals below the divider — energy · focus · medication name. The mood is no longer
+    /// here (it moved up to the title line beside the weekday).
     private var parts: [Part] {
         var p: [Part] = []
-        if let mood = summary.mood {
-            p.append(Part(kind: nil, level: nil, text: mood, color: .primary, isMood: true))
-        }
         if let energy = summary.energy {
             p.append(Part(kind: .energy, level: EnergyLevel(rawValue: energy.lowercased())?.numericValue,
-                          text: energy, color: .primary, isMood: false))
+                          text: energy, color: .primary))
         }
         if let focus = summary.focus {
             p.append(Part(kind: .focus, level: FocusLevel(rawValue: focus.lowercased())?.numericValue,
-                          text: focus, color: .primary, isMood: false))
+                          text: focus, color: .primary))
         }
         if let med = summary.mostRecentMedicationName {
-            p.append(Part(kind: .medication, level: nil, text: med, color: Palette.medication, isMood: false))
+            p.append(Part(kind: .medication, level: nil, text: med, color: Palette.medication))
         }
         return p
     }
