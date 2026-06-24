@@ -9,6 +9,11 @@ struct CheckInView: View {
 
     @State private var showMedLogSheet = false
     @State private var showComposer = false
+    @State private var showCapApproachCue = false
+
+    /// First-launch whisper hint (US5 / FR-018, R7): two ghost lines that orient a
+    /// first-ever visitor, dismissed forever on the first capture start (voice or text).
+    @AppStorage("checkInHintSeen") private var checkInHintSeen = false
 
     init(store: RecordingStore, services: AppServices, shouldAutoStart: Binding<Bool> = .constant(false)) {
         _viewModel = State(wrappedValue: CheckInViewModel(store: store, services: services))
@@ -33,6 +38,7 @@ struct CheckInView: View {
         }
         .sheet(isPresented: $showComposer) {
             TextCheckInComposer { draft in
+                checkInHintSeen = true   // a text capture also dismisses the hint (FR-018)
                 viewModel.saveTextCheckIn(draft)
                 return !viewModel.textSaveFailed
             }
@@ -64,9 +70,16 @@ struct CheckInView: View {
         shouldAutoStart = false
         switch viewModel.state {
         case .recording, .paused, .processing: return   // already capturing — never double-start (FR-016)
-        case .done: viewModel.reset(); viewModel.startRecording()
-        case .idle: viewModel.startRecording()
+        case .done: viewModel.reset(); startVoiceCapture()
+        case .idle: startVoiceCapture()
         }
+    }
+
+    /// Single chokepoint for voice capture so the first-launch hint (US5) is dismissed
+    /// the moment any capture begins, whether tapped or auto-started (FR-018).
+    private func startVoiceCapture() {
+        checkInHintSeen = true
+        viewModel.startRecording()
     }
 
     private var todayDate: String {
@@ -103,12 +116,29 @@ struct CheckInView: View {
                     .foregroundStyle(Theme.textPrimary)
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
+
+                // US5 / FR-018: first-launch headline whisper — low-contrast, one-time.
+                if !checkInHintSeen {
+                    Text("Say whatever's on your mind — a few words is plenty.")
+                        .font(Typography.callout)
+                        .foregroundStyle(Theme.textSecondary.opacity(0.7))
+                        .multilineTextAlignment(.center)
+                }
             }
             .padding(.top, Spacing.xl)
 
             Spacer()
-            CrescentRing()
-                .frame(width: 200, height: 200)
+            VStack(spacing: Spacing.m) {
+                CrescentRing()
+                    .frame(width: 200, height: 200)
+                // US5 / FR-018: faint idle-ring caption, one-time. The ring itself stays
+                // purely ambient — no fill, count, streak, or recency (FR-019).
+                if !checkInHintSeen {
+                    Text("This is your space to check in.")
+                        .font(Typography.caption)
+                        .foregroundStyle(Theme.textSecondary.opacity(0.6))
+                }
+            }
             Spacer()
 
             VStack(spacing: Spacing.s) {
@@ -130,7 +160,7 @@ struct CheckInView: View {
 
     private var speakButton: some View {
         Button {
-            viewModel.startRecording()
+            startVoiceCapture()
         } label: {
             HStack(spacing: Spacing.s) {
                 Image(systemName: "mic.fill")
@@ -202,6 +232,15 @@ struct CheckInView: View {
                                 .foregroundStyle(Theme.textSecondary)
                                 .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
                                 .accessibilityLabel("Cancel recording")
+
+                            // FR-014 / R5: a single calm "wrapping up soon" line on the
+                            // approach to the cap — faint, no red, no ticking bar. Fades
+                            // out after a beat; one-shot via the VM latch.
+                            Text("Wrapping up soon")
+                                .font(Typography.caption)
+                                .foregroundStyle(Theme.textSecondary.opacity(0.7))
+                                .opacity(showCapApproachCue ? 1 : 0)
+                                .accessibilityHidden(!showCapApproachCue)
                         }
                     }
                 }
@@ -209,6 +248,17 @@ struct CheckInView: View {
                 .padding(.bottom, Spacing.l)
                 .onChange(of: viewModel.saveFailed) { _, failed in
                     if failed { Haptics.error() }
+                }
+                // FR-014: show the calm approach cue exactly once on the rising edge,
+                // then let it fade after a beat (Motion token, not a raw literal).
+                .onChange(of: viewModel.isApproachingCap) { _, approaching in
+                    guard approaching, !viewModel.hasShownCapApproach else { return }
+                    viewModel.markCapApproachShown()
+                    withAnimation(reduceMotion ? nil : Motion.smooth) { showCapApproachCue = true }
+                    Task {
+                        try? await Task.sleep(for: .seconds(4))
+                        withAnimation(reduceMotion ? nil : Motion.smooth) { showCapApproachCue = false }
+                    }
                 }
                 // FR-010: announce each prompt advance to VoiceOver, but never over the
                 // speaker — request on the visual swap, then flush the held announcement
