@@ -149,4 +149,43 @@ struct CheckInViewModelTests {
         #expect(viewModel.state == .recording)
         #expect(await mocks.audio.startRecordingCalled == true)
     }
+
+    // MARK: Re-entry guard (FND / T002–T003)
+
+    /// Starting a recording while one is already `.recording` MUST be a no-op:
+    /// it must not zero a live `elapsedTime` and must not open a second audio
+    /// session (FR-016, SC-005). Without the guard, the second call runs the full
+    /// async start path — zeroing the timer and calling the audio service again.
+    @Test func startRecordingWhileRecordingIsNoOp() async {
+        await mocks.audio.setPermissionGranted(true)
+
+        await viewModel.startRecording().value
+        #expect(viewModel.state == .recording)
+        let firstStartCount = await mocks.audio.startRecordingCallCount
+        #expect(firstStartCount == 1)
+
+        // Simulate a live, mid-recording timer.
+        viewModel.elapsedTime = 12.3
+
+        // Re-entrant start (rapid double-tap / auto-start firing while live).
+        await viewModel.startRecording().value
+
+        #expect(viewModel.state == .recording)
+        #expect(viewModel.elapsedTime == 12.3)
+        #expect(await mocks.audio.startRecordingCallCount == 1)
+    }
+
+    /// A clean start from `.idle` must clear any stale recovery flags left over
+    /// from a prior failed attempt (FR-016, critique §4 P3).
+    @Test func startRecordingClearsStaleRecoveryFlags() async {
+        await mocks.audio.setPermissionGranted(true)
+        viewModel.permissionDenied = true
+        viewModel.lowDiskSpace = true
+
+        await viewModel.startRecording().value
+
+        #expect(viewModel.state == .recording)
+        #expect(viewModel.permissionDenied == false)
+        #expect(viewModel.lowDiskSpace == false)
+    }
 }

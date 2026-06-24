@@ -46,6 +46,16 @@ final class CheckInViewModel {
 
     @discardableResult
     func startRecording() -> Task<Void, Never> {
+        // Re-entry guard (FR-016): a capture is already live or finishing. Bail
+        // before any disk/permission/audio-session work so a rapid double-tap or a
+        // re-firing auto-start can't zero a running timer or open a second session.
+        guard state == .idle || state == .done else {
+            return Task {}
+        }
+        // Clean start: drop any stale recovery flags from a prior failed attempt.
+        permissionDenied = false
+        lowDiskSpace = false
+
         return Task {
             let available = await storageService.availableStorage()
             guard available > LayoutConstants.minDiskSpaceForRecordingBytes else {
