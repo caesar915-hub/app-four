@@ -265,6 +265,9 @@ final class CheckInViewModel {
             // `.transcribing`. The service was already torn down by the caller's
             // `cancelInFlightServices()`, so no extra cancel call is needed.
             Task { @MainActor [store] in
+                // The recording may have been deleted while the cancel raced — re-resolve
+                // by id before touching the @Model so we never mutate a freed object.
+                guard store.recordings.contains(where: { $0.id == recording.id }) else { return }
                 recording.status = .failed
                 recording.fullTranscriptText = "Transcription cancelled. Tap to retry in the recording detail view."
                 store.save()
