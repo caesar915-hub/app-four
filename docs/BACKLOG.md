@@ -46,7 +46,7 @@ Gates:
 
 Gates — everything in v0.8, plus what makes it usable by someone else:
 - [x] Calendar day-selection & navigation — merged to `main` (PR #8, 2026-06-14)
-- [ ] _onboarding / empty states good enough for a stranger's first run?_ — 🔨 **visible-name half done** on `fix/squirl-rename` / **PR #6** (2026-06-17): all 6 "Whisper Notes" strings (onboarding welcome/permission/download/CTA + 2 CheckIn alerts) **+** the `@main` entry point (`WhisperNotesApp` → `SquirlApp`) renamed to "Squirl"; build green + 277/277 suite green. `whispernotes://` URL scheme + `WhisperCLI` banner intentionally kept (functional contract / separate target). Remaining for this gate: empty-states / first-run polish.
+- [ ] _onboarding / empty states good enough for a stranger's first run?_ — 🔨 **redesigned** on `feat/ux-improvements-015-017` (Spec Kit **015**, 2026-06-24): the 3-step setup ceremony → one warm Paper & Pollen `WelcomeView` (kills the P0 AI-slop first-impression); background model download (no entry gate, cellular-safe); a **record-before-model-ready transcription queue** (no lost audio, extraction pipeline verified zero-diff); just-in-time mic permission; de-jargoned copy. Test-first, full serial suite green. _Earlier:_ visible-name rename half (PR #6, 2026-06-17). _Remaining for this gate:_ `/code-review` → PR; empty-states beyond first-run. See DEVLOG 2026-06-24.
 
 _(Insights palette: v0.9 → v0.8 on 2026-06-14, then → v0.8.1 on 2026-06-15.)_
 
