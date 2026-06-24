@@ -11,6 +11,14 @@ import NaturalLanguage
 public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
     public let lexicon: Lexicon
 
+    /// Per-language config (relocated English-bound tables). Defaults to English so
+    /// existing call sites and the regression gate are unchanged (spec 003 FR-003/FR-004).
+    public let config: LanguageConfig
+
+    /// Sleep regexes compiled once from `config` (were static literals before relocation).
+    private let sleepHoursRegex: NSRegularExpression?
+    private let sleepBareRegex: NSRegularExpression?
+
     /// Activity cue lists built ONCE from the lexicon at init. Surface-only matching
     /// (lemmaEnabled: false) is required: gerunds like "reading"→"read" cause polysemy
     /// false positives, so activities never use the verb-lemma fallback (Task 9).
@@ -38,8 +46,11 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
     }
     private let cues: CachedCues
 
-    public init(lexicon: Lexicon = Lexicon()) {
+    public init(lexicon: Lexicon = Lexicon(), config: LanguageConfig = .english) {
         self.lexicon = lexicon
+        self.config = config
+        self.sleepHoursRegex = try? NSRegularExpression(pattern: config.sleepHoursPattern)
+        self.sleepBareRegex = try? NSRegularExpression(pattern: config.sleepBarePattern)
 
         self.activityCueLists = lexicon.activityKeywords.map {
             ($0.category, CueMatcher.makeList($0.keywords, lemmaEnabled: false))
@@ -110,7 +121,9 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
         // 1. Mood (per-sentence, aggregated). Each signal has an explicit, documented
         //    policy (P1.2): mood = present-tense-wins, energy/focus = strongest-match-wins.
         var moodCandidates: [(label: String, temporalWeight: Double, sentenceIndex: Int)] = []
+        var weakMoodCandidates: [(label: String, temporalWeight: Double, sentenceIndex: Int)] = []
         var energyCandidates: [(level: EnergyLevel, phraseLength: Int)] = []
+        var weakEnergyCandidates: [(level: EnergyLevel, phraseLength: Int)] = []
         var focusCandidates: [(level: FocusLevel, phraseLength: Int)] = []
 
         // 2. Medications, tasks, wins, etc. collected per-sentence
@@ -143,7 +156,9 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
         let extractedCrashTime: String? = ADHDRegexPatterns.extractCrashTime(from: text)
         let extractedIntakeContext: String? = ADHDRegexPatterns.extractIntakeContext(from: text)
 
-        let tenseClassifier = TenseClassifier()
+        let tenseClassifier = TenseClassifier(
+            presentMarkers: config.presentMarkers, pastMarkers: config.pastMarkers,
+            pastVerbSuffixes: config.pastVerbSuffixes, irregularPastVerbs: config.irregularPastVerbs)
 
         for (sentenceIndex, sentence) in sentences.enumerated() {
             // Cooperative cancellation: bail between sentences so cancelProcessing()
@@ -160,6 +175,14 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
                 let effectiveMood = negated ? flipMood(moodMatch.label) : moodMatch.label
                 let weight = tenseClassifier.tense(of: sentence).temporalWeight
                 moodCandidates.append((effectiveMood, weight, sentenceIndex))
+            } else if let weak = weakMood(in: lower) {
+                // Mood-gated fallback: sentence names "mood" but no strong cue matched.
+                // Same gating/negation rationale as energy; used only if no strong mood
+                // cue exists anywhere (resolved after the loop).
+                let negated = isNegatedBefore(target: weak.matchedPhrase, in: lower)
+                let effectiveMood = negated ? flipMood(weak.label) : weak.label
+                let weight = tenseClassifier.tense(of: sentence).temporalWeight
+                weakMoodCandidates.append((effectiveMood, weight, sentenceIndex))
             }
 
             // Energy (with targeted negation) — collect candidates; strongest match
@@ -168,6 +191,15 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
                 let negated = isNegatedBefore(target: energyMatch.phrase, in: lower)
                 let effectiveEnergy = negated ? flipEnergy(energyMatch.level) : energyMatch.level
                 energyCandidates.append((effectiveEnergy, energyMatch.phrase.count))
+            } else if let weak = weakEnergy(in: lower) {
+                // Energy-gated fallback: the sentence names "energy"/"energetic" but no
+                // strong cue matched. Generic descriptors are safe here — they are only
+                // consulted inside an energy sentence, never globally. Negation ("no
+                // energy", "no dips") flips via the shared machinery. Used only if no
+                // strong cue exists anywhere in the note (resolved after the loop).
+                let negated = isNegatedBefore(target: weak.phrase, in: lower)
+                let effectiveEnergy = negated ? flipEnergy(weak.level) : weak.level
+                weakEnergyCandidates.append((effectiveEnergy, weak.phrase.count))
             }
 
             // Focus (with targeted negation) — same strongest-match-wins policy.
@@ -205,10 +237,10 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
             if nonNegatedCueMatch(cues.appetiteReturn)        { appetiteReturn.append(sentence) }
             if nonNegatedCueMatch(cues.appointment)           { appointments.append(sentence) }
 
-            // Sleep
-            if lower.contains("sleep") || lower.contains("slept") || lower.contains("woke")
-                || lower.contains("insomnia") || lower.contains("nightmare")
-                || lower.contains("dream") || lower.contains("nap") {
+            // Sleep — word-boundary match over a curated vocabulary (substring `contains`
+            // catches "interest"/"snap"); covers kip/wink/rested/waking/lay-awake and a
+            // bare "<n> hours … night" with no explicit sleep verb.
+            if mentionsSleep(lower) {
                 sleepMentioned = true
                 if let hours = extractSleepHours(from: sentence) {
                     sleepHours = hours
@@ -218,7 +250,7 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
                 }
             }
 
-            // Emotions: every non-negated emotion cue (deduped), not just the first.
+            // Emotions: every non-negated feeling cue (deduped), not just the first.
             // Iterate the pre-tokenized pairs so each cue's tokens are reused.
             for cue in cues.emotions.cues {
                 if CueMatcher.contains(tokens, cue) && !isNegatedBefore(target: cue.surface, in: lower) {
@@ -242,7 +274,9 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
         // sentiment is too negatively biased on short factual text (neutral
         // sentences score -0.6 to -0.8), so it fabricated "low" moods on
         // mood-free entries. Mood is exact lexicon match only.
-        if let bestMood = moodCandidates.max(by: { a, b in
+        // Strong cues win; the mood-gated weak fallback only fills total misses.
+        let moodPool = moodCandidates.isEmpty ? weakMoodCandidates : moodCandidates
+        if let bestMood = moodPool.max(by: { a, b in
             if a.temporalWeight != b.temporalWeight { return a.temporalWeight < b.temporalWeight }
             return a.sentenceIndex < b.sentenceIndex
         }) {
@@ -251,7 +285,10 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
 
         // Energy / focus = strongest match wins: longest exact lexicon phrase across
         // sentences, so a more specific multi-word hit beats a shorter one.
-        if let bestEnergy = energyCandidates.max(by: { $0.phraseLength < $1.phraseLength }) {
+        // Strong cues win outright; the energy-gated weak fallback only fills in when
+        // no strong energy cue matched anywhere in the note (recall for hedged phrasing).
+        let energyPool = energyCandidates.isEmpty ? weakEnergyCandidates : energyCandidates
+        if let bestEnergy = energyPool.max(by: { $0.phraseLength < $1.phraseLength }) {
             extraction.energy = bestEnergy.level
         }
         if let bestFocus = focusCandidates.max(by: { $0.phraseLength < $1.phraseLength }) {
@@ -263,7 +300,10 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
         extraction.medications = medEvents
 
         extraction.sideEffects = Array(Set(sideEffects)).sorted()
-        extraction.sleep = SleepNote(mentioned: sleepMentioned, hours: sleepHours, quality: sleepQuality)
+        // If the whole-text hours regex found a duration, sleep was mentioned even if
+        // no keyword sentence triggered ("got a solid 8 hours last night").
+        extraction.sleep = SleepNote(mentioned: sleepMentioned || extractedSleepHours != nil,
+                                     hours: sleepHours, quality: sleepQuality)
         extraction.tasksCompleted = Array(Set(tasksCompleted)).sorted()
         extraction.tasksAvoided = Array(Set(tasksAvoided)).sorted()
         extraction.wins = Array(Set(wins)).sorted()
@@ -397,6 +437,40 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
             }
         }
         return best
+    }
+
+    /// Energy-presence fallback for sentences that name energy but match no strong cue.
+    /// Gated descriptors, ordered extreme→neutral, all from `config` (spec 003 FR-003).
+    private func weakEnergy(in lower: String) -> CategoryMatch<EnergyLevel>? {
+        guard config.weakEnergyTriggers.contains(where: { lower.contains($0) }) else { return nil }
+        for entry in config.weakEnergyTable
+        where lower.range(of: "\\b\(entry.word)\\b", options: .regularExpression) != nil {
+            return CategoryMatch(level: entry.level, phrase: entry.word)
+        }
+        // Energy named but no descriptor -> neutral present; "no energy" flips to tired.
+        return CategoryMatch(level: config.weakEnergyDefaultLevel, phrase: config.weakEnergyDefaultPhrase)
+    }
+
+    /// Mood-presence fallback for sentences that name mood but match no strong cue.
+    /// Gated descriptors → mood label, all from `config`; negation flips via flipMood.
+    private func weakMood(in lower: String) -> MoodMatch? {
+        guard lower.range(of: config.weakMoodTriggerPattern, options: .regularExpression) != nil else { return nil }
+        for entry in config.weakMoodTable
+        where lower.range(of: "\\b\(entry.word)\\b", options: .regularExpression) != nil {
+            return MoodMatch(label: entry.label, matchedPhrase: entry.word)
+        }
+        return MoodMatch(label: config.weakMoodDefaultLabel, matchedPhrase: config.weakMoodDefaultPhrase)
+    }
+
+    /// Curated sleep vocabulary, matched on word boundaries (not substring).
+    /// True if the sentence refers to sleep — curated words + a few multiword/duration
+    /// patterns ("a wink", "lay awake", "<n> hours … night"). All from `config`.
+    private func mentionsSleep(_ lower: String) -> Bool {
+        for w in config.sleepWords
+        where lower.range(of: "\\b\(w)\\b", options: .regularExpression) != nil {
+            return true
+        }
+        return config.sleepMultiwordPatterns.contains { lower.range(of: $0, options: .regularExpression) != nil }
     }
 
     private func nearestFocus(tokens: [CueMatcher.Token]) -> CategoryMatch<FocusLevel>? {
@@ -594,16 +668,25 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
     /// Compiled once: require a sleep-duration phrase, not just any "N hours" in a
     /// sentence that mentions sleep ("couldn't sleep, worked 12 hours" must NOT
     /// yield 12h). A duration verb/phrase must precede the number.
-    private static let sleepHoursRegex = try? NSRegularExpression(
-        pattern: #"(?i)\b(?:slept|in bed(?: for)?|got|had|asleep for)\s+(?:about |around |roughly |maybe |only |a good )?(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)\b"#
-    )
-
+    // This runs ONLY on a sentence that already mentions sleep (caller-gated), so a
+    // trigger verb is not required — a bare "<n> hours" / "sleep <n>" is safe here and
+    // "three-hour lab session" never reaches this (it lives in a non-sleep sentence).
+    // Sleep-hours regexes are compiled once in init from `config` (patterns relocated
+    // to LanguageConfig; English values byte-identical to the prior literals).
     private func extractSleepHours(from text: String) -> Double? {
-        guard let regex = Self.sleepHoursRegex else { return nil }
-        let range = NSRange(text.startIndex..., in: text)
-        if let match = regex.firstMatch(in: text, options: [], range: range),
-           let hoursRange = Range(match.range(at: 1), in: text) {
-            return Double(text[hoursRange])
+        let ns = text as NSString
+        let full = NSRange(location: 0, length: ns.length)
+        if let regex = sleepHoursRegex,
+           let m = regex.firstMatch(in: text, options: [], range: full) {
+            let token = ns.substring(with: m.range(at: 1)).lowercased()
+            if let base = Double(token) ?? config.numberWords[token] {
+                let half = m.range(at: 2).location != NSNotFound
+                return half ? base + 0.5 : base
+            }
+        }
+        if let regex = sleepBareRegex,
+           let m = regex.firstMatch(in: text, options: [], range: full) {
+            return Double(ns.substring(with: m.range(at: 1)))
         }
         return nil
     }

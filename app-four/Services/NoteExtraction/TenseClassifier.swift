@@ -21,27 +21,32 @@ public nonisolated struct TenseClassifier: Sendable {
         }
     }
 
-    public init() {}
+    private let presentMarkers: [String]
+    private let pastMarkers: [String]
+    private let pastVerbSuffixes: [String]
+    private let irregularPastVerbs: Set<String>
 
-    private static let presentMarkers: [String] = [
-        "right now", "currently", "today", "i feel", "i'm feeling", "i am feeling",
-        "i am", "i'm", "this evening", "tonight", "at the moment", "these days",
-        "now i", "now i'm", "i've been feeling", "i have been feeling"
-    ]
-
-    private static let pastMarkers: [String] = [
-        "i was", "i felt", "earlier", "this morning", "yesterday", "last night",
-        "by evening", "by the afternoon", "this afternoon", "woke up", "had been",
-        "used to", "a while ago", "before", "was feeling", "were feeling"
-    ]
+    /// Markers + past-verb morphology are per-language (spec 003 FR-003); defaults are
+    /// the English config so existing behavior is unchanged.
+    public init(
+        presentMarkers: [String] = LanguageConfig.english.presentMarkers,
+        pastMarkers: [String] = LanguageConfig.english.pastMarkers,
+        pastVerbSuffixes: [String] = LanguageConfig.english.pastVerbSuffixes,
+        irregularPastVerbs: [String] = LanguageConfig.english.irregularPastVerbs
+    ) {
+        self.presentMarkers = presentMarkers
+        self.pastMarkers = pastMarkers
+        self.pastVerbSuffixes = pastVerbSuffixes
+        self.irregularPastVerbs = Set(irregularPastVerbs)
+    }
 
     /// Classify the sentence's dominant tense. Explicit lexical markers take
     /// priority; otherwise we fall back to verb-tense from `NLTagger`.
     public func tense(of sentence: String) -> Tense {
         let lower = sentence.lowercased()
 
-        let present = Self.presentMarkers.contains { lower.contains($0) }
-        let past = Self.pastMarkers.contains { lower.contains($0) }
+        let present = presentMarkers.contains { lower.contains($0) }
+        let past = pastMarkers.contains { lower.contains($0) }
 
         // "now i feel okay" with no past marker → present; "i was ... but now" can
         // contain both — prefer present when a present marker is present, since the
@@ -59,8 +64,8 @@ public nonisolated struct TenseClassifier: Sendable {
 
     /// True if the last-occurring tense marker in the sentence is a present one.
     private func lastMarkerIsPresent(in lower: String) -> Bool {
-        let lastPresent = Self.presentMarkers.compactMap { lower.range(of: $0)?.lowerBound }.max()
-        let lastPast = Self.pastMarkers.compactMap { lower.range(of: $0)?.lowerBound }.max()
+        let lastPresent = presentMarkers.compactMap { lower.range(of: $0)?.lowerBound }.max()
+        let lastPast = pastMarkers.compactMap { lower.range(of: $0)?.lowerBound }.max()
         switch (lastPresent, lastPast) {
         case let (p?, q?): return p >= q
         case (.some, nil): return true
@@ -80,7 +85,7 @@ public nonisolated struct TenseClassifier: Sendable {
             if tag == .verb {
                 sawVerb = true
                 let word = sentence[range].lowercased()
-                if word.hasSuffix("ed") || Self.irregularPastVerbs.contains(String(word)) {
+                if pastVerbSuffixes.contains(where: { word.hasSuffix($0) }) || irregularPastVerbs.contains(String(word)) {
                     sawPastVerb = true
                 }
             }
@@ -90,8 +95,4 @@ public nonisolated struct TenseClassifier: Sendable {
         return sawVerb ? .neutral : .neutral
     }
 
-    private static let irregularPastVerbs: Set<String> = [
-        "was", "were", "felt", "had", "did", "went", "got", "woke", "became",
-        "began", "came", "ran", "saw", "took", "thought", "knew", "made", "found"
-    ]
 }
