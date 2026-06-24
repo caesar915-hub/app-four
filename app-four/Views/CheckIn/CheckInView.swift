@@ -26,7 +26,7 @@ struct CheckInView: View {
         ScreenContainer(title: "", showsMedicationBar: true, scrollable: false) {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: viewModel.state)
+                .animation(reduceMotion ? nil : Motion.smooth, value: viewModel.state)
         }
         .trackScreen("CheckInView")
         .onAppear { consumeAutoStart() }
@@ -130,7 +130,7 @@ struct CheckInView: View {
             Spacer()
             VStack(spacing: Spacing.m) {
                 CrescentRing()
-                    .frame(width: 200, height: 200)
+                    .frame(width: Metrics.CheckIn.idleCrescent, height: Metrics.CheckIn.idleCrescent)
                 // US5 / FR-018: faint idle-ring caption, one-time. The ring itself stays
                 // purely ambient — no fill, count, streak, or recency (FR-019).
                 if !checkInHintSeen {
@@ -210,8 +210,12 @@ struct CheckInView: View {
                 ZStack {
                     // The crescent is decorative; the grouped status below carries the
                     // information to VoiceOver as the "Recording, elapsed" live region.
-                    CrescentRing(isActive: !viewModel.saveFailed)
-                        .frame(width: 260, height: 260)
+                    // Paused (or a pending save) drops the spin to the calmer breathing
+                    // state and dims the ring, so a held capture reads as held — an
+                    // honest visual only, no audio-append/resume engineering (FR-017).
+                    CrescentRing(isActive: viewModel.state == .recording && !viewModel.saveFailed)
+                        .frame(width: Metrics.CheckIn.recordingCrescent, height: Metrics.CheckIn.recordingCrescent)
+                        .opacity(viewModel.state == .paused ? Opacity.deEmphasis : 1)
                         .accessibilityHidden(true)
                     if viewModel.saveFailed {
                         failureRecovery
@@ -224,8 +228,21 @@ struct CheckInView: View {
                                 .font(Typography.timer)
                                 .foregroundStyle(Theme.textPrimary)
                                 .accessibilityElement(children: .ignore)
-                                .accessibilityLabel("Recording, \(viewModel.timeString) elapsed")
+                                .accessibilityLabel(viewModel.state == .paused
+                                                    ? "Paused, \(viewModel.timeString) elapsed"
+                                                    : "Recording, \(viewModel.timeString) elapsed")
                                 .accessibilityAddTraits(.updatesFrequently)
+
+                            // FR-017: a held capture (phone call etc.) gets a minimal
+                            // honest "paused" indication — the ring already dims and stops
+                            // revolving above; this quiet label names the state. No resume /
+                            // audio-append engineering — visual floor only.
+                            if viewModel.state == .paused {
+                                Text("Paused")
+                                    .font(Typography.label)
+                                    .textCase(.uppercase)
+                                    .foregroundStyle(Theme.textSecondary)
+                            }
                             stopButton
                             Button("Cancel") { viewModel.cancelRecording() }
                                 .font(Typography.callout)
@@ -298,7 +315,7 @@ struct CheckInView: View {
                     .id(viewModel.currentPromptIndex)
             }
         }
-        .frame(height: 3)
+        .frame(height: Metrics.CheckIn.promptBarHeight)
         .accessibilityHidden(true)
     }
 
@@ -330,13 +347,13 @@ struct CheckInView: View {
     }
 
     private var promptDots: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: Metrics.CheckIn.promptDot) {
             ForEach(0..<CheckInViewModel.nudgePrompts.count, id: \.self) { index in
                 Circle()
                     .fill(index == viewModel.currentPromptIndex
                           ? Theme.accent
                           : Theme.textSecondary.opacity(0.3))
-                    .frame(width: 6, height: 6)
+                    .frame(width: Metrics.CheckIn.promptDot, height: Metrics.CheckIn.promptDot)
             }
         }
         .accessibilityHidden(true)
@@ -350,9 +367,9 @@ struct CheckInView: View {
                 if viewModel.state == .processing {
                     ProgressView().tint(Theme.background)
                 } else {
-                    RoundedRectangle(cornerRadius: 3)
+                    RoundedRectangle(cornerRadius: Metrics.CheckIn.stopGlyphRadius)
                         .fill(Theme.background)
-                        .frame(width: 11, height: 11)
+                        .frame(width: Metrics.CheckIn.stopGlyph, height: Metrics.CheckIn.stopGlyph)
                     Text("Stop & save").font(Typography.headline)
                 }
             }
@@ -419,10 +436,10 @@ private struct CheckInSavedView: View {
             ZStack {
                 Circle()
                     .fill(Theme.meadowGradient)
-                    .frame(width: 78, height: 78)
+                    .frame(width: Metrics.CheckIn.savedDisc, height: Metrics.CheckIn.savedDisc)
                     .shadow(color: Theme.meadowAmber.opacity(0.3), radius: 20, y: 8)
                 Image(systemName: "checkmark")
-                    .font(.system(size: 32, weight: .bold))
+                    .font(.system(size: Metrics.CheckIn.savedCheck, weight: .bold))
                     .foregroundStyle(.white)
             }
             .scaleEffect(popped ? 1 : 0.6)

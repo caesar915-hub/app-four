@@ -31,4 +31,27 @@ enum Metrics {
         /// Onboarding hero glyph
         static let hero: CGFloat = 72
     }
+
+    /// Fixed-point dimensions of the Check-in capture surface — imagery and hand-rolled
+    /// control glyphs, not Dynamic-Type copy, so they are intentionally point-sized.
+    /// Named here (rather than scattered as literals) so the capture screen reads from
+    /// one place; tap targets still use `minTapTarget`.
+    enum CheckIn {
+        /// Idle-hub ambient crescent diameter.
+        static let idleCrescent: CGFloat = 200
+        /// Recording-stage crescent diameter (the larger, active ring).
+        static let recordingCrescent: CGFloat = 260
+        /// Side of the rounded "stop" square glyph inside the Stop & save button.
+        static let stopGlyph: CGFloat = 11
+        /// Corner radius of that stop-square glyph.
+        static let stopGlyphRadius: CGFloat = 3
+        /// Diameter of a single prompt-progress dot, and the gap between dots.
+        static let promptDot: CGFloat = 6
+        /// Height of the thin prompt-progress bar at the top of the recording stage.
+        static let promptBarHeight: CGFloat = 3
+        /// Saved-state confirmation disc diameter.
+        static let savedDisc: CGFloat = 78
+        /// Saved-state checkmark glyph point size.
+        static let savedCheck: CGFloat = 32
+    }
 }
