@@ -135,11 +135,7 @@ struct SettingsView: View {
     }
 
     private var accessibilitySection: some View {
-        Section {
-            EmptyView()
-        } header: {
-            Text("Accessibility")
-        } footer: {
+        Section("Accessibility") {
             Text("Squirl follows the iOS motion setting. Turn on Reduce Motion in Settings › Accessibility to still animations.")
                 .font(Typography.caption)
                 .foregroundStyle(Theme.textSecondary)
