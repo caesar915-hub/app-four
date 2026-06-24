@@ -110,7 +110,7 @@ private struct RootContainerView: View {
 
         do {
             let progress = try await aiModelService.download(.whisper)
-            for await _ in progress {}
+            for try await _ in progress {}
             // Model just landed — drain anything captured while it was downloading (US3).
             await services.pendingTranscriptionService.drainIfModelReady()
         } catch {

@@ -130,13 +130,26 @@ protocol AudioFileStorageService: Sendable {
 
 // MARK: - AI Model Management
 
+/// Why a model download could not finish, carried to the UI so it can show a
+/// cause-specific message and the right recovery action. Transient (never
+/// persisted) and content-free — it names the *condition*, never any
+/// transcript or medication data (Principle VI).
+enum ModelDownloadFailure: Error, Sendable, Equatable {
+    case noNetwork
+    case insufficientSpace
+    case cellularDisabled
+    case other(String)
+}
+
 protocol AIModelService: Sendable {
     /// Checks the current metadata for a given model type.
     func status(for type: AIModelType) async -> ModelMetadata?
 
     /// Downloads the specified AI model.
-    /// - Returns: An async stream of download progress (0.0 to 1.0).
-    func download(_ type: AIModelType) async throws -> AsyncStream<Double>
+    /// - Returns: A throwing stream of download progress (0.0 to 1.0). A
+    ///   mid-download failure terminates the stream by throwing a
+    ///   `ModelDownloadFailure` so the caller learns the cause.
+    func download(_ type: AIModelType) async throws -> AsyncThrowingStream<Double, Error>
 
     /// Deletes the local model to free up space.
     func delete(_ type: AIModelType) async throws

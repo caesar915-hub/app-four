@@ -84,7 +84,7 @@ struct AIModelServiceImplTests {
         // created regardless of whether the network download proceeds.
         let downloadTask = Task {
             let stream = try await self.service.download(.whisper)
-            for await _ in stream { break }
+            for try await _ in stream { break }
         }
         downloadTask.cancel()
         try? await downloadTask.value
