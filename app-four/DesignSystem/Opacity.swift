@@ -10,7 +10,7 @@ enum Opacity {
     /// and the open-state strip (Paper & Pollen "#4 Divided · Cream disc"). Deliberately light, and
     /// inset within a cream frame, so the card reads as a mood-tinted panel — not a full-card stain —
     /// while the cream-disc badge stays the focal mood mark.
-    static let moodBlock: Double = 0.16
+    static let moodBlock: Double = 0.24
     /// 0.50 — the cream-disc mood badge behind the mood glyph (folded header + check-in bead).
     static let moodBadge: Double = 0.50
 }

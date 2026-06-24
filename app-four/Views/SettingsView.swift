@@ -40,7 +40,7 @@ struct SettingsView: View {
         // List manages its own scroll — ScreenContainer is non-scrollable here.
         // The inline navigation title is exposed to VoiceOver as a heading by default,
         // so passing it here both shows "Settings" and gives the screen a landmark.
-        ScreenContainer(title: "Settings", showsMedicationBar: true, scrollable: false) {
+        ScreenContainer(title: "", showsMedicationBar: true, scrollable: false) {
             ScrollViewReader { proxy in
                 List {
                     aiModelsSection

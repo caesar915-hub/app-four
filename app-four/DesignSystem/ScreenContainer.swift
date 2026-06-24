@@ -53,7 +53,7 @@ struct ScreenContainer<Content: View>: View {
                 .background(Theme.background.ignoresSafeArea())
                 .toolbarBackground(Theme.background, for: .navigationBar)
         }
-        .tint(Theme.accent)
+        .tint(Theme.meadowGreen)
     }
 
     // MARK: - Private
