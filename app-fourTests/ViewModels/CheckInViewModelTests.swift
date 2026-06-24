@@ -282,6 +282,79 @@ struct CheckInViewModelTests {
         #expect(vm.textSaveFailed == true)
         #expect(vm.state != .done)
     }
+
+    // MARK: VoiceOver gate (US3 / T021–T023)
+
+    /// T021 — the VM derives an `isSpeaking` signal from the audio level: a value at or
+    /// above the named active-voice threshold means the mic is picking up the user's
+    /// voice; a value below means quiet (FR-010, R4). This is the announcement gate the
+    /// previously-discarded `audioLevelStream` finally feeds — not a glow.
+    @Test func isSpeakingTracksAudioLevelThreshold() {
+        #expect(viewModel.isSpeaking == false)  // no level yet ⇒ not speaking
+
+        viewModel.ingestAudioLevel(CheckInViewModel.activeVoiceThreshold + 0.1)
+        #expect(viewModel.isSpeaking == true)
+
+        viewModel.ingestAudioLevel(CheckInViewModel.activeVoiceThreshold - 0.05)
+        #expect(viewModel.isSpeaking == false)
+
+        // Exactly at the threshold counts as active voice (>=).
+        viewModel.ingestAudioLevel(CheckInViewModel.activeVoiceThreshold)
+        #expect(viewModel.isSpeaking == true)
+    }
+
+    /// T021 — the silence floor the real stream emits (~0.01) must read as quiet, so a
+    /// recording with no speech never suppresses announcements forever.
+    @Test func isSpeakingFalseAtSilenceFloor() {
+        viewModel.ingestAudioLevel(0.01)
+        #expect(viewModel.isSpeaking == false)
+        #expect(CheckInViewModel.activeVoiceThreshold > 0.01)
+    }
+
+    /// T022 — a requested prompt-advance announcement is DEFERRED while the user is
+    /// actively speaking (not eligible to post), and becomes eligible the moment the
+    /// level drops back to quiet (FR-010, R4). The view reads `promptAnnouncementIsEligible`
+    /// to decide whether to post now or hold.
+    @Test func promptAnnouncementDeferredWhileSpeakingEligibleOnQuiet() {
+        // Speaking, then a prompt advances mid-sentence.
+        viewModel.ingestAudioLevel(CheckInViewModel.activeVoiceThreshold + 0.2)
+        viewModel.requestPromptAnnouncement()
+
+        #expect(viewModel.promptAnnouncementIsPending == true)
+        #expect(viewModel.promptAnnouncementIsEligible == false)  // held — don't talk over them
+
+        // The user pauses.
+        viewModel.ingestAudioLevel(0.02)
+        #expect(viewModel.promptAnnouncementIsEligible == true)   // now safe to post
+
+        // The view posts and consumes it; nothing left pending.
+        viewModel.consumePromptAnnouncement()
+        #expect(viewModel.promptAnnouncementIsPending == false)
+        #expect(viewModel.promptAnnouncementIsEligible == false)
+    }
+
+    /// T022 — a prompt advance during quiet is immediately eligible (no artificial delay
+    /// when the user isn't speaking).
+    @Test func promptAnnouncementEligibleImmediatelyWhenQuiet() {
+        viewModel.ingestAudioLevel(0.02)
+        viewModel.requestPromptAnnouncement()
+        #expect(viewModel.promptAnnouncementIsEligible == true)
+    }
+
+    /// T022 — only the latest advance matters: if the prompt advances again while an
+    /// earlier one is still deferred, there is still exactly one pending announcement to
+    /// post on the next quiet (the user hears the current prompt, not a backlog).
+    @Test func promptAnnouncementCoalescesWhileDeferred() {
+        viewModel.ingestAudioLevel(CheckInViewModel.activeVoiceThreshold + 0.2)
+        viewModel.requestPromptAnnouncement()
+        viewModel.requestPromptAnnouncement()
+        #expect(viewModel.promptAnnouncementIsPending == true)
+
+        viewModel.ingestAudioLevel(0.02)
+        #expect(viewModel.promptAnnouncementIsEligible == true)
+        viewModel.consumePromptAnnouncement()
+        #expect(viewModel.promptAnnouncementIsPending == false)
+    }
 }
 
 /// Test seam: a store whose text-note persistence always throws, so the view-model's

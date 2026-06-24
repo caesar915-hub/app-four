@@ -23,6 +23,25 @@ final class CheckInViewModel {
     var saveFailed: Bool = false
     var textSaveFailed: Bool = false
 
+    // MARK: VoiceOver announcement gate (US3 / FR-010, R4)
+
+    /// Audio level (normalized 0.0–1.0, `audioLevelStream`) at or above which the mic is
+    /// treated as picking up active voice. Sits well above the ~0.01 silence floor the
+    /// recorder emits so room tone reads as quiet. This is the *announcement gate* the
+    /// otherwise-discarded level stream feeds — deliberately NOT a visual glow (R4).
+    static let activeVoiceThreshold: Float = 0.1
+
+    /// True while the latest audio level indicates the user is actively speaking; used to
+    /// defer prompt-advance announcements so VoiceOver never talks over the speaker.
+    private(set) var isSpeaking: Bool = false
+
+    /// A prompt-advance announcement the view requested but that is held until the next
+    /// quiet (it must not fire mid-sentence). The view reads `promptAnnouncementIsEligible`.
+    private(set) var promptAnnouncementIsPending: Bool = false
+
+    /// The held announcement may post now: one is pending AND the user has gone quiet.
+    var promptAnnouncementIsEligible: Bool { promptAnnouncementIsPending && !isSpeaking }
+
     @ObservationIgnored private let audioService: AudioRecordingService
     @ObservationIgnored private let storageService: AudioFileStorageService
     @ObservationIgnored private let transcriptionService: TranscriptionService
@@ -62,9 +81,13 @@ final class CheckInViewModel {
         guard state == .idle || state == .done else {
             return Task {}
         }
-        // Clean start: drop any stale recovery flags from a prior failed attempt.
+        // Clean start: drop any stale recovery flags from a prior failed attempt and
+        // reset the VoiceOver announcement gate so a prior session can't leak a held
+        // announcement or a stale speaking state into this one.
         permissionDenied = false
         lowDiskSpace = false
+        isSpeaking = false
+        promptAnnouncementIsPending = false
 
         return Task {
             let available = await storageService.availableStorage()
@@ -330,6 +353,24 @@ final class CheckInViewModel {
         (elapsedTime.truncatingRemainder(dividingBy: promptInterval)) / promptInterval
     }
 
+    /// Feeds the live audio level into the active-voice gate (FR-010, R4). Called from
+    /// `startLevelMonitoring()` for each emitted sample; also the test seam for the gate.
+    func ingestAudioLevel(_ level: Float) {
+        isSpeaking = level >= Self.activeVoiceThreshold
+    }
+
+    /// The view requests a prompt-advance announcement when `currentPromptIndex` changes.
+    /// Coalesced to a single pending announcement so a backlog never accumulates while
+    /// deferred — the user hears the *current* prompt on the next quiet, not a queue.
+    func requestPromptAnnouncement() {
+        promptAnnouncementIsPending = true
+    }
+
+    /// The view calls this once it has posted the held announcement.
+    func consumePromptAnnouncement() {
+        promptAnnouncementIsPending = false
+    }
+
     // MARK: - Text check-in
 
     private(set) var lastSavedRecording: Recording?
@@ -377,7 +418,7 @@ final class CheckInViewModel {
         levelTask = Task {
             for await level in audioService.audioLevelStream {
                 if Task.isCancelled { break }
-                _ = level
+                self.ingestAudioLevel(level)
             }
         }
     }
@@ -395,6 +436,9 @@ final class CheckInViewModel {
         timerTask = nil
         levelTask?.cancel()
         levelTask = nil
+        // Monitoring stopped: no live level means no active voice. Releases the gate so a
+        // pending prompt announcement isn't wedged "deferred" on the last loud sample.
+        isSpeaking = false
         if cancelTranscription {
             transcriptionTask?.cancel()
             transcriptionTask = nil
