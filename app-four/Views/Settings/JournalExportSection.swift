@@ -40,7 +40,7 @@ struct RecoveryKeySheet: View {
                     Text("Keep this key safe")
                         .font(Typography.title)
                         .foregroundStyle(Theme.textPrimary)
-                    Text("You'll need this key to open your backup. We don't store it — if you lose it, the file can't be opened. Save it somewhere only you can reach.")
+                    Text("This file can only be opened by a future version of Squirl, using this exact key. If you lose the key, the backup can't be recovered — not even by us. Save it somewhere only you can reach.")
                         .font(Typography.body)
                         .foregroundStyle(Theme.textSecondary)
                 }
@@ -56,7 +56,13 @@ struct RecoveryKeySheet: View {
                     .accessibilityValue(keyBase64)
 
                 Button {
-                    UIPasteboard.general.string = keyBase64
+                    UIPasteboard.general.setItems(
+                        [[UTType.utf8PlainText.identifier: keyBase64]],
+                        options: [
+                            .localOnly: true,
+                            .expirationDate: Date().addingTimeInterval(120)
+                        ]
+                    )
                     withAnimation(Motion.smooth) { copied = true }
                 } label: {
                     Label(copied ? "Copied" : "Copy key", systemImage: copied ? "checkmark" : "doc.on.doc")

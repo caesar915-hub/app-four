@@ -201,7 +201,7 @@ struct SettingsView: View {
             }
             .disabled(isPreparingExport)
         } footer: {
-            Text("Saves one encrypted file you can keep or share. We’ll show you a key to open it — we don’t store that key.")
+            Text("Saves one encrypted file you can keep or share. We’ll show you a key to open it — keep it safe. If you lose the key, the backup can’t be recovered — not even by us.")
         }
     }
 
