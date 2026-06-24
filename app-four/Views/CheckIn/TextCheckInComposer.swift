@@ -4,10 +4,13 @@ import SwiftUI
 /// mood/energy/focus glyph pickers, a single free-text notebox, and a gradient
 /// "Save check-in" pill. Meds and sleep are captured by voice and the Edit sheet, not here.
 struct TextCheckInComposer: View {
-    let onSave: (CheckInDraft) -> Void
+    /// Returns `true` when the save persisted; `false` keeps the composer open with
+    /// the draft intact so the inline retry surface can re-attempt (FR-009).
+    let onSave: (CheckInDraft) -> Bool
 
     @Environment(\.dismiss) private var dismiss
     @State private var draft = CheckInDraft()
+    @State private var showSaveFailed = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -92,12 +95,27 @@ struct TextCheckInComposer: View {
     // MARK: - Save
 
     private var saveButton: some View {
-        Button("Save check-in") {
-            onSave(draft)
-            dismiss()
+        VStack(spacing: Spacing.s) {
+            Button("Save check-in") {
+                if onSave(draft) {
+                    dismiss()
+                } else {
+                    showSaveFailed = true
+                    Haptics.error()
+                }
+            }
+            .buttonStyle(.primary)
+            .disabled(draft.isEmpty)
+
+            if showSaveFailed {
+                Text("Couldn't save — tap to try again. Your note is safe.")
+                    .font(Typography.callout)
+                    .foregroundStyle(Theme.textSecondary)
+                    .multilineTextAlignment(.center)
+                    .transition(.opacity)
+            }
         }
-        .buttonStyle(.primary)
-        .disabled(draft.isEmpty)
+        .animation(Motion.smooth, value: showSaveFailed)
     }
 }
 
@@ -131,5 +149,5 @@ struct SignalScaleRow<Level: SignalLevel & CaseIterable & Equatable>: View {
 }
 
 #Preview {
-    TextCheckInComposer { _ in }
+    TextCheckInComposer { _ in true }
 }

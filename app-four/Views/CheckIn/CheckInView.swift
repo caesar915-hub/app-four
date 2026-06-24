@@ -34,6 +34,7 @@ struct CheckInView: View {
         .sheet(isPresented: $showComposer) {
             TextCheckInComposer { draft in
                 viewModel.saveTextCheckIn(draft)
+                return !viewModel.textSaveFailed
             }
         }
         .alert("Microphone Access Required", isPresented: $viewModel.permissionDenied) {
@@ -170,21 +171,29 @@ struct CheckInView: View {
                 Spacer()
 
                 ZStack {
-                    CrescentRing(isActive: true)
+                    CrescentRing(isActive: !viewModel.saveFailed)
                         .frame(width: 260, height: 260)
-                    VStack(spacing: Spacing.m) {
-                        Text(viewModel.timeString)
-                            .font(Typography.timer)
-                            .foregroundStyle(Theme.textPrimary)
-                        stopButton
-                        Button("Cancel") { viewModel.cancelRecording() }
-                            .font(Typography.callout)
-                            .foregroundStyle(Theme.textSecondary)
-                            .accessibilityLabel("Cancel recording")
+                    if viewModel.saveFailed {
+                        failureRecovery
+                    } else {
+                        VStack(spacing: Spacing.m) {
+                            Text(viewModel.timeString)
+                                .font(Typography.timer)
+                                .foregroundStyle(Theme.textPrimary)
+                            stopButton
+                            Button("Cancel") { viewModel.cancelRecording() }
+                                .font(Typography.callout)
+                                .foregroundStyle(Theme.textSecondary)
+                                .frame(minHeight: Metrics.minTapTarget)
+                                .accessibilityLabel("Cancel recording")
+                        }
                     }
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.bottom, Spacing.l)
+                .onChange(of: viewModel.saveFailed) { _, failed in
+                    if failed { Haptics.error() }
+                }
             }
             .frame(width: geo.size.width, height: geo.size.height)
         }
@@ -270,6 +279,41 @@ struct CheckInView: View {
         .buttonStyle(.plain)
         .disabled(viewModel.state == .processing)
         .accessibilityLabel("Finish check-in")
+    }
+
+    // §04b Save-failed recovery — calm, recovery-framed, no alarm styling: the audio
+    // is already buffered (FR-005), so reassure and offer a one-tap re-save (FR-006).
+    private var failureRecovery: some View {
+        VStack(spacing: Spacing.s) {
+            Text("Couldn't save that one.")
+                .font(Typography.headline)
+                .foregroundStyle(Theme.textPrimary)
+            Text("Your check-in is safe — tap to try again.")
+                .font(Typography.callout)
+                .foregroundStyle(Theme.textSecondary)
+                .multilineTextAlignment(.center)
+
+            Button { viewModel.retrySave() } label: {
+                Text("Try again")
+                    .font(Typography.headline)
+                    .foregroundStyle(.white)
+                    .padding(.vertical, Spacing.m)
+                    .padding(.horizontal, Spacing.xxl)
+                    .frame(minHeight: Metrics.minTapTarget)
+                    .background(Theme.meadowGradient, in: Capsule())
+                    .shadow(color: Theme.meadowAmber.opacity(0.34), radius: 12, y: 5)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Try saving again")
+
+            Button("Discard") { viewModel.discardFailedCapture() }
+                .font(Typography.callout)
+                .foregroundStyle(Theme.textSecondary)
+                .frame(minHeight: Metrics.minTapTarget)
+                .accessibilityLabel("Discard this check-in")
+        }
+        .padding(.horizontal, Spacing.l)
+        .accessibilityElement(children: .contain)
     }
 }
 
