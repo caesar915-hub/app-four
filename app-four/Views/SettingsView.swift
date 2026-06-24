@@ -29,6 +29,7 @@ struct SettingsView: View {
                     dayCardSection
                     medicationBarSection
                     accessibilitySection
+                    YourDataSection()
                     dangerSection
                     versionSection
                 }
