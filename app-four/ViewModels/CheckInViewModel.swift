@@ -248,6 +248,12 @@ final class CheckInViewModel {
             let stream = try await transcriptionService.transcribe(audioURL: recording.audioURL)
             try await consumeStreamWithTimeout(stream, for: recording, timeoutSeconds: 90)
 
+            // The user may have deleted this recording (library multi-select) while it
+            // transcribed in the background; never touch a freed @Model.
+            guard store.recordings.contains(where: { $0.id == recording.id }) else {
+                AppLogger.log("Transcription finished but recording \(recording.id) was deleted; skipping")
+                return
+            }
             recording.status = .completed
             store.save()
             AppLogger.log("Transcription completed for \(recording.id)")
@@ -275,11 +281,13 @@ final class CheckInViewModel {
         } catch RecordingError.timeout {
             AppLogger.log("Transcription timed out for \(recording.id)")
             await transcriptionService.cancelTranscription()
+            guard store.recordings.contains(where: { $0.id == recording.id }) else { return }
             recording.status = .failed
             recording.fullTranscriptText = "Transcription timed out. Tap to retry in the recording detail view."
             store.save()
         } catch {
             AppLogger.log("Transcription failed for \(recording.id): \(error)")
+            guard store.recordings.contains(where: { $0.id == recording.id }) else { return }
             recording.status = .failed
             recording.fullTranscriptText = "Transcription failed: \(error.localizedDescription)"
             store.save()
