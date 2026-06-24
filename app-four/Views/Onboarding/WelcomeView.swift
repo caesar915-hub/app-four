@@ -17,17 +17,33 @@ struct WelcomeView: View {
     private let crescentSize: CGFloat = 232
 
     var body: some View {
+        // ScrollView keeps the fixed-size crescent and the Start button reachable
+        // when Dynamic Type scales the text past the viewport (AX5). At normal
+        // sizes the minHeight fill centers the content exactly as a static layout.
+        GeometryReader { geo in
+            ScrollView {
+                content
+                    .frame(maxWidth: Metrics.maxContentWidth)
+                    .frame(maxWidth: .infinity, minHeight: geo.size.height)
+            }
+        }
+        .background(Theme.background.ignoresSafeArea())
+    }
+
+    private var content: some View {
         VStack(spacing: Spacing.section) {
             Spacer(minLength: Spacing.section)
 
             CrescentRing()
                 .frame(width: crescentSize, height: crescentSize)
+                .accessibilityHidden(true)
 
             VStack(spacing: Spacing.m) {
                 Text("Welcome to Squirl")
                     .font(Typography.largeTitle)
                     .foregroundStyle(Theme.textPrimary)
                     .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
 
                 Text("A calm place to speak your day. Everything stays on this device.")
                     .font(Typography.body)
@@ -40,15 +56,14 @@ struct WelcomeView: View {
 
             Button("Start", action: start)
                 .buttonStyle(.primary)
+                .accessibilityHint("Opens your check-in")
         }
         .padding(.horizontal, Spacing.xxl)
         .padding(.vertical, Spacing.hero)
-        .frame(maxWidth: Metrics.maxContentWidth)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Theme.background.ignoresSafeArea())
     }
 
     private func start() {
+        Haptics.success()
         withAnimation(Motion.smooth) {
             viewModel.complete(modelContext: modelContext)
         }
