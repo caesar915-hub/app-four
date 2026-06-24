@@ -52,6 +52,13 @@ struct CheckInView: View {
         }
     }
 
+    /// Posts a VoiceOver announcement (FR-010/012). A no-op when VoiceOver is off, so it
+    /// is safe to call unconditionally from state-change handlers. iOS 26 floor ⇒ the
+    /// SwiftUI announcement API is always available; no UIAccessibility fallback needed.
+    private func announce(_ message: String) {
+        AccessibilityNotification.Announcement(message).post()
+    }
+
     private func consumeAutoStart() {
         guard shouldAutoStart else { return }
         shouldAutoStart = false
@@ -171,20 +178,29 @@ struct CheckInView: View {
                 Spacer()
 
                 ZStack {
+                    // The crescent is decorative; the grouped status below carries the
+                    // information to VoiceOver as the "Recording, elapsed" live region.
                     CrescentRing(isActive: !viewModel.saveFailed)
                         .frame(width: 260, height: 260)
+                        .accessibilityHidden(true)
                     if viewModel.saveFailed {
                         failureRecovery
                     } else {
                         VStack(spacing: Spacing.m) {
+                            // FR-011: crescent + timer read as one live-region status,
+                            // throttled to whole seconds (timeString changes once a second,
+                            // not every 0.1s tick) so VoiceOver doesn't chatter.
                             Text(viewModel.timeString)
                                 .font(Typography.timer)
                                 .foregroundStyle(Theme.textPrimary)
+                                .accessibilityElement(children: .ignore)
+                                .accessibilityLabel("Recording, \(viewModel.timeString) elapsed")
+                                .accessibilityAddTraits(.updatesFrequently)
                             stopButton
                             Button("Cancel") { viewModel.cancelRecording() }
                                 .font(Typography.callout)
                                 .foregroundStyle(Theme.textSecondary)
-                                .frame(minHeight: Metrics.minTapTarget)
+                                .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
                                 .accessibilityLabel("Cancel recording")
                         }
                     }
@@ -193,6 +209,25 @@ struct CheckInView: View {
                 .padding(.bottom, Spacing.l)
                 .onChange(of: viewModel.saveFailed) { _, failed in
                     if failed { Haptics.error() }
+                }
+                // FR-010: announce each prompt advance to VoiceOver, but never over the
+                // speaker — request on the visual swap, then flush the held announcement
+                // the moment the active-voice gate goes quiet (eligible).
+                .onChange(of: viewModel.currentPromptIndex) { _, _ in
+                    viewModel.requestPromptAnnouncement()
+                }
+                .onChange(of: viewModel.promptAnnouncementIsEligible) { _, eligible in
+                    guard eligible else { return }
+                    announce("\(viewModel.currentPrompt.question) \(viewModel.currentPrompt.hint)")
+                    viewModel.consumePromptAnnouncement()
+                }
+                // FR-012: speak the capture's final transitions.
+                .onChange(of: viewModel.state) { _, newState in
+                    switch newState {
+                    case .processing: announce("Saving…")
+                    case .done: announce("Captured.")
+                    default: break
+                    }
                 }
             }
             .frame(width: geo.size.width, height: geo.size.height)
@@ -274,6 +309,7 @@ struct CheckInView: View {
             .foregroundStyle(Theme.background)
             .padding(.vertical, Spacing.m)
             .padding(.horizontal, Spacing.xxl)
+            .frame(minHeight: Metrics.minTapTarget)
             .background(Theme.textPrimary, in: Capsule())
         }
         .buttonStyle(.plain)
@@ -309,7 +345,7 @@ struct CheckInView: View {
             Button("Discard") { viewModel.discardFailedCapture() }
                 .font(Typography.callout)
                 .foregroundStyle(Theme.textSecondary)
-                .frame(minHeight: Metrics.minTapTarget)
+                .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
                 .accessibilityLabel("Discard this check-in")
         }
         .padding(.horizontal, Spacing.l)
