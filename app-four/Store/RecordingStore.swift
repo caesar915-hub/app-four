@@ -108,6 +108,9 @@ class RecordingStore {
     func persistCheckInNote(_ draft: CheckInDraft) throws -> Recording {
         let recording = buildAndInsertCheckInNote(draft)
         try modelContext.save()
+        // Match save(): a meds-only text check-in must refresh the medication bar,
+        // which only updates on this notification.
+        NotificationCenter.default.post(name: .medicationEventsDidChange, object: nil)
         loadRecordings()
         return recording
     }
