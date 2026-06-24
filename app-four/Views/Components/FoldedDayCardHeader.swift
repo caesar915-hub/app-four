@@ -63,7 +63,7 @@ struct FoldedDayCardHeader: View {
     private var moodBadge: some View {
         ZStack {
             Circle().fill(level?.badgeTint ?? Color(.systemGray5))
-            SignalGlyph(.mood, level: level?.numericValue, size: Metrics.headerMoodBadge * 0.5, decorative: true)
+            SignalGlyph(.mood, level: level?.numericValue, size: Metrics.headerMoodBadge * 0.56, decorative: true)
         }
         .frame(width: Metrics.headerMoodBadge, height: Metrics.headerMoodBadge)
         .accessibilityHidden(true)

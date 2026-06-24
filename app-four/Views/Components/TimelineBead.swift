@@ -42,7 +42,7 @@ struct TimelineBead: View {
             ZStack {
                 Circle().fill(MoodLevel(name: node.recording?.mood)?.badgeTint ?? Color(.systemGray5))
                 SignalGlyph(.mood, level: MoodLevel(name: node.recording?.mood)?.numericValue,
-                            size: circleSize * 0.5, decorative: true)
+                            size: circleSize * 0.6, decorative: true)
             }
         } else {
             Circle()
