@@ -95,4 +95,108 @@ struct SettingsViewModelTests {
         vm.medicalPromptEnabled = true
         #expect(defaults.medicalPromptEnabled == true, "VM setter round-trips the key back on")
     }
+
+    // MARK: - US2 (017): model-download recovery — cause surfacing, copy mapping, cancel/retry
+
+    // T017: the engine reports a typed cause; the VM must capture it as `downloadError`
+    // and expose the no-connection copy (not a swallowed log).
+    @Test func downloadSurfacesNoNetworkCauseToViewModel() async {
+        await mocks.aiModel.setStubIsDownloaded(false)
+        await mocks.aiModel.setDownloadFailure(.noNetwork)
+
+        await viewModel.downloadModel(.whisper)
+
+        #expect(viewModel.downloadError == .noNetwork, "VM must capture the engine's no-network cause")
+        #expect(viewModel.isDownloadingWhisper == false)
+        #expect(viewModel.whisperModelInstalled == false, "A failed download leaves nothing installed")
+        let message = viewModel.message(for: .noNetwork)
+        #expect(message.localizedCaseInsensitiveContains("connection") ||
+                message.localizedCaseInsensitiveContains("offline") ||
+                message.localizedCaseInsensitiveContains("internet"),
+                "No-network copy must name the missing connection")
+    }
+
+    // T018: cause→copy is exhaustive AND distinct; each cause carries the right remedy framing.
+    @Test func causeMessagesAreDistinctAndAppropriate() {
+        let noNetwork = viewModel.message(for: .noNetwork)
+        let space = viewModel.message(for: .insufficientSpace)
+        let cellular = viewModel.message(for: .cellularDisabled)
+        let other = viewModel.message(for: .other("URLError.-1"))
+
+        let all = [noNetwork, space, cellular, other]
+        #expect(Set(all).count == all.count, "Every cause must map to a distinct message")
+        #expect(all.allSatisfy { !$0.isEmpty }, "No cause may map to an empty message")
+    }
+
+    @Test func insufficientSpaceMessageNamesSpaceNotRetry() {
+        let space = viewModel.message(for: .insufficientSpace)
+        #expect(space.localizedCaseInsensitiveContains("space") ||
+                space.localizedCaseInsensitiveContains("room") ||
+                space.localizedCaseInsensitiveContains("storage"),
+                "Insufficient-space copy must name the cause (space)")
+        #expect(!space.localizedCaseInsensitiveContains("tap to retry"),
+                "Space failure must not imply a pointless immediate retry as the sole remedy")
+    }
+
+    @Test func cellularDisabledExposesAllowCellularAffordance() async {
+        let cellular = viewModel.message(for: .cellularDisabled)
+        #expect(cellular.localizedCaseInsensitiveContains("cellular") ||
+                cellular.localizedCaseInsensitiveContains("mobile data") ||
+                cellular.localizedCaseInsensitiveContains("Wi-Fi"),
+                "Cellular-disabled copy must reference the cellular/Wi-Fi condition")
+
+        // The allow-cellular affordance is offered only while the active error is
+        // the cellular-metered block — drive that state through the real path.
+        #expect(viewModel.canAllowCellular == false, "No affordance before any cellular failure")
+        await mocks.aiModel.setStubIsDownloaded(false)
+        await mocks.aiModel.setDownloadFailure(.cellularDisabled)
+        await viewModel.downloadModel(.whisper)
+        #expect(viewModel.downloadError == .cellularDisabled)
+        #expect(viewModel.canAllowCellular == true,
+                "Cellular-disabled cause must offer the allow-cellular affordance")
+    }
+
+    @Test func otherCauseMessageIsGenericAndNonAlarming() {
+        let other = viewModel.message(for: .other("URLError.-1009"))
+        #expect(!other.isEmpty)
+        // The raw error tag must never leak into user-facing copy.
+        #expect(!other.contains("URLError"), "Generic copy must not leak the raw error tag")
+        #expect(!other.contains("-1009"))
+    }
+
+    // T019: state machine — cancel returns to a clean "not installed", clearing progress.
+    @Test func cancelDownloadReturnsToCleanNotInstalled() async {
+        await mocks.aiModel.setStubIsDownloaded(false)
+        await mocks.aiModel.setHangsForCancel(true)
+
+        let download = Task { await viewModel.downloadModel(.whisper) }
+        // Wait until the download is in-flight before cancelling.
+        while !viewModel.isDownloadingWhisper { await Task.yield() }
+
+        viewModel.cancelDownload()
+        await download.value
+
+        #expect(viewModel.isDownloadingWhisper == false, "Cancel stops the in-flight download")
+        #expect(viewModel.whisperDownloadProgress == 0, "Cancel clears progress")
+        #expect(viewModel.whisperModelInstalled == false,
+                "Cancel leaves no partial/installed model (filesystem truth)")
+        #expect(viewModel.downloadError == nil, "A user cancel is not an error state")
+    }
+
+    // T019: a successful retry after a failure installs the model and clears the error.
+    @Test func retryAfterFailureInstallsAndClearsError() async {
+        await mocks.aiModel.setStubIsDownloaded(false)
+        await mocks.aiModel.setDownloadFailure(.noNetwork)
+        await viewModel.downloadModel(.whisper)
+        #expect(viewModel.downloadError == .noNetwork, "First attempt fails with the cause")
+        #expect(viewModel.whisperModelInstalled == false)
+
+        // Conditions recover: the model now installs cleanly.
+        await mocks.aiModel.setDownloadFailure(nil)
+        await mocks.aiModel.setStubIsDownloaded(true)
+        await viewModel.downloadModel(.whisper)
+
+        #expect(viewModel.whisperModelInstalled == true, "Retry success installs the model")
+        #expect(viewModel.downloadError == nil, "A successful retry clears the prior error")
+    }
 }

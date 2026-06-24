@@ -15,6 +15,17 @@ final class SettingsViewModel {
     var whisperDownloadProgress: Double = 0
     var storageUsedMB: Double = 0.0
 
+    /// The cause of the most recent failed download, surfaced inline so the row
+    /// can show plain-language recovery copy. `nil` when there is no active error
+    /// (never attempted, in progress, succeeded, or cancelled).
+    var downloadError: ModelDownloadFailure?
+
+    /// True only when the active error is a cellular-metered block, so the row can
+    /// offer a one-tap "allow on cellular" shortcut alongside "Try again".
+    var canAllowCellular: Bool { downloadError == .cellularDisabled }
+
+    @ObservationIgnored private var downloadTask: Task<Void, Never>?
+
     var recordingCount: Int {
         store.recordings.count
     }
@@ -77,20 +88,58 @@ final class SettingsViewModel {
     }
 
     func downloadModel(_ type: AIModelType) async {
+        downloadError = nil
         setDownloading(type, to: true)
         setProgress(type, to: 0)
-        defer {
-            setDownloading(type, to: false)
-            setProgress(type, to: 0)
-        }
-        do {
-            let stream = try await aiModelService.download(type)
-            for await progress in stream {
-                setProgress(type, to: progress)
+
+        let task = Task {
+            defer {
+                setDownloading(type, to: false)
+                setProgress(type, to: 0)
             }
-            await checkModels()
-        } catch {
-            AppLogger.log("Failed to download \(type.rawValue): \(error)")
+            do {
+                let stream = try await aiModelService.download(type)
+                for try await progress in stream {
+                    setProgress(type, to: progress)
+                }
+                await checkModels()
+            } catch is CancellationError {
+                // User cancelled — not an error; the filesystem-truth recheck in
+                // cancelDownload() settles the row.
+            } catch let cause as ModelDownloadFailure {
+                downloadError = cause
+                await checkModels()
+            } catch {
+                downloadError = .other(String(describing: Swift.type(of: error)))
+                await checkModels()
+            }
+        }
+        downloadTask = task
+        await task.value
+        downloadTask = nil
+    }
+
+    /// Cancels an in-flight download and re-reads filesystem truth so the row
+    /// returns to "not installed" with no partial/installed model left behind.
+    func cancelDownload() {
+        downloadTask?.cancel()
+        downloadTask = nil
+        downloadError = nil
+        Task { await checkModels() }
+    }
+
+    /// Plain-language, non-alarming copy for each failure cause. Names the
+    /// condition and points at the real remedy; never leaks a raw error string.
+    func message(for failure: ModelDownloadFailure) -> String {
+        switch failure {
+        case .noNetwork:
+            return "No connection. Reconnect to the internet, then try again."
+        case .insufficientSpace:
+            return "Not enough space on this device. Free up some room, then try again."
+        case .cellularDisabled:
+            return "You're on cellular and downloads over cellular are off. Switch to Wi-Fi, or allow cellular below."
+        case .other:
+            return "The download didn't finish. Try again in a moment."
         }
     }
 
