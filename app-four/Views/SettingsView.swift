@@ -110,13 +110,16 @@ struct SettingsView: View {
     }
 
     private var accessibilitySection: some View {
-        Section("Accessibility") {
+        Section {
             Toggle(isOn: $viewModel.medicalPromptEnabled) {
                 Label("Medical Context Prompt", systemImage: "pills")
             }
-            Toggle(isOn: $viewModel.reduceMotion) {
-                Label("Reduce Motion", systemImage: "figure.walk")
-            }
+        } header: {
+            Text("Accessibility")
+        } footer: {
+            Text("Squirl follows the iOS motion setting. Turn on Reduce Motion in Settings › Accessibility to still animations.")
+                .font(Typography.caption)
+                .foregroundStyle(Theme.textSecondary)
         }
     }
 

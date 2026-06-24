@@ -19,16 +19,7 @@ final class SettingsViewModel {
         store.recordings.count
     }
 
-    private var _reduceMotion: Bool = UserDefaults.standard.bool(forKey: "reduceMotion")
     private var _medicalPromptEnabled: Bool = UserDefaults.standard.medicalPromptEnabled
-
-    var reduceMotion: Bool {
-        get { _reduceMotion }
-        set {
-            _reduceMotion = newValue
-            UserDefaults.standard.set(newValue, forKey: "reduceMotion")
-        }
-    }
 
     var medicalPromptEnabled: Bool {
         get { _medicalPromptEnabled }
