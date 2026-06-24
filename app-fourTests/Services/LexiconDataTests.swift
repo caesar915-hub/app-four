@@ -41,7 +41,7 @@ struct LexiconDataTests {
         superset(fromJSON.focusPresent, defaults.focusPresent, "focusPresent")
         superset(fromJSON.focusDistracted, defaults.focusDistracted, "focusDistracted")
         superset(fromJSON.focusFoggy, defaults.focusFoggy, "focusFoggy")
-        superset(fromJSON.feelings, defaults.feelings, "feelings")
+        superset(fromJSON.emotions, defaults.emotions, "emotions")
         superset(fromJSON.taskCompletionCues, defaults.taskCompletionCues, "taskCompletionCues")
         superset(fromJSON.taskAvoidanceCues, defaults.taskAvoidanceCues, "taskAvoidanceCues")
         superset(fromJSON.winCues, defaults.winCues, "winCues")
@@ -79,11 +79,11 @@ struct LexiconDataTests {
         let overlay = PersonalLexicon(
             medications: ["MyCustomMed"],
             moodSpecific: [.init(word: "vibing hard", label: "great")],
-            feelings: ["hyped"]
+            emotions: ["hyped"]
         )
         let lex = try loadData().toLexicon(personalOverlay: overlay)
         #expect(lex.medications.contains("MyCustomMed"))
         #expect(lex.moodSpecific.contains { $0.word == "vibing hard" && $0.label == "great" })
-        #expect(lex.feelings.contains("hyped"))
+        #expect(lex.emotions.contains("hyped"))
     }
 }

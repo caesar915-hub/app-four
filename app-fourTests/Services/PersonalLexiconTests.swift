@@ -18,16 +18,16 @@ struct PersonalLexiconTests {
     }
 
     @Test func buildsOverlayFromUserCorrectedTags() throws {
-        // A user-corrected med + feeling, plus an NLP tag that must be ignored.
+        // A user-corrected med + emotion, plus an NLP tag that must be ignored.
         context.insert(RecordingTag(name: "Wellbutrin XL", category: .medication, source: .userCorrected))
-        context.insert(RecordingTag(name: "Hopeful", category: .feelings, source: .userCorrected))
+        context.insert(RecordingTag(name: "Hopeful", category: .emotions, source: .userCorrected))
         context.insert(RecordingTag(name: "Adderall", category: .medication, source: .nlp))
         try context.save()
 
         let overlay = PersonalLexiconBuilder.build(from: context)
         #expect(overlay != nil)
         #expect(overlay?.medications.contains("Wellbutrin XL") == true)
-        #expect(overlay?.feelings.contains("hopeful") == true)
+        #expect(overlay?.emotions.contains("hopeful") == true)
         // NLP-sourced tag is not personal vocabulary.
         #expect(overlay?.medications.contains("Adderall") != true)
     }

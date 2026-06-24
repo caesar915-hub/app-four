@@ -24,8 +24,8 @@ public nonisolated struct Lexicon: Sendable {
     public let focusDistracted: [String]
     public let focusFoggy: [String]
 
-    // MARK: - Feelings
-    public let feelings: [String]
+    // MARK: - Emotions
+    public let emotions: [String]
 
     // MARK: - Tasks / Wins / Overwhelm
     public let taskCompletionCues: [String]
@@ -81,7 +81,7 @@ public nonisolated struct Lexicon: Sendable {
         focusPresent: [String]? = nil,
         focusDistracted: [String]? = nil,
         focusFoggy: [String]? = nil,
-        feelings: [String]? = nil,
+        emotions: [String]? = nil,
         taskCompletionCues: [String]? = nil,
         taskAvoidanceCues: [String]? = nil,
         winCues: [String]? = nil,
@@ -114,7 +114,7 @@ public nonisolated struct Lexicon: Sendable {
         self.focusPresent = focusPresent ?? Lexicon.defaultFocusPresent
         self.focusDistracted = focusDistracted ?? Lexicon.defaultFocusDistracted
         self.focusFoggy = focusFoggy ?? Lexicon.defaultFocusFoggy
-        self.feelings = feelings ?? Lexicon.defaultFeelings
+        self.emotions = emotions ?? Lexicon.defaultEmotions
         self.taskCompletionCues = taskCompletionCues ?? Lexicon.defaultTaskCompletionCues
         self.taskAvoidanceCues = taskAvoidanceCues ?? Lexicon.defaultTaskAvoidanceCues
         self.winCues = winCues ?? Lexicon.defaultWinCues
@@ -264,17 +264,17 @@ nonisolated extension Lexicon {
         "jumping around", "all over the shop", "mind blank"
     ]
 
-    // Feelings — curated subset (lexicon.json is the superset). "feeling seen"/
-    // "feel seen" are feel-context phrases that replaced the bare "seen", which
-    // fired on "seen my therapist".
-    static let defaultFeelings: [String] = [
-        "grateful", "hopeful", "excited", "content", "inspired", "proud",
-        "playful", "loved", "peaceful", "motivated",
-        "curious", "reflective", "nostalgic", "restless", "indifferent",
-        "bored", "uncertain", "tense",
-        "anxious", "sad", "frustrated", "overwhelmed", "lonely", "angry",
-        "scared", "guilty", "ashamed", "exhausted", "panicked",
-        "feeling seen", "feel seen"
+    // Emotions — the 20 curated Mood-Meter emotions, 5 per valence×energy quadrant
+    // (lexicon.json is the superset). See specs/020-emotions-lexicon/contracts.
+    // Excludes energy states (exhausted/restless), moods, and cognitive states —
+    // those live on the app's separate mood/energy/focus axes.
+    static let defaultEmotions: [String] = [
+        // 🟡 high-energy pleasant   🔴 high-energy unpleasant
+        "excited", "joyful", "proud", "thrilled", "inspired",
+        "angry", "anxious", "frustrated", "irritated", "jealous",
+        // 🟢 low-energy pleasant    🔵 low-energy unpleasant
+        "content", "grateful", "peaceful", "secure", "serene",
+        "sad", "lonely", "disappointed", "hopeless", "discouraged"
     ]
 
     static let defaultTaskCompletionCues: [String] = [

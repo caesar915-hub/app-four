@@ -33,7 +33,7 @@ final class Recording {
     var noteExtractionJSON: String?
     var sideEffectsJSON: String?
     var sleepEventJSON: String?
-    var feelingsJSON: String?
+    var emotionsJSON: String?
     var sleepLevelValue: String?
     var isMockData: Bool = false
 
@@ -84,7 +84,7 @@ final class Recording {
         noteExtractionJSON: String? = nil,
         sideEffectsJSON: String? = nil,
         sleepEventJSON: String? = nil,
-        feelingsJSON: String? = nil,
+        emotionsJSON: String? = nil,
         sleepLevelValue: String? = nil
     ) {
         self.id = id
@@ -112,7 +112,7 @@ final class Recording {
         self.noteExtractionJSON = noteExtractionJSON
         self.sideEffectsJSON = sideEffectsJSON
         self.sleepEventJSON = sleepEventJSON
-        self.feelingsJSON = feelingsJSON
+        self.emotionsJSON = emotionsJSON
         self.sleepLevelValue = sleepLevelValue
     }
 }
@@ -169,11 +169,11 @@ extension Recording {
         sleepLevelValue.flatMap { SleepLevel(rawValue: $0) }
     }
 
-    var decodedFeelings: [String] {
-        guard let json = feelingsJSON,
+    var decodedEmotions: [String] {
+        guard let json = emotionsJSON,
               let data = json.data(using: .utf8),
-              let feelings = try? JSONDecoder().decode([String].self, from: data) else { return [] }
-        return feelings
+              let emotions = try? JSONDecoder().decode([String].self, from: data) else { return [] }
+        return emotions
     }
 
     @MainActor var decodedNoteExtraction: NoteExtraction? {
@@ -233,7 +233,7 @@ extension Recording {
         }
 
         // The blocks below run in both modes: the user-authoritative values are the
-        // scalars above. Bullets, feelings, side effects, sleep event and topics are
+        // scalars above. Bullets, emotions, side effects, sleep event and topics are
         // never set by the composer, so they always reflect the latest extraction.
         if let data = try? JSONEncoder().encode(result.bullets),
            let json = String(data: data, encoding: .utf8) {
@@ -241,13 +241,13 @@ extension Recording {
         }
 
         // Persist ONLY the fields that have no scalar column. mood/energy/focus/
-        // feelings/sideEffects/sleepHours live in dedicated columns (the source of
+        // emotions/sideEffects/sleepHours live in dedicated columns (the source of
         // truth); duplicating them in the JSON is the drift class we remove here.
         if var extraction = result.noteExtraction {
             extraction.mood = nil
             extraction.energy = nil
             extraction.focus = nil
-            extraction.feelings = []
+            extraction.emotions = []
             extraction.sideEffects = []
             extraction.sleepHours = nil
             if let data = try? JSONEncoder().encode(extraction),
@@ -268,10 +268,10 @@ extension Recording {
             sleepEventJSON = json
         }
 
-        if !result.feelings.isEmpty,
-           let data = try? JSONEncoder().encode(result.feelings),
+        if !result.emotions.isEmpty,
+           let data = try? JSONEncoder().encode(result.emotions),
            let json = String(data: data, encoding: .utf8) {
-            feelingsJSON = json
+            emotionsJSON = json
         }
 
         if !result.topics.isEmpty,

@@ -168,7 +168,7 @@ struct SummaryResult: Sendable {
     let sleepEvent: SleepEvent?
     let sleepLevel: String?
     let sideEffects: [String]
-    let feelings: [String]
+    let emotions: [String]
     let topics: [String]
     let noteExtraction: NoteExtraction?
 

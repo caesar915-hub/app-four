@@ -37,7 +37,7 @@ public struct LexiconData: Codable, Sendable {
     public var focusPresent: [String]
     public var focusDistracted: [String]
     public var focusFoggy: [String]
-    public var feelings: [String]
+    public var emotions: [String]
     public var taskCompletionCues: [String]
     public var taskAvoidanceCues: [String]
     public var winCues: [String]
@@ -63,7 +63,7 @@ public struct LexiconData: Codable, Sendable {
     public func toLexicon(personalOverlay: PersonalLexicon? = nil) -> Lexicon {
         let extraMood = personalOverlay?.moodSpecific.map { ($0.word, $0.label) } ?? []
         let extraMeds = personalOverlay?.medications ?? []
-        let extraFeelings = personalOverlay?.feelings ?? []
+        let extraEmotions = personalOverlay?.emotions ?? []
 
         return Lexicon(
             medications: medications + extraMeds,
@@ -78,7 +78,7 @@ public struct LexiconData: Codable, Sendable {
             focusPresent: focusPresent,
             focusDistracted: focusDistracted,
             focusFoggy: focusFoggy,
-            feelings: feelings + extraFeelings,
+            emotions: emotions + extraEmotions,
             taskCompletionCues: taskCompletionCues,
             taskAvoidanceCues: taskAvoidanceCues,
             winCues: winCues,
@@ -107,12 +107,12 @@ public struct LexiconData: Codable, Sendable {
 public struct PersonalLexicon: Codable, Sendable {
     public var medications: [String] = []
     public var moodSpecific: [LexiconData.MoodEntry] = []
-    public var feelings: [String] = []
+    public var emotions: [String] = []
 
-    public init(medications: [String] = [], moodSpecific: [LexiconData.MoodEntry] = [], feelings: [String] = []) {
+    public init(medications: [String] = [], moodSpecific: [LexiconData.MoodEntry] = [], emotions: [String] = []) {
         self.medications = medications
         self.moodSpecific = moodSpecific
-        self.feelings = feelings
+        self.emotions = emotions
     }
 }
 

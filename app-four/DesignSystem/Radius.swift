@@ -8,6 +8,6 @@ enum Radius {
     static let control: CGFloat = 10
     /// 16pt — tall, generously rounded action buttons (Check-in hub / stop)
     static let button: CGFloat = 16
-    /// 15pt — signal / feeling / side-effect chips in the expanded check-in row
+    /// 15pt — signal / emotion / side-effect chips in the expanded check-in row
     static let chip: CGFloat = 15
 }

@@ -47,13 +47,9 @@ struct NLNoteExtractorMatchingTests {
 
     // MARK: - Common-word traps (Task 5)
 
-    @Test func sawTherapistIsNotFeelingSeen() {
+    @Test func seenAloneIsNotAnEmotion() {
         let r = extractor.extract(from: "I've seen my therapist this morning.")
-        #expect(!r.feelings.contains("seen"))
-    }
-    @Test func feelingSeenDetected() {
-        let r = extractor.extract(from: "She really listened and I left feeling seen.")
-        #expect(r.feelings.contains("feeling seen"))
+        #expect(!r.emotions.contains("seen"))
     }
     @Test func lostKeysIsNotFoggyFocus() {
         #expect(extractor.extract(from: "I lost my keys again this morning.").focus == nil)
@@ -87,9 +83,9 @@ struct NLNoteExtractorMatchingTests {
 
     // MARK: - Verb-lemma fallback pins (Task 9)
 
-    @Test func inflectedVerbMatchesLexiconForm() {
-        let r = extractor.extract(from: "I'm panicking about the deadline.")
-        #expect(r.feelings.contains("panicked"))
+    @Test func curatedEmotionDetected() {
+        let r = extractor.extract(from: "I felt frustrated about the deadline.")
+        #expect(r.emotions.contains("frustrated"))
     }
     @Test func inflectedAvoidanceMatches() {
         let r = extractor.extract(from: "I keep avoiding that email thread.")
@@ -97,7 +93,7 @@ struct NLNoteExtractorMatchingTests {
     }
     @Test func nounDoesNotLemmaMatchVerbCue() {
         let r = extractor.extract(from: "There were wires everywhere in the office.")
-        #expect(!r.feelings.contains("wired"))
+        #expect(!r.emotions.contains("wired"))
     }
 
     // MARK: - New activity categories (Task 10)

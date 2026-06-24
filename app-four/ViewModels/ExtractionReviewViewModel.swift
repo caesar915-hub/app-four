@@ -24,7 +24,7 @@ final class ExtractionReviewViewModel: Identifiable {
     var sleepLevel: SleepLevel?
     var sleepHours: Double?
     var medications: [MedEvent]
-    var feelings: Set<String>
+    var emotions: Set<String>
     var sideEffects: Set<String>
 
     let originalResult: SummaryResult
@@ -54,7 +54,7 @@ final class ExtractionReviewViewModel: Identifiable {
         self.sleepLevel = result.sleepLevel.flatMap { SleepLevel(rawValue: $0) }
         self.sleepHours = result.sleepHours
         self.medications = result.medications
-        self.feelings = Set(result.feelings)
+        self.emotions = Set(result.emotions)
         self.sideEffects = Set(result.sideEffects)
     }
 
@@ -95,7 +95,7 @@ final class ExtractionReviewViewModel: Identifiable {
             sleepEvent: recording.decodedSleepEvent,
             sleepLevel: recording.sleepLevelValue,
             sideEffects: recording.decodedSideEffects,
-            feelings: recording.decodedFeelings,
+            emotions: recording.decodedEmotions,
             topics: recording.topicCategories.map(\.rawValue),
             noteExtraction: nil
         )
@@ -127,9 +127,9 @@ final class ExtractionReviewViewModel: Identifiable {
         sleepHours = hours
     }
 
-    func toggleFeeling(_ feeling: String) {
-        if feelings.contains(feeling) { feelings.remove(feeling) } else { feelings.insert(feeling) }
-        editedFields.insert(.feelings)
+    func toggleEmotion(_ emotion: String) {
+        if emotions.contains(emotion) { emotions.remove(emotion) } else { emotions.insert(emotion) }
+        editedFields.insert(.emotions)
     }
 
     func toggleSideEffect(_ effect: String) {
@@ -191,7 +191,7 @@ final class ExtractionReviewViewModel: Identifiable {
         correctedExtraction?.energy = energy
         correctedExtraction?.focus = focus
         correctedExtraction?.medications = medications
-        correctedExtraction?.feelings = Array(feelings)
+        correctedExtraction?.emotions = Array(emotions)
         correctedExtraction?.sideEffects = Array(sideEffects)
 
         let correctedResult = SummaryResult(
@@ -206,7 +206,7 @@ final class ExtractionReviewViewModel: Identifiable {
             sleepEvent: originalResult.sleepEvent,
             sleepLevel: sleepLevel?.rawValue,
             sideEffects: Array(sideEffects),
-            feelings: Array(feelings),
+            emotions: Array(emotions),
             topics: originalResult.topics,
             noteExtraction: correctedExtraction
         )
@@ -246,9 +246,9 @@ final class ExtractionReviewViewModel: Identifiable {
             tags.append(RecordingTag(name: med.name, category: .medication,
                                      source: editedFields.contains(.medication) ? .userCorrected : .nlp))
         }
-        for feeling in feelings {
-            tags.append(RecordingTag(name: feeling, category: .feelings,
-                                     source: editedFields.contains(.feelings) ? .userCorrected : .nlp))
+        for emotion in emotions {
+            tags.append(RecordingTag(name: emotion, category: .emotions,
+                                     source: editedFields.contains(.emotions) ? .userCorrected : .nlp))
         }
         store.addCorrectionTags(tags, for: recording)
         store.save()

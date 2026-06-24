@@ -96,7 +96,7 @@ struct NLSummarizationService: SummarizationService {
             sleepEvent: sleepEvent,
             sleepLevel: sleepLevel?.rawValue,
             sideEffects: sideEffectKeywords,
-            feelings: extraction.feelings,
+            emotions: extraction.emotions,
             topics: topics,
             noteExtraction: extraction
         )

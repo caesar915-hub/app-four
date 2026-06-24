@@ -23,7 +23,7 @@ struct RecordingApplySummaryTests {
             bullets: ["a bullet"], medications: meds, generatedTitle: "Generated",
             energyLevel: energy, focusLevel: focus, mood: mood,
             sleepHours: sleepHours, sleepQuality: sleepQuality,
-            sleepEvent: nil, sleepLevel: nil, sideEffects: [], feelings: [],
+            sleepEvent: nil, sleepLevel: nil, sideEffects: [], emotions: [],
             topics: topics, noteExtraction: nil
         )
     }

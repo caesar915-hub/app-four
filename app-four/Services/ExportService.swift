@@ -45,7 +45,7 @@ struct RecordingDTO: Codable, Sendable {
     let noteExtractionJSON: String?
     let sideEffectsJSON: String?
     let sleepEventJSON: String?
-    let feelingsJSON: String?
+    let emotionsJSON: String?
     let sleepLevelValue: String?
 
     /// Base64 of the recording's audio file, when it exists on disk. `nil` for
@@ -184,7 +184,7 @@ struct ExportServiceImpl: ExportService {
             noteExtractionJSON: r.noteExtractionJSON,
             sideEffectsJSON: r.sideEffectsJSON,
             sleepEventJSON: r.sleepEventJSON,
-            feelingsJSON: r.feelingsJSON,
+            emotionsJSON: r.emotionsJSON,
             sleepLevelValue: r.sleepLevelValue,
             audioBase64: audioBase64,
             segments: (r.segments ?? []).map { s in

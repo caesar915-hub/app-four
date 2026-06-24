@@ -21,7 +21,7 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
     private struct CachedCues {
         let sideEffect, taskCompletion, taskAvoidance, win, overwhelm: CueMatcher.CueList
         let executiveDysfunction, physicalStim, physicalSideEffects, rebound: CueMatcher.CueList
-        let appetiteLoss, appetiteReturn, appointment, feelings: CueMatcher.CueList
+        let appetiteLoss, appetiteReturn, appointment, emotions: CueMatcher.CueList
         let energyCharged, energyAlert, energySteady, energyTired, energySluggish: CueMatcher.CueList
         let focusLockedIn, focusSharp, focusPresent, focusDistracted, focusFoggy: CueMatcher.CueList
         let moodSurfaces, medications: CueMatcher.CueList
@@ -69,7 +69,7 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
             appetiteLoss: CueMatcher.makeList(lexicon.appetiteLoss, lemmaEnabled: false),
             appetiteReturn: CueMatcher.makeList(lexicon.appetiteReturn, lemmaEnabled: false),
             appointment: CueMatcher.makeList(lexicon.appointmentCues, lemmaEnabled: false),
-            feelings: CueMatcher.makeList(lexicon.feelings),
+            emotions: CueMatcher.makeList(lexicon.emotions),
             energyCharged: CueMatcher.makeList(lexicon.energyCharged),
             energyAlert: CueMatcher.makeList(lexicon.energyAlert),
             energySteady: CueMatcher.makeList(lexicon.energySteady),
@@ -115,7 +115,7 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
 
         // 2. Medications, tasks, wins, etc. collected per-sentence
         var medEvents: [MedEvent] = []
-        var detectedFeelings: [String] = []
+        var detectedEmotions: [String] = []
         var sideEffects: [String] = []
         var tasksCompleted: [String] = []
         var tasksAvoided: [String] = []
@@ -218,12 +218,12 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
                 }
             }
 
-            // Feelings: every non-negated feeling cue (deduped), not just the first.
+            // Emotions: every non-negated emotion cue (deduped), not just the first.
             // Iterate the pre-tokenized pairs so each cue's tokens are reused.
-            for cue in cues.feelings.cues {
+            for cue in cues.emotions.cues {
                 if CueMatcher.contains(tokens, cue) && !isNegatedBefore(target: cue.surface, in: lower) {
-                    if !detectedFeelings.contains(cue.surface) {
-                        detectedFeelings.append(cue.surface)
+                    if !detectedEmotions.contains(cue.surface) {
+                        detectedEmotions.append(cue.surface)
                     }
                 }
             }
@@ -258,7 +258,7 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
             extraction.focus = bestFocus.level
         }
 
-        extraction.feelings = detectedFeelings
+        extraction.emotions = detectedEmotions
         extraction.activities = Array(Set(activities)).sorted()
         extraction.medications = medEvents
 
@@ -647,7 +647,7 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
                 || hasAny(cues.energyTired) || hasAny(cues.energySluggish) { score += 1.5 }
             if hasAny(cues.focusLockedIn) || hasAny(cues.focusSharp) || hasAny(cues.focusPresent)
                 || hasAny(cues.focusDistracted) || hasAny(cues.focusFoggy) { score += 1.5 }
-            if hasAny(cues.moodSurfaces) || hasAny(cues.feelings) { score += 1.5 }
+            if hasAny(cues.moodSurfaces) || hasAny(cues.emotions) { score += 1.5 }
             if hasAny(cues.sideEffect) || hasAny(cues.physicalSideEffects) { score += 2.0 }
             if hasAny(cues.rebound) { score += 2.5 }
             if hasAny(cues.appetiteLoss) || hasAny(cues.appetiteReturn) { score += 1.5 }

@@ -30,7 +30,7 @@ enum GlyphSignal: String, CaseIterable, Hashable, Sendable {
 }
 
 /// A small descriptor letting a tag/badge carry a Paper & Pollen glyph instead of an
-/// SF Symbol. Set on the signal tags; absent on non-signal tags (category, feeling…).
+/// SF Symbol. Set on the signal tags; absent on non-signal tags (category, emotion…).
 struct GlyphBadge: Hashable, Sendable {
     let kind: GlyphSignal
     var level: Int? = nil

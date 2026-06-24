@@ -369,7 +369,7 @@ final class CheckInViewModel {
         NudgePrompt(question: "What's your energy like?", hint: "Wired, steady, or running low."),
         NudgePrompt(question: "Able to focus?",          hint: "Locked in, scattered, somewhere between."),
         NudgePrompt(question: "How did you sleep?",      hint: "Hours, and how rested you feel."),
-        NudgePrompt(question: "Any strong feelings?",    hint: "Something sitting with you right now."),
+        NudgePrompt(question: "Any strong emotions?",    hint: "Something sitting with you right now."),
     ]
 
     /// Seconds per prompt — read from AppSettings on startRecording(), stays stable during a session.

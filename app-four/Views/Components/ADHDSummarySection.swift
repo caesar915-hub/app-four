@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// §07 Recording detail — the **Summary** card (regenerate ↻ + green-dot bullets, plus
-/// feeling/sleep/side-effect tags) and the standalone **Meds** card. The mood/energy/focus
+/// emotion/sleep/side-effect tags) and the standalone **Meds** card. The mood/energy/focus
 /// signal readback lives in the detail's top glyph row (RecordingDetailView), not here.
 /// Hidden entirely when the recording carries no ADHD data (e.g. legacy notes).
 struct ADHDSummarySection: View {
@@ -105,8 +105,8 @@ struct ADHDSummarySection: View {
 
     private var extraTags: [DisplayTag] {
         var tags: [DisplayTag] = []
-        for (i, feeling) in recording.decodedFeelings.enumerated() {
-            tags.append(DisplayTag(id: "f-\(i)", label: feeling.capitalized, icon: "heart.fill", color: Theme.accent))
+        for (i, emotion) in recording.decodedEmotions.enumerated() {
+            tags.append(DisplayTag(id: "e-\(i)", label: emotion.capitalized, icon: "heart.fill", color: Theme.accent))
         }
         if let level = recording.decodedSleepLevel {
             tags.append(DisplayTag(id: "sleep", label: level.rawValue.capitalized, icon: "moon.fill", color: Palette.sleepIndigo, glyph: GlyphBadge(kind: .sleep)))

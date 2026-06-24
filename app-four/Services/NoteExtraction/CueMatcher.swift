@@ -98,8 +98,8 @@ public nonisolated struct CueMatcher: Sendable {
     }
 
     /// `lemmaEnabled` controls the single-word verb-lemma fallback per category.
-    /// Default ON for feeling/state/task cues where inflected verbs should reach
-    /// their base-form cue ("panicking"→"panicked"). Categories whose single-word
+    /// Default ON for emotion/state/task cues where inflected verbs should reach
+    /// their base-form cue ("frustrating"→"frustrated"). Categories whose single-word
     /// cues are polysemous gerunds or where lemma-bridging hurt precision in the
     /// eval (activities, side-effect/rebound/appetite/appointment topic feeders)
     /// pass `false` and stay surface-only.
@@ -112,17 +112,16 @@ public nonisolated struct CueMatcher: Sendable {
         })
     }
 
-    /// Curated inflected surfaces that denote the SAME feeling/state as their
+    /// Curated inflected surfaces that denote the SAME emotion/state as their
     /// canonical lexicon entry, matched deterministically. The verb-lemma bridge
     /// (`cue.lemma` ↔ `Token.verbLemma`) rides `NLTagger`'s lemma model, which is
     /// absent on the iOS simulator and so no-ops on-device — this table is the
-    /// model-independent path. Only meaning-identical forms are listed:
-    /// "panicking" (actively in panic) → "panicked". Cause-describing inflections
-    /// ("exhausting", "overwhelming") are deliberately excluded — they don't
-    /// denote the feeling and would cost precision.
-    static let canonicalInflections: [String: [String]] = [
-        "panicked": ["panicking"],
-    ]
+    /// model-independent path. Currently empty: none of the 20 curated emotions
+    /// needs a hand-bridged surface (their plain whole-token forms suffice). Add a
+    /// `"base": ["inflection"]` entry only for a meaning-identical form a real cue
+    /// misses — never a cause-describing inflection ("exhausting"), which would cost
+    /// precision.
+    static let canonicalInflections: [String: [String]] = [:]
 
     /// Longest cue (by surface length) whose tokens appear as a contiguous run.
     public static func longestMatch(in tokens: [Token], list: CueList) -> String? {

@@ -10,7 +10,7 @@ struct EvalCounts: Equatable {
         self.tp = tp; self.fp = fp; self.fn = fn
     }
 
-    /// Set-valued categories (feelings, activities, meds, topics).
+    /// Set-valued categories (emotions, activities, meds, topics).
     init(expected: Set<String>, actual: Set<String>) {
         tp = expected.intersection(actual).count
         fp = actual.subtracting(expected).count

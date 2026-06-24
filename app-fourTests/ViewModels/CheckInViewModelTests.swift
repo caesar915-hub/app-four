@@ -30,7 +30,7 @@ struct CheckInViewModelTests {
         #expect(CheckInViewModel.nudgePrompts[1].question == "What's your energy like?")
         #expect(CheckInViewModel.nudgePrompts[2].question == "Able to focus?")
         #expect(CheckInViewModel.nudgePrompts[3].question == "How did you sleep?")
-        #expect(CheckInViewModel.nudgePrompts[4].question == "Any strong feelings?")
+        #expect(CheckInViewModel.nudgePrompts[4].question == "Any strong emotions?")
     }
 
     @Test func nudgePromptsRotateByInterval() {

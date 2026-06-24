@@ -37,7 +37,7 @@ struct ExtractionReviewViewModelTests {
             sleepEvent: nil,
             sleepLevel: nil,
             sideEffects: [],
-            feelings: [],
+            emotions: [],
             topics: [],
             noteExtraction: NoteExtraction(mood: mood, activities: ["Fitness"], durationHours: 8)
         )
@@ -104,7 +104,7 @@ struct ExtractionReviewViewModelTests {
         #expect(json?.mood == nil)
         #expect(json?.energy == nil)
         #expect(json?.focus == nil)
-        #expect(json?.feelings.isEmpty == true)
+        #expect(json?.emotions.isEmpty == true)
         #expect(json?.sideEffects.isEmpty == true)
         #expect(json?.sleepHours == nil)
     }
