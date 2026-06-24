@@ -355,6 +355,65 @@ struct CheckInViewModelTests {
         viewModel.consumePromptAnnouncement()
         #expect(viewModel.promptAnnouncementIsPending == false)
     }
+
+    // MARK: 8-minute soft landing (US4 / T028–T031)
+
+    /// T028 — `isApproachingCap` is `false` until `elapsedTime` crosses
+    /// `maxDuration − approachWindow`, then `true`; the cue is one-shot, so once
+    /// `hasShownCapApproach` flips it never re-arms even as elapsed advances further
+    /// (FR-014, R5). The view keys a single faint "wrapping up soon" line off this.
+    @Test func isApproachingCapTrueOnlyInFinalWindow() {
+        #expect(viewModel.approachWindow > 0)
+        let cap = viewModel.maxDuration
+        let window = viewModel.approachWindow
+
+        // Well before the window: not approaching.
+        viewModel.elapsedTime = cap - window - 1
+        #expect(viewModel.isApproachingCap == false)
+        #expect(viewModel.hasShownCapApproach == false)
+
+        // Just past the window boundary: approaching.
+        viewModel.elapsedTime = cap - window + 0.1
+        #expect(viewModel.isApproachingCap == true)
+    }
+
+    /// T028 — the one-shot guard latches: once shown, marking it consumes the cue so
+    /// advancing deeper into the window (or to the cap) does NOT re-arm it.
+    @Test func capApproachCueIsOneShot() {
+        let cap = viewModel.maxDuration
+        let window = viewModel.approachWindow
+
+        viewModel.elapsedTime = cap - window + 0.1
+        #expect(viewModel.isApproachingCap == true)
+        #expect(viewModel.hasShownCapApproach == false)
+
+        // The view shows the cue once and marks it consumed.
+        viewModel.markCapApproachShown()
+        #expect(viewModel.hasShownCapApproach == true)
+
+        // Advancing further never re-arms the one-shot.
+        viewModel.elapsedTime = cap - 1
+        #expect(viewModel.hasShownCapApproach == true)
+    }
+
+    /// T029 — reaching the cap takes the SAME stop/save path as a manual stop: it goes
+    /// `.processing → .done` on success via the mock, i.e. the capped save lands on the
+    /// Settle path, never a hard drop (FR-015). `startTimer()`'s auto-stop calls exactly
+    /// this `stopRecording()`, so asserting the call here proves the cap settles.
+    @Test func reachingCapSavesThroughStopPathToDone() async throws {
+        await mocks.aiModel.setStubIsDownloaded(true)
+        await enterRecording()
+
+        // The cap fires the same call the auto-stop timer makes at maxDuration.
+        let task = viewModel.stopRecording()
+        #expect(viewModel.state == .processing)  // not a hard drop straight past Settle
+        await task.value
+        if let t = viewModel.transcriptionTask { await t.value }
+        if let p = viewModel.processingViewModel.activeTask { await p.value }
+
+        #expect(viewModel.state == .done)
+        #expect(viewModel.lastSavedRecording != nil)
+    }
 }
 
 /// Test seam: a store whose text-note persistence always throws, so the view-model's

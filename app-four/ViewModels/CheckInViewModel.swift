@@ -13,6 +13,29 @@ final class CheckInViewModel {
     var permissionDenied: Bool = false
     var lowDiskSpace: Bool = false
 
+    // MARK: 8-minute soft landing (US4 / FR-014, R5)
+
+    /// How long before the cap the single calm approach cue appears. ~30s gives a
+    /// time-blind user a warm "wrapping up soon" heads-up without it reading as a
+    /// deadline countdown (DESIGN: no you're-late alarms). A tuned content value, not magic.
+    let approachWindow: TimeInterval = 30
+
+    /// True once the recording has entered the final approach window. Derived from
+    /// `elapsedTime` so it follows the timer; the view shows ONE faint cue on the
+    /// rising edge — never a ticking bar (FR-014).
+    var isApproachingCap: Bool { elapsedTime >= maxDuration - approachWindow }
+
+    /// One-shot latch so the approach cue fires exactly once per recording: the view
+    /// calls `markCapApproachShown()` after presenting it, and a clean `startRecording()`
+    /// re-arms it. Advancing deeper into the window never re-triggers the cue.
+    private(set) var hasShownCapApproach: Bool = false
+
+    /// The view consumes the one-shot cue after showing it, so further elapsed advance
+    /// (or hitting the cap) does not re-arm it.
+    func markCapApproachShown() {
+        hasShownCapApproach = true
+    }
+
     /// US2 — never lose a capture. On a save failure the just-recorded audio is held
     /// here so a retry can re-save without re-recording; cleared on success or discard.
     struct PendingSave: Equatable {
@@ -88,6 +111,7 @@ final class CheckInViewModel {
         lowDiskSpace = false
         isSpeaking = false
         promptAnnouncementIsPending = false
+        hasShownCapApproach = false
 
         return Task {
             let available = await storageService.availableStorage()
