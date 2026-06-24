@@ -120,4 +120,33 @@ struct CheckInViewModelTests {
         #expect(saved.status == .completed)
         #expect(viewModel.state == .done)
     }
+
+    // MARK: Just-in-time microphone permission (US4 / T027)
+
+    /// Deleting the onboarding permission step (US1) leaves the just-in-time recovery
+    /// contract as the only place permission is taught: a denied mic at the first record
+    /// attempt MUST surface `permissionDenied` (which drives the in-context "Open Settings"
+    /// recovery, [CheckInView.swift#L39](../../app-four/Views/CheckIn/CheckInView.swift#L39))
+    /// and MUST NOT start a recording (FR-019/020).
+    @Test func startRecordingSetsPermissionDeniedWhenDenied() async {
+        await mocks.audio.setPermissionGranted(false)
+
+        await viewModel.startRecording().value
+
+        #expect(viewModel.permissionDenied == true)
+        #expect(viewModel.state == .idle)
+        #expect(await mocks.audio.startRecordingCalled == false)
+    }
+
+    /// The mirror guard: an authorized mic must never raise the recovery flag and must
+    /// proceed to record (FR-021) — so the alert can't false-fire for granted users.
+    @Test func startRecordingDoesNotSetPermissionDeniedWhenGranted() async {
+        await mocks.audio.setPermissionGranted(true)
+
+        await viewModel.startRecording().value
+
+        #expect(viewModel.permissionDenied == false)
+        #expect(viewModel.state == .recording)
+        #expect(await mocks.audio.startRecordingCalled == true)
+    }
 }
