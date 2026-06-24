@@ -5,6 +5,7 @@ struct SettingsView: View {
     @State private var viewModel: SettingsViewModel
     @State private var showingDebug = false
     @State private var showingClearConfirmation = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private static let topID = "settings-top"
 
@@ -14,14 +15,17 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        // List manages its own scroll — ScreenContainer is non-scrollable here
-        ScreenContainer(title: "", showsMedicationBar: true, scrollable: false) {
+        // List manages its own scroll — ScreenContainer is non-scrollable here.
+        // The inline navigation title is exposed to VoiceOver as a heading by default,
+        // so passing it here both shows "Settings" and gives the screen a landmark.
+        ScreenContainer(title: "Settings", showsMedicationBar: true, scrollable: false) {
             ScrollViewReader { proxy in
                 List {
                     aiModelsSection
                         .id(Self.topID)
                     systemSection
                     checkInSection
+                    transcriptionSection
                     dayCardSection
                     medicationBarSection
                     accessibilitySection
@@ -33,7 +37,7 @@ struct SettingsView: View {
                 // Reset to top each time Settings becomes the active tab.
                 .onChange(of: selectedTab) { _, newValue in
                     guard newValue == .settings else { return }
-                    withAnimation(.easeOut(duration: 0.25)) {
+                    withAnimation(reduceMotion ? nil : Motion.smooth) {
                         proxy.scrollTo(Self.topID, anchor: .top)
                     }
                 }
@@ -100,6 +104,18 @@ struct SettingsView: View {
         }
     }
 
+    private var transcriptionSection: some View {
+        Section {
+            Toggle(isOn: $viewModel.medicalPromptEnabled) {
+                Label("Recognize medication names", systemImage: "pills")
+            }
+        } header: {
+            Text("Transcription")
+        } footer: {
+            Text("Helps transcription spell medication and side-effect terms correctly.")
+        }
+    }
+
     @ViewBuilder
     private var medicationBarSection: some View {
         MedicationBarSettingsSection()
@@ -111,9 +127,7 @@ struct SettingsView: View {
 
     private var accessibilitySection: some View {
         Section {
-            Toggle(isOn: $viewModel.medicalPromptEnabled) {
-                Label("Medical Context Prompt", systemImage: "pills")
-            }
+            EmptyView()
         } header: {
             Text("Accessibility")
         } footer: {

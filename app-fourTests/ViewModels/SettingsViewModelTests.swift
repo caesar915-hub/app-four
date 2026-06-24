@@ -66,4 +66,33 @@ struct SettingsViewModelTests {
 
         #expect(defaults.object(forKey: key) == nil, "Constructing the VM must not write a reduceMotion default")
     }
+
+    // US4 (017): the medical-vocabulary control is renamed "Recognize medication names"
+    // and relocated from Accessibility to Check-in. This is a LABEL/PLACEMENT move only —
+    // it stays backed by `UserDefaults.medicalPromptEnabled` (FR-022, no value migration).
+    // Locks that behaviour so the UI move can't silently rebind the toggle to a new key.
+    @Test func medicalPromptIsBackedByUserDefaultsKey() throws {
+        let key = SettingsKeys.medicalPromptEnabled
+        let defaults = UserDefaults.standard
+        let original = defaults.object(forKey: key)
+        defer {
+            if let original { defaults.set(original, forKey: key) } else { defaults.removeObject(forKey: key) }
+        }
+
+        // Default is `true` with no value written (matches existing-user opt-out semantics).
+        defaults.removeObject(forKey: key)
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
+        let store = RecordingStore(context: container.mainContext)
+        let vm = SettingsViewModel(store: store, services: MockAppServices().services)
+        #expect(vm.medicalPromptEnabled == true, "Medical prompt defaults to true")
+
+        // Toggling the VM flips exactly the `medicalPromptEnabled` key.
+        vm.medicalPromptEnabled = false
+        #expect(defaults.medicalPromptEnabled == false, "VM setter must write UserDefaults.medicalPromptEnabled")
+        #expect(defaults.object(forKey: key) as? Bool == false, "The exact key is the backing store")
+
+        vm.medicalPromptEnabled = true
+        #expect(defaults.medicalPromptEnabled == true, "VM setter round-trips the key back on")
+    }
 }
