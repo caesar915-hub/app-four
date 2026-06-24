@@ -188,4 +188,107 @@ struct CheckInViewModelTests {
         #expect(viewModel.permissionDenied == false)
         #expect(viewModel.lowDiskSpace == false)
     }
+
+    // MARK: Never lose a capture (US2 / T011–T020)
+
+    /// Drives a recording to `.recording` so the stop path has a live capture to fail on.
+    private func enterRecording() async {
+        await mocks.audio.setPermissionGranted(true)
+        await viewModel.startRecording().value
+        #expect(viewModel.state == .recording)
+    }
+
+    /// T011 — a save failure (the file-write/store step throws) MUST NOT silently
+    /// reset to `.idle`. The audio is retained in the retry buffer and `saveFailed`
+    /// is raised so the inline "try again" surface can show (FR-005). Without the fix,
+    /// `stopRecording()`'s catch sets `state = .idle` and the capture vanishes.
+    @Test func saveFailureRetainsBufferAndSetsSaveFailed() async {
+        await enterRecording()
+        mocks.storage.shouldThrowError = true
+
+        await viewModel.stopRecording().value
+
+        #expect(viewModel.saveFailed == true)
+        #expect(viewModel.state != .idle)
+        #expect(viewModel.pendingSave != nil)
+    }
+
+    /// T012 — retrying from the buffer after the condition clears saves the recording,
+    /// clears the buffer + flag, and lands on `.done` (FR-007).
+    @Test func retryAfterFailureSavesAndReachesDone() async throws {
+        await enterRecording()
+        mocks.storage.shouldThrowError = true
+        await viewModel.stopRecording().value
+        #expect(viewModel.saveFailed == true)
+
+        mocks.storage.shouldThrowError = false
+        await viewModel.retrySave().value
+        // The successful retry starts background transcription against the saved
+        // @Model; drain it (and the follow-on processing) before this in-memory
+        // container tears down, or a later test crashes touching a reset @Model.
+        if let t = viewModel.transcriptionTask { await t.value }
+        if let p = viewModel.processingViewModel.activeTask { await p.value }
+
+        #expect(viewModel.saveFailed == false)
+        #expect(viewModel.pendingSave == nil)
+        #expect(viewModel.state == .done)
+        #expect(try #require(viewModel.lastSavedRecording).id == store.recordings.first?.id)
+        #expect(store.recordings.count == 1)
+    }
+
+    /// T013 — a retry that fails again keeps the failure surface up and the buffer
+    /// intact: no discard, no idle reset (FR-005, US2 AC3).
+    @Test func retryThatFailsAgainKeepsBuffer() async {
+        await enterRecording()
+        mocks.storage.shouldThrowError = true
+        await viewModel.stopRecording().value
+
+        // Still failing on retry.
+        await viewModel.retrySave().value
+
+        #expect(viewModel.saveFailed == true)
+        #expect(viewModel.pendingSave != nil)
+        #expect(viewModel.state != .idle)
+        #expect(viewModel.state != .done)
+    }
+
+    /// T014 — explicit discard clears the buffer + flag and returns to the idle hub
+    /// (FR-008).
+    @Test func discardFailedCaptureClearsAndResetsToIdle() async {
+        await enterRecording()
+        mocks.storage.shouldThrowError = true
+        await viewModel.stopRecording().value
+        #expect(viewModel.pendingSave != nil)
+
+        viewModel.discardFailedCapture()
+
+        #expect(viewModel.pendingSave == nil)
+        #expect(viewModel.saveFailed == false)
+        #expect(viewModel.state == .idle)
+    }
+
+    /// T015 — a text-save failure surfaces a non-alarming `textSaveFailed` rather than
+    /// silently dropping the draft (FR-009). Forced via a store subclass whose persist
+    /// throws (the SwiftData layer can't be made to fail on demand).
+    @Test func textSaveFailureSetsTextSaveFailed() {
+        let brokenStore = ThrowingCheckInStore(context: container.mainContext)
+        let vm = CheckInViewModel(store: brokenStore, services: mocks.services)
+
+        var draft = CheckInDraft()
+        draft.mood = .good
+        draft.note = "energy crashed mid-afternoon"
+        vm.saveTextCheckIn(draft)
+
+        #expect(vm.textSaveFailed == true)
+        #expect(vm.state != .done)
+    }
+}
+
+/// Test seam: a store whose text-note persistence always throws, so the view-model's
+/// text-save failure path (FR-009) can be exercised deterministically.
+@MainActor
+private final class ThrowingCheckInStore: RecordingStore {
+    override func persistCheckInNote(_ draft: CheckInDraft) throws -> Recording {
+        throw RecordingError.unknown
+    }
 }

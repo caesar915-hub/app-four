@@ -13,6 +13,16 @@ final class CheckInViewModel {
     var permissionDenied: Bool = false
     var lowDiskSpace: Bool = false
 
+    /// US2 — never lose a capture. On a save failure the just-recorded audio is held
+    /// here so a retry can re-save without re-recording; cleared on success or discard.
+    struct PendingSave: Equatable {
+        let fileURL: URL
+        let duration: TimeInterval
+    }
+    private(set) var pendingSave: PendingSave?
+    var saveFailed: Bool = false
+    var textSaveFailed: Bool = false
+
     @ObservationIgnored private let audioService: AudioRecordingService
     @ObservationIgnored private let storageService: AudioFileStorageService
     @ObservationIgnored private let transcriptionService: TranscriptionService
@@ -111,33 +121,78 @@ final class CheckInViewModel {
         return Task {
             do {
                 let result = try await audioService.stopRecording()
-                let recording = try storageService.saveRecording(from: result.fileURL, duration: result.duration)
-                self.store.addRecording(recording)
-                self.lastSavedRecording = recording
-
-                // Immediately show done; transcribe in background
-                self.state = .done
-
-                // Model not ready: persist as pending and skip transcription. The
-                // PendingTranscriptionService drains it through this exact path once the
-                // model lands — capture stays "Captured.", never a .failed (FR-011/012).
-                guard self.aiModelService.localPath(for: .whisper) != nil else {
-                    recording.status = .pendingTranscription
-                    self.store.save()
-                    return
-                }
-
-                self.transcriptionTask = Task {
-                    // Let the prior transcription finish first (serialize on the single
-                    // Whisper instance). It's never cancelled here, so its work is kept.
-                    await priorTranscription?.value
-                    await self.transcribeInBackground(recording)
-                }
+                // The audio is now on disk. Hold it in the retry buffer BEFORE the
+                // save step so a save/store failure can be re-attempted (FR-005).
+                self.pendingSave = PendingSave(fileURL: result.fileURL, duration: result.duration)
+                self.attemptSave(priorTranscription: priorTranscription)
             } catch {
-                AppLogger.log("Failed to stop/save: \(error)")
+                // The audio stop itself failed — there is no captured file to buffer.
+                AppLogger.log("Failed to stop recording: \(error)")
                 self.state = .idle
             }
         }
+    }
+
+    /// Saves the buffered audio and, on success, settles into `.done` and kicks off
+    /// background transcription; on failure raises `saveFailed` and KEEPS the buffer
+    /// so the inline retry surface can re-attempt without re-recording (FR-005/007).
+    /// Shared by the initial stop and `retrySave()` so both land identically.
+    private func attemptSave(priorTranscription: Task<Void, Never>?) {
+        guard let buffer = pendingSave else { return }
+        do {
+            let recording = try storageService.saveRecording(from: buffer.fileURL, duration: buffer.duration)
+            self.store.addRecording(recording)
+            self.lastSavedRecording = recording
+            self.pendingSave = nil
+            self.saveFailed = false
+
+            // Immediately show done; transcribe in background
+            self.state = .done
+
+            // Model not ready: persist as pending and skip transcription. The
+            // PendingTranscriptionService drains it through this exact path once the
+            // model lands — capture stays "Captured.", never a .failed (FR-011/012).
+            guard self.aiModelService.localPath(for: .whisper) != nil else {
+                recording.status = .pendingTranscription
+                self.store.save()
+                return
+            }
+
+            self.transcriptionTask = Task {
+                // Let the prior transcription finish first (serialize on the single
+                // Whisper instance). It's never cancelled here, so its work is kept.
+                await priorTranscription?.value
+                await self.transcribeInBackground(recording)
+            }
+        } catch {
+            // Never silently reset to idle — retain the buffer and surface a calm,
+            // recoverable "try again" (FR-005/006). State stays `.processing` so the
+            // recording stage (and its inline retry surface) remains on screen.
+            AppLogger.log("Failed to save capture: \(error)")
+            self.saveFailed = true
+        }
+    }
+
+    @discardableResult
+    func retrySave() -> Task<Void, Never> {
+        guard saveFailed, pendingSave != nil else { return Task {} }
+        saveFailed = false
+        state = .processing
+        let priorTranscription = transcriptionTask
+        return Task {
+            self.attemptSave(priorTranscription: priorTranscription)
+        }
+    }
+
+    /// Explicit discard of a failed capture: release the buffered audio file and clear
+    /// the failure surface, returning to the idle hub (FR-008).
+    func discardFailedCapture() {
+        if let buffer = pendingSave {
+            try? FileManager.default.removeItem(at: buffer.fileURL)
+        }
+        pendingSave = nil
+        saveFailed = false
+        state = .idle
     }
 
     /// Runs transcription in the background with a timeout so the UI never hangs.
@@ -281,7 +336,17 @@ final class CheckInViewModel {
 
     func saveTextCheckIn(_ draft: CheckInDraft) {
         guard !draft.isEmpty else { return }
-        let recording = store.createCheckInNote(draft)
+        let recording: Recording
+        do {
+            recording = try store.persistCheckInNote(draft)
+        } catch {
+            // Don't silently drop the draft — surface a calm, non-alarming retry
+            // affordance (FR-009). The composer's draft is still intact for a re-save.
+            AppLogger.log("Failed to save text check-in: \(error)")
+            textSaveFailed = true
+            return
+        }
+        textSaveFailed = false
         if !draft.trimmedNote.isEmpty {
             processingViewModel.processRawTranscription(
                 draft.trimmedNote,
