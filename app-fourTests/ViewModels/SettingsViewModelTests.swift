@@ -1,4 +1,5 @@
 import Testing
+import Foundation
 import SwiftData
 @testable import app_four
 
@@ -39,5 +40,30 @@ struct SettingsViewModelTests {
         #expect(viewModel.recordingCount == 0)
         store.addRecording(Recording(audioFileName: "a.m4a", title: "Test"))
         #expect(viewModel.recordingCount == 1)
+    }
+
+    // US1 (017): the in-app Reduce-Motion control was a dead store — nothing read it;
+    // every animated view gates on @Environment(\.accessibilityReduceMotion). The VM
+    // must own no reduceMotion state and must not read/write a "reduceMotion" default.
+    @Test func exposesNoReduceMotionProperty() {
+        let names = Mirror(reflecting: viewModel).children.compactMap(\.label)
+        #expect(!names.contains { $0.localizedCaseInsensitiveContains("reduceMotion") })
+    }
+
+    @Test func constructingDoesNotTouchReduceMotionDefault() throws {
+        let key = "reduceMotion"
+        let defaults = UserDefaults.standard
+        let original = defaults.object(forKey: key)
+        defer {
+            if let original { defaults.set(original, forKey: key) } else { defaults.removeObject(forKey: key) }
+        }
+        defaults.removeObject(forKey: key)
+
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
+        let store = RecordingStore(context: container.mainContext)
+        _ = SettingsViewModel(store: store, services: MockAppServices().services)
+
+        #expect(defaults.object(forKey: key) == nil, "Constructing the VM must not write a reduceMotion default")
     }
 }
