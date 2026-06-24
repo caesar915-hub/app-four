@@ -58,7 +58,7 @@ struct SettingsView: View {
     private var aiModelsSection: some View {
         Section("AI Models") {
             ModelDownloadRow(
-                title: "Whisper Transcription",
+                title: "Voice Transcription",
                 icon: "waveform",
                 isInstalled: viewModel.whisperModelInstalled,
                 isDownloading: viewModel.isDownloadingWhisper,

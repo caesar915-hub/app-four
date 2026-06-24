@@ -99,10 +99,11 @@ actor WhisperKitTranscriptionService: TranscriptionService {
             do {
                 // Ensure model is loaded
                 if whisperKit == nil {
-                    // Yield progress so the user knows why they are waiting on the first run
+                    // Yield progress so the user knows why they are waiting on the first run.
+                    // Plain language, no internal model name or byte wall (FR-022).
                     continuation.yield(TranscriptionSegmentDTO(
                         id: UUID(),
-                        text: "Downloading AI Model (~150MB)... Please wait.",
+                        text: "Setting up on-device transcription…",
                         startTime: 0,
                         endTime: 0,
                         isFinal: false,
@@ -113,13 +114,13 @@ actor WhisperKitTranscriptionService: TranscriptionService {
                 }
 
                 guard let kit = whisperKit else {
-                    throw AudioConverterError.conversionFailed("WhisperKit not initialized")
+                    throw AudioConverterError.conversionFailed("Transcription engine not initialized")
                 }
 
                 // Yield progress
                 continuation.yield(TranscriptionSegmentDTO(
                     id: UUID(),
-                    text: "Transcribing with Whisper...",
+                    text: "Transcribing…",
                     startTime: 0,
                     endTime: 0,
                     isFinal: false,
@@ -186,7 +187,7 @@ actor WhisperKitTranscriptionService: TranscriptionService {
                 AppLogger.log("WhisperKit error: \(error)")
                 continuation.yield(TranscriptionSegmentDTO(
                     id: UUID(),
-                    text: "Whisper error: \(error.localizedDescription)",
+                    text: "Transcription error: \(error.localizedDescription)",
                     startTime: 0,
                     endTime: 0,
                     isFinal: true,
