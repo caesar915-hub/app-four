@@ -28,13 +28,7 @@ struct FoldedDayCardHeader: View {
         }
         .padding(.vertical, Spacing.l)
         .frame(maxWidth: .infinity, minHeight: Metrics.minTapTarget, alignment: .leading)
-        .background {
-            // Inset the tint within a cream frame so the card reads as a mood-tinted panel,
-            // not a full-card stain. Inner radius = card radius − inset → concentric corners.
-            RoundedRectangle(cornerRadius: Radius.card - Spacing.s, style: .continuous)
-                .fill(level?.blockTint ?? .clear)
-                .padding(Spacing.s)
-        }
+        .background(level?.blockTint ?? .clear)   // full-bleed mood tint (matches the approved "#4" mockup; the card clip rounds the corners)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
@@ -47,6 +41,7 @@ struct FoldedDayCardHeader: View {
             moodBadge
             title
                 .font(Typography.dayCardDate)
+                .dynamicTypeSize(...DynamicTypeSize.xLarge)   // cap growth so the weekday/date can't balloon
                 .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: "chevron.down")
                 .font(.caption.weight(.semibold))
