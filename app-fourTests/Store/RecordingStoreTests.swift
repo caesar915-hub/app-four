@@ -9,6 +9,7 @@ struct RecordingStoreTests {
     var container: ModelContainer
 
     init() throws {
+        TestSupport.useRealData()
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         container = try ModelContainer(for: Recording.self, configurations: config)
         store = RecordingStore(context: container.mainContext)

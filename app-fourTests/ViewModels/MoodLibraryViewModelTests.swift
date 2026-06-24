@@ -10,6 +10,7 @@ struct MoodLibraryViewModelTests {
     var store: RecordingStore
 
     init() throws {
+        TestSupport.useRealData()
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         container = try ModelContainer(
             for: Recording.self, MedicationEvent.self, AppSettings.self,
