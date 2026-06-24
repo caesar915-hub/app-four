@@ -30,10 +30,6 @@ protocol Connectivity: Sendable {
 /// Driven on app launch/foreground and on background-download completion.
 /// (Seam only — the draining implementation lands with the queue story.)
 protocol PendingTranscriptionService: Sendable {
-    /// Fast-path hint that a recording is awaiting the model. Draining also
-    /// discovers pending recordings via a fetch, so this is best-effort.
-    func enqueue(_ recordingID: PersistentIdentifier) async
-
     /// Fetch `.pendingTranscription` recordings in capture order; if the model
     /// is ready, transcribe + extract each, serialized on the single engine.
     func drainIfModelReady() async

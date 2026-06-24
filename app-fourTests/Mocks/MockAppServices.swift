@@ -57,11 +57,6 @@ final class MockExportService: ExportService, @unchecked Sendable {
 /// test can assert the wiring fired.
 actor MockPendingTranscriptionService: PendingTranscriptionService {
     private(set) var drainCallCount = 0
-    private(set) var enqueuedIDs: [PersistentIdentifier] = []
-
-    func enqueue(_ recordingID: PersistentIdentifier) async {
-        enqueuedIDs.append(recordingID)
-    }
 
     func drainIfModelReady() async {
         drainCallCount += 1

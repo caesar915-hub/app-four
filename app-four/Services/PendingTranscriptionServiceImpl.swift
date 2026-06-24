@@ -34,10 +34,6 @@ actor PendingTranscriptionServiceImpl: PendingTranscriptionService {
         self.aiModelService = aiModelService
     }
 
-    func enqueue(_ recordingID: PersistentIdentifier) async {
-        await drainIfModelReady()
-    }
-
     func drainIfModelReady() async {
         guard aiModelService.localPath(for: .whisper) != nil else { return }
         guard !isDraining else { return }
