@@ -8,6 +8,7 @@ final class SettingsViewModel {
     @ObservationIgnored private let aiModelService: AIModelService
     @ObservationIgnored private let store: RecordingStore
     @ObservationIgnored private let storageService: AudioFileStorageService
+    @ObservationIgnored private let exportService: ExportService
     @ObservationIgnored private let context: ModelContext
 
     var whisperModelInstalled: Bool = false
@@ -58,6 +59,7 @@ final class SettingsViewModel {
         self.store = store
         self.aiModelService = services.aiModelService
         self.storageService = services.storageService
+        self.exportService = services.exportService
         self.context = AppModelContainer.container.mainContext
         self.downloadOverCellular = appSettings.downloadOverCellular
         self.promptPace = PromptPace(rawValue: appSettings.promptPaceSeconds) ?? .relaxed
@@ -158,6 +160,14 @@ final class SettingsViewModel {
         } catch {
             AppLogger.log("Failed to delete \(type.rawValue): \(error)")
         }
+    }
+
+    /// Snapshots the journal into a sealed archive and returns it with the one-time
+    /// key that opens it. The key is NEVER stored here (no property, no persistence) —
+    /// it lives only in the returned value so the view can surface it once. Serialize +
+    /// seal run off the main actor inside the service.
+    func exportJournal() async throws -> ExportResult {
+        try await exportService.export(from: context)
     }
 
     /// Permanently deletes all user content: every recording (with its audio file)

@@ -101,6 +101,12 @@ struct MedicationEventDTO: Codable, Sendable {
 struct ExportResult: Sendable {
     let data: Data
     let key: SymmetricKey
+
+    /// The key as base64, for one-time display as the recovery key. Reads the key's
+    /// raw bytes here (in the service layer) so callers never handle key material.
+    var keyBase64: String {
+        key.withUnsafeBytes { Data($0).base64EncodedString() }
+    }
 }
 
 // MARK: - Service
