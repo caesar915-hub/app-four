@@ -54,8 +54,11 @@ struct CheckInView: View {
     private func consumeAutoStart() {
         guard shouldAutoStart else { return }
         shouldAutoStart = false
-        if viewModel.state == .done { viewModel.reset() }
-        viewModel.startRecording()
+        switch viewModel.state {
+        case .recording, .paused, .processing: return   // already capturing — never double-start (FR-016)
+        case .done: viewModel.reset(); viewModel.startRecording()
+        case .idle: viewModel.startRecording()
+        }
     }
 
     private var todayDate: String {
@@ -272,8 +275,8 @@ struct CheckInView: View {
 
 // MARK: - Saved
 
-/// §05 Saved — pure confirmation: a gradient checkmark that pops, "Captured." in Fraunces,
-/// a calm subtitle, and Done / Check in again. No card, no transcribing UI (locked decision).
+/// §05 Saved — pure confirmation: a gradient checkmark that settles in with a success haptic,
+/// "Captured." in Fraunces, a calm subtitle, and a single Done. No card, no transcribing UI.
 private struct CheckInSavedView: View {
     let recording: Recording?
     let onNewCheckIn: () -> Void
@@ -305,15 +308,14 @@ private struct CheckInSavedView: View {
                 .frame(maxWidth: 240)
 
             Spacer()
-            VStack(spacing: Spacing.s) {
-                Button("Done", action: onNewCheckIn).buttonStyle(.primary)
-                Button("Check in again", action: onNewCheckIn).buttonStyle(.secondary)
-            }
-            .padding(.bottom, Spacing.hero)
+            Button("Done", action: onNewCheckIn)
+                .buttonStyle(.primary)
+                .padding(.bottom, Spacing.hero)
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, Spacing.l)
         .onAppear {
+            Haptics.success()
             guard !reduceMotion else { popped = true; return }
             withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) { popped = true }
         }
