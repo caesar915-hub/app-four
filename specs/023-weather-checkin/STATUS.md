@@ -85,7 +85,7 @@ portal step only you can do (T004), and the commit/PR. Nothing is merged.
   **not** explicitly exercised against a pre-populated on-disk store.
 - **T029 — logging audit**: done by inspection — `WeatherServiceImpl` logs outcome strings only
   (`captured` / `skipped — no location` / `lookup failed`), no coordinates/condition/temp.
-- **T031 — docs**: `docs/BACKLOG.md` + `docs/DEVLOG.md` not yet updated.
+- **T031 — docs**: ✅ done. `docs/BACKLOG.md` + `docs/DEVLOG.md` updated and reconciled to the committed/pushed/PR-#16-open + code-review-done state.
 - **T032 — `/code-review`**: ✅ done. Multi-agent adversarial review (31 agents, 6 dimensions,
   each finding verified through 2 skeptic lenses) → 11 confirmed findings. **All applied & re-verified
   green (35/35):**
