@@ -12,11 +12,23 @@ struct SquirlSandboxApp: App {
 
 struct RootView: View {
     @State private var dark = false
+    @State private var tab = "calendar"
 
     var body: some View {
+        TabView(selection: $tab) {
+            navWrap(SandboxCalendar(), title: "Calendar")
+                .tabItem { Label("Calendar", systemImage: "calendar") }.tag("calendar")
+            navWrap(DesignGallery(), title: "Gallery")
+                .tabItem { Label("Gallery", systemImage: "square.grid.2x2") }.tag("gallery")
+        }
+        .preferredColorScheme(dark ? .dark : .light)
+        .tint(Theme.meadowGreen)
+    }
+
+    private func navWrap<C: View>(_ content: C, title: String) -> some View {
         NavigationStack {
-            DesignGallery()
-                .navigationTitle("Squirl Sandbox")
+            content
+                .navigationTitle(title)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
@@ -24,6 +36,5 @@ struct RootView: View {
                     }
                 }
         }
-        .preferredColorScheme(dark ? .dark : .light)
     }
 }
