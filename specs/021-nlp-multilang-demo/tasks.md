@@ -112,11 +112,11 @@ otherwise; the mx reference check-in (incl. "Ando agüitado") surfaces low mood 
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T023 [P] RED: in `app-fourTests/Services/` add/extend a test asserting `NLSummarizationService` surfaces an `appetiteLoss` phrase within its side-effect display output (`sideEffectKeywords`). Run; confirm FAILS.
-- [ ] T024 Fold the `appetiteLoss` bucket into the side-effect surface in `app-four/Services/NLSummarizationService.swift:78-85` (`sideEffectKeywords`), alongside `sideEffects`/`physicalSideEffects` (FR-011). Make T023 GREEN.
-- [ ] T025 Remove the now-unused `app-four/Resources/lexicon.json` (English vocab lives in `lexicon.en.json`); grep to confirm no remaining `forResource: "lexicon"` (non-suffixed) reference.
-- [ ] T026 Full verification: `xcodebuild build` + `xcodebuild test -scheme app-four` (entire suite, incl. Eval) green; run the quickstart §4 four-language manual demo end-to-end (verify §1-5).
-- [ ] T027 [P] Log a `docs/DEVLOG.md` checkpoint (the why: engine upgraded to the multilingual lineage + 4 demo packs; documented limitations) and move `docs/BACKLOG.md` item to 🔨/✅.
+- [X] T023 [P] RED: in `app-fourTests/Services/` add/extend a test asserting `NLSummarizationService` surfaces an `appetiteLoss` phrase within its side-effect display output (`sideEffectKeywords`). Run; confirm FAILS.
+- [X] T024 Fold the `appetiteLoss` bucket into the side-effect surface in `app-four/Services/NLSummarizationService.swift:78-85` (`sideEffectKeywords`), alongside `sideEffects`/`physicalSideEffects` (FR-011). Make T023 GREEN.
+- [~] T025 **SUPERSEDED** — `lexicon.json` is kept (not removed): the English key routes through `LexiconLoader.loadBundled` which reads it, and the eval + `LexiconDataTests` depend on it. No duplicate `lexicon.en.json` was ever created, so there is nothing to remove.
+- [X] T026 Full verification: `xcodebuild build` + `xcodebuild test -scheme app-four` (entire suite, incl. Eval) green; run the quickstart §4 four-language manual demo end-to-end (verify §1-5).
+- [X] T027 [P] Log a `docs/DEVLOG.md` checkpoint (the why: engine upgraded to the multilingual lineage + 4 demo packs; documented limitations) and move `docs/BACKLOG.md` item to 🔨/✅.
 
 ---
 

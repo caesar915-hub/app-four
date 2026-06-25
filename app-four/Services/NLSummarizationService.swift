@@ -93,6 +93,9 @@ struct NLSummarizationService: SummarizationService {
             } +
             lexicon.physicalSideEffects.filter { cue in
                 extraction.physicalSideEffects.contains { $0.lowercased().contains(cue) }
+            } +
+            lexicon.appetiteLoss.filter { cue in
+                extraction.appetiteLoss.contains { $0.lowercased().contains(cue) }
             }
         ).filter { seen.insert($0).inserted }
 
