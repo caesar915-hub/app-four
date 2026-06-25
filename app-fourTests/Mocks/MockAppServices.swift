@@ -14,6 +14,7 @@ struct MockAppServices {
     let connectivity = MockConnectivity()
     let pendingTranscription = MockPendingTranscriptionService()
     let export = MockExportService()
+    let weather = MockWeatherService()
 
     var services: AppServices {
         AppServices(
@@ -24,7 +25,8 @@ struct MockAppServices {
             summarizationService: summarization,
             connectivity: connectivity,
             pendingTranscriptionService: pendingTranscription,
-            exportService: export
+            exportService: export,
+            weatherService: weather
         )
     }
 }

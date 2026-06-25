@@ -184,11 +184,12 @@ struct InsightsViewModelTests {
         #expect(copy == "Note 2 more good-sleep days and 3 more poor-sleep days to unlock this connection.")
     }
 
-    @Test func connectionsAlwaysThreeInOrder() {
+    @Test func connectionsAlwaysFourInOrder() {
         let c = vm().connections
-        #expect(c.count == 3)
+        #expect(c.count == 4)
         #expect(c[0].title == "Medication × focus")
         #expect(c[1].title == "Energy × mood")
         #expect(c[2].title == "Sleep × mood")
+        #expect(c[3].title == "Weather × mood")
     }
 }
