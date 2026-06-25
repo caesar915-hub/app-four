@@ -2,8 +2,9 @@
 
 **As of**: 2026-06-25 · **Branch**: `worktree-feat+weather-checkin` (worktree off `main` @ `55201477`)
 **State**: Implementation complete; adversarial `/code-review` done with all 11 findings (incl. 1
-critical) fixed & re-verified (**35/35 feature tests green**); **not committed**. Remaining: serial
-full-suite gate (env-flaky in parallel) + commit/PR. T004 (manual WeatherKit capability registration)
+critical) fixed & re-verified (**35/35 feature tests green**); **committed + pushed; PR #16 open**.
+Remaining before merge: serial full-suite gate (env-flaky in parallel). T004 (manual WeatherKit
+capability registration)
 **SKIPPED by user decision (2026-06-25)** — code degrades to best-effort `nil` on device until then;
 blocks nothing in build/tests/PR.
 
@@ -101,7 +102,9 @@ portal step only you can do (T004), and the commit/PR. Nothing is merged.
     reduced-accuracy location only.
 
 ### Integration
-- **Not committed**; **no PR**. One revertable feature on the worktree branch.
+- **Committed (4 commits) + pushed** to `origin/feat/023-weather-checkin`; **PR #16** open against
+  `main` (https://github.com/caesar915-hub/app-four/pull/16). Ready to continue on another machine:
+  `git fetch && git checkout feat/023-weather-checkin`.
 - Device acceptance (real local weather + attribution visible; no user content leaves device)
   not performed — needs T004 + a physical device.
 
