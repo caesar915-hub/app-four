@@ -12,12 +12,19 @@ struct SquirlSandboxApp: App {
 
 struct RootView: View {
     @State private var dark = ProcessInfo.processInfo.arguments.contains("-dark")
-    @State private var tab = ProcessInfo.processInfo.arguments.contains("-gallery") ? "gallery" : "calendar"
+    @State private var tab: String = {
+        let a = ProcessInfo.processInfo.arguments
+        if a.contains("-gallery") { return "gallery" }
+        if a.contains("-insights") { return "insights" }
+        return "calendar"
+    }()
 
     var body: some View {
         TabView(selection: $tab) {
             navWrap(SandboxCalendar(), title: "Calendar")
                 .tabItem { Label("Calendar", systemImage: "calendar") }.tag("calendar")
+            navWrap(SandboxInsights(), title: "Insights")
+                .tabItem { Label("Insights", systemImage: "chart.bar") }.tag("insights")
             navWrap(DesignGallery(), title: "Gallery")
                 .tabItem { Label("Gallery", systemImage: "square.grid.2x2") }.tag("gallery")
         }
