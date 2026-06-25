@@ -4,11 +4,11 @@ import SwiftUI
 /// Ported from the approved `gMood` generator (24×26 design space). Level is encoded by
 /// crown shape (bud vs open), an internal size lift, fill depth, a stem notch (≥3) and a
 /// crown dot (5) — so it survives grayscale, not on hue alone.
-struct SproutGlyph: View {
-    let level: Int
-    let color: Color
+public struct SproutGlyph: View {
+    public let level: Int
+    public let color: Color
 
-    var body: some View {
+    public var body: some View {
         Canvas { ctx, size in
             let lift = 0.66 + Double(level) * 0.068
             let s = min(size.width / 24, size.height / 26) * lift

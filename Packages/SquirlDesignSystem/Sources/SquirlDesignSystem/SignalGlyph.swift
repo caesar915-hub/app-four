@@ -6,20 +6,20 @@ import SwiftUI
 ///
 /// - `decorative: true` hides the glyph from VoiceOver (use when the surrounding row/chip
 ///   already announces the signal and value, to avoid a double read).
-struct SignalGlyph: View {
+public struct SignalGlyph: View {
     private let kind: GlyphSignal
     private let level: Int?
     private let size: CGFloat
     private let decorative: Bool
 
-    init(_ kind: GlyphSignal, level: Int? = nil, size: CGFloat = 22, decorative: Bool = false) {
+    public init(_ kind: GlyphSignal, level: Int? = nil, size: CGFloat = 22, decorative: Bool = false) {
         self.kind = kind
         self.level = level
         self.size = size
         self.decorative = decorative
     }
 
-    var body: some View {
+    public var body: some View {
         glyph
             .frame(width: size, height: size)
             .accessibilityElement()
@@ -65,7 +65,7 @@ struct SignalGlyph: View {
 
 /// Absent-level placeholder — a faint dashed outline, never a misleading level-1 glyph (FR-015).
 private struct EmptySignalGlyph: View {
-    var body: some View {
+    public var body: some View {
         Circle()
             .strokeBorder(Color.secondary.opacity(0.3), style: StrokeStyle(lineWidth: 1, dash: [2, 2]))
             .padding(2)

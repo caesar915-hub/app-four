@@ -4,11 +4,11 @@ import SwiftUI
 /// rings + a sharp center at high. Ported from the approved `gFocus` generator
 /// (24×26 design space, centred 12,13). Level is encoded by ring count, dashing and the
 /// solid core — a shape ladder, never opacity alone.
-struct ApertureGlyph: View {
-    let level: Int
-    let color: Color
+public struct ApertureGlyph: View {
+    public let level: Int
+    public let color: Color
 
-    var body: some View {
+    public var body: some View {
         Canvas { ctx, size in
             let s = min(size.width / 24, size.height / 26)
             ctx.translateBy(x: (size.width - 24 * s) / 2, y: (size.height - 26 * s) / 2)

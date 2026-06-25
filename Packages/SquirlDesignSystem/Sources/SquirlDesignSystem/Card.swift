@@ -2,7 +2,7 @@ import SwiftUI
 
 // MARK: - The one card modifier
 
-extension View {
+public extension View {
     /// Applies the standard native card treatment: secondary background + 12pt corner radius.
     /// This is the single card pattern for the entire app.
     ///
@@ -15,7 +15,7 @@ extension View {
     /// HStack { ... }
     ///     .card(padding: Spacing.m)
     /// ```
-    func card(padding: CGFloat = Spacing.l, elevated: Bool = false) -> some View {
+    public func card(padding: CGFloat = Spacing.l, elevated: Bool = false) -> some View {
         let base = self
             .padding(padding)
             .background(Theme.cardBackground, in: .rect(cornerRadius: Radius.card))
@@ -36,9 +36,9 @@ extension View {
 
 // MARK: - Card section eyebrow
 
-extension Text {
+public extension Text {
     /// Uppercase, tracked, muted eyebrow used as a card/section header (e.g. "Summary", "Meds", "Audio").
-    func cardEyebrow() -> some View {
+    public func cardEyebrow() -> some View {
         self
             .font(Typography.label)
             .textCase(.uppercase)

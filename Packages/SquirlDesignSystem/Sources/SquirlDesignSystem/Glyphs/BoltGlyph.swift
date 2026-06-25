@@ -3,11 +3,11 @@ import SwiftUI
 /// Energy — a lightning bolt that grows and fills across levels 1…5.
 /// Ported from the approved `gEnergy` generator (24×26 design space). Level is encoded by
 /// an internal size lift, fill depth and stroke weight, so low and high read apart in grayscale.
-struct BoltGlyph: View {
-    let level: Int
-    let color: Color
+public struct BoltGlyph: View {
+    public let level: Int
+    public let color: Color
 
-    var body: some View {
+    public var body: some View {
         Canvas { ctx, size in
             let lift = 0.6 + Double(level) * 0.08
             let s = min(size.width / 24, size.height / 26) * lift

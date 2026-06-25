@@ -2,10 +2,10 @@ import SwiftUI
 
 /// Medication — a single horizontal two-tone capsule (does not vary by level; rendered as
 /// a chip, never on the 1→5 ramp). One darker half + a seam read instantly as "a dose".
-struct CapsuleGlyph: View {
-    var color: Color = Palette.medication
+public struct CapsuleGlyph: View {
+    public var color: Color = Palette.medication
 
-    var body: some View {
+    public var body: some View {
         GeometryReader { geo in
             let capW = geo.size.width * 0.86
             let capH = geo.size.height * 0.42

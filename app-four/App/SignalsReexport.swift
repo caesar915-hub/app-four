@@ -1,4 +1,5 @@
-// The four level scales (MoodLevel/EnergyLevel/FocusLevel/SleepLevel) were hoisted into the
-// `SquirlSignals` package. A single `@_exported import` re-exports them so every file in the
-// app module keeps seeing them unqualified — no per-file import churn.
+// The level scales and the design system were hoisted into SPM packages. A single
+// `@_exported import` of each re-exports their public API so every file in the app module
+// keeps seeing MoodLevel/Theme/Palette/SignalGlyph/… unqualified — no per-file import churn.
 @_exported import SquirlSignals
+@_exported import SquirlDesignSystem

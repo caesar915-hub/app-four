@@ -2,10 +2,10 @@ import SwiftUI
 
 /// Sleep — a single bed icon (does not vary by level; the 1→5 ramp is deferred).
 /// Side-profile: headboard + frame, mattress line, pillow. Drawn in a 24×24 space.
-struct BedIcon: View {
-    var color: Color = Palette.sleepIndigo
+public struct BedIcon: View {
+    public var color: Color = Palette.sleepIndigo
 
-    var body: some View {
+    public var body: some View {
         Canvas { ctx, size in
             let s = min(size.width, size.height) / 24
             ctx.translateBy(x: (size.width - 24 * s) / 2, y: (size.height - 24 * s) / 2)

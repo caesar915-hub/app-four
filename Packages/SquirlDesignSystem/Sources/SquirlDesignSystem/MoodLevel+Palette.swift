@@ -10,16 +10,16 @@ import SwiftUI
 ///   the dark end of Insights gradients, and legend dots.
 /// - ``gradientPartner`` / ``fill`` — the **light partner**: flat bead/banner surfaces paired
 ///   with the fixed dark ``onColor`` ink, and the light end of Insights gradients.
-extension MoodLevel {
+public extension MoodLevel {
 
     /// Build from a recording's raw mood string (case-insensitive), or nil.
-    init?(name: String?) {
+    public init?(name: String?) {
         guard let name else { return nil }
         self.init(rawValue: name.lowercased())
     }
 
     /// Meadow·Burnt base — saturated valence colour (burnt-orange→amber→green). The dark end of every fill.
-    var color: Color {
+    public var color: Color {
         switch self {
         case .low:   Color(hex: "#DA7A2A")
         case .flat:  Color(hex: "#EDA94A")
@@ -31,7 +31,7 @@ extension MoodLevel {
 
     /// Meadow·Burnt light partner — the light end of every fill, and the flat calendar bead/banner
     /// surface (kept light so the fixed dark ``onColor`` ink stays legible).
-    var gradientPartner: Color {
+    public var gradientPartner: Color {
         switch self {
         case .low:   Color(hex: "#EA9248")
         case .flat:  Color(hex: "#FDC06C")
@@ -42,20 +42,20 @@ extension MoodLevel {
     }
 
     /// Soft fill for banners and beads — paired with the dark ``onColor`` ink.
-    var fill: Color { gradientPartner }
+    public var fill: Color { gradientPartner }
 
     /// Deeper, legible shade of the same hue — used for the day header text.
-    var deepFill: Color { color }
+    public var deepFill: Color { color }
 
     /// Day-card mood-block tint (spec 019, "#4 Divided · Cream disc"): the representative-mood base
     /// colour at `Opacity.moodBlock`, filling the folded card and the open-state strip header.
-    var blockTint: Color { color.opacity(Opacity.moodBlock) }
+    public var blockTint: Color { color.opacity(Opacity.moodBlock) }
     /// Cream-disc mood badge behind the mood glyph (folded header + check-in bead).
-    var badgeTint: Color { color.opacity(Opacity.moodBadge) }
+    public var badgeTint: Color { color.opacity(Opacity.moodBadge) }
     /// Mood-word colour on the block tint — the deeper, legible shade.
-    var wordColor: Color { deepFill }
+    public var wordColor: Color { deepFill }
 
-    var displayLabel: String {
+    public var displayLabel: String {
         switch self {
         case .low:   "Low"
         case .flat:  "Flat"
@@ -68,7 +68,7 @@ extension MoodLevel {
     /// Dark ink for text/icons on the light fills. Fixed (the fills don't adapt to dark
     /// mode, so the ink stays dark) — a justified exception to the "semantic colours only"
     /// rule, the mood palette itself being custom.
-    static let onColor = Color(hex: "#1C1C1E")
+    public static let onColor = Color(hex: "#1C1C1E")
 
     private init?(numericValue: Int) {
         switch numericValue {
@@ -89,5 +89,5 @@ extension MoodLevel {
     }
 
     /// Rounded-average deep shade of several moods, for the day header.
-    static func averageDeep(of moods: [String?]) -> Color? { average(moods)?.deepFill }
+    public static func averageDeep(of moods: [String?]) -> Color? { average(moods)?.deepFill }
 }

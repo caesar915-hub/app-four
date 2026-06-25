@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Filled primary action button — one accent-tinted style for the main action
 /// on a screen. Honors the 44pt minimum tap target.
-struct PrimaryButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
+public struct PrimaryButtonStyle: ButtonStyle {
+    public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(Typography.headline)
             .foregroundStyle(.white)
@@ -16,8 +16,8 @@ struct PrimaryButtonStyle: ButtonStyle {
 }
 
 /// Ghost secondary action — ink text on the surface with a hairline border.
-struct SecondaryButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
+public struct SecondaryButtonStyle: ButtonStyle {
+    public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(Typography.headline)
             .foregroundStyle(Theme.textPrimary)
@@ -33,8 +33,8 @@ struct SecondaryButtonStyle: ButtonStyle {
 }
 
 extension ButtonStyle where Self == PrimaryButtonStyle {
-    static var primary: PrimaryButtonStyle { PrimaryButtonStyle() }
+    public static var primary: PrimaryButtonStyle { PrimaryButtonStyle() }
 }
 extension ButtonStyle where Self == SecondaryButtonStyle {
-    static var secondary: SecondaryButtonStyle { SecondaryButtonStyle() }
+    public static var secondary: SecondaryButtonStyle { SecondaryButtonStyle() }
 }
