@@ -2,22 +2,11 @@ import Foundation
 import Observation
 
 /// Orchestrates the post-transcription pipeline: model download (if needed) → ADHD summarization → save.
-/// Created by CheckInViewModel after transcription completes and exposed for progress observation.
+/// Created by CheckInViewModel after transcription completes. Progress is reflected on the persisted
+/// `Recording.summaryStatus` (the single source of truth the UI observes), not on in-memory state.
 @Observable
 @MainActor
 final class ProcessingViewModel {
-
-    // MARK: - State
-
-    enum ProcessingState {
-        case idle
-        case summarizing
-        case saving
-        case completed(Recording)
-        case failed(String)
-    }
-
-    var state: ProcessingState = .idle
 
     // MARK: - Dependencies
 
@@ -52,17 +41,6 @@ final class ProcessingViewModel {
     func cancelProcessing() {
         activeTask?.cancel()
         activeTask = nil
-        state = .idle
-    }
-
-    @discardableResult
-    func retry(
-        rawText: String,
-        duration: TimeInterval,
-        language: String?,
-        audioFileName: String
-    ) -> Task<Void, Never> {
-        processRawTranscription(rawText, duration: duration, language: language, audioFileName: audioFileName)
     }
 
     // MARK: - Private
@@ -72,12 +50,10 @@ final class ProcessingViewModel {
 
         // Locate the recording up front so we can record both success and failure on it.
         guard let recording = store.recordings.first(where: { $0.audioFileName == audioFileName }) else {
-            state = .failed("Recording not found for file: \(audioFileName)")
             AppLogger.log("ProcessingViewModel: could not locate Recording with audioFileName \(audioFileName)")
             return
         }
 
-        state = .summarizing
         recording.summaryStatus = SummaryStatus.generating.rawValue
         store.save()
 
@@ -88,14 +64,12 @@ final class ProcessingViewModel {
             // Surface a clear failure ("Tap to retry") instead of echoing the transcript.
             recording.summaryStatus = SummaryStatus.failed.rawValue
             store.save()
-            state = .failed(error.localizedDescription)
             AppLogger.log("ProcessingViewModel: summarization failed: \(error)")
             return
         }
 
         guard !Task.isCancelled else { return }
 
-        state = .saving
         recording.applySummary(result, fillOnly: fillOnly)
         recording.setMedicationEvents(
             from: result.medications,
@@ -103,7 +77,6 @@ final class ProcessingViewModel {
             context: store.context
         )
         store.save()
-        state = .completed(recording)
         AppLogger.log("ProcessingViewModel: pipeline complete for \(audioFileName)")
     }
 
