@@ -32,8 +32,11 @@ memory/
 !.specify/memory/
 !.specify/memory/**
 
-# Claude Code local config, hooks & installed skills — not app source
-.claude/
+# Claude Code local config, hooks & installed skills — not app source.
+# Track only .claude/commands/ (shared slash commands) so they travel with the repo.
+.claude/*
+!.claude/commands/
+!.claude/commands/**
 
 # Obsidian vault config (this repo doubles as an Obsidian vault; notes are the .md files)
 .obsidian/
