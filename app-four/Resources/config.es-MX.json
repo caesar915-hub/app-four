@@ -1,0 +1,807 @@
+{
+  "numberWords": {
+    "un": 1,
+    "uno": 1,
+    "una": 1,
+    "dos": 2,
+    "tres": 3,
+    "cuatro": 4,
+    "cinco": 5,
+    "seis": 6,
+    "siete": 7,
+    "ocho": 8,
+    "nueve": 9,
+    "diez": 10,
+    "once": 11,
+    "doce": 12
+  },
+  "hourUnits": [
+    "hora",
+    "horas",
+    "h",
+    "hrs",
+    "hr"
+  ],
+  "andAHalf": [
+    "y media"
+  ],
+  "sleepBareVerbs": [
+    "dormí",
+    "dormi",
+    "dormido"
+  ],
+  "sleepWords": [
+    "dormir",
+    "dormí",
+    "dormi",
+    "sueño",
+    "sueno",
+    "dormido",
+    "dormida",
+    "durmiendo",
+    "desperté",
+    "desperte",
+    "despertar",
+    "despierto",
+    "despierta",
+    "insomnio",
+    "pesadilla",
+    "pesadillas",
+    "siesta",
+    "descansé",
+    "descanse",
+    "descansar",
+    "inquieto",
+    "inquieta",
+    "soñé",
+    "sone",
+    "soñar",
+    "trasnoché",
+    "trasnoche",
+    "desvelado",
+    "desvelada",
+    "desvelarme",
+    "desvelé",
+    "me desvelé",
+    "acostarme",
+    "antes de dormir",
+    "se me pegaron las sábanas"
+  ],
+  "sleepMultiwordPatterns": [
+    "\\bno pegu[eé] (?:el )?ojo\\b",
+    "\\bsue[ñn]os?\\b",
+    "\\bme qued[eé] jet[oó]n[a]?\\b",
+    "\\b(?:horas?|hrs?)\\b[^.!?]*\\bnoche\\b",
+    "\\bnoche\\b[^.!?]*\\b(?:horas?|hrs?)\\b"
+  ],
+  "weakEnergyTable": [
+    {
+      "word": "padrísima",
+      "level": "charged"
+    },
+    {
+      "word": "increíble",
+      "level": "charged"
+    },
+    {
+      "word": "buenísima",
+      "level": "charged"
+    },
+    {
+      "word": "excelente",
+      "level": "charged"
+    },
+    {
+      "word": "muchísima",
+      "level": "charged"
+    },
+    {
+      "word": "montón",
+      "level": "charged"
+    },
+    {
+      "word": "harta",
+      "level": "charged"
+    },
+    {
+      "word": "por las nubes",
+      "level": "charged"
+    },
+    {
+      "word": "mala",
+      "level": "tired"
+    },
+    {
+      "word": "pobre",
+      "level": "tired"
+    },
+    {
+      "word": "baja",
+      "level": "tired"
+    },
+    {
+      "word": "plana",
+      "level": "tired"
+    },
+    {
+      "word": "agotada",
+      "level": "tired"
+    },
+    {
+      "word": "drenada",
+      "level": "tired"
+    },
+    {
+      "word": "vacía",
+      "level": "tired"
+    },
+    {
+      "word": "por los suelos",
+      "level": "tired"
+    },
+    {
+      "word": "decaída",
+      "level": "tired"
+    },
+    {
+      "word": "bajón",
+      "level": "tired"
+    },
+    {
+      "word": "bajones",
+      "level": "tired"
+    },
+    {
+      "word": "cayó",
+      "level": "tired"
+    },
+    {
+      "word": "cayendo",
+      "level": "tired"
+    },
+    {
+      "word": "bajó",
+      "level": "tired"
+    },
+    {
+      "word": "bajando",
+      "level": "tired"
+    },
+    {
+      "word": "se desplomó",
+      "level": "tired"
+    },
+    {
+      "word": "nula",
+      "level": "tired"
+    },
+    {
+      "word": "cero",
+      "level": "tired"
+    },
+    {
+      "word": "siesta",
+      "level": "tired"
+    },
+    {
+      "word": "falta",
+      "level": "tired"
+    },
+    {
+      "word": "lenta",
+      "level": "tired"
+    },
+    {
+      "word": "buena",
+      "level": "steady"
+    },
+    {
+      "word": "decente",
+      "level": "steady"
+    },
+    {
+      "word": "normal",
+      "level": "steady"
+    },
+    {
+      "word": "estable",
+      "level": "steady"
+    },
+    {
+      "word": "constante",
+      "level": "steady"
+    },
+    {
+      "word": "manejable",
+      "level": "steady"
+    },
+    {
+      "word": "moderada",
+      "level": "steady"
+    },
+    {
+      "word": "regular",
+      "level": "steady"
+    },
+    {
+      "word": "pareja",
+      "level": "steady"
+    }
+  ],
+  "weakMoodTable": [
+    {
+      "word": "padrísimo",
+      "label": "great"
+    },
+    {
+      "word": "increíble",
+      "label": "great"
+    },
+    {
+      "word": "excelente",
+      "label": "great"
+    },
+    {
+      "word": "de maravilla",
+      "label": "great"
+    },
+    {
+      "word": "eufórico",
+      "label": "great"
+    },
+    {
+      "word": "chido",
+      "label": "great"
+    },
+    {
+      "word": "pésimo",
+      "label": "low"
+    },
+    {
+      "word": "malo",
+      "label": "low"
+    },
+    {
+      "word": "bajo",
+      "label": "low"
+    },
+    {
+      "word": "bajón",
+      "label": "low"
+    },
+    {
+      "word": "triste",
+      "label": "low"
+    },
+    {
+      "word": "decaído",
+      "label": "low"
+    },
+    {
+      "word": "miserable",
+      "label": "low"
+    },
+    {
+      "word": "horrible",
+      "label": "low"
+    },
+    {
+      "word": "espantoso",
+      "label": "low"
+    },
+    {
+      "word": "agüitado",
+      "label": "low"
+    },
+    {
+      "word": "sombrío",
+      "label": "low"
+    },
+    {
+      "word": "oscuro",
+      "label": "low"
+    },
+    {
+      "word": "irritable",
+      "label": "low"
+    },
+    {
+      "word": "de malas",
+      "label": "low"
+    },
+    {
+      "word": "plano",
+      "label": "flat"
+    },
+    {
+      "word": "bueno",
+      "label": "good"
+    },
+    {
+      "word": "positivo",
+      "label": "good"
+    },
+    {
+      "word": "feliz",
+      "label": "good"
+    },
+    {
+      "word": "contento",
+      "label": "good"
+    },
+    {
+      "word": "tranquilo",
+      "label": "good"
+    },
+    {
+      "word": "relajado",
+      "label": "good"
+    },
+    {
+      "word": "estable",
+      "label": "good"
+    },
+    {
+      "word": "animado",
+      "label": "good"
+    },
+    {
+      "word": "optimista",
+      "label": "good"
+    },
+    {
+      "word": "okay",
+      "label": "okay"
+    },
+    {
+      "word": "más o menos",
+      "label": "okay"
+    },
+    {
+      "word": "neutro",
+      "label": "okay"
+    },
+    {
+      "word": "normal",
+      "label": "okay"
+    },
+    {
+      "word": "regular",
+      "label": "okay"
+    },
+    {
+      "word": "ni fu ni fa",
+      "label": "okay"
+    }
+  ],
+  "weakTriggerNouns": [
+    "energía",
+    "energia",
+    "pila",
+    "pilas",
+    "humor",
+    "ánimo",
+    "animo"
+  ],
+  "presentMarkers": [
+    "ahorita",
+    "en este momento",
+    "actualmente",
+    "hoy",
+    "me siento",
+    "ando",
+    "estoy sintiendo",
+    "estoy",
+    "esta noche",
+    "hoy en la noche",
+    "por ahora",
+    "estos días",
+    "ahora",
+    "ahora me siento",
+    "he estado sintiéndome",
+    "últimamente"
+  ],
+  "pastMarkers": [
+    "estaba",
+    "me sentí",
+    "me sentia",
+    "antes",
+    "más temprano",
+    "en la mañana",
+    "esta mañana",
+    "ayer",
+    "anoche",
+    "para la tarde",
+    "en la tarde",
+    "esta tarde",
+    "desperté",
+    "me había sentido",
+    "solía",
+    "hace rato",
+    "hace un rato",
+    "estaba sintiéndome",
+    "antier"
+  ],
+  "pastVerbSuffixes": [
+    "é",
+    "ó",
+    "aron",
+    "ieron",
+    "amos",
+    "imos",
+    "aba",
+    "ía",
+    "aste",
+    "iste"
+  ],
+  "irregularPastVerbs": [
+    "fui",
+    "fue",
+    "fuimos",
+    "fueron",
+    "era",
+    "eran",
+    "estaba",
+    "estuve",
+    "estuvo",
+    "sentí",
+    "sentia",
+    "tuve",
+    "tuvo",
+    "hice",
+    "hizo",
+    "fui",
+    "anduve",
+    "anduvo",
+    "vino",
+    "vine",
+    "dije",
+    "dijo",
+    "pude",
+    "pudo",
+    "quise",
+    "quiso",
+    "supe",
+    "supo",
+    "desperté",
+    "me desperté",
+    "dormí",
+    "comí",
+    "vi"
+  ],
+  "negationTokens": [
+    "no",
+    "nunca",
+    "jamás",
+    "nada",
+    "ni",
+    "tampoco",
+    "sin"
+  ],
+  "negationNarrowWindowTokens": [
+    "no",
+    "ni"
+  ],
+  "medContextTokens": [
+    "tomé",
+    "tome",
+    "tomar",
+    "tomando",
+    "tomado",
+    "dosis",
+    "salté",
+    "me salté",
+    "olvidé",
+    "se me olvidó",
+    "omití",
+    "mg",
+    "miligramo",
+    "miligramos"
+  ],
+  "medStoplist": [
+    "concierto",
+    "conciertos",
+    "concertar",
+    "tradearé"
+  ],
+  "clauseBreakConjunctions": [
+    "y",
+    "pero",
+    "luego",
+    "después",
+    "entonces",
+    "así que",
+    "mientras"
+  ],
+  "notTakenBreaks": [
+    "y",
+    "pero",
+    "luego",
+    "después",
+    "entonces",
+    "así que",
+    "mientras",
+    "antes de",
+    "después de"
+  ],
+  "stopStartTerms": [
+    "dejé",
+    "dejé de tomar",
+    "suspendí",
+    "corté",
+    "me bajaron",
+    "dejé de",
+    "ya no tomo",
+    "empecé",
+    "empecé a tomar",
+    "comencé",
+    "me recetaron",
+    "me pusieron",
+    "primer día",
+    "primera vez",
+    "inicié"
+  ],
+  "halfDoseTerms": [
+    "media",
+    "la mitad de",
+    "media pastilla",
+    "media tableta",
+    "media dosis",
+    "partí la",
+    "partí mi",
+    "dividí la",
+    "partir a la mitad",
+    "tomé media"
+  ],
+  "structuredPatternTriggers": {
+    "dose": [
+      "mg",
+      "miligramos",
+      "miligramo"
+    ],
+    "sleepVerb": [
+      "dormí",
+      "dormi"
+    ],
+    "onset": [
+      "empezó a hacer efecto",
+      "me hizo efecto",
+      "entró el efecto",
+      "pegó la medicina"
+    ],
+    "duration": [
+      "se pasó el efecto",
+      "se me acabó el efecto",
+      "duró el efecto",
+      "se me bajó"
+    ],
+    "crash": [
+      "bajón",
+      "se me vino abajo",
+      "rebote",
+      "la caída"
+    ],
+    "emptyStomach": [
+      "con el estómago vacío",
+      "sin haber comido",
+      "en ayunas"
+    ]
+  },
+  "titleFillers": [
+    "hoy",
+    "ahorita",
+    "pues",
+    "este",
+    "o sea",
+    "como que",
+    "la verdad",
+    "creo que",
+    "siento que",
+    "nomás",
+    "namás",
+    "ahí",
+    "bueno",
+    "entonces",
+    "y pues",
+    "fíjate que"
+  ],
+  "titleClauseSplitters": [
+    ",",
+    ";",
+    " pero ",
+    " y ",
+    " porque ",
+    " aunque ",
+    " así que ",
+    " luego ",
+    " entonces "
+  ],
+  "canonicalInflections": {
+    "cansado": [
+      "cansada",
+      "cansados",
+      "cansadas"
+    ],
+    "agotado": [
+      "agotada",
+      "agotados",
+      "agotadas"
+    ],
+    "molido": [
+      "molida",
+      "molidos",
+      "molidas"
+    ],
+    "tronado": [
+      "tronada",
+      "tronados",
+      "tronadas"
+    ],
+    "agüitado": [
+      "agüitada",
+      "agüitados",
+      "agüitadas"
+    ],
+    "deprimido": [
+      "deprimida",
+      "deprimidos",
+      "deprimidas"
+    ],
+    "enojado": [
+      "enojada",
+      "enojados",
+      "enojadas"
+    ],
+    "encabronado": [
+      "encabronada",
+      "encabronados",
+      "encabronadas"
+    ],
+    "estresado": [
+      "estresada",
+      "estresados",
+      "estresadas"
+    ],
+    "rebasado": [
+      "rebasada",
+      "rebasados",
+      "rebasadas"
+    ],
+    "saturado": [
+      "saturada",
+      "saturados",
+      "saturadas"
+    ],
+    "frustrado": [
+      "frustrada",
+      "frustrados",
+      "frustradas"
+    ],
+    "tranquilo": [
+      "tranquila",
+      "tranquilos",
+      "tranquilas"
+    ],
+    "relajado": [
+      "relajada",
+      "relajados",
+      "relajadas"
+    ],
+    "contento": [
+      "contenta",
+      "contentos",
+      "contentas"
+    ],
+    "animado": [
+      "animada",
+      "animados",
+      "animadas"
+    ],
+    "distraído": [
+      "distraída",
+      "distraídos",
+      "distraídas"
+    ],
+    "concentrado": [
+      "concentrada",
+      "concentrados",
+      "concentradas"
+    ],
+    "enfocado": [
+      "enfocada",
+      "enfocados",
+      "enfocadas"
+    ],
+    "nublado": [
+      "nublada",
+      "nublados",
+      "nubladas"
+    ],
+    "perdido": [
+      "perdida",
+      "perdidos",
+      "perdidas"
+    ],
+    "ansioso": [
+      "ansiosa",
+      "ansiosos",
+      "ansiosas"
+    ],
+    "preocupado": [
+      "preocupada",
+      "preocupados",
+      "preocupadas"
+    ],
+    "descansado": [
+      "descansada",
+      "descansados",
+      "descansadas"
+    ],
+    "despierto": [
+      "despierta",
+      "despiertos",
+      "despiertas"
+    ],
+    "acelerado": [
+      "acelerada",
+      "acelerados",
+      "aceleradas"
+    ],
+    "lento": [
+      "lenta",
+      "lentos",
+      "lentas"
+    ],
+    "mareado": [
+      "mareada",
+      "mareados",
+      "mareadas"
+    ],
+    "tembloroso": [
+      "temblorosa",
+      "temblorosos",
+      "temblorosas"
+    ],
+    "tenso": [
+      "tensa",
+      "tensos",
+      "tensas"
+    ],
+    "dormí": [
+      "dormí",
+      "dormiste",
+      "durmió",
+      "dormimos",
+      "durmieron"
+    ],
+    "desperté": [
+      "despertaste",
+      "despertó",
+      "despertamos",
+      "despertaron"
+    ],
+    "tomé": [
+      "tomaste",
+      "tomó",
+      "tomamos",
+      "tomaron"
+    ],
+    "olvidé": [
+      "olvidaste",
+      "olvidó",
+      "olvidamos",
+      "olvidaron"
+    ]
+  },
+  "sleepHoursPattern": "(?i)\\b(\\d{1,2}(?:\\.\\d)?|cuatro|cinco|siete|nueve|tres|seis|ocho|diez|once|doce|uno|una|dos|un)(\\s+(?:y media))?\\s*(?:horas|hora|hrs|hr|h)\\b",
+  "sleepBarePattern": "(?i)\\b(?:dormí|dormi|dormido)\\s+(\\d{1,2}(?:\\.\\d)?)\\b",
+  "weakEnergyTriggers": [
+    "energía",
+    "energia"
+  ],
+  "weakEnergyDefaultLevel": "steady",
+  "weakEnergyDefaultPhrase": "energía",
+  "weakMoodTriggerPattern": "\\b(?:humor|ánimo|estado de ánimo)\\b",
+  "weakMoodDefaultLabel": "okay",
+  "weakMoodDefaultPhrase": "humor"
+}

@@ -14,6 +14,10 @@ struct LanguagePackLoaderTests {
     @Test func spanishESConfigDecodesNonEnglish() {
         #expect(LanguagePackLoader.config("es-ES").presentMarkers != LanguageConfig.english.presentMarkers)
     }
+    // US3: the Mexican Spanish pack must also decode completely (not silent-fallback).
+    @Test func mexicanConfigDecodesNonEnglish() {
+        #expect(LanguagePackLoader.config("es-MX").presentMarkers != LanguageConfig.english.presentMarkers)
+    }
     @Test func englishConfigIsEnglish() {
         #expect(LanguagePackLoader.config("en").presentMarkers == LanguageConfig.english.presentMarkers)
     }

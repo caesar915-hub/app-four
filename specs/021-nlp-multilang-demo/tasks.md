@@ -98,13 +98,13 @@ otherwise; the mx reference check-in (incl. "Ando agüitado") surfaces low mood 
 
 ### Tests for User Story 3 (test-first · RED — MANDATORY) ⚠️
 
-- [ ] T019 [P] [US3] RED: extend `app-fourTests/Services/LanguageDetectorTests.swift` — the same Spanish reference text with `locale.region == "MX"` → `"es-MX"`, with region `"ES"` → `"es-ES"`. Extend `LanguagePackLoaderTests` — `config("es-MX")` decodes to a non-`.english` config. Run; confirm the MX cases FAIL.
+- [X] T019 [P] [US3] RED: extend `app-fourTests/Services/LanguageDetectorTests.swift` — the same Spanish reference text with `locale.region == "MX"` → `"es-MX"`, with region `"ES"` → `"es-ES"`. Extend `LanguagePackLoaderTests` — `config("es-MX")` decodes to a non-`.english` config. Run; confirm the MX cases FAIL.
 
 ### Implementation for User Story 3
 
-- [ ] T020 [US3] Add the region branch to `LanguageDetector.packKey`: spanish → `(locale.region?.identifier == "MX") ? "es-MX" : "es-ES"`.
-- [ ] T021 [P] [US3] Add packs to `app-four/Resources/`: `lexicon.es-MX.json`, `config.es-MX.json` (from spike `extractor/packs/`).
-- [ ] T022 [US3] Build + run T019 (GREEN) + Eval floors. Manual: set simulator region to Mexico, enter the mx reference check-in, confirm `es-MX` selection and the 6 signals (incl. low mood from "Ando agüitado"); switch to Spain → `es-ES`.
+- [X] T020 [US3] Add the region branch to `LanguageDetector.packKey`: spanish → `(locale.region?.identifier == "MX") ? "es-MX" : "es-ES"`.
+- [X] T021 [P] [US3] Add packs to `app-four/Resources/`: `lexicon.es-MX.json`, `config.es-MX.json` (from spike `extractor/packs/`).
+- [X] T022 [US3] Build + run T019 (GREEN) + Eval floors. Manual: set simulator region to Mexico, enter the mx reference check-in, confirm `es-MX` selection and the 6 signals (incl. low mood from "Ando agüitado"); switch to Spain → `es-ES`.
 
 **Checkpoint**: all four packs select and extract correctly.
 
