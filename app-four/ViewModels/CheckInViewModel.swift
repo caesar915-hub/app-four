@@ -13,9 +13,62 @@ final class CheckInViewModel {
     var permissionDenied: Bool = false
     var lowDiskSpace: Bool = false
 
+    // MARK: 8-minute soft landing (US4 / FR-014, R5)
+
+    /// How long before the cap the single calm approach cue appears. ~30s gives a
+    /// time-blind user a warm "wrapping up soon" heads-up without it reading as a
+    /// deadline countdown (DESIGN: no you're-late alarms). A tuned content value, not magic.
+    let approachWindow: TimeInterval = 30
+
+    /// True once the recording has entered the final approach window. Derived from
+    /// `elapsedTime` so it follows the timer; the view shows ONE faint cue on the
+    /// rising edge — never a ticking bar (FR-014).
+    var isApproachingCap: Bool { elapsedTime >= maxDuration - approachWindow }
+
+    /// One-shot latch so the approach cue fires exactly once per recording: the view
+    /// calls `markCapApproachShown()` after presenting it, and a clean `startRecording()`
+    /// re-arms it. Advancing deeper into the window never re-triggers the cue.
+    private(set) var hasShownCapApproach: Bool = false
+
+    /// The view consumes the one-shot cue after showing it, so further elapsed advance
+    /// (or hitting the cap) does not re-arm it.
+    func markCapApproachShown() {
+        hasShownCapApproach = true
+    }
+
+    /// US2 — never lose a capture. On a save failure the just-recorded audio is held
+    /// here so a retry can re-save without re-recording; cleared on success or discard.
+    struct PendingSave: Equatable {
+        let fileURL: URL
+        let duration: TimeInterval
+    }
+    private(set) var pendingSave: PendingSave?
+    var saveFailed: Bool = false
+    var textSaveFailed: Bool = false
+
+    // MARK: VoiceOver announcement gate (US3 / FR-010, R4)
+
+    /// Audio level (normalized 0.0–1.0, `audioLevelStream`) at or above which the mic is
+    /// treated as picking up active voice. Sits well above the ~0.01 silence floor the
+    /// recorder emits so room tone reads as quiet. This is the *announcement gate* the
+    /// otherwise-discarded level stream feeds — deliberately NOT a visual glow (R4).
+    static let activeVoiceThreshold: Float = 0.1
+
+    /// True while the latest audio level indicates the user is actively speaking; used to
+    /// defer prompt-advance announcements so VoiceOver never talks over the speaker.
+    private(set) var isSpeaking: Bool = false
+
+    /// A prompt-advance announcement the view requested but that is held until the next
+    /// quiet (it must not fire mid-sentence). The view reads `promptAnnouncementIsEligible`.
+    private(set) var promptAnnouncementIsPending: Bool = false
+
+    /// The held announcement may post now: one is pending AND the user has gone quiet.
+    var promptAnnouncementIsEligible: Bool { promptAnnouncementIsPending && !isSpeaking }
+
     @ObservationIgnored private let audioService: AudioRecordingService
     @ObservationIgnored private let storageService: AudioFileStorageService
     @ObservationIgnored private let transcriptionService: TranscriptionService
+    @ObservationIgnored private let aiModelService: AIModelService
     @ObservationIgnored private let store: RecordingStore
     private(set) var processingViewModel: ProcessingViewModel
 
@@ -36,6 +89,7 @@ final class CheckInViewModel {
         self.audioService = services.audioService
         self.storageService = services.storageService
         self.transcriptionService = services.transcriptionService
+        self.aiModelService = services.aiModelService
         self.processingViewModel = ProcessingViewModel(
             store: store,
             summarizationService: services.summarizationService
@@ -44,6 +98,21 @@ final class CheckInViewModel {
 
     @discardableResult
     func startRecording() -> Task<Void, Never> {
+        // Re-entry guard (FR-016): a capture is already live or finishing. Bail
+        // before any disk/permission/audio-session work so a rapid double-tap or a
+        // re-firing auto-start can't zero a running timer or open a second session.
+        guard state == .idle || state == .done else {
+            return Task {}
+        }
+        // Clean start: drop any stale recovery flags from a prior failed attempt and
+        // reset the VoiceOver announcement gate so a prior session can't leak a held
+        // announcement or a stale speaking state into this one.
+        permissionDenied = false
+        lowDiskSpace = false
+        isSpeaking = false
+        promptAnnouncementIsPending = false
+        hasShownCapApproach = false
+
         return Task {
             let available = await storageService.availableStorage()
             guard available > LayoutConstants.minDiskSpaceForRecordingBytes else {
@@ -99,24 +168,78 @@ final class CheckInViewModel {
         return Task {
             do {
                 let result = try await audioService.stopRecording()
-                let recording = try storageService.saveRecording(from: result.fileURL, duration: result.duration)
-                self.store.addRecording(recording)
-                self.lastSavedRecording = recording
-
-                // Immediately show done; transcribe in background
-                self.state = .done
-
-                self.transcriptionTask = Task {
-                    // Let the prior transcription finish first (serialize on the single
-                    // Whisper instance). It's never cancelled here, so its work is kept.
-                    await priorTranscription?.value
-                    await self.transcribeInBackground(recording)
-                }
+                // The audio is now on disk. Hold it in the retry buffer BEFORE the
+                // save step so a save/store failure can be re-attempted (FR-005).
+                self.pendingSave = PendingSave(fileURL: result.fileURL, duration: result.duration)
+                self.attemptSave(priorTranscription: priorTranscription)
             } catch {
-                AppLogger.log("Failed to stop/save: \(error)")
+                // The audio stop itself failed — there is no captured file to buffer.
+                AppLogger.log("Failed to stop recording: \(error)")
                 self.state = .idle
             }
         }
+    }
+
+    /// Saves the buffered audio and, on success, settles into `.done` and kicks off
+    /// background transcription; on failure raises `saveFailed` and KEEPS the buffer
+    /// so the inline retry surface can re-attempt without re-recording (FR-005/007).
+    /// Shared by the initial stop and `retrySave()` so both land identically.
+    private func attemptSave(priorTranscription: Task<Void, Never>?) {
+        guard let buffer = pendingSave else { return }
+        do {
+            let recording = try storageService.saveRecording(from: buffer.fileURL, duration: buffer.duration)
+            self.store.addRecording(recording)
+            self.lastSavedRecording = recording
+            self.pendingSave = nil
+            self.saveFailed = false
+
+            // Immediately show done; transcribe in background
+            self.state = .done
+
+            // Model not ready: persist as pending and skip transcription. The
+            // PendingTranscriptionService drains it through this exact path once the
+            // model lands — capture stays "Captured.", never a .failed (FR-011/012).
+            guard self.aiModelService.localPath(for: .whisper) != nil else {
+                recording.status = .pendingTranscription
+                self.store.save()
+                return
+            }
+
+            self.transcriptionTask = Task {
+                // Let the prior transcription finish first (serialize on the single
+                // Whisper instance). It's never cancelled here, so its work is kept.
+                await priorTranscription?.value
+                await self.transcribeInBackground(recording)
+            }
+        } catch {
+            // Never silently reset to idle — retain the buffer and surface a calm,
+            // recoverable "try again" (FR-005/006). State stays `.processing` so the
+            // recording stage (and its inline retry surface) remains on screen.
+            AppLogger.log("Failed to save capture: \(error)")
+            self.saveFailed = true
+        }
+    }
+
+    @discardableResult
+    func retrySave() -> Task<Void, Never> {
+        guard saveFailed, pendingSave != nil else { return Task {} }
+        saveFailed = false
+        state = .processing
+        let priorTranscription = transcriptionTask
+        return Task {
+            self.attemptSave(priorTranscription: priorTranscription)
+        }
+    }
+
+    /// Explicit discard of a failed capture: release the buffered audio file and clear
+    /// the failure surface, returning to the idle hub (FR-008).
+    func discardFailedCapture() {
+        if let buffer = pendingSave {
+            try? FileManager.default.removeItem(at: buffer.fileURL)
+        }
+        pendingSave = nil
+        saveFailed = false
+        state = .idle
     }
 
     /// Runs transcription in the background with a timeout so the UI never hangs.
@@ -125,6 +248,12 @@ final class CheckInViewModel {
             let stream = try await transcriptionService.transcribe(audioURL: recording.audioURL)
             try await consumeStreamWithTimeout(stream, for: recording, timeoutSeconds: 90)
 
+            // The user may have deleted this recording (library multi-select) while it
+            // transcribed in the background; never touch a freed @Model.
+            guard store.recordings.contains(where: { $0.id == recording.id }) else {
+                AppLogger.log("Transcription finished but recording \(recording.id) was deleted; skipping")
+                return
+            }
             recording.status = .completed
             store.save()
             AppLogger.log("Transcription completed for \(recording.id)")
@@ -142,6 +271,9 @@ final class CheckInViewModel {
             // `.transcribing`. The service was already torn down by the caller's
             // `cancelInFlightServices()`, so no extra cancel call is needed.
             Task { @MainActor [store] in
+                // The recording may have been deleted while the cancel raced — re-resolve
+                // by id before touching the @Model so we never mutate a freed object.
+                guard store.recordings.contains(where: { $0.id == recording.id }) else { return }
                 recording.status = .failed
                 recording.fullTranscriptText = "Transcription cancelled. Tap to retry in the recording detail view."
                 store.save()
@@ -149,11 +281,13 @@ final class CheckInViewModel {
         } catch RecordingError.timeout {
             AppLogger.log("Transcription timed out for \(recording.id)")
             await transcriptionService.cancelTranscription()
+            guard store.recordings.contains(where: { $0.id == recording.id }) else { return }
             recording.status = .failed
             recording.fullTranscriptText = "Transcription timed out. Tap to retry in the recording detail view."
             store.save()
         } catch {
             AppLogger.log("Transcription failed for \(recording.id): \(error)")
+            guard store.recordings.contains(where: { $0.id == recording.id }) else { return }
             recording.status = .failed
             recording.fullTranscriptText = "Transcription failed: \(error.localizedDescription)"
             store.save()
@@ -235,7 +369,7 @@ final class CheckInViewModel {
         NudgePrompt(question: "What's your energy like?", hint: "Wired, steady, or running low."),
         NudgePrompt(question: "Able to focus?",          hint: "Locked in, scattered, somewhere between."),
         NudgePrompt(question: "How did you sleep?",      hint: "Hours, and how rested you feel."),
-        NudgePrompt(question: "Any strong feelings?",    hint: "Something sitting with you right now."),
+        NudgePrompt(question: "Any strong emotions?",    hint: "Something sitting with you right now."),
     ]
 
     /// Seconds per prompt — read from AppSettings on startRecording(), stays stable during a session.
@@ -254,13 +388,41 @@ final class CheckInViewModel {
         (elapsedTime.truncatingRemainder(dividingBy: promptInterval)) / promptInterval
     }
 
+    /// Feeds the live audio level into the active-voice gate (FR-010, R4). Called from
+    /// `startLevelMonitoring()` for each emitted sample; also the test seam for the gate.
+    func ingestAudioLevel(_ level: Float) {
+        isSpeaking = level >= Self.activeVoiceThreshold
+    }
+
+    /// The view requests a prompt-advance announcement when `currentPromptIndex` changes.
+    /// Coalesced to a single pending announcement so a backlog never accumulates while
+    /// deferred — the user hears the *current* prompt on the next quiet, not a queue.
+    func requestPromptAnnouncement() {
+        promptAnnouncementIsPending = true
+    }
+
+    /// The view calls this once it has posted the held announcement.
+    func consumePromptAnnouncement() {
+        promptAnnouncementIsPending = false
+    }
+
     // MARK: - Text check-in
 
     private(set) var lastSavedRecording: Recording?
 
     func saveTextCheckIn(_ draft: CheckInDraft) {
         guard !draft.isEmpty else { return }
-        let recording = store.createCheckInNote(draft)
+        let recording: Recording
+        do {
+            recording = try store.persistCheckInNote(draft)
+        } catch {
+            // Don't silently drop the draft — surface a calm, non-alarming retry
+            // affordance (FR-009). The composer's draft is still intact for a re-save.
+            AppLogger.log("Failed to save text check-in: \(error)")
+            textSaveFailed = true
+            return
+        }
+        textSaveFailed = false
         if !draft.trimmedNote.isEmpty {
             processingViewModel.processRawTranscription(
                 draft.trimmedNote,
@@ -291,7 +453,7 @@ final class CheckInViewModel {
         levelTask = Task {
             for await level in audioService.audioLevelStream {
                 if Task.isCancelled { break }
-                _ = level
+                self.ingestAudioLevel(level)
             }
         }
     }
@@ -309,6 +471,9 @@ final class CheckInViewModel {
         timerTask = nil
         levelTask?.cancel()
         levelTask = nil
+        // Monitoring stopped: no live level means no active voice. Releases the gate so a
+        // pending prompt announcement isn't wedged "deferred" on the last loud sample.
+        isSpeaking = false
         if cancelTranscription {
             transcriptionTask?.cancel()
             transcriptionTask = nil

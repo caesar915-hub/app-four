@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Calendar + Day Card — 8 variations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F6F1E7;--surface:#FCF8EF;--surface2:#EFE8D8;--ink:#221E16;--muted:#7A7361;--hair:#E3DAC7;--green:#5F8A4C;--amber:#E0A33A;--accent:#B8842A;--med:#7E5CA8;--shadow:0 1px 2px rgba(34,30,22,.05),0 8px 24px rgba(34,30,22,.07);}
+  [data-theme="dark"]{--bg:#14130F;--surface:#1E1C16;--surface2:#272419;--ink:#F3EEE0;--muted:#9A917C;--hair:#322E22;--green:#6E9A58;--amber:#E8B255;--accent:#D4A24A;--med:#9277BE;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);}
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:1340px;margin:0 auto;padding:40px 28px 120px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 12px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(34px,5vw,54px);line-height:1.03;margin:0;letter-spacing:-.02em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:19px;color:var(--accent);margin:14px 0 0;max-width:66ch;}
+  .note{font-size:13px;color:var(--muted);margin:10px 0 0;max-width:74ch;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:10px 16px;box-shadow:var(--shadow);z-index:50;}
+  .row{display:flex;gap:36px;flex-wrap:wrap;align-items:flex-start;margin-top:38px;}
+  .col{width:320px;}
+  .cap{margin-bottom:12px;}
+  .cap .t{font-family:'Fraunces',serif;font-size:18px;font-weight:600;}
+  .cap .d{font-size:12.5px;color:var(--muted);margin-top:2px;}
+  .cap .g{font-size:11.5px;color:var(--green);font-weight:700;margin-top:5px;letter-spacing:.02em;}
+  .phone{width:320px;height:700px;background:var(--bg);border-radius:42px;border:1px solid var(--hair);box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column;}
+  .statusbar{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);padding:14px 24px 6px;font-weight:600;font-family:'IBM Plex Mono',monospace;}
+  .screen{padding:8px 16px 16px;overflow:hidden;flex:1;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .fr{font-family:'Fraunces',serif;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+  .daylbl{font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--muted);margin:14px 0 8px;}
+  .daylbl.green{color:var(--green);}
+  .card{background:var(--surface);border:1px solid var(--hair);border-radius:16px;box-shadow:var(--shadow);padding:13px;margin-bottom:10px;}
+  .ribbonrow{display:grid;grid-template-columns:repeat(7,1fr);row-gap:6px;text-align:center;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · Paper &amp; Pollen · Calendar + Day card · 8 variations</p>
+      <h1>Same spine, eight day cards</h1>
+      <p class="sub">Every screen keeps the proven structure — week calendar on top, medication bar, then a list of day cards. The only thing that changes is how each card summarizes a day. Built to the daily-check-in + ADHD guidelines: summary-first, calm, no shame, redundant glyphs, time made visible.</p>
+      <p class="note">Shared rules across all 8 — calendar never moves (predictability), empty days read neutral not red (no shame), color is never the only cue (shape+hue+fill), timestamps externalize time (time-blindness).</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div class="row" id="board"></div>
+</div>
+
+<script>
+// glyphs
+const moodRamp=['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'];
+const energyRamp=['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'];
+const focusRamp=['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.8,op=(0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.4,cx=12,cy=13,d=l<=2?'stroke-dasharray="3 3"':'';let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}" ${d}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.7"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.3"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.22"/></g></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p)=>`color-mix(in srgb, ${h} ${p}%, var(--surface))`;
+const mg=(l,b)=>`<span class="glyph">${gMood(cssv(moodRamp[l-1]),l,b||7)}</span>`;
+const eg=(l,b)=>`<span class="glyph">${gEnergy(cssv(energyRamp[l-1]),l,b||7)}</span>`;
+const fg=(l,b)=>`<span class="glyph">${gFocus(cssv(focusRamp[l-1]),l,b||7)}</span>`;
+const cap=(sz)=>`<span class="glyph">${icCapsule(cssv('var(--med)'),sz||16)}</span>`;
+const MOODW=['Low','Flat','Okay','Good','Great'],ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Scattered','Present','Sharp','Locked'];
+
+// data
+const DOW=['M','T','W','T','F','S','S'];
+const WEEK=[{n:15,m:3,med:true},{n:16,m:2,med:false},{n:17,m:null,med:true},{n:18,m:4,med:true},{n:19,m:4,med:true,today:true},{n:20,future:true},{n:21,future:true}];
+const TODAY=[
+  {time:'16:12',mood:4,energy:5,focus:3,quote:'Finally shipped the thing. Felt light after.'},
+  {time:'12:05',mood:3,energy:3,focus:5,quote:'Steady. Got the deep work block in before lunch.'},
+  {time:'09:15',mood:3,energy:2,focus:3,quote:'Slow start, foggy, but not anxious.'},
+];
+const YDAY=[
+  {time:'21:40',mood:4,energy:3,focus:4,quote:'Cooked, didn’t doomscroll. Good evening.'},
+  {time:'13:30',mood:2,energy:2,focus:2,quote:'Crashed after lunch. Wrote it down anyway.'},
+];
+
+// shared header: week ribbon + med bar
+function ribbon(){
+  let h='<div class="ribbonrow">';
+  DOW.forEach(d=>h+=`<div style="font-size:11px;font-weight:600;color:var(--muted)">${d}</div>`);
+  WEEK.forEach(d=>{ h+=`<div style="display:flex;flex-direction:column;align-items:center;gap:3px">
+    <span style="width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;background:${d.today?'var(--ink)':'transparent'};color:${d.today?'var(--bg)':(d.future?'var(--muted)':'var(--ink)')}">${d.n}</span>
+    <span style="display:flex;gap:2px"><span style="width:5px;height:5px;border-radius:50%;background:${d.m?cssv(moodRamp[d.m-1]):'transparent'}"></span><span style="width:5px;height:5px;border-radius:50%;background:${d.med?'var(--med)':'transparent'}"></span></span></div>`; });
+  return h+'</div>';
+}
+const MEDBAR=`<div style="background:var(--surface);border:1px solid var(--hair);border-radius:14px;padding:9px 12px"><div style="display:flex;justify-content:space-between;align-items:center"><span class="fr" style="font-size:14px">Concerta 18 mg</span><span style="font-size:11px;color:var(--med);font-weight:600">active · ends 02:34</span></div><div style="display:flex;align-items:center;gap:8px;margin-top:7px">${cap(18)}<span style="flex:1;height:5px;border-radius:4px;background:var(--surface2);overflow:hidden"><span style="display:block;height:100%;width:48%;background:var(--med);border-radius:4px"></span></span></div></div>`;
+const SB=`<div class="statusbar"><span>14:34</span><span>54</span></div>`;
+// Layout order: medication bar FIRST, then calendar, then day-card list
+function frame(inner){ return `${SB}<div class="screen">${MEDBAR}<div style="margin-top:14px">${ribbon()}</div><div style="height:1px;background:var(--hair);margin:14px -16px"></div>${inner}</div>`; }
+function dominant(entries){ const m=Math.round(entries.reduce((a,e)=>a+e.mood,0)/entries.length); return m; }
+
+// ===== 8 day-card styles =====
+const VARS=[
+{ t:'A · Glance', d:'Card = date + dominant mood + one-line read + count. Detail on tap.', g:'Summary-first; lowest cognitive load.',
+  card:(lbl,es,today)=>{ const m=dominant(es); return `<div class="card" style="display:flex;align-items:center;gap:12px">${mg(m,11)}<div style="flex:1"><div style="font-size:14px;font-weight:700">${lbl} · ${MOODW[m-1]}</div><div style="font-size:12px;color:var(--muted)">${es.length} check-ins · ${today?'steady after a slow start':'crashed midday, recovered'}</div></div><span style="color:var(--muted);font-size:18px">›</span></div>`; } },
+
+{ t:'B · Signal Pills', d:'Card = each check-in as a glyph+word pill row. Your shipped agenda style.', g:'Full signal read, redundant encoding.',
+  card:(lbl,es)=>es.map(e=>{ const mh=cssv(moodRamp[e.mood-1]); return `<div class="card" style="display:flex;gap:10px;align-items:flex-start;padding:11px"><span class="mono" style="width:40px;height:40px;flex:0 0 40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;background:${mh};color:#1c2a12">${e.time}</span><div style="flex:1;display:flex;flex-wrap:wrap;gap:5px 11px;align-items:center;background:${tint(mh,42)};border-radius:13px;padding:9px 12px">${[mg(e.mood),'<b style="font-size:11px">'+MOODW[e.mood-1]+'</b>',eg(e.energy),'<b style="font-size:11px">'+ENW[e.energy-1]+'</b>',fg(e.focus),'<b style="font-size:11px">'+FOW[e.focus-1]+'</b>'].join('')}</div></div>`; }).join('') },
+
+{ t:'C · Swatch Strip', d:'Card = a row of mood swatches (one per check-in) + count. Daylio-style glance.', g:'Pattern at a glance, very fast scan.',
+  card:(lbl,es)=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:700">${lbl}</span><span style="font-size:11px;color:var(--green);font-weight:700">${es.length} check-ins</span></div><div style="display:flex;gap:6px;margin-top:10px;align-items:center">${es.map(e=>`<span style="width:30px;height:30px;border-radius:9px;background:${cssv(moodRamp[e.mood-1])};display:flex;align-items:center;justify-content:center">${mg(e.mood,6).replace('class="glyph"','')}</span>`).join('')}${cap(26)}</div><div style="font-size:12px;color:var(--muted);margin-top:9px">Good start, dipped, steadied.</div></div>` },
+
+{ t:'D · Intraday Timeline', d:'Card holds a mini time-row: each check-in placed along the day, left→right.', g:'Time made visible inside the card.',
+  card:(lbl,es)=>{ const sorted=[...es].sort((a,b)=>a.time<b.time?-1:1); return `<div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:10px">${lbl}</div><div style="position:relative;height:54px"><div style="position:absolute;left:0;right:0;top:20px;height:2px;background:var(--hair)"></div>${sorted.map((e,i)=>{ const x=8+i*((100-16)/(sorted.length-1||1)); return `<div style="position:absolute;left:${x}%;top:0;transform:translateX(-50%);text-align:center"><span class="glyph">${gMood(cssv(moodRamp[e.mood-1]),e.mood,7)}</span><div class="mono" style="font-size:8px;color:var(--muted);margin-top:18px">${e.time}</div></div>`; }).join('')}</div></div>`; } },
+
+{ t:'E · Dose-aware', d:'Card embeds a slim med arc; check-ins sit relative to onset→wear-off.', g:'Folds time-blindness + dose into the card.',
+  card:(lbl,es,today)=>{ return `<div class="card"><div style="font-size:13px;font-weight:700;margin-bottom:8px">${lbl}</div><div style="position:relative;height:30px;margin-bottom:6px"><div style="position:absolute;left:0;right:0;top:13px;height:6px;border-radius:4px;background:linear-gradient(90deg,${tint('var(--med)',20)},var(--med),${tint('var(--med)',20)})"></div>${today?`<span style="position:absolute;left:62%;top:4px;transform:translateX(-50%)">${cap(16)}</span>`:''}<span class="mono" style="position:absolute;left:0;top:22px;font-size:8px;color:var(--muted)">14:34 dose</span><span class="mono" style="position:absolute;right:0;top:22px;font-size:8px;color:var(--muted)">wears 02:34</span></div>${es.map(e=>`<div style="display:flex;align-items:center;gap:9px;padding:6px 0"><span class="mono" style="font-size:10px;color:var(--muted);width:34px">${e.time}</span>${mg(e.mood)}<span style="font-size:12px;font-weight:600">${MOODW[e.mood-1]}</span><span style="font-size:11px;color:var(--muted);margin-left:auto">${ENW[e.energy-1]}</span></div>`).join('')}</div>`; } },
+
+{ t:'F · Two-line Calm', d:'Card = date line + glanceable read; muted secondary line. Maximum quiet.', g:'Calm, intentional, minimal noise.',
+  card:(lbl,es)=>{ const m=dominant(es); return `<div class="card" style="padding:14px"><div style="display:flex;align-items:baseline;gap:8px"><span class="fr" style="font-size:17px;font-weight:600;color:${cssv(moodRamp[m-1])}">${MOODW[m-1]}</span><span style="font-size:12px;color:var(--muted)">${lbl}</span><span style="margin-left:auto">${mg(m,8)}</span></div><div style="font-size:12.5px;color:var(--muted);margin-top:5px">${es.length} check-ins · energy ${ENW[Math.round(es.reduce((a,e)=>a+e.energy,0)/es.length)-1].toLowerCase()} · focus ${FOW[Math.round(es.reduce((a,e)=>a+e.focus,0)/es.length)-1].toLowerCase()}</div></div>`; } },
+
+{ t:'G · Expandable', d:'Collapsed cards = summary. Tap to expand one into full detail.', g:'Progressive disclosure — the ADHD core.',
+  interactive:true,
+  card:(lbl,es,today,vi)=>{ const m=dominant(es); const id=`exp-${vi}-${lbl.replace(/\\W/g,'')}`; return `<div class="card exp-card" data-id="${id}" style="cursor:pointer"><div style="display:flex;align-items:center;gap:11px">${mg(m,10)}<div style="flex:1"><div style="font-size:13.5px;font-weight:700">${lbl} · ${MOODW[m-1]}</div><div style="font-size:11.5px;color:var(--muted)">${es.length} check-ins · tap to open</div></div><span class="exp-chev" style="color:var(--muted)">⌄</span></div><div class="exp-body" style="display:grid;grid-template-rows:0fr;transition:grid-template-rows .2s"><div style="overflow:hidden"><div style="padding-top:11px">${es.map(e=>`<div style="display:flex;align-items:center;gap:9px;padding:5px 0"><span class="mono" style="font-size:10px;color:var(--muted);width:34px">${e.time}</span>${mg(e.mood)}${eg(e.energy)}${fg(e.focus)}<span style="font-size:11px;color:var(--muted);margin-left:auto">${MOODW[e.mood-1]}</span></div>`).join('')}</div></div></div></div>`; } },
+
+{ t:'H · In Your Words', d:'Card leads with a transcript snippet + small mood glyph. Voice folded in.', g:'Foregrounds the journal you actually have.',
+  card:(lbl,es)=>`<div class="card"><div style="font-size:11px;font-weight:800;letter-spacing:.06em;color:var(--muted);margin-bottom:8px">${lbl.toUpperCase()}</div>${es.slice(0,2).map(e=>`<div style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--hair)"><span style="flex:0 0 auto;margin-top:2px">${mg(e.mood,7)}</span><div><div class="fr" style="font-style:italic;font-size:13.5px;line-height:1.4">“${e.quote}”</div><div class="mono" style="font-size:9px;color:var(--muted);margin-top:3px">${e.time} · ▶ 0:${20+es.indexOf(e)*9}</div></div></div>`).join('')}</div>` },
+];
+
+function render(){
+  document.getElementById('board').innerHTML=VARS.map((v,vi)=>{
+    const list=`<div class="daylbl green">TODAY · 19 JUN</div>${v.card('Today',TODAY,true,vi)}<div class="daylbl">YESTERDAY · 18 JUN</div>${v.card('Yesterday',YDAY,false,vi)}`;
+    return `<div class="col"><div class="cap"><div class="t">${v.t}</div><div class="d">${v.d}</div><div class="g">✓ ${v.g}</div></div><div class="phone">${frame(list)}</div></div>`;
+  }).join('');
+  // expandable interactivity
+  document.querySelectorAll('.exp-card').forEach(c=>{ c.onclick=()=>{ const b=c.querySelector('.exp-body'); const ch=c.querySelector('.exp-chev'); const open=b.style.gridTemplateRows==='1fr'; b.style.gridTemplateRows=open?'0fr':'1fr'; ch.textContent=open?'⌄':'⌃'; }; });
+}
+function toggleTheme(){ const r=document.documentElement; r.setAttribute('data-theme', r.getAttribute('data-theme')==='dark'?'light':'dark'); render(); }
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

@@ -67,11 +67,13 @@ class MockDataGenerator {
                 recording.summaryGeneratedAt = recordingDate
                 recording.isMockData = true
 
-                // Feelings (0–3), shown as neutral chips.
-                let feelingPool = ["Happy", "Calm", "Relaxed", "Content", "Anxious", "Tired", "Bored", "Indifferent", "Restless", "Grateful"]
-                let feelings = Array(feelingPool.shuffled().prefix(Int.random(in: 0...3)))
-                if let data = try? JSONEncoder().encode(feelings), let json = String(data: data, encoding: .utf8) {
-                    recording.feelingsJSON = json
+                // Emotions (0–3) drawn from the curated Mood-Meter set, shown as chips.
+                let emotionPool = ["excited", "joyful", "proud", "inspired", "content",
+                                   "grateful", "serene", "anxious", "frustrated", "sad",
+                                   "lonely", "discouraged"]
+                let emotions = Array(emotionPool.shuffled().prefix(Int.random(in: 0...3)))
+                if let data = try? JSONEncoder().encode(emotions), let json = String(data: data, encoding: .utf8) {
+                    recording.emotionsJSON = json
                 }
 
                 // Side effects on roughly a third of entries.

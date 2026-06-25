@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Calendar View — 10 Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#F6F1E7; --surface:#FCF8EF; --surface2:#EFE8D8; --ink:#221E16; --muted:#7A7361;
+    --hair:#E3DAC7; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#7E5CA8;
+    --shadow:0 1px 2px rgba(34,30,22,.05),0 8px 24px rgba(34,30,22,.07);
+  }
+  [data-theme="dark"] {
+    --bg:#14130F; --surface:#1E1C16; --surface2:#272419; --ink:#F3EEE0; --muted:#9A917C;
+    --hair:#322E22; --green:#6E9A58; --amber:#E8B255; --accent:#D4A24A; --med:#9277BE;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.4);
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'DM Sans',system-ui,sans-serif; line-height:1.5; -webkit-font-smoothing:antialiased; transition:background .4s,color .4s; }
+  .wrap { max-width:1320px; margin:0 auto; padding:40px 28px 120px; }
+  header { display:flex; justify-content:space-between; align-items:flex-start; gap:24px; flex-wrap:wrap; }
+  .eyebrow { font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); font-weight:700; margin:0 0 12px; }
+  h1 { font-family:'Fraunces',serif; font-weight:500; font-size:clamp(34px,5vw,54px); line-height:1.03; margin:0; letter-spacing:-.02em; }
+  .sub { font-family:'Fraunces',serif; font-style:italic; font-size:19px; color:var(--accent); margin:14px 0 0; max-width:64ch; }
+  .toggle { position:sticky; top:16px; font-size:13px; font-weight:600; cursor:pointer; background:var(--surface); color:var(--ink); border:1px solid var(--hair); border-radius:999px; padding:10px 16px; box-shadow:var(--shadow); z-index:50; }
+  .row { display:flex; gap:34px; flex-wrap:wrap; align-items:flex-start; margin-top:42px; }
+  .col { width:312px; }
+  .cap { margin-bottom:12px; }
+  .cap .t { font-family:'Fraunces',serif; font-size:18px; font-weight:600; }
+  .cap .d { font-size:12.5px; color:var(--muted); }
+  .phone { width:312px; height:680px; background:var(--bg); border-radius:40px; border:1px solid var(--hair); box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column; }
+  .statusbar { display:flex; justify-content:space-between; font-size:11px; color:var(--muted); padding:13px 22px 6px; font-weight:600; font-family:'IBM Plex Mono',monospace; }
+  .screen { padding:6px 16px 16px; overflow:hidden; flex:1; }
+  .mono { font-family:'IBM Plex Mono',monospace; }
+  .fr { font-family:'Fraunces',serif; }
+  .hair { height:1px; background:var(--hair); margin:14px -16px; }
+  .day-head { font-size:12px; font-weight:800; letter-spacing:.08em; color:var(--muted); margin:14px 0 8px; }
+  .day-head.green { color:var(--green); }
+  .glyph { display:inline-flex; vertical-align:middle; }
+  .medbar { background:var(--surface); border:1px solid var(--hair); border-radius:14px; padding:9px 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · Paper &amp; Pollen · Calendar view · 10 directions</p>
+      <h1>Ten ways to read the calendar</h1>
+      <p class="sub">Fresh directions for the home calendar, built on the Paper &amp; Pollen system: week ribbon, agenda thread, mood/med dots, the signal glyph language. Each is a distinct mental model for how the month, the week, and today relate. Toggle light/dark.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div class="row" id="board"></div>
+</div>
+
+<script>
+// ---- Paper & Pollen glyph generators (ported from Squirl .dc.html) ----
+const moodRamp = ['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'];
+const energyRamp = ['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'];
+const focusRamp = ['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.8,op=(0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.4,cx=12,cy=13,d=l<=2?'stroke-dasharray="3 3"':'';let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}" ${d}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icBed(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a2 2 0 0 1 2-2h9a4 4 0 0 1 4 4v4"/><path d="M3 14h18"/><path d="M6.5 10V8.6a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1V10"/></svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.7"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.3"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.22"/></g></svg>`;}
+const g=(k,l,base)=>{const r=k==='mood'?moodRamp:k==='energy'?energyRamp:focusRamp;const fn=k==='mood'?gMood:k==='energy'?gEnergy:gFocus;return `<span class="glyph">${fn(r[l-1],l,base||7)}</span>`;};
+const cap=(sz)=>`<span class="glyph">${icCapsule('var(--med)',sz||16)}</span>`;
+const bed=(sz)=>`<span class="glyph">${icBed('var(--med)',sz||16)}</span>`;
+const tint=(hex,pct)=>`color-mix(in srgb, ${hex} ${pct}%, var(--surface))`;
+
+// ---- sample data ----
+// days 15..21, June 2026; 19 = today (Fri). mood per day (null = no entry)
+const DOW=['M','T','W','T','F','S','S'];
+const DAYS=[
+  {n:15,mood:3,med:true},{n:16,mood:2,med:false},{n:17,mood:null,med:true},
+  {n:18,mood:4,med:true},{n:19,mood:4,med:true,today:true},{n:20,mood:null,med:false,future:true},{n:21,mood:null,med:false,future:true}
+];
+// full month grid (30 days), mood tints for a heatmap
+const MONTH=[]; for(let i=1;i<=30;i++){ let m=null; const seed=(i*7)%6; if(i<=19){ m = seed===0?null:Math.min(5,Math.max(1,(seed))); } MONTH.push({n:i,mood:m,today:i===19,future:i>19}); }
+// agenda entries for a day
+const AGENDA=[
+  {time:'16:12',mood:4,energy:5,focus:3,words:['Good','Charged','Present']},
+  {time:'12:05',mood:3,energy:3,focus:5,words:['Okay','Steady','Sharp']},
+  {time:'09:15',mood:3,energy:2,focus:3,words:['Okay','Tired','Present']},
+];
+
+function moodTint(m){ return m? tint(moodRamp[m-1],38) : 'transparent'; }
+
+// status bar
+const SB=`<div class="statusbar"><span>14:34</span><span>54</span></div>`;
+// med bar component
+const MEDBAR=`<div class="medbar" style="margin-top:12px;"><div style="display:flex; justify-content:space-between; align-items:center;"><span class="fr" style="font-size:14px;">Concerta 18 mg</span><span style="font-size:11px; color:var(--med); font-weight:600;">active</span></div><div style="display:flex; align-items:center; gap:8px; margin-top:7px;">${cap(18)}<span style="flex:1; height:5px; border-radius:4px; background:var(--surface2); overflow:hidden;"><span style="display:block; height:100%; width:48%; background:var(--med); border-radius:4px;"></span></span></div></div>`;
+
+// week ribbon component
+function weekRibbon(){
+  let h=`<div style="display:grid; grid-template-columns:repeat(7,1fr); row-gap:6px; text-align:center;">`;
+  DOW.forEach(d=>h+=`<div style="font-size:11px; font-weight:600; color:var(--muted);">${d}</div>`);
+  DAYS.forEach(d=>{
+    h+=`<div style="display:flex; flex-direction:column; align-items:center; gap:3px;">
+      <span style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; background:${d.today?'var(--ink)':'transparent'}; color:${d.today?'var(--bg)':(d.future?'var(--muted)':'var(--ink)')};">${d.n}</span>
+      <span style="display:flex; gap:2px;"><span style="width:5px; height:5px; border-radius:50%; background:${d.mood?'var(--green)':'transparent'};"></span><span style="width:5px; height:5px; border-radius:50%; background:${d.med?'var(--med)':'transparent'};"></span></span>
+    </div>`;
+  });
+  return h+`</div>`;
+}
+
+// agenda thread
+function agendaThread(items){
+  return items.map(e=>{
+    const moodHex=moodRamp[e.mood-1];
+    const pills=[['mood',e.mood,e.words[0]],['energy',e.energy,e.words[1]],['focus',e.focus,e.words[2]]]
+      .map(([k,l,w])=>`<span style="display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:700; color:var(--ink);">${g(k,l,7)}${w}</span>`).join('');
+    return `<div style="display:flex; gap:10px; align-items:flex-start; margin-bottom:11px;">
+      <span class="mono" style="width:42px; height:42px; flex:0 0 42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; background:${moodHex}; color:#1c2a12;">${e.time}</span>
+      <div style="flex:1; display:flex; flex-wrap:wrap; gap:5px 11px; align-items:center; background:${tint(moodHex,42)}; border-radius:14px; padding:9px 13px;">${pills}</div>
+    </div>`;
+  }).join('');
+}
+
+// ---- 10 directions ----
+const VARIANTS=[
+  { t:'A · Week Ribbon + Agenda', d:'The shipped favorite, refined. Week strip, then today, then the thread.',
+    body:()=>`${weekRibbon()}${MEDBAR}<div class="hair"></div><div class="day-head green">TODAY · 19 JUN</div>${agendaThread(AGENDA)}` },
+
+  { t:'B · Month Bloom', d:'Full month grid; each day a circle tinted by its mood. Overview-first.',
+    body:()=>{
+      let grid=`<div style="display:grid; grid-template-columns:repeat(7,1fr); gap:6px; text-align:center; margin-top:4px;">`;
+      DOW.forEach(d=>grid+=`<div style="font-size:10px; font-weight:600; color:var(--muted);">${d}</div>`);
+      // pad first day (June 1 2026 = Monday, so no pad)
+      MONTH.forEach(d=>{ grid+=`<div style="aspect-ratio:1; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; background:${d.future?'transparent':moodTint(d.mood)}; color:${d.future?'var(--muted)':'var(--ink)'}; outline:${d.today?'2px solid var(--accent)':'none'}; outline-offset:1px; position:relative;">${d.n}${d.mood&&d.n%4===0?`<span style="position:absolute; bottom:3px; width:4px; height:4px; border-radius:50%; background:var(--med);"></span>`:''}</div>`; });
+      grid+=`</div>`;
+      return `<div class="fr" style="font-size:20px; font-weight:500;">June 2026</div>${grid}<div class="hair"></div><div class="day-head">FRI 19 · SELECTED</div>${agendaThread(AGENDA.slice(0,2))}`;
+    } },
+
+  { t:'C · Vertical Day Feed', d:'No calendar chrome. Days flow as a continuous scroll; today anchors the top.',
+    body:()=>`<div class="fr" style="font-size:20px; font-weight:500;">Your days</div>
+      <div class="day-head green" style="margin-top:10px;">TODAY · FRI 19 JUN</div>${agendaThread(AGENDA.slice(0,2))}
+      <div class="day-head">YESTERDAY · THU 18 JUN</div>${agendaThread([AGENDA[2]])}
+      <div style="display:flex; align-items:center; gap:8px; color:var(--muted); font-size:12px; margin-top:4px;">${bed(16)} slept 7h30m</div>` },
+
+  { t:'D · Now-Line Timeline', d:'Time runs down a spine with a live "now" marker. Inspired by Structured.',
+    body:()=>{
+      const tl=[
+        {time:'09:15',entry:true,mood:3,label:'Okay · steady'},
+        {time:'12:30',gap:true,label:'quiet stretch'},
+        {time:'14:34',now:true,med:true,label:'Took Concerta'},
+        {time:'16:12',entry:true,mood:4,label:'Good · sharper'},
+      ];
+      const rows=tl.map(t=>`<div style="position:relative; margin-bottom:16px;">
+        <span class="mono" style="position:absolute; left:-52px; top:1px; font-size:10px; color:var(--muted); width:34px; text-align:right;">${t.time}</span>
+        ${t.now?`<span style="position:absolute; left:-16px; top:4px; width:11px; height:11px; border-radius:50%; background:var(--accent); border:2px solid var(--bg);"></span>`:''}
+        ${t.gap?`<div style="font-size:12px; color:var(--muted); font-style:italic;">${t.label}</div>`:
+          t.med?`<div style="background:${tint('var(--med)',16)}; border-radius:13px; padding:9px 12px; display:flex; gap:8px; align-items:center;">${cap(16)}<span style="font-size:12.5px; font-weight:700;">${t.label}</span></div>`:
+          `<div style="background:${tint(moodRamp[t.mood-1],50)}; border-radius:13px; padding:9px 12px; display:flex; gap:8px; align-items:center;">${g('mood',t.mood,7)}<span style="font-size:12.5px; font-weight:700;">${t.label}</span></div>`}
+      </div>`).join('');
+      return `<div style="display:flex; align-items:baseline; gap:8px;"><span class="fr" style="font-size:21px; font-weight:500;">Today</span><span style="font-size:13px; color:var(--muted);">· Fri 19 Jun</span></div>
+        <div style="position:relative; margin-top:18px; padding-left:52px;"><div style="position:absolute; left:40px; top:6px; bottom:0; width:2px; background:var(--hair);"></div>${rows}</div>`;
+    } },
+
+  { t:'E · Mood Heatstrip', d:'Last 30 days as a scrollable bead strip; tap a bead for the day below.',
+    body:()=>{
+      let strip='';
+      MONTH.forEach(d=>{ strip+=`<span style="flex:0 0 auto; width:18px; height:34px; border-radius:6px; background:${d.future?'var(--surface2)':moodTint(d.mood)||'var(--surface2)'}; outline:${d.today?'2px solid var(--accent)':'none'}; outline-offset:1px;"></span>`; });
+      return `<div class="fr" style="font-size:20px; font-weight:500;">June 2026</div>
+        <div style="font-size:11px; color:var(--muted); margin:3px 0 10px;">30-day mood at a glance</div>
+        <div style="display:flex; gap:4px; overflow:hidden; padding:2px;">${strip}</div>
+        <div style="display:flex; gap:10px; margin-top:8px; font-size:10px; color:var(--muted);"><span>← earlier</span><span style="margin-left:auto;">today →</span></div>
+        <div class="hair"></div><div class="day-head accent" style="color:var(--accent);">FRI 19 · SELECTED</div>${MEDBAR}<div style="height:12px;"></div>${agendaThread(AGENDA.slice(0,2))}`;
+    } },
+
+  { t:'F · Card Stack', d:'Each day is a full card you swipe through. One day, full attention.',
+    body:()=>{
+      const moodHex=moodRamp[3];
+      return `<div style="position:relative; height:100%;">
+        <div style="position:absolute; inset:0 0 0 0; transform:translateY(8px) scale(.96); background:var(--surface2); border:1px solid var(--hair); border-radius:24px;"></div>
+        <div style="position:absolute; inset:0; background:var(--surface); border:1px solid var(--hair); border-radius:24px; box-shadow:var(--shadow); padding:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;"><span class="fr" style="font-size:24px; font-weight:500;">Fri 19</span><span style="font-size:12px; color:var(--muted);">June 2026</span></div>
+          <div style="display:flex; align-items:center; gap:12px; margin:18px 0;"><span style="width:60px; height:60px; border-radius:50%; background:${tint(moodHex,60)}; display:flex; align-items:center; justify-content:center;">${g('mood',4,14)}</span><div><div class="fr" style="font-size:20px; font-weight:600; color:${moodHex};">Good day</div><div style="font-size:12px; color:var(--muted);">3 check-ins · steady after a slow start</div></div></div>
+          ${MEDBAR}
+          <div class="hair"></div>
+          ${agendaThread(AGENDA.slice(0,2))}
+          <div style="position:absolute; bottom:16px; left:0; right:0; display:flex; justify-content:center; gap:6px; color:var(--muted);"><span>‹ Thu</span><span style="opacity:.4;">·····</span><span>Sat ›</span></div>
+        </div>
+      </div>`;
+    } },
+
+  { t:'G · Two-Week Pulse', d:'14-day dot grid; mood + med beads per day, today ringed.',
+    body:()=>{
+      const two=[]; for(let i=8;i<=21;i++){ let m=null; if(i<=19){const s=(i*5)%6; m=s===0?null:Math.min(5,s);} two.push({n:i,mood:m,med:i%3!==0,today:i===19,future:i>19}); }
+      let grid=`<div style="display:grid; grid-template-columns:repeat(7,1fr); gap:9px 6px; text-align:center; margin-top:8px;">`;
+      DOW.forEach(d=>grid+=`<div style="font-size:10px; font-weight:600; color:var(--muted);">${d}</div>`);
+      two.forEach(d=>{ grid+=`<div style="display:flex; flex-direction:column; align-items:center; gap:4px;"><span style="width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; color:${d.today?'var(--bg)':(d.future?'var(--muted)':'var(--ink)')}; background:${d.today?'var(--ink)':'transparent'};">${d.n}</span><span style="display:flex; gap:2px;"><span style="width:5px; height:5px; border-radius:50%; background:${d.mood?moodRamp[d.mood-1]:'transparent'};"></span><span style="width:5px; height:5px; border-radius:50%; background:${d.med&&!d.future?'var(--med)':'transparent'};"></span></span></div>`; });
+      grid+=`</div>`;
+      return `<div class="fr" style="font-size:20px; font-weight:500;">Last 2 weeks</div>${grid}
+        <div style="display:flex; gap:12px; margin-top:12px; font-size:10px; color:var(--muted);"><span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:6px; height:6px; border-radius:50%; background:var(--green);"></span>mood</span><span style="display:inline-flex; align-items:center; gap:4px;"><span style="width:6px; height:6px; border-radius:50%; background:var(--med);"></span>med</span></div>
+        <div class="hair"></div><div class="day-head accent" style="color:var(--accent);">FRI 19 · SELECTED</div>${agendaThread(AGENDA.slice(0,2))}`;
+    } },
+
+  { t:'H · Radial Day', d:'A 24-hour clock face; entries placed around the ring by time.',
+    body:()=>{
+      const cx=140,cy=140,R=104;
+      const pt=(h)=>{ const a=(h/24)*2*Math.PI - Math.PI/2; return [cx+Math.cos(a)*R, cy+Math.sin(a)*R]; };
+      const marks=[0,6,12,18].map(h=>{const[x,y]=pt(h);return `<text x="${x}" y="${y+3}" text-anchor="middle" font-family="IBM Plex Mono" font-size="9" fill="var(--muted)">${String(h).padStart(2,'0')}</text>`;}).join('');
+      const ev=[{h:9.25,k:'mood',l:3},{h:14.57,k:'med'},{h:16.2,k:'mood',l:4}];
+      const dots=ev.map(e=>{const[x,y]=pt(e.h); return e.k==='med'?`<circle cx="${x}" cy="${y}" r="9" fill="var(--med)" fill-opacity="0.85"/>`:`<circle cx="${x}" cy="${y}" r="10" fill="${moodRamp[e.l-1]}"/>`;}).join('');
+      const[nx,ny]=pt(14.57);
+      return `<div class="fr" style="font-size:20px; font-weight:500;">Fri 19 · today</div>
+        <svg width="280" height="280" viewBox="0 0 280 280" style="margin-top:8px;">
+          <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="var(--hair)" stroke-width="2"/>
+          <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="var(--accent)" stroke-width="1.5" opacity=".5"/>
+          ${marks}${dots}
+          <text x="${cx}" y="${cy-4}" text-anchor="middle" font-family="Fraunces" font-size="26" fill="var(--ink)">3</text>
+          <text x="${cx}" y="${cy+14}" text-anchor="middle" font-family="DM Sans" font-size="10" fill="var(--muted)">check-ins</text>
+        </svg>
+        <div class="hair"></div>${agendaThread(AGENDA.slice(0,2))}`;
+    } },
+
+  { t:'I · Calm Grouped List', d:'Soft tinted sections: today, earlier this week. No grid at all.',
+    body:()=>`<div class="fr" style="font-size:20px; font-weight:500;">Your June</div>
+      <div class="day-head" style="margin-top:14px;">TODAY</div>
+      <div style="background:${tint('var(--green)',9)}; border:1px solid ${tint('var(--green)',22)}; border-radius:16px; padding:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:13px; font-weight:700;">Fri 19 Jun</span><span style="font-size:11px; color:var(--green); font-weight:700;">3 check-ins</span></div>
+        <div style="display:flex; gap:6px; margin-top:11px;">${[moodRamp[3],moodRamp[2],moodRamp[2]].map(c=>`<span style="width:30px; height:30px; border-radius:9px; background:${c};"></span>`).join('')}${cap(28)}</div>
+        <div style="font-size:12px; color:var(--muted); margin-top:9px;">Good start, steady after. Concerta at 14:34.</div>
+      </div>
+      <div class="day-head">EARLIER THIS WEEK</div>
+      ${[{day:'Thu 18 Jun',note:'3 check-ins · steady',sw:[moodRamp[3],moodRamp[2]]},{day:'Tue 16 Jun',note:'1 check-in · flat',sw:[moodRamp[1]]}].map(e=>`<div style="display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--hair); border-radius:14px; padding:12px; margin-bottom:9px;"><div style="display:flex; gap:5px;">${e.sw.map(c=>`<span style="width:22px; height:22px; border-radius:6px; background:${c};"></span>`).join('')}</div><div style="flex:1;"><div style="font-size:13px; font-weight:600;">${e.day}</div><div style="font-size:11px; color:var(--muted);">${e.note}</div></div></div>`).join('')}` },
+
+  { t:'J · Split Month', d:'Mini-month up top, agenda for the tapped day below. Two scales at once.',
+    body:()=>{
+      let grid=`<div style="display:grid; grid-template-columns:repeat(7,1fr); gap:3px; text-align:center;">`;
+      DOW.forEach(d=>grid+=`<div style="font-size:9px; font-weight:600; color:var(--muted);">${d}</div>`);
+      MONTH.forEach(d=>{ grid+=`<div style="aspect-ratio:1; border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; background:${d.future?'transparent':(d.mood?moodTint(d.mood):'var(--surface2)')}; color:${d.future?'var(--muted)':'var(--ink)'}; border:${d.today?'2px solid var(--accent)':'none'};">${d.n}</div>`; });
+      grid+=`</div>`;
+      return `<div style="display:flex; justify-content:space-between; align-items:baseline;"><span class="fr" style="font-size:18px; font-weight:500;">June 2026</span><span style="font-size:12px; color:var(--muted);">‹ ›</span></div>
+        <div style="margin-top:8px; padding:10px; background:var(--surface); border:1px solid var(--hair); border-radius:14px;">${grid}</div>
+        <div class="day-head accent" style="color:var(--accent);">FRI 19 JUN</div>${MEDBAR}<div style="height:10px;"></div>${agendaThread(AGENDA.slice(0,2))}`;
+    } },
+];
+
+function render(){
+  document.getElementById('board').innerHTML = VARIANTS.map(v=>`
+    <div class="col">
+      <div class="cap"><div class="t">${v.t}</div><div class="d">${v.d}</div></div>
+      <div class="phone">${SB}<div class="screen">${v.body()}</div></div>
+    </div>`).join('');
+}
+function toggleTheme(){ const r=document.documentElement; r.setAttribute('data-theme', r.getAttribute('data-theme')==='dark'?'light':'dark'); render(); }
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

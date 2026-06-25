@@ -8,7 +8,7 @@ struct EvalCase {
     var mood: String? = nil
     var energy: EnergyLevel? = nil
     var focus: FocusLevel? = nil
-    var feelings: Set<String> = []
+    var emotions: Set<String> = []        // curated Mood-Meter emotions; EN-only lexicon
     var activities: Set<String> = []
     var medNames: Set<String> = []
     var sleepHours: Double? = nil
@@ -16,6 +16,12 @@ struct EvalCase {
     var anySideEffect: Bool = false
 }
 
+// Emotion truth labels use ONLY the 20 curated emotions (specs/020-emotions-lexicon).
+// Words dropped from the old ~60-word list (panicked, delighted, overwhelmed, relieved,
+// settled, indifferent, curious, recharged, exhausted, restless, motivated, on edge) are
+// no longer asserted — they belong to other axes or are out of the curated set. The
+// emotion lexicon is EN-only, so PT/ES samples carry no emotion label (multilingual is a
+// separate, out-of-scope concern) while keeping their mood/med/sleep labels.
 enum EvalSet {
     static let cases: [EvalCase] = [
         // ── EN: multi-signal med day ──
@@ -23,7 +29,7 @@ enum EvalSet {
             id: "en-med-day", language: "en",
             transcript: "Took my Concerta 36mg at 8am with breakfast. It kicked in after about 45 minutes and I was firing on all cylinders until lunch. Crashed hard around 3pm, dry mouth all afternoon. Still managed to finish the report, proud of that.",
             mood: "good",
-            energy: .charged, feelings: ["proud"], medNames: ["Concerta"],
+            energy: .charged, emotions: ["proud"], medNames: ["Concerta"],
             topics: ["Medications", "Symptoms"], anySideEffect: true
         ),
         // ── EN: paraphrase energy (current pipeline SHOULD miss — recall gap doc) ──
@@ -47,7 +53,7 @@ enum EvalSet {
         EvalCase(
             id: "en-past-progressive", language: "en",
             transcript: "I was feeling really anxious on Monday. Today I'm actually calm and got my inbox to zero.",
-            mood: "good", feelings: ["anxious"]
+            mood: "good", emotions: ["anxious"]
         ),
         // ── EN: sleep + side effects ──
         EvalCase(
@@ -56,11 +62,11 @@ enum EvalSet {
             mood: "low", focus: .foggy, medNames: ["Vyvanse"], sleepHours: 5,
             topics: ["Medications", "Symptoms"], anySideEffect: true
         ),
-        // ── EN: inflection recall (Task 9 target) ──
+        // ── EN: inflection recall (Task 9 target) — emotion word "panicked" dropped ──
         EvalCase(
             id: "en-inflection", language: "en",
             transcript: "I'm panicking about the deadline and I keep avoiding the email thread. Spent the evening doomscrolling instead.",
-            feelings: ["panicked"], activities: ["Screen Time"]
+            activities: ["Screen Time"]
         ),
         // ── EN: activities beyond the original six (Task 10 target) ──
         EvalCase(
@@ -72,7 +78,7 @@ enum EvalSet {
         EvalCase(
             id: "pt-med-day", language: "pt",
             transcript: "Tomei o Concerta de 36mg às 8 da manhã. Dormi só 5 horas e passei o dia todo ansioso, sem conseguir começar nada. Boca seca a tarde inteira.",
-            mood: "low", feelings: ["anxious"], medNames: ["Concerta"], sleepHours: 5,
+            mood: "low", medNames: ["Concerta"], sleepHours: 5,
             topics: ["Medications", "Symptoms"], anySideEffect: true
         ),
         // ── ES: truth labels, zero expected recall today except med/dose ──
@@ -84,44 +90,44 @@ enum EvalSet {
         ),
 
         // ════════════════════════════════════════════════════════════
-        // 8 EN mood/feelings-centric
+        // 8 EN mood/emotion-centric
         // ════════════════════════════════════════════════════════════
 
-        // exact lexicon mood word "great", happy
+        // exact lexicon mood word "great", happy — old emotion "delighted" dropped
         EvalCase(
             id: "en-mood-great", language: "en",
             transcript: "Today was great, honestly one of the best days in ages. I felt happy and light, like everything was clicking into place.",
-            mood: "great", feelings: ["delighted"]
+            mood: "great"
         ),
-        // exact lexicon mood word "overwhelmed"/"stressed" → low; overwhelmed feeling
+        // overwhelmed/stressed → low mood; emotion words "overwhelmed"/"on edge" dropped
         EvalCase(
             id: "en-mood-overwhelmed", language: "en",
             transcript: "I'm so overwhelmed right now, completely buried under deadlines and the to-do list just keeps growing. Feeling really stressed and on edge all day.",
-            mood: "low", feelings: ["overwhelmed", "on edge"]
+            mood: "low"
         ),
-        // paraphrase mood the pipeline likely misses: "weight lifted" → good, relieved
+        // paraphrase mood "weight lifted" → good; emotions "relieved"/"settled" dropped
         EvalCase(
             id: "en-mood-paraphrase-lifted", language: "en",
             transcript: "After I finally sent that email it was like a weight lifted off my shoulders, and I could breathe again. Spent the rest of the afternoon feeling settled.",
-            mood: "good", feelings: ["relieved", "settled"]
+            mood: "good"
         ),
-        // paraphrase mood the pipeline likely misses: "world is grey" → low, sad
+        // paraphrase mood "world is grey" → low, sad
         EvalCase(
             id: "en-mood-paraphrase-grey", language: "en",
             transcript: "Everything just felt grey and pointless today, like there was no colour in anything. I was sad for most of the morning and couldn't shake it.",
-            mood: "low", feelings: ["sad"]
+            mood: "low", emotions: ["sad"]
         ),
-        // flat mood + indifferent feeling
+        // flat mood — old emotion "indifferent" dropped (cognitive/mood state)
         EvalCase(
             id: "en-mood-flat", language: "en",
             transcript: "Pretty meh day, just kind of numb and going through the motions. Didn't feel much of anything either way, totally indifferent.",
-            mood: "flat", feelings: ["indifferent"]
+            mood: "flat"
         ),
-        // okay mood + curious feeling
+        // okay mood — old emotion "curious" dropped (cognitive state)
         EvalCase(
             id: "en-mood-okay", language: "en",
             transcript: "I'm alright, not bad at all really. Got curious about a new podcast and ended up taking notes, which was kind of nice.",
-            mood: "okay", feelings: ["curious"]
+            mood: "okay"
         ),
         // NO mood at all #1 — logistics with trap word "nothing" non-emotional
         EvalCase(
@@ -171,20 +177,20 @@ enum EvalSet {
         ),
 
         // ════════════════════════════════════════════════════════════
-        // 4 EN sleep-centric
+        // 4 EN sleep-centric — old energy-state "emotions" dropped
         // ════════════════════════════════════════════════════════════
 
         // "got about 7 hours" → 7, slept well
         EvalCase(
             id: "en-sleep-seven", language: "en",
             transcript: "Got about 7 hours last night and woke up before the alarm feeling rested. Made a proper breakfast instead of skipping it for once.",
-            feelings: ["recharged"], activities: ["Eating"], sleepHours: 7
+            activities: ["Eating"], sleepHours: 7
         ),
-        // "barely slept, three hours" → 3, exhausted
+        // "barely slept, three hours" → 3, exhausted (energy axis)
         EvalCase(
             id: "en-sleep-three", language: "en",
             transcript: "Barely slept, maybe three hours total because the baby was up all night. I'm completely exhausted and running on fumes.",
-            energy: .tired, feelings: ["exhausted"], sleepHours: 3
+            energy: .tired, sleepHours: 3
         ),
         // "nine hours and still tired" → 9, tired energy
         EvalCase(
@@ -203,29 +209,29 @@ enum EvalSet {
         // 4 EN executive-dysfunction / overwhelm / win register
         // ════════════════════════════════════════════════════════════
 
-        // executive dysfunction / can't start, scattered focus, restless
+        // executive dysfunction / can't start, scattered focus — "restless" dropped (energy)
         EvalCase(
             id: "en-exec-stuck", language: "en",
             transcript: "I knew exactly what I needed to do but I just could not start any of it, sat staring at the screen for an hour. My head was all over the place and I felt restless and useless.",
-            focus: .distracted, feelings: ["restless"]
+            focus: .distracted
         ),
         // win register — crushed it, accomplished, proud → great mood
         EvalCase(
             id: "en-win-presentation", language: "en",
             transcript: "Absolutely nailed the presentation today, the client signed off on the spot. Felt accomplished and proud walking out of that room.",
-            mood: "great", feelings: ["proud"]
+            mood: "great", emotions: ["proud"]
         ),
-        // overwhelm + locked-in focus once started, motivated
+        // overwhelm + locked-in focus once started — "overwhelmed"/"motivated" dropped
         EvalCase(
             id: "en-overwhelm-then-focus", language: "en",
             transcript: "The inbox was a mountain and I felt completely overwhelmed at first, but once I got into the zone I powered through it. Ended up feeling really motivated.",
-            focus: .lockedIn, feelings: ["overwhelmed", "motivated"]
+            focus: .lockedIn
         ),
         // quiet win, content/good register, grateful
         EvalCase(
             id: "en-quiet-win", language: "en",
             transcript: "Nothing dramatic, but I cleared the small admin tasks I'd been putting off for weeks and felt quietly content about it. Grateful for a calm evening.",
-            mood: "good", feelings: ["content", "grateful"]
+            mood: "good", emotions: ["content", "grateful"]
         ),
 
         // ════════════════════════════════════════════════════════════
@@ -256,14 +262,14 @@ enum EvalSet {
         EvalCase(
             id: "pt-good-day", language: "pt",
             transcript: "Que dia maravilhoso, me senti ótimo do começo ao fim. Tomei meu Ritalina de manhã e consegui terminar tudo no trabalho, muito orgulhoso.",
-            mood: "great", feelings: ["proud"],
+            mood: "great",
             activities: ["Work"], medNames: ["Ritalin"], topics: ["Medications"]
         ),
         // PT sleep + tired + chores
         EvalCase(
             id: "pt-sleep-chores", language: "pt",
             transcript: "Dormi apenas 4 horas e acordei exausto. Mesmo assim lavei a louça e fiz a faxina da casa toda antes do almoço.",
-            energy: .tired, feelings: ["exhausted"],
+            energy: .tired,
             activities: ["Chores"], sleepHours: 4
         ),
         // PT med skip + symptom (headache)
@@ -278,11 +284,11 @@ enum EvalSet {
         // 3 ES
         // ════════════════════════════════════════════════════════════
 
-        // ES mood low + anxious + meds
+        // ES mood low + meds (emotion label EN-only → omitted)
         EvalCase(
             id: "es-anxious-day", language: "es",
             transcript: "Hoy me sentí muy triste y ansioso todo el día, no podía dejar de preocuparme. Tomé mi Concerta de 36 miligramos pero no ayudó mucho.",
-            mood: "low", feelings: ["anxious", "sad"], medNames: ["Concerta"],
+            mood: "low", medNames: ["Concerta"],
             topics: ["Medications"]
         ),
         // ES sleep + good mood + outdoors fitness

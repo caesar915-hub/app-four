@@ -5,6 +5,10 @@ import SwiftUI
 enum RecordingStatus: String, Codable, Sendable {
     case recorded
     case transcribing
+    /// Captured before the transcription model was ready; awaiting the model to land.
+    /// Distinct from `.transcribing` (orphan recovery must not sweep it to `.failed`)
+    /// and from `.failed` (a late model is not a failure — the UI stays calm).
+    case pendingTranscription
     case completed
     case failed
     case placeholder

@@ -35,6 +35,9 @@ memory/
 # Claude Code local config, hooks & installed skills — not app source
 .claude/
 
+# Obsidian vault config (this repo doubles as an Obsidian vault; notes are the .md files)
+.obsidian/
+
 # Local design reference screen recordings (any location)
 *.MP4
 *.mp4

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Expanded card v2 — 10 mixes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EAF0DB; --paper:#F1F4E6; --surface:#FCFBF4; --surface2:#E4E9D2; --ink:#23271C; --muted:#7C8270;
+    --hair:#D7DEC4; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#8466B5;
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    --e1:#A9A079; --e2:#C2B25A; --e3:#D8C53E; --e4:#EAD22A; --e5:#E6C21E;
+    --f1:#7E8B96; --f2:#6E8DAE; --f3:#5683B8; --f4:#3E73B0; --f5:#2C5E9E;
+    --shadow:0 2px 6px rgba(40,48,24,.05),0 14px 34px rgba(40,48,24,.08); --shadow-sm:0 1px 2px rgba(40,48,24,.06);
+  }
+  [data-theme="dark"]{
+    --bg:#131510; --paper:#1B1E16; --surface:#23271C; --surface2:#2D3122; --ink:#EDF0E2; --muted:#9AA088;
+    --hair:#363B2A; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC;
+    --m1:#E08A3C; --m2:#EFB860; --m3:#A9D183; --m4:#6EC07C; --m5:#43A268;
+    --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:1340px;margin:0 auto;padding:48px 28px 110px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(34px,5vw,50px);line-height:1.02;margin:0;letter-spacing:-.025em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--accent);margin:14px 0 0;max-width:66ch;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:11px 18px;box-shadow:var(--shadow-sm);z-index:50;}
+  .board{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start;margin-top:42px;}
+  .unit{width:380px;}
+  .pn{font-family:'Fraunces',serif;font-size:17px;font-weight:600;}
+  .pd{font-size:12.5px;color:var(--muted);margin:4px 0 14px;min-height:48px;}
+
+  .card{background:var(--paper);border:1px solid var(--hair);border-radius:22px;overflow:hidden;box-shadow:var(--shadow-sm);}
+  .wash{display:flex;align-items:center;gap:13px;padding:15px 18px;}
+  .wash .title{font-family:'Fraunces',serif;font-size:20px;font-weight:600;letter-spacing:-.01em;}
+  .wash .meta{margin-left:auto;display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;font-weight:600;}
+  .wash .chev{font-size:12px;color:var(--muted);}
+  .body{padding:14px 16px 18px;}
+  .medchip{display:flex;align-items:center;gap:8px;background:color-mix(in srgb,var(--med) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--med) 22%,var(--hair));border-radius:999px;padding:9px 14px;margin-bottom:14px;font-size:13px;color:var(--med);font-weight:700;}
+  .medchip .left{color:var(--med);} .medchip .meta{margin-left:auto;font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);font-weight:500;}
+
+  .fr{font-family:'Fraunces',serif;} .mono{font-family:'IBM Plex Mono',monospace;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+
+  /* rows */
+  .row{display:flex;gap:13px;align-items:stretch;padding:12px 2px;}
+  .row+.row{border-top:1px solid var(--hair);}
+  .ct{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;gap:7px;}
+  .mhead{display:flex;align-items:baseline;gap:8px;}
+  .mword{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-.01em;}
+  .rtime{margin-left:auto;font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);}
+  .subsig{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .sg{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;}
+
+  /* left anchors */
+  .disc{flex:none;width:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;}
+  .disc .circle{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .medpill{font-family:'IBM Plex Mono';font-size:10px;font-weight:600;color:var(--med);background:color-mix(in srgb,var(--med) 14%,var(--surface));border-radius:999px;padding:2px 7px;}
+  .panel{flex:none;width:78px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:10px 4px;}
+  .panel .pm{font-family:'IBM Plex Mono';font-size:10px;font-weight:600;color:var(--med);}
+  .ringcol{flex:none;width:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+
+  /* meters & dots */
+  .segs{display:flex;gap:3px;width:108px;} .seg{height:7px;flex:1;border-radius:3px;background:var(--surface2);}
+  .dots{display:flex;gap:5px;} .d5{width:8px;height:8px;border-radius:50%;background:var(--surface2);}
+  .mlab{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);width:50px;flex:none;}
+  .meterline{display:flex;align-items:center;gap:9px;}
+
+  /* table */
+  .tbl{width:100%;border-collapse:collapse;}
+  .tbl th{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:center;padding:0 0 9px;}
+  .tbl th:first-child{text-align:left;}
+  .tbl td{padding:11px 0;text-align:center;border-top:1px solid var(--hair);}
+  .tbl td:first-child{text-align:left;}
+  .tbl .tt{font-family:'IBM Plex Mono';font-size:12px;}
+  .tbl .tp{font-family:'IBM Plex Mono';font-size:9px;color:var(--med);}
+
+  /* inline */
+  .inline{display:flex;align-items:center;gap:11px;padding:11px 2px;}
+  .inline+.inline{border-top:1px solid var(--hair);}
+  .inline .it{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);width:42px;flex:none;}
+  .inline .ip{font-family:'IBM Plex Mono';font-size:10px;color:var(--med);width:34px;flex:none;text-align:right;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · expanded card v2 · 10 mixes</p>
+      <h1>Disc, panel, ring, table — × glyphs, meters, dots</h1>
+      <p class="sub">Mixing what you liked: the two-tone split, the table, the mood-disc header, the inline expand-on-demand — with C meters / F dots / D glyphs and your real ramp. The anchor now shows medication %, not time; time is a small label. Sparse rows (partial signals) shown on purpose. Toggle light/dark.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+const mC=['var(--m1)','var(--m2)','var(--m3)','var(--m4)','var(--m5)'];
+const eC=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
+const fC=['var(--f1)','var(--f2)','var(--f3)','var(--f4)','var(--f5)'];
+const MOODW=['Low','Flat','Okay','Good','Great'],ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Scattered','Present','Sharp','Locked'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.7,op=(0.4+l*0.13).toFixed(2),sw=(1+l*0.14).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.3,cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.32+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.4" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.5" opacity="0.95"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.8"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.4"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.25"/></g></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p,base)=>`color-mix(in srgb, ${h} ${p}%, ${base||'var(--surface)'})`;
+const mg=(l,b)=>`<span class="glyph">${gMood(cssv(mC[l-1]),l,b||9)}</span>`;
+const eg=(l,b)=>`<span class="glyph">${gEnergy(cssv(eC[l-1]),l,b||9)}</span>`;
+const fg=(l,b)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,b||9)}</span>`;
+const cap=(s)=>`<span class="glyph">${icCapsule(cssv('var(--med)'),s||16)}</span>`;
+
+// rows: time, mood m, energy e, focus f (null=absent), med phase (null=no dose)
+const ROWS=[
+  {time:'16:12',m:4,e:5,f:3,med:0.58},
+  {time:'12:05',m:3,e:3,f:null,med:null},
+  {time:'09:15',m:3,e:null,f:null,med:null},
+];
+
+// ---- left anchors ----
+function disc(r){const inner=tint(mC[r.m-1],45,'var(--surface)');return `<div class="disc"><div class="circle" style="background:${inner}">${mg(r.m,11)}</div>${r.med!=null?`<span class="medpill">${Math.round(r.med*100)}%</span>`:''}</div>`;}
+function panel(r){const bg=tint(mC[r.m-1],55,'var(--surface)');return `<div class="panel" style="background:${bg}">${mg(r.m,12)}${r.med!=null?`<span class="pm">${Math.round(r.med*100)}%</span>`:''}</div>`;}
+function ring(r){const S=58,c=29,rr=25,C=2*Math.PI*rr,p=r.med||0;const inner=tint(mC[r.m-1],45,'var(--surface)');
+  const arc=r.med!=null?`<circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="var(--hair)" stroke-width="3.5"/><circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${c} ${c})"/>`:'';
+  return `<div class="ringcol"><div style="position:relative;width:${S}px;height:${S}px;display:flex;align-items:center;justify-content:center"><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" style="position:absolute;inset:0">${arc}<circle cx="${c}" cy="${c}" r="20" fill="${inner}"/></svg><span style="position:relative">${mg(r.m,11)}</span></div>${r.med!=null?`<span class="medpill">${Math.round(r.med*100)}%</span>`:''}</div>`;}
+
+// glyph in anchor: when anchor has mood glyph, the headline shows the word only (no second glyph)
+function moodHead(r,withTime){return `<div class="mhead"><span class="mword" style="color:${cssv(mC[r.m-1])}">${MOODW[r.m-1]}</span>${withTime?`<span class="rtime">${r.time}</span>`:''}</div>`;}
+
+// ---- signal (energy/focus) styles ----
+function sigGlyphs(r){let s='';if(r.e!=null)s+=`<span class="sg">${eg(r.e)} ${ENW[r.e-1]}</span>`;if(r.f!=null)s+=`<span class="sg">${fg(r.f)} ${FOW[r.f-1]}</span>`;return s?`<div class="subsig">${s}</div>`:'';}
+function meterLine(lab,l,colors){let g='';for(let i=0;i<5;i++)g+=`<span class="seg" style="${i<l?'background:'+cssv(colors[i]):''}"></span>`;return `<div class="meterline"><span class="mlab">${lab}</span><span class="segs">${g}</span></div>`;}
+function sigMeters(r){let s='';if(r.e!=null)s+=meterLine('Energy',r.e,eC);if(r.f!=null)s+=meterLine('Focus',r.f,fC);return s?`<div class="subsig" style="flex-direction:column;align-items:stretch;gap:7px">${s}</div>`:'';}
+function dotLine(lab,l,colors){let g='';for(let i=0;i<5;i++)g+=`<span class="d5" style="${i<l?'background:'+cssv(colors[i]):''}"></span>`;return `<div class="meterline"><span class="mlab">${lab}</span><span class="dots">${g}</span></div>`;}
+function sigDots(r){let s='';if(r.e!=null)s+=dotLine('Energy',r.e,eC);if(r.f!=null)s+=dotLine('Focus',r.f,fC);return s?`<div class="subsig" style="flex-direction:column;align-items:stretch;gap:7px">${s}</div>`:'';}
+function sigGlyphTrio(r){let s=`<span class="sg" style="flex-direction:column;gap:3px">${mg(r.m,14)}<b style="font-size:10px;color:${cssv(mC[r.m-1])}">${MOODW[r.m-1]}</b></span>`;if(r.e!=null)s+=`<span class="sg" style="flex-direction:column;gap:3px">${eg(r.e,14)}<b style="font-size:10px;color:${cssv('var(--accent)')}">${ENW[r.e-1]}</b></span>`;if(r.f!=null)s+=`<span class="sg" style="flex-direction:column;gap:3px">${fg(r.f,14)}<b style="font-size:10px;color:${cssv(fC[r.f-1])}">${FOW[r.f-1]}</b></span>`;return `<div class="subsig" style="gap:18px">${s}</div>`;}
+
+function rows(anchorFn,sigFn,trio){
+  return ROWS.map(r=>`<div class="row">${anchorFn(r)}<div class="ct">${trio?'':moodHead(r,true)}${sigFn(r)}</div></div>`).join('');
+}
+function tableCard(){
+  const rws=ROWS.map(r=>`<tr><td><span class="tt">${r.time}</span>${r.med!=null?`<div class="tp">${Math.round(r.med*100)}%</div>`:''}</td><td>${mg(r.m,9)}</td><td>${r.e!=null?eg(r.e,9):'<span style="color:var(--hair)">·</span>'}</td><td>${r.f!=null?fg(r.f,9):'<span style="color:var(--hair)">·</span>'}</td></tr>`).join('');
+  return `<table class="tbl"><thead><tr><th>Time</th><th>Mood</th><th>Energy</th><th>Focus</th></tr></thead><tbody>${rws}</tbody></table>`;
+}
+function inlineCard(){
+  return ROWS.map(r=>{let s=`<span class="sg">${mg(r.m)} <b style="color:${cssv(mC[r.m-1])}">${MOODW[r.m-1]}</b></span>`;if(r.e!=null)s+=`<span class="sg">${eg(r.e)} ${ENW[r.e-1]}</span>`;if(r.f!=null)s+=`<span class="sg">${fg(r.f)} ${FOW[r.f-1]}</span>`;return `<div class="inline"><span class="it">${r.time}</span><span class="ip">${r.med!=null?Math.round(r.med*100)+'%':''}</span><div class="subsig" style="flex:1">${s}</div></div>`;}).join('');
+}
+
+function card(inner){const headBg=tint(mC[3],50,'var(--paper)');return `<div class="card"><div class="wash" style="background:${headBg}"><span class="glyph">${gMood(cssv(mC[3]),4,12)}</span><span class="title">Fri 13 · Good</span><span class="meta">3 · ${cap(14)} <span class="chev">⌃</span></span></div><div class="body"><div class="medchip">${cap(15)}<span class="left">Concerta 18 mg · taken 14:34</span><span class="meta" style="color:var(--muted)">5h left</span></div>${inner}</div></div>`;}
+
+const PROPS=[
+ ['1 · Disc + glyphs','Mood-tinted disc with the sprout + med% pill; mood word + energy/focus glyph-words to the right.',()=>rows(disc,sigGlyphs)],
+ ['2 · Two-tone panel + glyphs','Your two-tone split: tinted left panel holds mood + med%; mood word + glyph-words right.',()=>rows(panel,sigGlyphs)],
+ ['3 · Phase-ring + glyphs','The disc carries the purple medication-phase ring (your original circle), glyph inside, % below; glyph-words right.',()=>rows(ring,sigGlyphs)],
+ ['4 · Table','Your table view — time + med% column, then mood / energy / focus as ramp glyphs that encode level. Densest, scannable.',()=>tableCard()],
+ ['5 · Disc + meters','Disc + med%; energy/focus as 5-segment level bars in their hue. Adds magnitude to the read.',()=>rows(disc,sigMeters)],
+ ['6 · Panel + dots','Two-tone panel; energy/focus as dot scales. Calm, gauge-like.',()=>rows(panel,sigDots)],
+ ['7 · Inline rows','Expand-on-demand inline: time · med% · mood/energy/focus glyph-words on one line. Lightest, list-friendly.',()=>inlineCard()],
+ ['8 · Disc + dots','Disc + med%; energy/focus as dots. Soft and quiet.',()=>rows(disc,sigDots)],
+ ['9 · Panel + meters','Two-tone panel; energy/focus as level meters. Magnitude with a strong mood anchor.',()=>rows(panel,sigMeters)],
+ ['10 · Ring + glyph trio','Phase-ring anchor; the signal is three big ramp glyphs (mood/energy/focus) that grow with level. Most visual, leans on your glyph language.',()=>rows(ring,sigGlyphTrio,true)],
+];
+function render(){document.getElementById('board').innerHTML=PROPS.map(([t,d,fn])=>`<div class="unit"><div class="pn">${t}</div><div class="pd">${d}</div>${card(fn())}</div>`).join('');}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

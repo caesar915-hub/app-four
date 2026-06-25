@@ -1,70 +1,54 @@
 import SwiftUI
 
-/// A card grouping all of a single day's check-ins as a mood/medication timeline.
-/// The card is an elevated surface washed with the day's *average* mood colour
-/// (Daylio-style), so it reads as a tinted card in both light and dark mode. The
-/// header takes the average's deeper shade on light, brighter shade on dark.
+/// A folding card for a single day's check-ins (Paper & Pollen "#4 Divided · Cream disc", spec 019).
+/// The card surface is cream; the day's *representative* mood tint lives on the header
+/// (`FoldedDayCardHeader`), so folded the whole card reads as one mood-tinted block and expanded the
+/// tint becomes a strip with the check-in rows dropping onto the cream surface below. Tapping the
+/// header toggles expansion. Selection carries no border — top-position + expansion convey it (FR-012).
 struct DayCard: View {
     let day: MoodLibraryViewModel.TimelineDay
+    let isExpanded: Bool
+    let onToggleExpand: () -> Void
     let onTapRecording: (UUID) -> Void
 
-    @Environment(\.colorScheme) private var colorScheme
-
-    private let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
+    private let shape = RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(day.label)
-                .font(.system(size: 14, weight: .heavy))   // fixed (no Dynamic Type scaling)
-                .textCase(.uppercase)
-                .foregroundStyle(headerColor)
-                .padding(.bottom, Spacing.m)
-                .accessibilityAddTraits(.isHeader)
+            Button(action: onToggleExpand) {
+                FoldedDayCardHeader(day: day, isExpanded: isExpanded)
+            }
+            .buttonStyle(.plain)
 
-            if day.nodes.isEmpty {
-                Text("No check-ins")
-                    .font(Typography.callout)
-                    .foregroundStyle(Theme.textSecondary)
-            } else {
-                ForEach(Array(day.nodes.enumerated()), id: \.element.id) { index, node in
-                    TimelineRow(
-                        node: node,
-                        isLast: index == day.nodes.count - 1,
-                        onTapRecording: onTapRecording
-                    )
+            if isExpanded && !day.nodes.isEmpty {
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(Array(day.nodes.enumerated()), id: \.element.id) { index, node in
+                        TimelineRow(
+                            node: node,
+                            isLast: index == day.nodes.count - 1,
+                            onTapRecording: onTapRecording
+                        )
+                    }
                 }
+                .padding(.horizontal, Spacing.l)
+                .padding(.top, Spacing.m)
+                .padding(.bottom, Spacing.l)
             }
         }
-        .padding(Spacing.l)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background {
-            ZStack {
-                shape.fill(Theme.cardBackground)
-                if let tint = MoodLevel.averageFill(of: moods) {
-                    shape.fill(tint.opacity(0.16))   // mood wash layered over the surface
-                }
-            }
-        }
-    }
-
-    private var moods: [String?] {
-        day.nodes.compactMap(\.recording).map(\.mood)
-    }
-
-    /// Deeper average-mood shade on light; the brighter pastel on dark (the deep
-    /// shade is too dark to read on a dark card). Neutral when no moods.
-    private var headerColor: Color {
-        let avg = colorScheme == .dark
-            ? MoodLevel.averageFill(of: moods)
-            : MoodLevel.averageDeep(of: moods)
-        return avg ?? Theme.textSecondary
+        .background(Theme.cardBackground)
+        .clipShape(shape)
     }
 }
 
-#Preview("Empty day") {
-    DayCard(
-        day: .init(date: .now, label: "TUESDAY, 10 JUN", nodes: []),
-        onTapRecording: { _ in }
-    )
+#Preview("Folded / expanded") {
+    VStack(spacing: Spacing.m) {
+        DayCard(
+            day: .init(date: .now, label: "Tuesday, 10 Jun", nodes: []),
+            isExpanded: false,
+            onToggleExpand: {},
+            onTapRecording: { _ in }
+        )
+    }
     .padding()
 }

@@ -33,7 +33,7 @@ struct RootTabView: View {
                 .tabItem { Label("Settings", systemImage: Icons.settings) }
                 .tag(Tab.settings)
         }
-        .tint(Theme.accent)
+        .tint(Theme.meadowGreen)
     }
 }
 

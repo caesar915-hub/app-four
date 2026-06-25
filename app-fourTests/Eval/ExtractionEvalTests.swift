@@ -10,7 +10,7 @@ enum EvalFloors {
     static let mood            = (precision: 0.730, recall: 0.580)
     static let energy          = (precision: 0.647, recall: 0.230)
     static let focus           = (precision: 0.380, recall: 0.313)
-    static let feelings        = (precision: 0.920, recall: 0.647)
+    static let emotions        = (precision: 0.920, recall: 0.647)
     static let activities      = (precision: 0.280, recall: 0.409)
     static let meds            = (precision: 0.980, recall: 0.980)
     static let sleepHours      = (precision: 0.980, recall: 0.266)
@@ -31,7 +31,7 @@ struct ExtractionEvalTests {
         var mood = CategoryResult(name: "mood", floor: EvalFloors.mood)
         var energy = CategoryResult(name: "energy", floor: EvalFloors.energy)
         var focus = CategoryResult(name: "focus", floor: EvalFloors.focus)
-        var feelings = CategoryResult(name: "feelings", floor: EvalFloors.feelings)
+        var emotions = CategoryResult(name: "emotions", floor: EvalFloors.emotions)
         var activities = CategoryResult(name: "activities", floor: EvalFloors.activities)
         var meds = CategoryResult(name: "meds", floor: EvalFloors.meds)
         var sleep = CategoryResult(name: "sleepHours", floor: EvalFloors.sleepHours)
@@ -43,7 +43,7 @@ struct ExtractionEvalTests {
             mood.counts.add(.init(expectedScalar: c.mood, actualScalar: r.mood))
             energy.counts.add(.init(expectedScalar: c.energy?.rawValue, actualScalar: r.energy?.rawValue))
             focus.counts.add(.init(expectedScalar: c.focus?.rawValue, actualScalar: r.focus?.rawValue))
-            feelings.counts.add(.init(expected: c.feelings, actual: Set(r.feelings)))
+            emotions.counts.add(.init(expected: c.emotions, actual: Set(r.emotions)))
             activities.counts.add(.init(expected: c.activities, actual: Set(r.activities)))
             meds.counts.add(.init(expected: c.medNames, actual: Set(r.medications.map(\.name))))
             sleep.counts.add(.init(expectedScalar: c.sleepHours.map { String($0) },
@@ -54,7 +54,7 @@ struct ExtractionEvalTests {
             sideFx.counts.add(.init(expectedScalar: c.anySideEffect ? "yes" : nil,
                                     actualScalar: actualSideFx ? "yes" : nil))
         }
-        return [mood, energy, focus, feelings, activities, meds, sleep, topicsCat, sideFx]
+        return [mood, energy, focus, emotions, activities, meds, sleep, topicsCat, sideFx]
     }
 
     @Test func metricsMeetFloors() {

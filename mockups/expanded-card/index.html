@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Expanded card — signal bar, 6 proposals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EAF0DB; --paper:#F1F4E6; --surface:#FCFBF4; --surface2:#E4E9D2; --ink:#23271C; --muted:#7C8270;
+    --hair:#D7DEC4; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#8466B5;
+    --m-low:#DA7A2A; --m-flat:#EDA94A; --m-okay:#9FCB79; --m-good:#5FB36E; --m-great:#2E8B57;
+    --e1:#A9A079; --e2:#C2B25A; --e3:#D8C53E; --e4:#EAD22A; --e5:#E6C21E;
+    --f1:#7E8B96; --f2:#6E8DAE; --f3:#5683B8; --f4:#3E73B0; --f5:#2C5E9E;
+    --shadow:0 2px 6px rgba(40,48,24,.05),0 14px 34px rgba(40,48,24,.08); --shadow-sm:0 1px 2px rgba(40,48,24,.06);
+  }
+  [data-theme="dark"]{
+    --bg:#131510; --paper:#1B1E16; --surface:#23271C; --surface2:#2D3122; --ink:#EDF0E2; --muted:#9AA088;
+    --hair:#363B2A; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC;
+    --m-low:#E08A3C; --m-flat:#EFB860; --m-okay:#A9D183; --m-good:#6EC07C; --m-great:#43A268;
+    --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:1280px;margin:0 auto;padding:48px 28px 110px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(34px,5vw,50px);line-height:1.02;margin:0;letter-spacing:-.025em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--accent);margin:14px 0 0;max-width:64ch;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:11px 18px;box-shadow:var(--shadow-sm);z-index:50;}
+  .board{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start;margin-top:42px;}
+  .unit{width:360px;}
+  .pn{font-family:'Fraunces',serif;font-size:17px;font-weight:600;}
+  .pd{font-size:12.5px;color:var(--muted);margin:4px 0 14px;min-height:48px;}
+
+  .card{background:var(--paper);border:1px solid var(--hair);border-radius:22px;padding:18px 18px 20px;box-shadow:var(--shadow-sm);}
+  .dayhdr{font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--green);margin-bottom:16px;}
+  .node{display:flex;gap:14px;align-items:flex-start;}
+  .timecol{flex:none;display:flex;flex-direction:column;align-items:center;gap:5px;width:72px;}
+  .pct{font-family:'IBM Plex Mono';font-size:12px;font-weight:600;color:var(--med);}
+  .content{flex:1;min-width:0;}
+  .fr{font-family:'Fraunces',serif;} .mono{font-family:'IBM Plex Mono',monospace;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+
+  /* chips */
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:7px 12px;border-radius:18px;background:var(--surface2);color:var(--ink);}
+  .chip.med{background:color-mix(in srgb,var(--med) 16%,var(--surface));color:var(--med);font-weight:700;}
+  .chip svg{flex:none;}
+
+  /* ---- shared signal bar styles ---- */
+  .sigbar{border-radius:16px;padding:11px 14px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .sigitem{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:13.5px;letter-spacing:.02em;text-transform:uppercase;}
+  .sigsep{opacity:.4;font-weight:700;}
+  /* B split pills */
+  .pillrow{display:flex;gap:8px;flex-wrap:wrap;}
+  .sigpill{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.02em;padding:8px 13px;border-radius:14px;}
+  /* C meters / F dots */
+  .meterpanel{background:var(--surface);border:1px solid var(--hair);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:11px;}
+  .meterrow{display:flex;align-items:center;gap:10px;}
+  .meterrow .lab{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);width:58px;flex:none;}
+  .segs{display:flex;gap:4px;flex:1;}
+  .seg{height:8px;flex:1;border-radius:3px;background:var(--surface2);}
+  .meterrow .val{font-size:12px;font-weight:700;width:64px;text-align:right;flex:none;}
+  .dots{display:flex;gap:5px;flex:1;}
+  .dot5{width:9px;height:9px;border-radius:50%;background:var(--surface2);}
+  /* D glyph-forward */
+  .glyphrow{display:flex;gap:6px;background:var(--surface);border:1px solid var(--hair);border-radius:16px;padding:12px 8px;}
+  .gcell{flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;}
+  .gcell .gw{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.02em;}
+  /* E headline + sub */
+  .headbar{border-radius:16px;padding:13px 16px;display:flex;align-items:center;gap:10px;}
+  .headbar .hw{font-family:'Fraunces',serif;font-size:20px;font-weight:600;}
+  .subrow{display:flex;gap:8px;margin-top:8px;}
+  .subchip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.02em;padding:7px 12px;border-radius:13px;background:var(--surface2);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · expanded card · signal bar · 6 proposals</p>
+      <h1>The mood / energy / focus bar</h1>
+      <p class="sub">Same expanded node throughout — your real time-circle with the medication-phase ring and %, same chips below. Only the mood/energy/focus bar changes. Pick a direction. Toggle light/dark.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div class="board" id="board"></div>
+</div>
+
+<script>
+const M={low:1,flat:2,okay:3,good:4,great:5};
+const moodC=['var(--m-low)','var(--m-flat)','var(--m-okay)','var(--m-good)','var(--m-great)'];
+const eC=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
+const fC=['var(--f1)','var(--f2)','var(--f3)','var(--f4)','var(--f5)'];
+const MOODW=['Low','Flat','Okay','Good','Great'],ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Scattered','Present','Sharp','Locked'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.7,op=(0.4+l*0.13).toFixed(2),sw=(1+l*0.14).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.3,cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.32+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.4" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.5" opacity="0.95"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.8"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.4"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.25"/></g></svg>`;}
+function icDoc(c,s){return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M8.5 13h7M8.5 16.5h5"/></svg>`;}
+function icBandage(c,s){return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="8" width="19" height="8" rx="4" transform="rotate(-45 12 12)"/><circle cx="12" cy="12" r="1"/><circle cx="9.5" cy="9.5" r=".6"/><circle cx="14.5" cy="14.5" r=".6"/></svg>`;}
+function icHeart(c,s){return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="${c}" stroke="${c}" stroke-width="1.4" stroke-linejoin="round"><path d="M19 14c1.5-1.6 2.5-3.3 2.5-5.2A4 4 0 0 0 12 6 4 4 0 0 0 2.5 8.8c0 1.9 1 3.6 2.5 5.2l7 7Z"/></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p,base)=>`color-mix(in srgb, ${h} ${p}%, ${base||'var(--surface)'})`;
+const mg=(l,b)=>`<span class="glyph">${gMood(cssv(moodC[l-1]),l,b||9)}</span>`;
+const eg=(l,b)=>`<span class="glyph">${gEnergy(cssv(eC[l-1]),l,b||9)}</span>`;
+const fg=(l,b)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,b||9)}</span>`;
+
+// time circle with med-phase ring (the real component)
+function timeCircle(mood,time,phase){
+  const S=72,c=36,r=31,C=2*Math.PI*r,p=Math.max(0,Math.min(1,phase));
+  const fill=cssv(moodC[mood-1]);
+  return `<div class="timecol"><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">
+    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="var(--hair)" stroke-width="4"/>
+    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="4" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${c} ${c})"/>
+    <circle cx="${c}" cy="${c}" r="24" fill="${fill}"/>
+    <text x="${c}" y="${c+4.5}" text-anchor="middle" font-family="IBM Plex Mono" font-size="14" font-weight="600" fill="${cssv('var(--ink)')}">${time}</text>
+  </svg><span class="pct">${Math.round(p*100)}%</span></div>`;
+}
+function chips(){
+  const g=cssv('var(--ink)');
+  return `<div class="chips">
+    <span class="chip med">${icCapsule(cssv('var(--med)'),16)} TAKEN VYVANSE 54MG</span>
+    <span class="chip">${icDoc(g,15)} General</span>
+    <span class="chip">${icCapsule(g,15)} Medications</span>
+    <span class="chip">${icBandage(g,15)} Dry Mouth</span>
+    <span class="chip">${icHeart(g,14)} Grateful</span>
+    <span class="chip">${icHeart(g,14)} Anxious</span>
+  </div>`;
+}
+function segs(level,colors){let s='';for(let i=0;i<5;i++)s+=`<span class="seg" style="${i<level?'background:'+cssv(colors[i]):''}"></span>`;return `<span class="segs">${s}</span>`;}
+function dots(level,colors){let s='';for(let i=0;i<5;i++)s+=`<span class="dot5" style="${i<level?'background:'+cssv(colors[i]):''}"></span>`;return `<span class="dots">${s}</span>`;}
+
+const MOOD=4,EN=5,FO=3,TIME='14:14',PHASE=0.52;
+
+// ---- 6 signal-bar treatments ----
+const BARS={
+A:()=>{const bg=tint(moodC[MOOD-1],85,'var(--surface)');return `<div class="sigbar" style="background:${bg}"><span class="sigitem">${mg(MOOD,9)} ${MOODW[MOOD-1]}</span><span class="sigsep">·</span><span class="sigitem">${eg(EN,9)} ${ENW[EN-1]}</span><span class="sigsep">·</span><span class="sigitem">${fg(FO,9)} ${FOW[FO-1]}</span></div>`;},
+B:()=>`<div class="pillrow">
+  <span class="sigpill" style="background:${tint(moodC[MOOD-1],80)};color:${cssv(moodC[MOOD-1])}">${mg(MOOD,8)} ${MOODW[MOOD-1]}</span>
+  <span class="sigpill" style="background:${tint(eC[EN-1],75)};color:${cssv('var(--accent)')}">${eg(EN,8)} ${ENW[EN-1]}</span>
+  <span class="sigpill" style="background:${tint(fC[FO-1],75)};color:${cssv(fC[FO-1])}">${fg(FO,8)} ${FOW[FO-1]}</span></div>`,
+C:()=>`<div class="meterpanel">
+  <div class="meterrow"><span class="lab">Mood</span>${segs(MOOD,moodC)}<span class="val" style="color:${cssv(moodC[MOOD-1])}">${MOODW[MOOD-1]}</span></div>
+  <div class="meterrow"><span class="lab">Energy</span>${segs(EN,eC)}<span class="val" style="color:${cssv('var(--accent)')}">${ENW[EN-1]}</span></div>
+  <div class="meterrow"><span class="lab">Focus</span>${segs(FO,fC)}<span class="val" style="color:${cssv(fC[FO-1])}">${FOW[FO-1]}</span></div></div>`,
+D:()=>`<div class="glyphrow">
+  <div class="gcell">${mg(MOOD,16)}<span class="gw" style="color:${cssv(moodC[MOOD-1])}">${MOODW[MOOD-1]}</span></div>
+  <div class="gcell">${eg(EN,16)}<span class="gw" style="color:${cssv('var(--accent)')}">${ENW[EN-1]}</span></div>
+  <div class="gcell">${fg(FO,16)}<span class="gw" style="color:${cssv(fC[FO-1])}">${FOW[FO-1]}</span></div></div>`,
+E:()=>`<div class="headbar" style="background:${tint(moodC[MOOD-1],82,'var(--surface)')}">${mg(MOOD,13)}<span class="hw" style="color:${cssv(moodC[MOOD-1])}">${MOODW[MOOD-1]}</span></div>
+  <div class="subrow"><span class="subchip">${eg(EN,8)} ${ENW[EN-1]}</span><span class="subchip">${fg(FO,8)} ${FOW[FO-1]}</span></div>`,
+F:()=>`<div class="meterpanel">
+  <div class="meterrow"><span class="lab">Mood</span>${dots(MOOD,moodC)}<span class="val" style="color:${cssv(moodC[MOOD-1])}">${MOODW[MOOD-1]}</span></div>
+  <div class="meterrow"><span class="lab">Energy</span>${dots(EN,eC)}<span class="val" style="color:${cssv('var(--accent)')}">${ENW[EN-1]}</span></div>
+  <div class="meterrow"><span class="lab">Focus</span>${dots(FO,fC)}<span class="val" style="color:${cssv(fC[FO-1])}">${FOW[FO-1]}</span></div></div>`,
+};
+const PROPS=[
+ ['A · Inline trio','Your current bar, refined: one mood-tinted bar — mood · energy · focus as glyph + word in a row. Compact, one line.'],
+ ['B · Split pills','Each signal its own coloured pill (mood / energy / focus). Categorical colour makes the three dimensions distinct at a glance.'],
+ ['C · Level meters','A small panel: each signal a 5-segment bar filled to its level, in its hue. Shows magnitude — how good, how charged, how sharp.'],
+ ['D · Glyph-forward','Three large glyphs that already grow + fill with level (your glyph language doing the work), word small beneath. Most visual.'],
+ ['E · Headline + sub','Mood leads as a big headline bar; energy + focus ride below as two quiet chips. Prioritises the one feeling that matters most.'],
+ ['F · Dot scale','Name + five dots filled to level + word. The calmest, most data-clear read; reads like a quiet gauge, not a coloured block.'],
+];
+function nodeCard(barFn){
+  return `<div class="card"><div class="dayhdr">FRIDAY, 19 JUN</div><div class="node">${timeCircle(MOOD,TIME,PHASE)}<div class="content">${barFn()}${chips()}</div></div></div>`;
+}
+function render(){document.getElementById('board').innerHTML=PROPS.map(([t,d],i)=>{const k=t[0];return `<div class="unit"><div class="pn">${t}</div><div class="pd">${d}</div>${nodeCard(BARS[k])}</div>`;}).join('');}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

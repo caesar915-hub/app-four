@@ -8,6 +8,7 @@ final class SettingsViewModel {
     @ObservationIgnored private let aiModelService: AIModelService
     @ObservationIgnored private let store: RecordingStore
     @ObservationIgnored private let storageService: AudioFileStorageService
+    @ObservationIgnored private let exportService: ExportService
     @ObservationIgnored private let context: ModelContext
 
     var whisperModelInstalled: Bool = false
@@ -15,20 +16,22 @@ final class SettingsViewModel {
     var whisperDownloadProgress: Double = 0
     var storageUsedMB: Double = 0.0
 
+    /// The cause of the most recent failed download, surfaced inline so the row
+    /// can show plain-language recovery copy. `nil` when there is no active error
+    /// (never attempted, in progress, succeeded, or cancelled).
+    var downloadError: ModelDownloadFailure?
+
+    /// True only when the active error is a cellular-metered block, so the row can
+    /// offer a one-tap "allow on cellular" shortcut alongside "Try again".
+    var canAllowCellular: Bool { downloadError == .cellularDisabled }
+
+    @ObservationIgnored private var downloadTask: Task<Void, Never>?
+
     var recordingCount: Int {
         store.recordings.count
     }
 
-    private var _reduceMotion: Bool = UserDefaults.standard.bool(forKey: "reduceMotion")
     private var _medicalPromptEnabled: Bool = UserDefaults.standard.medicalPromptEnabled
-
-    var reduceMotion: Bool {
-        get { _reduceMotion }
-        set {
-            _reduceMotion = newValue
-            UserDefaults.standard.set(newValue, forKey: "reduceMotion")
-        }
-    }
 
     var medicalPromptEnabled: Bool {
         get { _medicalPromptEnabled }
@@ -56,6 +59,7 @@ final class SettingsViewModel {
         self.store = store
         self.aiModelService = services.aiModelService
         self.storageService = services.storageService
+        self.exportService = services.exportService
         self.context = AppModelContainer.container.mainContext
         self.downloadOverCellular = appSettings.downloadOverCellular
         self.promptPace = PromptPace(rawValue: appSettings.promptPaceSeconds) ?? .relaxed
@@ -86,20 +90,58 @@ final class SettingsViewModel {
     }
 
     func downloadModel(_ type: AIModelType) async {
+        downloadError = nil
         setDownloading(type, to: true)
         setProgress(type, to: 0)
-        defer {
-            setDownloading(type, to: false)
-            setProgress(type, to: 0)
-        }
-        do {
-            let stream = try await aiModelService.download(type)
-            for await progress in stream {
-                setProgress(type, to: progress)
+
+        let task = Task {
+            defer {
+                setDownloading(type, to: false)
+                setProgress(type, to: 0)
             }
-            await checkModels()
-        } catch {
-            AppLogger.log("Failed to download \(type.rawValue): \(error)")
+            do {
+                let stream = try await aiModelService.download(type)
+                for try await progress in stream {
+                    setProgress(type, to: progress)
+                }
+                await checkModels()
+            } catch is CancellationError {
+                // User cancelled — not an error; the filesystem-truth recheck in
+                // cancelDownload() settles the row.
+            } catch let cause as ModelDownloadFailure {
+                downloadError = cause
+                await checkModels()
+            } catch {
+                downloadError = .other(String(describing: Swift.type(of: error)))
+                await checkModels()
+            }
+        }
+        downloadTask = task
+        await task.value
+        downloadTask = nil
+    }
+
+    /// Cancels an in-flight download and re-reads filesystem truth so the row
+    /// returns to "not installed" with no partial/installed model left behind.
+    func cancelDownload() {
+        downloadTask?.cancel()
+        downloadTask = nil
+        downloadError = nil
+        Task { await checkModels() }
+    }
+
+    /// Plain-language, non-alarming copy for each failure cause. Names the
+    /// condition and points at the real remedy; never leaks a raw error string.
+    func message(for failure: ModelDownloadFailure) -> String {
+        switch failure {
+        case .noNetwork:
+            return "No connection. Reconnect to the internet, then try again."
+        case .insufficientSpace:
+            return "Not enough space on this device. Free up some room, then try again."
+        case .cellularDisabled:
+            return "You're on cellular and downloads over cellular are off. Switch to Wi-Fi, or allow cellular below."
+        case .other:
+            return "The download didn't finish. Try again in a moment."
         }
     }
 
@@ -118,6 +160,14 @@ final class SettingsViewModel {
         } catch {
             AppLogger.log("Failed to delete \(type.rawValue): \(error)")
         }
+    }
+
+    /// Snapshots the journal into a sealed archive and returns it with the one-time
+    /// key that opens it. The key is NEVER stored here (no property, no persistence) —
+    /// it lives only in the returned value so the view can surface it once. Serialize +
+    /// seal run off the main actor inside the service.
+    func exportJournal() async throws -> ExportResult {
+        try await exportService.export(from: context)
     }
 
     /// Permanently deletes all user content: every recording (with its audio file)

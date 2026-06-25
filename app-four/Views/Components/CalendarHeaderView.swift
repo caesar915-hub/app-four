@@ -103,6 +103,8 @@ struct CalendarHeaderView: View {
                         CalendarDayCell(
                             cell: cell,
                             isSelected: Calendar.current.isDate(cell.date, inSameDayAs: selectedDay),
+                            isAboveSelection: !cell.isFuture
+                                && Calendar.current.startOfDay(for: cell.date) > Calendar.current.startOfDay(for: selectedDay),
                             onTap: { onSelect(cell) }
                         )
                     }

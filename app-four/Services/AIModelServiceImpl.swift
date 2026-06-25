@@ -19,13 +19,13 @@ final class AIModelServiceImpl: AIModelService {
         return try? context.fetch(descriptor).first
     }
 
-    func download(_ type: AIModelType) async throws -> AsyncStream<Double> {
+    func download(_ type: AIModelType) async throws -> AsyncThrowingStream<Double, Error> {
         AppLogger.log("Starting download for \(type.rawValue)")
         let metadata = try await ensureMetadata(for: type)
         metadata.isDownloaded = false
         try? context.save()
 
-        return AsyncStream { continuation in
+        return AsyncThrowingStream { continuation in
             let task = Task {
                 do {
                     switch type {
@@ -43,17 +43,46 @@ final class AIModelServiceImpl: AIModelService {
                     continuation.yield(1.0)
                     continuation.finish()
                 } catch {
+                    // A cancellation is the caller tearing the stream down, not a failure to
+                    // report: finish quietly so the row settles to filesystem truth.
                     guard !Task.isCancelled else { continuation.finish(); return }
                     metadata.isCorrupted = true
                     try? context.save()
-                    AppLogger.log("Download failed for \(type.rawValue): \(error)")
-                    continuation.finish()
+                    let cause = Self.classify(error)
+                    AppLogger.log("Download failed for \(type.rawValue): \(cause)")
+                    continuation.finish(throwing: cause)
                 }
             }
             continuation.onTermination = { _ in
                 task.cancel()
             }
         }
+    }
+
+    /// Maps a raw download error to a content-free, user-messageable cause. Only
+    /// the *condition* is derived (connectivity / disk / metered policy); no
+    /// payload from the error is forwarded except a short type tag for `.other`.
+    nonisolated static func classify(_ error: Error) -> ModelDownloadFailure {
+        if let urlError = error as? URLError {
+            switch urlError.code {
+            case .dataNotAllowed:
+                return .cellularDisabled
+            case .notConnectedToInternet, .networkConnectionLost,
+                 .cannotConnectToHost, .timedOut:
+                return .noNetwork
+            default:
+                return .other("URLError.\(urlError.code.rawValue)")
+            }
+        }
+        let nsError = error as NSError
+        if nsError.domain == NSCocoaErrorDomain,
+           nsError.code == NSFileWriteOutOfSpaceError || nsError.code == NSFileWriteVolumeReadOnlyError {
+            return .insufficientSpace
+        }
+        if nsError.domain == NSPOSIXErrorDomain, nsError.code == Int(ENOSPC) {
+            return .insufficientSpace
+        }
+        return .other(String(describing: Swift.type(of: error)))
     }
 
     func delete(_ type: AIModelType) async throws {

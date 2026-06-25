@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A compact chip under a timeline check-in. Inputs (feelings, sleep, side
+/// A compact chip under a timeline check-in. Inputs (emotions, sleep, side
 /// effects, topics) use the neutral style; a logged medication uses the purple
 /// style. The icon is always dark for a flat, consistent look.
 struct TimelineChip: View {
@@ -44,7 +44,7 @@ struct TimelineChip: View {
     HStack {
         TimelineChip(icon: "heart.fill", label: "Happy")
         TimelineChip(icon: "moon.fill", label: "5h sleep")
-        TimelineChip.medication("TAKEN CONCERTA 36MG")
+        TimelineChip.medication("Taken Concerta 36mg")
     }
     .padding()
 }

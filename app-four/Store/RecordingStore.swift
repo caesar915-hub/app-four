@@ -3,7 +3,7 @@ import SwiftData
 
 @Observable
 @MainActor
-final class RecordingStore {
+class RecordingStore {
     var recordings: [Recording] = []
     private let modelContext: ModelContext
     var context: ModelContext { modelContext }
@@ -18,6 +18,10 @@ final class RecordingStore {
     /// the app was killed or relaunched mid-transcription (e.g. its transcription was
     /// cancelled by a second recording and never finalized). Recover it to `.failed`
     /// so the detail view stops showing a permanent "Transcribing…" and offers retry.
+    ///
+    /// Scoped to `.transcribing` only: a `.pendingTranscription` recording (captured
+    /// before the model was ready) is legitimately waiting and MUST NOT be swept — it
+    /// drains via `PendingTranscriptionService` once the model lands (FR-016).
     private func recoverOrphanedTranscriptions() {
         let orphaned = recordings.filter { $0.status == .transcribing }
         guard !orphaned.isEmpty else { return }
@@ -89,6 +93,29 @@ final class RecordingStore {
     /// transcript for gap-filling extraction (`applySummary(fillOnly: true)`).
     @discardableResult
     func createCheckInNote(_ draft: CheckInDraft) -> Recording {
+        let recording = buildAndInsertCheckInNote(draft)
+        save()
+        loadRecordings()
+        return recording
+    }
+
+    /// Throwing sibling of `createCheckInNote` for the capture flow: propagates a
+    /// persistence failure so the view-model can surface a non-alarming retry surface
+    /// instead of silently dropping the draft (FR-009). Overridable (the type is not
+    /// final) so a test can force the throw — the SwiftData layer can't be made to
+    /// fail on demand otherwise.
+    @discardableResult
+    func persistCheckInNote(_ draft: CheckInDraft) throws -> Recording {
+        let recording = buildAndInsertCheckInNote(draft)
+        try modelContext.save()
+        // Match save(): a meds-only text check-in must refresh the medication bar,
+        // which only updates on this notification.
+        NotificationCenter.default.post(name: .medicationEventsDidChange, object: nil)
+        loadRecordings()
+        return recording
+    }
+
+    private func buildAndInsertCheckInNote(_ draft: CheckInDraft) -> Recording {
         let signalParts = [
             draft.mood?.displayLabel, draft.energy?.displayLabel, draft.focus?.displayLabel,
         ].compactMap { $0 }
@@ -124,8 +151,6 @@ final class RecordingStore {
             event.recording = recording
         }
 
-        save()
-        loadRecordings()
         return recording
     }
 }

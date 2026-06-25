@@ -2,6 +2,39 @@ import Foundation
 import AVFoundation
 import SwiftData
 
+// MARK: - Connectivity
+
+/// The active network interface class, used only to honor `downloadOverCellular`
+/// when deciding whether a background model download may start.
+enum NetworkInterface: Sendable, Equatable {
+    case wifi
+    case cellular
+    case other
+    case unsatisfied
+}
+
+/// A live, on-device connectivity check (no permission, no user data) behind a
+/// protocol so the download decision is mockable.
+protocol Connectivity: Sendable {
+    /// The current interface class at the moment of the call.
+    var currentInterface: NetworkInterface { get async }
+
+    /// A stream of interface changes so a deferred download can resume when
+    /// Wi-Fi returns. The current value is emitted on subscription.
+    var interfaceChanges: AsyncStream<NetworkInterface> { get }
+}
+
+// MARK: - Pending-Transcription Queue
+
+/// Drains recordings captured before the transcription model was ready.
+/// Driven on app launch/foreground and on background-download completion.
+/// (Seam only — the draining implementation lands with the queue story.)
+protocol PendingTranscriptionService: Sendable {
+    /// Fetch `.pendingTranscription` recordings in capture order; if the model
+    /// is ready, transcribe + extract each, serialized on the single engine.
+    func drainIfModelReady() async
+}
+
 /// Data Transfer Object for transcription segments, ensuring Sendable compliance for Swift 6.
 struct TranscriptionSegmentDTO: Sendable {
     let id: UUID
@@ -93,13 +126,26 @@ protocol AudioFileStorageService: Sendable {
 
 // MARK: - AI Model Management
 
+/// Why a model download could not finish, carried to the UI so it can show a
+/// cause-specific message and the right recovery action. Transient (never
+/// persisted) and content-free — it names the *condition*, never any
+/// transcript or medication data (Principle VI).
+enum ModelDownloadFailure: Error, Sendable, Equatable {
+    case noNetwork
+    case insufficientSpace
+    case cellularDisabled
+    case other(String)
+}
+
 protocol AIModelService: Sendable {
     /// Checks the current metadata for a given model type.
     func status(for type: AIModelType) async -> ModelMetadata?
 
     /// Downloads the specified AI model.
-    /// - Returns: An async stream of download progress (0.0 to 1.0).
-    func download(_ type: AIModelType) async throws -> AsyncStream<Double>
+    /// - Returns: A throwing stream of download progress (0.0 to 1.0). A
+    ///   mid-download failure terminates the stream by throwing a
+    ///   `ModelDownloadFailure` so the caller learns the cause.
+    func download(_ type: AIModelType) async throws -> AsyncThrowingStream<Double, Error>
 
     /// Deletes the local model to free up space.
     func delete(_ type: AIModelType) async throws
@@ -122,7 +168,7 @@ struct SummaryResult: Sendable {
     let sleepEvent: SleepEvent?
     let sleepLevel: String?
     let sideEffects: [String]
-    let feelings: [String]
+    let emotions: [String]
     let topics: [String]
     let noteExtraction: NoteExtraction?
 

@@ -11,13 +11,14 @@ struct ExtractionReviewView: View {
         let items: [String]
     }
 
-    private let feelingGroups: [ChipGroup] = [
-        ChipGroup(label: "Positive",  items: ["grateful", "hopeful", "excited", "content", "inspired",
-                                              "proud", "playful", "loved", "peaceful", "motivated"]),
-        ChipGroup(label: "Neutral",   items: ["curious", "reflective", "nostalgic", "restless",
-                                              "indifferent", "bored", "uncertain", "tense"]),
-        ChipGroup(label: "Difficult", items: ["anxious", "sad", "frustrated", "overwhelmed", "lonely",
-                                              "angry", "scared", "guilty", "ashamed", "exhausted"])
+    // The 20 curated Mood-Meter emotions (5 per valence×energy quadrant), grouped by
+    // valence and ordered high→low energy within each group. Mirrors Lexicon.defaultEmotions
+    // and lexicon.json's "emotions" key — see specs/020-emotions-lexicon/contracts.
+    private let emotionGroups: [ChipGroup] = [
+        ChipGroup(label: "Pleasant",   items: ["excited", "joyful", "proud", "thrilled", "inspired",
+                                               "content", "grateful", "peaceful", "secure", "serene"]),
+        ChipGroup(label: "Unpleasant", items: ["angry", "anxious", "frustrated", "irritated", "jealous",
+                                               "sad", "lonely", "disappointed", "hopeless", "discouraged"])
     ]
 
     private let commonSideEffects = [
@@ -38,7 +39,7 @@ struct ExtractionReviewView: View {
                     focusField
                     sleepField
                     medicationsField
-                    feelingsField
+                    emotionsField
                     sideEffectsField
                     Button("Save corrections") { save() }
                         .buttonStyle(.primary)
@@ -415,22 +416,22 @@ struct ExtractionReviewView: View {
         }
     }
 
-    // MARK: - 07/08 Feelings / Side effects
+    // MARK: - 07/08 Emotions / Side effects
 
-    private var feelingsField: some View {
+    private var emotionsField: some View {
         field {
-            numberedHeader("07", "Feelings") { EmptyView() }
+            numberedHeader("07", "Emotions") { EmptyView() }
         } content: {
             VStack(alignment: .leading, spacing: Spacing.m) {
-                ForEach(feelingGroups) { group in
+                ForEach(emotionGroups) { group in
                     VStack(alignment: .leading, spacing: Spacing.s) {
                         Text(group.label).font(Typography.caption).foregroundStyle(Theme.textSecondary)
                         FlowLayout(spacing: Spacing.s) {
-                            ForEach(group.items, id: \.self) { feeling in
-                                Chip.filter(feeling.capitalized, isSelected: viewModel.feelings.contains(feeling)) {
-                                    viewModel.toggleFeeling(feeling)
+                            ForEach(group.items, id: \.self) { emotion in
+                                Chip.filter(emotion.capitalized, isSelected: viewModel.emotions.contains(emotion)) {
+                                    viewModel.toggleEmotion(emotion)
                                 }
-                                .accessibilityLabel("\(feeling)\(viewModel.feelings.contains(feeling) ? ", selected" : "")")
+                                .accessibilityLabel("\(emotion)\(viewModel.emotions.contains(emotion) ? ", selected" : "")")
                             }
                         }
                     }

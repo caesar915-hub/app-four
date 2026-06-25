@@ -19,4 +19,7 @@ enum Spacing {
     static let section: CGFloat = 32
     /// 40pt — large spacers (bottom safe-area padding, hero spacing)
     static let hero: CGFloat = 40
+
+    /// 3.3pt — stroke width of the medication-phase ring around a check-in time bead
+    static let ringStroke: CGFloat = 3.3
 }

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Unfolded header · 3 proposals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EAF0DB; --paper:#F1F4E6; --surface:#FCFBF4; --surface2:#E4E9D2; --ink:#23271C; --muted:#7C8270;
+    --hair:#D7DEC4; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#8466B5;
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    --e1:#A9A079; --e2:#C2B25A; --e3:#D8C53E; --e4:#EAD22A; --e5:#E6C21E;
+    --f1:#7E8B96; --f2:#6E8DAE; --f3:#5683B8; --f4:#3E73B0; --f5:#2C5E9E;
+    --shadow:0 2px 6px rgba(40,48,24,.05),0 14px 34px rgba(40,48,24,.08); --shadow-sm:0 1px 2px rgba(40,48,24,.06);
+  }
+  [data-theme="dark"]{
+    --bg:#131510; --paper:#1B1E16; --surface:#23271C; --surface2:#2D3122; --ink:#EDF0E2; --muted:#9AA088;
+    --hair:#363B2A; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC;
+    --m1:#E08A3C; --m2:#EFB860; --m3:#A9D183; --m4:#6EC07C; --m5:#43A268;
+    --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1240px;margin:0 auto;padding:46px 28px 120px;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 12px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(32px,5vw,52px);line-height:1.02;margin:0;letter-spacing:-.03em;}
+  .lede{font-family:'Fraunces',serif;font-style:italic;font-size:19px;color:var(--accent);margin:14px 0 0;max-width:64ch;}
+  .toggle{position:fixed;top:16px;right:18px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:9px 16px;box-shadow:var(--shadow-sm);z-index:50;}
+  h2{font-family:'Fraunces',serif;font-weight:500;font-size:24px;letter-spacing:-.02em;margin:54px 0 4px;}
+  .sub{color:var(--muted);font-size:14px;margin:0 0 22px;max-width:78ch;}
+  .label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;}
+
+  .cols{display:flex;gap:26px;flex-wrap:wrap;align-items:flex-start;}
+  .colp{flex:1 1 340px;max-width:380px;min-width:300px;}
+  .pname{font-family:'Fraunces',serif;font-size:20px;font-weight:600;letter-spacing:-.01em;margin:14px 0 2px;}
+  .pnum{font-family:'IBM Plex Mono';font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.1em;}
+  .pconcept{font-size:13.5px;color:var(--ink);margin:6px 0 12px;}
+  .meta{border-top:1px solid var(--hair);margin-top:6px;padding-top:10px;font-size:12.5px;color:var(--muted);}
+  .meta b{color:var(--ink);font-weight:700;}
+  .meta .line{margin:0 0 7px;}
+  .tag{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:999px;background:var(--surface2);color:var(--muted);margin:0 5px 5px 0;}
+
+  /* shared card + check-in rows (ported from mockups/summary/index.html) */
+  .card{border:1px solid var(--hair);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm);background:var(--surface);}
+  .wash{padding:15px 16px;}
+  .hrow{display:flex;align-items:center;gap:14px;}
+  .gcircle{flex:none;width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .rcol{flex:1;min-width:0;}
+  .toprow{display:flex;align-items:center;gap:10px;}
+  .titlegrp{display:inline-flex;align-items:baseline;gap:7px;min-width:0;flex-wrap:wrap;}
+  .t-mood{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-.01em;}
+  .t-sep{color:var(--muted);font-weight:600;}
+  .daytitle{font-family:'Fraunces',serif;font-size:19px;font-weight:600;letter-spacing:-.01em;}
+  .chev{margin-left:auto;font-size:13px;color:var(--muted);}
+  .cbody{border-top:none;padding:4px 16px 12px;}
+  .row{display:flex;gap:11px;align-items:flex-start;padding:11px 0;}
+  .row+.row{border-top:1px solid var(--hair);}
+  .ringcol{flex:none;width:52px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .medpill{font-family:'IBM Plex Mono';font-size:10px;font-weight:600;color:var(--med);background:color-mix(in srgb,var(--med) 14%,var(--surface));border-radius:999px;padding:2px 6px;}
+  .ct{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+  .mhead{display:flex;align-items:baseline;gap:8px;}
+  .mword{font-family:'Fraunces',serif;font-size:16px;font-weight:600;}
+  .rtime{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);}
+  .rmore{margin-left:auto;align-self:center;display:inline-flex;align-items:center;color:var(--muted);cursor:pointer;}
+  .subsig{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .sg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+</style>
+<style id="vcss"></style>
+</head>
+<body>
+<button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+<div class="wrap">
+  <p class="eyebrow">Squirl · Paper &amp; Pollen · Day card</p>
+  <h1>When it opens, the bar steps back</h1>
+  <p class="lede">Three takes on the unfolded header: the bar shrinks and the mood glyph drops its circle. Each answers the same question differently — once the disc and wash are gone, what carries the mood? A fill, an edge, or the glyph itself.</p>
+
+  <h2>Before</h2>
+  <p class="sub">The current unfolded header: full-height wash bar, 58px tinted disc around the glyph. This is what every proposal reduces.</p>
+  <div class="colp"><div id="baseline"></div></div>
+
+  <h2>Proposals</h2>
+  <p class="sub">Same check-in rows under every header (their purple medication-phase rings stay — that's a different element). Mood for the demo day = “Good” (green, var(--m4)).</p>
+  <div class="cols" id="props"></div>
+</div>
+
+<script>
+const mC=['var(--m1)','var(--m2)','var(--m3)','var(--m4)','var(--m5)'];
+const eC=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
+const fC=['var(--f1)','var(--f2)','var(--f3)','var(--f4)','var(--f5)'];
+const MOODW=['Low','Flat','Okay','Good','Great'],ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Scattered','Present','Sharp','Locked'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.7,op=(0.4+l*0.13).toFixed(2),sw=(1+l*0.14).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.3,cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.32+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.4" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.5" opacity="0.95"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icMore(c,s){return `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p,base)=>`color-mix(in srgb, ${h} ${p}%, ${base||'var(--surface)'})`;
+const mg=(l,b)=>`<span class="glyph">${gMood(cssv(mC[l-1]),l,b||9)}</span>`;
+const eg=(l,b)=>`<span class="glyph">${gEnergy(cssv(eC[l-1]),l,b||9)}</span>`;
+const fg=(l,b)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,b||9)}</span>`;
+function ring(r,S){S=S||52;const c=S/2,rr=S/2-4,C=2*Math.PI*rr,p=r.med||0;const inner=tint(mC[r.m-1],45,'var(--surface)');
+  const arc=r.med!=null?`<circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="var(--hair)" stroke-width="3.3"/><circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="3.3" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${c} ${c})"/>`:'';
+  return `<div class="ringcol"><div style="position:relative;width:${S}px;height:${S}px;display:flex;align-items:center;justify-content:center"><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" style="position:absolute;inset:0">${arc}<circle cx="${c}" cy="${c}" r="${S*0.34}" fill="${inner}"/></svg><span style="position:relative">${mg(r.m,S>=64?12:9)}</span></div>${r.med!=null?`<span class="medpill">${Math.round(r.med*100)}%</span>`:''}</div>`;}
+function rowHTML(r){let sig='';if(r.e!=null)sig+=`<span class="sg">${eg(r.e)} ${ENW[r.e-1]}</span>`;if(r.f!=null)sig+=`<span class="sg">${fg(r.f)} ${FOW[r.f-1]}</span>`;
+  return `<div class="row">${ring(r)}<div class="ct"><div class="mhead"><span class="mword" style="color:${cssv(mC[r.m-1])}">${MOODW[r.m-1]}</span><span class="rtime">${r.time}</span><span class="rmore" title="Details">${icMore(cssv('var(--muted)'),16)}</span></div>${sig?`<div class="subsig">${sig}</div>`:''}</div></div>`;}
+const R3=[{time:'16:12',m:4,e:5,f:3,med:0.58},{time:'12:40',m:3,e:3,f:null,med:null},{time:'09:15',m:3,e:null,f:null,med:null}];
+const body=()=>`<div class="cbody">${R3.map(rowHTML).join('')}</div>`;
+
+function baseline(){
+  const m=4;const headBg=tint(mC[m-1],46,'var(--surface)'),gBg=tint(mC[m-1],70,'var(--surface)');
+  return `<div class="card"><div class="wash" style="background:${headBg}"><div class="hrow"><span class="gcircle" style="background:${gBg}">${mg(m,16)}</span><div class="rcol"><div class="toprow"><span class="titlegrp"><span class="t-mood" style="color:${cssv(mC[m-1])}">Good</span><span class="t-sep">·</span><span class="daytitle">Monday 8</span></span><span class="chev">⌃</span></div></div></div></div>${body()}</div>`;
+}
+
+const VARIANTS=[
+{
+  id:'v1', name:'Slim Tinted Rail', carries:'a fill', glyphPx:12,
+  concept:'Keep the mood wash but pale it, at half the folded height — the bar reads as the same card quietly stepping back.',
+  tradeoff:'Stays so close to folded it can read as merely “shrunk”; a 13% tint plus one colored word is a quiet cue that fades in greyscale.',
+  watch:'Mood category survives, but level leans on the (now small) glyph + word once the wash is paled.',
+  best:'Lowest-risk, most continuous transition — attention flows straight to the rows.',
+  headerTpl:`<div class="__ROOT__-rail"><span class="__ROOT__-glyph">{{GLYPH}}</span><h3 class="__ROOT__-title"><span class="__ROOT__-mood">Good</span><span class="__ROOT__-sep">·</span><span class="__ROOT__-day">Monday 8</span></h3><button class="__ROOT__-chev" aria-label="Collapse">&#8963;</button></div>`,
+  css:`.__ROOT__-rail{display:flex;align-items:center;gap:9px;padding:7px 12px;min-height:44px;background:color-mix(in srgb, var(--m4) 13%, var(--surface));border-bottom:1px solid var(--hair);}
+.__ROOT__-glyph{flex:0 0 auto;display:flex;align-items:center;justify-content:center;line-height:0;}
+.__ROOT__-glyph svg{display:block}
+.__ROOT__-title{flex:1 1 auto;margin:0;min-width:0;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;font-family:'Fraunces',serif;font-size:16px;font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+.__ROOT__-mood{color:var(--m4)}
+.__ROOT__-sep{color:var(--muted)}
+.__ROOT__-day{color:var(--ink)}
+.__ROOT__-chev{flex:0 0 auto;appearance:none;border:0;background:transparent;padding:2px 4px;margin:-2px -2px -2px 0;font-size:14px;line-height:1;color:var(--muted);cursor:pointer;align-self:center;}`
+},
+{
+  id:'v2', name:'Quiet Margin', carries:'an edge', glyphPx:13,
+  concept:'Drop the wash entirely; mood lives in the green word plus a slim mood-color edge bar running down the header’s left margin.',
+  tradeoff:'The edge is subtle — on a long scroll the mood reads as a quiet label, not an instant colour hit, and the sliver can echo the row hairlines.',
+  watch:'3px edge can read as a stray rule and sits close to the purple med-ring below.',
+  best:'When a card is opened to be read and acted on — the header gets out of the way.',
+  headerTpl:`<div class="__ROOT__-bar"><span class="__ROOT__-edge" aria-hidden="true"></span><span class="__ROOT__-glyph">{{GLYPH}}</span><h2 class="__ROOT__-title"><span class="__ROOT__-mood">Good</span><span class="__ROOT__-sep">·</span><span class="__ROOT__-day">Monday 8</span></h2><span class="__ROOT__-chev" aria-hidden="true">&#8963;</span></div>`,
+  css:`.__ROOT__-bar{position:relative;display:flex;align-items:center;gap:9px;padding:8px 14px 8px 16px;min-height:44px;background:var(--surface);border-bottom:1px solid var(--hair);}
+.__ROOT__-edge{position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:0 2px 2px 0;background:var(--m4);}
+.__ROOT__-glyph{display:flex;align-items:center;justify-content:center;flex:0 0 auto;line-height:0;}
+.__ROOT__-glyph svg{display:block}
+.__ROOT__-title{flex:1 1 auto;margin:0;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;font-family:'Fraunces',serif;font-weight:600;font-size:18px;line-height:1.1;letter-spacing:-.01em;min-width:0;}
+.__ROOT__-mood{color:var(--m4)}
+.__ROOT__-sep{color:var(--muted)}
+.__ROOT__-day{color:var(--ink);font-weight:500;}
+.__ROOT__-chev{flex:0 0 auto;color:var(--muted);font-size:13px;line-height:1;padding-left:4px;align-self:center;}`
+},
+{
+  id:'v3', name:'Glyph-Led', carries:'the glyph', glyphPx:18,
+  concept:'Everything shrinks except the glyph — the bare sprout grows into the hero mark and carries mood by shape, hue and fill; the title sits in ink beside it.',
+  tradeoff:'Mood colour lives only in the glyph (the word is ink), so it leans entirely on the sprout language — it only works because the glyph is kept large enough to read level.',
+  watch:'No colour in the title text; relies on the glyph being big enough to encode level.',
+  best:'When you trust the sprout to carry mood on its own and want the cleanest, most type-forward header.',
+  headerTpl:`<div class="__ROOT__-bar"><span class="__ROOT__-glyph">{{GLYPH}}</span><span class="__ROOT__-title"><span class="__ROOT__-mood">Good</span><span class="__ROOT__-sep">·</span><span class="__ROOT__-day">Monday 8</span></span><span class="__ROOT__-chev" aria-hidden="true">&#8963;</span></div>`,
+  css:`.__ROOT__-bar{display:flex;align-items:center;gap:11px;padding:6px 14px;min-height:44px;background:var(--surface);border-bottom:1px solid var(--hair);}
+.__ROOT__-glyph{flex:0 0 auto;display:flex;align-items:center;justify-content:center;line-height:0;}
+.__ROOT__-glyph svg{display:block}
+.__ROOT__-title{flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;font-family:'Fraunces',serif;font-size:18px;font-weight:600;letter-spacing:-.01em;}
+.__ROOT__-mood{color:var(--ink)}
+.__ROOT__-sep{color:var(--muted)}
+.__ROOT__-day{color:var(--ink)}
+.__ROOT__-chev{flex:0 0 auto;align-self:center;color:var(--muted);font-size:13px;line-height:1;}`
+}
+];
+
+function proposalCard(v){
+  const header=v.headerTpl.replaceAll('__ROOT__',v.id).replace('{{GLYPH}}',mg(4,v.glyphPx));
+  return `<div class="colp">
+    <div class="pnum">PROPOSAL ${v.idx} · CARRIES ${v.carries.toUpperCase()}</div>
+    <div class="pname">${v.name}</div>
+    <div class="pconcept">${v.concept}</div>
+    <div class="card">${header}${body()}</div>
+    <div class="meta">
+      <p class="line"><b>Trade-off.</b> ${v.tradeoff}</p>
+      <p class="line"><b>Watch.</b> ${v.watch}</p>
+      <p class="line"><b>Best when.</b> ${v.best}</p>
+      <span class="tag">glyph ${v.glyphPx}</span><span class="tag">bare glyph</span><span class="tag">shorter bar</span>
+    </div>
+  </div>`;
+}
+
+function render(){
+  document.getElementById('vcss').textContent=VARIANTS.map(v=>v.css.replaceAll('__ROOT__',v.id)).join('\n');
+  document.getElementById('baseline').innerHTML=baseline();
+  document.getElementById('props').innerHTML=VARIANTS.map((v,i)=>{v.idx=i+1;return proposalCard(v);}).join('');
+}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

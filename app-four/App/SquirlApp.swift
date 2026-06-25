@@ -45,8 +45,10 @@ private struct RootContainerView: View {
     @Binding var selectedTab: Tab
     @Binding var shouldAutoStartRecording: Bool
     @Environment(AppServices.self) private var services
+    @Environment(\.scenePhase) private var scenePhase
     @Query private var settingsQuery: [AppSettings]
     @State private var showOnboarding: Bool = false
+    @State private var downloadKicked = false
 
     private var hasCompletedOnboarding: Bool {
         settingsQuery.first?.hasCompletedOnboarding ?? false
@@ -58,13 +60,72 @@ private struct RootContainerView: View {
             shouldAutoStartRecording: $shouldAutoStartRecording
         )
         .fullScreenCover(isPresented: $showOnboarding) {
-            OnboardingView(services: services)
+            WelcomeView(onComplete: { showOnboarding = false })
         }
         .task {
+            #if DEBUG
+            if CommandLine.arguments.contains("-skipOnboarding") { showOnboarding = false; return }
+            #endif
             showOnboarding = !hasCompletedOnboarding
+        }
+        // Background model download — kept off the first-run path (FR-007): it
+        // never gates UI; the welcome dismisses immediately while the model
+        // arrives on its own schedule. Drains the pending queue on completion.
+        .task { await startBackgroundModelDownloadIfNeeded() }
+        // Drain any recordings captured before the model was ready (US3): on launch
+        // (a download that finished in a prior session) and on every foreground (one
+        // that finished while backgrounded). The service no-ops when the model isn't
+        // ready or when already draining (FR-013/016).
+        .task { await services.pendingTranscriptionService.drainIfModelReady() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                Task { await services.pendingTranscriptionService.drainIfModelReady() }
+            }
         }
         .onChange(of: hasCompletedOnboarding) { _, completed in
             if completed { showOnboarding = false }
         }
+    }
+
+    /// Fetch the model in the background, honoring `downloadOverCellular`.
+    /// If the model is already installed, do nothing (FR-008). When the active
+    /// interface forbids the download (cellular + preference off, or no usable
+    /// path), wait for a permitted interface and resume automatically (FR-009).
+    private func startBackgroundModelDownloadIfNeeded() async {
+        guard !downloadKicked else { return }
+        downloadKicked = true
+
+        let aiModelService = services.aiModelService
+        let connectivity = services.connectivity
+        guard aiModelService.localPath(for: .whisper) == nil else { return }
+
+        if !shouldStartDownload(interface: await connectivity.currentInterface) {
+            for await interface in connectivity.interfaceChanges where shouldStartDownload(interface: interface) {
+                break
+            }
+        }
+
+        // The model may have landed (or been installed elsewhere) while we waited.
+        guard aiModelService.localPath(for: .whisper) == nil else { return }
+
+        do {
+            let progress = try await aiModelService.download(.whisper)
+            for try await _ in progress {}
+            // Model just landed — drain anything captured while it was downloading (US3).
+            await services.pendingTranscriptionService.drainIfModelReady()
+        } catch {
+            // A background download failure must not surface as a first-run error
+            // (FR-010); the model stays retryable from its Settings home.
+            AppLogger.log("Background model download failed: \(error)")
+        }
+    }
+
+    /// Re-reads the live `downloadOverCellular` preference each call so toggling
+    /// it on while deferred on cellular also unblocks the download.
+    private func shouldStartDownload(interface: NetworkInterface) -> Bool {
+        NetworkConnectivity.shouldStartDownload(
+            overCellular: settingsQuery.first?.downloadOverCellular ?? false,
+            interface: interface
+        )
     }
 }

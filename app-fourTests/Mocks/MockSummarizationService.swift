@@ -14,7 +14,7 @@ actor MockSummarizationService: SummarizationService {
         sleepEvent: nil,
         sleepLevel: nil,
         sideEffects: [],
-        feelings: [],
+        emotions: [],
         topics: [],
         noteExtraction: nil
     )

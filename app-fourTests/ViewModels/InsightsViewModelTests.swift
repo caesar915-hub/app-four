@@ -12,6 +12,7 @@ struct InsightsViewModelTests {
     let month = Calendar.current.date(from: DateComponents(year: 2025, month: 6, day: 15))!
 
     init() throws {
+        TestSupport.useRealData()
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         container = try ModelContainer(for: Recording.self, MedicationEvent.self, AppSettings.self, configurations: config)
         context = container.mainContext

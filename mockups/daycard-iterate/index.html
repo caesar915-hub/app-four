@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · DayCard — 12 evolutions of 4/5/6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4EEE2; --paper:#FBF6EC; --surface:#FFFDF7; --surface2:#EFE7D6; --ink:#221E16; --muted:#8A8270;
+    --hair:#E7DECB; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#7E5CA8; --sleep:#5566A6;
+    --m-low:#DA7A2A; --m-flat:#EDA94A; --m-okay:#9FCB79; --m-good:#5FB36E; --m-great:#2E8B57;
+    --shadow:0 2px 6px rgba(60,48,24,.05),0 14px 34px rgba(60,48,24,.08); --shadow-sm:0 1px 2px rgba(60,48,24,.05);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  [data-theme="dark"]{
+    --bg:#100F0B; --paper:#1A1812; --surface:#221F18; --surface2:#2C2920; --ink:#F3EEE0; --muted:#9A917C;
+    --hair:#34301F; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC; --sleep:#7A8AC8;
+    --m-low:#E08A3C; --m-flat:#EFB860; --m-okay:#A9D183; --m-good:#6EC07C; --m-great:#43A268;
+    --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:1480px;margin:0 auto;padding:48px 28px 120px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(34px,5vw,50px);line-height:1.02;margin:0;letter-spacing:-.025em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--accent);margin:14px 0 0;max-width:64ch;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:11px 18px;box-shadow:var(--shadow-sm);z-index:50;}
+  .lineage{font-family:'Fraunces',serif;font-size:22px;font-weight:600;margin:46px 0 4px;}
+  .lineage .from{font-size:13px;color:var(--muted);font-style:italic;font-weight:400;}
+  .row{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-start;margin-top:18px;}
+  .unit{width:312px;}
+  .pn{font-family:'Fraunces',serif;font-size:16px;font-weight:600;}
+  .pd{font-size:12px;color:var(--muted);margin:3px 0 12px;min-height:46px;}
+  .phone{width:312px;height:648px;background:#000;border-radius:46px;padding:9px;box-shadow:var(--shadow);}
+  .screen{position:relative;width:100%;height:100%;border-radius:38px;overflow:hidden;background:var(--bg);display:flex;flex-direction:column;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:13px 22px 2px;font-size:11px;font-weight:600;}
+  .fr{font-family:'Fraunces',serif;} .mono{font-family:'IBM Plex Mono',monospace;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+  .medbar{margin:6px 12px 0;padding:9px 13px;border-radius:22px;background:color-mix(in srgb,var(--surface) 78%,transparent);backdrop-filter:blur(14px);border:1px solid var(--hair);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:10px;}
+  .medbar .pill{width:28px;height:28px;border-radius:9px;background:color-mix(in srgb,var(--med) 14%,transparent);display:flex;align-items:center;justify-content:center;flex:none;}
+  .medbar .mname{font-size:12.5px;font-weight:700;} .medbar .mmeta{font-size:10px;color:var(--muted);}
+  .medbar .mtrack{width:48px;height:5px;border-radius:4px;background:var(--surface2);overflow:hidden;flex:none;}
+  .medbar .mtrack span{display:block;height:100%;background:var(--med);border-radius:4px;}
+  .hdr{padding:11px 16px 0;} .hdr .top{display:flex;align-items:center;justify-content:space-between;}
+  .hdr .month{font-family:'Fraunces',serif;font-size:16px;font-weight:600;} .hdr .today{font-size:10px;font-weight:700;color:var(--accent);border:1.2px solid var(--accent);border-radius:20px;padding:2px 8px;}
+  .wcaps{display:flex;margin-top:9px;} .wcaps span{flex:1;text-align:center;font-size:10px;color:var(--muted);font-weight:600;}
+  .drow{display:flex;margin-top:3px;}
+  .day{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding-top:3px;}
+  .day .n{width:27px;height:27px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:13.5px;font-weight:600;}
+  .day.today .n{border:1.6px solid var(--ink);} .day.sel .n{background:var(--ink);color:var(--bg);} .day.future .n{color:var(--muted);}
+  .day .dot{width:6px;height:6px;border-radius:50%;}
+  .divider{height:1px;background:var(--hair);margin:10px 16px 0;}
+  .list{flex:1;overflow:hidden;padding:11px 14px 64px;-webkit-mask-image:linear-gradient(transparent,#000 10px,#000 calc(100% - 56px),transparent);mask-image:linear-gradient(transparent,#000 10px,#000 calc(100% - 56px),transparent);}
+  .daycard{background:var(--surface);border:1px solid var(--hair);border-radius:14px;overflow:hidden;margin-bottom:10px;box-shadow:var(--shadow-sm);}
+  .wash{padding:9px 13px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+  .wash .dl{font-family:'Fraunces',serif;font-weight:600;font-size:14px;}
+  .wash .dr{font-size:11px;font-weight:700;display:flex;align-items:center;gap:6px;color:var(--muted);}
+  .tlrow{display:flex;gap:10px;padding:10px 13px;border-top:1px solid var(--hair);}
+  .tlrow .bcol{display:flex;flex-direction:column;align-items:center;flex:none;padding-top:1px;}
+  .tlrow .line{width:2px;flex:1;margin-top:3px;background:var(--hair);}
+  .tlrow .time{font-size:10px;color:var(--muted);}
+  .tlrow .summary{font-size:13px;font-weight:600;margin-top:2px;}
+  .tlrow .chips{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;align-items:center;}
+  .chip{font-size:9px;font-weight:700;letter-spacing:.3px;padding:3px 7px;border-radius:20px;text-transform:uppercase;}
+  .chip.med{background:color-mix(in srgb,var(--med) 14%,transparent);color:var(--med);}
+  .chip.sleep{background:color-mix(in srgb,var(--sleep) 16%,transparent);color:var(--sleep);}
+  .exp-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .26s var(--ease);}
+  .exp-body>div{overflow:hidden;}
+  .partlbl{font-size:9px;font-weight:800;letter-spacing:.08em;color:var(--muted);padding:9px 13px 2px;border-top:1px solid var(--hair);}
+  .tabbar{position:absolute;left:16px;right:16px;bottom:10px;height:48px;border-radius:24px;background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(14px);border:1px solid var(--hair);box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:space-around;}
+  .tb{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);font-size:9px;font-weight:600;} .tb.on{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · Paper &amp; Pollen · DayCard · 12 evolutions of 4 / 5 / 6</p>
+      <h1>Three lineages, four each</h1>
+      <p class="sub">Summary-first, Color Memory, and Rich Node — each pushed four ways. Same canonical shell. The Summary-first cards expand on tap. Toggle light/dark.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div id="stage"></div>
+</div>
+
+<script>
+const RAMP={1:'--m-low',2:'--m-flat',3:'--m-okay',4:'--m-good',5:'--m-great'};
+const MOODW=['Low','Flat','Okay','Good','Great'],ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Scattered','Present','Sharp','Locked'];
+const energyRamp=['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'],focusRamp=['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.6,op=(0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.2,cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}"/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.7"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.3"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.22"/></g></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const mc=l=>cssv('var('+RAMP[l]+')');
+const tint=(h,p)=>`color-mix(in srgb, ${h} ${p}%, var(--surface))`;
+const mg=(l,b)=>`<span class="glyph">${gMood(mc(l),l,b||7)}</span>`;
+const eg=(l,b)=>`<span class="glyph">${gEnergy(energyRamp[l-1],l,b||7)}</span>`;
+const fg=(l,b)=>`<span class="glyph">${gFocus(focusRamp[l-1],l,b||7)}</span>`;
+const cap=(sz)=>`<span class="glyph">${icCapsule(cssv('var(--med)'),sz||14)}</span>`;
+function ringBead(mood,doses){const S=32,c=16;doses=doses||[];const n=Math.min(3,doses.length);let r='';for(let i=0;i<n;i++){const rr=7.5+(n-1-i)*3;const C=2*Math.PI*rr;const p=Math.min(0.99,doses[i]);r+=`<circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="2" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${c} ${c})" opacity="0.9"/>`;}const ctr=mood?`<circle cx="${c}" cy="${c}" r="5" fill="${mc(mood)}"/>`:`<circle cx="${c}" cy="${c}" r="4.6" fill="var(--bg)" stroke="${cssv('var(--muted)')}" stroke-width="1.5"/>`;return `<span class="glyph"><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}">${r}${ctr}</svg></span>`;}
+function doseArc(){const W=270,H=30,X=t=>((t-7)/(24-7))*W,Y=v=>6+(H-10)*(1-v/5);const taken=14.57;const pts=[];for(let t=7;t<=24;t+=0.5){let b=2+Math.sin((t-7)/4)*0.5,d=0;if(t>=taken){const dt=t-taken;d=3*Math.exp(-Math.pow((dt-1.6)/2.2,2))*(dt<0.6?dt/0.6:1);}pts.push([X(t),Y(Math.min(5,b+d))]);}let dd=`M${pts[0][0]} ${pts[0][1]}`;for(let i=1;i<pts.length;i++)dd+=` L${pts[i][0].toFixed(1)} ${pts[i][1].toFixed(1)}`;return `<svg width="100%" viewBox="0 0 ${W} ${H}" style="display:block"><path d="${dd}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="1.8" opacity="0.85"/><line x1="${X(taken)}" y1="2" x2="${X(taken)}" y2="${H-2}" stroke="${cssv('var(--med)')}" stroke-width="1" stroke-dasharray="2 2"/></svg>`;}
+
+const WEEK=[[9,3],[10,4],[11,2],[12,4],[13,5],[14,3],[15,4]];
+function shell(list,sel){sel=sel||15;
+  const med=`<div class="medbar"><span class="pill">${cap(15)}</span><div style="flex:1"><div class="mname">Concerta 18 mg</div><div class="mmeta">Winding down · ends 02:34</div></div><span class="mtrack"><span style="width:58%"></span></span></div>`;
+  const days=WEEK.map(([n,m])=>{const isSel=n===sel,today=n===15,fut=n>15;return `<div class="day ${today?'today':''} ${isSel?'sel':''} ${fut?'future':''}"><span class="n">${n}</span><span class="dot" style="background:${m&&!fut?mc(m):'transparent'}"></span></div>`;}).join('');
+  return `<div class="phone"><div class="screen"><div class="statusbar"><span>14:34</span><span>􀙇 54</span></div>${med}<div class="hdr"><div class="top"><span class="month">June 2026 ›</span><span class="today">Today</span></div><div class="wcaps"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div><div class="drow">${days}</div></div><div class="divider"></div><div class="list">${list}</div><div class="tabbar"><div class="tb on">◷<span>Calendar</span></div><div class="tb">◍<span>Check-in</span></div><div class="tb">◳<span>Insights</span></div><div class="tb">⚙<span>Settings</span></div></div></div></div>`;}
+function row(time,mood,summary,chips,doses,last){return `<div class="tlrow"><div class="bcol">${ringBead(mood,doses)}${last?'':'<span class="line"></span>'}</div><div style="flex:1"><div class="time">${time}</div><div class="summary">${summary}</div>${chips?`<div class="chips">${chips}</div>`:''}</div></div>`;}
+const cMed='<span class="chip med">Taken · Concerta</span>',cSleep='<span class="chip sleep">Slept 7h30</span>';
+
+// expandable summary card (dir 4)
+function expCard(mood,dl,meta,rowsHTML,open){return `<div class="daycard exp"><div class="wash" style="background:${tint(mc(mood),46)}"><span class="dl">${mg(mood,8)} ${dl}</span><span class="dr">${meta}</span></div><div class="exp-body" style="grid-template-rows:${open?'1fr':'0fr'}"><div><div>${rowsHTML}</div></div></div></div>`;}
+
+const LINEAGES=[
+ {title:'Direction 4 · Summary-first', from:'from “the header is the read; rows fold until you ask” — tap a card to expand', items:[
+   {n:'4a · Folded list', d:'Every day a collapsed header carrying the full read. The timeline only appears when you open a day.',
+     list:()=>expCard(4,'Mon 15 · Good','3 · '+cap(13)+' ⌄',row('09:12',4,'Steady after the walk',cMed,[0.6])+row('14:40',3,'Foggy patch','',[],true),false)+expCard(3,'Sun 14 · Okay','2 ⌄',row('20:10',3,'Quiet evening','',[],true),false)+expCard(5,'Sat 13 · Great','4 · '+cap(13)+' ⌄','',false)},
+   {n:'4b · Accordion', d:'Today opens by default showing its rows; the rest stay folded. One day in focus at a time.',
+     list:()=>expCard(4,'Mon 15 · Good','3 · '+cap(13)+' ⌃',row('09:12',4,'Steady after the walk',cMed,[0.6])+row('12:40',3,'Deep work block','',[])+row('19:05',4,'Good evening','',[],true),true)+expCard(3,'Sun 14 · Okay','2 ⌄','',false)},
+   {n:'4c · Sentence', d:'The header is a plain-English sentence of the whole day — no labels, no rows unless tapped.',
+     list:()=>`<div class="daycard exp"><div class="wash" style="background:${tint(mc(4),40)};align-items:flex-start"><div><div class="dl">Monday 15</div><div style="font-size:12px;color:var(--ink);opacity:.8;margin-top:3px;line-height:1.4" class="fr">Good day — steady after a slow start, meds at 14:34.</div></div><span class="dr" style="align-self:center">⌄</span></div><div class="exp-body" style="grid-template-rows:0fr"><div><div>${row('09:12',4,'Steady after the walk',cMed,[0.6],true)}</div></div></div></div>
+       <div class="daycard exp"><div class="wash" style="background:${tint(mc(3),40)};align-items:flex-start"><div><div class="dl">Sunday 14</div><div style="font-size:12px;color:var(--ink);opacity:.8;margin-top:3px;line-height:1.4" class="fr">An okay day — quiet, even keel throughout.</div></div><span class="dr" style="align-self:center">⌄</span></div><div class="exp-body" style="grid-template-rows:0fr"><div><div>${row('20:10',3,'Quiet evening','',[],true)}</div></div></div></div>`},
+   {n:'4d · Glance + peek', d:'Folded, but the header shows a tiny strip of the day’s mood beads — a peek of the shape before you open it.',
+     list:()=>{const peek=ls=>`<span style="display:inline-flex;gap:3px;margin-left:2px">${ls.map(l=>`<span style="width:8px;height:8px;border-radius:50%;background:${mc(l)}"></span>`).join('')}</span>`;return expCard(4,'Mon 15 · Good',peek([4,3,4])+' ⌄',row('09:12',4,'Steady',cMed,[0.6],true),false)+expCard(5,'Sat 13 · Great',peek([5,4,5,4])+' ⌄','',false)+expCard(2,'Fri 12 · Flat',peek([2,3])+' ⌄','',false);}},
+ ]},
+ {title:'Direction 5 · Color Memory', from:'from “recognise a day by its colour” — mood as the dominant visual', items:[
+   {n:'5a · Full gradient', d:'Bold mood gradient bleeds the whole card. Maximum colour memory; white text rides the wash.',
+     list:()=>[[15,4,'Good','Steady, shipped the thing'],[14,3,'Okay','Quiet, even keel'],[13,5,'Great','Best day in a while']].map(([n,m,w,s])=>`<div class="daycard" style="border:none"><div class="wash" style="background:linear-gradient(120deg,${mc(m)},${tint(mc(m),30)});padding:15px 15px"><div><div class="dl" style="color:#fff;font-size:16px">${w}</div><div style="color:#fff;opacity:.88;font-size:11.5px;margin-top:2px">${s}</div></div><div style="color:#fff;font-size:12px;font-weight:700">${n} Jun</div></div></div>`).join('')},
+   {n:'5b · Soft & readable', d:'Same colour memory, dialed for calm: a light wash with ink text (not white), so it stays legible and unhurried.',
+     list:()=>[[15,4,'Good','Steady, shipped the thing'],[14,3,'Okay','Quiet, even keel'],[13,5,'Great','Best day in a while']].map(([n,m,w,s])=>`<div class="daycard"><div class="wash" style="background:${tint(mc(m),30)};padding:14px"><div><div class="dl" style="font-size:15px">${w} <span style="color:${mc(m)}">·</span></div><div style="color:var(--muted);font-size:11.5px;margin-top:2px">${s}</div></div><div style="font-size:11px;color:var(--muted);font-weight:600">${n} Jun</div></div></div>`).join('')},
+   {n:'5c · Mood spine', d:'Cards stay neutral; colour memory lives in the timeline thread — the connector runs a mood gradient down the day.',
+     list:()=>{const seg=(a,b)=>`background:linear-gradient(180deg,${mc(a)},${mc(b)})`;return `<div class="daycard"><div class="wash"><span class="dl">Mon 15 Jun</span><span class="dr">Good</span></div>
+       <div class="tlrow"><div class="bcol">${ringBead(4,[0.6])}<span class="line" style="${seg(4,3)}"></span></div><div style="flex:1"><div class="time">09:12</div><div class="summary">Steady after the walk</div><div class="chips">${cMed}</div></div></div>
+       <div class="tlrow"><div class="bcol">${ringBead(3)}<span class="line" style="${seg(3,4)}"></span></div><div style="flex:1"><div class="time">14:40</div><div class="summary">Foggy patch</div></div></div>
+       <div class="tlrow"><div class="bcol">${ringBead(4)}</div><div style="flex:1"><div class="time">19:05</div><div class="summary">Good evening</div></div></div></div>`;}},
+   {n:'5d · Colour in the row', d:'Colour memory moves up to the day-row selector — each date sits on its mood fill — while cards stay quiet and textual.',
+     list:()=>`<div class="daycard"><div class="wash"><span class="dl">Mon 15 Jun</span><span class="dr">Good · 3 check-ins</span></div>${row('09:12',4,'Steady after the walk',cMed,[0.6])}${row('19:05',4,'Good evening','',[],true)}</div>`,
+     dayfill:true},
+ ]},
+ {title:'Direction 6 · Rich Node', from:'from “the dense, fully-loaded day” — every signal, still legible', items:[
+   {n:'6a · Full rich', d:'Combined recording+dose nodes with concentric rings, sleep + med chips, four rows. The maximal real day.',
+     list:()=>`<div class="daycard"><div class="wash" style="background:${tint(mc(4),46)}"><span class="dl">${mg(4,8)} Mon 15 Jun</span><span class="dr" style="color:${mc(4)}">Good</span></div>${row('08:30',4,'Woke rested, took meds',cMed+cSleep,[0.1])}${row('12:15',3,'Lunch dip, second dose',cMed,[0.5,0.12])}${row('16:20',4,'Locked in, peak focus','',[0.78,0.42])}${row('22:00',3,'Winding down',cSleep,[],true)}</div>`},
+   {n:'6b · + Signal glyphs', d:'Each row carries the full signal read — mood, energy, focus glyphs together — for people who want every dimension visible.',
+     list:()=>{const sr=(t,m,e,f,ch,ds,last)=>`<div class="tlrow"><div class="bcol">${ringBead(m,ds)}${last?'':'<span class="line"></span>'}</div><div style="flex:1"><div class="time">${t}</div><div class="chips" style="margin-top:3px">${mg(m)}<b style="font-size:11px">${MOODW[m-1]}</b>${eg(e)}<b style="font-size:11px">${ENW[e-1]}</b>${fg(f)}<b style="font-size:11px">${FOW[f-1]}</b></div>${ch?`<div class="chips">${ch}</div>`:''}</div></div>`;return `<div class="daycard"><div class="wash" style="background:${tint(mc(4),46)}"><span class="dl">${mg(4,8)} Mon 15 Jun</span><span class="dr" style="color:${mc(4)}">Good</span></div>${sr('09:12',4,2,3,cMed,[0.6])}${sr('16:20',4,5,3,'',[0.85],true)}</div>`;}},
+   {n:'6c · + Dose arc', d:'A slim medication arc sits in the card header — the day’s dose coverage at a glance — with the rich rows beneath it.',
+     list:()=>`<div class="daycard"><div style="padding:10px 13px 4px;background:${tint(mc(4),40)}"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span class="dl">${mg(4,8)} Mon 15 · Good</span><span class="dr" style="color:var(--med)">${cap(13)} 14:34</span></div>${doseArc()}</div>${row('09:12',4,'Steady after the walk','',[])}${row('16:20',4,'Rode the peak','',[],true)}</div>`},
+   {n:'6d · Grouped by time', d:'Rows cluster into Morning / Afternoon / Evening inside the card — the day reads as parts, not one long thread.',
+     list:()=>`<div class="daycard"><div class="wash" style="background:${tint(mc(4),46)}"><span class="dl">${mg(4,8)} Mon 15 Jun</span><span class="dr" style="color:${mc(4)}">Good</span></div><div class="partlbl">MORNING</div>${row('08:30',4,'Woke rested',cMed,[0.1])}<div class="partlbl">AFTERNOON</div>${row('14:20',3,'Lunch dip','',[0.5])}<div class="partlbl">EVENING</div>${row('21:40',4,'Good evening',cSleep,[],true)}</div>`},
+ ]},
+];
+
+function render(){
+  document.getElementById('stage').innerHTML=LINEAGES.map(L=>`<div class="lineage">${L.title} <span class="from">${L.from}</span></div><div class="row">${L.items.map(p=>`<div class="unit"><div class="pn">${p.n}</div><div class="pd">${p.d}</div>${shell(p.list(), p.sel)}</div>`).join('')}</div>`).join('');
+  // dir 5d: tint the day-row circles by mood
+  document.querySelectorAll('.unit').forEach(u=>{ if(u.querySelector('.pn').textContent.startsWith('5d')){ const sel=u.querySelector('.day.sel .n'); u.querySelectorAll('.day').forEach((d,i)=>{const m=WEEK[i][1];const fut=WEEK[i][0]>15;if(m&&!fut){const n=d.querySelector('.n');if(!d.classList.contains('sel')){n.style.background=tint(mc(m),55);} d.querySelector('.dot').style.display='none';}}); } });
+  // expandable (dir 4)
+  document.querySelectorAll('.exp .wash').forEach(w=>w.onclick=()=>{const b=w.parentElement.querySelector('.exp-body');if(!b)return;const open=b.style.gridTemplateRows==='1fr';b.style.gridTemplateRows=open?'0fr':'1fr';const dr=w.querySelector('.dr');if(dr)dr.innerHTML=dr.innerHTML.replace(open?'⌃':'⌄',open?'⌄':'⌃');});
+}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

@@ -15,6 +15,8 @@ enum Typography {
     static let largeTitle: Font = .custom(fraunces, size: 34, relativeTo: .largeTitle).weight(.medium)
     /// Primary section title.
     static let title: Font = .custom(fraunces, size: 22, relativeTo: .title2).weight(.medium)
+    /// Folded day-card weekday label.
+    static let dayCardDate: Font = .custom(fraunces, size: 16, relativeTo: .subheadline).weight(.medium)
 
     // MARK: Content (DM Sans)
     /// Row / card headline.

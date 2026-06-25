@@ -5,7 +5,7 @@ public struct NoteExtraction: Sendable, Codable, Equatable {
     public var mood: String?          // MoodLevel rawValue (dark/low/flat/okay/good/high)
     public var energy: EnergyLevel?
     public var focus: FocusLevel?
-    public var feelings: [String]     // specific emotions (anxious, grateful, etc.)
+    public var emotions: [String]     // curated Mood-Meter emotions (anxious, grateful, etc.)
     public var activities: [String]   // e.g. ["resting", "hobbies", "fitness"]
     public var medications: [MedEvent]
     public var sideEffects: [String]
@@ -38,7 +38,7 @@ public struct NoteExtraction: Sendable, Codable, Equatable {
         mood: String? = nil,
         energy: EnergyLevel? = nil,
         focus: FocusLevel? = nil,
-        feelings: [String] = [],
+        emotions: [String] = [],
         activities: [String] = [],
         medications: [MedEvent] = [],
         sideEffects: [String] = [],
@@ -66,7 +66,7 @@ public struct NoteExtraction: Sendable, Codable, Equatable {
         self.mood = mood
         self.energy = energy
         self.focus = focus
-        self.feelings = feelings
+        self.emotions = emotions
         self.activities = activities
         self.medications = medications
         self.sideEffects = sideEffects
@@ -103,7 +103,7 @@ public struct NoteExtraction: Sendable, Codable, Equatable {
         mood = try c.decodeIfPresent(String.self, forKey: .mood)
         energy = try c.decodeIfPresent(EnergyLevel.self, forKey: .energy)
         focus = try c.decodeIfPresent(FocusLevel.self, forKey: .focus)
-        feelings = try c.decode([String].self, forKey: .feelings)
+        emotions = try c.decode([String].self, forKey: .emotions)
         activities = try c.decode([String].self, forKey: .activities)
         medications = try c.decode([MedEvent].self, forKey: .medications)
         sideEffects = try c.decode([String].self, forKey: .sideEffects)

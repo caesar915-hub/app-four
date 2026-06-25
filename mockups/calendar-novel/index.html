@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Calendar — 3 novel paradigms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4EEE2; --paper:#FBF6EC; --surface:#FFFDF7; --surface2:#EFE7D6; --ink:#221E16; --muted:#8A8270;
+    --hair:#E7DECB; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#7E5CA8;
+    --shadow:0 2px 6px rgba(60,48,24,.05),0 14px 34px rgba(60,48,24,.08); --shadow-sm:0 1px 2px rgba(60,48,24,.05);
+  }
+  [data-theme="dark"]{
+    --bg:#100F0B; --paper:#1A1812; --surface:#221F18; --surface2:#2C2920; --ink:#F3EEE0; --muted:#9A917C;
+    --hair:#34301F; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC;
+    --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:1400px;margin:0 auto;padding:48px 28px 120px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(34px,5vw,52px);line-height:1.02;margin:0;letter-spacing:-.025em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--accent);margin:14px 0 0;max-width:60ch;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:11px 18px;box-shadow:var(--shadow-sm);z-index:50;}
+  .stage{display:flex;gap:56px;flex-wrap:wrap;align-items:flex-start;margin-top:44px;}
+  .unit{width:392px;}
+  .feel-name{font-family:'Fraunces',serif;font-size:20px;font-weight:600;}
+  .feel-desc{font-size:12.5px;color:var(--muted);margin:4px 0 16px;min-height:48px;}
+  .phone{width:392px;height:832px;border-radius:54px;border:1px solid var(--hair);box-shadow:var(--shadow);overflow:hidden;position:relative;display:flex;flex-direction:column;background:var(--bg);}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:124px;height:30px;background:#000;border-radius:0 0 18px 18px;opacity:.6;z-index:8;}
+  .statusbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:16px 30px 4px;font-size:13px;font-weight:600;z-index:7;}
+  .fr{font-family:'Fraunces',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · Paper &amp; Pollen · Calendar · 3 novel paradigms</p>
+      <h1>The data is the surface</h1>
+      <p class="sub">Not a chart on a screen — three calendars where the day itself becomes the medium. A sky, a thread, a pressed specimen. Medication and the week are woven in, not stacked on top. Toggle light/dark.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div class="stage" id="stage"></div>
+</div>
+
+<script>
+const moodRamp=['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'];
+const energyRamp=['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'];
+const focusRamp=['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.8,op=(0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.4,cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}"/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.7"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.3"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.22"/></g></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p)=>`color-mix(in srgb, ${h} ${p}%, var(--surface))`;
+const mg=(l,b)=>gMood(cssv(moodRamp[l-1]),l,b||9);
+const MOODW=['Low','Flat','Okay','Good','Great'];
+const SB=`<div class="notch"></div><div class="statusbar"><span>14:34</span><span>􀙇 􀉪 􀛨</span></div>`;
+// today's check-ins (time decimal, mood, energy, focus)
+const CI=[{t:9.25,time:'09:15',m:3,e:2,f:3},{t:12.08,time:'12:05',m:3,e:3,f:5},{t:16.2,time:'16:12',m:4,e:5,f:3}];
+const DOSE=14.57;
+const WEEK=[[ 'M',15,3],['T',16,2],['W',17,null],['T',18,4],['F',19,4,'today'],['S',20,null,'fut'],['S',21,null,'fut']];
+
+/* ============ 1 · AURORA ============ */
+function aurora(){
+  const Yp=t=>((t-7)/(23-7))*100; // % down the sky
+  // sky chips (week)
+  const chips=WEEK.map(([wl,n,m,f])=>{
+    const g=m?`linear-gradient(180deg, ${tint(moodRamp[Math.min(4,m)], 70)}, ${tint(moodRamp[m-1],85)})`:'var(--surface2)';
+    return `<div style="text-align:center"><div style="width:30px;height:42px;border-radius:10px;background:${g};border:${f==='today'?'2px solid var(--ink)':'1px solid var(--hair)'};margin:0 auto"></div><div style="font-size:10px;color:${f==='today'?'var(--ink)':'var(--muted)'};font-weight:700;margin-top:4px">${n}</div></div>`;
+  }).join('');
+  const orbs=CI.map(c=>{const hex=cssv(moodRamp[c.m-1]);return `<div style="position:absolute;left:50%;top:${Yp(c.t)}%;transform:translate(-50%,-50%);text-align:center"><div style="width:64px;height:64px;border-radius:50%;background:radial-gradient(circle at 38% 35%, ${tint(hex,75)}, ${tint(hex,45)});box-shadow:0 0 28px ${hex}55, inset 0 0 14px ${hex}33;display:flex;align-items:center;justify-content:center">${mg(c.m,12)}</div><div class="mono" style="font-size:9px;color:var(--muted);margin-top:5px">${c.time}</div></div>`;}).join('');
+  const medY=Yp(DOSE);
+  const sky=`linear-gradient(180deg, ${tint('#E9B765',55)} 0%, ${tint(moodRamp[3],30)} 42%, ${tint('#6E7FB0',32)} 100%)`;
+  return `<div class="phone">${SB}
+    <div style="position:absolute;inset:0;background:${sky}"></div>
+    <div style="position:relative;z-index:3;padding:48px 22px 0;height:100%">
+      <div class="fr" style="font-size:26px;font-weight:500;letter-spacing:-.01em">Friday</div>
+      <div style="font-size:13px;color:var(--ink);opacity:.7;margin-bottom:14px">a green day · 19 June</div>
+      <div style="display:flex;justify-content:space-between">${chips}</div>
+      <div style="position:relative;height:540px;margin-top:18px">
+        <!-- med band -->
+        <div style="position:absolute;left:-22px;right:-22px;top:${medY}%;height:74px;transform:translateY(-50%);background:radial-gradient(ellipse at center, ${cssv('var(--med)')}33, transparent 72%)"></div>
+        <div style="position:absolute;right:6px;top:${medY}%;transform:translateY(-50%);display:flex;align-items:center;gap:7px;background:color-mix(in srgb,var(--med) 16%,var(--surface));border:1px solid color-mix(in srgb,var(--med) 30%,var(--hair));border-radius:999px;padding:6px 11px"><span class="glyph">${icCapsule(cssv('var(--med)'),16)}</span><span style="font-size:11px;font-weight:700;color:var(--med)">Concerta · on</span></div>
+        ${orbs}
+      </div>
+    </div></div>`;
+}
+
+/* ============ 2 · THE THREAD ============ */
+function thread(){
+  const W=392,H=620,cx=196,t0=7,t1=23;
+  const Y=t=>40+((t-t0)/(t1-t0))*(H-80);
+  // ribbon: x wiggle by mood at sample points
+  const samples=[[7,3],[9.25,3],[11,4],[12.08,3],[14.57,4],[16.2,4],[19,4],[23,3]];
+  const X=m=>cx+(m-3)*14;
+  const left=samples.map(([t,m])=>[X(m)-(10+m*3),Y(t)]);
+  const right=samples.map(([t,m])=>[X(m)+(10+m*3),Y(t)]).reverse();
+  const sm=pts=>{let d=`M${pts[0][0]} ${pts[0][1]}`;for(let i=0;i<pts.length-1;i++){const p0=pts[i-1]||pts[i],p1=pts[i],p2=pts[i+1],p3=pts[i+2]||p2;const c1x=p1[0]+(p2[0]-p0[0])/6,c1y=p1[1]+(p2[1]-p0[1])/6,c2x=p2[0]-(p3[0]-p1[0])/6,c2y=p2[1]-(p3[1]-p1[1])/6;d+=` C${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2[0]} ${p2[1]}`;}return d;};
+  const ribbon=sm(left)+' L'+right.map(p=>p.join(' ')).join(' L')+' Z';
+  const beads=CI.map(c=>{const hex=cssv(moodRamp[c.m-1]);const y=Y(c.t),x=X(c.m);return `<g><circle cx="${x}" cy="${y}" r="17" fill="${tint(hex,30)}" stroke="var(--bg)" stroke-width="3"/></g><foreignObject x="${x-9}" y="${y-10}" width="20" height="20"><div xmlns="http://www.w3.org/1999/xhtml">${mg(c.m,7)}</div></foreignObject><text x="${x+24}" y="${y+4}" font-family="IBM Plex Mono" font-size="10" fill="${cssv('var(--muted)')}">${c.time}</text>`;}).join('');
+  const my0=Y(DOSE-0.3),my1=Y(23);
+  const weekdots=WEEK.map(([wl,n,m,f],i)=>`<div style="text-align:center"><div style="width:9px;height:9px;border-radius:50%;margin:0 auto;background:${m?cssv(moodRamp[m-1]):'var(--hair)'};outline:${f==='today'?'2px solid var(--ink)':'none'};outline-offset:2px"></div><div style="font-size:10px;color:var(--muted);margin-top:7px">${n}</div></div>`).join('');
+  return `<div class="phone">${SB}
+    <div style="padding:46px 24px 10px"><div class="fr" style="font-size:24px;font-weight:500">June · this week</div><div style="display:flex;justify-content:space-between;margin-top:12px">${weekdots}</div></div>
+    <svg width="100%" viewBox="0 0 ${W} ${H}" style="flex:1">
+      <defs>
+        <linearGradient id="rib" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${cssv(moodRamp[2])}"/><stop offset="0.5" stop-color="${cssv(moodRamp[3])}"/><stop offset="1" stop-color="${cssv(moodRamp[3])}"/></linearGradient>
+      </defs>
+      <rect x="${cx-40}" y="${my0}" width="80" height="${my1-my0}" rx="40" fill="${cssv('var(--med)')}" opacity="0.14"/>
+      <path d="${ribbon}" fill="url(#rib)" opacity="0.92"/>
+      <text x="${cx+52}" y="${(my0+my1)/2}" font-family="DM Sans" font-size="10" font-weight="700" fill="${cssv('var(--med)')}">meds on</text>
+      ${beads}
+      <text x="24" y="34" font-family="IBM Plex Mono" font-size="9" fill="${cssv('var(--muted)')}">morning</text>
+      <text x="24" y="${H-12}" font-family="IBM Plex Mono" font-size="9" fill="${cssv('var(--muted)')}">night</text>
+    </svg></div>`;
+}
+
+/* ============ 3 · HERBARIUM ============ */
+function specimen(m,e,f,big){
+  // composed botanical mark: sprout (mood) + energy sparks + focus rings, scaled
+  const sc=big?1.7:1; const hex=cssv(moodRamp[m-1]);
+  const sprout=gMood(hex,m,big?20:11);
+  return `<div style="position:relative;display:inline-flex;align-items:flex-end;justify-content:center">${sprout}</div>`;
+}
+function herbarium(){
+  const today=`<div style="background:var(--surface);border:1px solid var(--hair);border-radius:6px;box-shadow:var(--shadow-sm);padding:22px 22px 18px;position:relative">
+    <div style="position:absolute;top:14px;right:16px;font-family:'IBM Plex Mono';font-size:10px;color:var(--muted);letter-spacing:.04em">No. 19 · JUN</div>
+    <div style="height:200px;display:flex;align-items:flex-end;justify-content:center;gap:14px;padding-bottom:8px;border-bottom:1px solid var(--hair)">
+      <span style="opacity:.5">${gEnergy(cssv(energyRamp[3]),4,16)}</span>
+      <span>${mg(4,30)}</span>
+      <span style="opacity:.6">${gFocus(cssv(focusRamp[2]),3,16)}</span>
+    </div>
+    <div class="fr" style="font-size:24px;font-weight:500;font-style:italic;margin-top:14px">Friday, 19 June</div>
+    <div style="font-size:13px;color:var(--muted);margin-top:4px">Good · sharp afternoon, slow morning. Three check-ins.</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-top:14px;padding-top:13px;border-top:1px solid var(--hair)">
+      <span class="glyph">${icCapsule(cssv('var(--med)'),18)}</span><span style="font-size:12px;font-weight:600;color:var(--med)">Concerta 18 mg</span><span class="mono" style="font-size:10px;color:var(--muted);margin-left:auto">taken 14:34</span>
+    </div>
+  </div>`;
+  const sheet=WEEK.map(([wl,n,m,f])=>`<div style="background:var(--surface);border:1px solid var(--hair);border-radius:5px;padding:9px 6px 7px;text-align:center;${f==='today'?'outline:2px solid var(--accent);outline-offset:-1px':''}"><div style="height:46px;display:flex;align-items:flex-end;justify-content:center">${m?mg(m,9):`<span style="color:var(--hair);font-size:18px">·</span>`}</div><div class="mono" style="font-size:9px;color:var(--muted);margin-top:4px">${wl} ${n}</div></div>`).join('');
+  return `<div class="phone" style="background:var(--paper)">${SB}
+    <div style="padding:48px 20px 16px;overflow:hidden">
+      <div class="fr" style="font-size:13px;letter-spacing:.04em;color:var(--muted);font-style:italic;margin-bottom:14px">The herbarium · pressed days</div>
+      ${today}
+      <div style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin:22px 2px 10px">THIS WEEK, PRESSED</div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px">${sheet}</div>
+    </div></div>`;
+}
+
+const CONCEPTS=[
+  ['Aurora','The day as a sky. Morning at the top, night below; each check-in glows at its hour, and medication lights a warm band across the hours it covers. The whole field tints greener on better days.',aurora],
+  ['The Thread','Your life as one continuous ribbon. It swells and shifts color with your mood; check-ins are beads strung along it; the dose wraps the thread in a soft glow. Days are a scroll, not a grid.',thread],
+  ['Herbarium','Each day pressed like a botanical specimen — mood, energy and focus composed into one growing mark, dated and tagged. The week is a contact sheet of pressed days.',herbarium],
+];
+function render(){
+  document.getElementById('stage').innerHTML=CONCEPTS.map(([n,d,fn])=>`<div class="unit"><div class="feel-name">${n}</div><div class="feel-desc">${d}</div>${fn()}</div>`).join('');
+}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

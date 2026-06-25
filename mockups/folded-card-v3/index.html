@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Folded card v3 — energy+focus, shrink to glyph+day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EAF0DB; --paper:#F1F4E6; --surface:#FCFBF4; --surface2:#E4E9D2; --ink:#23271C; --muted:#7C8270;
+    --hair:#D7DEC4; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#8466B5;
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    --e1:#A9A079; --e2:#C2B25A; --e3:#D8C53E; --e4:#EAD22A; --e5:#E6C21E;
+    --f1:#7E8B96; --f2:#6E8DAE; --f3:#5683B8; --f4:#3E73B0; --f5:#2C5E9E;
+    --shadow:0 2px 6px rgba(40,48,24,.05),0 14px 34px rgba(40,48,24,.08); --shadow-sm:0 1px 2px rgba(40,48,24,.06);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  [data-theme="dark"]{
+    --bg:#131510; --paper:#1B1E16; --surface:#23271C; --surface2:#2D3122; --ink:#EDF0E2; --muted:#9AA088;
+    --hair:#363B2A; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC;
+    --m1:#E08A3C; --m2:#EFB860; --m3:#A9D183; --m4:#6EC07C; --m5:#43A268;
+    --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5); --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:600px;margin:0 auto;padding:48px 28px 110px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(30px,5vw,44px);line-height:1.04;margin:0;letter-spacing:-.025em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:17px;color:var(--accent);margin:13px 0 0;max-width:50ch;}
+  .hint{font-size:13px;color:var(--muted);margin:9px 0 0;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:11px 18px;box-shadow:var(--shadow-sm);z-index:50;}
+  .list{margin-top:38px;display:flex;flex-direction:column;gap:14px;}
+
+  .card{border:1px solid var(--hair);border-radius:20px;overflow:hidden;box-shadow:var(--shadow-sm);background:var(--surface);}
+  .wash{padding:18px 20px;cursor:pointer;user-select:none;transition:padding .3s var(--ease);}
+  .card.open .wash{padding:14px 18px;}
+  .hrow{display:flex;align-items:center;gap:15px;}
+  .gcircle{flex:none;width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+  .rcol{flex:1;min-width:0;}
+  .toprow{display:flex;align-items:center;gap:10px;}
+  .daytitle{font-family:'Fraunces',serif;font-size:21px;font-weight:600;letter-spacing:-.01em;}
+  .chev{margin-left:auto;font-size:14px;color:var(--muted);transition:transform .26s var(--ease);}
+  .card.open .chev{transform:rotate(180deg);}
+
+  /* folded summary: mood word + energy/focus + med line. Collapses on open → leaves glyph + day only */
+  .fext{display:grid;grid-template-rows:1fr;opacity:1;transition:grid-template-rows .3s var(--ease),opacity .2s var(--ease),margin .3s var(--ease);margin-top:6px;}
+  .fext>.in{overflow:hidden;}
+  .card.open .fext{grid-template-rows:0fr;opacity:0;margin-top:0;}
+  .fline{display:flex;align-items:center;gap:7px 16px;flex-wrap:wrap;}
+  .fl-mood{font-family:'Fraunces',serif;font-size:20px;font-weight:600;letter-spacing:-.01em;}
+  .fl-s{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--ink);}
+  .fl-med{color:var(--med);}
+
+  .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s var(--ease);background:var(--surface);}
+  .card.open .body{grid-template-rows:1fr;}
+  .body>.inner{overflow:hidden;}
+  .rows{padding:4px 18px 16px;}
+
+  .fr{font-family:'Fraunces',serif;} .mono{font-family:'IBM Plex Mono',monospace;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+  .row{display:flex;gap:12px;align-items:flex-start;padding:13px 2px;}
+  .row+.row{border-top:1px solid var(--hair);}
+  .ringcol{flex:none;width:56px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .medpill{font-family:'IBM Plex Mono';font-size:10px;font-weight:600;color:var(--med);background:color-mix(in srgb,var(--med) 14%,var(--surface));border-radius:999px;padding:2px 7px;}
+  .ct{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;}
+  .mhead{display:flex;align-items:baseline;gap:8px;}
+  .mword{font-family:'Fraunces',serif;font-size:17px;font-weight:600;}
+  .rtime{margin-left:auto;font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);}
+  .subsig{display:flex;align-items:center;gap:13px;flex-wrap:wrap;}
+  .sg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · folded card v3</p>
+      <h1>Mood, energy &amp; focus — folded</h1>
+      <p class="sub">No medication pill on the right. Folded shows mood + energy + focus (and the med line if a dose was taken). Open it and the header collapses to just the glyph + weekday; the rows take over. Click any card.</p>
+      <p class="hint">Monday is open by default — see it reduced to glyph + “Monday 8”. The others are folded with the full summary.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div class="list" id="list"></div>
+</div>
+
+<script>
+const mC=['var(--m1)','var(--m2)','var(--m3)','var(--m4)','var(--m5)'];
+const eC=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
+const fC=['var(--f1)','var(--f2)','var(--f3)','var(--f4)','var(--f5)'];
+const MOODW=['Low','Flat','Okay','Good','Great'],ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Scattered','Present','Sharp','Locked'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.7,op=(0.4+l*0.13).toFixed(2),sw=(1+l*0.14).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.3,cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.32+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.4" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.5" opacity="0.95"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.8"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.4"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.25"/></g></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p,base)=>`color-mix(in srgb, ${h} ${p}%, ${base||'var(--surface)'})`;
+const mg=(l,b)=>`<span class="glyph">${gMood(cssv(mC[l-1]),l,b||9)}</span>`;
+const eg=(l,b)=>`<span class="glyph">${gEnergy(cssv(eC[l-1]),l,b||9)}</span>`;
+const fg=(l,b)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,b||9)}</span>`;
+const cap=(s)=>`<span class="glyph">${icCapsule(cssv('var(--med)'),s||14)}</span>`;
+function ring(r){const S=54,c=27,rr=23,C=2*Math.PI*rr,p=r.med||0;const inner=tint(mC[r.m-1],45,'var(--surface)');
+  const arc=r.med!=null?`<circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="var(--hair)" stroke-width="3.3"/><circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="3.3" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 ${c} ${c})"/>`:'';
+  return `<div class="ringcol"><div style="position:relative;width:${S}px;height:${S}px;display:flex;align-items:center;justify-content:center"><svg width="${S}" height="${S}" viewBox="0 0 ${S} ${S}" style="position:absolute;inset:0">${arc}<circle cx="${c}" cy="${c}" r="18.5" fill="${inner}"/></svg><span style="position:relative">${mg(r.m,9)}</span></div>${r.med!=null?`<span class="medpill">${Math.round(r.med*100)}%</span>`:''}</div>`;}
+function rowHTML(r){let sig='';if(r.e!=null)sig+=`<span class="sg">${eg(r.e)} ${ENW[r.e-1]}</span>`;if(r.f!=null)sig+=`<span class="sg">${fg(r.f)} ${FOW[r.f-1]}</span>`;
+  return `<div class="row">${ring(r)}<div class="ct"><div class="mhead"><span class="mword" style="color:${cssv(mC[r.m-1])}">${MOODW[r.m-1]}</span><span class="rtime">${r.time}</span></div>${sig?`<div class="subsig">${sig}</div>`:''}</div></div>`;}
+
+const R3=[{time:'16:12',m:4,e:5,f:3,med:0.58},{time:'12:40',m:3,e:3,f:null,med:null},{time:'09:15',m:3,e:null,f:null,med:0.05}];
+const R2=[{time:'17:30',m:5,e:4,f:4,med:0.85},{time:'10:00',m:4,e:5,f:3,med:0.30}];
+const R1okay=[{time:'20:10',m:3,e:3,f:null,med:null}];
+const R1flat=[{time:'14:00',m:2,e:2,f:2,med:null}];
+
+// day-level mood/energy/focus + med line (string|null)
+const DAYS=[
+ {day:'Monday 8',m:4,e:5,f:3,med:'Concerta',open:true,rows:R3},
+ {day:'Sunday 7',m:5,e:4,f:4,med:'Vyvanse',rows:R2},
+ {day:'Saturday 6',m:3,e:3,f:null,med:null,rows:R1okay},
+ {day:'Friday 5',m:2,e:2,f:2,med:null,rows:R1flat},
+];
+function card(d){
+  const headBg=tint(mC[d.m-1],46,'var(--surface)');
+  const gBg=tint(mC[d.m-1],70,'var(--surface)');
+  let fl=`<span class="fl-mood" style="color:${cssv(mC[d.m-1])}">${MOODW[d.m-1]}</span>`;
+  if(d.e!=null)fl+=`<span class="fl-s">${eg(d.e,11)} ${ENW[d.e-1]}</span>`;
+  if(d.f!=null)fl+=`<span class="fl-s">${fg(d.f,11)} ${FOW[d.f-1]}</span>`;
+  if(d.med)fl+=`<span class="fl-s fl-med">${cap(13)} ${d.med}</span>`;
+  return `<div class="card ${d.open?'open':''}">
+    <div class="wash" data-toggle style="background:${headBg}">
+      <div class="hrow">
+        <span class="gcircle" style="background:${gBg}">${mg(d.m,16)}</span>
+        <div class="rcol">
+          <div class="toprow"><span class="daytitle">${d.day}</span><span class="chev">⌄</span></div>
+          <div class="fext"><div class="in"><div class="fline">${fl}</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="body"><div class="inner"><div class="rows">${d.rows.map(rowHTML).join('')}</div></div></div>
+  </div>`;
+}
+function render(){
+  document.getElementById('list').innerHTML=DAYS.map(card).join('');
+  document.querySelectorAll('[data-toggle]').forEach(w=>w.onclick=()=>w.parentElement.classList.toggle('open'));
+}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

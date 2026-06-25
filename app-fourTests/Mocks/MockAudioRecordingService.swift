@@ -10,6 +10,7 @@ actor MockAudioRecordingService: AudioRecordingService {
     var shouldThrowError = false
 
     var startRecordingCalled = false
+    var startRecordingCallCount = 0
     var stopRecordingCalled = false
     var cancelRecordingCalled = false
 
@@ -24,6 +25,7 @@ actor MockAudioRecordingService: AudioRecordingService {
     func startRecording() async throws -> URL {
         if shouldThrowError { throw RecordingError.unknown }
         startRecordingCalled = true
+        startRecordingCallCount += 1
         return URL(fileURLWithPath: "/tmp/mock.m4a")
     }
 

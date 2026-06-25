@@ -12,7 +12,7 @@ enum TagCategory: String, Codable {
     case energy
     case focus
     case medication
-    case feelings
+    case emotions
 }
 
 @Model final class RecordingTag {

@@ -20,7 +20,7 @@ extension Recording {
         return parts.isEmpty ? title : parts.joined(separator: " ")
     }
 
-    /// Tags shown as chips under a timeline check-in: feelings, side effects,
+    /// Tags shown as chips under a timeline check-in: emotions, side effects,
     /// sleep, and topics. Excludes energy/focus (folded into the headline) and
     /// medications (rendered as their own "Taken …" / active-dose lines).
     @MainActor var chipTags: [DisplayTag] {
@@ -71,8 +71,8 @@ extension Recording {
             tags.append(DisplayTag(id: "se-\(i)", label: effect.capitalized, icon: "bandage.fill", color: Palette.warning))
         }
 
-        for (i, feeling) in decodedFeelings.enumerated() {
-            tags.append(DisplayTag(id: "feeling-\(i)", label: feeling.capitalized, icon: "heart.fill", color: .pink))
+        for (i, emotion) in decodedEmotions.enumerated() {
+            tags.append(DisplayTag(id: "emotion-\(i)", label: emotion.capitalized, icon: "heart.fill", color: .pink))
         }
 
         var seenMedNames = Set<String>()

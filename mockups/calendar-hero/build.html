@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Calendar — Pressed Paper (full build)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4EEE2; --paper:#FBF6EC; --surface:#FFFDF7; --surface2:#EFE7D6; --ink:#221E16; --muted:#8A8270;
+    --hair:#E7DECB; --green:#5F8A4C; --amber:#E0A33A; --accent:#B8842A; --med:#7E5CA8;
+    --shadow-sm:0 1px 2px rgba(60,48,24,.04); --shadow:0 2px 6px rgba(60,48,24,.05),0 14px 34px rgba(60,48,24,.08);
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  [data-theme="dark"]{
+    --bg:#100F0B; --paper:#1A1812; --surface:#221F18; --surface2:#2C2920; --ink:#F3EEE0; --muted:#9A917C;
+    --hair:#34301F; --green:#7CAA64; --amber:#E8B255; --accent:#D8AA52; --med:#A488CC;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.3); --shadow:0 2px 6px rgba(0,0,0,.35),0 16px 40px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s;}
+  .wrap{max-width:760px;margin:0 auto;padding:48px 28px 120px;}
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 14px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(34px,5vw,50px);line-height:1.02;margin:0;letter-spacing:-.025em;}
+  .sub{font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--accent);margin:14px 0 0;max-width:54ch;}
+  .hint{font-size:13px;color:var(--muted);margin:10px 0 0;}
+  .toggle{position:sticky;top:16px;font-size:13px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:11px 18px;box-shadow:var(--shadow-sm);z-index:50;}
+  .stage{display:flex;justify-content:center;margin-top:40px;}
+
+  .phone{width:392px;height:832px;background:var(--bg);border-radius:54px;border:1px solid var(--hair);box-shadow:var(--shadow);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  .notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:124px;height:30px;background:var(--ink);border-radius:0 0 18px 18px;opacity:.92;z-index:8;}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:16px 30px 4px;font-size:13px;color:var(--ink);font-weight:600;}
+  .scroll{flex:1;overflow-y:auto;padding:12px 22px 18px;scrollbar-width:none;}
+  .scroll::-webkit-scrollbar{display:none;}
+  .fr{font-family:'Fraunces',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .glyph{display:inline-flex;vertical-align:middle;}
+
+  /* med bar */
+  .medcard{background:var(--surface);border:1px solid var(--hair);border-radius:24px;padding:17px 20px;box-shadow:var(--shadow-sm);}
+  .med-disc{width:42px;height:42px;border-radius:14px;background:color-mix(in srgb,var(--med) 14%,var(--surface));display:flex;align-items:center;justify-content:center;flex:0 0 42px;}
+  .track{position:relative;height:8px;border-radius:6px;background:var(--surface2);margin-top:15px;}
+  .fill{position:absolute;left:0;top:0;height:100%;border-radius:6px;background:linear-gradient(90deg,color-mix(in srgb,var(--med) 55%,var(--surface)),var(--med));transition:width .5s var(--ease);}
+  .knob{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:var(--med);transform:translate(-50%,-50%);box-shadow:0 0 0 4px color-mix(in srgb,var(--med) 22%,transparent);transition:left .5s var(--ease);}
+  .med-quiet{display:flex;align-items:center;gap:12px;color:var(--muted);}
+
+  /* calendar */
+  .cal-head{display:flex;align-items:baseline;justify-content:space-between;margin:24px 2px 14px;}
+  .cal-title{font-family:'Fraunces',serif;font-size:24px;font-weight:500;}
+  .week{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+  .day{display:flex;flex-direction:column;align-items:center;gap:7px;padding:9px 0 7px;border-radius:18px;cursor:pointer;transition:background .2s var(--ease);}
+  .day:hover{background:var(--paper);}
+  .day .dl{font-size:11px;font-weight:700;color:var(--muted);}
+  .day .dn{font-size:16px;font-weight:600;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s var(--ease);}
+  .day.sel{background:var(--paper);box-shadow:var(--shadow-sm);}
+  .day.sel .dn{background:var(--ink);color:var(--bg);}
+  .day.future .dn{color:var(--muted);}
+  .bead{width:7px;height:7px;border-radius:50%;}
+
+  /* day list */
+  .sec{font-size:12px;font-weight:800;letter-spacing:.1em;margin:26px 2px 14px;}
+  .list{display:flex;flex-direction:column;}
+  .list.swap{animation:fade .32s var(--ease);}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  .entry{background:var(--surface);border:1px solid var(--hair);border-radius:22px;padding:15px 17px;margin-bottom:11px;box-shadow:var(--shadow-sm);cursor:pointer;}
+  .entry-top{display:flex;align-items:center;gap:15px;}
+  .entry-disc{width:52px;height:52px;border-radius:18px;display:flex;align-items:center;justify-content:center;flex:0 0 52px;}
+  .word{font-family:'Fraunces',serif;font-size:18px;font-weight:600;}
+  .line{font-size:13px;color:var(--muted);margin-top:2px;}
+  .time{margin-left:auto;font-family:'IBM Plex Mono';font-size:12px;color:var(--muted);align-self:flex-start;padding-top:2px;}
+  .detail{display:grid;grid-template-rows:0fr;transition:grid-template-rows .28s var(--ease);}
+  .detail>div{overflow:hidden;}
+  .detail-in{padding-top:14px;margin-top:13px;border-top:1px solid var(--hair);}
+  .sigrow{display:flex;gap:10px;}
+  .sigchip{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--paper);border-radius:14px;padding:11px 6px;}
+  .sigchip .v{font-size:12px;font-weight:700;}
+  .sigchip .k{font-size:10px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;}
+  .note{font-style:italic;font-family:'Fraunces',serif;font-size:14px;color:var(--ink);margin-top:12px;line-height:1.5;}
+
+  .quiet{background:var(--paper);border:1px dashed var(--hair);border-radius:24px;padding:30px 22px;text-align:center;}
+  .add{display:flex;align-items:center;justify-content:center;gap:9px;background:linear-gradient(90deg,var(--green),color-mix(in srgb,var(--amber) 55%,var(--green)));color:#fff;border-radius:999px;padding:15px;font-weight:700;font-size:15px;margin-top:18px;box-shadow:var(--shadow-sm);cursor:pointer;}
+
+  /* tab bar */
+  .tabs{display:flex;justify-content:space-around;align-items:center;padding:12px 14px 26px;border-top:1px solid var(--hair);background:color-mix(in srgb,var(--paper) 80%,transparent);backdrop-filter:blur(10px);}
+  .tab{display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--muted);font-size:10px;font-weight:600;}
+  .tab.on{color:var(--ink);}
+  .tab svg{display:block;}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Squirl · Paper &amp; Pollen · Calendar · Pressed Paper · full build</p>
+      <h1>The calendar, for real</h1>
+      <p class="sub">Feel A built out: tap days in the calendar to move through the week, tap a check-in to open its detail, see the quiet-day and no-medication states.</p>
+      <p class="hint">Try: tap <b>Wed 17</b> (a quiet day) · tap <b>Tue 16</b> (no meds) · tap any check-in card to expand it.</p>
+    </div>
+    <button class="toggle" onclick="toggleTheme()">◐ light / dark</button>
+  </header>
+  <div class="stage"><div class="phone" id="phone"></div></div>
+</div>
+
+<script>
+const moodRamp=['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'];
+const energyRamp=['#A9A079','#C2B25A','#D8C53E','#EAD22A','#F5D70E'];
+const focusRamp=['#7E8B96','#6E8DAE','#5683B8','#3E73B0','#2C5E9E'];
+function gMood(hex,l,base){const s=base+l*3,fo=(0.42+l*0.145).toFixed(2),o=l>=4,w=o?Math.round(s*1.15):s;return `<svg width="${w}" height="${s+5}" viewBox="0 0 24 26"><path d="M12 25 C12 18 12 14 12 ${o?9:11}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M12 ${o?9:11} C ${o?4:6} ${o?13:14}, ${o?5:6} ${o?2:5}, 12 1 C ${o?19:18} ${o?2:5}, ${o?20:18} ${o?13:14}, 12 ${o?9:11} Z" fill="${hex}" fill-opacity="${fo}" stroke="${hex}" stroke-width="1.3"/>${l>=3?`<path d="M12 ${o?9:11} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:''}${l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:''}</svg>`;}
+function gEnergy(hex,l,base){const s=base+l*2.8,op=(0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);return `<svg width="${s}" height="${s+3}" viewBox="0 0 24 26"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${op}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></svg>`;}
+function gFocus(hex,l,base){const s=base+l*2.4,cx=12,cy=13,d=l<=2?'stroke-dasharray="3 3"':'';let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}" ${d}/>`;if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;if(l>=3){const dr=((l-1)*0.85).toFixed(1);o+=`<circle cx="${cx}" cy="${cy}" r="${dr}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}return `<svg width="${s}" height="${s}" viewBox="0 0 24 26">${o}</svg>`;}
+function icCapsule(c,sz){return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24"><g transform="rotate(45 12 12)"><rect x="4.5" y="9" width="15" height="6" rx="3" fill="none" stroke="${c}" stroke-width="1.7"/><path d="M12 9.2 V14.8" stroke="${c}" stroke-width="1.3"/><path d="M7.5 9 a3 3 0 0 0 0 6 H12 V9 Z" fill="${c}" fill-opacity="0.22"/></g></svg>`;}
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p)=>`color-mix(in srgb, ${h} ${p}%, var(--surface))`;
+const mg=(l,b)=>`<span class="glyph">${gMood(cssv(moodRamp[l-1]),l,b||9)}</span>`;
+const eg=(l,b)=>`<span class="glyph">${gEnergy(cssv(energyRamp[l-1]),l,b||9)}</span>`;
+const fg=(l,b)=>`<span class="glyph">${gFocus(cssv(focusRamp[l-1]),l,b||9)}</span>`;
+const cap=(sz)=>`<span class="glyph">${icCapsule(cssv('var(--med)'),sz||22)}</span>`;
+const MOODW=['Low','Flat','Okay','Good','Great'],ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Scattered','Present','Sharp','Locked'];
+const WD=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+// week data: n, weekday letter, weekday idx, med state, entries
+const DATA={
+  15:{dl:'M',wd:0,med:{state:'taken',pct:0,time:'08:10'},entries:[{time:'19:30',mood:3,energy:3,focus:3,line:'Even keel. Nothing dramatic.',note:'Quiet Monday. Got through the list, didn’t overthink it.'},{time:'08:40',mood:3,energy:2,focus:3,line:'Slow but okay.',note:''}]},
+  16:{dl:'T',wd:1,med:{state:'none'},entries:[{time:'14:20',mood:2,energy:2,focus:2,line:'Flat day, no meds.',note:'Skipped the dose to see. Foggier, but calmer in the chest.'}]},
+  17:{dl:'W',wd:2,med:{state:'taken',pct:0,time:'08:05'},entries:[]},
+  18:{dl:'T',wd:3,med:{state:'taken',pct:0,time:'08:15'},entries:[{time:'21:40',mood:4,energy:3,focus:4,line:'Good evening.',note:'Cooked, didn’t doomscroll. The meds wore off gentle today.'},{time:'10:05',mood:4,energy:4,focus:4,line:'Strong morning.',note:''}]},
+  19:{dl:'F',wd:4,today:true,med:{state:'active',pct:58,time:'14:34'},entries:[{time:'16:12',mood:4,energy:5,focus:3,line:'Finally shipped it. Felt light after.',note:'The thing I’d been circling for a week. Rode the peak right through it.'},{time:'12:05',mood:3,energy:3,focus:5,line:'Steady — got the deep block in.',note:''},{time:'09:15',mood:3,energy:2,focus:3,line:'Slow start, foggy, but calm.',note:''}]},
+  20:{dl:'S',wd:5,future:true,med:{state:'none'},entries:[]},
+  21:{dl:'S',wd:6,future:true,med:{state:'none'},entries:[]},
+};
+const ORDER=[15,16,17,18,19,20,21];
+let sel=19, openEntry=null;
+
+function medbar(d){
+  const m=d.med;
+  if(m.state==='active'){
+    return `<div class="medcard"><div style="display:flex;align-items:center;gap:12px"><span class="med-disc">${cap(22)}</span><div style="flex:1"><div class="fr" style="font-size:18px;font-weight:600">Concerta 18 mg</div><div style="font-size:12.5px;color:var(--muted)">Winding down · ends 02:34</div></div><span class="mono" style="font-size:12px;color:var(--med);font-weight:600">5h left</span></div><div class="track"><span class="fill" style="width:${m.pct}%"></span><span class="knob" style="left:${m.pct}%"></span></div></div>`;
+  }
+  if(m.state==='taken'){
+    return `<div class="medcard"><div style="display:flex;align-items:center;gap:12px"><span class="med-disc">${cap(22)}</span><div style="flex:1"><div class="fr" style="font-size:18px;font-weight:600">Concerta 18 mg</div><div style="font-size:12.5px;color:var(--muted)">Taken ${m.time} · worn off</div></div><span class="mono" style="font-size:11px;color:var(--muted)">done</span></div></div>`;
+  }
+  return `<div class="medcard"><div class="med-quiet"><span class="med-disc" style="background:var(--surface2)">${icCapsule(cssv('var(--muted)'),22)}</span><div style="flex:1"><div class="fr" style="font-size:18px;font-weight:600;color:var(--muted)">No medication</div><div style="font-size:12.5px;color:var(--muted)">${d.future?'—':'Nothing logged today'}</div></div><span style="font-size:18px;color:var(--muted)">＋</span></div></div>`;
+}
+function week(){
+  return `<div class="week">${ORDER.map(n=>{const d=DATA[n];const m=d.entries.length?Math.round(d.entries.reduce((a,e)=>a+e.mood,0)/d.entries.length):null;const isSel=n===sel;
+    return `<div class="day ${isSel?'sel':''} ${d.future?'future':''}" data-n="${n}"><span class="dl">${d.dl}</span><span class="dn">${n}</span><span style="display:flex;gap:3px;height:7px">${m?`<span class="bead" style="background:${cssv(moodRamp[m-1])}"></span>`:`<span class="bead" style="background:var(--hair)"></span>`}${(d.med.state==='active'||d.med.state==='taken')?`<span class="bead" style="background:var(--med)"></span>`:''}</span></div>`;}).join('')}</div>`;
+}
+function entryCard(e,i){
+  const h=cssv(moodRamp[e.mood-1]); const open=openEntry===i;
+  return `<div class="entry" data-i="${i}"><div class="entry-top"><span class="entry-disc" style="background:${tint(h,55)}">${mg(e.mood,12)}</span><div style="flex:1"><div class="word" style="color:${h}">${MOODW[e.mood-1]}</div><div class="line">${e.line}</div></div><span class="time">${e.time}</span></div><div class="detail" style="grid-template-rows:${open?'1fr':'0fr'}"><div><div class="detail-in"><div class="sigrow"><div class="sigchip">${mg(e.mood,9)}<span class="v" style="color:${h}">${MOODW[e.mood-1]}</span><span class="k">Mood</span></div><div class="sigchip">${eg(e.energy,9)}<span class="v" style="color:${cssv(energyRamp[e.energy-1])}">${ENW[e.energy-1]}</span><span class="k">Energy</span></div><div class="sigchip">${fg(e.focus,9)}<span class="v" style="color:${cssv(focusRamp[e.focus-1])}">${FOW[e.focus-1]}</span><span class="k">Focus</span></div></div>${e.note?`<div class="note">“${e.note}”</div>`:`<div class="note" style="color:var(--muted)">No note on this one.</div>`}</div></div></div></div>`;
+}
+function list(d){
+  if(d.future) return `<div class="quiet"><div class="fr" style="font-size:19px">Not yet</div><div style="font-size:13px;color:var(--muted);margin-top:6px">This day hasn’t happened. Nothing to see — and that’s fine.</div></div>`;
+  if(!d.entries.length) return `<div class="quiet"><div class="fr" style="font-size:20px">No check-ins yet</div><div style="font-size:13px;color:var(--muted);margin-top:6px">That’s alright. Squirl’s here when you are.</div><div class="add">＋ Speak a check-in</div></div>`;
+  return `<div class="list swap">${d.entries.map((e,i)=>entryCard(e,i)).join('')}</div>`;
+}
+function ictab(p,c){const s={cal:'<rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/>',add:'<circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/>',ins:'<path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/>',set:'<circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 2.5a7 7 0 0 0-1.7 1l-2.4-1-2 3.5L3 11a7 7 0 0 0 0 2l-2 1.5 2 3.5 2.4-1a7 7 0 0 0 1.7 1l.3 2.5h5l.3-2.5a7 7 0 0 0 1.7-1l2.4 1 2-3.5-2-1.5a7 7 0 0 0 .1-1Z'};return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${s[p]}</svg>`;}
+
+function render(){
+  const d=DATA[sel];
+  const secColor = d.today?'var(--green)':'var(--muted)';
+  const secLabel = d.today?`TODAY · ${WD[d.wd].toUpperCase()} ${sel}`:`${WD[d.wd].toUpperCase()} ${sel} JUN`;
+  document.getElementById('phone').innerHTML=`
+    <div class="notch"></div>
+    <div class="statusbar"><span>14:34</span><span>􀙇 􀉪 􀛨</span></div>
+    <div class="scroll">
+      ${medbar(d)}
+      <div class="cal-head"><span class="cal-title">June</span><span style="font-size:15px;color:var(--muted)">‹  ›</span></div>
+      ${week()}
+      <div class="sec" style="color:${secColor}">${secLabel}</div>
+      ${list(d)}
+    </div>
+    <div class="tabs">
+      <div class="tab on">${ictab('cal',cssv('var(--ink)'))}<span>Calendar</span></div>
+      <div class="tab">${ictab('add',cssv('var(--muted)'))}<span>Check-in</span></div>
+      <div class="tab">${ictab('ins',cssv('var(--muted)'))}<span>Insights</span></div>
+      <div class="tab">${ictab('set',cssv('var(--muted)'))}<span>Settings</span></div>
+    </div>`;
+  document.querySelectorAll('.day').forEach(el=>el.onclick=()=>{ if(+el.dataset.n!==sel){sel=+el.dataset.n;openEntry=null;render();} });
+  document.querySelectorAll('.entry').forEach(el=>el.onclick=()=>{ const i=+el.dataset.i; openEntry=openEntry===i?null:i; render(); });
+}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>
