@@ -5,7 +5,11 @@ import Foundation
 /// in-code `LanguageConfig.english`; `"pt-PT"`/`"es-ES"`/`"es-MX"` load their bundled
 /// `lexicon.<key>.json` + `config.<key>.json`. The personalization overlay (P2.3) is
 /// threaded through unchanged. A missing or malformed pack degrades to English (FR-008).
-enum LanguagePackLoader {
+///
+/// `nonisolated`: pure pack-building over `Sendable` value types, called from the
+/// `nonisolated` extraction path (`NLSummarizationService.extractor(for:)` runs in a
+/// detached task). The project defaults to `@MainActor`, so this must opt out explicitly.
+nonisolated enum LanguagePackLoader {
     static func lexicon(_ key: String, overlay: PersonalLexicon? = nil) -> Lexicon {
         guard key != "en",
               let url = Bundle.main.url(forResource: "lexicon.\(key)", withExtension: "json"),

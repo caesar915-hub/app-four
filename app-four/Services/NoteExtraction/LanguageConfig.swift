@@ -93,7 +93,9 @@ public nonisolated struct LanguageConfig: Codable, Sendable {
 
 public extension LanguageConfig {
     /// English defaults — values MUST equal the prior in-code literals (FR-004 gate).
-    static let english = LanguageConfig(
+    /// `nonisolated`: read from the `nonisolated` extractor/tense path (the project
+    /// defaults to `@MainActor`); the value is an immutable `Sendable` constant.
+    nonisolated static let english = LanguageConfig(
         numberWords: [
             "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
             "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12,

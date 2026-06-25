@@ -5,7 +5,10 @@ import NaturalLanguage
 /// notes still resolve). The Spanish variant (es-ES vs es-MX) comes from the
 /// device region because `NLLanguageRecognizer` returns only `es` for both Spain
 /// and Mexico Spanish.
-enum LanguageDetector {
+///
+/// `nonisolated`: called from the `nonisolated` pack-selection path; the project
+/// defaults to `@MainActor`, so opt out explicitly.
+nonisolated enum LanguageDetector {
     /// Pack key: "en" | "pt-PT" | "es-ES" | "es-MX".
     static func packKey(for text: String, locale: Locale = .current) -> String {
         let rec = NLLanguageRecognizer()
