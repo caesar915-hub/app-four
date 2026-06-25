@@ -1,0 +1,1529 @@
+{
+  "medications": [
+    "Concerta",
+    "Ritalina",
+    "Ritalina LA",
+    "Medikinet",
+    "Medikinet MR",
+    "Rubifen",
+    "Strattera",
+    "Elvanse",
+    "Elvanse Adultos",
+    "Intuniv",
+    "metilfenidato",
+    "lisdexanfetamina",
+    "anfetamina",
+    "dexanfetamina",
+    "atomoxetina",
+    "guanfacina",
+    "clonidina",
+    "concertas",
+    "rita",
+    "ritas",
+    "ritalinas",
+    "medikinets",
+    "elvanses",
+    "metil",
+    "elvance",
+    "concerta 18",
+    "concerta 36",
+    "concerta 54",
+    "ritalina la",
+    "elvanse 30",
+    "elvanse 50",
+    "elvanse 70",
+    "ldx",
+    "atx",
+    "atomox",
+    "estratera"
+  ],
+  "moodSpecific": [
+    {
+      "word": "desolado",
+      "label": "low"
+    },
+    {
+      "word": "desolada",
+      "label": "low"
+    },
+    {
+      "word": "vazio por dentro",
+      "label": "low"
+    },
+    {
+      "word": "vazia por dentro",
+      "label": "low"
+    },
+    {
+      "word": "anestesiado",
+      "label": "low"
+    },
+    {
+      "word": "anestesiada",
+      "label": "low"
+    },
+    {
+      "word": "horrível",
+      "label": "low"
+    },
+    {
+      "word": "péssimo",
+      "label": "low"
+    },
+    {
+      "word": "péssima",
+      "label": "low"
+    },
+    {
+      "word": "de rastos",
+      "label": "low"
+    },
+    {
+      "word": "estou de rastos",
+      "label": "low"
+    },
+    {
+      "word": "destroçado",
+      "label": "low"
+    },
+    {
+      "word": "destroçada",
+      "label": "low"
+    },
+    {
+      "word": "sem esperança",
+      "label": "low"
+    },
+    {
+      "word": "não aguento mais",
+      "label": "low"
+    },
+    {
+      "word": "já não aguento mais",
+      "label": "low"
+    },
+    {
+      "word": "em baixo",
+      "label": "low"
+    },
+    {
+      "word": "estou em baixo",
+      "label": "low"
+    },
+    {
+      "word": "deprimido",
+      "label": "low"
+    },
+    {
+      "word": "deprimida",
+      "label": "low"
+    },
+    {
+      "word": "muito triste",
+      "label": "low"
+    },
+    {
+      "word": "bué triste",
+      "label": "low"
+    },
+    {
+      "word": "ando em baixo",
+      "label": "low"
+    },
+    {
+      "word": "no fundo do poço",
+      "label": "low"
+    },
+    {
+      "word": "a tocar no fundo",
+      "label": "low"
+    },
+    {
+      "word": "neutro",
+      "label": "flat"
+    },
+    {
+      "word": "neutra",
+      "label": "flat"
+    },
+    {
+      "word": "nem bem nem mal",
+      "label": "flat"
+    },
+    {
+      "word": "tanto faz",
+      "label": "flat"
+    },
+    {
+      "word": "oco",
+      "label": "flat"
+    },
+    {
+      "word": "oca",
+      "label": "flat"
+    },
+    {
+      "word": "sem emoções",
+      "label": "flat"
+    },
+    {
+      "word": "como um zombie",
+      "label": "flat"
+    },
+    {
+      "word": "ando como um zombie",
+      "label": "flat"
+    },
+    {
+      "word": "desligado",
+      "label": "flat"
+    },
+    {
+      "word": "desligada",
+      "label": "flat"
+    },
+    {
+      "word": "mais ou menos",
+      "label": "okay"
+    },
+    {
+      "word": "vou andando",
+      "label": "okay"
+    },
+    {
+      "word": "lá me vou aguentando",
+      "label": "okay"
+    },
+    {
+      "word": "estável",
+      "label": "okay"
+    },
+    {
+      "word": "normal",
+      "label": "okay"
+    },
+    {
+      "word": "razoável",
+      "label": "okay"
+    },
+    {
+      "word": "tranquilo",
+      "label": "good"
+    },
+    {
+      "word": "tranquila",
+      "label": "good"
+    },
+    {
+      "word": "animado",
+      "label": "good"
+    },
+    {
+      "word": "animada",
+      "label": "good"
+    },
+    {
+      "word": "melhor",
+      "label": "good"
+    },
+    {
+      "word": "bastante bem",
+      "label": "good"
+    },
+    {
+      "word": "sinto-me bem",
+      "label": "good"
+    },
+    {
+      "word": "ando bem",
+      "label": "good"
+    },
+    {
+      "word": "positivo",
+      "label": "good"
+    },
+    {
+      "word": "positiva",
+      "label": "good"
+    },
+    {
+      "word": "à vontade",
+      "label": "good"
+    },
+    {
+      "word": "fantástico",
+      "label": "great"
+    },
+    {
+      "word": "fantástica",
+      "label": "great"
+    },
+    {
+      "word": "incrível",
+      "label": "great"
+    },
+    {
+      "word": "às mil maravilhas",
+      "label": "great"
+    },
+    {
+      "word": "em grande",
+      "label": "great"
+    },
+    {
+      "word": "ando em grande",
+      "label": "great"
+    },
+    {
+      "word": "maravilhoso",
+      "label": "great"
+    },
+    {
+      "word": "maravilhosa",
+      "label": "great"
+    },
+    {
+      "word": "feliz da vida",
+      "label": "great"
+    },
+    {
+      "word": "no topo do mundo",
+      "label": "great"
+    },
+    {
+      "word": "eufórico",
+      "label": "great"
+    },
+    {
+      "word": "eufórica",
+      "label": "great"
+    },
+    {
+      "word": "ansioso",
+      "label": "low"
+    },
+    {
+      "word": "ansiosa",
+      "label": "low"
+    },
+    {
+      "word": "preocupado",
+      "label": "low"
+    },
+    {
+      "word": "preocupada",
+      "label": "low"
+    },
+    {
+      "word": "irritado",
+      "label": "low"
+    },
+    {
+      "word": "irritada",
+      "label": "low"
+    },
+    {
+      "word": "chateado",
+      "label": "low"
+    },
+    {
+      "word": "chateada",
+      "label": "low"
+    },
+    {
+      "word": "de mau humor",
+      "label": "low"
+    },
+    {
+      "word": "de cara fechada",
+      "label": "low"
+    },
+    {
+      "word": "irritável",
+      "label": "low"
+    },
+    {
+      "word": "frustrado",
+      "label": "low"
+    },
+    {
+      "word": "frustrada",
+      "label": "low"
+    },
+    {
+      "word": "stressado",
+      "label": "low"
+    },
+    {
+      "word": "stressada",
+      "label": "low"
+    },
+    {
+      "word": "sobrecarregado",
+      "label": "low"
+    },
+    {
+      "word": "sobrecarregada",
+      "label": "low"
+    },
+    {
+      "word": "saturado",
+      "label": "low"
+    },
+    {
+      "word": "saturada",
+      "label": "low"
+    },
+    {
+      "word": "miserável",
+      "label": "low"
+    },
+    {
+      "word": "triste",
+      "label": "low"
+    },
+    {
+      "word": "calmo",
+      "label": "good"
+    },
+    {
+      "word": "calma",
+      "label": "good"
+    },
+    {
+      "word": "relaxado",
+      "label": "good"
+    },
+    {
+      "word": "relaxada",
+      "label": "good"
+    },
+    {
+      "word": "em paz",
+      "label": "good"
+    },
+    {
+      "word": "contente",
+      "label": "good"
+    },
+    {
+      "word": "feliz",
+      "label": "great"
+    },
+    {
+      "word": "alegre",
+      "label": "great"
+    },
+    {
+      "word": "realizado",
+      "label": "great"
+    },
+    {
+      "word": "realizada",
+      "label": "great"
+    },
+    {
+      "word": "consegui",
+      "label": "great"
+    },
+    {
+      "word": "otimista",
+      "label": "good"
+    },
+    {
+      "word": "em baixo de forma",
+      "label": "low"
+    },
+    {
+      "word": "às voltas com a cabeça",
+      "label": "low"
+    },
+    {
+      "word": "a ruminar",
+      "label": "low"
+    },
+    {
+      "word": "rezingão",
+      "label": "low"
+    },
+    {
+      "word": "rezingona",
+      "label": "low"
+    },
+    {
+      "word": "rabugento",
+      "label": "low"
+    },
+    {
+      "word": "rabugenta",
+      "label": "low"
+    },
+    {
+      "word": "com o rastilho curto",
+      "label": "low"
+    },
+    {
+      "word": "sem vida",
+      "label": "flat"
+    },
+    {
+      "word": "não sou eu",
+      "label": "flat"
+    },
+    {
+      "word": "não me sinto eu",
+      "label": "flat"
+    },
+    {
+      "word": "robótico",
+      "label": "flat"
+    },
+    {
+      "word": "robótica",
+      "label": "flat"
+    },
+    {
+      "word": "sinto-me vazio",
+      "label": "flat"
+    },
+    {
+      "word": "sinto-me vazia",
+      "label": "flat"
+    },
+    {
+      "word": "sentia um vazio",
+      "label": "flat"
+    },
+    {
+      "word": "não sinto nada",
+      "label": "flat"
+    },
+    {
+      "word": "não sentia nada",
+      "label": "flat"
+    },
+    {
+      "word": "sinto-me pesado",
+      "label": "low"
+    },
+    {
+      "word": "sinto-me pesada",
+      "label": "low"
+    }
+  ],
+  "energyCharged": [
+    "a mil",
+    "ando a mil",
+    "com a cabeça a mil",
+    "com a cabeça a 1000",
+    "cheio de energia",
+    "cheia de energia",
+    "com pilhas",
+    "com muita energia",
+    "com toda a energia",
+    "acelerado",
+    "acelerada",
+    "com tudo",
+    "ando com tudo",
+    "imparável",
+    "como um motor",
+    "a mil à hora",
+    "consigo com tudo",
+    "energia ao máximo",
+    "com o depósito cheio",
+    "pronto para arrancar",
+    "pronta para arrancar",
+    "pilhas carregadas",
+    "transbordo de energia",
+    "imensa energia",
+    "muitíssima energia",
+    "tenho muita energia",
+    "ando bué de animado",
+    "ando bué de animada",
+    "boa energia",
+    "super energia",
+    "com bué de energia",
+    "enérgico",
+    "enérgica"
+  ],
+  "energyAlert": [
+    "alerta",
+    "desperto",
+    "desperta",
+    "pronto",
+    "pronta",
+    "com a mente clara",
+    "descansado",
+    "descansada",
+    "espevitado",
+    "espevitada",
+    "ando atento",
+    "ando atenta"
+  ],
+  "energySteady": [
+    "estável",
+    "constante",
+    "moderado",
+    "moderada",
+    "no meu nível normal",
+    "energia normal",
+    "vou andando",
+    "lá me vou aguentando",
+    "a aguentar",
+    "sem altos e baixos"
+  ],
+  "energyTired": [
+    "cansado",
+    "cansada",
+    "esgotado",
+    "esgotada",
+    "exausto",
+    "exausta",
+    "pouca energia",
+    "sem energia",
+    "moído",
+    "moída",
+    "sem pilha",
+    "ando sem pilha",
+    "já não consigo mais",
+    "preciso de uma sesta",
+    "estou a ficar sem forças",
+    "fecham-se-me os olhos",
+    "mal consigo abrir os olhos",
+    "preciso de me deitar",
+    "bué de cansado",
+    "bué de cansada",
+    "bué de sono",
+    "o corpo já não me responde",
+    "super cansado",
+    "super cansada",
+    "não consigo levantar os braços",
+    "completamente derreado",
+    "completamente derreada",
+    "energia a zero",
+    "não tenho energia nenhuma",
+    "zero energia",
+    "zero pilhas",
+    "morto de cansaço",
+    "morta de cansaço",
+    "não me aguento nas canetas"
+  ],
+  "energySluggish": [
+    "lento",
+    "lenta",
+    "ando lento",
+    "ando lenta",
+    "a arrastar-me",
+    "letárgico",
+    "letárgica",
+    "mexo-me devagar",
+    "queimado",
+    "queimada",
+    "drenado",
+    "drenada",
+    "fui-me abaixo",
+    "estou a ir abaixo",
+    "bati na parede",
+    "quebra de repente",
+    "apagão total",
+    "ando feito num bagaço",
+    "ando feita num bagaço",
+    "sinto-me pesado",
+    "sinto-me pesada",
+    "sem energia nenhuma",
+    "totalmente esgotado",
+    "totalmente esgotada",
+    "como em câmara lenta",
+    "o corpo vai atrasado",
+    "sinto-me como betão",
+    "tudo me custa o dobro",
+    "preso em câmara lenta",
+    "sem ímpeto",
+    "sinto que preciso de um empurrão",
+    "a arrastar os pés",
+    "o corpo não colabora",
+    "bateria fraca",
+    "preciso de reiniciar",
+    "arrastei-me o dia todo",
+    "arrastei-me por todo o lado"
+  ],
+  "focusLockedIn": [
+    "super concentrado",
+    "super concentrada",
+    "hiperconcentrado",
+    "hiperconcentrada",
+    "hiperfoco",
+    "na minha zona",
+    "ando na zona",
+    "em flow",
+    "completamente metido",
+    "completamente metida",
+    "ando agarrado à tarefa",
+    "ando agarrada à tarefa",
+    "absorto",
+    "absorta",
+    "não me conseguia despregar",
+    "apanhei o ritmo",
+    "nada me conseguia interromper",
+    "concentrado a cem por cento",
+    "concentrada a cem por cento",
+    "com a cabeça posta naquilo",
+    "só aquilo existia",
+    "não conseguia parar",
+    "metido numa só coisa",
+    "trabalho profundo",
+    "sem distrações",
+    "sem me distrair",
+    "sem nada que me distraísse",
+    "avancei imenso",
+    "avancei muitíssimo",
+    "despachei imenso trabalho",
+    "dei tudo por tudo",
+    "agarrei-me à tarefa",
+    "mantive-me na tarefa"
+  ],
+  "focusSharp": [
+    "afiado",
+    "afiada",
+    "concentrado",
+    "concentrada",
+    "focado",
+    "focada",
+    "concentração",
+    "na tarefa",
+    "atento",
+    "atenta",
+    "a acompanhar o fio",
+    "claro",
+    "clara",
+    "a seguir o raciocínio",
+    "em cima do assunto"
+  ],
+  "focusPresent": [
+    "presente",
+    "centrado",
+    "centrada",
+    "no momento",
+    "ligado",
+    "ligada",
+    "atento ao momento",
+    "atenta ao momento",
+    "a dar o meu melhor",
+    "envolvido",
+    "envolvida"
+  ],
+  "focusDistracted": [
+    "distraído",
+    "distraída",
+    "ando distraído",
+    "ando distraída",
+    "distraio-me com facilidade",
+    "não me consigo concentrar",
+    "não consigo concentrar-me",
+    "não consigo concentrar",
+    "ando na lua",
+    "ando com a cabeça nas nuvens",
+    "ando bué de disperso",
+    "ando bué de dispersa",
+    "ando avoado",
+    "ando avoada",
+    "fui-me embora com o pensamento",
+    "perco o fio à meada",
+    "a sonhar acordado",
+    "a sonhar acordada",
+    "a cabeça foge-me",
+    "ando noutro sítio",
+    "qualquer coisa me distrai",
+    "foge-me a atenção",
+    "ando todo baralhado",
+    "ando toda baralhada",
+    "atrás de mil coisas",
+    "três tarefas ao mesmo tempo e nenhuma acabada",
+    "perco o fio",
+    "a saltar de uma coisa para outra",
+    "a atenção não me fica",
+    "mil separadores na cabeça",
+    "a meio",
+    "deixei a meio",
+    "deixei-as a meio",
+    "não me conseguia estar quieto",
+    "não me conseguia estar quieta",
+    "a saltar entre tarefas",
+    "a saltar entre separadores",
+    "não acabei nenhuma",
+    "a saltitar de tarefa em tarefa"
+  ],
+  "focusFoggy": [
+    "nevoeiro mental",
+    "ando enevoado",
+    "ando enevoada",
+    "embotado",
+    "embotada",
+    "a mente nublada",
+    "tudo turvo",
+    "não consigo pensar bem",
+    "não penso com clareza",
+    "ideias baralhadas",
+    "atordoado",
+    "atordoada",
+    "ando perdido",
+    "ando perdida",
+    "fiquei em branco",
+    "fugiu-me a ideia",
+    "ando disperso",
+    "ando dispersa",
+    "ando todo baralhado",
+    "fragmentado",
+    "fragmentada",
+    "a saltar de um lado para o outro",
+    "a mente em branco",
+    "a cabeça cheia de estática",
+    "como a pensar dentro de algodão",
+    "não me saem as palavras",
+    "não consigo reter uma ideia",
+    "o cérebro desligado",
+    "sinto-me mentalmente turvo",
+    "as ideias desfazem-se",
+    "não ligo as ideias",
+    "a cabeça anda à roda",
+    "como se o cérebro andasse em câmara lenta",
+    "não consigo juntar duas ideias",
+    "a cabeça num oito",
+    "a processar à velocidade de um modem",
+    "a cabeça em todo o lado",
+    "a mente em todo o lado",
+    "não me conseguia concentrar em nada"
+  ],
+  "emotions": [
+    "grato",
+    "grata",
+    "esperançoso",
+    "esperançosa",
+    "entusiasmado",
+    "entusiasmada",
+    "contente",
+    "inspirado",
+    "inspirada",
+    "orgulhoso",
+    "orgulhosa",
+    "brincalhão",
+    "brincalhona",
+    "querido",
+    "querida",
+    "em paz",
+    "motivado",
+    "motivada",
+    "curioso",
+    "curiosa",
+    "reflexivo",
+    "reflexiva",
+    "nostálgico",
+    "nostálgica",
+    "inquieto",
+    "inquieta",
+    "indiferente",
+    "aborrecido",
+    "aborrecida",
+    "inseguro",
+    "insegura",
+    "tenso",
+    "tensa",
+    "ansioso",
+    "ansiosa",
+    "triste",
+    "frustrado",
+    "frustrada",
+    "sobrecarregado",
+    "sobrecarregada",
+    "sozinho",
+    "sozinha",
+    "irritado",
+    "irritada",
+    "assustado",
+    "assustada",
+    "culpado",
+    "culpada",
+    "envergonhado",
+    "envergonhada",
+    "exausto",
+    "exausta",
+    "com energia",
+    "centrado",
+    "centrada",
+    "sinto-me visto",
+    "sinto-me vista",
+    "encorajado",
+    "encorajada",
+    "aliviado",
+    "aliviada",
+    "encantado",
+    "encantada",
+    "valorizado",
+    "valorizada",
+    "recarregado",
+    "recarregada",
+    "ligado",
+    "ligada",
+    "absorto",
+    "absorta",
+    "sinto-me vivo",
+    "sinto-me viva",
+    "pleno",
+    "plena",
+    "validado",
+    "validada",
+    "sensível",
+    "empolgado",
+    "empolgada",
+    "sinto-me leve",
+    "divertido",
+    "divertida",
+    "desanimado",
+    "desanimada",
+    "acelerado",
+    "acelerada",
+    "saturado de convívio",
+    "desregulado",
+    "desregulada",
+    "retraído",
+    "retraída",
+    "derrotado",
+    "derrotada",
+    "em carne viva",
+    "em pânico",
+    "incompreendido",
+    "incompreendida",
+    "no limite",
+    "apático",
+    "apática",
+    "eufórico",
+    "eufórica"
+  ],
+  "taskCompletionCues": [
+    "terminei",
+    "completei",
+    "acabei",
+    "feito",
+    "está feito",
+    "já está",
+    "despachei",
+    "despachei o trabalho",
+    "fiz o que tinha a fazer",
+    "consegui",
+    "dei tudo por tudo",
+    "terminei-o",
+    "acabei-o",
+    "está despachado"
+  ],
+  "taskAvoidanceCues": [
+    "evitei",
+    "a evitar",
+    "procrastinei",
+    "a procrastinar",
+    "deixei para depois",
+    "fui adiando",
+    "não consegui começar",
+    "preso em",
+    "presa em",
+    "paralisado por",
+    "paralisada por",
+    "paralisia de tarefa",
+    "não arranco",
+    "não consigo arrancar",
+    "bloqueado",
+    "bloqueada",
+    "preso",
+    "presa",
+    "a pilha do medo",
+    "fiquei a fazer scroll",
+    "a fazer scroll sem parar",
+    "espiral de evasão",
+    "não me consigo obrigar a fazê-lo",
+    "dá-me uma preguiça começar",
+    "espiral de culpa por não começar",
+    "a tarefa mete-me medo",
+    "a tarefa parece impossível",
+    "não me deixo começar"
+  ],
+  "winCues": [
+    "orgulhoso",
+    "orgulhosa",
+    "realizado",
+    "realizada",
+    "conquista",
+    "consegui",
+    "acertei",
+    "despachei",
+    "vitória",
+    "cumpri",
+    "despachei o trabalho",
+    "fiz o que tinha a fazer",
+    "dei tudo por tudo"
+  ],
+  "overwhelmCues": [
+    "sobrecarregado",
+    "sobrecarregada",
+    "demasiado",
+    "é demais",
+    "a afogar-me",
+    "soterrado",
+    "soterrada",
+    "não dou conta",
+    "não consigo com tudo",
+    "paralisado",
+    "paralisada",
+    "fadiga de decisão",
+    "um caos",
+    "ando no limite",
+    "já não tenho pilha",
+    "sem pilha nenhuma",
+    "o cérebro fritou",
+    "sensível à rejeição",
+    "espiral de rejeição",
+    "desregulação emocional",
+    "tudo ou nada",
+    "modo desligado",
+    "não consigo funcionar",
+    "ando frito",
+    "ando frita",
+    "tudo parece urgente",
+    "sobrecarga sensorial"
+  ],
+  "appointmentCues": [
+    "consulta",
+    "consultas",
+    "psiquiatra",
+    "psiquiatria",
+    "terapeuta",
+    "sessão de terapia",
+    "médico",
+    "médica",
+    "doutor",
+    "doutora",
+    "dentista",
+    "check-up",
+    "revisão",
+    "seguimento",
+    "consulta de seguimento",
+    "renovação da receita",
+    "renovar a receita",
+    "análises de sangue",
+    "análises ao sangue"
+  ],
+  "executiveDysfunction": [
+    "disfunção executiva",
+    "não consigo começar",
+    "não arranco",
+    "paralisia de tarefa",
+    "a procrastinar",
+    "evasão",
+    "a evitar",
+    "preso",
+    "presa",
+    "bloqueado",
+    "bloqueada",
+    "fadiga de decisão",
+    "não consigo priorizar",
+    "desorganizado",
+    "desorganizada",
+    "cego ao tempo",
+    "não tenho noção do tempo",
+    "fez-se tarde",
+    "passou-me a data",
+    "esqueci-me de comer",
+    "esqueci-me de beber água",
+    "trabalhar acompanhado",
+    "modo de espera",
+    "cegueira temporal",
+    "permanência do objeto",
+    "longe da vista longe do coração",
+    "o que não vejo esqueço",
+    "paralisia por análise",
+    "imposto da PHDA",
+    "muro do que é avassalador",
+    "não consigo tomar decisões",
+    "perdi a noção do tempo",
+    "hiperfixado",
+    "hiperfixada",
+    "a mudar de contexto",
+    "custo de mudar de tarefa",
+    "esqueci-me de que existia",
+    "não consigo guardar o plano na cabeça"
+  ],
+  "sideEffectCues": [
+    "boca seca",
+    "dor de cabeça",
+    "dores de cabeça",
+    "enjoo",
+    "náuseas",
+    "falta de apetite",
+    "insónia",
+    "nervoso",
+    "nervosa",
+    "o coração acelerado",
+    "palpitações",
+    "ansioso",
+    "ansiosa",
+    "irritável",
+    "de mau humor",
+    "quebra",
+    "dor de barriga",
+    "tonturas",
+    "pulso acelerado",
+    "a suar",
+    "o maxilar apertado",
+    "tenso",
+    "tensa",
+    "ombros tensos",
+    "fugiu-me o apetite",
+    "não tenho fome",
+    "desidratado",
+    "desidratada",
+    "a ranger os dentes",
+    "efeito rebound",
+    "passou o efeito",
+    "como um zombie",
+    "sem emoções",
+    "afeto plano",
+    "sem personalidade",
+    "efeitos secundários"
+  ],
+  "physicalStim": [
+    "a abanar a perna",
+    "a sapatear",
+    "a tamborilar",
+    "a tamborilar com os dedos",
+    "stimming",
+    "a abanar as mãos",
+    "às voltas",
+    "não me consigo estar quieto",
+    "não me consigo estar quieta",
+    "a beliscar a pele",
+    "a roer as unhas",
+    "a puxar o cabelo",
+    "a trincar coisas",
+    "a trincar a caneta",
+    "a trincar a camisola",
+    "a baloiçar-me",
+    "a brincar com algo nas mãos",
+    "a girar o anel",
+    "clique e clique na caneta",
+    "a enrolar o cabelo",
+    "a coçar a pele",
+    "a estalar os dedos",
+    "a rabiscar sem parar",
+    "não consigo parar de me mexer",
+    "preciso de me mexer",
+    "a abanar o pé"
+  ],
+  "physicalSideEffects": [
+    "dor de cabeça",
+    "dor de barriga",
+    "enjoo",
+    "náuseas",
+    "boca seca",
+    "tonturas",
+    "coração acelerado",
+    "pulso acelerado",
+    "palpitações",
+    "a suar",
+    "maxilar apertado",
+    "tenso",
+    "tensa",
+    "ombros tensos",
+    "fugiu-me o apetite",
+    "não tenho fome",
+    "desidratado",
+    "desidratada",
+    "a ranger os dentes",
+    "apertei o maxilar",
+    "aperto o maxilar",
+    "tensão no maxilar",
+    "o coração acelerado",
+    "o coração disparou",
+    "o coração batia depressa",
+    "menos apetite",
+    "redução do apetite",
+    "o apetite baixou",
+    "menos fome",
+    "supressão do apetite",
+    "um bocadinho menos de fome",
+    "a frequência cardíaca subiu",
+    "frequência cardíaca elevada",
+    "aumento da frequência cardíaca",
+    "o coração acelerava-se",
+    "o coração a bater com força",
+    "o coração aos saltos",
+    "parecia que o coração me saltava do peito",
+    "o coração disparou-me",
+    "trémulo",
+    "trémula",
+    "as mãos trémulas",
+    "tremiam-me as mãos",
+    "a tremer",
+    "tremor",
+    "nervoso",
+    "nervosa",
+    "ranger os dentes",
+    "rangi os dentes",
+    "a ranger os dentes"
+  ],
+  "sleepQualityGood": [
+    "dormi bem",
+    "dormi que nem uma pedra",
+    "bom sono",
+    "descansado",
+    "descansada",
+    "sono profundo",
+    "dormi profundamente",
+    "caí logo no sono",
+    "adormeci num instante",
+    "fiquei a dormir num instante",
+    "dormi a noite toda seguida",
+    "dormi seguido",
+    "acordei a sentir-me humano",
+    "acordei a sentir-me humana",
+    "o melhor sono em muito tempo",
+    "finalmente descansei bem",
+    "adormeci logo",
+    "dormi tão profundamente que nem me mexi"
+  ],
+  "sleepQualityBad": [
+    "dormi mal",
+    "sono cortado",
+    "acordei a cada hora",
+    "pesadelos",
+    "sonhos muito vívidos",
+    "preguei-me aos lençóis",
+    "não me conseguia levantar",
+    "andei às voltas na cama",
+    "acordei",
+    "pesadelo",
+    "mau sono",
+    "sono leve",
+    "dormi muito mal",
+    "quase não dormi",
+    "agitado a noite toda",
+    "agitada a noite toda",
+    "acordava a cada bocado",
+    "outra vez acordado às 3",
+    "acordei esgotado",
+    "acordei esgotada",
+    "dormi mas não descansei",
+    "atordoado toda a manhã",
+    "atordoada toda a manhã",
+    "deitei-me mas nunca dormi bem",
+    "sono inquieto",
+    "sono de má qualidade"
+  ],
+  "sleepInsomnia": [
+    "insónia",
+    "não consigo dormir",
+    "não conseguia dormir",
+    "acelerado à noite",
+    "pensamentos acelerados na hora de dormir",
+    "demorei horas a adormecer",
+    "demorei a adormecer",
+    "não conseguia desligar a cabeça",
+    "não conseguia desligar o cérebro",
+    "a cabeça não parava",
+    "fiquei horas deitado",
+    "fiquei horas deitada",
+    "a olhar para o teto",
+    "a mente a mil à hora",
+    "não me conseguia descontrair para dormir",
+    "nunca me deu sono",
+    "bem acelerado à meia-noite",
+    "os pensamentos não paravam",
+    "ainda acordado às 2",
+    "o corpo cansado mas a mente desperta",
+    "não preguei olho",
+    "nem preguei olho"
+  ],
+  "reboundTerms": [
+    "rebound",
+    "efeito rebound",
+    "passou o efeito",
+    "o efeito caiu",
+    "queda de repente",
+    "quebra da tarde",
+    "quebra da noite",
+    "os sintomas dispararam",
+    "irritabilidade de rebound",
+    "hiperatividade de rebound",
+    "tristeza de rebound",
+    "pior do que o normal",
+    "a descida",
+    "acabou-se o efeito",
+    "hora da quebra",
+    "a parede",
+    "fui-me abaixo de repente",
+    "quebra do meio da tarde",
+    "como cair de um precipício",
+    "quando o efeito acabou",
+    "quebra de fim de dose"
+  ],
+  "appetiteLoss": [
+    "sem apetite",
+    "a comida dá-me náuseas",
+    "a comer à força",
+    "esqueci-me de comer",
+    "saltei a refeição",
+    "não tenho fome",
+    "não consigo comer",
+    "fugiu-me o apetite",
+    "o medicamento tirou-me a fome",
+    "não conseguia nem olhar para a comida",
+    "a comida parece nojenta",
+    "não me apetece nada",
+    "não me apetece nada de comer",
+    "demasiado concentrado para comer",
+    "demasiado concentrada para comer",
+    "o apetite suprimido",
+    "o estômago às voltas",
+    "comer parecia uma obrigação",
+    "não conseguia engolir nada",
+    "a comida parecia pouco apetecível",
+    "comida pouco apetecível",
+    "saltei o almoço",
+    "saltei o pequeno-almoço",
+    "saltei uma refeição",
+    "mal comi",
+    "quase não comi",
+    "não conseguia passar a comida",
+    "comi à força",
+    "obriguei-me a comer",
+    "sem interesse na comida",
+    "mal toquei na comida"
+  ],
+  "appetiteReturn": [
+    "finalmente com fome",
+    "com uma fome de lobo",
+    "comi compulsivamente",
+    "ataque à despensa",
+    "esfomeado",
+    "esfomeada",
+    "comi tudo",
+    "fome de rebound",
+    "passou o efeito e deu-me uma fome enorme",
+    "de repente com imensa fome",
+    "comi como se não comesse há dias",
+    "o apetite voltou em força",
+    "não conseguia parar de comer",
+    "a compensar por não ter comido antes",
+    "ataque de fome à noite",
+    "a fome bateu com força à noite"
+  ],
+  "negationTokens": [
+    "não",
+    "nunca",
+    "jamais",
+    "nada",
+    "nem",
+    "tampouco",
+    "sem"
+  ],
+  "medNotTakenVerbs": [
+    "esqueci",
+    "esqueci-me",
+    "saltei",
+    "falhei",
+    "omiti",
+    "esquecer",
+    "saltar"
+  ],
+  "timeOfDayKeywords": [
+    {
+      "keyword": "manhã",
+      "normalized": "morning"
+    },
+    {
+      "keyword": "tarde",
+      "normalized": "afternoon"
+    },
+    {
+      "keyword": "noite",
+      "normalized": "evening"
+    },
+    {
+      "keyword": "madrugada",
+      "normalized": "night"
+    },
+    {
+      "keyword": "antes de dormir",
+      "normalized": "bedtime"
+    },
+    {
+      "keyword": "à hora de dormir",
+      "normalized": "bedtime"
+    },
+    {
+      "keyword": "almoço",
+      "normalized": "afternoon"
+    },
+    {
+      "keyword": "pequeno-almoço",
+      "normalized": "morning"
+    },
+    {
+      "keyword": "jantar",
+      "normalized": "evening"
+    },
+    {
+      "keyword": "lanche",
+      "normalized": "afternoon"
+    }
+  ],
+  "activityKeywords": [
+    {
+      "category": "Resting",
+      "keywords": [
+        "a descansar",
+        "a relaxar",
+        "deitado",
+        "deitada",
+        "estendido",
+        "estendida",
+        "descansar",
+        "a levar as coisas com calma",
+        "a fazer uma sesta"
+      ]
+    },
+    {
+      "category": "Hobbies",
+      "keywords": [
+        "passatempo",
+        "a ler",
+        "a jogar videojogos",
+        "a desenhar",
+        "a jogar",
+        "a pintar",
+        "trabalhos manuais",
+        "a escrever"
+      ]
+    },
+    {
+      "category": "Hanging Out",
+      "keywords": [
+        "a conviver",
+        "com os amigos",
+        "com os meus amigos",
+        "a socializar",
+        "festa",
+        "convívio",
+        "a encontrar-me com alguém",
+        "a estar à conversa"
+      ]
+    },
+    {
+      "category": "Fitness",
+      "keywords": [
+        "ginásio",
+        "a correr",
+        "exercício",
+        "a treinar",
+        "a caminhar",
+        "a fazer jogging",
+        "a andar de bicicleta",
+        "a nadar",
+        "ioga"
+      ]
+    },
+    {
+      "category": "Eating",
+      "keywords": [
+        "a comer",
+        "pequeno-almoço",
+        "almoço",
+        "jantar",
+        "lanche",
+        "a cozinhar",
+        "refeição"
+      ]
+    },
+    {
+      "category": "Driving",
+      "keywords": [
+        "a conduzir",
+        "no carro",
+        "a ir para o trabalho",
+        "no autocarro",
+        "no metro",
+        "a viajar",
+        "no comboio"
+      ]
+    },
+    {
+      "category": "Work",
+      "keywords": [
+        "trabalho",
+        "reunião",
+        "reuniões",
+        "prazo",
+        "email",
+        "emails",
+        "escritório",
+        "apresentação",
+        "turno"
+      ]
+    },
+    {
+      "category": "Chores",
+      "keywords": [
+        "a lavar a roupa",
+        "a loiça",
+        "a limpar",
+        "a arrumar",
+        "a aspirar",
+        "as compras",
+        "compras do supermercado",
+        "tarefas domésticas",
+        "lides da casa"
+      ]
+    },
+    {
+      "category": "Errands",
+      "keywords": [
+        "recados",
+        "tratar de coisas",
+        "diligências",
+        "correios",
+        "banco",
+        "farmácia",
+        "lavandaria",
+        "devoluções"
+      ]
+    },
+    {
+      "category": "Outdoors",
+      "keywords": [
+        "lá fora",
+        "o parque",
+        "a natureza",
+        "ar fresco",
+        "caminhada",
+        "trilho",
+        "o jardim",
+        "a tratar do jardim",
+        "um passeio no parque",
+        "um passeio longo"
+      ]
+    },
+    {
+      "category": "Screen Time",
+      "keywords": [
+        "a fazer scroll",
+        "a fazer scroll sem parar",
+        "netflix",
+        "youtube",
+        "tiktok",
+        "instagram",
+        "maratona de séries",
+        "a ver séries sem parar",
+        "tempo de ecrã",
+        "agarrado ao telemóvel",
+        "agarrada ao telemóvel"
+      ]
+    }
+  ]
+}

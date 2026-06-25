@@ -4,26 +4,37 @@ import Foundation
 /// `NLNoteExtractor`. Instant; no model load or download required.
 struct NLSummarizationService: SummarizationService {
 
-    private let extractor: NLNoteExtractor
+    /// A fixed extractor (test seam — explicit `Lexicon`), or `nil` when the pack
+    /// is selected per check-in from the detected language + device region.
+    private let fixedExtractor: NLNoteExtractor?
+    private let personalOverlay: PersonalLexicon?
 
-    /// Production path loads the bundled, swarm-expanded vocabulary (with an
-    /// optional personal overlay). Tests pass an explicit `Lexicon` for
-    /// deterministic, minimal vocabularies.
+    /// Tests pass an explicit `Lexicon` for deterministic, minimal vocabularies —
+    /// this bypasses language detection.
     init(lexicon: Lexicon) {
-        self.extractor = NLNoteExtractor(lexicon: lexicon)
+        self.fixedExtractor = NLNoteExtractor(lexicon: lexicon)
+        self.personalOverlay = nil
     }
 
+    /// Production path: the language pack is chosen per check-in (with an optional
+    /// personal overlay threaded through).
     init(personalOverlay: PersonalLexicon? = nil) {
-        self.extractor = NLNoteExtractor(lexicon: LexiconLoader.loadBundled(overlay: personalOverlay))
+        self.fixedExtractor = nil
+        self.personalOverlay = personalOverlay
+    }
+
+    /// The extractor for one check-in: the fixed test extractor, or the pack chosen
+    /// from the check-in's own language + device region (production).
+    private nonisolated func extractor(for transcript: String) -> NLNoteExtractor {
+        fixedExtractor ?? LanguagePackLoader.extractor(for: transcript, overlay: personalOverlay)
     }
 
     /// Run the (synchronous, CPU-bound) extraction off the main actor so the UI
     /// never blocks on a long transcript. `NLNoteExtractor` is `Sendable` and
     /// `extract` is `nonisolated`, so a detached task is safe; the extractor
     /// checks `Task.isCancelled` between sentences.
-    private nonisolated func runExtraction(on transcript: String) async -> NoteExtraction {
-        let extractor = self.extractor
-        return await Task.detached(priority: .userInitiated) {
+    private static nonisolated func runExtraction(_ extractor: NLNoteExtractor, on transcript: String) async -> NoteExtraction {
+        await Task.detached(priority: .userInitiated) {
             extractor.extract(from: transcript)
         }.value
     }
@@ -42,7 +53,8 @@ struct NLSummarizationService: SummarizationService {
     }
 
     nonisolated func summarize(rawTranscription: String) async throws -> SummaryResult {
-        let extraction = await runExtraction(on: rawTranscription)
+        let extractor = extractor(for: rawTranscription)
+        let extraction = await Self.runExtraction(extractor, on: rawTranscription)
         let lexicon = extractor.lexicon
         let topics = Self.deriveTopics(from: extraction)
 

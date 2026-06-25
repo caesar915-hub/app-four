@@ -74,16 +74,16 @@ surface all 6 signals; detector/loader unit tests pass.
 
 ### Tests for User Story 2 (test-first · RED — MANDATORY) ⚠️
 
-- [ ] T012 [P] [US2] RED: `app-fourTests/Services/LanguageDetectorTests.swift` — en reference → `"en"`; pt reference → `"pt-PT"`; es reference (any non-MX region) → `"es-ES"`. Run; confirm FAILS (no `LanguageDetector` yet).
-- [ ] T013 [P] [US2] RED: `app-fourTests/Services/LanguagePackLoaderTests.swift` — `config("pt-PT")` and `config("es-ES")` each decode to a NON-`.english` config (proves pack completeness — guards the synthesized-Codable silent-fallback trap, research D5); `config("en") == .english`; `config("zz")` (missing) → `.english`; `lexicon("en", overlay:)` applies a sentinel overlay term (overlay threaded). Run; confirm FAILS.
+- [X] T012 [P] [US2] RED: `app-fourTests/Services/LanguageDetectorTests.swift` — en reference → `"en"`; pt reference → `"pt-PT"`; es reference (any non-MX region) → `"es-ES"`. Run; confirm FAILS (no `LanguageDetector` yet).
+- [X] T013 [P] [US2] RED: `app-fourTests/Services/LanguagePackLoaderTests.swift` — `config("pt-PT")` and `config("es-ES")` each decode to a NON-`.english` config (proves pack completeness — guards the synthesized-Codable silent-fallback trap, research D5); `config("en") == .english`; `config("zz")` (missing) → `.english`; `lexicon("en", overlay:)` applies a sentinel overlay term (overlay threaded). Run; confirm FAILS.
 
 ### Implementation for User Story 2
 
-- [ ] T014 [P] [US2] Add `app-four/Services/NoteExtraction/LanguageDetector.swift` — `packKey(for:locale:)` via `NLLanguageRecognizer` constrained to en/pt/es with equal hints; portuguese→`"pt-PT"`, spanish→`"es-ES"` (region branch deferred to US3), default→`"en"`.
-- [ ] T015 [US2] Add `app-four/Services/NoteExtraction/LanguagePackLoader.swift` — `lexicon(_:overlay:)` (loads `lexicon.<key>.json` → `LexiconData.toLexicon(personalOverlay:)`, `Lexicon()` fallback), `config(_:)` (`"en"`→`.english`, else decode `config.<key>.json`, `.english` fallback), `extractor(for:locale:overlay:)`. Overlay always threaded (FR-007).
-- [ ] T016 [P] [US2] Add packs to `app-four/Resources/`: `lexicon.pt-PT.json`, `config.pt-PT.json`, `lexicon.es-ES.json`, `config.es-ES.json` (copy from spike `extractor/packs/`).
-- [ ] T017 [US2] Rewire the production path in `app-four/Services/NLSummarizationService.swift`: select+build the extractor **per check-in** from the transcript text — store the `personalOverlay` at init and call `LanguagePackLoader.extractor(for: text, overlay: personalOverlay)` inside the extract/summarize method, replacing the single pre-built `LexiconLoader.loadBundled` extractor. Leave the `init(lexicon:)` test seam intact.
-- [ ] T018 [US2] Build + run T012/T013 (GREEN) + the Eval floors (still green — English unaffected). Then manual: pt and es-ES reference check-ins each surface the 6 signals (quickstart §4).
+- [X] T014 [P] [US2] Add `app-four/Services/NoteExtraction/LanguageDetector.swift` — `packKey(for:locale:)` via `NLLanguageRecognizer` constrained to en/pt/es with equal hints; portuguese→`"pt-PT"`, spanish→`"es-ES"` (region branch deferred to US3), default→`"en"`.
+- [X] T015 [US2] Add `app-four/Services/NoteExtraction/LanguagePackLoader.swift` — `lexicon(_:overlay:)` (loads `lexicon.<key>.json` → `LexiconData.toLexicon(personalOverlay:)`, `Lexicon()` fallback), `config(_:)` (`"en"`→`.english`, else decode `config.<key>.json`, `.english` fallback), `extractor(for:locale:overlay:)`. Overlay always threaded (FR-007).
+- [X] T016 [P] [US2] Add packs to `app-four/Resources/`: `lexicon.pt-PT.json`, `config.pt-PT.json`, `lexicon.es-ES.json`, `config.es-ES.json` (copy from spike `extractor/packs/`).
+- [X] T017 [US2] Rewire the production path in `app-four/Services/NLSummarizationService.swift`: select+build the extractor **per check-in** from the transcript text — store the `personalOverlay` at init and call `LanguagePackLoader.extractor(for: text, overlay: personalOverlay)` inside the extract/summarize method, replacing the single pre-built `LexiconLoader.loadBundled` extractor. Leave the `init(lexicon:)` test seam intact.
+- [X] T018 [US2] Build + run T012/T013 (GREEN) + the Eval floors (still green — English unaffected). Then manual: pt and es-ES reference check-ins each surface the 6 signals (quickstart §4).
 
 **Checkpoint**: en + pt-PT + es-ES all work via per-check-in selection.
 
