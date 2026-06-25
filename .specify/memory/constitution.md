@@ -1,26 +1,32 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.1.0 → 1.2.0
-Rationale: Adopt test-first development (TDD) as the discipline for the Spec Kit
-  implement step. Adds Principle X (Test-First Development, NON-NEGOTIABLE) and
-  corrects the Testing stack to Swift Testing (reconciling the v1.1.1 BACKLOG note
-  that was logged but never applied to this file).
-Added principles:
-  - X. Test-First Development (NON-NEGOTIABLE) — RED-GREEN-REFACTOR, test-first for
-    logic (models, services, view-models, NLP extraction); SwiftUI views exempt
-    (verified by build + simulator run). Tests MANDATORY, not optional.
+Version change: 1.2.0 → 1.3.0
+Rationale: Carve out a single, narrowly-bounded exception to Principle VI
+  (On-Device Privacy) to permit first-party Apple WeatherKit weather lookups for
+  the Weather-at-Check-In feature (spec 023). Scope: coarse location only, no user
+  content transmitted, weather stored on-device, read-only public data — the core
+  protections (sensitive data on-device, no account, no user-data sync) are
+  UNCHANGED. Bump classified MINOR (additive scoped exception, principle not
+  removed or gutted); a stricter reading could treat softening a NON-NEGOTIABLE as
+  MAJOR — flagged here for the reviewer's call.
+Added principles: none
 Modified sections:
-  - Technology Stack — Testing: XCTest → Swift Testing (@Test/#expect), test-first
-  - Governance — Constitution Check gate now spans Principles I–X
+  - VI. On-Device Privacy — appended a scoped "Exception — first-party weather
+    lookup" clause; the prohibition otherwise stands in full.
 Removed sections: n/a
 Templates requiring updates:
-  - .specify/templates/plan-template.md ✅ — Constitution Check adds Principle X;
-    version reference bumped to v1.2.0
-  - .specify/templates/tasks-template.md ✅ — tests flipped OPTIONAL → MANDATORY
-    test-first; explicit RED checkpoint before implementation per user story
-  - .specify/templates/spec-template.md ✅ — no edit needed; principles inform criteria
+  - .specify/templates/plan-template.md — Constitution Check: no structural change
+    (Principle VI still gates; the exception is self-describing in the spec).
+  - .specify/templates/tasks-template.md — no change.
+  - .specify/templates/spec-template.md — no change.
 Deferred TODOs: none
+
+----- prior amendment (1.1.0 → 1.2.0) -----
+Adopt test-first development (TDD) as the discipline for the Spec Kit implement
+  step. Added Principle X (Test-First Development, NON-NEGOTIABLE); corrected the
+  Testing stack to Swift Testing (@Test/#expect). Templates synced: plan-template,
+  tasks-template (tests flipped OPTIONAL → MANDATORY test-first), spec-template.
 -->
 
 # app-four Constitution
@@ -77,6 +83,18 @@ backup (`isExcludedFromBackupKey`) because transcripts and medication data are
 sensitive health information. Diagnostics and logging MUST record counts,
 durations, and token estimates ONLY — never transcript text or medication
 content.
+
+**Exception — first-party weather lookup (scoped, added v1.3.0):** A single,
+on-demand, **reduced-accuracy** location MAY be sent to Apple's first-party
+WeatherKit service to retrieve current public weather conditions for a check-in.
+This is the ONLY outbound network call permitted by default. It MUST transmit
+nothing but coarse location — never audio, transcript, mood, emotion, health, or
+medication data — and the retrieved weather MUST be stored on-device only. It is a
+read of public data, not synchronization of user data, and opens no account or
+cloud store. Capture MUST be best-effort: a denied permission, offline state, or
+service error leaves the entry weather-less and MUST NOT block the check-in. Any
+broader network use, any finer location precision, or any transmission of user
+content remains prohibited and requires a further amendment.
 
 ### VII. Deterministic, Measured Extraction
 
@@ -172,4 +190,4 @@ compliance with Principles I–X before Phase 0 research proceeds.
 Runtime development guidance lives in `CLAUDE.md` at the repository root. The
 Spec Kit operating procedure lives in `docs/SPECKIT.md`.
 
-**Version**: 1.2.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-16
+**Version**: 1.3.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-25
