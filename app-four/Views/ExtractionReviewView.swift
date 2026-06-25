@@ -94,8 +94,9 @@ struct ExtractionReviewView: View {
     @ViewBuilder
     private func synonym(_ name: String?, _ syn: String?) -> some View {
         if let name {
-            Text(name).font(Typography.caption.weight(.semibold)).foregroundStyle(Theme.accent)
-            + Text(syn.map { " · \($0)" } ?? "").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+            let nameText = Text(name).font(Typography.caption.weight(.semibold)).foregroundStyle(Theme.accent)
+            let synText = Text(syn.map { " · \($0)" } ?? "").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+            Text("\(nameText)\(synText)")
         }
     }
 

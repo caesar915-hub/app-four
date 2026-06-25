@@ -15,8 +15,8 @@ public extension View {
     /// HStack { ... }
     ///     .card(padding: Spacing.m)
     /// ```
-    public func card(padding: CGFloat = Spacing.l, elevated: Bool = false) -> some View {
-        let base = self
+    public func card(padding: CGFloat = Spacing.l) -> some View {
+        self
             .padding(padding)
             .background(Theme.cardBackground, in: .rect(cornerRadius: Radius.card))
             .overlay(
@@ -24,13 +24,6 @@ public extension View {
                     .strokeBorder(Theme.cardStroke, lineWidth: 1)
             )
             .shadow(color: Color(lightHex: "#221E16", darkHex: "#000000").opacity(0.06), radius: 10, y: 3)
-        return Group {
-            if elevated {
-                base.elevated()
-            } else {
-                base
-            }
-        }
     }
 }
 
