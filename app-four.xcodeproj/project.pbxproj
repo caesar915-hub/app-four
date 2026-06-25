@@ -44,8 +44,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3724CF872FC9292700427F48 /* app-fourTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = "app-fourTests";
 			sourceTree = "<group>";
 		};
@@ -251,8 +249,8 @@
 			packageReferences = (
 				370F529C2FC2046C00504F1C /* XCRemoteSwiftPackageReference "WhisperKit" */,
 				3724CFB22FC9D3EC00427F48 /* XCRemoteSwiftPackageReference "swift-transformers" */,
-				EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "SquirlSignals" */,
-				4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "SquirlDesignSystem" */,
+				EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */,
+				4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 37F17B2B2FC0CE4F00CAC42E /* Products */;
@@ -587,11 +585,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "SquirlDesignSystem" */ = {
+		4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/SquirlDesignSystem;
 		};
-		EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "SquirlSignals" */ = {
+		EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/SquirlSignals;
 		};
@@ -629,22 +627,22 @@
 		};
 		3F8C35CE4B4793A1A8BAC706 /* SquirlDesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "SquirlDesignSystem" */;
+			package = 4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */;
 			productName = SquirlDesignSystem;
 		};
 		7A34C43D19993F90A188D010 /* SquirlSignals */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "SquirlSignals" */;
+			package = EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */;
 			productName = SquirlSignals;
 		};
 		90059C596F1B493FEBD81C9B /* SquirlDesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "SquirlDesignSystem" */;
+			package = 4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */;
 			productName = SquirlDesignSystem;
 		};
 		AC13466A421DCDB2A4BCB3C5 /* SquirlSignals */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "SquirlSignals" */;
+			package = EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */;
 			productName = SquirlSignals;
 		};
 /* End XCSwiftPackageProductDependency section */
