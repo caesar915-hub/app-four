@@ -1,8 +1,5 @@
 import SwiftUI
 
-/// Lightweight Identifiable wrapper so a recording id can drive `.sheet(item:)`.
-struct RecordingDetailRef: Identifiable { let id: UUID }
-
 struct RecordingDetailView: View {
     let recording: Recording
     @State private var viewModel: RecordingDetailViewModel

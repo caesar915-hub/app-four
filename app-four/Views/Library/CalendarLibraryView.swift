@@ -6,7 +6,6 @@ struct CalendarLibraryView: View {
     @Binding var selectedTab: Tab
     @State private var viewModel: MoodLibraryViewModel
     @State private var path = NavigationPath()
-    @State private var detailRef: RecordingDetailRef?
     @State private var selectedDay = Calendar.current.startOfDay(for: Date())
     @State private var isCalendarExpanded = false
     @State private var topDayID: Date?
@@ -34,14 +33,12 @@ struct CalendarLibraryView: View {
                     Spacer()
                 }
             }
-            .sheet(item: $detailRef) { ref in
-                if let recording = viewModel.recording(for: ref.id) {
-                    NavigationStack {
-                        RecordingDetailView(recording: recording, store: store, services: services)
-                    }
-                    .presentationDragIndicator(.visible)
+            .navigationDestination(for: UUID.self) { id in
+                if let recording = viewModel.recording(for: id) {
+                    RecordingDetailView(recording: recording, store: store, services: services)
                 } else {
-                    Color.clear.onAppear { detailRef = nil }   // recording deleted out from under the sheet → dismiss
+                    // Recording deleted out from under an open push → pop back to the list.
+                    Color.clear.onAppear { if !path.isEmpty { path.removeLast() } }
                 }
             }
         }
@@ -96,7 +93,7 @@ struct CalendarLibraryView: View {
                                     expandedCards = expandedCards.toggling(day.date)
                                 }
                             },
-                            onTapRecording: { detailRef = RecordingDetailRef(id: $0) }
+                            onTapRecording: { path.append($0) }
                         )
                         .id(day.date)
                     }
