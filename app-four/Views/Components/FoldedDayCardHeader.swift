@@ -53,11 +53,11 @@ struct FoldedDayCardHeader: View {
     /// Mood word (deepened mood colour) · weekday, concatenated as one `Text` so it wraps — never
     /// truncating the mood word — at large Dynamic Type (FR-013). Weekday only when mood is unknown.
     private var title: Text {
-        let weekday = Text(day.label).foregroundColor(.primary)
+        let weekday = Text(day.label).foregroundStyle(.primary)
         guard let level else { return weekday }
-        return Text(level.displayLabel).foregroundColor(level.wordColor)
-            + Text(" · ").foregroundColor(Theme.textSecondary)
-            + weekday
+        let mood = Text(level.displayLabel).foregroundStyle(level.wordColor)
+        let separator = Text(" · ").foregroundStyle(Theme.textSecondary)
+        return Text("\(mood)\(separator)\(weekday)")
     }
 
     private var moodBadge: some View {
