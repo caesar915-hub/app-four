@@ -52,8 +52,21 @@ public extension MoodLevel {
     public var blockTint: Color { color.opacity(Opacity.moodBlock) }
     /// Cream-disc mood badge behind the mood glyph (folded header + check-in bead).
     public var badgeTint: Color { color.opacity(Opacity.moodBadge) }
-    /// Mood-word colour on the block tint — the deeper, legible shade.
-    public var wordColor: Color { deepFill }
+    /// Mood-word colour on the block tint — a deeper, AA-legible shade, per appearance.
+    /// Decoupled from ``deepFill`` (which stays the saturated base for marker dots and gradient
+    /// ends): in **light** the hue is darkened to clear WCAG AA 4.5:1 on the 0.24 block tint over
+    /// the cream card; in **dark** the burnt-orange/green ramp ends are brightened to clear 4.5:1
+    /// on the tint over loam. All five levels measure ≥4.9:1 light / ≥5.0:1 dark. (Design-review
+    /// finding ①: the old `wordColor = deepFill = color` washed out to as low as 1.54:1 in light.)
+    public var wordColor: Color {
+        switch self {
+        case .low:   Color(lightHex: "#8E470F", darkHex: "#E89A5A")
+        case .flat:  Color(lightHex: "#8A5600", darkHex: "#EDA94A")
+        case .okay:  Color(lightHex: "#41691F", darkHex: "#B7D897")
+        case .good:  Color(lightHex: "#2C6B3B", darkHex: "#79C98E")
+        case .great: Color(lightHex: "#1E5C38", darkHex: "#57C98A")
+        }
+    }
 
     public var displayLabel: String {
         switch self {

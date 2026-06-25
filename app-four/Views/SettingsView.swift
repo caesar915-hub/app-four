@@ -57,6 +57,8 @@ struct SettingsView: View {
                     versionSection
                 }
                 .listStyle(.insetGrouped)
+                .scrollContentBackground(.hidden)        // reveal Theme.background (paper) under the grouped list
+                .listRowBackground(Theme.cardBackground)  // cream inset cards instead of system grouped gray
                 // TabView keeps this tab alive, so its scroll offset persists.
                 // Reset to top each time Settings becomes the active tab.
                 .onChange(of: selectedTab) { _, newValue in
@@ -133,7 +135,7 @@ struct SettingsView: View {
             LabeledContent("Storage") {
                 let count = viewModel.recordingCount
                 Text("\(count) \(count == 1 ? "recording" : "recordings") · \(String(format: "%.1f", viewModel.storageUsedMB)) MB")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.textSecondary)
             }
             Toggle(isOn: $viewModel.downloadOverCellular) {
                 Label("Download over Cellular", systemImage: "antenna.radiowaves.left.and.right")
@@ -243,7 +245,7 @@ struct SettingsView: View {
                 Spacer()
                 Text(versionLabel)
                     .font(Typography.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(Theme.textSecondary)
                     #if DEBUG || TESTFLIGHT
                     .onTapGesture(count: 5) { showingDebug = true }
                     #endif
