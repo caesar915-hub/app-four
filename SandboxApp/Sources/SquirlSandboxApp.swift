@@ -11,8 +11,8 @@ struct SquirlSandboxApp: App {
 }
 
 struct RootView: View {
-    @State private var dark = false
-    @State private var tab = "calendar"
+    @State private var dark = ProcessInfo.processInfo.arguments.contains("-dark")
+    @State private var tab = ProcessInfo.processInfo.arguments.contains("-gallery") ? "gallery" : "calendar"
 
     var body: some View {
         TabView(selection: $tab) {
