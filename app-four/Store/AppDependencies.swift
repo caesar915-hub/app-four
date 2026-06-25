@@ -22,6 +22,7 @@ enum AppDependencies {
         aiModelService: aiModelService
     )
     static let exportService: ExportService = ExportServiceImpl()
+    static let weatherService: WeatherService = WeatherServiceImpl()
 
     /// Observable bundle for environment injection into ViewModels.
     static let services = AppServices(
@@ -32,7 +33,8 @@ enum AppDependencies {
         summarizationService: summarizationService,
         connectivity: connectivity,
         pendingTranscriptionService: pendingTranscriptionService,
-        exportService: exportService
+        exportService: exportService,
+        weatherService: weatherService
     )
 
     private static let sharedWhisperKitService = WhisperKitTranscriptionService(

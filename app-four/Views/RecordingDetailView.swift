@@ -28,6 +28,7 @@ struct RecordingDetailView: View {
             VStack(alignment: .leading, spacing: Spacing.l) {
                 titleBlock
                 if hasSignals { signalGlyphRow }
+                weatherRow
                 ADHDSummarySection(
                     recording: viewModel.recording,
                     onRegenerate: { Task { await viewModel.regenerateSummary() } }
@@ -135,6 +136,46 @@ struct RecordingDetailView: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(kind.title): \(label)")
+    }
+
+    // MARK: - Weather (best-effort snapshot, omitted when absent — FR-007/011)
+
+    /// Mandatory Apple Weather attribution link (WeatherKit terms / App Review — FR-009).
+    private static let weatherAttributionURL = URL(string: "https://weatherkit.apple.com/legal-attribution.html")!
+
+    @ViewBuilder
+    private var weatherRow: some View {
+        if let weather = viewModel.recording.decodedWeather {
+            let temp = temperatureString(weather.temperatureC)
+            HStack(spacing: Spacing.s) {
+                Image(systemName: weather.symbolName)
+                    .symbolRenderingMode(.hierarchical)
+                    .font(Typography.body)
+                    .foregroundStyle(Theme.textSecondary)
+                Text(temp)
+                    .font(Typography.body)
+                    .foregroundStyle(Theme.textPrimary)
+                Text("·").foregroundStyle(Theme.textSecondary)
+                Text(weather.conditionLabel)
+                    .font(Typography.body)
+                    .foregroundStyle(Theme.textSecondary)
+                Spacer(minLength: Spacing.s)
+                Link(" Weather", destination: Self.weatherAttributionURL)
+                    .font(Typography.label)
+                    .foregroundStyle(Theme.textSecondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Weather: \(weather.conditionLabel), \(temp). Source: Apple Weather.")
+        }
+    }
+
+    /// Locale-aware temperature (°C/°F by region) from the canonical Celsius store (FR-010).
+    private func temperatureString(_ celsius: Double) -> String {
+        let formatter = MeasurementFormatter()
+        formatter.unitOptions = .naturalScale
+        formatter.numberFormatter.maximumFractionDigits = 0
+        return formatter.string(from: Measurement(value: celsius, unit: UnitTemperature.celsius))
     }
 
     // MARK: - Transcript

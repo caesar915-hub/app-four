@@ -35,6 +35,9 @@ final class Recording {
     var sleepEventJSON: String?
     var emotionsJSON: String?
     var sleepLevelValue: String?
+    /// Best-effort weather captured at check-in time, JSON-encoded `WeatherSnapshot`.
+    /// Optional/defaulted to keep the schema CloudKit-compatible (Constitution IX).
+    var weatherJSON: String?
     var isMockData: Bool = false
 
     /// Name to show in lists/headers. While transcription is in progress the real title
@@ -85,7 +88,8 @@ final class Recording {
         sideEffectsJSON: String? = nil,
         sleepEventJSON: String? = nil,
         emotionsJSON: String? = nil,
-        sleepLevelValue: String? = nil
+        sleepLevelValue: String? = nil,
+        weatherJSON: String? = nil
     ) {
         self.id = id
         self.createdAt = createdAt
@@ -114,6 +118,7 @@ final class Recording {
         self.sleepEventJSON = sleepEventJSON
         self.emotionsJSON = emotionsJSON
         self.sleepLevelValue = sleepLevelValue
+        self.weatherJSON = weatherJSON
     }
 }
 
@@ -174,6 +179,23 @@ extension Recording {
               let data = json.data(using: .utf8),
               let emotions = try? JSONDecoder().decode([String].self, from: data) else { return [] }
         return emotions
+    }
+
+    // MARK: - Weather
+
+    /// The weather captured at check-in, if any. Not `@MainActor` (unlike `decodedSleepEvent`)
+    /// because `WeatherSnapshot` is a `Sendable` value type.
+    var decodedWeather: WeatherSnapshot? {
+        guard let json = weatherJSON, let data = json.data(using: .utf8) else { return nil }
+        return try? JSONDecoder().decode(WeatherSnapshot.self, from: data)
+    }
+
+    /// Single source of truth for writing a weather snapshot onto the model.
+    func applyWeather(_ snapshot: WeatherSnapshot) {
+        guard let data = try? JSONEncoder().encode(snapshot),
+              let json = String(data: data, encoding: .utf8) else { return }
+        weatherJSON = json
+        updatedAt = Date()
     }
 
     @MainActor var decodedNoteExtraction: NoteExtraction? {

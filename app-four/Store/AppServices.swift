@@ -15,6 +15,7 @@ final class AppServices {
     let connectivity: Connectivity
     let pendingTranscriptionService: PendingTranscriptionService
     let exportService: ExportService
+    let weatherService: WeatherService
 
     init(
         audioService: AudioRecordingService,
@@ -24,7 +25,8 @@ final class AppServices {
         summarizationService: SummarizationService,
         connectivity: Connectivity,
         pendingTranscriptionService: PendingTranscriptionService,
-        exportService: ExportService
+        exportService: ExportService,
+        weatherService: WeatherService
     ) {
         self.audioService = audioService
         self.storageService = storageService
@@ -34,5 +36,6 @@ final class AppServices {
         self.connectivity = connectivity
         self.pendingTranscriptionService = pendingTranscriptionService
         self.exportService = exportService
+        self.weatherService = weatherService
     }
 }

@@ -179,6 +179,15 @@ protocol SummarizationService: Sendable {
     func summarize(rawTranscription: String) async throws -> SummaryResult
 }
 
+// MARK: - Weather
+
+/// Best-effort current-weather lookup for a check-in. Returns `nil` on EVERY failure mode
+/// (permission denied/restricted, no location, offline, WeatherKit error, timeout) and
+/// NEVER throws — weather must never block or fail a check-in (Constitution VI exception).
+protocol WeatherService: Sendable {
+    func currentSnapshot() async -> WeatherSnapshot?
+}
+
 enum SummarizationError: Error, Sendable {
     case modelNotInstalled
     case contextTooLong

@@ -69,12 +69,14 @@ final class CheckInViewModel {
     @ObservationIgnored private let storageService: AudioFileStorageService
     @ObservationIgnored private let transcriptionService: TranscriptionService
     @ObservationIgnored private let aiModelService: AIModelService
+    @ObservationIgnored private let weatherService: WeatherService
     @ObservationIgnored private let store: RecordingStore
     private(set) var processingViewModel: ProcessingViewModel
 
     private var timerTask: Task<Void, Never>?
     private var levelTask: Task<Void, Never>?
     private(set) var transcriptionTask: Task<Void, Never>?
+    private(set) var weatherCaptureTask: Task<Void, Never>?
 
     var timeString: String {
         AccessibilityHelpers.formatDuration(elapsedTime)
@@ -90,6 +92,7 @@ final class CheckInViewModel {
         self.storageService = services.storageService
         self.transcriptionService = services.transcriptionService
         self.aiModelService = services.aiModelService
+        self.weatherService = services.weatherService
         self.processingViewModel = ProcessingViewModel(
             store: store,
             summarizationService: services.summarizationService
@@ -193,8 +196,9 @@ final class CheckInViewModel {
             self.pendingSave = nil
             self.saveFailed = false
 
-            // Immediately show done; transcribe in background
+            // Immediately show done; transcribe + capture weather in background
             self.state = .done
+            self.backfillWeather(for: recording)
 
             // Model not ready: persist as pending and skip transcription. The
             // PendingTranscriptionService drains it through this exact path once the
@@ -433,7 +437,25 @@ final class CheckInViewModel {
             )
         }
         lastSavedRecording = recording
+        backfillWeather(for: recording)
         state = .done
+    }
+
+    // MARK: - Weather backfill (best-effort, after save)
+
+    /// Best-effort weather capture. Runs AFTER the entry is saved and on its own task so a
+    /// slow or failed lookup never blocks or fails the check-in (Constitution VI exception).
+    /// Internal (not private) so tests can drive it deterministically. Mirrors the
+    /// deleted-recording guard used by `transcribeInBackground`.
+    func captureWeather(for recording: Recording) async {
+        guard let snapshot = await weatherService.currentSnapshot() else { return }
+        guard store.recordings.contains(where: { $0.id == recording.id }) else { return }
+        recording.applyWeather(snapshot)
+        store.save()
+    }
+
+    private func backfillWeather(for recording: Recording) {
+        weatherCaptureTask = Task { await self.captureWeather(for: recording) }
     }
 
     private func startTimer() {

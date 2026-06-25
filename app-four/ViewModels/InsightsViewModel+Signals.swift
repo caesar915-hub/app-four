@@ -182,7 +182,14 @@ extension InsightsViewModel {
     // MARK: connections
 
     var connections: [Connection] {
-        [medFocusConnection, energyMoodConnection, sleepMoodConnection]
+        [medFocusConnection, energyMoodConnection, sleepMoodConnection, weatherMoodConnection]
+    }
+
+    /// True when the weather×mood card is actually showing weather-derived data, so the
+    /// mandatory Apple Weather attribution is surfaced only where weather data appears (FR-009).
+    var weatherCorrelationShown: Bool {
+        if case .unlocked = weatherMoodConnection.state { return true }
+        return false
     }
 
     private var medFocusConnection: Connection {
@@ -294,10 +301,56 @@ extension InsightsViewModel {
         )
     }
 
+    /// Weather × mood: average mood per weather family, surfaced as best-vs-worst.
+    /// Gated until there are ≥5 weathered check-ins spanning ≥2 distinct families, so a
+    /// correlation never appears from a thin sample (FR-008, research R6).
+    private var weatherMoodConnection: Connection {
+        let title = "Weather × mood"
+        let samples: [(family: WeatherFamily, mood: Int)] = monthRecordings.compactMap { r in
+            guard let family = r.decodedWeather?.family,
+                  let mood = r.mood.flatMap({ MoodLevel(name: $0) })?.numericValue else { return nil }
+            return (family, mood)
+        }
+        let families = Set(samples.map { $0.family })
+        guard samples.count >= 5, families.count >= 2 else {
+            let copy: String
+            if samples.count < 5 {
+                let need = 5 - samples.count
+                copy = "Check in \(need) more \(Self.timesNoun(need)) to unlock this connection."
+            } else {
+                copy = "Check in across more kinds of weather to unlock this connection."
+            }
+            return Connection(title: title, state: .gated(unlockCopy: copy))
+        }
+        var totals: [WeatherFamily: (sum: Int, count: Int)] = [:]
+        for s in samples {
+            totals[s.family, default: (0, 0)].sum += s.mood
+            totals[s.family]!.count += 1
+        }
+        let averages = totals.mapValues { Double($0.sum) / Double($0.count) }
+        // Highest/lowest-mood weather family; deterministic label tie-break.
+        let best = averages.max { a, b in a.value != b.value ? a.value < b.value : a.key.label > b.key.label }!
+        let worst = averages.min { a, b in a.value != b.value ? a.value < b.value : a.key.label > b.key.label }!
+        let bestMoodLabel = MoodLevel.allCases.first { $0.numericValue == Int(best.value.rounded()) }?.displayLabel ?? ""
+        return Connection(
+            title: title,
+            state: .unlocked(
+                sentence: "Your mood runs highest on \(best.key.label) days and lowest on \(worst.key.label) days.",
+                fraction: best.value / 5.0,
+                barLabel: bestMoodLabel,
+                leadingText: "\(best.key.label.capitalized) days",
+                trailingText: "\(worst.key.label.capitalized) days"
+            )
+        )
+    }
+
     // MARK: - Private helpers
 
     /// "day" / "days" for unlock copy.
     fileprivate static func dayNoun(_ n: Int) -> String { n == 1 ? "day" : "days" }
+
+    /// "time" / "times" for unlock copy.
+    fileprivate static func timesNoun(_ n: Int) -> String { n == 1 ? "time" : "times" }
 
     private func signalLevel(for kind: SignalKind, from recording: Recording?) -> (any SignalLevel)? {
         guard let r = recording else { return nil }

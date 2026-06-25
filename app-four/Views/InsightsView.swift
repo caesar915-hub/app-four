@@ -202,15 +202,29 @@ struct InsightsView: View {
         VStack(spacing: 0) {
             InsightsSectionHeader(
                 title: "Connections",
-                subtitle: "Patterns across signals — 3 or more days to unlock"
+                subtitle: "Patterns across signals — keep checking in to unlock"
             )
             .opacity(headerOpacity(.connections))
             ConnectionCardsView(connections: viewModel.connections)
                 .padding(.top, Spacing.s)
-                .padding(.bottom, Spacing.hero)
+            if viewModel.weatherCorrelationShown {
+                weatherAttribution
+                    .padding(.top, Spacing.m)
+            }
         }
+        .padding(.bottom, Spacing.hero)
         .id(SectionID.connections)
         .animation(headerAnimation, value: activeSectionID)
+    }
+
+    /// Mandatory Apple Weather attribution for the Insights surface (WeatherKit terms — FR-009).
+    private var weatherAttribution: some View {
+        Link(" Weather · Data sources",
+             destination: URL(string: "https://weatherkit.apple.com/legal-attribution.html")!)
+            .font(Typography.caption)
+            .foregroundStyle(Theme.textSecondary)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.horizontal, Spacing.l)
     }
 
     private var emptyState: some View {
