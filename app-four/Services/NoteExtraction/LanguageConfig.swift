@@ -109,7 +109,11 @@ public extension LanguageConfig {
             "\\b(?:hours?|hrs?)\\b[^.!?]*\\bnight\\b",
             "\\bnight\\b[^.!?]*\\b(?:hours?|hrs?)\\b",
         ],
-        sleepHoursPattern: #"(?i)\b(\d{1,2}(?:\.\d)?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)(\s+and\s+a\s+half)?\s*(?:hours?|hrs?|hr|h)\b"#,
+        // Anchored to sleep-context lead-ins so work/other "N hours" in a sleep
+        // sentence isn't read as sleep ("couldn't sleep, so I worked 12 hours" → nil);
+        // spelled-out numbers stay supported ("slept five hours" → 5). Mirrors the
+        // app's digit-only ADHDRegexPatterns anchor, widened to spelled-out cardinals.
+        sleepHoursPattern: #"(?i)(?:slept|got|in bed for|was asleep for|only|about|roughly|maybe)\s+(\d{1,2}(?:\.\d)?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)(\s+and\s+a\s+half)?\s*(?:hours?|hrs?|hr|h)\b"#,
         sleepBarePattern: #"(?i)\b(?:sleep|slept)\s+(\d{1,2}(?:\.\d)?)\b"#,
         weakEnergyTriggers: ["energy", "energetic"],
         weakEnergyTable: ([
