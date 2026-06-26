@@ -46,7 +46,7 @@ struct RecoveryKeySheet: View {
                 }
 
                 Text(keyBase64)
-                    .font(.plexMono(13))
+                    .font(Typography.mono12)
                     .foregroundStyle(Theme.textPrimary)
                     .textSelection(.enabled)
                     .frame(maxWidth: .infinity, alignment: .leading)

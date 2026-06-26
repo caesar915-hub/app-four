@@ -17,7 +17,7 @@ struct CalendarDayCell: View {
         Button(action: onTap) {
             VStack(spacing: 2) {
                 Text("\(cell.dayNumber)")
-                    .font(.callout)                                   // Dynamic Type (no hardcoded size)
+                    .font(Typography.callout)                         // DM Sans tabular figures, scales with Dynamic Type (DESIGN.md §Typography)
                     .fontWeight(isSelected ? .bold : .regular)
                     .monospacedDigit()
                     .lineLimit(1)

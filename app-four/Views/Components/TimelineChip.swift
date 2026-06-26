@@ -22,7 +22,7 @@ struct TimelineChip: View {
             Text(label)
                 .foregroundStyle(textColor)
         }
-        .font(.system(size: 12, weight: .medium))   // fixed (no Dynamic Type scaling)
+        .font(Typography.label)   // DM Sans 12pt, scales with Dynamic Type (Typography.label = relativeTo: .caption)
         .padding(.horizontal, Spacing.s)
         .padding(.vertical, Spacing.xs)
         .background(background, in: .capsule)

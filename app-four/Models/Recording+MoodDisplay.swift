@@ -59,12 +59,12 @@ extension Recording {
             } else {
                 label = "sleep"
             }
-            tags.append(DisplayTag(id: "sleep", label: label, icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
+            tags.append(DisplayTag(id: "sleep", label: label, icon: "bed.double.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
         } else if let hours = sleepHours {
             let label = hours == hours.rounded() ? "\(Int(hours))h sleep" : "\(hours)h sleep"
-            tags.append(DisplayTag(id: "sleep", label: label, icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
+            tags.append(DisplayTag(id: "sleep", label: label, icon: "bed.double.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
         } else if let quality = sleepQuality {
-            tags.append(DisplayTag(id: "sleep", label: "\(quality) sleep", icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
+            tags.append(DisplayTag(id: "sleep", label: "\(quality) sleep", icon: "bed.double.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
         }
 
         for (i, effect) in decodedSideEffects.enumerated() {

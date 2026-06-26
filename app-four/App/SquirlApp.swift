@@ -7,6 +7,15 @@ struct SquirlApp: App {
     @State private var shouldAutoStartRecording = false
 
     init() {
+        #if DEBUG
+        // UI/UX dev: default the mock-data toggle ON so a cold launch lands on a
+        // populated timeline. Guarded out under XCTest so the suite keeps the
+        // real default (false). Registered before AppDependencies.store, which
+        // reads the key eagerly via RecordingStore.loadRecordings().
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            UserDefaults.standard.register(defaults: ["debugMockMode": true])
+        }
+        #endif
         // Touch global dependencies at startup so stores begin observing the DB.
         _ = AppDependencies.store
         MetricManager.shared.start()
@@ -64,7 +73,13 @@ private struct RootContainerView: View {
         }
         .task {
             #if DEBUG
-            if CommandLine.arguments.contains("-skipOnboarding") { showOnboarding = false; return }
+            // Mock-dev mode (the DEBUG default) implies a returning user: skip the
+            // first-run ceremony so dev lands straight on the populated app. Flip
+            // Mock Mode off in TestServices to restore the real onboarding gate.
+            if CommandLine.arguments.contains("-skipOnboarding")
+                || UserDefaults.standard.bool(forKey: "debugMockMode") {
+                showOnboarding = false; return
+            }
             #endif
             showOnboarding = !hasCompletedOnboarding
         }

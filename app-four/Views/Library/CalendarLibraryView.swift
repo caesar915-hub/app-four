@@ -36,8 +36,10 @@ struct CalendarLibraryView: View {
             }
             .sheet(item: $detailRef) { ref in
                 if let recording = viewModel.recording(for: ref.id) {
-                    RecordingDetailView(recording: recording, store: store, services: services)
-                        .presentationDragIndicator(.visible)
+                    NavigationStack {
+                        RecordingDetailView(recording: recording, store: store, services: services)
+                    }
+                    .presentationDragIndicator(.visible)
                 } else {
                     Color.clear.onAppear { detailRef = nil }   // recording deleted out from under the sheet → dismiss
                 }

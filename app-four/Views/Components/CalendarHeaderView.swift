@@ -64,6 +64,8 @@ struct CalendarHeaderView: View {
                             .accessibilityHidden(true)   // decorative; the month text is the label
                     }
                 }
+                .frame(minHeight: Metrics.minTapTarget, alignment: .leading)   // ≥44pt tap target (HIG)
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityHint(forceWeek ? "" : (effectiveExpanded ? "Collapse to week" : "Expand to month"))
@@ -78,6 +80,8 @@ struct CalendarHeaderView: View {
                         .padding(.horizontal, Spacing.s)
                         .padding(.vertical, Spacing.xs)
                         .overlay(Capsule().strokeBorder(Theme.accent, lineWidth: 1.2))
+                        .frame(minHeight: Metrics.minTapTarget)   // ≥44pt tap target; pill stays visually compact
+                        .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
             }
