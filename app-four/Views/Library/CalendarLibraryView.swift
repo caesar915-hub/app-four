@@ -89,7 +89,7 @@ struct CalendarLibraryView: View {
                             day: day,
                             isExpanded: expandedCards.contains(day.date),
                             onToggleExpand: {
-                                withAnimation(reduceMotion ? nil : Motion.smooth) {
+                                withAnimation(reduceMotion ? nil : Motion.expand) {
                                     expandedCards = expandedCards.toggling(day.date)
                                 }
                             },
