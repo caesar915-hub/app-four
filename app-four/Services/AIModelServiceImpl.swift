@@ -130,7 +130,7 @@ final class AIModelServiceImpl: AIModelService {
         )
     }
 
-    nonisolated private static func findWhisperModelFolder(in base: URL) -> URL? {
+    nonisolated static func findWhisperModelFolder(in base: URL) -> URL? {
         let fm = FileManager.default
         guard let enumerator = fm.enumerator(
             at: base,
@@ -140,6 +140,15 @@ final class AIModelServiceImpl: AIModelService {
         for case let url as URL in enumerator {
             guard url.lastPathComponent == "openai_whisper-small",
                   (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true
+            else { continue }
+            // Guard against a partially-downloaded model: WhisperKit creates the
+            // directory skeleton before weight files are moved into place. Verify
+            // the two files that are written last so we only return a path when the
+            // model is actually loadable.
+            let encoder = url.appendingPathComponent("AudioEncoder.mlmodelc", isDirectory: true)
+            let config  = url.appendingPathComponent("config.json")
+            guard fm.fileExists(atPath: encoder.path),
+                  fm.fileExists(atPath: config.path)
             else { continue }
             return url
         }
