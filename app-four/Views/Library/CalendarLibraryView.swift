@@ -11,6 +11,7 @@ struct CalendarLibraryView: View {
     @State private var topDayID: Date?
     @State private var expandedCards = ExpandedDayCards()
     @AppStorage("autoExpandOnSelection") private var autoExpandOnSelection = true
+    @AppStorage("alwaysExpandCards") private var alwaysExpandCards = false
     @Environment(AppServices.self) private var services
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     private let store: RecordingStore
@@ -64,9 +65,7 @@ struct CalendarLibraryView: View {
                 selectedDay: $selectedDay,
                 isExpanded: $isCalendarExpanded,
                 monthLabel: viewModel.monthLabel,
-                canJumpToToday: !calendar.isDateInToday(selectedDay) || !viewModel.isCurrentMonth,
                 onSelect: { selectDay($0) },
-                onJumpToToday: { jumpToToday() },
                 onPageMonth: { pageMonth($0) }
             )
             .padding(.horizontal, Spacing.l)
@@ -81,13 +80,12 @@ struct CalendarLibraryView: View {
     private var timelineList: some View {
         VStack(spacing: 0) {
             pinnedHeader
-            filterCaption
             ScrollView {
                 LazyVStack(spacing: Spacing.m) {
                     ForEach(viewModel.timelineDaysFilteredToSelectedDate(selectedDay)) { day in
                         DayCard(
                             day: day,
-                            isExpanded: expandedCards.contains(day.date),
+                            isExpanded: expandedCards.shouldExpand(day.date, alwaysExpand: alwaysExpandCards),
                             onToggleExpand: {
                                 withAnimation(reduceMotion ? nil : Motion.expand) {
                                     expandedCards = expandedCards.toggling(day.date)
@@ -104,21 +102,6 @@ struct CalendarLibraryView: View {
             }
             .scrollPosition(id: $topDayID, anchor: .top)
             .edgeFadeMask(top: 0, bottom: Spacing.section)
-        }
-        .animation(reduceMotion ? nil : Motion.smooth, value: calendar.isDateInToday(selectedDay))
-    }
-
-    /// Names the filter boundary so a list trimmed to "≤ selected day" (FR-010) never reads as
-    /// silently missing entries. Suppressed at today, when nothing is filtered out.
-    @ViewBuilder private var filterCaption: some View {
-        if !calendar.isDateInToday(selectedDay) {
-            Text("Entries up to \(viewModel.dayLabel(for: selectedDay))")
-                .font(Typography.caption)
-                .foregroundStyle(Theme.textSecondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, Spacing.l)
-                .padding(.top, Spacing.s)
-                .transition(.opacity)
         }
     }
 

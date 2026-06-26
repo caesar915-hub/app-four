@@ -67,4 +67,19 @@ import Foundation
         #expect(once == twice)            // FR-009 idempotent re-selection
         #expect(twice.contains(a))
     }
+
+    // MARK: - FR-008: "Always expand cards" override
+
+    @Test func shouldExpandHonoursOpenSetWhenAlwaysExpandOff() {
+        let a = day(0), b = day(1)
+        let s = ExpandedDayCards().toggling(a)
+        #expect(s.shouldExpand(a, alwaysExpand: false))    // a is individually open
+        #expect(!s.shouldExpand(b, alwaysExpand: false))   // b is not
+    }
+
+    @Test func shouldExpandIsTrueForAnyDayWhenAlwaysExpandOn() {
+        let s = ExpandedDayCards()                          // nothing individually open
+        #expect(s.shouldExpand(day(0), alwaysExpand: true))
+        #expect(s.shouldExpand(day(99), alwaysExpand: true))
+    }
 }

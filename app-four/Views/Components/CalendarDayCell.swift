@@ -2,13 +2,12 @@ import SwiftUI
 
 /// One day in the calendar grid: number + mood marker dot, with selection/future styling.
 /// Selection chrome is neutral (`Color.primary` circle) so it never competes with the
-/// mood-coloured marker dot. Today carries no ring — it's marked only by the "Today" pill in
-/// the header (FR-013). Days more recent than the selected date are de-emphasised with reduced
-/// opacity **and** a dropped marker dot, a non-colour cue that survives greyscale (FR-011/FR-014).
+/// mood-coloured marker dot. No day is dimmed (024 QA round): every day reads at full strength.
+/// Future days are simply non-interactive (`.disabled`) and carry the tertiary number colour plus
+/// the AX "future" state as the greyscale-safe cue.
 struct CalendarDayCell: View {
     let cell: CalendarMonthModel.DayCell
     let isSelected: Bool
-    var isAboveSelection: Bool = false
     let onTap: () -> Void
 
     @ScaledMetric(relativeTo: .body) private var diameter: CGFloat = 30
@@ -33,7 +32,6 @@ struct CalendarDayCell: View {
             }
             .frame(maxWidth: .infinity, minHeight: 44)   // ≥44pt tap target (HIG)
             .contentShape(Rectangle())
-            .opacity(isAboveSelection ? Opacity.deEmphasis : 1)
         }
         .buttonStyle(.plain)
         .disabled(cell.isFuture)
@@ -50,14 +48,10 @@ struct CalendarDayCell: View {
     }
 
     @ViewBuilder private var marker: some View {
-        if isAboveSelection {
-            Color.clear   // dropped dot — the greyscale-safe second cue (FR-011/FR-014)
-        } else {
-            switch cell.marker {
-            case .mood(let color): Circle().fill(color)
-            case .neutral:         Circle().fill(Theme.textSecondary)
-            case .none:            Color.clear
-            }
+        switch cell.marker {
+        case .mood(let color): Circle().fill(color)
+        case .neutral:         Circle().fill(Theme.textSecondary)
+        case .none:            Color.clear
         }
     }
 
