@@ -26,6 +26,7 @@ Act as a senior iOS engineer and UX/UI designer. Be analytical and objective. Qu
 - For new UI: HTML mockup before SwiftUI — see memory.
 - Plan → surface assumptions → execute. No mid-task interruptions.
 - Log to `docs/DEVLOG.md` at real checkpoints (a decision made, an investigation concluded, a direction set, an item shipped) — the *why*, not every edit. Run `/recap` for the morning standup.
+- After any merge (`git merge`, `gh pr merge`, or a merge commit landing on `main`): regenerate `docs/WORKLOG.md` by running `scripts/worklog.sh` and replacing the top block with the freshly generated one. The worklog is derived, not narrated — regenerate it, don't hand-edit it.
 - Always build and run tests after code changes before reporting done. Never ask — just do it. Use the `ios-debugger-agent` skill (XcodeBuildMCP).
 
 ## Git Workflow
