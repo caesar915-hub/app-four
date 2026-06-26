@@ -1,9 +1,10 @@
 import SwiftUI
 
-/// One row of the day timeline: the bead (mood glyph + medication-phase ring) with its downward
-/// connector on the left, and the check-in content on the right — a head (mood word + inline time +
-/// energy/focus ramp glyphs + a details chevron), a "Taken …" pill for any dose logged here, and
-/// neutral chips for the remaining inputs. Tapping a row that has a recording opens its detail.
+/// One row of the day timeline (spec 023): the mood bead (mood glyph + medication-phase ring) with its
+/// downward connector on the left, and the check-in content on the right as four bare glyph+text lines —
+/// (1) mood word + time + a push chevron, (2) energy + focus, (3) medication + sleep, (4) feelings +
+/// side-effects. No pill containers: read-only data reads as quiet text; medication is the single accent.
+/// Tapping the row (content or chevron) pushes the recording detail.
 struct TimelineRow: View {
     let node: DayTimeline.Node
     let isLast: Bool
@@ -13,7 +14,7 @@ struct TimelineRow: View {
         HStack(alignment: .top, spacing: Spacing.m) {
             beadColumn
             content
-                .padding(.bottom, isLast ? 0 : Spacing.section)   // more breathing room between check-ins
+                .padding(.bottom, isLast ? 0 : Spacing.section)   // breathing room between check-ins
         }
         .accessibilityElement(children: .combine)
     }
@@ -23,7 +24,7 @@ struct TimelineRow: View {
     private var beadColumn: some View {
         VStack(spacing: 0) {
             TimelineBead(node: node)
-                .zIndex(1)   // keep the carry-over badge above the connector line
+                .zIndex(1)
             if !isLast {
                 Rectangle()
                     .fill(Theme.separator)
@@ -50,25 +51,28 @@ struct TimelineRow: View {
     private var contentBody: some View {
         VStack(alignment: .leading, spacing: Spacing.s) {
             if let recording = node.recording {
-                rowHead(recording)
+                rowHead(recording)        // line 1 (mood + time) + line 2 (energy + focus)
             }
-            chips
+            medicationSleepLine           // line 3
+            if let recording = node.recording {
+                feelingsSideEffectsLine(recording)   // line 4
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, Spacing.l)   // centre the head against the bead, level with the time
+        .padding(.top, Metrics.rowHeadTop)   // pull the head toward the bead's top (mid-high)
     }
 
-    // MARK: - Row head (mood word + inline time + ramp glyphs + details chevron)
+    // MARK: - Line 1 + 2 (mood · time · chevron / energy · focus)
 
     private func rowHead(_ recording: Recording) -> some View {
         let level = MoodLevel(name: recording.mood)
         return VStack(alignment: .leading, spacing: Spacing.xs) {
             HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
                 Text(level?.displayLabel ?? recording.displayTitle)
-                    .font(.fraunces(Metrics.rowMoodText))
+                    .font(Typography.text(Metrics.rowMoodText, weight: .semibold))
                     .foregroundStyle(level?.wordColor ?? .primary)
                 Text(node.time, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits))
-                    .font(.plexMono(Metrics.rowTime))
+                    .font(Typography.mono(Metrics.rowTime))
                     .foregroundStyle(Theme.textSecondary)
                 Spacer(minLength: Spacing.s)
                 Image(systemName: "chevron.right")
@@ -114,22 +118,59 @@ struct TimelineRow: View {
         return items
     }
 
-    // MARK: - Chips ("Taken …" pill + inputs)
+    // MARK: - Line 3 (medication · sleep) — the single accent + the sleep blue
 
     @ViewBuilder
-    private var chips: some View {
+    private var medicationSleepLine: some View {
         let taken = takenLabels
-        let inputs = node.recording?.chipTags ?? []
-        if !taken.isEmpty || !inputs.isEmpty {
-            FlowLayout(spacing: Spacing.s) {
+        let sleep = node.recording?.sleepLine
+        if !taken.isEmpty || sleep != nil {
+            FlowLayout(spacing: Spacing.m) {
                 ForEach(taken, id: \.self) { label in
-                    TimelineChip.medication(label)
+                    dataItem("capsule.righthalf.filled", label, color: Palette.medication, weight: .semibold)
                 }
-                ForEach(inputs) { tag in
-                    TimelineChip(icon: tag.icon, label: tag.label, glyph: tag.glyph)
+                if let sleep {
+                    dataItem("zzz", sleep.label, color: sleep.color)
                 }
             }
         }
+    }
+
+    // MARK: - Line 4 (feelings · side-effects) — muted context, capped at 4 each
+
+    @ViewBuilder
+    private func feelingsSideEffectsLine(_ recording: Recording) -> some View {
+        let feelings = recording.feelings()
+        let sideEffects = recording.sideEffects()
+        if !feelings.shown.isEmpty || !sideEffects.shown.isEmpty {
+            FlowLayout(spacing: Spacing.m) {
+                if !feelings.shown.isEmpty {
+                    dataItem("heart.fill", joined(feelings), color: Theme.textSecondary)
+                }
+                if !sideEffects.shown.isEmpty {
+                    dataItem("medical.thermometer", joined(sideEffects), color: Theme.textSecondary)
+                }
+            }
+        }
+    }
+
+    // MARK: - Shared bare glyph+text item
+
+    private func dataItem(_ systemImage: String, _ text: String, color: Color, weight: Font.Weight = .regular) -> some View {
+        HStack(spacing: Spacing.xs) {
+            Image(systemName: systemImage)
+                .font(Typography.caption)
+                .accessibilityHidden(true)   // the value text carries the meaning; the glyph is reinforcement
+            Text(text)
+                .font(Typography.caption.weight(weight))
+        }
+        .foregroundStyle(color)
+    }
+
+    private func joined(_ capped: (shown: [String], overflow: Int)) -> String {
+        var text = capped.shown.joined(separator: " · ")
+        if capped.overflow > 0 { text += " +\(capped.overflow)" }
+        return text
     }
 
     /// "Taken Concerta 36mg" for each distinct dose logged at this instant.

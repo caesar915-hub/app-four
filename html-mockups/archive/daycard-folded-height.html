@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · STEP 1 · Folded DayCard — reduce height · 6 proposals · TRUE scale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F1E7; --card:#FCF8EF; --elevated:#FCF8EF;
+    --ink:#221E16; --muted:#7A7361; --muted2:#615A49; --hair:#E3DAC7; --med:#7E5CA8;
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    --mw1:#8E470F; --mw2:#8A5600; --mw3:#41691F; --mw4:#2C6B3B; --mw5:#1E5C38;
+    --e1:#7C6E2E; --e2:#A89236; --e3:#D2BB40; --e4:#EEDA4C; --e5:#FCEE64;
+    --f1:#44546E; --f2:#4E6F94; --f3:#5889BA; --f4:#63A4E0; --f5:#79C4FF;
+  }
+  [data-theme="dark"]{
+    --bg:#14130F; --card:#1E1C16; --elevated:#272419; --ink:#F3EEE0; --muted:#9A917C; --muted2:#B6AD97; --hair:#322E22; --med:#9277BE;
+    --mw1:#E89A5A; --mw2:#EDA94A; --mw3:#B7D897; --mw4:#79C98E; --mw5:#57C98A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:#1d1c1a;color:#EDE9DC;font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:42px 24px 70px;}
+  .head{max-width:1280px;margin:0 auto 26px;}
+  .head h1{font-family:'Fraunces',serif;font-weight:600;font-size:26px;margin:0 0 6px;}
+  .head .step{color:#EAD08A;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;}
+  .head p{color:#9d988a;font-size:13.5px;line-height:1.55;max-width:92ch;margin:6px 0 0;}
+  .btn{margin-top:14px;font-size:13px;font-weight:600;cursor:pointer;background:#2a2823;color:#EDE9DC;border:1px solid #3a382f;border-radius:999px;padding:8px 16px;}
+
+  .board{display:flex;flex-wrap:wrap;gap:28px;justify-content:center;align-items:flex-start;}
+  .proposal{flex:none;width:393px;}
+  .plabel{padding:0 16px 10px;}
+  .pid{font-family:'Fraunces',serif;font-size:17px;font-weight:600;}
+  .pid.rec{color:#EAD08A;}
+  .hgt{display:inline-block;margin-left:8px;font-family:'IBM Plex Mono';font-size:11px;color:#cdbf95;border:1px solid #3a382f;border-radius:6px;padding:2px 7px;vertical-align:2px;}
+  .hgt .dn{color:#8FCb86;} .hgt .up{color:#d39}
+  .pdesc{display:block;color:#a9a392;font-size:12.5px;margin-top:5px;line-height:1.5;}
+  .pdesc .warn{color:#d6a24a;}
+
+  .band{width:393px;background:var(--bg);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;}
+
+  /* DayCard — cream, radius 16, mood-tint header, NO border */
+  .card{border-radius:16px;overflow:hidden;background:var(--card);box-shadow:0 1px 3px rgba(40,48,24,.05);}
+  .gdisc{flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:0;}
+  .otitle{font-family:'Fraunces',serif;font-weight:500;}
+  .t-sep{color:var(--muted);} .oday{color:var(--ink);}
+  .ochev{flex:none;color:var(--muted);font-weight:700;line-height:1;}
+  .fdiv{height:1px;background:var(--hair);}
+  .sumline{display:flex;flex-wrap:wrap;align-items:center;gap:8px;}
+  .sumline .sig{display:inline-flex;align-items:center;gap:4px;color:var(--ink);}
+  .sumline .sep{color:var(--muted);} .sumline .medname{color:var(--med);font-weight:600;}
+  .glyph{display:inline-flex;vertical-align:middle;line-height:0;}
+
+  /* two-tier kind */
+  .k-two .otop{display:flex;align-items:center;}
+  /* avatar two-line kind */
+  .k-av .avrow{display:flex;align-items:center;}
+  .k-av .avtext{flex:1;min-width:0;display:flex;flex-direction:column;}
+  /* one-line kinds */
+  .k-one .otop{display:flex;align-items:center;}
+
+  .foot{max-width:1280px;margin:28px auto 0;color:#8f8a7c;font-size:12px;line-height:1.6;border-top:1px solid #2f2d28;padding-top:14px;}
+  .foot b{color:#cfc9b8;}
+</style>
+</head>
+<body>
+<div class="head">
+  <span class="step">Step 1 of 3 — folded card height</span>
+  <h1>Folded DayCard — reduce the height</h1>
+  <p>Direction C, true scale. Each proposal shows three folded cards stacked (the real calendar list rhythm, 12pt gaps) so you can judge list density, with the <b>measured pixel height</b> of one card and its delta vs. baseline. Levers: vertical padding, badge size, the divider, and collapsing the two tiers (title / summary) into one. ✦ = my pick. Pick one, then we move to Step 2 (unfolded header).</p>
+  <button class="btn" onclick="toggleTheme()">◐ light / dark</button>
+</div>
+
+<div class="board" id="board"></div>
+<div class="foot" id="foot"></div>
+
+<script>
+const mC=['var(--m1)','var(--m2)','var(--m3)','var(--m4)','var(--m5)'];
+const mW=['var(--mw1)','var(--mw2)','var(--mw3)','var(--mw4)','var(--mw5)'];
+const eC=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
+const fC=['var(--f1)','var(--f2)','var(--f3)','var(--f4)','var(--f5)'];
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p)=>`color-mix(in srgb, ${h} ${p}%, var(--card))`;
+
+function gMood(hex,l,px){const lift=0.66+l*0.068,open=l>=4,top=open?9:11,fill=Math.min(1,0.42+l*0.145).toFixed(2);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26"><g transform="translate(12 13) scale(${lift}) translate(-12 -13)">`+
+    `<path d="M12 25 C12 18 12 14 12 ${top}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6" stroke-linecap="round"/>`+
+    `<path d="M12 ${top} C ${open?4:6} ${open?13:14}, ${open?5:6} ${open?2:5}, 12 1 C ${open?19:18} ${open?2:5}, ${open?20:18} ${open?13:14}, 12 ${top} Z" fill="${hex}" fill-opacity="${fill}" stroke="${hex}" stroke-width="1.3" stroke-linejoin="round"/>`+
+    (l>=3?`<path d="M12 ${top} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:'')+
+    (l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:'')+`</g></svg>`;}
+function gEnergy(hex,l,px){const lift=0.6+l*0.08,fill=Math.min(1,0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26"><g transform="translate(12 13) scale(${lift}) translate(-12 -13)"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${fill}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></g></svg>`;}
+function gFocus(hex,l,px){const cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;
+  if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;
+  if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;
+  if(l>=3){const r=((l-1)*0.85).toFixed(2);o+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26">${o}</svg>`;}
+function gCapsule(hex,px){const w=px*0.86,h=px*0.42,x=(px-w)/2,y=(px-h)/2,r=h/2,id='cp'+Math.round(px*97);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 ${px} ${px}"><defs><clipPath id="${id}"><rect x="${x}" y="${y}" width="${w/2}" height="${h}"/></clipPath></defs>`+
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${hex}" fill-opacity="0.22"/>`+
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${hex}" fill-opacity="0.5" clip-path="url(#${id})"/>`+
+    `<rect x="${x+1}" y="${y+1}" width="${w-2}" height="${h-2}" rx="${r-1}" fill="none" stroke="${hex}" stroke-width="2"/>`+
+    `<rect x="${px/2-0.8}" y="${(y+h*0.17).toFixed(2)}" width="1.6" height="${(h*0.66).toFixed(2)}" fill="${hex}" fill-opacity="0.8"/></svg>`;}
+const mg=(l,px)=>`<span class="glyph">${gMood(cssv(mC[l-1]),l,px)}</span>`;
+const eg=(l,px)=>`<span class="glyph">${gEnergy(cssv(eC[l-1]),l,px)}</span>`;
+const fg=(l,px)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,px)}</span>`;
+const cap=(px)=>`<span class="glyph">${gCapsule(cssv('var(--med)'),px)}</span>`;
+const ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Distracted','Present','Sharp','Locked in'];
+
+/* full summary (energy·focus·med name) — words */
+function summaryWords(d,fs){let s=`<span class="sig">${eg(d.e,fs+1)} ${ENW[d.e-1]}</span><span class="sep">·</span><span class="sig">${fg(d.f,fs+1)} ${FOW[d.f-1]}</span>`;
+  if(d.med)s+=`<span class="sep">·</span><span class="sig medname">${cap(fs+2)} ${d.med}</span>`;return s;}
+/* glyph-only summary (no words) */
+function summaryGlyphs(d,fs){let s=`${eg(d.e,fs)}${fg(d.f,fs)}`;if(d.med)s+=cap(fs+1);return `<span style="display:inline-flex;gap:8px;align-items:center">${s}</span>`;}
+
+function title(d,fs){return `<span class="otitle" style="font-size:${fs}px"><span style="color:${cssv(mW[d.m-1])}">${d.mood}</span><span class="t-sep"> · </span><span class="oday">${d.day}</span></span>`;}
+function chev(px){return `<span class="ochev" style="font-size:${px}px">⌄</span>`;}
+
+function cardHTML(d,c){
+  const strip=tint(mC[d.m-1],24),badge=tint(mC[d.m-1],50);
+  const disc=`<span class="gdisc" style="width:${c.badge}px;height:${c.badge}px;background:${badge}">${mg(d.m,Math.round(c.badge*0.56))}</span>`;
+  if(c.kind==='two'){
+    const div=c.divider?`<div class="fdiv"></div>`:'';
+    return `<div class="card k-two"><div style="display:flex;flex-direction:column;gap:${c.gap}px;padding:${c.padV}px 0">
+      <div class="otop" style="gap:12px;padding:0 16px">${disc}${title(d,c.title)}<span style="flex:1"></span>${chev(13)}</div>
+      ${div}<div class="sumline" style="padding:0 16px;font-size:${c.sum}px">${summaryWords(d,c.sum)}</div>
+    </div></div>`;
+  }
+  if(c.kind==='av'){
+    return `<div class="card k-av"><div class="avrow" style="gap:12px;padding:${c.padV}px 16px">${disc}
+      <div class="avtext" style="gap:${c.gap}px">${title(d,c.title)}<div class="sumline" style="font-size:${c.sum}px">${summaryWords(d,c.sum)}</div></div>${chev(13)}</div></div>`;
+  }
+  if(c.kind==='oneG'){
+    return `<div class="card k-one"><div class="otop" style="gap:12px;padding:${c.padV}px 16px">${disc}${title(d,c.title)}<span style="flex:1"></span>${summaryGlyphs(d,c.gly)}${chev(13)}</div></div>`;
+  }
+  if(c.kind==='oneM'){
+    const med=d.med?`<span class="medname" style="display:inline-flex;align-items:center;gap:4px;color:var(--med);font-weight:600;font-size:${c.sum}px">${cap(c.sum+2)} ${d.med}</span>`:'';
+    return `<div class="card k-one"><div class="otop" style="gap:12px;padding:${c.padV}px 16px">${disc}${title(d,c.title)}<span style="flex:1"></span>${med}${chev(13)}</div></div>`;
+  }
+}
+
+const DAYS=[
+  {m:4,mood:'Good',day:'Monday 8',e:4,f:3,med:'Concerta'},
+  {m:3,mood:'Okay',day:'Sunday 7',e:3,f:2,med:null},
+  {m:1,mood:'Low', day:'Saturday 6',e:2,f:1,med:'Vyvanse'},
+];
+
+const PROPS=[
+ {id:1,name:'Baseline (current)',kind:'two',badge:42,padV:16,gap:8,divider:true,title:16,sum:11.5,desc:'Two tiers + full-width divider. The starting point.'},
+ {id:2,name:'No divider',kind:'two',badge:42,padV:14,gap:6,divider:false,title:16,sum:11.5,desc:'Drop the rule — group title↔summary by proximity (the research principle), tighten padding/gap. Same info, lighter.'},
+ {id:3,name:'Compact badge',kind:'two',badge:32,padV:12,gap:5,divider:false,title:15,sum:11,desc:'Badge 42→32 (no longer forces a 44pt row) + no divider + tight padding. The tap target is the whole card, so the small badge is fine.'},
+ {id:4,name:'Avatar two-line',rec:true,kind:'av',badge:38,padV:10,gap:2,title:14,sum:11,desc:'Standard iOS contact-row: badge centred beside a stacked title + summary. Removes the divider tier and the full-width second row entirely; keeps every word.'},
+ {id:5,name:'One line · glyphs',kind:'oneG',badge:34,padV:12,title:15,gly:16,desc:'Title on one line; summary collapses to trailing signal glyphs (no words). Most compact. <span class="warn">Trade-off: glyph-only drops the labels (research says keep labels).</span>'},
+ {id:6,name:'One line · med accent',kind:'oneM',badge:34,padV:13,title:15,sum:11.5,desc:'Title + only the medication name trailing in purple (energy/focus appear when expanded). One line, keeps one meaningful word + the single accent.'},
+];
+
+function proposalHTML(p){
+  const cards=DAYS.map(d=>cardHTML(d,p)).join('');
+  return `<div class="proposal" data-id="${p.id}">
+    <div class="plabel"><span class="pid${p.rec?' rec':''}">${p.id} · ${p.name}${p.rec?' ✦':''}</span><span class="hgt" id="h${p.id}">measuring…</span><span class="pdesc">${p.desc}</span></div>
+    <div class="band">${cards}</div></div>`;
+}
+function render(){
+  document.getElementById('board').innerHTML=PROPS.map(proposalHTML).join('');
+  // measure after layout
+  requestAnimationFrame(()=>{
+    const base=document.querySelector('.proposal[data-id="1"] .card').offsetHeight;
+    PROPS.forEach(p=>{
+      const h=document.querySelector(`.proposal[data-id="${p.id}"] .card`).offsetHeight;
+      const stack=h*3+24; // 3 cards + 2×12 gaps
+      let delta='';
+      if(p.id!==1){const d=h-base,pct=Math.round((d/base)*100);delta=` · <span class="${d<0?'dn':'up'}">${d<0?'▼':'▲'}${Math.abs(pct)}%</span>`;}
+      document.getElementById('h'+p.id).innerHTML=`${h}px${delta} · stack ${stack}px`;
+    });
+  });
+}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+
+document.getElementById('foot').innerHTML=`<b>How to read it:</b> the chip after each name is the measured height of one folded card, its % change vs. baseline (▼ = shorter), and the height of a 3-card stack. <b>#4 Avatar two-line</b> is the biggest reduction that loses no information and uses a pattern every iOS user already knows. <b>#5</b> is shortest but drops the summary words. After you pick, Step 2 tackles the unfolded card's top header.`;
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

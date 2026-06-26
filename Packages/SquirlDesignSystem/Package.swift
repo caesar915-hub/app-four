@@ -13,8 +13,7 @@ let package = Package(
     targets: [
         .target(
             name: "SquirlDesignSystem",
-            dependencies: ["SquirlSignals"],
-            resources: [.copy("Resources/Fonts")]
+            dependencies: ["SquirlSignals"]
         ),
     ],
     swiftLanguageModes: [.v5]

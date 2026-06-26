@@ -10,4 +10,6 @@ public enum Motion {
     public static let smoothDuration: Double = 0.4
     /// Gentle — larger transitions, content appearance
     public static let smooth: Animation = .smooth(duration: smoothDuration)
+    /// Day-card expand/collapse — a quiet ease (no spring overshoot) so the reveal doesn't bounce.
+    public static let expand: Animation = .easeInOut(duration: 0.25)
 }

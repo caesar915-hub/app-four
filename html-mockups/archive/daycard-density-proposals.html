@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · DayCard density · 6 proposals · folded + unfolded · TRUE scale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* DECISION BOARD — only the DayCard, six density variations, each folded + unfolded.
+     Chrome (week strip / tab bar / status bar / legend) intentionally stripped.
+     Card rendered at TRUE on-device scale: a 361pt card inside a 393pt band, 1px = 1pt.
+     Constants (NEVER vary, lifted from shipped code):
+       header title  Fraunces 16 / medium        (Typography.dayCardDate)
+       header badge  42                            (Metrics.headerMoodBadge)
+       card          radius 16, cream, no border   (Radius.card / DayCard.swift)
+       mood tint     base@24% / badge@50%          (Opacity.moodBlock / moodBadge)
+     The six proposals vary ONLY: bead disc, mood/time/signal/chip type, paddings, row gap. */
+  :root{
+    --bg:#F6F1E7; --card:#FCF8EF; --surface2:#EFE8D8; --elevated:#FCF8EF;
+    --ink:#221E16; --muted:#7A7361; --hair:#E3DAC7;
+    --med:#7E5CA8; --sleep:#5566A6; --warning:#C2772E;
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    --mw1:#8E470F; --mw2:#8A5600; --mw3:#41691F; --mw4:#2C6B3B; --mw5:#1E5C38;
+    --e1:#7C6E2E; --e2:#A89236; --e3:#D2BB40; --e4:#EEDA4C; --e5:#FCEE64;
+    --f1:#44546E; --f2:#4E6F94; --f3:#5889BA; --f4:#63A4E0; --f5:#79C4FF;
+  }
+  [data-theme="dark"]{
+    --bg:#14130F; --card:#1E1C16; --surface2:#272419; --elevated:#272419;
+    --ink:#F3EEE0; --muted:#9A917C; --hair:#322E22; --med:#9277BE;
+    --mw1:#E89A5A; --mw2:#EDA94A; --mw3:#B7D897; --mw4:#79C98E; --mw5:#57C98A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:#1d1c1a;color:#EDE9DC;font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:42px 24px 100px;}
+  .head{max-width:1200px;margin:0 auto 30px;}
+  .head h1{font-family:'Fraunces',serif;font-weight:600;font-size:28px;margin:0 0 6px;}
+  .head p{color:#9d988a;font-size:13.5px;line-height:1.55;max-width:80ch;margin:0;}
+  .head .ctl{margin-top:16px;}
+  .btn{font-size:13px;font-weight:600;cursor:pointer;background:#2a2823;color:#EDE9DC;border:1px solid #3a382f;border-radius:999px;padding:8px 16px;}
+
+  .board{display:flex;flex-wrap:wrap;gap:30px;justify-content:center;align-items:flex-start;}
+  .proposal{flex:none;width:393px;}
+  .plabel{padding:0 16px 10px;}
+  .pid{font-family:'Fraunces',serif;font-size:17px;font-weight:600;}
+  .pid.rec{color:#EAD08A;}
+  .pdesc{display:block;color:#9d988a;font-size:12px;margin-top:2px;}
+  .pvars{display:block;font-family:'IBM Plex Mono';font-size:11px;color:#cdbf95;margin-top:5px;line-height:1.5;}
+  .pvars b{color:#EDE9DC;}
+
+  /* true-scale device band: 393pt screen with 16pt gutters → 361pt card */
+  .band{width:393px;background:var(--bg);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;}
+  .stag{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:700;padding-left:2px;}
+
+  /* DayCard — cream, radius 16, NO border */
+  .card{border-radius:16px;overflow:hidden;background:var(--card);box-shadow:0 1px 3px rgba(40,48,24,.05);}
+
+  /* FoldedDayCardHeader: VStack(spacing 8); v-pad 16; title h-pad 16; divider full-bleed */
+  .ohdr{display:flex;flex-direction:column;gap:8px;padding:16px 0;}
+  .otop{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 16px;}
+  .gdisc{flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:0;}
+  .otitle{flex:1;min-width:0;font-family:'Fraunces',serif;font-size:16px;font-weight:500;}  /* CONSTANT */
+  .t-sep{color:var(--muted);} .oday{color:var(--ink);}
+  .ochev{flex:none;font-size:13px;color:var(--muted);font-weight:700;line-height:1;}
+  .fdiv{height:1px;background:var(--hair);}
+  .fsum{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:0 16px;}
+  .fsum .sig{display:inline-flex;align-items:center;gap:4px;color:var(--ink);}
+  .fsum .sep{color:var(--muted);} .fsum .medname{color:var(--med);font-weight:600;}
+
+  .cbody{padding:12px 16px 16px;}
+  .row{display:flex;gap:12px;align-items:flex-start;}
+  .beadcol{flex:none;display:flex;flex-direction:column;align-items:center;}
+  .bead{position:relative;display:flex;align-items:center;justify-content:center;flex:none;}
+  .disc{border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:0;}
+  .medbadge{position:absolute;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono';font-weight:800;color:var(--med);background:var(--elevated);border:0.5px solid color-mix(in srgb,var(--hair) 30%,transparent);border-radius:999px;padding:1px 5px;white-space:nowrap;}
+  .conn{width:1px;background:var(--hair);flex:1;min-height:18px;}
+  .ct{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .rhead{display:flex;flex-direction:column;}
+  .rtop{display:flex;align-items:baseline;gap:8px;}
+  .mword{font-family:'Fraunces',serif;font-weight:500;}
+  .rtime{font-family:'IBM Plex Mono';color:var(--muted);}
+  .rchev{margin-left:auto;color:var(--muted);font-weight:700;align-self:center;}
+  .ramp{display:flex;align-items:center;gap:12px;}
+  .sig{display:inline-flex;align-items:center;gap:4px;color:var(--ink);font-weight:500;}
+  .glyph{display:inline-flex;vertical-align:middle;line-height:0;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;background:var(--surface2);color:var(--ink);font-family:'DM Sans';font-weight:500;}
+  .chip.med{color:var(--med);background:color-mix(in srgb,var(--med) 13%,transparent);}
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>DayCard density — 6 proposals</h1>
+  <p>Only the card, each <b>folded</b> + <b>unfolded</b>, at true device scale (361pt card in a 393pt band). Header is constant across all six — Fraunces 16 title, 42 badge, mood tint. The six vary only the <b>unfolded</b> rows (bead disc, type, padding, row gap); the folded <i>summary</i> line is scaled to match each proposal so folded stays consistent. ✦ = my pick.</p>
+  <div class="ctl"><button class="btn" onclick="toggleTheme()">◐ light / dark</button></div>
+</div>
+
+<div class="board" id="board"></div>
+
+<script>
+const mC=['var(--m1)','var(--m2)','var(--m3)','var(--m4)','var(--m5)'];
+const mW=['var(--mw1)','var(--mw2)','var(--mw3)','var(--mw4)','var(--mw5)'];
+const eC=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
+const fC=['var(--f1)','var(--f2)','var(--f3)','var(--f4)','var(--f5)'];
+const ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Distracted','Present','Sharp','Locked in'];
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p,base)=>`color-mix(in srgb, ${h} ${p}%, ${base||'var(--card)'})`;
+
+/* glyphs ported 1:1 from SwiftUI Canvas geometry (24×26 design space) */
+function gMood(hex,l,px){const lift=0.66+l*0.068,open=l>=4,top=open?9:11,fill=Math.min(1,0.42+l*0.145).toFixed(2);
+  const inner=`<g transform="translate(12 13) scale(${lift}) translate(-12 -13)">`+
+    `<path d="M12 25 C12 18 12 14 12 ${top}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6" stroke-linecap="round"/>`+
+    `<path d="M12 ${top} C ${open?4:6} ${open?13:14}, ${open?5:6} ${open?2:5}, 12 1 C ${open?19:18} ${open?2:5}, ${open?20:18} ${open?13:14}, 12 ${top} Z" fill="${hex}" fill-opacity="${fill}" stroke="${hex}" stroke-width="1.3" stroke-linejoin="round"/>`+
+    (l>=3?`<path d="M12 ${top} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:'')+
+    (l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:'')+`</g>`;
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26">${inner}</svg>`;}
+function gEnergy(hex,l,px){const lift=0.6+l*0.08,fill=Math.min(1,0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26"><g transform="translate(12 13) scale(${lift}) translate(-12 -13)"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${fill}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></g></svg>`;}
+function gFocus(hex,l,px){const cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;
+  if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;
+  if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;
+  if(l>=3){const r=((l-1)*0.85).toFixed(2);o+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26">${o}</svg>`;}
+function gCapsule(hex,px){const w=px*0.86,h=px*0.42,x=(px-w)/2,y=(px-h)/2,r=h/2,id='cp'+Math.round(px*10);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 ${px} ${px}"><defs><clipPath id="${id}"><rect x="${x}" y="${y}" width="${w/2}" height="${h}"/></clipPath></defs>`+
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${hex}" fill-opacity="0.22"/>`+
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${hex}" fill-opacity="0.5" clip-path="url(#${id})"/>`+
+    `<rect x="${x+1}" y="${y+1}" width="${w-2}" height="${h-2}" rx="${r-1}" fill="none" stroke="${hex}" stroke-width="2"/>`+
+    `<rect x="${px/2-0.8}" y="${(y+h*0.17).toFixed(2)}" width="1.6" height="${(h*0.66).toFixed(2)}" fill="${hex}" fill-opacity="0.8"/></svg>`;}
+const mg=(l,px)=>`<span class="glyph">${gMood(cssv(mC[l-1]),l,px)}</span>`;
+const eg=(l,px)=>`<span class="glyph">${gEnergy(cssv(eC[l-1]),l,px)}</span>`;
+const fg=(l,px)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,px)}</span>`;
+
+/* TimelineBead: disc + inside-edge carry-over ring + flush % badge */
+function bead(r,cfg){const D=cfg.disc;
+  let inner;
+  if(r.m!=null){const badge=tint(mC[r.m-1],50,'var(--card)');
+    inner=`<div class="disc" style="width:${D}px;height:${D}px;background:${badge}">${mg(r.m,Math.round(D*0.6))}</div>`;}
+  else inner=`<div class="disc" style="width:${D}px;height:${D}px;background:var(--bg);border:1px solid var(--hair)"></div>`;
+  let ringSvg='',badgeHtml='';
+  if(r.carry!=null){const sw=3.3,rr=(D-sw)/2,c=D/2,C=2*Math.PI*rr,p=Math.max(0.003,r.carry);
+    ringSvg=`<svg width="${D}" height="${D}" viewBox="0 0 ${D} ${D}" style="position:absolute;inset:0;transform:rotate(-90deg)"><circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}"/></svg>`;
+    const fs=Math.max(8,D*0.21).toFixed(1);
+    badgeHtml=`<span class="medbadge" style="font-size:${fs}px;bottom:-2px">${Math.round(r.carry*100)}%</span>`;}
+  return `<div class="bead" style="width:${D+2}px;height:${D+2}px">${inner}${ringSvg}${badgeHtml}</div>`;}
+
+function rowHTML(r,cfg,isLast){
+  let ramp='';
+  if(r.e!=null)ramp+=`<span class="sig" style="font-size:${cfg.sig}px">${eg(r.e,cfg.sg)} ${ENW[r.e-1]}</span>`;
+  if(r.f!=null)ramp+=`<span class="sig" style="font-size:${cfg.sig}px">${fg(r.f,cfg.sg)} ${FOW[r.f-1]}</span>`;
+  let chips='';
+  (r.taken||[]).forEach(t=>{chips+=`<span class="chip med" style="font-size:${cfg.chip}px;padding:${cfg.chipPad}">${gCapsule(cssv('var(--med)'),Math.round(cfg.chip*1.5))} Taken ${t}</span>`;});
+  (r.chips||[]).forEach(c=>{chips+=`<span class="chip" style="font-size:${cfg.chip}px;padding:${cfg.chipPad}">${c}</span>`;});
+  return `<div class="row">
+    <div class="beadcol">${bead(r,cfg)}${isLast?'':`<div class="conn"></div>`}</div>
+    <div class="ct" style="padding-top:${cfg.ctTop}px;gap:${cfg.rowGap}px;padding-bottom:${isLast?0:cfg.between}px">
+      <div class="rhead" style="gap:${cfg.headGap}px">
+        <div class="rtop">
+          <span class="mword" style="font-size:${cfg.mood}px;color:${cssv(mW[r.m-1])}">${MOODW(r.m)}</span>
+          <span class="rtime" style="font-size:${cfg.time}px">${r.time}</span>
+          <span class="rchev" style="font-size:${Math.round(cfg.mood*0.85)}px">›</span>
+        </div>
+        ${ramp?`<div class="ramp">${ramp}</div>`:''}
+      </div>
+      ${chips?`<div class="chips">${chips}</div>`:''}
+    </div>
+  </div>`;
+}
+const MOODW=m=>['Low','Flat','Okay','Good','Great'][m-1];
+
+/* header — constant title; folded adds full-bleed divider + summary (scaled per proposal) */
+function header(folded,cfg){const m=4,strip=tint(mC[m-1],24,'var(--card)'),badge=tint(mC[m-1],50,'var(--card)');
+  const chev=`<span class="ochev" style="transform:rotate(${folded?0:180}deg)">⌄</span>`;
+  const otop=`<div class="otop">
+    <span class="gdisc" style="width:42px;height:42px;background:${badge}">${mg(m,Math.round(42*0.56))}</span>
+    <span class="otitle"><span style="color:${cssv(mW[m-1])}">Good</span><span class="t-sep"> · </span><span class="oday">Monday 8</span></span>
+    ${chev}</div>`;
+  if(!folded) return `<div class="ohdr" style="background:${strip}">${otop}</div>`;
+  // folded summary: latest recording (16:12) → Alert · Present · Concerta (name only). Scaled per proposal.
+  const sgF=cfg.sg+2, txtF=cfg.chip;
+  const sum=`<div class="fsum" style="font-size:${txtF}px">
+    <span class="sig">${eg(4,sgF)} Alert</span><span class="sep">·</span>
+    <span class="sig">${fg(3,sgF)} Present</span><span class="sep">·</span>
+    <span class="sig medname">${gCapsule(cssv('var(--med)'),Math.round(txtF*1.5))} Concerta</span></div>`;
+  return `<div class="ohdr" style="background:${strip}">${otop}<div class="fdiv"></div>${sum}</div>`;}
+
+/* representative day: rich recent check-in, mid one, bare morning one */
+const R=[
+  {time:'16:12',m:4,e:4,f:3,carry:0.58,taken:['Concerta 36mg'],chips:['Calm','5h sleep']},
+  {time:'12:40',m:3,e:3,f:null,carry:0.34,taken:[],chips:['Restless']},
+  {time:'09:15',m:3,e:null,f:null,carry:null,taken:[],chips:[]},
+];
+
+/* === THE VARIATIONS (extracted verbatim from library-row-density-current.html) === */
+const CFG=[
+ {id:1,name:'Baseline (current)',disc:42,mood:14,time:11,sig:13,sg:13,chip:12,chipPad:'4px 8px',ctTop:16,headGap:4,rowGap:8,between:32,desc:'real Metrics.swift values'},
+ {id:2,name:'Small disc only',disc:34,mood:14,time:11,sig:13,sg:13,chip:12,chipPad:'4px 8px',ctTop:13,headGap:4,rowGap:8,between:32,desc:'type UNCHANGED, disc 42→34 (isolate the bead)'},
+ {id:3,name:'Small type only',disc:42,mood:13,time:10,sig:11,sg:11,chip:11,chipPad:'3px 7px',ctTop:16,headGap:3,rowGap:7,between:32,desc:'disc UNCHANGED, type shrunk (isolate the type)'},
+ {id:4,name:'Gentle −10%',disc:38,mood:13.5,time:10.5,sig:12,sg:12,chip:11.5,chipPad:'3px 7px',ctTop:14,headGap:4,rowGap:7,between:28,desc:'everything eased a notch, proportions kept'},
+ {id:5,name:'Balanced',rec:true,disc:36,mood:13,time:10.5,sig:11.5,sg:12,chip:11,chipPad:'3px 7px',ctTop:13,headGap:3,rowGap:6,between:24,desc:'disc just under the 42 header badge; rows clearly recede'},
+ {id:6,name:'Compact',disc:32,mood:12.5,time:10,sig:11,sg:11,chip:10.5,chipPad:'2px 6px',ctTop:11,headGap:2,rowGap:5,between:20,desc:'tightest — rows fully subordinate'},
+];
+
+function proposalHTML(c){
+  const folded=`<div class="card">${header(true,c)}</div>`;
+  const open=`<div class="card">${header(false,c)}<div class="cbody">${R.map((r,i)=>rowHTML(r,c,i===R.length-1)).join('')}</div></div>`;
+  return `<div class="proposal">
+    <div class="plabel">
+      <span class="pid${c.rec?' rec':''}">${c.id} · ${c.name}${c.rec?' ✦':''}</span>
+      <span class="pdesc">${c.desc}</span>
+      <span class="pvars"><b>disc ${c.disc}</b> · mood ${c.mood} · time ${c.time} · signal ${c.sig} · chip ${c.chip} · gap ${c.between}</span>
+    </div>
+    <div class="band">
+      <span class="stag">Folded</span>${folded}
+      <span class="stag">Unfolded</span>${open}
+    </div>
+  </div>`;
+}
+function render(){document.getElementById('board').innerHTML=CFG.map(proposalHTML).join('');}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

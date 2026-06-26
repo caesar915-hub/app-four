@@ -37,6 +37,9 @@ struct InsightsView: View {
             .navigationDestination(for: UUID.self) { id in
                 if let recording = viewModel.recording(for: id) {
                     RecordingDetailView(recording: recording, store: store, services: services)
+                } else {
+                    // Recording deleted out from under an open push → pop back to the list.
+                    Color.clear.onAppear { if !path.isEmpty { path.removeLast() } }
                 }
             }
         }
