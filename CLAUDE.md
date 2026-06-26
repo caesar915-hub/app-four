@@ -21,6 +21,14 @@ Act as a senior iOS engineer and UX/UI designer. Be analytical and objective. Qu
 - No backwards-compat shims, no dead code.
 - Never overwrite an existing file without explicit instruction.
 
+## Swift Skills (always invoke before producing Swift/SwiftUI code)
+- `swiftui-pro` — best practices, modern APIs, maintainability, performance
+- `swiftui-design-principles` — native feel, spacing, typography, WidgetKit
+- `swift-architecture-skill` — structural patterns and component design
+- `swift-concurrency-pro` — async/await correctness, modern concurrency APIs
+- `swift-concurrency-expert` — deep concurrency review
+- `swiftui-liquid-glass` — liquid glass effect patterns
+
 ## Process
 - **Spec Kit is the main build workflow** (spec → plan → tasks → implement) for every feature — see `docs/SPECKIT.md`. superpowers (`/spec`, `/design-*`) is design-exploration only; its mockups feed Spec Kit specs. Constitution (`.specify/memory/constitution.md`) gates every spec/plan.
 - For new UI: HTML mockup before SwiftUI — see memory.
