@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The exact icons we use</title>
+<style>
+  :root{ --paper:#FBF7EE; --card:#FFFDF7; --ink:#1C1C1E; --muted:#6B6457; --line:#E9E0CF; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"DM Sans",system-ui,sans-serif; background:var(--paper); color:var(--ink); padding:32px 20px 80px; line-height:1.45}
+  h1{font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:25px; margin-bottom:4px}
+  .sub{color:var(--muted); font-size:14px; margin-bottom:26px; max-width:760px}
+  .wrap{max-width:880px; margin:0 auto}
+  .row{background:var(--card); border:1px solid var(--line); border-radius:18px; padding:20px 22px; margin-bottom:18px}
+  .row h2{font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:18px; margin-bottom:2px}
+  .row h2 .mono{font-family:ui-monospace,Menlo,monospace; font-size:12px; font-weight:500; color:var(--muted); background:rgba(0,0,0,.04); padding:2px 7px; border-radius:6px; margin-left:6px}
+  .meta{font-size:12px; color:var(--muted); margin:4px 0 16px}
+  .specimen{display:flex; align-items:center; gap:30px; flex-wrap:wrap}
+  .glyphbox{display:flex; flex-direction:column; align-items:center; gap:8px}
+  .glyphbox img{width:60px; height:60px; object-fit:contain}
+  .glyphbox .cap{font-size:11px; color:var(--muted); font-family:ui-monospace,Menlo,monospace}
+  .applied{flex:1; min-width:240px}
+  .applied .lbl{font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); margin-bottom:8px}
+  .chips{display:flex; flex-wrap:wrap; gap:7px}
+  .chip{display:inline-flex; align-items:center; gap:6px; padding:5px 11px 5px 8px; border-radius:999px; font-size:13px; font-weight:500; border:1px solid transparent}
+  .chip img{width:15px; height:15px; object-fit:contain}
+  .chip.emotion{background:rgba(218,90,58,.10); color:#A23A22; border-color:rgba(218,90,58,.18)}
+  .chip.side{background:rgba(194,119,46,.12); color:#8A5214; border-color:rgba(194,119,46,.22)}
+  .chip.sleep{background:rgba(85,102,166,.12); color:#3B4880; border-color:rgba(85,102,166,.22)}
+  .callout{background:rgba(85,102,166,.07); border:1px solid rgba(85,102,166,.18); border-radius:12px; padding:14px 16px; font-size:13px; margin-top:6px}
+  .callout strong{color:#A23A22}
+  .src{font-size:11px; color:var(--muted); font-family:ui-monospace,Menlo,monospace; margin-top:18px; line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>The exact icons — sleep · feelings · side effects</h1>
+  <p class="sub">Real glyphs, not redrawn. The SF Symbols are rendered straight from macOS (<span style="font-family:ui-monospace">NSImage(systemSymbolName:)</span>); the bed is the actual <span style="font-family:ui-monospace">BedIcon</span> path. Each row: the glyph at size, then how it looks applied as UI chips.</p>
+
+  <!-- SLEEP -->
+  <div class="row">
+    <h2>Sleep <span class="mono">BedIcon (custom)</span><span class="mono">bed.double.fill (fallback)</span></h2>
+    <p class="meta">Primary = custom Canvas shape in sleepIndigo #5566A6, non-varying. SF Symbol used only on legacy paths.</p>
+    <div class="specimen">
+      <div class="glyphbox"><img src="sf-symbols/custom_BedIcon.png" alt="BedIcon"><span class="cap">BedIcon</span></div>
+      <div class="glyphbox"><img src="sf-symbols/bed_indigo.png" alt="bed.double.fill"><span class="cap">bed.double.fill</span></div>
+      <div class="applied">
+        <div class="lbl">In the UI</div>
+        <div class="chips"><span class="chip sleep"><img src="sf-symbols/custom_BedIcon.png">Slept 7h 20m</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEELINGS -->
+  <div class="row">
+    <h2>Feelings <span class="mono">heart.fill</span></h2>
+    <p class="meta">One SF Symbol for all 20 lexicon emotions · tint .pink.</p>
+    <div class="specimen">
+      <div class="glyphbox"><img src="sf-symbols/heart_full.png" alt="heart.fill"><span class="cap">heart.fill</span></div>
+      <div class="applied">
+        <div class="lbl">In the UI — every feeling, same heart</div>
+        <div class="chips" id="emotions"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDE EFFECTS -->
+  <div class="row">
+    <h2>Side effects <span class="mono">bandage.fill</span></h2>
+    <p class="meta">One SF Symbol for all side effects · tint Palette.warning #C2772E.</p>
+    <div class="specimen">
+      <div class="glyphbox"><img src="sf-symbols/bandage_full.png" alt="bandage.fill"><span class="cap">bandage.fill</span></div>
+      <div class="applied">
+        <div class="lbl">In the UI — every effect, same bandage</div>
+        <div class="chips" id="side"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">Both <strong>feelings</strong> and <strong>side effects</strong> reuse a single icon — the glyph never changes, only the word does. Daylio gives every item its own glyph; we don’t.</div>
+
+  <p class="src">Sources — heart.fill: Recording+MoodDisplay.swift:75 · bandage.fill: Icons.swift:14 &amp; Recording+MoodDisplay.swift:71 · BedIcon: SquirlDesignSystem/Glyphs/BedIcon.swift · 20 emotions: specs/020-emotions-lexicon. Daylio icons are proprietary — not shown (would need real screenshots).</p>
+</div>
+
+<script>
+  const EMOTIONS = ["excited","joyful","proud","thrilled","inspired","angry","anxious","frustrated","irritated","jealous","content","grateful","peaceful","secure","serene","sad","lonely","disappointed","hopeless","discouraged"];
+  const SIDE = ["Headache","Nausea","Jitters","Appetite loss","Insomnia","Dry mouth"];
+  document.getElementById("emotions").innerHTML = EMOTIONS.map(w=>`<span class="chip emotion"><img src="sf-symbols/heart_pink.png">${w}</span>`).join("");
+  document.getElementById("side").innerHTML = SIDE.map(s=>`<span class="chip side"><img src="sf-symbols/bandage_clay.png">${s}</span>`).join("");
+</script>
+</body>
+</html>

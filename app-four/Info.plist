@@ -8,13 +8,5 @@
 	<array>
 		<string>audio</string>
 	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Fraunces.ttf</string>
-		<string>FrauncesItalic.ttf</string>
-		<string>DMSans.ttf</string>
-		<string>IBMPlexMono-Regular.ttf</string>
-		<string>IBMPlexMono-Medium.ttf</string>
-	</array>
 </dict>
 </plist>

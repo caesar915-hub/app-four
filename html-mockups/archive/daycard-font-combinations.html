@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · STEP 3 · Unfolded row type — 4-line font combinations · 6 proposals · TRUE scale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F6F1E7; --card:#FCF8EF; --elevated:#FCF8EF;
+    --ink:#221E16; --muted:#7A7361; --muted2:#615A49; --hair:#E3DAC7; --med:#7E5CA8;
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    --mw1:#8E470F; --mw2:#8A5600; --mw3:#41691F; --mw4:#2C6B3B; --mw5:#1E5C38;
+    --e1:#7C6E2E; --e2:#A89236; --e3:#D2BB40; --e4:#EEDA4C; --e5:#FCEE64;
+    --f1:#44546E; --f2:#4E6F94; --f3:#5889BA; --f4:#63A4E0; --f5:#79C4FF;
+  }
+  [data-theme="dark"]{
+    --bg:#14130F; --card:#1E1C16; --elevated:#272419; --ink:#F3EEE0; --muted:#9A917C; --muted2:#B6AD97; --hair:#322E22; --med:#9277BE;
+    --mw1:#E89A5A; --mw2:#EDA94A; --mw3:#B7D897; --mw4:#79C98E; --mw5:#57C98A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:#1d1c1a;color:#EDE9DC;font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:42px 24px 70px;}
+  .head{max-width:1280px;margin:0 auto 26px;}
+  .head .step{color:#EAD08A;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;}
+  .head h1{font-family:'Fraunces',serif;font-weight:600;font-size:26px;margin:4px 0 6px;}
+  .head p{color:#9d988a;font-size:13.5px;line-height:1.55;max-width:94ch;margin:0;}
+  .legend{margin-top:10px;font-size:12px;color:#a9a392;}
+  .legend b{color:#cfc9b8;}
+  .btn{margin-top:14px;font-size:13px;font-weight:600;cursor:pointer;background:#2a2823;color:#EDE9DC;border:1px solid #3a382f;border-radius:999px;padding:8px 16px;}
+
+  .board{display:flex;flex-wrap:wrap;gap:28px;justify-content:center;align-items:flex-start;}
+  .proposal{flex:none;width:393px;}
+  .plabel{padding:0 16px 10px;}
+  .pid{font-family:'Fraunces',serif;font-size:17px;font-weight:600;}
+  .pid.rec{color:#EAD08A;}
+  .spec{display:block;font-family:'IBM Plex Mono';font-size:11px;color:#cdbf95;margin-top:5px;line-height:1.5;}
+  .spec .bh{color:#8FCb86;}
+  .pdesc{display:block;color:#a9a392;font-size:12.5px;margin-top:4px;line-height:1.5;}
+
+  .band{width:393px;background:var(--bg);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;}
+  .card{border-radius:16px;overflow:hidden;background:var(--card);box-shadow:0 1px 3px rgba(40,48,24,.05);}
+
+  .hdr{display:flex;align-items:center;gap:12px;}
+  .otitle{font-family:'Fraunces',serif;font-weight:500;flex:1;min-width:0;}
+  .t-sep{color:var(--muted);} .oday{color:var(--ink);}
+  .ochev{flex:none;color:var(--muted);font-weight:700;line-height:1;}
+  .glyph{display:inline-flex;vertical-align:middle;line-height:0;}
+
+  .cbody{padding:12px 16px 16px;}
+  .row{display:flex;gap:12px;align-items:flex-start;}
+  .beadcol{flex:none;display:flex;flex-direction:column;align-items:center;}
+  .bead{position:relative;display:flex;align-items:center;justify-content:center;flex:none;}
+  .disc{border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:0;}
+  .medbadge{position:absolute;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono';font-weight:800;color:var(--med);background:var(--elevated);border:0.5px solid color-mix(in srgb,var(--hair) 30%,transparent);border-radius:999px;padding:1px 4px;white-space:nowrap;}
+  .conn{width:1px;background:var(--hair);flex:1;min-height:18px;}
+  .ct{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .rtop{display:flex;align-items:baseline;gap:8px;}
+  .mword{font-family:'Fraunces',serif;font-weight:500;}
+  .rtime{font-family:'IBM Plex Mono';color:var(--muted);}
+  .rchev{margin-left:auto;color:var(--muted);font-weight:700;align-self:center;}
+  .run{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-top:4px;}
+  .sig2{display:inline-flex;align-items:center;gap:4px;color:var(--ink);}
+  .medL{display:inline-flex;align-items:center;gap:4px;color:var(--med);font-weight:600;}
+  .ctx{display:flex;flex-wrap:wrap;align-items:center;gap:3px 6px;color:var(--muted2);}
+  .ctx .item{display:inline-flex;align-items:center;gap:4px;} .ctx .mid{color:var(--muted);}
+
+  .foot{max-width:1280px;margin:28px auto 0;color:#8f8a7c;font-size:12px;line-height:1.6;border-top:1px solid #2f2d28;padding-top:14px;}
+  .foot b{color:#cfc9b8;}
+</style>
+</head>
+<body>
+<div class="head">
+  <span class="step">Step 3 of 3 — row type sizes</span>
+  <h1>Unfolded row — font combinations for the 4 lines</h1>
+  <p>Folded #4 + header #3 locked; Direction-C body; Balanced spacing held constant so this isolates <b>only type</b>. Each card varies the four lines together. Spec chip lists all four sizes + the measured body height. ✦ = my pick.</p>
+  <div class="legend"><b>The 4 lines:</b> ① mood + time · ② energy + focus · ③ medication · ④ sleep + feeling + side-effects.</div>
+  <button class="btn" onclick="toggleTheme()">◐ light / dark</button>
+</div>
+
+<div class="board" id="board"></div>
+<div class="foot" id="foot"></div>
+
+<script>
+const mC=['var(--m1)','var(--m2)','var(--m3)','var(--m4)','var(--m5)'];
+const mW=['var(--mw1)','var(--mw2)','var(--mw3)','var(--mw4)','var(--mw5)'];
+const eC=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
+const fC=['var(--f1)','var(--f2)','var(--f3)','var(--f4)','var(--f5)'];
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p)=>`color-mix(in srgb, ${h} ${p}%, var(--card))`;
+const ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Distracted','Present','Sharp','Locked in'];
+
+function gMood(hex,l,px){const lift=0.66+l*0.068,open=l>=4,top=open?9:11,fill=Math.min(1,0.42+l*0.145).toFixed(2);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26"><g transform="translate(12 13) scale(${lift}) translate(-12 -13)">`+
+    `<path d="M12 25 C12 18 12 14 12 ${top}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6" stroke-linecap="round"/>`+
+    `<path d="M12 ${top} C ${open?4:6} ${open?13:14}, ${open?5:6} ${open?2:5}, 12 1 C ${open?19:18} ${open?2:5}, ${open?20:18} ${open?13:14}, 12 ${top} Z" fill="${hex}" fill-opacity="${fill}" stroke="${hex}" stroke-width="1.3" stroke-linejoin="round"/>`+
+    (l>=3?`<path d="M12 ${top} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:'')+
+    (l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:'')+`</g></svg>`;}
+function gEnergy(hex,l,px){const lift=0.6+l*0.08,fill=Math.min(1,0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26"><g transform="translate(12 13) scale(${lift}) translate(-12 -13)"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${fill}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></g></svg>`;}
+function gFocus(hex,l,px){const cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;
+  if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;
+  if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;
+  if(l>=3){const r=((l-1)*0.85).toFixed(2);o+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26">${o}</svg>`;}
+function gCapsule(hex,px){const w=px*0.86,h=px*0.42,x=(px-w)/2,y=(px-h)/2,r=h/2,id='cp'+Math.round(px*71);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 ${px} ${px}"><defs><clipPath id="${id}"><rect x="${x}" y="${y}" width="${w/2}" height="${h}"/></clipPath></defs>`+
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${hex}" fill-opacity="0.22"/>`+
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${hex}" fill-opacity="0.5" clip-path="url(#${id})"/>`+
+    `<rect x="${x+1}" y="${y+1}" width="${w-2}" height="${h-2}" rx="${r-1}" fill="none" stroke="${hex}" stroke-width="2"/>`+
+    `<rect x="${px/2-0.8}" y="${(y+h*0.17).toFixed(2)}" width="1.6" height="${(h*0.66).toFixed(2)}" fill="${hex}" fill-opacity="0.8"/></svg>`;}
+const iBed=(px,c)=>`<svg width="${px}" height="${(px*0.92).toFixed(0)}" viewBox="0 0 24 22" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6v12M3 12h18v6M21 18v-3a3 3 0 0 0-3-3H9"/><circle cx="6.5" cy="9.5" r="1.5"/></svg>`;
+const iBandage=(px,c)=>`<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-45 12 12)"/><circle cx="12" cy="12" r="0.7" fill="${c}" stroke="none"/></svg>`;
+const iHeart=(px,c)=>`<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-9.5A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7 3.5C19 15.5 12 20 12 20Z"/></svg>`;
+const mg=(l,px)=>`<span class="glyph">${gMood(cssv(mC[l-1]),l,px)}</span>`;
+const eg=(l,px)=>`<span class="glyph">${gEnergy(cssv(eC[l-1]),l,px)}</span>`;
+const fg=(l,px)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,px)}</span>`;
+const cap=(px)=>`<span class="glyph">${gCapsule(cssv('var(--med)'),px)}</span>`;
+
+/* locked header (#3 inline mood glyph) — constant across all proposals */
+const DAY={m:4,mood:'Good',day:'Monday 8'};
+function header(){const strip=tint(mC[DAY.m-1],24);
+  return `<div class="hdr" style="background:${strip};padding:8px 16px"><span class="glyph" style="margin-right:-4px">${gMood(cssv(mC[DAY.m-1]),DAY.m,20)}</span>
+    <span class="otitle" style="font-size:14px"><span style="color:${cssv(mW[DAY.m-1])}">${DAY.mood}</span><span class="t-sep"> · </span><span class="oday">${DAY.day}</span></span>
+    <span class="ochev" style="font-size:13px;transform:rotate(180deg)">⌄</span></div>`;}
+
+/* Direction C body — sizes driven by the proposal's font config c={mood,time,ramp,med,ctx} */
+const CFG={disc:36,between:24};
+function bead(r){const D=CFG.disc;const badge=tint(mC[r.m-1],50);
+  let ring='',bdg='';
+  if(r.carry!=null){const sw=3.0,rr=(D-sw)/2,c=D/2,C=2*Math.PI*rr,p=Math.max(0.003,r.carry);
+    ring=`<svg width="${D}" height="${D}" viewBox="0 0 ${D} ${D}" style="position:absolute;inset:0;transform:rotate(-90deg)"><circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}"/></svg>`;
+    bdg=`<span class="medbadge" style="font-size:8.5px;bottom:-2px">${Math.round(r.carry*100)}%</span>`;}
+  return `<div class="bead" style="width:${D+2}px;height:${D+2}px"><div class="disc" style="width:${D}px;height:${D}px;background:${badge}">${mg(r.m,Math.round(D*0.6))}</div>${ring}${bdg}</div>`;}
+function ctxRun(r,c,topGap){const m=cssv('var(--muted2)'),g=c.ctx+1;const p=[];
+  if(r.sleep)p.push(`<span class="item">${iBed(g,m)} ${r.sleep}</span>`);
+  if(r.se&&r.se.length)p.push(`<span class="item">${iBandage(g,m)} ${r.se.join(' · ')}</span>`);
+  if(r.emo&&r.emo.length)p.push(`<span class="item">${iHeart(g,m)} ${r.emo.join(' · ')}</span>`);
+  if(!p.length)return '';return `<div class="ctx" style="margin-top:${topGap}px;font-size:${c.ctx}px">${p.join('<span class="mid">·</span>')}</div>`;}
+function rowC(r,c,isLast){
+  let ramp='';const rg=c.ramp+0.5;
+  if(r.e!=null)ramp+=`<span class="sig2" style="font-size:${c.ramp}px">${eg(r.e,rg)} ${ENW[r.e-1]}</span>`;
+  if(r.f!=null)ramp+=`<span class="sig2" style="font-size:${c.ramp}px">${fg(r.f,rg)} ${FOW[r.f-1]}</span>`;
+  const rampH=ramp?`<div class="run">${ramp}</div>`:'';
+  const medLine=r.med?`<div class="medL" style="margin-top:8px;font-size:${c.med}px">${cap(c.med+2)} Taken ${r.med}</div>`:'';
+  const ctx=ctxRun(r,c,r.med?10:6);
+  return `<div class="row"><div class="beadcol">${bead(r)}${isLast?'':'<div class="conn"></div>'}</div>
+    <div class="ct" style="padding-top:14px;padding-bottom:${isLast?0:CFG.between}px">
+      <div class="rtop"><span class="mword" style="font-size:${c.mood}px;color:${cssv(mW[r.m-1])}">${['Low','Flat','Okay','Good','Great'][r.m-1]}</span><span class="rtime" style="font-size:${c.time}px">${r.time}</span><span class="rchev" style="font-size:${Math.round(c.mood*0.85)}px">›</span></div>
+      ${rampH}${medLine}${ctx}</div></div>`;}
+const ROWS=[
+  {time:'16:12',m:4,e:4,f:3,carry:0.58,med:'Concerta 36mg',sleep:'5h sleep',se:['Nausea','Jitters'],emo:['Calm','Focused']},
+  {time:'12:40',m:3,e:3,f:null,carry:0.34,med:null,sleep:null,se:[],emo:['Restless']},
+  {time:'09:15',m:3,e:null,f:null,carry:null,med:null,sleep:null,se:[],emo:[]},
+];
+
+const PROPS=[
+ {id:1,name:'Balanced (current)',mood:13,time:10.5,ramp:11.5,med:12,ctx:11,desc:'The size set you saw. Hierarchy: mood ▸ med ▸ energy/focus ▸ context.'},
+ {id:2,name:'Compact (−1)',rec:true,mood:12,time:10,ramp:11,med:11,ctx:10.5,desc:'Same hierarchy, everything one notch smaller — the direct answer to “the type feels big”.'},
+ {id:3,name:'Tight (−1.5)',mood:11.5,time:9.5,ramp:10.5,med:10.5,ctx:10,desc:'Densest still-comfortable set; most rows-per-screen.'},
+ {id:4,name:'Strong headline',mood:15,time:10.5,ramp:11,med:11,ctx:10.5,desc:'Mood word up, details down — maximal contrast, the mood reads as the row’s title.'},
+ {id:5,name:'Uniform body',mood:13,time:11,ramp:12,med:12,ctx:12,desc:'Everything roughly equal — calmest, flattest; tests whether you even want a recede.'},
+ {id:6,name:'Med-forward 2-tier',mood:13,time:10,ramp:11,med:12.5,ctx:10,desc:'Two tiers only: a signal tier (mood + medication, the accent) over a quiet tier (energy/focus + context).'},
+];
+
+function proposalHTML(p){
+  const open=`<div class="card">${header()}<div class="cbody">${ROWS.map((r,i)=>rowC(r,p,i===ROWS.length-1)).join('')}</div></div>`;
+  return `<div class="proposal" data-id="${p.id}">
+    <div class="plabel"><span class="pid${p.rec?' rec':''}">${p.id} · ${p.name}${p.rec?' ✦':''}</span>
+      <span class="spec">①${p.mood}/${p.time} · ②${p.ramp} · ③${p.med} · ④${p.ctx} <span class="bh" id="bh${p.id}"></span></span>
+      <span class="pdesc">${p.desc}</span></div>
+    <div class="band">${open}</div></div>`;
+}
+function render(){
+  document.getElementById('board').innerHTML=PROPS.map(proposalHTML).join('');
+  requestAnimationFrame(()=>{
+    const base=document.querySelector('.proposal[data-id="1"] .cbody').offsetHeight;
+    PROPS.forEach(p=>{const h=document.querySelector(`.proposal[data-id="${p.id}"] .cbody`).offsetHeight;
+      let d='';if(p.id!==1){const pct=Math.round((h-base)/base*100);d=` (${pct<=0?'▼':'▲'}${Math.abs(pct)}%)`;}
+      document.getElementById('bh'+p.id).textContent=`· body ${h}px${d}`;});
+  });
+}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.getElementById('foot').innerHTML=`<b>Spec key:</b> ① mood/time · ② energy+focus · ③ medication · ④ sleep+feeling+side-effects, in px; “body” = measured timeline height + change vs baseline. <b>#2 Compact</b> is my pick — it directly fixes “too big” while keeping the proven hierarchy and the Fraunces mood word still leading. <b>#6</b> if you want medication to read as clearly second after mood; <b>#3</b> if you want maximum density. After you pick, all three decisions compose into one final card — and the real values land in Metrics.swift / Typography.swift.`;
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>
