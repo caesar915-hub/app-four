@@ -288,9 +288,10 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
 
         extraction.sideEffects = Array(Set(sideEffects)).sorted()
         // If the whole-text hours regex found a duration, sleep was mentioned even if
-        // no keyword sentence triggered ("got a solid 8 hours last night").
+        // no keyword sentence triggered ("got a solid 8 hours last night"). Use the same
+        // two-tier value as `extraction.sleepHours` below so the two fields never disagree.
         extraction.sleep = SleepNote(mentioned: sleepMentioned || extractedSleepHours != nil,
-                                     hours: sleepHours, quality: sleepQuality)
+                                     hours: extractedSleepHours ?? sleepHours, quality: sleepQuality)
         extraction.tasksCompleted = Array(Set(tasksCompleted)).sorted()
         extraction.tasksAvoided = Array(Set(tasksAvoided)).sorted()
         extraction.wins = Array(Set(wins)).sorted()
@@ -305,6 +306,11 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
         extraction.appointments = Array(Set(appointments)).sorted()
 
         extraction.extractedDose = extractedDose
+        // Two-tier sleep-hours, by design (not redundancy): the whole-text
+        // `ADHDRegexPatterns.extractSleepHours` is trigger-word gated so it can scan the
+        // entire note safely, and wins; the per-sentence `extractSleepHours` is trigger-less
+        // (gated to sleep sentences) and adds spelled-out numbers / "and a half", filling
+        // the cases the whole-text pass misses.
         extraction.sleepHours = extractedSleepHours ?? sleepHours
         extraction.onsetMinutes = extractedOnset
         extraction.durationHours = extractedDuration
@@ -426,6 +432,17 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
         return best
     }
 
+    /// Lowercased alphabetic word tokens of a sentence. Built once per weak-signal check
+    /// so membership is an O(1) `Set` lookup instead of compiling a `\bword\b` regex per
+    /// candidate term — these paths run on every sentence.
+    private static func wordSet(_ lower: String) -> Set<String> {
+        Set(lower.split(whereSeparator: { !$0.isLetter }).map(String.init))
+    }
+
+    /// "energy drink/bar/gel/shot" name a product, not a self-reported energy level.
+    private static let energyProductRegex = try? NSRegularExpression(
+        pattern: #"(?i)\benerg(?:y|etic)\s+(?:drinks?|bars?|gels?|shots?|balls?)\b"#)
+
     /// Energy-gated weak descriptors: consulted ONLY when the sentence names energy,
     /// so generic adjectives ("good"/"fine"/"rubbish") can never fire globally. Decline
     /// words map to `.tired`; "no dips"/"no energy" then flip to `.steady`/`.tired` via
@@ -451,10 +468,16 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
 
     /// Energy-presence fallback for sentences that name energy but match no strong cue.
     private func weakEnergy(in lower: String) -> CategoryMatch<EnergyLevel>? {
-        guard lower.contains("energy") || lower.contains("energetic") else { return nil }
-        for (word, level) in Self.weakEnergyTable
-        where lower.range(of: "\\b\(word)\\b", options: .regularExpression) != nil {
+        let words = Self.wordSet(lower)
+        guard words.contains("energy") || words.contains("energetic") else { return nil }
+        // Table order encodes priority (extreme levels before the neutral default).
+        for (word, level) in Self.weakEnergyTable where words.contains(word) {
             return CategoryMatch(level: level, phrase: word)
+        }
+        // No descriptor: a named product ("energy drink") isn't a self-report — skip it.
+        if let regex = Self.energyProductRegex,
+           regex.firstMatch(in: lower, options: [], range: NSRange(lower.startIndex..., in: lower)) != nil {
+            return nil
         }
         // Energy named but no descriptor -> neutral present; "no energy" flips to tired.
         return CategoryMatch(level: .steady, phrase: "energy")
@@ -480,35 +503,33 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
 
     /// Mood-presence fallback for sentences that name mood but match no strong cue.
     private func weakMood(in lower: String) -> MoodMatch? {
-        guard lower.range(of: "\\bmood\\b", options: .regularExpression) != nil else { return nil }
-        for (word, label) in Self.weakMoodTable
-        where lower.range(of: "\\b\(word)\\b", options: .regularExpression) != nil {
+        let words = Self.wordSet(lower)
+        guard words.contains("mood") else { return nil }
+        // Table order encodes priority (extreme moods before the neutral default).
+        for (word, label) in Self.weakMoodTable where words.contains(word) {
             return MoodMatch(label: label, matchedPhrase: word)
         }
         return MoodMatch(label: "okay", matchedPhrase: "mood")
     }
 
-    /// Curated sleep vocabulary, matched on word boundaries (not substring).
-    private static let sleepWords = [
+    /// Curated single-word sleep vocabulary, tested by O(1) `wordSet` membership.
+    private static let sleepWords: Set<String> = [
         "sleep", "slept", "asleep", "sleeping", "sleepless", "oversleep", "overslept",
         "woke", "woken", "awoke", "waking", "insomnia", "nightmare", "nightmares",
         "nap", "napped", "napping", "kip", "rested", "restless", "dozed", "dozing",
-        "slumber", "bedtime",
+        "slumber", "bedtime", "dream", "dreams", "wink",
     ]
 
-    /// True if the sentence refers to sleep — curated words + a few multiword/duration
-    /// patterns ("a wink", "lay awake", "<n> hours … night").
+    /// Multiword / positional sleep cues that single-word membership can't express,
+    /// compiled once ("lay/lie awake", "<n> hours … night").
+    private static let sleepPhraseRegex = try? NSRegularExpression(
+        pattern: #"(?i)\bl(?:a|i)e? awake\b|\b(?:hours?|hrs?)\b[^.!?]*\bnight\b|\bnight\b[^.!?]*\b(?:hours?|hrs?)\b"#)
+
+    /// True if the sentence refers to sleep — single-word vocabulary or a positional cue.
     private func mentionsSleep(_ lower: String) -> Bool {
-        for w in Self.sleepWords
-        where lower.range(of: "\\b\(w)\\b", options: .regularExpression) != nil {
-            return true
-        }
-        let patterns = [
-            "\\bdreams?\\b", "\\bwink\\b", "\\bl(?:a|i)e? awake\\b",
-            "\\b(?:hours?|hrs?)\\b[^.!?]*\\bnight\\b",
-            "\\bnight\\b[^.!?]*\\b(?:hours?|hrs?)\\b",
-        ]
-        return patterns.contains { lower.range(of: $0, options: .regularExpression) != nil }
+        if !Self.sleepWords.isDisjoint(with: Self.wordSet(lower)) { return true }
+        guard let regex = Self.sleepPhraseRegex else { return false }
+        return regex.firstMatch(in: lower, options: [], range: NSRange(lower.startIndex..., in: lower)) != nil
     }
 
     private func nearestFocus(tokens: [CueMatcher.Token]) -> CategoryMatch<FocusLevel>? {
@@ -703,24 +724,30 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
 
     // MARK: - Sleep
 
-    /// Compiled once: require a sleep-duration phrase, not just any "N hours" in a
-    /// sentence that mentions sleep ("couldn't sleep, worked 12 hours" must NOT
-    /// yield 12h). A duration verb/phrase must precede the number.
     private static let numberWords: [String: Double] = [
         "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
         "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12
     ]
-    // This runs ONLY on a sentence that already mentions sleep (caller-gated), so a
-    // trigger verb is not required — a bare "<n> hours" / "sleep <n>" is safe here and
-    // "three-hour lab session" never reaches this (it lives in a non-sleep sentence).
-    // Accepts digits OR spelled-out numbers, optional "and a half", hrs/hr/h units.
+    // `extractSleepHours` runs ONLY on a sentence that already mentions sleep
+    // (caller-gated), so no trigger verb is required — a bare "<n> hours" / "sleep <n>"
+    // is safe, and "three-hour lab session" never reaches it (non-sleep sentence). The
+    // residual risk is a non-sleep duration sharing the sleep sentence ("couldn't sleep,
+    // worked 12 hours"), which `hoursGovernedByActivityVerb` filters. Accepts digits OR
+    // spelled-out numbers + optional "and a half". Unit is hr/hrs/hour(s) only — a lone
+    // "h" is dropped so 24h clock times ("woke at 7h") aren't read as a duration.
     private static let sleepHoursRegex = try? NSRegularExpression(
-        pattern: #"(?i)\b(\d{1,2}(?:\.\d)?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)(\s+and\s+a\s+half)?\s*(?:hours?|hrs?|hr|h)\b"#
+        pattern: #"(?i)\b(\d{1,2}(?:\.\d)?|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)(\s+and\s+a\s+half)?\s*(?:hours?|hrs?|hr)\b"#
     )
     // Fallback for the terse "sleep 7" / "slept 7" phrasing (no unit).
     private static let sleepBareRegex = try? NSRegularExpression(
         pattern: #"(?i)\b(?:sleep|slept)\s+(\d{1,2}(?:\.\d)?)\b"#
     )
+
+    /// digit or spelled-out number (+ optional "and a half") -> hours.
+    private static func hours(fromNumberToken token: String, halfPresent: Bool) -> Double? {
+        guard let base = Double(token) ?? numberWords[token] else { return nil }
+        return halfPresent ? base + 0.5 : base
+    }
     // Activity verbs that govern an "N hours" duration that is NOT sleep. Without this,
     // the caller-gated bare-hours match logs work hours as sleep when both share one
     // sentence ("I couldn't sleep, so I worked 12 hours" -> must stay nil). Genuine sleep
@@ -738,9 +765,9 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
             for m in regex.matches(in: text, options: [], range: full) {
                 if Self.hoursGovernedByActivityVerb(in: ns, numberRange: m.range(at: 1)) { continue }
                 let token = ns.substring(with: m.range(at: 1)).lowercased()
-                if let base = Double(token) ?? Self.numberWords[token] {
-                    let half = m.range(at: 2).location != NSNotFound
-                    return half ? base + 0.5 : base
+                let halfPresent = m.range(at: 2).location != NSNotFound
+                if let value = Self.hours(fromNumberToken: token, halfPresent: halfPresent) {
+                    return value
                 }
             }
         }
@@ -751,13 +778,27 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
         return nil
     }
 
-    /// True when the word immediately before the matched number is a non-sleep activity
-    /// verb (so the duration is work/exercise time, not sleep).
+    /// Filler/preposition words allowed between the governing verb and the number, so the
+    /// guard still fires on "worked *for* 12 hours" / "ran *for about* 2 hours".
+    private static let hourGuardSkipWords: Set<String> = [
+        "for", "about", "around", "roughly", "nearly", "almost", "over", "another",
+        "a", "an", "the", "some", "maybe", "only", "just", "good", "solid", "whole", "full"
+    ]
+
+    /// True when the nearest preceding *content* word (skipping fillers/prepositions) is a
+    /// non-sleep activity verb, so the duration is work/exercise time, not sleep. Walking
+    /// back over fillers catches "worked for 12 hours" that an adjacent-word check misses;
+    /// "slept for 8 hours" stops at "slept" (not an activity verb) and is kept as sleep.
     private static func hoursGovernedByActivityVerb(in ns: NSString, numberRange: NSRange) -> Bool {
         guard numberRange.location != NSNotFound, numberRange.location > 0 else { return false }
         let before = ns.substring(to: numberRange.location).lowercased()
-        guard let last = before.split(whereSeparator: { !$0.isLetter }).last else { return false }
-        return nonSleepHourVerbs.contains(String(last))
+        let words = before.split(whereSeparator: { !$0.isLetter }).map(String.init)
+        for word in words.reversed() {
+            if nonSleepHourVerbs.contains(word) { return true }
+            if hourGuardSkipWords.contains(word) { continue }
+            break   // a content word that isn't an activity verb -> not governed by one
+        }
+        return false
     }
 
     private func extractSleepQuality(from text: String) -> String? {
