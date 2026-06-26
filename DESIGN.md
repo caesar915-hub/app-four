@@ -17,10 +17,8 @@
 - **Reference (anti-pattern):** the mood-tracker category converges on blue/purple "calm" palettes and emoji faces. Squirl deliberately diverges (earth-warm paper, abstract glyphs).
 
 ## Typography
-- **Display / Hero:** **Fraunces** (variable; soft optical axis, slight wonk). Check-in prompts, big mood numbers, titles. Free/OFL.
-- **Body / UI:** **DM Sans**. Buttons, labels, nav, paragraphs. Calm grotesque that recedes. Free/OFL.
-- **Data / numeric:** **DM Sans (tabular figures)** for aligned columns; **IBM Plex Mono** as the optional "instrument readout" voice (timers, time labels). Free/OFL.
-- **Do not** use SF / system as the display or body face (the "gave up on typography" signal). All three faces support Dynamic Type — wire it.
+- **All roles: Apple SF** — SF Pro (display / body / UI) + SF Mono (data / time), defined in `Typography.swift` and `UIFontMetrics`-scaled so every role keeps Dynamic Type. Hierarchy comes from **weight** (SF semibold headings), not a serif voice.
+- **Reversal (spec 023, 2026-06-26):** dropped the original **Fraunces + DM Sans + IBM Plex Mono** system — including the earlier rule *"do not use SF/system as display or body, the 'gave up on typography' signal"* — for native SF app-wide, an explicit owner decision. The bundled faces, `UIAppFonts`, and `SquirlFonts` registration were removed. (Settings was already SF-exempt; it now matches the rest of the app.)
 
 ## Color
 Never pure white, never `#000`. Light = warm paper; dark = warm loam (not black).

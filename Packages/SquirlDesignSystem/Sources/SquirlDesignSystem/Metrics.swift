@@ -13,20 +13,26 @@ public enum Metrics {
     /// Standard minimum row height
     public static let rowMinHeight: CGFloat = 44
 
-    /// Diameter of the time-bead circle (wrapped by the medication-phase ring) in a check-in row.
-    /// Matches `headerMoodBadge` so the row ring never out-sizes the header badge (spec 019 / "#5 Balanced").
-    public static let timeBead: CGFloat = 42
+    /// Diameter of the mood-bead circle (wrapped by the medication-phase ring) in a check-in row.
+    /// Spec 023 "Balanced": smaller than the no-disc day-header's 40pt inline mood glyph, so the
+    /// per-row beads read as detail beneath the day header rather than as peers of it.
+    public static let timeBead: CGFloat = 36
     /// Diameter of the cream-disc mood badge in the day-card header (folded block + open strip)
     public static let headerMoodBadge: CGFloat = 42
     /// Base size for the folded-card summary's inline signal glyph (fixed-point, decorative) and
     /// its mood text (scales with Dynamic Type) — the two align at the default text size.
     public static let summarySignal: CGFloat = 15
-    /// Check-in row type ("#5 Balanced"): the mood word (Fraunces, scales), the inline time (mono),
-    /// and the energy/focus signal glyph — kept below the folded-summary sizes so the rows read as
-    /// detail beneath the header, not peers of it.
-    public static let rowMoodText: CGFloat = 14
-    public static let rowTime: CGFloat = 11
-    public static let rowSignal: CGFloat = 13
+    /// Check-in row type (spec 023, SF): the mood word (SF semibold, scales), the inline time (SF Mono),
+    /// and the energy/focus signal glyph. Mood is the row headline; medication/sleep/feelings recede by
+    /// weight and colour, not size.
+    public static let rowMoodText: CGFloat = 17
+    public static let rowTime: CGFloat = 13
+    public static let rowSignal: CGFloat = 12
+    /// Optical top inset pulling the row head toward the bead's top edge (spec 023 "mid-high") — an
+    /// alignment nudge, not a grid value (cf. `Spacing.ringStroke`).
+    public static let rowHeadTop: CGFloat = 7
+    /// Diameter of the no-disc day-header's inline mood glyph, folded + expanded (spec 023).
+    public static let dayHeaderGlyph: CGFloat = 40
 
     /// Decorative SF Symbol sizes (large hero glyphs, not Dynamic Type text).
     /// These use a fixed point size intentionally because they are imagery, not copy.

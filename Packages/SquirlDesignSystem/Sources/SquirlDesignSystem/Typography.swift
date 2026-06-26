@@ -1,62 +1,71 @@
 import SwiftUI
+import UIKit
 
-/// Paper & Pollen typography — **Fraunces** (display/hero), **DM Sans** (body/UI),
-/// **IBM Plex Mono** (data/time). Bundled via Info.plist `UIAppFonts`. Roles keep their
-/// names so every call site is unchanged; each scales with Dynamic Type via `relativeTo:`.
+/// Squirl typography — **Apple SF**: SF Pro (text/display) and SF Mono (data/time).
+/// Every role scales with Dynamic Type via `UIFontMetrics` (relative to a text style),
+/// so custom point sizes still respond to the user's text-size setting. Roles keep their
+/// names so every call site is unchanged; only the underlying face changed (Fraunces +
+/// DM Sans + IBM Plex Mono → SF), with weight carrying the hierarchy the serif gave by style.
 public enum Typography {
-    private static let fraunces = "Fraunces"
-    private static let dmSans = "DM Sans"
-    private static let mono = "IBM Plex Mono"
 
-    // MARK: Display (Fraunces)
-    /// Serif display header — Insights section titles, the Check-in headline.
-    public static let display: Font = .custom(fraunces, size: 28, relativeTo: .title).weight(.medium)
+    /// SF Pro / SF Mono at an explicit point size, scaled relative to `style` for Dynamic Type.
+    private static func sf(_ size: CGFloat, _ weight: UIFont.Weight, _ style: UIFont.TextStyle, mono: Bool = false) -> Font {
+        let base = mono
+            ? UIFont.monospacedSystemFont(ofSize: size, weight: weight)
+            : UIFont.systemFont(ofSize: size, weight: weight)
+        return Font(UIFontMetrics(forTextStyle: style).scaledFont(for: base))
+    }
+
+    // MARK: Display (SF Pro)
+    /// Serif-replacement display header — Insights section titles, the Check-in headline.
+    public static let display: Font = sf(28, .semibold, .title1)
     /// Screen hero — used sparingly.
-    public static let largeTitle: Font = .custom(fraunces, size: 34, relativeTo: .largeTitle).weight(.medium)
+    public static let largeTitle: Font = sf(34, .bold, .largeTitle)
     /// Primary section title.
-    public static let title: Font = .custom(fraunces, size: 22, relativeTo: .title2).weight(.medium)
+    public static let title: Font = sf(22, .semibold, .title2)
     /// Folded day-card weekday label.
-    public static let dayCardDate: Font = .custom(fraunces, size: 16, relativeTo: .subheadline).weight(.medium)
+    public static let dayCardDate: Font = sf(16, .semibold, .subheadline)
 
-    // MARK: Content (DM Sans)
+    // MARK: Content (SF Pro)
     /// Row / card headline.
-    public static let headline: Font = .custom(dmSans, size: 16, relativeTo: .headline).weight(.semibold)
+    public static let headline: Font = sf(16, .semibold, .headline)
     /// Group / section header label.
-    public static let subheadline: Font = .custom(dmSans, size: 14, relativeTo: .subheadline).weight(.medium)
+    public static let subheadline: Font = sf(14, .medium, .subheadline)
     /// Primary body copy.
-    public static let body: Font = .custom(dmSans, size: 16, relativeTo: .body)
+    public static let body: Font = sf(16, .regular, .body)
     /// Secondary body copy.
-    public static let callout: Font = .custom(dmSans, size: 15, relativeTo: .callout)
+    public static let callout: Font = sf(15, .regular, .callout)
 
-    // MARK: Metadata (DM Sans)
+    // MARK: Metadata (SF Pro)
     /// Timestamps, labels, metadata.
-    public static let caption: Font = .custom(dmSans, size: 12, relativeTo: .caption)
+    public static let caption: Font = sf(12, .regular, .caption1)
     /// Uppercase section labels with tracking — call `.textCase(.uppercase)` separately.
-    public static let label: Font = .custom(dmSans, size: 12, relativeTo: .caption).weight(.medium)
+    public static let label: Font = sf(12, .medium, .caption1)
 
-    // MARK: Data / time (IBM Plex Mono)
+    // MARK: Data / time (SF Mono)
     /// Timers and durations.
-    public static let timer: Font = .custom(mono, size: 22, relativeTo: .title2).weight(.medium)
-    public static let duration: Font = .custom(mono, size: 12, relativeTo: .caption)
+    public static let timer: Font = sf(22, .medium, .title2, mono: true)
+    public static let duration: Font = sf(12, .regular, .caption1, mono: true)
     /// Generic mono for inline data (time labels, counts).
-    public static let mono12: Font = .custom(mono, size: 12, relativeTo: .caption)
+    public static let mono12: Font = sf(12, .regular, .caption1, mono: true)
+
+    // MARK: Bespoke sizes (explicit point size + Dynamic Type scaling)
+
+    /// SF Pro text at an explicit size (for call sites that need a specific point size — e.g. the
+    /// check-in row's mood word). Scales relative to `style`.
+    public static func text(_ size: CGFloat, weight: UIFont.Weight = .regular, relativeTo style: UIFont.TextStyle = .body) -> Font {
+        sf(size, weight, style)
+    }
+    /// SF Mono at an explicit size (inline time/data). Scales relative to `style`.
+    public static func mono(_ size: CGFloat, weight: UIFont.Weight = .regular, relativeTo style: UIFont.TextStyle = .caption1) -> Font {
+        sf(size, weight, style, mono: true)
+    }
 }
 
 // MARK: - View extensions for ergonomic usage
 
 public extension View {
-    public func typography(_ style: Font) -> some View {
+    func typography(_ style: Font) -> some View {
         self.font(style)
-    }
-}
-
-public extension Font {
-    /// A Fraunces font at an explicit size (for bespoke headline sizes that match the mockup).
-    public static func fraunces(_ size: CGFloat, relativeTo style: Font.TextStyle = .body, weight: Font.Weight = .medium) -> Font {
-        .custom("Fraunces", size: size, relativeTo: style).weight(weight)
-    }
-    /// IBM Plex Mono at an explicit size.
-    public static func plexMono(_ size: CGFloat, relativeTo style: Font.TextStyle = .caption) -> Font {
-        .custom("IBM Plex Mono", size: size, relativeTo: style)
     }
 }

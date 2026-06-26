@@ -38,9 +38,8 @@ struct RecordingDetailView: View {
         }
         .background(Theme.background.ignoresSafeArea())
         .medicationBarOverlay()
-        // §07: no back button (navigate back by swipe-left); the date rides the nav bar,
-        // and the ⋯ menu carries the quiet Delete affordance.
-        .navigationBarBackButtonHidden(true)
+        // Pushed from the calendar / insights (spec 023): a standard back control returns to the day;
+        // the date rides the nav bar and the ⋯ menu carries the quiet Delete affordance.
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Theme.background, for: .navigationBar)
         .toolbar {

@@ -3,8 +3,6 @@ import SquirlDesignSystem
 
 @main
 struct SquirlSandboxApp: App {
-    init() { SquirlFonts.register() }
-
     var body: some Scene {
         WindowGroup { RootView() }
     }

@@ -2,8 +2,8 @@ import SwiftUI
 import SquirlDesignSystem
 
 /// A live catalog of the real `SquirlDesignSystem` atoms — the glyphs, color ramps, type,
-/// buttons, and card, rendered by the actual package (zero drift). Fonts come from the
-/// package's `SquirlFonts.register()` (called at app launch).
+/// buttons, and card, rendered by the actual package (zero drift). Type is the Apple SF system
+/// font (no bundled faces to register).
 struct DesignGallery: View {
     var body: some View {
         ScrollView {
