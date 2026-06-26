@@ -141,13 +141,10 @@ final class AIModelServiceImpl: AIModelService {
             guard url.lastPathComponent == "openai_whisper-small",
                   (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true
             else { continue }
-            // Guard against a partially-downloaded model: WhisperKit creates the
-            // directory skeleton before weight files are moved into place. Verify
-            // the two files that are written last so we only return a path when the
-            // model is actually loadable.
-            let encoder = url.appendingPathComponent("AudioEncoder.mlmodelc", isDirectory: true)
-            let config  = url.appendingPathComponent("config.json")
-            guard fm.fileExists(atPath: encoder.path),
+            // weights/ is only created during a successful file move, not in the skeleton.
+            let encoderWeights = url.appendingPathComponent("AudioEncoder.mlmodelc/weights", isDirectory: true)
+            let config         = url.appendingPathComponent("config.json")
+            guard fm.fileExists(atPath: encoderWeights.path),
                   fm.fileExists(atPath: config.path)
             else { continue }
             return url

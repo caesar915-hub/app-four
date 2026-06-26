@@ -7,7 +7,7 @@ struct WhisperModelIntegrityTests {
 
     private func makeTempBase() throws -> URL {
         let tmp = FileManager.default.temporaryDirectory
-            .appendingPathComponent("whisper-integrity-\(Int.random(in: 0..<Int.max))", isDirectory: true)
+            .appendingPathComponent("whisper-integrity-\(UUID().uuidString)", isDirectory: true)
         try FileManager.default.createDirectory(at: tmp, withIntermediateDirectories: true)
         return tmp
     }
@@ -27,7 +27,9 @@ struct WhisperModelIntegrityTests {
         #expect(AIModelServiceImpl.findWhisperModelFolder(in: base) == nil)
     }
 
-    @Test func missingConfigIsNotEnough() throws {
+    // Mirrors the actual crash: skeleton creates AudioEncoder.mlmodelc/ but
+    // weight move fails, so weights/ subdir never appears.
+    @Test func encoderSkeletonWithoutWeightsIsNotEnough() throws {
         let base = try makeTempBase()
         defer { try? FileManager.default.removeItem(at: base) }
         let model = try makeModelDir(in: base)
@@ -36,7 +38,16 @@ struct WhisperModelIntegrityTests {
         #expect(AIModelServiceImpl.findWhisperModelFolder(in: base) == nil)
     }
 
-    @Test func missingEncoderIsNotEnough() throws {
+    @Test func missingConfigIsNotEnough() throws {
+        let base = try makeTempBase()
+        defer { try? FileManager.default.removeItem(at: base) }
+        let model = try makeModelDir(in: base)
+        let weights = model.appendingPathComponent("AudioEncoder.mlmodelc/weights", isDirectory: true)
+        try FileManager.default.createDirectory(at: weights, withIntermediateDirectories: true)
+        #expect(AIModelServiceImpl.findWhisperModelFolder(in: base) == nil)
+    }
+
+    @Test func missingEncoderWeightsIsNotEnough() throws {
         let base = try makeTempBase()
         defer { try? FileManager.default.removeItem(at: base) }
         let model = try makeModelDir(in: base)
@@ -49,8 +60,8 @@ struct WhisperModelIntegrityTests {
         let base = try makeTempBase()
         defer { try? FileManager.default.removeItem(at: base) }
         let model = try makeModelDir(in: base)
-        let encoder = model.appendingPathComponent("AudioEncoder.mlmodelc", isDirectory: true)
-        try FileManager.default.createDirectory(at: encoder, withIntermediateDirectories: true)
+        let weights = model.appendingPathComponent("AudioEncoder.mlmodelc/weights", isDirectory: true)
+        try FileManager.default.createDirectory(at: weights, withIntermediateDirectories: true)
         let config = model.appendingPathComponent("config.json")
         try Data().write(to: config)
         #expect(AIModelServiceImpl.findWhisperModelFolder(in: base) == model)
