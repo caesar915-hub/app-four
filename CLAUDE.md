@@ -32,6 +32,7 @@ Act as a senior iOS engineer and UX/UI designer. Be analytical and objective. Qu
 ## Process
 - **Spec Kit is the main build workflow** (spec → plan → tasks → implement) for every feature — see `docs/SPECKIT.md`. superpowers (`/spec`, `/design-*`) is design-exploration only; its mockups feed Spec Kit specs. Constitution (`.specify/memory/constitution.md`) gates every spec/plan.
 - For new UI: HTML mockup before SwiftUI — see memory.
+- **Before touching any Swift file**: confirm the request explicitly asks for code, not just a mockup/design update. When in doubt, ask. "Update the view" or "add X" without "implement" or "code it" means HTML mockup only. Never infer code permission from a UI description.
 - Plan → surface assumptions → execute. No mid-task interruptions.
 - Log to `docs/DEVLOG.md` at real checkpoints (a decision made, an investigation concluded, a direction set, an item shipped) — the *why*, not every edit. Run `/recap` for the morning standup.
 - After any merge (`git merge`, `gh pr merge`, or a merge commit landing on `main`): regenerate `docs/WORKLOG.md` by running `scripts/worklog.sh` and replacing the top block with the freshly generated one. The worklog is derived, not narrated — regenerate it, don't hand-edit it.

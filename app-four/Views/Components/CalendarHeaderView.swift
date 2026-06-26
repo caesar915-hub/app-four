@@ -9,9 +9,7 @@ struct CalendarHeaderView: View {
     @Binding var selectedDay: Date
     @Binding var isExpanded: Bool
     let monthLabel: String
-    let canJumpToToday: Bool
     let onSelect: (CalendarMonthModel.DayCell) -> Void
-    let onJumpToToday: () -> Void
     let onPageMonth: (Int) -> Void   // -1 = older, +1 = newer
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -71,20 +69,6 @@ struct CalendarHeaderView: View {
             .accessibilityHint(forceWeek ? "" : (effectiveExpanded ? "Collapse to week" : "Expand to month"))
 
             Spacer()
-
-            if canJumpToToday {
-                Button(action: onJumpToToday) {
-                    Text("Today")
-                        .font(Typography.caption.weight(.bold))
-                        .foregroundStyle(Theme.accent)
-                        .padding(.horizontal, Spacing.s)
-                        .padding(.vertical, Spacing.xs)
-                        .overlay(Capsule().strokeBorder(Theme.accent, lineWidth: 1.2))
-                        .frame(minHeight: Metrics.minTapTarget)   // ≥44pt tap target; pill stays visually compact
-                        .contentShape(Capsule())
-                }
-                .buttonStyle(.plain)
-            }
         }
     }
 
@@ -107,8 +91,6 @@ struct CalendarHeaderView: View {
                         CalendarDayCell(
                             cell: cell,
                             isSelected: Calendar.current.isDate(cell.date, inSameDayAs: selectedDay),
-                            isAboveSelection: !cell.isFuture
-                                && Calendar.current.startOfDay(for: cell.date) > Calendar.current.startOfDay(for: selectedDay),
                             onTap: { onSelect(cell) }
                         )
                     }
@@ -142,9 +124,7 @@ private extension Array {
         selectedDay: $selected,
         isExpanded: $expanded,
         monthLabel: "June 2026",
-        canJumpToToday: false,
         onSelect: { selected = $0.date },
-        onJumpToToday: {},
         onPageMonth: { _ in }
     )
     .padding()

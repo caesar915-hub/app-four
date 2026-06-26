@@ -47,7 +47,6 @@ struct SettingsView: View {
                         .id(Self.topID)
                     systemSection
                     checkInSection
-                    transcriptionSection
                     dayCardSection
                     medicationBarSection
                     accessibilitySection
@@ -158,18 +157,6 @@ struct SettingsView: View {
             Text("Check-in")
         } footer: {
             Text("How long each prompt stays on screen during a voice check-in.")
-        }
-    }
-
-    private var transcriptionSection: some View {
-        Section {
-            Toggle(isOn: $viewModel.medicalPromptEnabled) {
-                Label("Recognize medication names", systemImage: "pills")
-            }
-        } header: {
-            Text("Transcription")
-        } footer: {
-            Text("Helps transcription spell medication and side-effect terms correctly.")
         }
     }
 

@@ -87,13 +87,13 @@ final class MoodLibraryViewModel {
             guard let day = calendar.date(byAdding: .day, value: offset, to: firstOfMonth) else { continue }
             let dayStart = calendar.startOfDay(for: day)
             if dayStart > startOfToday { break }     // never show future days
+            let dayRecordings = recordingsByDay[dayStart] ?? []
+            let dayDoses = dosesByDay[dayStart] ?? []
+            guard !dayRecordings.isEmpty || !dayDoses.isEmpty else { continue }
             result.append(TimelineDay(
                 date: dayStart,
                 label: dayLabel(for: dayStart),
-                nodes: DayTimelineBuilder.build(
-                    recordings: recordingsByDay[dayStart] ?? [],
-                    doses: dosesByDay[dayStart] ?? []
-                )
+                nodes: DayTimelineBuilder.build(recordings: dayRecordings, doses: dayDoses)
             ))
         }
         return result.sorted { $0.date > $1.date }   // newest first
