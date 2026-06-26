@@ -89,73 +89,118 @@ struct CheckInView: View {
     @ViewBuilder
     private var content: some View {
         switch viewModel.state {
-        case .idle:
-            hub
-        // .processing keeps the recording stage on screen (crescent spinning, stop
-        // shows a spinner) for the brief save window; the headline reads "Saving…".
-        case .recording, .paused, .processing:
-            recordingStage
         case .done:
             CheckInSavedView(recording: viewModel.lastSavedRecording) {
                 viewModel.reset()
             }
+        // Idle and recording/paused/processing share one layout (captureStage) so the crescent
+        // stays anchored — it grows in place rather than jumping down when capture starts.
+        // .processing keeps the stage on screen (crescent spinning, stop shows a spinner) for
+        // the brief save window; the headline reads "Saving…".
+        default:
+            captureStage
         }
     }
 
-    // MARK: Hub
+    // MARK: Capture stage (idle + recording share one anchored layout)
 
-    private var hub: some View {
-        VStack(spacing: Spacing.l) {
-            VStack(spacing: Spacing.xs) {
-                Text(todayDate)
-                    .font(Typography.label)
-                    .textCase(.uppercase)
-                    .foregroundStyle(Theme.textSecondary)
-                Text("Ready when\nyou are.")
-                    .font(Typography.title)
-                    .foregroundStyle(Theme.textPrimary)
-                    .multilineTextAlignment(.center)
-                    .accessibilityAddTraits(.isHeader)
-
-                // US5 / FR-018: first-launch headline whisper — low-contrast, one-time.
-                if !checkInHintSeen {
-                    Text("Say whatever's on your mind — a few words is plenty.")
-                        .font(Typography.callout)
-                        .foregroundStyle(Theme.textSecondary.opacity(0.7))
-                        .multilineTextAlignment(.center)
-                }
+    /// Idle and recording/paused/processing render in one ZStack so the crescent is anchored at
+    /// the same screen-centre across the transition (spec 024): it grows in place (200→260) and
+    /// never jumps down. Top chrome (headline ▸ progress + prompt) pins to the top, bottom chrome
+    /// (Speak / Log / Type) to the bottom, and the crescent — carrying the timer + controls while
+    /// recording — stays centred. The grow animates via `content`'s state animation (Reduce Motion
+    /// honoured there).
+    private var captureStage: some View {
+        let isRecording = viewModel.state != .idle
+        return ZStack {
+            // Centre: the anchored crescent, plus the live status + controls while recording.
+            ZStack {
+                CrescentRing(isActive: viewModel.state == .recording && !viewModel.saveFailed)
+                    .frame(width: crescentDiameter, height: crescentDiameter)
+                    .opacity(viewModel.state == .paused ? Opacity.deEmphasis : 1)
+                    .accessibilityHidden(true)
+                if isRecording { recordingCentre } else { idleRingCentre }
             }
-            .padding(.top, Spacing.xl)
 
-            Spacer()
-            VStack(spacing: Spacing.m) {
-                CrescentRing()
-                    .frame(width: Metrics.CheckIn.idleCrescent, height: Metrics.CheckIn.idleCrescent)
-                // US5 / FR-018: faint idle-ring caption, one-time. The ring itself stays
-                // purely ambient — no fill, count, streak, or recency (FR-019).
-                if !checkInHintSeen {
-                    Text("This is your space to check in.")
-                        .font(Typography.caption)
-                        .foregroundStyle(Theme.textSecondary.opacity(0.6))
-                }
+            // Top chrome floats above the centred crescent.
+            VStack(spacing: 0) {
+                if isRecording { recordingHeader } else { idleHeader }
+                Spacer(minLength: 0)
             }
-            Spacer()
-
-            VStack(spacing: Spacing.s) {
-                speakButton
-                HStack(spacing: Spacing.s) {
-                    hubOption("Log meds", icon: Icons.medication, tint: Palette.medication) {
-                        showMedLogSheet = true
-                    }
-                    hubOption("Type note", icon: "square.and.pencil", tint: nil) {
-                        showComposer = true
-                    }
-                }
-            }
-            .padding(.bottom, Spacing.l)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(.horizontal, Spacing.l)
+        .padding(.bottom, Spacing.l)
+        .onChange(of: viewModel.saveFailed) { _, failed in
+            if failed { Haptics.error() }
+        }
+        // FR-014: show the calm approach cue exactly once on the rising edge, then fade it.
+        .onChange(of: viewModel.isApproachingCap) { _, approaching in
+            guard approaching, !viewModel.hasShownCapApproach else { return }
+            viewModel.markCapApproachShown()
+            withAnimation(reduceMotion ? nil : Motion.smooth) { showCapApproachCue = true }
+            Task {
+                try? await Task.sleep(for: .seconds(4))
+                withAnimation(reduceMotion ? nil : Motion.smooth) { showCapApproachCue = false }
+            }
+        }
+        // FR-010: announce each prompt advance to VoiceOver once the active-voice gate is quiet.
+        .onChange(of: viewModel.currentPromptIndex) { _, _ in
+            viewModel.requestPromptAnnouncement()
+        }
+        .onChange(of: viewModel.promptAnnouncementIsEligible) { _, eligible in
+            guard eligible else { return }
+            announce("\(viewModel.currentPrompt.question) \(viewModel.currentPrompt.hint)")
+            viewModel.consumePromptAnnouncement()
+        }
+        // FR-012: speak the capture's final transitions.
+        .onChange(of: viewModel.state) { _, newState in
+            switch newState {
+            case .processing: announce("Saving…")
+            case .done: announce("Captured.")
+            default: break
+            }
+        }
+    }
+
+    private var crescentDiameter: CGFloat { Metrics.CheckIn.crescentDiameter }
+
+    // MARK: Idle chrome
+
+    private var idleHeader: some View {
+        VStack(spacing: Spacing.xs) {
+            Text(todayDate)
+                .font(Typography.label)
+                .textCase(.uppercase)
+                .foregroundStyle(Theme.textSecondary)
+            Text("How do you feel?")
+                .font(Typography.title)
+                .foregroundStyle(Theme.textPrimary)
+                .multilineTextAlignment(.center)
+                .accessibilityAddTraits(.isHeader)
+
+            // US5 / FR-018: first-launch headline whisper — low-contrast, one-time.
+            if !checkInHintSeen {
+                Text("Say whatever's on your mind — a few words is plenty.")
+                    .font(Typography.callout)
+                    .foregroundStyle(Theme.textSecondary.opacity(0.7))
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .padding(.top, Spacing.xl)
+        .frame(maxWidth: .infinity)
+    }
+
+    private var idleRingCentre: some View {
+        VStack(spacing: Spacing.s) {
+            hubOption("Log meds", icon: Icons.medication, tint: Palette.medication) {
+                showMedLogSheet = true
+            }
+            speakButton
+            hubOption("Type note", icon: "square.and.pencil", tint: nil) {
+                showComposer = true
+            }
+        }
     }
 
     private var speakButton: some View {
@@ -167,7 +212,7 @@ struct CheckInView: View {
                 Text("Speak check-in").font(Typography.headline)
             }
             .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
+            .frame(width: 220)
             .padding(.vertical, Spacing.l)
             .background(Theme.meadowGradient, in: RoundedRectangle(cornerRadius: Radius.button))
             .shadow(color: Theme.meadowAmber.opacity(0.34), radius: 12, y: 5)
@@ -182,122 +227,64 @@ struct CheckInView: View {
                 Image(systemName: icon).foregroundStyle(tint ?? Theme.textPrimary)
                 Text(label).font(Typography.headline).foregroundStyle(Theme.textPrimary)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, Spacing.m)
-            .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.button))
-            .overlay(
-                RoundedRectangle(cornerRadius: Radius.button)
-                    .strokeBorder(Theme.separator, lineWidth: 1)
-            )
+            .frame(width: 220, height: Metrics.minTapTarget)
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(label)
     }
 
-    // MARK: Recording
+    // MARK: Recording chrome
 
-    private var recordingStage: some View {
-        GeometryReader { geo in
-            VStack(spacing: 0) {
-                promptProgressBar
+    private var recordingHeader: some View {
+        VStack(spacing: Spacing.xl) {
+            promptProgressBar
+            heroPrompt
+                .padding(.horizontal, Spacing.l)
+        }
+    }
 
-                Spacer()
+    /// The timer + controls that sit over the anchored crescent while recording; a save failure
+    /// swaps in the recovery affordance. The grouped status reads to VoiceOver as the
+    /// "Recording, elapsed" live region. Paused dims the ring (above) and names the state here —
+    /// an honest visual floor only, no resume / audio-append engineering (FR-017).
+    @ViewBuilder private var recordingCentre: some View {
+        if viewModel.saveFailed {
+            failureRecovery
+        } else {
+            VStack(spacing: Spacing.m) {
+                // FR-011: crescent + timer read as one live-region status, throttled to whole
+                // seconds (timeString changes once a second, not every 0.1s tick) so VoiceOver
+                // doesn't chatter.
+                Text(viewModel.timeString)
+                    .font(Typography.timer)
+                    .foregroundStyle(Theme.textPrimary)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(viewModel.state == .paused
+                                        ? "Paused, \(viewModel.timeString) elapsed"
+                                        : "Recording, \(viewModel.timeString) elapsed")
+                    .accessibilityAddTraits(.updatesFrequently)
 
-                heroPrompt
-                    .padding(.horizontal, Spacing.l)
-
-                Spacer()
-
-                ZStack {
-                    // The crescent is decorative; the grouped status below carries the
-                    // information to VoiceOver as the "Recording, elapsed" live region.
-                    // Paused (or a pending save) drops the spin to the calmer breathing
-                    // state and dims the ring, so a held capture reads as held — an
-                    // honest visual only, no audio-append/resume engineering (FR-017).
-                    CrescentRing(isActive: viewModel.state == .recording && !viewModel.saveFailed)
-                        .frame(width: Metrics.CheckIn.recordingCrescent, height: Metrics.CheckIn.recordingCrescent)
-                        .opacity(viewModel.state == .paused ? Opacity.deEmphasis : 1)
-                        .accessibilityHidden(true)
-                    if viewModel.saveFailed {
-                        failureRecovery
-                    } else {
-                        VStack(spacing: Spacing.m) {
-                            // FR-011: crescent + timer read as one live-region status,
-                            // throttled to whole seconds (timeString changes once a second,
-                            // not every 0.1s tick) so VoiceOver doesn't chatter.
-                            Text(viewModel.timeString)
-                                .font(Typography.timer)
-                                .foregroundStyle(Theme.textPrimary)
-                                .accessibilityElement(children: .ignore)
-                                .accessibilityLabel(viewModel.state == .paused
-                                                    ? "Paused, \(viewModel.timeString) elapsed"
-                                                    : "Recording, \(viewModel.timeString) elapsed")
-                                .accessibilityAddTraits(.updatesFrequently)
-
-                            // FR-017: a held capture (phone call etc.) gets a minimal
-                            // honest "paused" indication — the ring already dims and stops
-                            // revolving above; this quiet label names the state. No resume /
-                            // audio-append engineering — visual floor only.
-                            if viewModel.state == .paused {
-                                Text("Paused")
-                                    .font(Typography.label)
-                                    .textCase(.uppercase)
-                                    .foregroundStyle(Theme.textSecondary)
-                            }
-                            stopButton
-                            Button("Cancel") { viewModel.cancelRecording() }
-                                .font(Typography.callout)
-                                .foregroundStyle(Theme.textSecondary)
-                                .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
-                                .accessibilityLabel("Cancel recording")
-
-                            // FR-014 / R5: a single calm "wrapping up soon" line on the
-                            // approach to the cap — faint, no red, no ticking bar. Fades
-                            // out after a beat; one-shot via the VM latch.
-                            Text("Wrapping up soon")
-                                .font(Typography.caption)
-                                .foregroundStyle(Theme.textSecondary.opacity(0.7))
-                                .opacity(showCapApproachCue ? 1 : 0)
-                                .accessibilityHidden(!showCapApproachCue)
-                        }
-                    }
+                if viewModel.state == .paused {
+                    Text("Paused")
+                        .font(Typography.label)
+                        .textCase(.uppercase)
+                        .foregroundStyle(Theme.textSecondary)
                 }
-                .frame(maxWidth: .infinity)
-                .padding(.bottom, Spacing.l)
-                .onChange(of: viewModel.saveFailed) { _, failed in
-                    if failed { Haptics.error() }
-                }
-                // FR-014: show the calm approach cue exactly once on the rising edge,
-                // then let it fade after a beat (Motion token, not a raw literal).
-                .onChange(of: viewModel.isApproachingCap) { _, approaching in
-                    guard approaching, !viewModel.hasShownCapApproach else { return }
-                    viewModel.markCapApproachShown()
-                    withAnimation(reduceMotion ? nil : Motion.smooth) { showCapApproachCue = true }
-                    Task {
-                        try? await Task.sleep(for: .seconds(4))
-                        withAnimation(reduceMotion ? nil : Motion.smooth) { showCapApproachCue = false }
-                    }
-                }
-                // FR-010: announce each prompt advance to VoiceOver, but never over the
-                // speaker — request on the visual swap, then flush the held announcement
-                // the moment the active-voice gate goes quiet (eligible).
-                .onChange(of: viewModel.currentPromptIndex) { _, _ in
-                    viewModel.requestPromptAnnouncement()
-                }
-                .onChange(of: viewModel.promptAnnouncementIsEligible) { _, eligible in
-                    guard eligible else { return }
-                    announce("\(viewModel.currentPrompt.question) \(viewModel.currentPrompt.hint)")
-                    viewModel.consumePromptAnnouncement()
-                }
-                // FR-012: speak the capture's final transitions.
-                .onChange(of: viewModel.state) { _, newState in
-                    switch newState {
-                    case .processing: announce("Saving…")
-                    case .done: announce("Captured.")
-                    default: break
-                    }
-                }
+                stopButton
+                Button("Cancel") { viewModel.cancelRecording() }
+                    .font(Typography.callout)
+                    .foregroundStyle(Theme.textSecondary)
+                    .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
+                    .accessibilityLabel("Cancel recording")
+
+                // FR-014 / R5: a single calm "wrapping up soon" line on the approach to the cap —
+                // faint, no red, no ticking bar. Fades after a beat; one-shot via the VM latch.
+                Text("Wrapping up soon")
+                    .font(Typography.caption)
+                    .foregroundStyle(Theme.textSecondary.opacity(0.7))
+                    .opacity(showCapApproachCue ? 1 : 0)
+                    .accessibilityHidden(!showCapApproachCue)
             }
-            .frame(width: geo.size.width, height: geo.size.height)
         }
     }
 

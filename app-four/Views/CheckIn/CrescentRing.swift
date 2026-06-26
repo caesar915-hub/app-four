@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// The Paper & Pollen check-in ring: a soft ~295° arc that fades **green → amber**.
+/// The Paper & Pollen check-in ring: a full circle, green-dominant with amber at the bottom.
 /// At rest it **breathes** (idle); while recording it **spins** (active). Decorative.
 struct CrescentRing: View {
     var isActive: Bool = false
@@ -12,20 +12,19 @@ struct CrescentRing: View {
 
     private var arc: some View {
         Circle()
-            .trim(from: 0, to: 0.82)
+            .trim(from: 0, to: 1.0)
             .stroke(
                 AngularGradient(
                     gradient: Gradient(stops: [
-                        .init(color: .clear, location: 0.0),
-                        .init(color: Theme.meadowGreen, location: 0.18),
-                        .init(color: Theme.meadowAmber, location: 0.62),
-                        .init(color: .clear, location: 0.82),
+                        .init(color: Theme.meadowGreen, location: 0.00),
+                        .init(color: Theme.meadowAmber, location: 0.50),
+                        .init(color: Theme.meadowGreen, location: 1.00),
                     ]),
                     center: .center,
-                    startAngle: .degrees(135),
-                    endAngle: .degrees(135 + 360)
+                    startAngle: .degrees(270),
+                    endAngle: .degrees(270 + 360)
                 ),
-                style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
+                style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
             )
             .padding(lineWidth / 2)
     }

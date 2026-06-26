@@ -50,10 +50,8 @@ public enum Metrics {
     /// Named here (rather than scattered as literals) so the capture screen reads from
     /// one place; tap targets still use `minTapTarget`.
     public enum CheckIn {
-        /// Idle-hub ambient crescent diameter.
-        public static let idleCrescent: CGFloat = 200
-        /// Recording-stage crescent diameter (the larger, active ring).
-        public static let recordingCrescent: CGFloat = 260
+        /// Check-in ring diameter — same in idle and recording states (spec 025).
+        public static let crescentDiameter: CGFloat = 300
         /// Side of the rounded "stop" square glyph inside the Stop & save button.
         public static let stopGlyph: CGFloat = 11
         /// Corner radius of that stop-square glyph.
