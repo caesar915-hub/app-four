@@ -15,7 +15,7 @@ struct FoldedDayCardHeader: View {
     private var showsSummary: Bool { !isExpanded || summary.isEmpty }
 
     var body: some View {
-        HStack(alignment: .top, spacing: Spacing.m) {
+        HStack(alignment: .center, spacing: Spacing.m) {
             if let level {
                 SignalGlyph(.mood, level: level.numericValue, size: Metrics.dayHeaderGlyph, decorative: true)
             }

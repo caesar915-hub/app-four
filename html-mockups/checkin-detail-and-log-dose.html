@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mockups — Detail Cards + Log Dose</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #14130F;
+    --card:     #1E1C16;
+    --text:     #F3EEE0;
+    --text2:    #9A917C;
+    --sep:      #322E22;
+    --accent:   #D4A24A;
+    --green:    #6E9A58;
+    --amber:    #E8B255;
+    --med:      #9277BE;
+    --sleep:    #5566A6;
+    --warn:     #D98A3E;
+    --r:        16px;
+  }
+
+  body {
+    background: #111;
+    font-family: -apple-system, "SF Pro Text", sans-serif;
+    padding: 40px 32px 80px;
+  }
+
+  h2 {
+    color: #aaa;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin: 48px 0 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #222;
+  }
+  h2:first-of-type { margin-top: 0; }
+
+  .row {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .col-label {
+    font-size: 11px;
+    color: #666;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+  }
+
+  /* ── Phone frame ── */
+  .phone {
+    width: 390px;
+    background: var(--bg);
+    border-radius: 50px;
+    border: 2px solid #2a2a2a;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ── Navigation bar ── */
+  .navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 52px 20px 12px;
+    background: var(--bg);
+  }
+  .nav-back, .nav-more {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--sep);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text);
+    font-size: 14px;
+  }
+  .nav-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: .8px;
+    text-transform: uppercase;
+  }
+
+  /* ── Scroll content ── */
+  .content {
+    padding: 16px 16px 120px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    max-height: 780px;
+  }
+
+  /* ── Title block ── */
+  .big-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 4px;
+    font-family: Georgia, serif;
+  }
+  .meta {
+    font-size: 12px;
+    color: var(--text2);
+    font-variant-numeric: tabular-nums;
+    font-family: "SF Mono", monospace;
+  }
+
+  /* ── Signal glyph row ── */
+  .glyph-row {
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+  }
+  .glyph-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  .glyph-item .icon { line-height: 1; }
+  .glyph-item .icon-label {
+    font-size: 11px;
+    color: var(--text2);
+    font-weight: 500;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--card);
+    border-radius: var(--r);
+    padding: 14px 16px;
+  }
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  /* ── Medications ── */
+  .med-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+    font-size: 15px;
+  }
+
+  /* ── Tags ── */
+  .tag-flow { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .tag-sleep       { background: rgba(85,102,166,.18);  color: var(--sleep); }
+  .tag-emotion     { background: rgba(212,162,74,.15);  color: var(--accent); }
+  .tag-side-effect { background: rgba(217,138,62,.15);  color: var(--warn); }
+
+  /* ── Transcript ── */
+  .transcript-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .status-pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(110,154,88,.18);
+    color: var(--green);
+  }
+  .chevron { color: var(--text2); font-size: 12px; }
+
+  /* ── Audio ── */
+  .audio-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .play-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--green);
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .waveform {
+    flex: 1;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    overflow: hidden;
+  }
+  .waveform-bar { flex: 1; border-radius: 2px; background: var(--sep); }
+  .audio-time {
+    font-size: 12px;
+    color: var(--text2);
+    font-family: "SF Mono", monospace;
+  }
+
+  /* ── Edit button ── */
+  .edit-btn {
+    background: linear-gradient(90deg, var(--green), var(--amber));
+    border-radius: 999px;
+    padding: 14px;
+    text-align: center;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 4px;
+  }
+
+  /* ── Edit icon button (top-right navbar) ── */
+  .nav-edit {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--sep);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text);
+    font-size: 15px;
+  }
+
+  /* ── Delete link ── */
+  .delete-btn {
+    text-align: center;
+    color: #D05050;
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px 0 4px;
+  }
+
+  /* ── Tab bar ── */
+  .tabbar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(20,19,15,.92);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid var(--sep);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 28px;
+  }
+  .tab-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-size: 10px; font-weight: 500;
+    color: var(--text2);
+  }
+  .tab-item.active { color: var(--green); }
+  .tab-icon { font-size: 20px; }
+
+  /* ── OLD summary bullets ── */
+  .bullet-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 7px;
+  }
+  .bullet-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--green);
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  /* ── Log Dose: drag handle ── */
+  .drag-handle {
+    width: 36px; height: 5px;
+    background: var(--sep);
+    border-radius: 3px;
+    margin: 10px auto 0;
+  }
+
+  /* ── Log Dose: sheet nav ── */
+  .sheet-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px 10px;
+    border-bottom: 1px solid var(--sep);
+  }
+  .close-btn {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--sep);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .sheet-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .save-btn { font-size: 15px; font-weight: 600; color: var(--green); }
+
+  /* ── Log Dose: sections ── */
+  .section-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text2);
+    letter-spacing: .6px;
+    margin-bottom: 6px;
+    padding-left: 2px;
+  }
+  .input-card {
+    background: var(--card);
+    border-radius: var(--r);
+    border: 1px solid var(--sep);
+    overflow: hidden;
+  }
+  .chip-row {
+    display: flex;
+    gap: 8px;
+    padding: 12px 14px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .chip-row::-webkit-scrollbar { display: none; }
+  .chip {
+    padding: 7px 16px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+    background: rgba(255,255,255,.07);
+    color: var(--text);
+    border: 1px solid var(--sep);
+    flex-shrink: 0;
+  }
+  .chip.selected {
+    background: rgba(146,119,190,.25);
+    color: var(--med);
+    border-color: rgba(146,119,190,.4);
+    font-weight: 600;
+  }
+  .card-divider { height: 1px; background: var(--sep); margin: 0 14px; }
+  .field-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 14px;
+    gap: 10px;
+  }
+  .field-label { font-size: 15px; color: var(--text); font-weight: 500; }
+  .field-value { font-size: 15px; color: var(--text); }
+  .field-hint  { font-size: 15px; color: var(--text2); }
+  .time-pill {
+    background: rgba(255,255,255,.07);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 15px;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    font-family: "SF Mono", monospace;
+    border: 1px solid var(--sep);
+  }
+
+  /* ── Apple Form (before) ── */
+  .form-wrap { background: #1a1a1a; padding-top: 16px; }
+  .form-header { font-size: 13px; color: #8a8a8e; letter-spacing: .3px; padding: 6px 16px; text-transform: uppercase; }
+  .form-cell {
+    background: #2c2c2e;
+    padding: 12px 16px;
+    color: #fff;
+    font-size: 16px;
+    border-bottom: .5px solid #3a3a3c;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .form-cell:last-child { border-bottom: none; }
+  .form-cell-hint { color: #8a8a8e; }
+  .form-chip {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #3a3a3c;
+    color: white;
+    font-size: 14px;
+    margin-right: 6px;
+    margin-bottom: 4px;
+  }
+  .old-nav {
+    background: #1c1c1e;
+    border-bottom: .5px solid #3a3a3c;
+    padding: 52px 16px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 1 — RECORDING DETAIL: 4 INDIVIDUAL CARDS
+     ════════════════════════════════════════════════════════ -->
+<h2>Recording Detail — replace Summary with 4 cards + larger glyphs</h2>
+
+<div class="row">
+
+  <!-- BEFORE -->
+  <div class="col">
+    <div class="col-label">Before</div>
+    <div class="phone">
+      <div class="navbar">
+        <div class="nav-back">‹</div>
+        <div class="nav-title">SAT · 27 JUNE</div>
+        <div class="nav-more">···</div>
+      </div>
+      <div class="content">
+        <div>
+          <div class="big-title">Flat · Tired · Sharp</div>
+          <div class="meta">18:10 · 1:09</div>
+        </div>
+
+        <!-- Glyph row — size 26 -->
+        <div class="glyph-row">
+          <div class="glyph-item">
+            <span class="icon" style="font-size:26px;color:#C8953A">🍄</span>
+            <span class="icon-label">Flat</span>
+          </div>
+          <div class="glyph-item">
+            <span class="icon" style="font-size:26px;color:#C8B06A">⚡</span>
+            <span class="icon-label">Tired</span>
+          </div>
+          <div class="glyph-item">
+            <span class="icon" style="font-size:26px;color:#5B9BD5">🎯</span>
+            <span class="icon-label">Sharp</span>
+          </div>
+        </div>
+
+        <!-- OLD Summary card -->
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div class="eyebrow" style="margin-bottom:0">Summary</div>
+            <span style="color:var(--accent);font-size:16px">↻</span>
+          </div>
+          <div class="bullet-row"><span class="bullet-dot"></span><span style="color:var(--text);font-size:15px">Discussed feeling neutral, still</span></div>
+          <div class="bullet-row"><span class="bullet-dot"></span><span style="color:var(--text);font-size:15px">Energy level was low, dim</span></div>
+          <div class="bullet-row" style="margin-bottom:10px"><span class="bullet-dot"></span><span style="color:var(--text);font-size:15px">Focus was clear, on track</span></div>
+          <div class="tag-flow">
+            <span class="tag tag-emotion">♥ Anxious</span>
+            <span class="tag tag-sleep">💤 Okay</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="transcript-header">
+            <div class="eyebrow" style="margin-bottom:0">Transcript</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="status-pill">Completed</span>
+              <span class="chevron">∨</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="eyebrow">Audio</div>
+          <div class="audio-row">
+            <div class="play-btn">▶</div>
+            <div class="waveform">
+              <div class="waveform-bar" style="height:8px"></div><div class="waveform-bar" style="height:14px"></div><div class="waveform-bar" style="height:18px"></div><div class="waveform-bar" style="height:10px"></div><div class="waveform-bar" style="height:20px"></div><div class="waveform-bar" style="height:12px"></div><div class="waveform-bar" style="height:16px"></div><div class="waveform-bar" style="height:8px"></div><div class="waveform-bar" style="height:20px"></div><div class="waveform-bar" style="height:14px"></div><div class="waveform-bar" style="height:10px"></div><div class="waveform-bar" style="height:18px"></div><div class="waveform-bar" style="height:6px"></div><div class="waveform-bar" style="height:12px"></div><div class="waveform-bar" style="height:16px"></div>
+            </div>
+            <span class="audio-time">00:00</span>
+          </div>
+        </div>
+
+        <div class="edit-btn">Edit check-in</div>
+      </div>
+      <div class="tabbar">
+        <div class="tab-item active"><div class="tab-icon">📅</div>Calendar</div>
+        <div class="tab-item"><div class="tab-icon">✓</div>Check in</div>
+        <div class="tab-item"><div class="tab-icon">📊</div>Insights</div>
+        <div class="tab-item"><div class="tab-icon">⚙</div>Settings</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER -->
+  <div class="col">
+    <div class="col-label">After</div>
+    <div class="phone">
+      <div class="navbar">
+        <div class="nav-back">‹</div>
+        <div class="nav-title">SAT · 27 JUNE</div>
+        <div class="nav-edit">✏</div>
+      </div>
+      <div class="content">
+        <div>
+          <div class="big-title">Great · Charged · Present</div>
+          <div class="meta">14:24 · 0:50</div>
+        </div>
+
+        <!-- Glyph row — size 30 (between 26 and 36) -->
+        <div class="glyph-row">
+          <div class="glyph-item">
+            <span class="icon" style="font-size:30px;color:#6E9A58">🌳</span>
+            <span class="icon-label" style="color:var(--green)">Great</span>
+          </div>
+          <div class="glyph-item">
+            <span class="icon" style="font-size:30px;color:#E8B255">⚡</span>
+            <span class="icon-label">Charged</span>
+          </div>
+          <div class="glyph-item">
+            <span class="icon" style="font-size:30px;color:#5B9BD5">🎯</span>
+            <span class="icon-label">Present</span>
+          </div>
+        </div>
+
+        <!-- 1. Medications -->
+        <div class="card">
+          <div class="eyebrow">Medications</div>
+          <div class="med-row">
+            <span style="font-size:18px;color:var(--med)">💊</span>
+            <span style="color:var(--text);font-size:15px">Elvanse 20 mg</span>
+          </div>
+        </div>
+
+        <!-- 2. Sleep -->
+        <div class="card">
+          <div class="eyebrow">Sleep</div>
+          <div class="tag-flow">
+            <span class="tag tag-sleep">💤 6h sleep</span>
+          </div>
+        </div>
+
+        <!-- 3. Emotions -->
+        <div class="card">
+          <div class="eyebrow">Emotions</div>
+          <div class="tag-flow">
+            <span class="tag tag-emotion">♥ Grateful</span>
+            <span class="tag tag-emotion">♥ Anxious</span>
+            <span class="tag tag-emotion">♥ Frustrated</span>
+          </div>
+        </div>
+
+        <!-- 4. Side Effects -->
+        <div class="card">
+          <div class="eyebrow">Side Effects</div>
+          <div class="tag-flow">
+            <span class="tag tag-side-effect">🩹 Dry Mouth</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="transcript-header">
+            <div class="eyebrow" style="margin-bottom:0">Transcript</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="status-pill">Completed</span>
+              <span class="chevron">∨</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="eyebrow">Audio</div>
+          <div class="audio-row">
+            <div class="play-btn">▶</div>
+            <div class="waveform">
+              <div class="waveform-bar" style="height:8px"></div><div class="waveform-bar" style="height:14px"></div><div class="waveform-bar" style="height:18px"></div><div class="waveform-bar" style="height:10px"></div><div class="waveform-bar" style="height:20px"></div><div class="waveform-bar" style="height:12px"></div><div class="waveform-bar" style="height:16px"></div><div class="waveform-bar" style="height:8px"></div><div class="waveform-bar" style="height:20px"></div><div class="waveform-bar" style="height:14px"></div><div class="waveform-bar" style="height:10px"></div><div class="waveform-bar" style="height:18px"></div><div class="waveform-bar" style="height:6px"></div><div class="waveform-bar" style="height:12px"></div><div class="waveform-bar" style="height:16px"></div>
+            </div>
+            <span class="audio-time">00:00</span>
+          </div>
+        </div>
+
+        <div class="edit-btn">Edit check-in</div>
+        <div class="delete-btn">Delete check-in</div>
+      </div>
+      <div class="tabbar">
+        <div class="tab-item active"><div class="tab-icon">📅</div>Calendar</div>
+        <div class="tab-item"><div class="tab-icon">✓</div>Check in</div>
+        <div class="tab-item"><div class="tab-icon">📊</div>Insights</div>
+        <div class="tab-item"><div class="tab-icon">⚙</div>Settings</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /row -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SECTION 2 — LOG DOSE SHEET: RESTYLED
+     ════════════════════════════════════════════════════════ -->
+<h2>Log Dose — Apple Form → App design system</h2>
+
+<div class="row">
+
+  <!-- BEFORE: Apple Form -->
+  <div class="col">
+    <div class="col-label">Before (Apple Form)</div>
+    <div class="phone">
+      <div class="old-nav">
+        <span style="color:#30d158;font-size:16px">Cancel</span>
+        <span style="color:white;font-size:17px;font-weight:600">Log Dose</span>
+        <span style="color:#8a8a8e;font-size:16px">Save</span>
+      </div>
+      <div class="form-wrap">
+        <div class="form-header">Medication</div>
+        <div class="form-cell" style="flex-direction:column;align-items:flex-start;gap:8px;padding:12px 16px">
+          <div>
+            <span class="form-chip">Concerta</span>
+            <span class="form-chip">Ritalin</span>
+            <span class="form-chip">Elvanse</span>
+            <span class="form-chip">Vyvanse</span>
+          </div>
+        </div>
+        <div class="form-cell"><span>Name</span></div>
+        <div style="height:8px;background:#111"></div>
+        <div class="form-header">Dose</div>
+        <div class="form-cell"><span>Dose (optional)</span></div>
+        <div style="height:8px;background:#111"></div>
+        <div class="form-header">Effect duration</div>
+        <div class="form-cell"><span>10</span><span class="form-cell-hint">hours</span></div>
+        <div style="height:8px;background:#111"></div>
+        <div class="form-header">Taken at</div>
+        <div class="form-cell"><span>Time</span><span style="color:#5B9BD5;font-size:16px;font-family:monospace">01:23</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AFTER: App style -->
+  <div class="col">
+    <div class="col-label">After (App design system)</div>
+    <div class="phone">
+      <div style="background:var(--bg)">
+        <div class="drag-handle"></div>
+        <div class="sheet-nav">
+          <div class="close-btn">✕</div>
+          <div class="sheet-title">Log Dose</div>
+          <div class="save-btn">Save</div>
+        </div>
+        <div class="content">
+
+          <!-- Medication -->
+          <div>
+            <div class="section-label">Medication</div>
+            <div class="input-card">
+              <div class="chip-row">
+                <div class="chip">Concerta</div>
+                <div class="chip">Ritalin</div>
+                <div class="chip selected">Elvanse</div>
+                <div class="chip">Vyvanse</div>
+              </div>
+              <div class="card-divider"></div>
+              <div class="field-row">
+                <span class="field-value">Elvanse</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dose -->
+          <div>
+            <div class="section-label">Dose</div>
+            <div class="input-card">
+              <div class="field-row">
+                <span class="field-label">Dose</span>
+                <span class="field-value">20 mg</span>
+              </div>
+              <div class="card-divider"></div>
+              <div class="field-row">
+                <span class="field-label">Onset</span>
+                <span class="field-hint">≈ 30 min</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Effect Duration -->
+          <div>
+            <div class="section-label">Effect Duration</div>
+            <div class="input-card">
+              <div class="field-row">
+                <span class="field-label">Hours</span>
+                <span class="field-value">10</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Taken At -->
+          <div>
+            <div class="section-label">Taken At</div>
+            <div class="input-card">
+              <div class="field-row">
+                <span class="field-label">Time</span>
+                <span class="time-pill">01:23</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /row -->
+
+</body>
+</html>
