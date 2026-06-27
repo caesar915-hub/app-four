@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftData
 
 /// Orchestrates the post-transcription pipeline: model download (if needed) → ADHD summarization → save.
 /// Created by CheckInViewModel after transcription completes. Progress is reflected on the persisted
