@@ -23,10 +23,6 @@ final class RecordingDetailViewModel {
         retryTask?.cancel()
     }
 
-    deinit {
-        retryTask?.cancel()
-    }
-
     func toggleFavorite() {
         store.toggleFavorite(recording)
     }
@@ -49,11 +45,6 @@ final class RecordingDetailViewModel {
         recording.summaryStatus = SummaryStatus.notGenerated.rawValue
         store.save()
         await generateSummary()
-    }
-
-    func startRegenerate() {
-        summaryTask?.cancel()
-        summaryTask = Task { await self.regenerateSummary() }
     }
 
     func startRegenerate() {
