@@ -16,6 +16,44 @@ Sources of truth, not memory:
 
 ---
 
+## 2026-06-24 20:12–12:49 · spec + plan + tasks — Insights weekday-average signal strips · feat/028-weekday-signals
+
+**Code changes**
+- _Major (feat)_
+  - `da9e8e22` feat(028): weekday-average signal strips in Insights
+  - `f07b3dd0` feat(024/025): QA round + closed check-in ring (300pt, actions inside)
+  - `85fb5cc1` feat(023): DayCard redesign — SF typography, no-pill rows, no-disc header + calendar push-to-detail
+  - `b9ad1fa6` feat(025): closed ring 300pt — green-dominant, amber at 6 o'clock, idle actions inside ring
+  - `48b16958` feat(024): QA round — calendar/check-in/settings mechanical fixes
+  - `c2800be4` feat(daycard): spec-023 redesign — SF typography + no-pill rows + no-disc header
+  - `7bde98f9` feat(nlp): port recall-improved English extractor (supersedes PR #11)
+- _Fixes_
+  - `82350ed0` fix(whisper): tighten model-ready check to weights/ subdir, not mlmodelc skeleton
+  - `9bf406ac` fix(whisper): guard localPath against partially-downloaded model directory
+  - `9daf3596` fix(settings): Paper & Pollen theming — cream rows, paper gutter, green pills
+  - `d15e10c9` fix(daycard): calmer expand — anchored header title + ease curve
+- _refactor_
+  - `8e74e7b0` refactor(nlp): address extractor review — precompiled matching, scan-back sleep guard, clock-time fix
+- _docs_
+  - `5535ecf5` docs(028): spec + plan + tasks — Insights weekday-average signal strips
+  - `fd583f82` docs(024): spec + plan + tasks — calendar/check-in/settings QA round
+  - `d92821ad` docs: codify 'invoke Swift skills before SwiftUI code' in CLAUDE.md
+
+**gh actions**
+- PR #21 merged `feat/024-calendar-checkin-settings-qa` — "feat(024/025): QA round + closed check-in ring (300pt, actions inside)"
+- PR #20 merged `feat/daycard-v8` — "feat(023): DayCard redesign — SF typography, no-pill rows, no-disc header + calendar push-to-detail"
+- PR #17 merged `feat/spm-packages` — "fix(settings): Paper & Pollen theming — cream rows, paper gutter, green pills"
+- PR #15 merged `fix/022-view-audit-remediation` — "fix(022): view-layer audit remediation — P1+P2 + modern-API polish"
+- PR #13 merged `fix/nlp-english-recall` — "feat(nlp): port recall-improved English extractor (supersedes PR #11)"
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  82350ed0 [main]
+/Users/caesargrey/Projects/app-four-spm                                              5535ecf5 [feat/028-weekday-signals]
+```
+
+---
+
 ## 2026-06-26 00:33 · Calendar → recording detail · feat/daycard-v8 (→ PR #18)
 
 **Code changes**
