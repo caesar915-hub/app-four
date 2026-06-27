@@ -16,6 +16,30 @@ Sources of truth, not memory:
 
 ---
 
+## 2026-06-27 03:15–13:00 · no-op button at AX text sizes — show plain Text, not Button · fix/026-audit-critical-fixes
+
+**Code changes**
+- _Fixes_
+  - `f7d7bd2c` fix(026): no-op button at AX text sizes — show plain Text, not Button
+  - `4f5fead0` fix(026): remove duplicate deinit + startRegenerate in RecordingDetailViewModel
+  - `659eceb3` fix(026): audit-critical fixes — concurrency, view mechanics, and accessibility
+- _docs_
+  - `52469592` docs(worklog): regenerate — spec-028 implementation session
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  51f70a9a [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              f7d7bd2c [fix/026-audit-critical-fixes]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
+
 ## 2026-06-24 20:12–12:49 · spec + plan + tasks — Insights weekday-average signal strips · feat/028-weekday-signals
 
 **Code changes**
