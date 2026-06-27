@@ -3,13 +3,13 @@
 ## Implementation Tasks
 
 - [x] Create SpecKit files (spec.md, plan.md, tasks.md)
-- [ ] Add `weekdayLabel: String?` to `SignalBead` + update `signalStrips` call
-- [ ] Add `weekdaySignalStrips` computed property to `InsightsViewModel+Signals.swift`
-- [ ] Update `SignalStripsView.swift` — HStack, glyphs, weekday labels, optional tap
-- [ ] Update `InsightsView.swift` — subtitle + call site
-- [ ] Write 6 unit tests in `InsightsViewModelTests.swift`
-- [ ] Build passes
-- [ ] All 6 tests green
+- [x] Add `weekdayLabel: String?` to `SignalBead` + update `signalStrips` call
+- [x] Add `weekdaySignalStrips` computed property to `InsightsViewModel+Signals.swift`
+- [x] Update `SignalStripsView.swift` — HStack, glyphs, weekday labels, optional tap
+- [x] Update `InsightsView.swift` — subtitle + call site
+- [x] Write 6 unit tests in `InsightsViewModelTests.swift`
+- [ ] Build passes (owner)
+- [ ] All 6 tests green (owner)
 
 ## Unit Tests (write before implementation)
 
