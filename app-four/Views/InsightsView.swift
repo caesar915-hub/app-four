@@ -162,13 +162,11 @@ struct InsightsView: View {
         VStack(spacing: 0) {
             InsightsSectionHeader(
                 title: "Your month in three signals",
-                subtitle: "Each bead is one check-in day, in order"
+                subtitle: "Average by weekday — this month"
             )
             .opacity(headerOpacity(.signals))
-            SignalStripsView(strips: viewModel.signalStrips) { date in
-                viewModel.selectedDay = viewModel.calendarDay(for: date)
-            }
-            .padding(.top, Spacing.s)
+            SignalStripsView(strips: viewModel.weekdaySignalStrips)
+                .padding(.top, Spacing.s)
             sleepDeferredChip
                 .padding(.top, Spacing.m)
         }

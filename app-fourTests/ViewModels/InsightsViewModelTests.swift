@@ -191,4 +191,58 @@ struct InsightsViewModelTests {
         #expect(c[1].title == "Energy × mood")
         #expect(c[2].title == "Sleep × mood")
     }
+
+    // MARK: - weekdaySignalStrips
+
+    // June 2 2025 = Monday (weekday 2), June 4 = Wednesday (4), June 6 = Friday (6)
+
+    @Test func weekdayStrips_groupsByWeekday() {
+        add(day: 2, mood: "good") // Monday only
+        let mood = vm().weekdaySignalStrips.first { $0.kind == .mood }!
+        #expect(mood.beads.count == 7)
+        let mo = mood.beads.first { $0.weekdayLabel == "Mo" }!
+        #expect((mo.level as? MoodLevel) == .good)
+        for bead in mood.beads where bead.weekdayLabel != "Mo" {
+            #expect(bead.level == nil)
+        }
+    }
+
+    @Test func weekdayStrips_averagesRoundUp() {
+        // okay(3) + good(4) on Wednesday → avg 3.5 → Int(3.5.rounded()) = 4 → good
+        add(day: 4, mood: "okay")
+        add(day: 4, mood: "good")
+        let we = vm().weekdaySignalStrips.first { $0.kind == .mood }!
+            .beads.first { $0.weekdayLabel == "We" }!
+        #expect((we.level as? MoodLevel) == .good)
+    }
+
+    @Test func weekdayStrips_averagesHalfRounds() {
+        // flat(2) + okay(3) on Friday → avg 2.5 → Int(2.5.rounded()) = 3 → okay
+        add(day: 6, mood: "flat")
+        add(day: 6, mood: "okay")
+        let fr = vm().weekdaySignalStrips.first { $0.kind == .mood }!
+            .beads.first { $0.weekdayLabel == "Fr" }!
+        #expect((fr.level as? MoodLevel) == .okay)
+    }
+
+    @Test func weekdayStrips_emptyMonthAllNil() {
+        let mood = vm().weekdaySignalStrips.first { $0.kind == .mood }!
+        #expect(mood.beads.allSatisfy { $0.level == nil })
+    }
+
+    @Test func weekdayStrips_slotOrder() {
+        add(day: 1, mood: "okay")
+        let mood = vm().weekdaySignalStrips.first { $0.kind == .mood }!
+        #expect(mood.beads.first?.weekdayLabel == "Mo")
+        #expect(mood.beads.last?.weekdayLabel == "Su")
+    }
+
+    @Test func weekdayStrips_allThreeKinds() {
+        add(day: 2, mood: "good", energy: "alert", focus: "sharp")
+        let strips = vm().weekdaySignalStrips
+        #expect(strips.count == 3)
+        #expect(strips.map(\.kind).contains(.mood))
+        #expect(strips.map(\.kind).contains(.energy))
+        #expect(strips.map(\.kind).contains(.focus))
+    }
 }
