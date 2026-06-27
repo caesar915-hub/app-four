@@ -13,9 +13,12 @@ enum EvalFloors {
     static let emotions        = (precision: 0.920, recall: 0.647)
     static let activities      = (precision: 0.280, recall: 0.409)
     static let meds            = (precision: 0.980, recall: 0.980)
-    static let sleepHours      = (precision: 0.980, recall: 0.266)
+    // Ratcheted PR #13: sleep-hours parser broadened (spelled-out numbers, "and a half",
+    // hrs/hr/h, "sleep N"); side-effect phrasings added (jaw clench / racing heart /
+    // appetite reduction). Observed − 0.02.
+    static let sleepHours      = (precision: 0.980, recall: 0.550)
     static let topics          = (precision: 0.880, recall: 0.763)
-    static let sideEffectFlag  = (precision: 0.730, recall: 0.409)
+    static let sideEffectFlag  = (precision: 0.730, recall: 0.410)
 }
 
 struct ExtractionEvalTests {
