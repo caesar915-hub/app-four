@@ -19,7 +19,7 @@ enum ModelConstants {
 }
 
 enum SettingsKeys {
-    static let medicalPromptEnabled = "medicalPromptEnabled"
+    nonisolated static let medicalPromptEnabled = "medicalPromptEnabled"
 }
 
 extension UserDefaults {

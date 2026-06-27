@@ -214,7 +214,7 @@ struct ExportServiceImpl: ExportService {
 /// auto-generates a random nonce per seal and includes the auth tag in `combined`,
 /// so no nonce is ever set or reused by hand. Pure value-in/value-out → `Sendable`,
 /// safe to run on a detached task.
-private func seal(_ archive: JournalArchive) throws -> ExportResult {
+private nonisolated func seal(_ archive: JournalArchive) throws -> ExportResult {
     let plaintext = try JSONEncoder().encode(archive)
     let key = SymmetricKey(size: .bits256)
     let sealed = try AES.GCM.seal(plaintext, using: key)
