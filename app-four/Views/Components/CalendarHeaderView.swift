@@ -46,13 +46,16 @@ struct CalendarHeaderView: View {
 
     private var header: some View {
         HStack(spacing: Spacing.xs) {
-            Group {
-                if forceWeek {
-                    expandButton
-                } else {
-                    expandButton
-                        .accessibilityHint(effectiveExpanded ? "Collapse to week" : "Expand to month")
-                }
+            if forceWeek {
+                // At AX text sizes the month grid is force-collapsed; the button does
+                // nothing, so render plain text to avoid a no-op interactive element.
+                Text(monthLabel)
+                    .font(Typography.headline)
+                    .foregroundStyle(.primary)
+                    .frame(minHeight: Metrics.minTapTarget, alignment: .leading)
+            } else {
+                expandButton
+                    .accessibilityHint(effectiveExpanded ? "Collapse to week" : "Expand to month")
             }
             Spacer()
         }
