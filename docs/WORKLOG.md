@@ -8,11 +8,32 @@ for *what's next*, see [BACKLOG.md](BACKLOG.md). Blocks are newest-on-top, one p
 session. Code changes are grouped by Conventional-Commit type. Generated from `git log`,
 `git log --merges`, `gh pr list`, `git worktree list`, `git tag`.
 
-Sources of truth, not memory:
-- Code changes → `git log <range> --pretty='%h %ad %s'`
-- Git actions → `git log --merges`, `git tag`, `git reflog`
-- gh actions → `gh pr list --json number,title,headRefName,mergeable,createdAt,mergedAt`
-- Worktrees → `git worktree list`
+## 2026-06-27 13:18–13:27 · weekday-average signal strips in Insights (#23) · main
+
+**Code changes**
+- _Major (feat)_
+  - `22c37cbe` feat(028): weekday-average signal strips in Insights (#23)
+- _Fixes_
+  - `bfa578d3` fix(026): audit-critical UI fixes — concurrency, view mechanics, and accessibility
+- _Tests_
+  - `51f70a9a` test(nlp): port sleep/side-effect recall tests from PR #11 + ratchet floors
+- _docs_
+  - `b666ae79` docs: worklog + backlog — fix/026 shipped to main (PR #22)
+
+**Git actions**
+- `bfa578d3` fix(026): audit-critical UI fixes — concurrency, view mechanics, and accessibility
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  22c37cbe [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b666ae79 [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
 
 ---
 
