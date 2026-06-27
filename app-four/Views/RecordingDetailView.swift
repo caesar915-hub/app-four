@@ -27,13 +27,10 @@ struct RecordingDetailView: View {
             VStack(alignment: .leading, spacing: Spacing.l) {
                 titleBlock
                 if hasSignals { signalGlyphRow }
-                ADHDSummarySection(
-                    recording: viewModel.recording,
-                    onRegenerate: { viewModel.startRegenerate() }
-                )
+                ADHDSummarySection(recording: viewModel.recording)
                 transcriptSection
                 audioCard
-                editButton
+                deleteButton
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Spacing.l)
@@ -49,17 +46,21 @@ struct RecordingDetailView: View {
                 Text(navDate).cardEyebrow()
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Button(role: .destructive) {
-                        showDeleteConfirm = true
-                    } label: {
-                        Label("Delete check-in", systemImage: "trash")
-                    }
+                Button {
+                    editViewModel = ExtractionReviewViewModel(
+                        recording: viewModel.recording,
+                        store: store,
+                        onComplete: { [self] _ in editViewModel = nil }
+                    )
                 } label: {
-                    Image(systemName: "ellipsis")
+                    Image(systemName: "pencil")
+                        .font(Typography.subheadline)
                         .foregroundStyle(Theme.textPrimary)
+                        .frame(width: 30, height: 30)
+                        .background(Theme.cardBackground, in: Circle())
+                        .overlay(Circle().strokeBorder(Theme.separator, lineWidth: 1))
                 }
-                .accessibilityLabel("More options")
+                .accessibilityLabel("Edit check-in")
             }
         }
         .trackScreen("RecordingDetailView")
@@ -131,7 +132,7 @@ struct RecordingDetailView: View {
 
     private func glyphSummaryItem(_ kind: GlyphSignal, level: Int?, label: String) -> some View {
         VStack(spacing: Spacing.xs) {
-            SignalGlyph(kind, level: level, size: 26, decorative: true)
+            SignalGlyph(kind, level: level, size: 30, decorative: true)
             Text(label)
                 .font(Typography.label)
                 .foregroundStyle(Theme.textSecondary)
@@ -233,17 +234,15 @@ struct RecordingDetailView: View {
         .card()
     }
 
-    // MARK: - Edit (single primary action)
+    // MARK: - Delete (visible destructive action)
 
-    private var editButton: some View {
-        Button("Edit check-in") {
-            editViewModel = ExtractionReviewViewModel(
-                recording: viewModel.recording,
-                store: store,
-                onComplete: { [self] _ in editViewModel = nil }
-            )
+    private var deleteButton: some View {
+        Button("Delete check-in", role: .destructive) {
+            showDeleteConfirm = true
         }
-        .buttonStyle(.primary)
+        .buttonStyle(.plain)
+        .foregroundStyle(Theme.danger)
+        .frame(maxWidth: .infinity)
         .padding(.top, Spacing.s)
     }
 }
