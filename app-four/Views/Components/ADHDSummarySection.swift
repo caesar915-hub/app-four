@@ -60,7 +60,8 @@ struct ADHDSummarySection: View {
             } else if let hours = recording.sleepHours {
                 let label = hours == hours.rounded() ? "\(Int(hours))h sleep" : "\(hours)h sleep"
                 return DisplayTag(id: "sleep", label: label,
-                                  icon: "moon.fill", color: Palette.sleepIndigo)
+                                  icon: "moon.fill", color: Palette.sleepIndigo,
+                                  glyph: GlyphBadge(kind: .sleep))
             }
             return nil
         }()
