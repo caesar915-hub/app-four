@@ -8,6 +8,28 @@ for *what's next*, see [BACKLOG.md](BACKLOG.md). Blocks are newest-on-top, one p
 session. Code changes are grouped by Conventional-Commit type. Generated from `git log`,
 `git log --merges`, `gh pr list`, `git worktree list`, `git tag`.
 
+## 2026-06-27 13:29–17:50 · Merge branch 'main' of https://github.com/caesar915-hub/app-four · main
+
+**Code changes**
+- _Major (feat)_
+  - `517609ab` feat(027): recording detail UX pass — 4 info cards, pencil toolbar, delete button, Log Dose restyle
+- _Fixes_
+  - `b068a37d` fix(027): sleepHours branch missing GlyphBadge — restore parity with original extraTags
+  - `e97e5502` fix(concurrency): nonisolate three declarations for SWIFT_DEFAULT_ACTOR_ISOLATION=MainActor
+  - `2fb66bbd` fix: add missing import SwiftData to ProcessingViewModel
+- _docs_
+  - `1fd187fe` docs(027): DEVLOG entry — spec-027 shipped to feat/027-recording-detail-ux-pass PR #24
+  - `8e1aa055` docs(claude): require /code-review + device QA before any PR merge
+  - `9e6c5930` docs(worklog): regenerate — spec-026 + spec-028 shipped to main (PRs #22, #23)
+- _other_
+  - `95de74e4` Merge branch 'main' of https://github.com/caesar915-hub/app-four
+  - `df3f66cb` Merge pull request #24 from caesar915-hub/feat/027-recording-detail-ux-pass
+
+**gh actions**
+- PR #24 merged `feat/027-recording-detail-ux-pass` — "feat(027): recording detail UX pass — 4 info cards, pencil toolbar, delete button, Log Dose restyle"
+
+---
+
 ## 2026-06-27 13:18–13:27 · weekday-average signal strips in Insights (#23) · main
 
 **Code changes**
