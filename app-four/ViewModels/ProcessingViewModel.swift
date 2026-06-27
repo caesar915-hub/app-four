@@ -48,8 +48,18 @@ final class ProcessingViewModel {
     private func run(rawText: String, audioFileName: String, fillOnly: Bool = false) async {
         guard !Task.isCancelled else { return }
 
-        // Locate the recording up front so we can record both success and failure on it.
-        guard let recording = store.recordings.first(where: { $0.audioFileName == audioFileName }) else {
+        var descriptor = FetchDescriptor<Recording>(
+            predicate: #Predicate { $0.audioFileName == audioFileName }
+        )
+        descriptor.fetchLimit = 1
+        let fetched: [Recording]
+        do {
+            fetched = try store.context.fetch(descriptor)
+        } catch {
+            AppLogger.log("ProcessingViewModel: fetch failed for \(audioFileName): \(error)")
+            return
+        }
+        guard let recording = fetched.first else {
             AppLogger.log("ProcessingViewModel: could not locate Recording with audioFileName \(audioFileName)")
             return
         }

@@ -46,30 +46,42 @@ struct CalendarHeaderView: View {
 
     private var header: some View {
         HStack(spacing: Spacing.xs) {
-            Button {
-                guard !forceWeek else { return }
-                withAnimation(reduceMotion ? nil : Motion.smooth) { isExpanded.toggle() }
-            } label: {
-                HStack(spacing: Spacing.xs) {
-                    Text(monthLabel)
-                        .font(Typography.headline)
-                        .foregroundStyle(.primary)
-                    if !forceWeek {
-                        Image(systemName: "chevron.right")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Theme.textSecondary)
-                            .rotationEffect(.degrees(effectiveExpanded ? 90 : 0))
-                            .accessibilityHidden(true)   // decorative; the month text is the label
-                    }
-                }
-                .frame(minHeight: Metrics.minTapTarget, alignment: .leading)   // ≥44pt tap target (HIG)
-                .contentShape(Rectangle())
+            if forceWeek {
+                // At AX text sizes the month grid is force-collapsed; the button does
+                // nothing, so render plain text to avoid a no-op interactive element.
+                Text(monthLabel)
+                    .font(Typography.headline)
+                    .foregroundStyle(.primary)
+                    .frame(minHeight: Metrics.minTapTarget, alignment: .leading)
+            } else {
+                expandButton
+                    .accessibilityHint(effectiveExpanded ? "Collapse to week" : "Expand to month")
             }
-            .buttonStyle(.plain)
-            .accessibilityHint(forceWeek ? "" : (effectiveExpanded ? "Collapse to week" : "Expand to month"))
-
             Spacer()
         }
+    }
+
+    private var expandButton: some View {
+        Button {
+            guard !forceWeek else { return }
+            withAnimation(reduceMotion ? nil : Motion.smooth) { isExpanded.toggle() }
+        } label: {
+            HStack(spacing: Spacing.xs) {
+                Text(monthLabel)
+                    .font(Typography.headline)
+                    .foregroundStyle(.primary)
+                if !forceWeek {
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Theme.textSecondary)
+                        .rotationEffect(.degrees(effectiveExpanded ? 90 : 0))
+                        .accessibilityHidden(true)   // decorative; the month text is the label
+                }
+            }
+            .frame(minHeight: Metrics.minTapTarget, alignment: .leading)   // ≥44pt tap target (HIG)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
     private var weekdayCaps: some View {

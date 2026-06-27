@@ -7,9 +7,11 @@ struct RecordingDetailView: View {
     @State private var editViewModel: ExtractionReviewViewModel?
     @State private var isTranscriptExpanded = false
     @State private var pendingDelete = false
+    @State private var showDeleteConfirm = false
     @Environment(\.dismiss) private var dismiss
     @Environment(RecordingStore.self) private var store
     @Environment(AppServices.self) private var services
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     init(recording: Recording, store: RecordingStore, services: AppServices) {
         self.recording = recording
@@ -27,7 +29,7 @@ struct RecordingDetailView: View {
                 if hasSignals { signalGlyphRow }
                 ADHDSummarySection(
                     recording: viewModel.recording,
-                    onRegenerate: { Task { await viewModel.regenerateSummary() } }
+                    onRegenerate: { viewModel.startRegenerate() }
                 )
                 transcriptSection
                 audioCard
@@ -49,8 +51,7 @@ struct RecordingDetailView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
                     Button(role: .destructive) {
-                        pendingDelete = true
-                        dismiss()
+                        showDeleteConfirm = true
                     } label: {
                         Label("Delete check-in", systemImage: "trash")
                     }
@@ -70,6 +71,12 @@ struct RecordingDetailView: View {
         // doing it while the sheet is mounted re-renders a detached object and
         // traps in SwiftData (BackingData "detached without resolving faults").
         .onDisappear { if pendingDelete { viewModel.delete() } }
+        .confirmationDialog("Delete this check-in?", isPresented: $showDeleteConfirm, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                pendingDelete = true
+                dismiss()
+            }
+        }
     }
 
     // MARK: - Title + meta
@@ -139,7 +146,7 @@ struct RecordingDetailView: View {
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: Spacing.m) {
             Button {
-                withAnimation(.easeInOut(duration: 0.2)) {
+                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
                     isTranscriptExpanded.toggle()
                 }
             } label: {
@@ -151,10 +158,12 @@ struct RecordingDetailView: View {
                         .font(Typography.caption)
                         .foregroundStyle(Theme.textSecondary)
                         .rotationEffect(.degrees(isTranscriptExpanded ? 180 : 0))
-                        .animation(.easeInOut(duration: 0.2), value: isTranscriptExpanded)
+                        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: isTranscriptExpanded)
+                        .accessibilityHidden(true)
                 }
             }
             .buttonStyle(.plain)
+            .accessibilityHint(isTranscriptExpanded ? "Collapse transcript" : "Expand transcript")
 
             if viewModel.recording.status == .failed {
                 Button("Retry transcription") {

@@ -61,4 +61,37 @@ struct ProcessingViewModelTests {
         let r = try #require(store.recordings.first { $0.audioFileName == "fail.m4a" })
         #expect(r.summaryStatus == SummaryStatus.failed.rawValue)
     }
+
+    // MARK: FR-006 — FetchDescriptor lookup (RED→GREEN)
+
+    /// RED test: insert via context directly (bypasses addRecording/loadRecordings so
+    /// store.recordings stays stale). The old first(where:) lookup misses it and bails;
+    /// the FetchDescriptor implementation finds it and completes the pipeline.
+    @Test func pipelineLocatesRecordingViaFetchWhenArrayIsStale() async throws {
+        let r = Recording(audioFileName: "stale-026.m4a", title: "Stale")
+        store.context.insert(r)
+        try store.context.save()
+
+        await viewModel.processRawTranscription(
+            "Mood is good today.",
+            duration: 10,
+            language: nil,
+            audioFileName: "stale-026.m4a"
+        ).value
+
+        #expect(r.summaryStatus == SummaryStatus.completed.rawValue)
+    }
+
+    // MARK: FR-006a — Not-found does not crash or mutate (characterization)
+
+    @Test func pipelineWithNoMatchingFileDoesNotMutateOrCrash() async {
+        await viewModel.processRawTranscription(
+            "Some text",
+            duration: 5,
+            language: nil,
+            audioFileName: "ghost-026.m4a"
+        ).value
+
+        #expect(store.recordings.isEmpty)
+    }
 }

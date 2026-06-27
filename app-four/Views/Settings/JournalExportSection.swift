@@ -32,6 +32,7 @@ struct RecoveryKeySheet: View {
     let onDone: () -> Void
 
     @State private var copied = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         NavigationStack {
@@ -63,7 +64,7 @@ struct RecoveryKeySheet: View {
                             .expirationDate: Date().addingTimeInterval(120)
                         ]
                     )
-                    withAnimation(Motion.smooth) { copied = true }
+                    withAnimation(reduceMotion ? nil : Motion.smooth) { copied = true }
                 } label: {
                     Label(copied ? "Copied" : "Copy key", systemImage: copied ? "checkmark" : "doc.on.doc")
                 }
