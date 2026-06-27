@@ -134,15 +134,14 @@ struct CheckInView: View {
         .onChange(of: viewModel.saveFailed) { _, failed in
             if failed { Haptics.error() }
         }
-        // FR-014: show the calm approach cue exactly once on the rising edge, then fade it.
-        .onChange(of: viewModel.isApproachingCap) { _, approaching in
-            guard approaching, !viewModel.hasShownCapApproach else { return }
+        // FR-016: structured task lifetime tied to the view; cancelled automatically
+        // when id changes again or the view disappears.
+        .task(id: viewModel.isApproachingCap) {
+            guard viewModel.isApproachingCap, !viewModel.hasShownCapApproach else { return }
             viewModel.markCapApproachShown()
             withAnimation(reduceMotion ? nil : Motion.smooth) { showCapApproachCue = true }
-            Task {
-                try? await Task.sleep(for: .seconds(4))
-                withAnimation(reduceMotion ? nil : Motion.smooth) { showCapApproachCue = false }
-            }
+            try? await Task.sleep(for: .seconds(4))
+            withAnimation(reduceMotion ? nil : Motion.smooth) { showCapApproachCue = false }
         }
         // FR-010: announce each prompt advance to VoiceOver once the active-voice gate is quiet.
         .onChange(of: viewModel.currentPromptIndex) { _, _ in

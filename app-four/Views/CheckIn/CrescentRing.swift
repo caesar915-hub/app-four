@@ -6,12 +6,24 @@ struct CrescentRing: View {
     var isActive: Bool = false
     var lineWidth: CGFloat = 22
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var spinning = false
-    @State private var breathing = false
+    var body: some View {
+        AnimatedArc(isActive: isActive, lineWidth: lineWidth)
+            .id(isActive)
+            .accessibilityHidden(true)
+    }
+}
 
-    private var arc: some View {
-        Circle()
+/// Child view that owns animation state. `.id(isActive)` on the parent forces
+/// SwiftUI to destroy and recreate this view on every isActive flip, resetting
+/// `animating` to false and re-triggering onAppear with the correct animation.
+private struct AnimatedArc: View {
+    let isActive: Bool
+    let lineWidth: CGFloat
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var animating = false
+
+    var body: some View {
+        let arc = Circle()
             .trim(from: 0, to: 1.0)
             .stroke(
                 AngularGradient(
@@ -27,26 +39,21 @@ struct CrescentRing: View {
                 style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
             )
             .padding(lineWidth / 2)
-    }
 
-    var body: some View {
-        Group {
-            if isActive {
-                arc
-                    .rotationEffect(.degrees(spinning ? 360 : 0))
-                    .animation(reduceMotion ? nil : .linear(duration: 7).repeatForever(autoreverses: false),
-                               value: spinning)
-                    .onAppear { spinning = true }
-            } else {
-                arc
-                    .scaleEffect(breathing ? 1.035 : 1.0)
-                    .opacity(breathing ? 1.0 : 0.94)
-                    .animation(reduceMotion ? nil : .easeInOut(duration: 5).repeatForever(autoreverses: true),
-                               value: breathing)
-                    .onAppear { breathing = true }
-            }
+        if isActive {
+            arc
+                .rotationEffect(.degrees(animating ? 360 : 0))
+                .animation(reduceMotion ? nil : .linear(duration: 7).repeatForever(autoreverses: false),
+                           value: animating)
+                .onAppear { animating = true }
+        } else {
+            arc
+                .scaleEffect(animating ? 1.035 : 1.0)
+                .opacity(animating ? 1.0 : 0.94)
+                .animation(reduceMotion ? nil : .easeInOut(duration: 5).repeatForever(autoreverses: true),
+                           value: animating)
+                .onAppear { animating = true }
         }
-        .accessibilityHidden(true)
     }
 }
 

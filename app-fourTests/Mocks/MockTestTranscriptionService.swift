@@ -4,7 +4,16 @@ import Foundation
 actor MockTestTranscriptionService: TranscriptionService {
     var shouldThrowError = false
     var mockTranscriptText = "This is a mock transcript."
-    
+    var loadModelHangs = false
+
+    func setLoadModelHangs(_ v: Bool) { loadModelHangs = v }
+
+    func loadModel() async throws {
+        if loadModelHangs {
+            while !Task.isCancelled { await Task.yield() }
+        }
+    }
+
     func transcribe(audioURL url: URL) async throws -> AsyncStream<TranscriptionSegmentDTO> {
         if shouldThrowError {
             throw NSError(domain: "MockError", code: 1, userInfo: nil)

@@ -83,6 +83,7 @@ struct MedicationLogSheet: View {
                             )
                     }
                     .buttonStyle(.plain)
+                    .accessibilityAddTraits(selected ? [.isSelected] : [])
                 }
             }
             .padding(.vertical, 2)

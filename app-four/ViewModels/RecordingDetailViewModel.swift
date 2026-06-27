@@ -10,12 +10,21 @@ final class RecordingDetailViewModel {
     @ObservationIgnored private let summarizationService: SummarizationService
     @ObservationIgnored private let transcriptionService: TranscriptionService
     @ObservationIgnored private var retryTask: Task<Void, Never>?
+    private(set) var summaryTask: Task<Void, Never>?
 
     init(recording: Recording, store: RecordingStore, services: AppServices) {
         self.recording = recording
         self.store = store
         self.summarizationService = services.summarizationService
         self.transcriptionService = services.transcriptionService
+    }
+
+    deinit {
+        retryTask?.cancel()
+    }
+
+    deinit {
+        retryTask?.cancel()
     }
 
     func toggleFavorite() {
@@ -40,6 +49,16 @@ final class RecordingDetailViewModel {
         recording.summaryStatus = SummaryStatus.notGenerated.rawValue
         store.save()
         await generateSummary()
+    }
+
+    func startRegenerate() {
+        summaryTask?.cancel()
+        summaryTask = Task { await self.regenerateSummary() }
+    }
+
+    func startRegenerate() {
+        summaryTask?.cancel()
+        summaryTask = Task { await self.regenerateSummary() }
     }
 
     func updateTitle(_ newTitle: String) {

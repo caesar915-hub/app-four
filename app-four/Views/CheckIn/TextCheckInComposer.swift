@@ -11,6 +11,7 @@ struct TextCheckInComposer: View {
     @Environment(\.dismiss) private var dismiss
     @State private var draft = CheckInDraft()
     @State private var showSaveFailed = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(spacing: 0) {
@@ -36,11 +37,12 @@ struct TextCheckInComposer: View {
                 Image(systemName: "xmark")
                     .font(Typography.subheadline)
                     .foregroundStyle(Theme.textPrimary)
-                    .frame(width: 30, height: 30)
+                    .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
                     .background(Theme.cardBackground, in: Circle())
                     .overlay(Circle().strokeBorder(Theme.separator, lineWidth: 1))
             }
             .accessibilityLabel("Close")
+            .contentShape(.circle)
 
             Spacer()
             Text("Type a check-in")
@@ -48,7 +50,7 @@ struct TextCheckInComposer: View {
                 .foregroundStyle(Theme.textPrimary)
             Spacer()
 
-            Color.clear.frame(width: 30, height: 30)
+            Color.clear.frame(width: Metrics.minTapTarget, height: Metrics.minTapTarget)
         }
         .padding(.horizontal, Spacing.l)
         .padding(.vertical, Spacing.m)
@@ -115,7 +117,7 @@ struct TextCheckInComposer: View {
                     .transition(.opacity)
             }
         }
-        .animation(Motion.smooth, value: showSaveFailed)
+        .animation(reduceMotion ? nil : Motion.smooth, value: showSaveFailed)
     }
 }
 

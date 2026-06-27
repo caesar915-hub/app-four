@@ -75,6 +75,7 @@ final class CheckInViewModel {
     private var timerTask: Task<Void, Never>?
     private var levelTask: Task<Void, Never>?
     private(set) var transcriptionTask: Task<Void, Never>?
+    private(set) var modelPreloadTask: Task<Void, Never>?
 
     var timeString: String {
         AccessibilityHelpers.formatDuration(elapsedTime)
@@ -140,7 +141,7 @@ final class CheckInViewModel {
 
                 // Preload model off the main actor while the user records
                 // so post-recording transcription doesn't need to reload.
-                Task.detached(priority: .utility) { [transcriptionService] in
+                self.modelPreloadTask = Task.detached(priority: .utility) { [transcriptionService] in
                     do {
                         try await transcriptionService.loadModel()
                     } catch {
@@ -331,6 +332,7 @@ final class CheckInViewModel {
     @discardableResult
     func cancelRecording() -> Task<Void, Never> {
         self.stopTasks()
+        modelPreloadTask?.cancel()
         UIApplication.shared.isIdleTimerDisabled = false
         return Task {
             await audioService.cancelRecording()
@@ -348,7 +350,7 @@ final class CheckInViewModel {
         lastSavedRecording = nil
     }
 
-    private static func loadPromptInterval() -> TimeInterval {
+    @MainActor private static func loadPromptInterval() -> TimeInterval {
         let context = AppModelContainer.container.mainContext
         let descriptor = FetchDescriptor<AppSettings>()
         if let settings = try? context.fetch(descriptor).first {
@@ -436,11 +438,16 @@ final class CheckInViewModel {
         state = .done
     }
 
+    func advanceTick() {
+        guard !Task.isCancelled else { return }
+        elapsedTime += 0.1
+    }
+
     private func startTimer() {
         timerTask = Task {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 100_000_000) // 0.1s
-                self.elapsedTime += 0.1
+                self.advanceTick()
                 if self.elapsedTime >= self.maxDuration {
                     self.stopRecording()
                     break

@@ -40,6 +40,12 @@ struct ADHDSummarySection: View {
                 }
             }
 
+            if recording.summaryStatus == SummaryStatus.failed.rawValue {
+                Text("Summary failed — tap ↻ to retry")
+                    .font(Typography.body)
+                    .foregroundStyle(Theme.textSecondary)
+            }
+
             if !recording.summaryBullets.isEmpty {
                 VStack(alignment: .leading, spacing: Spacing.s) {
                     ForEach(Array(recording.summaryBullets.enumerated()), id: \.offset) { _, bullet in
@@ -98,7 +104,9 @@ struct ADHDSummarySection: View {
     // MARK: - Derived content
 
     private var hasSummaryContent: Bool {
-        !recording.summaryBullets.isEmpty || hasTags
+        recording.summaryStatus == SummaryStatus.failed.rawValue
+            || !recording.summaryBullets.isEmpty
+            || hasTags
     }
 
     private var hasTags: Bool { !extraTags.isEmpty }

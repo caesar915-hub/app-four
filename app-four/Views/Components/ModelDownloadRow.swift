@@ -58,6 +58,7 @@ struct ModelDownloadRow: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
+        .accessibilityAddTraits(.isButton)
         .accessibilityActions { accessibilityActions }
     }
 
