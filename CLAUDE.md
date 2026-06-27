@@ -44,6 +44,7 @@ Solo dev; all code written by Claude. PRs exist to give a review surface and kee
 - Trivial non-code changes (typos, `docs/BACKLOG.md`, `CLAUDE.md`) may go straight to `main` — no branch, no PR.
 - Build + tests must pass on the branch before opening a PR (see Process).
 - Open a PR for every code change; run `/code-review` on the diff and surface findings before merging. I approve/merge — no required reviewers, no branch protection.
+- **No PR is merged without both:** (1) `/code-review` completed and findings addressed, AND (2) manual human QA on device by the owner. Never merge on code review alone — device QA is non-negotiable.
 - Keep `main` always releasable: no half-finished work merged. One PR = one revertable feature.
 - When a commit on `main` is uploaded to TestFlight, tag it (`git tag v0.8.0`) so a tester's exact build is recoverable.
 - Don't let feature branches stack unmerged for long — flag growing merge-conflict risk.
