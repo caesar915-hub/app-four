@@ -38,8 +38,10 @@ struct CalendarLibraryView: View {
                 if let recording = viewModel.recording(for: id) {
                     RecordingDetailView(recording: recording, store: store, services: services)
                 } else {
-                    // Recording deleted out from under an open push → pop back to the list.
-                    Color.clear.onAppear { if !path.isEmpty { path.removeLast() } }
+                    // Unreachable: RecordingDetailView dismisses before deleting.
+                    // Do not mutate path inside navigationDestination/onAppear — it causes
+                    // "NavigationRequestObserver tried to update multiple times per frame".
+                    EmptyView()
                 }
             }
         }

@@ -132,6 +132,7 @@ final class AIModelServiceImpl: AIModelService {
 
     nonisolated static func findWhisperModelFolder(in base: URL) -> URL? {
         let fm = FileManager.default
+        guard fm.fileExists(atPath: base.path) else { return nil }
         guard let enumerator = fm.enumerator(
             at: base,
             includingPropertiesForKeys: [.isDirectoryKey],

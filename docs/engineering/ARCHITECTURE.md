@@ -1,61 +1,233 @@
-# WhisperNotesApp Architecture Document
+# Squirl Architecture
 
-_Last updated: 2026-06-14. Codebase target is `WhisperNotesApp`; the app ships as **Squirl** (display name)._
+_Last updated: 2026-06-28_
 
-This document outlines the architectural patterns, service interactions, design decisions, and machine learning model management for WhisperNotesApp.
+This document describes the architecture of Squirl: the layers that make up the app, how data flows between them, and the key design decisions that shape the codebase.
 
-## 1. High-Level Architecture
+---
 
-The application employs an **MVVM (Model-View-ViewModel)** architectural pattern augmented by a centralized **Store** and a **Dependency Injection (DI)** container.
+## Table of Contents
 
-- **Model Layer (`Models/`)**: Defines the data structures. `SwiftData` is used for persistence. The container schema is `Recording`, `TranscriptionSegment`, `ModelMetadata`, `AppSettings`, `RecordingTag`, and `MedicationEvent` (see `App/AppModelContainer.swift`).
-- **Store (`Store/RecordingStore.swift`)**: Wraps the `ModelContext` to provide a single, thread-safe access point for CRUD operations. This prevents scattered database logic across the app.
-- **Service Layer (`Services/`)**: Contains protocol-driven local backend services. They handle low-level operations like audio recording, file storage, AI model downloading, and ML inference.
-- **ViewModel Layer (`ViewModels/`)**: Coordinates between Views, Services, and the Store. They are marked `@Observable` and run on the `@MainActor`. They handle state changes, error catching, and async task orchestration.
-- **View Layer (`Views/`)**: Pure SwiftUI views that observe ViewModels or the Store. They do not contain complex business logic.
+- [Overview](#overview)
+- [Architectural Layers](#architectural-layers)
+- [Dependency Injection](#dependency-injection)
+- [Data Flow](#data-flow)
+- [Concurrency Model](#concurrency-model)
+- [Privacy & Security](#privacy--security)
+- [Machine Learning Pipeline](#machine-learning-pipeline)
+- [Key Design Decisions](#key-design-decisions)
+- [Module Map](#module-map)
 
-## 2. Frontend-Backend Interaction
+---
 
-Because WhisperNotesApp is an entirely **local, offline-first application**, the "backend" consists of local services and CoreML inference engines rather than a remote API. 
+## Overview
 
-**Dependency Injection Flow**:
-1. At app launch, `AppDependencies` creates global singletons for the Store and all Services (e.g., `AudioRecordingServiceImpl`, `WhisperKitTranscriptionService`).
-2. These services are bundled into an `@Observable` class called `AppServices`.
-3. `AppServices` is injected into the SwiftUI view hierarchy using `.environment(AppDependencies.services)`.
-4. Views instantiate their ViewModels and pass the required services from the environment into the ViewModel's initializer.
+Squirl is an offline-first iOS app built with SwiftUI and SwiftData. All user data — audio recordings, transcripts, medication events, and extracted signals — stays on device. The app has no remote API, no cloud sync, and no analytics SDK.
 
-**Asynchronous Communication**:
-- **Async/Await**: ViewModels interact with services using Swift Concurrency. 
-- **Streaming**: Services return `AsyncStream<T>` for incremental work — live audio levels during recording (`audioLevelStream`) and decoded transcription segments (`TranscriptionSegmentDTO`) emitted as a *finished* recording is transcribed. The ViewModel iterates the stream in a background `Task` and updates its published properties, which in turn drive the UI. (Real-time transcription of the live mic was removed: its `AVAudioEngine` tap muted the recorder.)
-- **Task Management**: ViewModels maintain references to active `Task`s. If a user cancels an operation (like recording), the ViewModel calls `.cancel()` on the task, and the service cleans up resources.
+The architecture follows **MVVM + centralized Store + protocol-oriented services**:
 
-## 3. Design Decisions
+- **Views** are pure SwiftUI and contain no business logic.
+- **ViewModels** own screen-level state and coordinate between Views, the Store, and Services.
+- **Store** (`RecordingStore`) is the single source of truth for recordings and mutations.
+- **Services** implement low-level capabilities behind protocols so they can be mocked or swapped.
+- **Models** are SwiftData `@Model` objects persisted to a local store.
 
-- **Strict Protocol-Oriented Services**: Every core capability (Audio, Storage, Transcription, Summarization) is hidden behind a protocol. This makes it trivial to swap out implementations or inject mocks (like `MockTranscriptionService`) for testing and SwiftUI Previews. The `TranscriptionService` protocol already has two real backends — `WhisperKitTranscriptionService` (the wired default) and an alternate `SpeechTranscriptionService` (Apple Speech framework) — selectable at the DI seam in `AppDependencies`.
-- **Offline First for Privacy**: To ensure user privacy (especially for medical/journaling contexts), all ML processing happens on-device. No audio or transcriptions are sent to a server. The SwiftData store directory is also flagged `isExcludedFromBackupKey`, keeping sensitive transcript/medication data out of iCloud backups.
-- **Debug-Only Seeded Data**: On `#if DEBUG` builds, `MockDataGenerator` seeds ~10 days of synthetic recordings and medication events into an empty store (and a separate in-memory `previewContainer` for SwiftUI Previews), so Insights/Calendar/Library can be exercised without real check-ins. Never present in release builds.
-- **Eager Memory Management (RAM Isolation)**: Whisper is heavy, so `WhisperKitTranscriptionService.unloadModel()` is called *immediately* after a transcription finishes, explicitly freeing Metal/CoreML RAM before any downstream work runs.
-- **Model Availability**: Filesystem presence is the absolute source of truth for whether the Whisper model is installed; SwiftData `ModelMetadata` mirrors it.
-- **Timeouts and Fallbacks**: Asynchronous tasks like transcription are wrapped in `withThrowingTaskGroup` with explicit timeouts. If the model hangs or takes too long, the task throws a timeout error, preventing the UI from locking up indefinitely and allowing the user to retry later.
+---
 
-## 4. How Models are Loaded and Used
+## Architectural Layers
 
-Transcription uses one primary on-device model — **OpenAI Whisper Small**. Summarization/extraction is **not** model-based: it runs on Apple's `NaturalLanguage` framework via `NLNoteExtractor` (instant, no download). See [Services/NoteExtraction/README.md](../../app-four/Services/NoteExtraction/README.md).
+```
+┌─────────────────────────────────────────────────────────────┐
+│                         Views                               │
+│  CheckInView  ·  CalendarLibraryView  ·  InsightsView  ·   │
+│  RecordingDetailView  ·  SettingsView  ·  Onboarding       │
+├─────────────────────────────────────────────────────────────┤
+│                      ViewModels                             │
+│  CheckInViewModel  ·  ProcessingViewModel  ·  InsightsVM   │
+├─────────────────────────────────────────────────────────────┤
+│                         Store                               │
+│                    RecordingStore                           │
+├─────────────────────────────────────────────────────────────┤
+│                       Services                              │
+│  Audio  ·  Storage  ·  Transcription  ·  Summarization   │
+│  AI Model Management  ·  Connectivity  ·  Export           │
+├─────────────────────────────────────────────────────────────┤
+│                        Models                               │
+│  SwiftData: Recording, MedicationEvent, AppSettings, ...   │
+└─────────────────────────────────────────────────────────────┘
+```
 
-**Model Management (`AIModelServiceImpl`)**:
-- Manages the download and lifecycle of the Whisper model (via `WhisperKit`) into the app's Library directory.
+### Views (`app-four/Views/`)
 
-**Whisper (`WhisperKitTranscriptionService`)**:
-- **Loading**: Loaded asynchronously using `WhisperKit`. Can be pre-loaded in the background while the user is still recording to eliminate wait time when they hit stop.
-- **Usage**: Transcribes a completed `URL` audio file, emitting `TranscriptionSegmentDTO`s as an `AsyncStream` while it decodes. Uses a specialized `DecodingOptions` prompt heavily biased towards ADHD vocabulary and medication names to improve domain-specific accuracy.
-- **Unloading**: Explicitly set to `nil` upon completion to release Metal/CoreML resources.
+- Pure SwiftUI.
+- Observe `@Observable` ViewModels or SwiftData `@Model` objects.
+- Never access singletons directly; dependencies arrive via SwiftUI Environment.
+- Complex views are decomposed into small subviews in `Views/Components/`.
 
-**Summarization (`NLSummarizationService` → `NLNoteExtractor`)**:
-- On-device, deterministic lexicon + `NaturalLanguage` extraction. No CoreML model, no download, runs off the main actor.
+### ViewModels (`app-four/ViewModels/`)
 
-## 5. Isolation of Concerns
+- Marked `@Observable` and `@MainActor`.
+- Own transient UI state (recording progress, sheet presentation, validation).
+- Delegate heavy work to services via `async/await`.
+- Persist results through `RecordingStore` or directly via `ModelContext`.
 
-- **Separation of State and Logic**: The Views only define *how* things look based on state. The ViewModels own the state and define *what* happens when a user taps a button.
-- **MainActor Enforcement**: All UI updates and SwiftData mutations are forced onto the `@MainActor` to prevent data races. Heavy lifting (transcription, file manipulation, downloading, NL extraction) happens off the main actor (e.g., `WhisperKitTranscriptionService` is an `actor`; `NLNoteExtractor` is a `nonisolated` value type run via `Task.detached`).
-- **Diagnostics Isolation**: Metrics and session snapshots (timing how long transcription takes, token counts) are handled by a dedicated `DiagnosticsStore`, ensuring telemetry code doesn't clutter business logic.
-- **File System Abstraction**: The ViewModels never construct file paths or deal with URLs directly. They ask `AudioFileStorageService` to persist audio, and the service returns an abstracted `Recording` object.
+### Store (`app-four/Store/`)
+
+- `RecordingStore` is the single access point for `Recording` CRUD and queries.
+- Loads recordings on init, handles mock-mode filtering, and recovers orphaned `.transcribing` states.
+- Posts `NotificationCenter` notifications (e.g., `.medicationEventsDidChange`) for cross-screen refresh.
+
+### Services (`app-four/Services/`)
+
+- Protocol-driven. Every capability is behind a protocol in `Services/Protocols.swift`.
+- Implementations are swapped in `AppDependencies.swift`.
+- Heavy services are actor-isolated; lightweight helpers are `Sendable` value types.
+
+### Models (`app-four/Models/`)
+
+- SwiftData `@Model` classes.
+- `Recording` is the central entity; `MedicationEvent`, `TranscriptionSegment`, `RecordingTag`, `AppSettings`, and `ModelMetadata` support it.
+- JSON-encoded arrays are stored as strings for complex sub-structures (e.g., `summaryBulletsJSON`).
+
+---
+
+## Dependency Injection
+
+Injection happens at the composition root (`app-four/App/SquirlApp.swift`):
+
+```swift
+RootContainerView(...)
+    .modelContainer(AppModelContainer.container)
+    .environment(AppDependencies.store)
+    .environment(AppDependencies.medicationBarViewModel)
+    .environment(AppDependencies.screenTracker)
+    .environment(AppDependencies.services)
+    .environment(\.diagnosticsStore, AppDependencies.diagnosticsStore)
+```
+
+`AppDependencies` is a `@MainActor` enum that constructs singletons:
+
+```swift
+enum AppDependencies {
+    static let store = RecordingStore(context: AppModelContainer.container.mainContext)
+    static let audioService: AudioRecordingService = AudioRecordingServiceImpl()
+    static let transcriptionService: TranscriptionService = sharedWhisperKitService
+    static let summarizationService: SummarizationService = NLSummarizationService()
+    static let services = AppServices(...)
+}
+```
+
+Views read the bundle through `@Environment(AppServices.self)`. This rule keeps views and ViewModels decoupled from concrete implementations and makes unit testing and SwiftUI previews straightforward.
+
+---
+
+## Data Flow
+
+### Voice Check-In Flow
+
+1. `CheckInViewModel` asks `AudioRecordingService` to start recording.
+2. User stops recording; service returns `(fileURL, duration)`.
+3. `AudioFileStorageService` moves the file to the persistent `Recordings/` directory and creates a `Recording` with status `.recorded`.
+4. `CheckInViewModel` asks `TranscriptionService` to transcribe the file.
+5. `TranscriptionService` emits `TranscriptionSegmentDTO`s via `AsyncStream`; the ViewModel appends them to `Recording.fullTranscriptText`.
+6. When transcription completes, `SummarizationService` extracts structured signals from the transcript.
+7. `Recording.applySummary(_:)` writes the extraction result onto the model in one place.
+8. `Recording.setMedicationEvents(from:durationHours:context:)` creates or updates `MedicationEvent` rows.
+9. `RecordingStore.save()` persists changes and notifies observers.
+
+### Pending-Transcription Queue
+
+If a recording is captured before the Whisper model is downloaded, it is saved with status `.pendingTranscription`. On app launch, foreground, and download completion, `PendingTranscriptionService.drainIfModelReady()` processes the queue serially.
+
+### Text Check-In Flow
+
+1. User selects mood/energy/focus, optionally types a note, and picks medications.
+2. `RecordingStore.createCheckInNote(_:)` (or `persistCheckInNote(_:)`) creates a `Recording` with status `.completed` and user-authoritative scalar values.
+3. If a note is present, `SummarizationService` runs `applySummary(fillOnly: true)` so NLP fills only the fields the user left blank.
+
+---
+
+## Concurrency Model
+
+- **Main actor** for all UI updates and SwiftData mutations.
+- **Actor-isolated services** for stateful heavy work (`WhisperKitTranscriptionService` is an `actor`).
+- **`Task.detached`** for CPU-bound NLP extraction (`NLNoteExtractor`).
+- **`AsyncStream`** for progress events (audio levels, transcription segments, download progress).
+- **Serial test execution** — the suite is not parallel-safe because it shares the in-memory SwiftData container and file system.
+
+---
+
+## Privacy & Security
+
+- All audio, transcripts, and extracted signals stay on device.
+- Whisper transcription and NLP extraction run locally.
+- The SwiftData store directory is marked `isExcludedFromBackupKey` to keep health data out of iCloud backups.
+- `ExportService` produces encrypted exports before any data leaves the device.
+- No analytics SDK or remote logging is wired.
+
+---
+
+## Machine Learning Pipeline
+
+### Transcription
+
+- **Model:** OpenAI Whisper Small via `WhisperKit`.
+- **Service:** `WhisperKitTranscriptionService` (actor-isolated).
+- **Download:** `AIModelServiceImpl` downloads the model to the app Library directory. Filesystem presence is the source of truth.
+- **Prompt:** `DecodingOptions` include ADHD-biased vocabulary and medication names to improve domain accuracy.
+- **Memory:** `unloadModel()` is called immediately after transcription to free Metal/CoreML RAM.
+
+### Extraction
+
+- **Engine:** Apple `NaturalLanguage` + custom lexicon-driven `NLNoteExtractor`.
+- **Service:** `NLSummarizationService` adapts the extractor output to `SummaryResult`.
+- **Characteristics:** Deterministic, instant, no model download, runs off the main actor.
+
+---
+
+## Key Design Decisions
+
+See [`docs/ADRs/`](../ADRs/) for full decision records. Summary:
+
+| Decision | Rationale |
+|----------|-----------|
+| MVVM + Store + DI | Keeps views testable and business logic centralized. |
+| Protocol-oriented services | Enables mocks, previews, and backend swaps without view changes. |
+| SwiftData for persistence | Native iOS 17 solution with SwiftUI integration; schema migrations are a known pre-launch gap. |
+| Offline-first / on-device ML | Privacy requirement for health/journaling data. |
+| Whisper Small + deterministic NLP | Whisper gives accurate transcription; deterministic NLP keeps extraction explainable and offline. |
+| `@Observable` ViewModels | Modern SwiftUI observation with granular updates. |
+| Environment-based DI | No singleton access from views; dependencies are explicit and replaceable. |
+| Debug-only mock seeding | Keeps release builds clean while giving developers populated timelines. |
+
+---
+
+## Module Map
+
+### App Target (`app-four/`)
+
+| Directory | Responsibility |
+|-----------|----------------|
+| `App/` | Composition root, model container, package re-exports |
+| `Models/` | SwiftData schema and enums |
+| `Services/` | Protocols and implementations |
+| `Store/` | Central state and dependency wiring |
+| `ViewModels/` | Screen coordinators |
+| `Views/` | SwiftUI screens and components |
+| `DesignSystem/` | App-specific chrome and overlays |
+| `Utils/` | Cross-cutting helpers |
+| `Resources/` | Info.plist and bundled resources |
+
+### Local Packages (`Packages/`)
+
+| Package | Responsibility |
+|---------|----------------|
+| `SquirlSignals` | Level enums shared across app and design system |
+| `SquirlDesignSystem` | Tokens, typography, palette, signal glyphs, reusable components |
+
+### Supporting Projects
+
+| Project | Responsibility |
+|---------|----------------|
+| `WhisperCLI/` | macOS SPM executable for WhisperKit experimentation |
+| `SandboxApp/` | XcodeGen-driven design-system sandbox |

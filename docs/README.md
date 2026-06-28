@@ -1,39 +1,55 @@
-# app-four docs
+# Squirl Documentation
 
-Map of the project's documentation. Source of truth for *where things live*.
+This directory contains the engineering, product, and design documentation for **Squirl** (Xcode target `app-four`).
 
-> Agent rules are in [`/CLAUDE.md`](../CLAUDE.md) (must stay at repo root — auto-loaded).
+## Quick Links
 
-## Planning (kept at `docs/` root — `/recap` and CLAUDE hard-code these paths)
-- [BACKLOG.md](BACKLOG.md) — every feature/idea by stage (💡 Idea → 📐 Plan → 🔨 In code → ✅ Shipped) + milestones + ship checklist.
-- [DEVLOG.md](DEVLOG.md) — chronological *why* narrative; written by `/recap`.
-- [TODO.md](TODO.md) — foundational / pre-launch action list (the load-bearing gaps).
+| Document | Audience | Purpose |
+|----------|----------|---------|
+| [`../README.md`](../README.md) | New team members & stakeholders | Project overview, build instructions, high-level architecture |
+| [`ONBOARDING.md`](ONBOARDING.md) | New engineers | Day-one setup, codebase tour, first tasks |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md) | All engineers | Branching, PRs, code review, style conventions |
+| [`engineering/ARCHITECTURE.md`](engineering/ARCHITECTURE.md) | All engineers | System architecture, data flow, layer responsibilities |
+| [`ui/ARCHITECTURE.md`](ui/ARCHITECTURE.md) | Frontend engineers | UI patterns, navigation, state flow, accessibility |
+| [`ui/VIEW_MODELS.md`](ui/VIEW_MODELS.md) | All engineers | ViewModel catalog and responsibilities |
+| [`ui/COMPONENTS.md`](ui/COMPONENTS.md) | Frontend engineers | Reusable component catalog |
+| [`engineering/SERVICES.md`](engineering/SERVICES.md) | Backend/service engineers | Service protocols, implementations, DI seams |
+| [`engineering/DATA_MODEL.md`](engineering/DATA_MODEL.md) | All engineers | SwiftData schema, relationships, migration notes |
+| [`engineering/DEVELOPMENT.md`](engineering/DEVELOPMENT.md) | All engineers | Build, run, test, debug, simulator workflows |
+| [`engineering/TESTING.md`](engineering/TESTING.md) | All engineers | Testing strategy, conventions, CI notes |
+| [`engineering/OPERATIONS.md`](engineering/OPERATIONS.md) | Release engineers | Release process, app store, troubleshooting runbook |
+| [`ADRs/`](ADRs/) | All engineers | Architecture Decision Records |
+| [`product/README.md`](product/README.md) | Product & engineering | PRD-lite, persona, success metrics, roadmap |
+| [`../DESIGN.md`](../DESIGN.md) | Design & frontend engineers | Design system "Paper & Pollen" |
+| [`design/UI_REQUIREMENTS.md`](design/UI_REQUIREMENTS.md) | Design & frontend engineers | Per-screen UI/UX requirements |
+| [`BACKLOG.md`](BACKLOG.md) | Product & engineering | Milestones and feature stages |
+| [`TODO.md`](TODO.md) | Engineering | Load-bearing pre-launch gaps |
 
-## product/
-Product definition — PRD, persona, success metric, monetization.
+## Per-Screen UI Docs
 
-> **Canonical product docs live in the organizer, not here.** The master PRD and FSD
-> are maintained in `~/Projects/app-two-organizer/product/` (`MASTER-PRD.md`,
-> `MASTER-FSD.md`), seeded 2026-06-24 from this repo's `impeccable-design/PRODUCT.md`,
-> `DESIGN.md`, constitution, BACKLOG, and the per-feature `specs/`. This repo remains
-> the source of truth for the **per-feature** specs under `specs/NNN-*/`; the organizer
-> consolidates them into the app-wide master docs. Update the masters there when specs
-> change materially.
+UI documentation is centralized under [`docs/ui/`](ui/):
 
-## engineering/
-- [ARCHITECTURE.md](engineering/ARCHITECTURE.md) — MVVM + Store + DI, SwiftData schema, ML model management.
-- [next-ml.md](engineering/next-ml.md) — strategy for replacing/augmenting the NLP extraction layer.
-- _Planned:_ `migrations.md` (SwiftData versioning — P0), `privacy.md`, `testing.md`.
+- [`docs/ui/README.md`](ui/README.md) — UI docs index
+- [`docs/ui/ARCHITECTURE.md`](ui/ARCHITECTURE.md) — UI architecture and patterns
+- [`docs/ui/VIEW_MODELS.md`](ui/VIEW_MODELS.md) — ViewModel catalog
+- [`docs/ui/COMPONENTS.md`](ui/COMPONENTS.md) — Component catalog
+- [`docs/ui/screens/check-in.md`](ui/screens/check-in.md) — Check-in screen
+- [`docs/ui/screens/library.md`](ui/screens/library.md) — Calendar / Library screen
+- [`docs/ui/screens/insights.md`](ui/screens/insights.md) — Insights screen
+- [`docs/ui/screens/settings.md`](ui/screens/settings.md) — Settings screen
+- [`docs/ui/screens/recording-detail.md`](ui/screens/recording-detail.md) — Recording detail screen
+- [`docs/ui/screens/extraction-review.md`](ui/screens/extraction-review.md) — Extraction review screen
+- [`app-four/Views/README.md`](../app-four/Views/README.md) — Views directory pointer
+- [`app-four/ViewModels/README.md`](../app-four/ViewModels/README.md) — ViewModels directory pointer
 
-## design/
-- [UI_REQUIREMENTS.md](design/UI_REQUIREMENTS.md) — design-system tokens + per-screen UI/UX requirements.
+## Documentation Conventions
 
-## superpowers/
-Skill-managed `specs/` (design specs) and `plans/` (implementation plans), dated. Left as-is.
+- **Subsystem docs live next to their code.** Example: `app-four/Services/NoteExtraction/README.md`.
+- **Engineering docs live under `docs/engineering/`.**
+- **Product docs live under `docs/product/`.**
+- **ADRs live under `docs/ADRs/`** and follow the format `NNN-short-title.md`.
+- **Archive is not authoritative.** Anything in `docs/archive/` may be outdated; verify against current code.
 
-## archive/
-Superseded docs kept for history. Not authoritative — verify against current code before trusting.
+## Updating Docs
 
----
-**Conventions:** subsystem READMEs live next to their code (e.g. `app-two/Services/NoteExtraction/README.md`), not here.
-Internal docs are kept out of the app source tree so they aren't bundled into the shipped `.app`.
+When you change architecture, service contracts, data models, UI structure, ViewModel responsibilities, or build/test workflows, update the corresponding document in the same PR. Docs that drift from code are worse than no docs.
