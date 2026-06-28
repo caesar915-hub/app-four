@@ -124,11 +124,11 @@ struct ExportServiceImpl: ExportService {
     @MainActor
     func export(from context: ModelContext) async throws -> ExportResult {
         let archive = try Self.snapshot(context)
-
-        // Serialize + seal off the main actor: JSON encode then AES-GCM seal.
-        // The archive is a `Sendable` value graph, so it crosses the boundary cleanly.
+        // Encode on the main actor where the @MainActor-isolated Codable conformance
+        // is valid, then cross the boundary with plain Data (Sendable) to seal.
+        let plaintext = try JSONEncoder().encode(archive)
         return try await Task.detached(priority: .userInitiated) {
-            try seal(archive)
+            try seal(plaintext)
         }.value
     }
 
@@ -214,8 +214,7 @@ struct ExportServiceImpl: ExportService {
 /// auto-generates a random nonce per seal and includes the auth tag in `combined`,
 /// so no nonce is ever set or reused by hand. Pure value-in/value-out → `Sendable`,
 /// safe to run on a detached task.
-private nonisolated func seal(_ archive: JournalArchive) throws -> ExportResult {
-    let plaintext = try JSONEncoder().encode(archive)
+private nonisolated func seal(_ plaintext: Data) throws -> ExportResult {
     let key = SymmetricKey(size: .bits256)
     let sealed = try AES.GCM.seal(plaintext, using: key)
     guard let combined = sealed.combined else {
