@@ -8,6 +8,28 @@ for *what's next*, see [BACKLOG.md](BACKLOG.md). Blocks are newest-on-top, one p
 session. Code changes are grouped by Conventional-Commit type. Generated from `git log`,
 `git log --merges`, `gh pr list`, `git worktree list`, `git tag`.
 
+## 2026-06-28 02:22–18:40 · Merge branch 'fix/ios17-compat' · main
+
+**Code changes**
+- _Fixes_
+  - `9a7d188c` fix(ios17): encode JournalArchive on main actor, pass Data to detached seal task
+  - `5aa44078` fix(ios17): replace ScrollPosition + delete README.md files causing build errors
+- _chore_
+  - `a9976afa` chore: lower SquirlSignals + SquirlDesignSystem packages to iOS 17.0
+  - `01b316d0` chore: lower deployment target to iOS 17.0
+- _other_
+  - `ade91e71` Merge branch 'fix/ios17-compat'
+
+**Git actions**
+- `ade91e71` Merge branch 'fix/ios17-compat'
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  ade91e71 [main]
+```
+
+---
+
 ## 2026-06-27 17:46–03:06 · lower SquirlSignals + SquirlDesignSystem packages to iOS 17. · main
 
 **Code changes**
