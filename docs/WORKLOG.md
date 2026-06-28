@@ -8,6 +8,37 @@ for *what's next*, see [BACKLOG.md](BACKLOG.md). Blocks are newest-on-top, one p
 session. Code changes are grouped by Conventional-Commit type. Generated from `git log`,
 `git log --merges`, `gh pr list`, `git worktree list`, `git tag`.
 
+## 2026-06-27 17:46–03:06 · lower SquirlSignals + SquirlDesignSystem packages to iOS 17. · main
+
+**Code changes**
+- _docs_
+  - `0f3300a1` docs(privacy): update contact email to icloud
+  - `97dbca22` docs: add privacy policy page for App Store Connect
+  - `84d184a8` docs: move spec-026/027/028 to Shipped; regenerate worklog
+  - `8e1aa055` docs(claude): require /code-review + device QA before any PR merge
+- _chore_
+  - `a9976afa` chore: lower SquirlSignals + SquirlDesignSystem packages to iOS 17.0
+  - `01b316d0` chore: lower deployment target to iOS 17.0
+  - `300703a7` chore: rename bundle ID to squirl-app.app-four, bump build number to 2
+- _other_
+  - `95de74e4` Merge branch 'main' of https://github.com/caesar915-hub/app-four
+
+**Git actions**
+- `95de74e4` Merge branch 'main' of https://github.com/caesar915-hub/app-four
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  a9976afa [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
 ## 2026-06-27 13:29–17:50 · Merge branch 'main' of https://github.com/caesar915-hub/app-four · main
 
 **Code changes**
