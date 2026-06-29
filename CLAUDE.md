@@ -1,3 +1,4 @@
+<!-- Created: 2026-06-14 23:59 (WEST) · Updated: 2026-06-29 17:01 (WEST) -->
 # Claude Behavior for app-four
 
 ## Role
@@ -20,6 +21,12 @@ Act as a senior iOS engineer and UX/UI designer. Be analytical and objective. Qu
 - No comments unless the WHY is non-obvious.
 - No backwards-compat shims, no dead code.
 - Never overwrite an existing file without explicit instruction.
+
+## Markdown files
+- Every `.md` file starts with a timestamp comment as its **first line**, above the H1:
+  `<!-- Created: YYYY-MM-DD HH:MM (TZ) · Updated: YYYY-MM-DD HH:MM (TZ) -->`
+- Set both fields when creating the file; bump `Updated` (never `Created`) on every edit. Get the time with `date "+%Y-%m-%d %H:%M %Z"`; recover an existing file's true `Created` with `git log --diff-filter=A --format=%ai -- <file> | tail -1`.
+- Exempt: generated/derived files whose body is produced by a script (e.g. `docs/WORKLOG.md`) — the generator owns the header; don't hand-stamp.
 
 ## Swift Skills (always invoke before producing Swift/SwiftUI code)
 - `swiftui-pro` — best practices, modern APIs, maintainability, performance
