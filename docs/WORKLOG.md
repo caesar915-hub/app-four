@@ -8,6 +8,29 @@ for *what's next*, see [BACKLOG.md](BACKLOG.md). Blocks are newest-on-top, one p
 session. Code changes are grouped by Conventional-Commit type. Generated from `git log`,
 `git log --merges`, `gh pr list`, `git worktree list`, `git tag`.
 
+## 2026-06-28 18:41–17:03 · require created/updated timestamps on all markdown files · main
+
+**Code changes**
+- _docs_
+  - `7848fcce` docs: require created/updated timestamps on all markdown files
+  - `20bd0b16` docs: record spec-023 typography reversal in CLAUDE.md
+  - `7ba84a70` docs: decouple app-four README from private docs path
+  - `a1987ab2` docs: regenerate WORKLOG after fix/ios17-compat merge
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  7848fcce [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
+
 ## 2026-06-28 02:22–18:40 · Merge branch 'fix/ios17-compat' · main
 
 **Code changes**
