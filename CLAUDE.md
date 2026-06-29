@@ -55,7 +55,8 @@ Solo dev; all code written by Claude. PRs exist to give a review surface and kee
 - When starting work, check the backlog first; when finishing a stage, move the item before reporting done.
 
 ## Design System
-- `DESIGN.md` (repo root) is the source of truth for all visual/UI decisions — aesthetic ("Paper & Pollen"), typography (Fraunces + DM Sans), color (signal ramps + medication purple), the signal glyph language (sprout/lightning/aperture; sleep bed icon, med capsule), spacing, layout, motion, and per-screen specs. Read it before writing or changing any SwiftUI. Don't deviate without explicit approval; flag mismatches in design/QA review.
+- `DESIGN.md` (repo root) is the source of truth for all visual/UI decisions — aesthetic ("Paper & Pollen"), typography (**native SF app-wide**; hierarchy via weight/size, not face), color (signal ramps + medication purple), the signal glyph language (sprout/lightning/aperture; sleep bed icon, med capsule), spacing, layout, motion, and per-screen specs. Read it before writing or changing any SwiftUI. Don't deviate without explicit approval; flag mismatches in design/QA review.
+  - Typography reversal (spec 023, 2026-06-26): the original Fraunces + DM Sans + IBM Plex Mono system was dropped for native SF — bundled faces, `UIAppFonts`, and `SquirlFonts` registration removed. Any Fraunces/DM Sans in `mockups/`, `html-mockups/`, or `SandboxApp/` is pre-reversal and not the shipping app. See DESIGN.md §typography.
 - Visual companion (HTML): `docs/superpowers/plans/2026-06-15-paper-pollen-design-system.html`.
 
 ## Session Start
