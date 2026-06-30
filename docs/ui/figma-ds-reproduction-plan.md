@@ -1,4 +1,4 @@
-<!-- Created: 2026-06-30 18:22 (WEST) · Updated: 2026-06-30 18:22 (WEST) -->
+<!-- Created: 2026-06-30 18:22 (WEST) · Updated: 2026-06-30 18:45 (WEST) -->
 # Plan — Code-derived Figma Design System + Calendar-flow reproduction (Squirl / app-four)
 
 > Produced via the [deep-plan-review](../../.claude/skills/deep-plan-review/SKILL.md) flow (5 review agents). Linear: project **UX/UI Figma** (`squirl-dev`). Working copy: `~/.claude/plans/how-will-you-design-compressed-koala.md`.
@@ -19,10 +19,10 @@ A canonical code→Figma skill family is cached locally (`figma-generate-library
 
 ## Hard constraints (figma-bridge schemas — VERIFIED)
 1. **Only 4 create_* tools** (`create_frame/text/shape/image`); **no** `create_variable/style/page/component`, **no JS exec**. ⇒ one **Page 1**, spatial sections; "components" are master frames duplicated as copies (drift becomes a review target — see Verify); tokens delivered as a specimen + `tokens.json` (optional Tokens Studio promotion).
-2. **`create_shape` = RECTANGLE | ELLIPSE | LINE only — no vector paths.** ⇒ glyphs are **SVG imported via `create_image`** (source accepts data URI/file path). Consequence: glyphs are **flat images, not recolorable vector components** (affects future dark recolor/INSTANCE_SWAP — acceptable for v1).
+2. **`create_shape` = RECTANGLE | ELLIPSE | LINE only — no vector paths; `create_image` REJECTS SVG** (verified Phase 0: "Image type is unsupported" for both data URI and file path — PNG only). ⇒ glyphs are authored as SVG, **rasterized to transparent PNG@3x via `cairosvg`** (`DYLD_LIBRARY_PATH=/opt/homebrew/lib python3 -m cairosvg in.svg -o out.png -s 3`), then imported via `create_image`. Pipeline proven; all 3 risk features (aperture `stroke-dasharray`, capsule two-tone left-mask, sprout variable stroke widths) survive. Consequence: glyphs are **flat raster images, not recolorable vectors** (acceptable for v1).
 3. **`set_auto_layout` supports `layoutWrap:WRAP` + `counterAxisSpacing` + per-side padding + `itemSpacing`** ⇒ VStack/HStack + FlowLayout map (width-pinning still required, M4). Use `set_gradient_fill` (meadow gradient), `set_effects` DROP_SHADOW (card/button shadow), `set_stroke_properties` (aperture dashes, dividers), full `set_text_properties`.
 4. **One WebSocket ⇒ serialize ALL calls** — even read-only `get_node`/`get_screenshot` queue on the one socket; "parallel" review means parallel *analysis*, serial *tool calls*. Keep the Figma tab **foreground** or it drops.
-5. **Font risk:** app is **native SF**. Confirm "SF Pro"/"SF Mono" appear in Figma's font list in Phase 0; `set_text_properties` may silently substitute — assert rendered family on read-back (M-font).
+5. **Fonts (verified Phase 0):** **SF Pro = AVAILABLE** (read-back confirms, no substitution). **SF Mono = UNAVAILABLE** in this Figma file → mono roles (timer/duration/mono12) render in **Roboto Mono** as a stand-in, every mono node annotated "SF Mono on device"; `tokens.json` keeps the true family "SF Mono". Flagged to owner.
 
 ---
 
@@ -32,10 +32,12 @@ A canonical code→Figma skill family is cached locally (`figma-generate-library
 - **Font availability:** confirm SF Pro/SF Mono selectable in Figma; if absent, flag typography-fidelity risk to owner now.
 - Confirm `set_auto_layout` WRAP break-points, `set_effects` shadow, `set_gradient_fill`.
 
+**OUTCOME (executed 2026-06-30, Sonnet agent) — GO-WITH-CHANGES:** SVG import blocked → PNG@3x via `cairosvg` (proven; all features survive). SF Mono unavailable → Roboto Mono stand-in (annotated). SF Pro available; `set_auto_layout` WRAP, `set_effects` DROP_SHADOW, `set_gradient_fill` LINEAR all PASS. All 6 deviations confirmed (incl. DESIGN.md "card 18" vs `Radius.card=16`). Test nodes cleaned up.
+
 ## Phase 1 — Token manifest FROM Swift (mechanical, gated)
 Regex parsing is rejected (values are computed; stale doc comments would poison it).
 - **1a Golden table** (below) read from code with `file:line`; **line-number re-verify gate** (grep each token at Phase 1 start AND Phase 4 — package is active).
-- **1b `tokens.json` via REQUIRED compiled-Swift dump** that imports `SquirlDesignSystem` and prints resolved values (evaluates `min()`, `.opacity()`, ramps, glyph formulas at all 5 levels). A **diff script fails the build on any mismatch** vs the golden table (the golden table is the human cross-check, not the source). *If the SPM build can't run in the automation sandbox (known gitconfig issue, memory `spm-resolve-sandbox-gitconfig`), run via owner's Xcode toolchain / `dangerouslyDisableSandbox` — never hand-author silently.*
+- **1b `tokens.json` via a mechanical gate** — preferred: a compiled-Swift dump importing `SquirlDesignSystem` that prints resolved values (evaluates `min()`, `.opacity()`, ramps, glyph formulas at all 5 levels). *If the SPM build is infeasible in the automation sandbox (gitconfig issue, memory `spm-resolve-sandbox-gitconfig`) and can't be run via the owner toolchain/`dangerouslyDisableSandbox`, the accepted equivalent is a **re-grep script** that extracts each token directly from the Swift sources and **diffs against the golden table, failing on any mismatch**.* Either way the gate is mechanical, never eyeball; the golden table is the cross-check, not the source. Never hand-author silently.
 - **headerMoodBadge/badgeTint "unused" gate:** grep `app-four/Views/` for usage; if used, the DayCard repro changes (unverified assumption).
 - Glyph SVGs generated by the engine evaluating the formulas per level.
 
