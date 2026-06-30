@@ -1,5 +1,34 @@
 # WORKLOG
 
+## 2026-06-29 17:07–16:14 · add Stable TestFlight channel (squirl-app.app-four.stable) · main
+
+**Code changes**
+- _Major (feat)_
+  - `35a7ef96` feat: add Stable TestFlight channel (squirl-app.app-four.stable)
+  - `e5491464` feat: add shared schemes app-four and app-four-stable
+  - `32339be1` feat: add AppIcon-Stable asset (desaturated variant for Stable TestFlight channel)
+  - `971fae64` feat: add Debug-Stable / Release-Stable build configurations for Stable TestFlight channel
+- _docs_
+  - `2fa2516e` docs: document Stable TestFlight channel in OPERATIONS.md and BACKLOG.md
+  - `272d7760` docs: regenerate WORKLOG for the docs-convention session
+
+**Git actions**
+- `35a7ef96` feat: add Stable TestFlight channel (squirl-app.app-four.stable)
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  35a7ef96 [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
+
 **Invariant:** every line here must reconcile with `git log` / `gh pr list`. If it doesn't,
 the generator is wrong — fix the generator, not the prose.
 
