@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Squirl · Calendar integration — the data flow</title>
+<style>
+  :root{
+    --paper:#F6F1E7; --card:#FCF8EF; --inset:#EFE8D8; --ink:#221E16;
+    --muted:#6A6354; --hair:#E3DAC7; --green:#4A6E3A; --green-fill:#5F8A4C;
+    --bronze:#8A5A12; --purple:#7E5CA8; --mood5:#2E8B57;
+    --z-base:1; --z-label:2; --z-arrow:3;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:-apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+    line-height:1.5;
+  }
+  .page{max-width:1420px; margin:0 auto; padding:clamp(28px,4vw,56px) clamp(20px,3vw,48px) 72px;}
+
+  /* ---------- header ---------- */
+  header h1{
+    font-size:clamp(30px,3.6vw,44px); font-weight:800; letter-spacing:-0.02em;
+    text-wrap:balance;
+  }
+  header .lede{
+    margin-top:10px; font-size:clamp(15px,1.4vw,18px); color:var(--ink);
+    max-width:62ch; text-wrap:pretty;
+  }
+  header .lede b{font-weight:700;}
+  .meta{margin-top:8px; font-size:12.5px; color:var(--muted);}
+
+  /* ---------- diagram frame ---------- */
+  .world{
+    margin-top:clamp(28px,3.5vw,44px);
+    display:grid; grid-template-columns:188px 104px minmax(0,1fr) 104px 178px;
+    align-items:stretch;
+  }
+
+  .zone-label{
+    font-size:12px; font-weight:700; letter-spacing:.04em; color:var(--muted);
+    position:absolute; top:4px; left:2px;
+  }
+
+  /* outside zones */
+  .outside{display:flex; flex-direction:column; justify-content:center; gap:10px; position:relative; padding-top:30px;}
+  .provider{
+    background:var(--inset); border:1px solid var(--hair); border-radius:12px;
+    padding:10px 12px; font-size:13.5px; font-weight:600;
+  }
+  .provider small{display:block; font-weight:400; font-size:12px; color:var(--muted);}
+  .no-server{
+    margin-top:14px; border:1px dashed var(--hair); border-radius:12px;
+    padding:10px 12px; font-size:13px; color:var(--muted); background:transparent;
+  }
+  .no-server b{color:var(--ink); display:block; font-size:13.5px;}
+  .no-server .strike{text-decoration:line-through; text-decoration-thickness:1.5px;}
+
+  .export-dest{
+    align-self:center; background:var(--inset); border:1px solid var(--hair);
+    border-radius:12px; padding:12px 14px; font-size:13.5px;
+  }
+  .export-dest b{display:block; font-size:14px;}
+  .export-dest small{color:var(--muted); font-size:12px; display:block; margin-top:4px;}
+
+  /* the device = the hero */
+  .device{
+    background:var(--card); border:2px solid var(--ink); border-radius:26px;
+    padding:18px 16px 20px; position:relative; z-index:var(--z-base);
+    box-shadow:0 18px 44px rgba(34,30,22,.10);
+  }
+  .device-tag{
+    position:absolute; top:-13px; left:26px; z-index:var(--z-label);
+    background:var(--ink); color:var(--paper); border-radius:999px;
+    font-size:12.5px; font-weight:700; letter-spacing:.03em; padding:4px 14px;
+  }
+  .device-sub{
+    font-size:12.5px; color:var(--muted); text-align:right; margin-bottom:12px;
+  }
+
+  .stages{
+    display:grid;
+    grid-template-columns:minmax(0,.95fr) 28px minmax(0,1fr) 28px minmax(0,1.05fr) 28px minmax(0,1fr);
+    align-items:stretch;
+  }
+  .stage{
+    background:var(--paper); border:1px solid var(--hair); border-radius:16px;
+    padding:14px 14px 12px; display:flex; flex-direction:column; gap:8px; min-width:0;
+  }
+  .stage h3{font-size:15px; font-weight:700; letter-spacing:-0.01em;}
+  .stage h3 small{display:block; font-weight:500; font-size:12px; color:var(--muted); margin-top:1px;}
+  .stage ul{list-style:none; display:flex; flex-direction:column; gap:5px; font-size:12.5px; color:var(--ink);}
+  .stage li{padding-left:14px; position:relative;}
+  .stage li::before{content:""; position:absolute; left:2px; top:.52em; width:5px; height:5px; border-radius:50%; background:var(--green-fill);}
+    .stage .foot{margin-top:auto; padding-top:8px; border-top:1px solid var(--hair); font-size:12px; color:var(--muted);}
+  .stage .foot b{color:var(--ink); font-weight:600;}
+
+  /* the little day card inside stage 4 */
+  .minicard{
+    background:color-mix(in srgb, var(--mood5) 24%, var(--card));
+    border:1px solid var(--hair); border-radius:12px; padding:9px 11px 8px;
+  }
+  .minicard .row{display:flex; align-items:baseline; gap:6px; font-weight:700; font-size:15px;}
+  .minicard .row .dow{font-size:11px; font-weight:600; color:var(--muted); letter-spacing:.05em;}
+  .minicard .ctx{
+    margin-top:6px; padding-top:6px; border-top:1px solid rgba(34,30,22,.12);
+    font-size:12px; color:var(--ink);
+  }
+  .minicard .ctx b{font-weight:650; color:var(--ink);}
+
+  /* connectors */
+  .conn{position:relative; align-self:center; height:64px; width:100%;}
+  .conn .bar{
+    position:absolute; top:50%; left:0; right:7px; height:0;
+    border-top:2.5px dashed var(--green-fill); opacity:.85;
+  }
+  .conn.flow .bar{
+    border-top:none; height:3px; border-radius:2px;
+    background:repeating-linear-gradient(90deg, var(--green-fill) 0 7px, transparent 7px 13px);
+    background-size:13px 3px; animation:dashflow 1.6s linear infinite;
+  }
+  .conn::after{
+    content:""; position:absolute; right:0; top:50%; transform:translateY(-50%);
+    border-left:9px solid var(--green-fill); border-top:6px solid transparent; border-bottom:6px solid transparent;
+  }
+  @keyframes dashflow{to{background-position:13px 0;}}
+
+  /* boundary-crossing connectors get labels */
+  .xconn{position:relative; align-self:center; height:110px; z-index:var(--z-arrow);}
+  .xconn .bar{
+    position:absolute; top:50%; left:-4px; right:7px; height:3px; border-radius:2px;
+    background:repeating-linear-gradient(90deg, var(--bronze) 0 7px, transparent 7px 13px);
+    background-size:13px 3px; animation:dashflow 2.2s linear infinite;
+  }
+  .xconn::after{
+    content:""; position:absolute; right:-2px; top:50%; transform:translateY(-50%);
+    border-left:10px solid var(--bronze); border-top:7px solid transparent; border-bottom:7px solid transparent;
+    z-index:var(--z-arrow);
+  }
+  .xconn .xlabel{
+    position:absolute; bottom:calc(50% + 12px); left:50%; transform:translateX(-50%);
+    font-size:10.5px; font-weight:700; letter-spacing:.02em; color:var(--bronze);
+    white-space:nowrap; text-align:center; line-height:1.3;
+    background:var(--paper); border:1px solid var(--hair); border-radius:8px; padding:3px 9px;
+  }
+  .xconn .xlabel small{display:block; font-weight:500; color:var(--muted); font-size:10px;}
+
+  /* ---------- boundary caption ---------- */
+  .boundary-note{
+    margin-top:18px; display:flex; gap:12px; align-items:flex-start;
+    background:var(--card); border:1px solid var(--hair); border-radius:16px; padding:14px 18px;
+  }
+  .boundary-note .shield{flex:none; width:30px; height:30px; margin-top:2px;}
+  .boundary-note p{font-size:14px; max-width:78ch; text-wrap:pretty;}
+  .boundary-note p b{font-weight:700;}
+
+  /* ---------- specimen band ---------- */
+  .band{margin-top:clamp(36px,4.5vw,56px);}
+  .band > h2{font-size:clamp(19px,2vw,24px); font-weight:800; letter-spacing:-0.015em; margin-bottom:4px;}
+  .band > .bandsub{font-size:13.5px; color:var(--muted); margin-bottom:16px; max-width:70ch;}
+  .specimen{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; align-items:stretch;}
+  .spec-card{background:var(--card); border:1px solid var(--hair); border-radius:16px; padding:16px 18px;}
+  .spec-card h4{font-size:14px; font-weight:700; margin-bottom:10px;}
+  .kv{font-size:13px; display:grid; grid-template-columns:auto 1fr; gap:4px 14px;}
+  .kv dt{color:var(--muted);}
+  .kv dd{font-weight:600;}
+  .kv dd small{font-weight:400; color:var(--muted);}
+  .never{list-style:none; font-size:13px; display:flex; flex-direction:column; gap:6px;}
+  .never li{display:flex; gap:8px; align-items:baseline; color:var(--muted);}
+  .never li::before{content:"✕"; font-weight:800; color:var(--ink); font-size:12px;}
+  .controls{list-style:none; font-size:13px; display:flex; flex-direction:column; gap:6px;}
+  .controls li{display:flex; gap:8px; align-items:baseline;}
+  .controls li::before{content:""; flex:none; width:22px; height:12px; border-radius:999px; border:1.5px solid var(--green); background:linear-gradient(90deg, var(--green-fill) 0 55%, transparent 55%); align-self:center;}
+
+  /* ---------- phases ---------- */
+  .phases{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin-top:16px;}
+  .phase{background:var(--card); border:1px solid var(--hair); border-radius:16px; padding:14px 16px;}
+  .phase .p-head{display:flex; align-items:center; gap:10px; margin-bottom:6px;}
+  .phase .p-num{
+    flex:none; width:26px; height:26px; border-radius:50%; display:grid; place-items:center;
+    font-size:13px; font-weight:800; color:var(--paper); background:var(--green-fill);
+  }
+  .phase.now{border-color:var(--green-fill); box-shadow:0 8px 22px rgba(95,138,76,.14);}
+  .phase.later .p-num{background:var(--hair); color:var(--muted);}
+  .phase h4{font-size:14.5px; font-weight:700;}
+  .phase h4 small{display:block; font-weight:500; font-size:11.5px; color:var(--muted);}
+  .phase p{font-size:12.5px; color:var(--ink);}
+  .phase.later p{color:var(--muted);}
+  .phase .tag{display:inline-block; margin-top:8px; font-size:11px; font-weight:700; color:var(--green); border:1px solid var(--green-fill); border-radius:999px; padding:2px 9px;}
+  .phase.later .tag{color:var(--muted); border-color:var(--hair);}
+
+  footer{margin-top:48px; border-top:1px solid var(--hair); padding-top:14px; font-size:12px; color:var(--muted); max-width:90ch;}
+
+  /* ---------- responsive: stack zones ---------- */
+  @media (max-width:1080px){
+    .phases{grid-template-columns:repeat(2,1fr);}
+    .specimen{grid-template-columns:repeat(2,1fr);}
+    .spec-card:last-child{grid-column:1 / -1;}
+    .world{grid-template-columns:1fr; gap:0;}
+    .outside{flex-direction:row; flex-wrap:wrap; justify-content:flex-start; padding-bottom:6px;}
+    .outside .no-server{margin-top:0;}
+    .export-dest{align-self:flex-start; margin-top:6px;}
+    .xconn{height:74px; width:100%;}
+    .xconn .bar{left:calc(50% - 1.5px); right:auto; top:8px; bottom:22px; width:3px; height:auto;
+      background:repeating-linear-gradient(180deg, var(--bronze) 0 7px, transparent 7px 13px);
+      background-size:3px 13px; animation-name:dashflowY;}
+    .xconn::after{right:auto; left:50%; transform:translateX(-50%); top:auto; bottom:10px;
+      border-left:7px solid transparent; border-right:7px solid transparent; border-top:10px solid var(--bronze); border-bottom:none;}
+    .xconn .xlabel{bottom:auto; top:10px; left:calc(50% + 16px); transform:none; text-align:left;}
+    .stages{grid-template-columns:1fr;}
+    .conn{height:44px; width:100%;}
+    .conn.flow .bar{left:calc(50% - 1.5px); right:auto; top:6px; bottom:14px; width:3px; height:auto;
+      background:repeating-linear-gradient(180deg, var(--green-fill) 0 7px, transparent 7px 13px);
+      background-size:3px 13px; animation-name:dashflowY;}
+    .conn::after{right:auto; left:50%; transform:translateX(-50%); top:auto; bottom:4px;
+      border-left:6px solid transparent; border-right:6px solid transparent; border-top:9px solid var(--green-fill); border-bottom:none;}
+  }
+  @media (max-width:620px){
+    .phases{grid-template-columns:1fr;}
+    .specimen{grid-template-columns:1fr;}
+    .spec-card:last-child{grid-column:auto;}
+  }
+  @keyframes dashflowY{to{background-position:0 13px;}}
+
+  @media (prefers-reduced-motion: reduce){
+    .conn.flow .bar, .xconn .bar{animation:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>Your calendar, joined to your journal.<br>No server involved.</h1>
+    <p class="lede">Squirl records the <b>inner day</b> (mood, energy, focus, sleep, meds) from a sub-minute voice check-in.
+    Calendar integration adds the <b>outer day</b>: what was actually on your plate. The join happens entirely on the phone,
+    because iOS already keeps a local copy of every calendar account. <b>The integration itself adds zero network traffic.</b></p>
+    <p class="meta">Squirl · calendar integration data flow · grounded in spec 029 &amp; the approved design (2026-07-03)</p>
+  </header>
+
+  <!-- ================= THE FLOW ================= -->
+  <section class="world" aria-label="Data flow diagram">
+
+    <!-- outside left -->
+    <div class="outside">
+      <div class="zone-label">OUTSIDE THE PHONE</div>
+      <div class="provider">iCloud Calendar <small>Apple</small></div>
+      <div class="provider">Google Calendar <small>personal / work</small></div>
+      <div class="provider">Exchange · Outlook <small>company account</small></div>
+      <div class="no-server">
+        <b>Squirl servers</b>
+        <span class="strike">upload</span> · <span class="strike">account</span> · <span class="strike">analytics</span><br>
+        None exist. There is nothing to breach.
+      </div>
+    </div>
+
+    <!-- boundary crossing: in -->
+    <div class="xconn" aria-hidden="true">
+      <div class="bar"></div>
+      <div class="xlabel">iOS system sync<small>Apple’s pipe, not ours</small></div>
+    </div>
+
+    <!-- the device -->
+    <div class="device">
+      <div class="device-tag">ON THIS iPHONE</div>
+      <div class="device-sub">everything below happens on-device</div>
+
+      <div class="stages">
+
+        <div class="stage">
+          <h3>iOS calendar store <small>system-owned · read via EventKit</small></h3>
+          <ul>
+            <li>iOS mirrors every account here, locally (within its sync window)</li>
+            <li>read access granted by the user, explainer first</li>
+          </ul>
+          <div class="foot"><b>Squirl reads.</b> It never syncs, polls, or phones home.</div>
+        </div>
+
+        <div class="conn flow" aria-hidden="true"><div class="bar"></div></div>
+
+        <div class="stage">
+          <h3>Capture <small>when a check-in is saved · plus self-healing history backfill</small></h3>
+          <ul>
+            <li>only calendars the user included</li>
+            <li>declined invitations never count</li>
+            <li>birthday &amp; holiday calendars off by default</li>
+          </ul>
+          <div class="foot">Per event, <b>five small facts</b>; see “What gets captured” below.</div>
+        </div>
+
+        <div class="conn flow" aria-hidden="true"><div class="bar"></div></div>
+
+        <div class="stage">
+          <h3>Day Context <small>stored in the journal · SwiftData</small></h3>
+          <ul>
+            <li>one context per day · latest capture wins</li>
+            <li>durable: survives calendar edits, account removal, permission revocation</li>
+          </ul>
+          <div class="foot"><b>“The day as lived”:</b> change jobs, lose the work calendar, keep the memory.</div>
+        </div>
+
+        <div class="conn flow" aria-hidden="true"><div class="bar"></div></div>
+
+        <div class="stage">
+          <h3>The day card <small>what the user sees</small></h3>
+          <div class="minicard">
+            <div class="row"><span>Great</span><span class="dow">MON</span></div>
+            <div class="ctx"><b>3 meetings</b> · Dentist · Mum’s birthday</div>
+          </div>
+          <ul style="margin-top:8px">
+            <li>events with invitees fold into “N meetings”</li>
+            <li>the rest keep their names</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- boundary crossing: out -->
+    <div class="xconn out" aria-hidden="true">
+      <div class="bar"></div>
+      <div class="xlabel">encrypted export<small>user-initiated only</small></div>
+    </div>
+
+    <!-- outside right -->
+    <div class="outside">
+      <div class="zone-label">THE ONLY WAY OUT</div>
+      <div class="export-dest">
+        <b>Your export file</b>
+        AES-GCM · fresh 256-bit key per export
+        <small>Leaves only when the user exports, and only they hold the key.</small>
+      </div>
+    </div>
+
+  </section>
+
+  <div class="boundary-note">
+    <svg class="shield" viewBox="0 0 24 24" fill="none" stroke="#4A6E3A" stroke-width="1.8" aria-hidden="true">
+      <path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6l7-3z" fill="#5F8A4C22"/>
+      <path d="M8.6 12.2l2.3 2.3 4.4-4.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <p><b>The privacy boundary is architectural, not contractual.</b> Calendar data adds no traffic of its own: the only
+    inbound calendar traffic is Apple’s own sync, which exists whether or not Squirl is installed. (Squirl’s sole
+    download is the on-device transcription model, fetched once at setup.) The only outbound path is an export the user
+    triggers and encrypts. Transcription, extraction, capture, storage, and display all run on the phone; there is no
+    Squirl backend to trust, subpoena, or breach.</p>
+  </div>
+
+  <!-- ================= SPECIMEN ================= -->
+  <section class="band" aria-label="What gets captured">
+    <h2>What gets captured, and what never is</h2>
+    <p class="bandsub">Capture is deliberately skeletal: enough to remember the shape of a day, nothing that profiles the people in it. Classification (“is this a meeting?”) uses attendee presence: deterministic, never guessed from words. Titles off? The context line still reads “3 meetings · 2 events”.</p>
+    <div class="specimen">
+      <div class="spec-card">
+        <h4>One captured event · five facts</h4>
+        <dl class="kv">
+          <dt>title</dt><dd>“Design review” <small>· user can switch titles off</small></dd>
+          <dt>time</dt><dd>11:00 – 11:45</dd>
+          <dt>all-day</dt><dd>no</dd>
+          <dt>attendees</dt><dd>4 <small>· count only → classifies as “meeting”</small></dd>
+          <dt>availability</dt><dd>busy</dd>
+        </dl>
+      </div>
+      <div class="spec-card">
+        <h4>Never captured</h4>
+        <ul class="never">
+          <li>attendee names or email addresses</li>
+          <li>event locations</li>
+          <li>notes, descriptions, attachments</li>
+          <li>URLs and video-call links</li>
+          <li>organizer identity</li>
+        </ul>
+      </div>
+      <div class="spec-card">
+        <h4>User controls · in Settings</h4>
+        <ul class="controls">
+          <li>choose which calendars count</li>
+          <li>include event titles (asked before first capture)</li>
+          <li>re-capture history under current settings</li>
+          <li>erase all captured calendar context</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PHASES ================= -->
+  <section class="band" aria-label="Rollout phases">
+    <h2>One foundation, four releases</h2>
+    <p class="bandsub">One EventKit foundation, built in Phase 1, carries every later phase. Correlations query the calendar live (nothing extra stored); markers are the only write path. Order is deliberate: plumbing first, the delicate pieces once the plumbing is proven.</p>
+    <div class="phases">
+      <div class="phase now">
+        <div class="p-head"><span class="p-num">1</span><h4>Day context <small>specified · spec 029</small></h4></div>
+        <p>Every check-in day carries what the calendar held: capture, backfill, settings, the classified context line.</p>
+        <span class="tag">the flow on this page</span>
+      </div>
+      <div class="phase later">
+        <div class="p-head"><span class="p-num">2</span><h4>Pattern correlations <small>Insights</small></h4></div>
+        <p>“Focus tends lower on days with 4+ meetings.” Observations, never judgments, with statistical floors before anything is shown.</p>
+        <span class="tag">live-queried · nothing extra stored</span>
+      </div>
+      <div class="phase later">
+        <div class="p-head"><span class="p-num">3</span><h4>Med-timing overlay <small>the med bar meets the day</small></h4></div>
+        <p>“Elvanse coverage ends ~15:30 — before Presentation, 16:00.” Descriptive only; Squirl never nags.</p>
+        <span class="tag">built on the same foundation</span>
+      </div>
+      <div class="phase later">
+        <div class="p-head"><span class="p-num">4</span><h4>Check-in markers <small>opt-in write-back</small></h4></div>
+        <p>One small event per check-in, written to a dedicated Squirl calendar, never the user’s own. Delete the calendar, every trace is gone.</p>
+        <span class="tag">only write path · off by default</span>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Sources: <code>specs/029-calendar-day-context/spec.md</code> (clarified 2026-07-03) ·
+    <code>docs/superpowers/specs/2026-07-03-calendar-integration-design.md</code> ·
+    constitution v1.2.0, Principle VI (on-device privacy, non-negotiable). Squirl is a journal, not a medical device.
+  </footer>
+
+</div>
+</body>
+</html>
