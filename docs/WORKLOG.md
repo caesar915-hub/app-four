@@ -1,5 +1,28 @@
 # WORKLOG
 
+## 2026-06-30 16:15 – 2026-07-03 14:01 · calendar-integration design spec (post-v1.0 flagship) + BACK · main
+
+**Code changes**
+- _docs_
+  - `a154959d` docs: calendar-integration design spec (post-v1.0 flagship) + BACKLOG/DEVLOG
+  - `26ff1769` docs: Phase 1 grep correction — badgeTint used by TimelineBead
+  - `d0e57a72` docs: fold Phase 0 outcome into Figma plan (PNG@3x glyphs, SF Mono stand-in)
+  - `59d5b106` docs: add deep-plan-review skill + Figma DS reproduction plan
+  - `fa9856a5` docs: regenerate WORKLOG after Stable TestFlight channel merge
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  a154959d [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
 ## 2026-06-29 17:07–16:14 · add Stable TestFlight channel (squirl-app.app-four.stable) · main
 
 **Code changes**

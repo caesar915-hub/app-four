@@ -128,7 +128,11 @@ WORKTREES=$(git worktree list 2>/dev/null || true)
 
 # ── Emit block ───────────────────────────────────────────────────────────────
 
-echo "## ${OLDEST_DATE%% *} ${OLDEST_DATE##* }–${NEWEST_DATE##* } · ${TOPIC} · ${BRANCH}"
+if [ "${OLDEST_DATE%% *}" = "${NEWEST_DATE%% *}" ]; then
+  echo "## ${OLDEST_DATE%% *} ${OLDEST_DATE##* }–${NEWEST_DATE##* } · ${TOPIC} · ${BRANCH}"
+else
+  echo "## ${OLDEST_DATE} – ${NEWEST_DATE} · ${TOPIC} · ${BRANCH}"
+fi
 echo ""
 echo "**Code changes**"
 
