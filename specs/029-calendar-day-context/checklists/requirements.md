@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-03 14:21 (WEST) · Updated: 2026-07-03 14:38 (WEST) -->
+<!-- Created: 2026-07-03 14:21 (WEST) · Updated: 2026-07-03 17:11 (WEST) -->
 # Specification Quality Checklist: Calendar Day Context — "The Day, Remembered" (Phase 1)
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
@@ -35,3 +35,4 @@
 - Validated 2026-07-03 by a 31-agent adversarial panel (3 review lenses — checklist, design/constitution fidelity, hostile-QA — each finding independently refuted-or-confirmed): 28 raw findings → 16 confirmed → all fixed in the spec; 12 refuted as already-handled/misreadings.
 - Key fixes folded in: pre-grant title-capture choice + purge/re-capture actions (was a blocker: backfill ran on defaults before any user control); named entry points (Settings row + one-time Calendar-tab invitation); latest-capture-wins re-capture rule incl. backdated check-ins; idempotent-coverage backfill (heals revoke→re-grant gaps and failed captures); multi-day/midnight attribution rule; time-zone attribution rule; system-designated birthday/holiday default exclusion; deletion lifecycle (FR-013/FR-014); SC-001 scoped to device-store contents; SC-007 workload-bounded; mock-mode fixture context.
 - One perceptual criterion (SC-002) deliberately stays qualitative per repo convention (device QA is the mandated verification; sibling specs 019/022 use the same style).
+- `/speckit-clarify` session 2026-07-03 (3 questions): context line = **classified summary** (wireframe-assisted decision, [mockups/context-line-variants.html](../mockups/context-line-variants.html)); full-list UI **deferred** (data captured, surface undecided); capture trigger = **check-in days only** (med-only days excluded). Re-validated after integration: 16/16 → 16/16, no regressions.
