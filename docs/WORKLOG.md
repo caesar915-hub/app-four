@@ -1,5 +1,26 @@
 # WORKLOG
 
+## 2026-07-03 14:03–14:42 · 029 calendar-day-context (Phase 1) via speckit-specify + adv · main
+
+**Code changes**
+- _docs_
+  - `a6518fe6` docs: regenerate WORKLOG; worklog.sh multi-day header fix
+- _other_
+  - `24478e7a` spec: 029 calendar-day-context (Phase 1) via speckit-specify + adversarial validation
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  24478e7a [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
 ## 2026-06-30 16:15 – 2026-07-03 14:01 · calendar-integration design spec (post-v1.0 flagship) + BACK · main
 
 **Code changes**
