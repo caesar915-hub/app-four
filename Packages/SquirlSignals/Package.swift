@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "SquirlSignals",
-    platforms: [.iOS("17.0")],
+    platforms: [.iOS("26.0")],
     products: [
         .library(name: "SquirlSignals", targets: ["SquirlSignals"]),
     ],
