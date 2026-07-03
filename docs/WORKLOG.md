@@ -1,5 +1,27 @@
 # WORKLOG
 
+## 2026-07-03 17:56–18:26 · 029 calendar-day-context task breakdown (45 tasks, test-firs · main
+
+**Code changes**
+- _docs_
+  - `3e8b6646` docs: regenerate WORKLOG after 029 plan
+- _other_
+  - `a13b7987` tasks: 029 calendar-day-context task breakdown (45 tasks, test-first, mockup-gated)
+  - `6abd77e2` plan: 029 calendar-day-context implementation plan (research, data-model, contracts, quickstart)
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  a13b7987 [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
 ## 2026-07-03 17:37–17:56 · 029 calendar-day-context implementation plan (research, data · main
 
 **Code changes**
