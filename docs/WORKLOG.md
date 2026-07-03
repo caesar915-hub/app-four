@@ -1,5 +1,27 @@
 # WORKLOG
 
+## 2026-07-03 17:12–17:37 · investor-facing calendar data-flow diagram + root PRODUCT.md · main
+
+**Code changes**
+- _docs_
+  - `7a74284d` docs: investor-facing calendar data-flow diagram + root PRODUCT.md
+  - `c82ed9f7` docs: regenerate WORKLOG after spec 029 clarify
+- _other_
+  - `2e2b9213` spec: 029 clarify session — classified context line (wireframe-decided), full-list UI deferred, check-in-only trigger
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  7a74284d [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
 ## 2026-07-03 14:42–17:12 · 029 clarify session — classified context line (wireframe-dec · main
 
 **Code changes**
