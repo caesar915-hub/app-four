@@ -8,6 +8,15 @@
 
 **Input**: User description: "Nutrition and exercise signals on the calendar Day card (demo-only). Display four health signals from Apple Health — Dietary energy (kcal), Protein (g), Caffeine (mg), Active energy (kcal) — on the calendar Day card in both folded and unfolded states. Folded: two summary tokens (dietary kcal + caffeine mg). Unfolded: food and exercise events as first-class timeline check-in entries interleaved by time with mood check-ins, plus a per-day totals footer. New clay color lane for food, teal for exercise. Real Apple Health reads of timestamped samples plus deterministic mock seeding so the demo works on any device; real data wins per-day. Manual editor deferred. Demo-only: stacked on the unmerged 009-healthkit-signals work, no merge to main planned."
 
+## Clarifications
+
+### Session 2026-07-05
+
+- Q: Minimum platform for this feature? → A: iOS 26 (app minimum).
+- Q: How are raw per-nutrient Apple Health samples grouped into displayed "food events"? → A: Use Apple Health's food-correlation grouping when present; group remaining loose samples into one event per clock hour.
+- Q: Are food/exercise events persisted on-device or read live from Apple Health at render? → A: Persisted on-device, synced from Apple Health like the existing per-day signals; demo seeds write the same store.
+- Q: What does the totals footer's "energy out" mean? → A: Sum of the day's workout entries' active energy only; the footer equals the timeline's exercise entries. Days with no workouts show "—".
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Nutrition at a glance on the folded card (Priority: P1)
@@ -80,10 +89,10 @@ As the owner demoing on my own phone, when I have real food, caffeine, or workou
 - **FR-001**: The folded day card MUST show a dietary-energy token (kcal) and a caffeine token (mg) appended after the existing energy, focus, and medication tokens whenever the day has that data, and MUST show no nutrition tokens otherwise (approved mockup V3).
 - **FR-002**: The expanded day card MUST render each food event and each exercise event as its own read-only timeline entry, interleaved with check-in entries using the same time-ordering convention as existing rows (approved mockup variant A).
 - **FR-003**: A food entry MUST display its name and any of: energy (kcal), protein (g), caffeine (mg). An exercise entry MUST display its name and any of: duration (min), active energy (kcal). Absent values are omitted.
-- **FR-004**: The expanded card MUST end with a per-day totals footer — energy in (kcal), protein (g), caffeine (mg), energy out (kcal) — rendering "—" for metrics with no data, plus a provenance glyph distinguishing Apple Health from manually entered data.
+- **FR-004**: The expanded card MUST end with a per-day totals footer — energy in (kcal), protein (g), caffeine (mg), energy out (kcal) — rendering "—" for metrics with no data, plus a provenance glyph distinguishing Apple Health from manually entered data. Energy out is the sum of that day's exercise entries' active energy (non-workout movement excluded), so the footer always reconciles with the visible timeline.
 - **FR-005**: A day with nutrition or exercise data but no check-ins MUST be expandable, showing its entries and totals.
 - **FR-006**: Food entries MUST use the new clay color lane (#B5674A light / #CB8266 dark) and exercise entries the new teal lane (#3E8E86 light / #5FAEA5 dark), per the approved Pair 2 mockup; color MUST never be the only cue (distinct glyphs: fork for food, flame for exercise, cup for caffeine). The two new lanes MUST be recorded in the design system's Decisions Log.
-- **FR-007**: Values MUST come from timestamped Apple Health samples (per-event), read on-device; per-day totals are derived from the same data.
+- **FR-007**: Values MUST come from timestamped Apple Health samples (per-event), read on-device; per-day totals are derived from the same data. Per-nutrient samples MUST be grouped into food events via Apple Health's food-correlation grouping when present, with remaining loose samples grouped into one event per clock hour. Grouped events MUST be persisted on-device (the card renders from the store, not from live Apple Health queries); demo-seeded events write to the same store under the mock partition.
 - **FR-008**: When demo data is enabled, the system MUST seed 30 days of deterministic nutrition and exercise data (identical across re-seeds): meals at realistic hours, caffeine inversely correlated with medication days, roughly 2 of 30 days skipped entirely. Seeded data MUST be partitioned from real data using the existing mock-data mechanism and MUST never be written to Apple Health.
 - **FR-009**: When a day has both demo and real nutrition data, the real data MUST be shown for that day.
 - **FR-010**: The calendar MUST NOT trigger any health-permission prompt; it refreshes health data only if access was already offered through the existing flow elsewhere in the app.
@@ -94,8 +103,8 @@ As the owner demoing on my own phone, when I have real food, caffeine, or workou
 
 ### Key Entities
 
-- **Food event**: one eating occasion at a point in time — name/label, energy (kcal), protein (g), caffeine (mg); source (Apple Health / demo).
-- **Exercise event**: one workout at a point in time — name/label, duration (min), active energy (kcal); source.
+- **Food event**: one eating occasion at a point in time — name/label, energy (kcal), protein (g), caffeine (mg); source (Apple Health / demo). Formed from a food-correlation group when the source app provides one, otherwise from loose samples within the same clock hour.
+- **Exercise event**: one workout at a point in time — name/label, duration (min), active energy (kcal); source. Both event types are persisted on-device after sync; re-syncing the same day replaces that day's Apple Health-sourced events rather than duplicating them.
 - **Day nutrition totals**: per-local-day sums of energy in, protein, caffeine, energy out; derived, with a single provenance for display.
 - **Existing check-in entry**: unchanged; food/exercise events interleave with it visually but do not alter it.
 
@@ -112,10 +121,12 @@ As the owner demoing on my own phone, when I have real food, caffeine, or workou
 
 ## Assumptions
 
+- Platform: iOS 26 is the app minimum; modern platform APIs may be assumed throughout.
 - Demo-only scope: this ships on `feat/nutrition-signals-demo` (stacked on the unmerged 009-healthkit-signals branch, PR #8) and is not planned for `main`; the known merge collision with spec 029 on the folded-card summary is accepted.
 - The three approved HTML mockups are the binding visual contract: `docs/superpowers/plans/2026-07-05-nutrition-signals-daycard.html` (folded V3), `2026-07-05-nutrition-checkins-unfolded.html` (variant A), `2026-07-05-nutrition-exercise-hues.html` (Pair 2 hues). This satisfies the mockup-before-UI gate (Constitution I).
 - The existing 009 health stack (day-keyed signals storage, health service seam, sync coordination, provenance model) is reused and extended; per-event display additionally requires timestamped samples, which is new relative to 009's per-day aggregates.
 - "Meal" naming from Apple Health data may be generic (e.g. "Food") when the source app provides no label; seeded demo data uses realistic names (Breakfast, Lunch, Coffee, Run…).
-- Exercise duration comes from workout entries; a day's "energy out" total uses active energy.
+- Exercise duration comes from workout entries; a day's "energy out" total is the sum of its workout entries' active energy — non-workout movement is excluded, so the sample values in the approved mockups (Out 410 vs run 310) are superseded by this rule; the mockups remain the layout contract.
+- Energy values display in kcal regardless of locale energy-unit preference (demo scope; kJ localization deferred).
 - Local calendar day boundaries follow the app's existing day-key convention.
 - The manual signals editor from 009 is not extended to nutrition in this feature (deferred).
