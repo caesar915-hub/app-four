@@ -1,0 +1,317 @@
+<!-- Created: 2026-07-05 12:14 (WEST) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Squirl · Nutrition signals on the Day card · folded + unfolded (demo, feat/nutrition-signals-demo)</title>
+<style>
+  /* Tokens copied verbatim from html-mockups/daycard-prototype-v8.html (spec 023 canonical card),
+     scoped per-panel so light and dark render side by side. */
+  .scheme{
+    --sf:-apple-system,"SF Pro Text","SF Pro Display",system-ui,"Segoe UI",sans-serif;
+    --sfmono:"SF Mono",ui-monospace,Menlo,monospace;
+    --bg:#F6F1E7; --card:#FCF8EF; --elevated:#FCF8EF;
+    --ink:#221E16; --muted:#7A7361; --muted2:#615A49; --hair:#E3DAC7; --med:#7E5CA8;
+  }
+  .scheme.dark{
+    --bg:#14130F; --card:#1E1C16; --elevated:#272419;
+    --ink:#F3EEE0; --muted:#9A917C; --muted2:#B6AD97; --hair:#322E22; --med:#9277BE;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:#1d1c1a;color:#EDE9DC;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:36px 24px 80px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+  h1{font-size:19px;font-weight:700;letter-spacing:-.01em;margin:0 0 2px;max-width:820px;text-align:center;}
+  .sub{font-size:12.5px;color:#9d988a;max-width:680px;text-align:center;line-height:1.5;margin:0 0 18px;}
+  .sub b{color:#cfc9b8;}
+  .sect{width:100%;max-width:820px;margin-top:30px;}
+  .sect > .lab{font-size:12px;color:#9d988a;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:4px;}
+  .sect > .note{font-size:12.5px;color:#9d988a;line-height:1.55;margin:4px 0 14px;max-width:720px;}
+  .sect > .note b{color:#cfc9b8;}
+  .rec{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#dfeccf;background:#3a4a2a;border:1px solid #5a6a3a;border-radius:999px;padding:2px 8px;vertical-align:1px;}
+  .vlab{font-size:12px;color:#cfc9b8;font-weight:600;margin:16px 0 8px;}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media (max-width:780px){.pair{grid-template-columns:1fr;}}
+  .scheme{background:var(--bg);border-radius:20px;padding:16px;}
+
+  /* ===== Day card CSS (v8 verbatim, static) ===== */
+  .card{border-radius:16px;overflow:hidden;background:var(--card);box-shadow:0 1px 3px rgba(40,48,24,.05);font-family:var(--sf);}
+  .card + .card{margin-top:12px;}
+  .hrow{display:flex;align-items:center;gap:10px;padding:9px 16px;}
+  .gcol{flex:none;line-height:0;width:36px;height:36px;}
+  .tcol{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .tline{font-weight:600;font-size:15px;line-height:1.2;letter-spacing:-.01em;color:var(--ink);}
+  .t-sep{color:var(--muted);font-weight:500;}
+  .fsum{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:11.5px;margin-top:3px;color:var(--ink);}
+  .fsum .sig{display:inline-flex;align-items:center;gap:3px;}
+  .fsum .sep{color:var(--muted);}
+  .fsum .medname{color:var(--med);font-weight:600;}
+  .fsum .nut{font-weight:600;}
+  .fempty{font-size:13px;color:var(--muted);margin-top:2px;}
+  .chev{flex:none;align-self:center;color:var(--muted);font-weight:700;line-height:1;font-size:13px;}
+  .card.open .chev{display:inline-block;transform:rotate(180deg);}
+
+  .cbody{padding:10px 16px 16px;}
+  .row{display:flex;gap:12px;align-items:flex-start;}
+  .beadcol{flex:none;display:flex;flex-direction:column;align-items:center;}
+  .bead{position:relative;display:flex;align-items:center;justify-content:center;flex:none;width:38px;height:38px;}
+  .disc{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:0;}
+  .conn{width:1px;background:var(--hair);flex:1;min-height:18px;}
+  .ct{flex:1;min-width:0;display:flex;flex-direction:column;padding-top:7px;}
+  .rtop{display:flex;align-items:baseline;gap:8px;line-height:1.1;}
+  .mword{font-weight:600;letter-spacing:-.01em;font-size:17px;}
+  .rtime{font-family:var(--sfmono);color:var(--muted);font-size:13px;}
+  .rchev{margin-left:auto;color:var(--muted);font-weight:700;align-self:center;font-size:12px;}
+  .run{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-top:5px;}
+  .sig2{display:inline-flex;align-items:center;gap:4px;color:var(--ink);font-size:12.5px;font-weight:600;}
+  .medL{display:inline-flex;align-items:center;gap:5px;color:var(--med);font-weight:600;margin-top:8px;font-size:11px;}
+  .ctx{display:flex;flex-wrap:wrap;align-items:center;gap:3px 6px;color:var(--muted2);font-size:10.5px;margin-top:6px;}
+  .ctx .item{display:inline-flex;align-items:center;gap:5px;}
+  .ctx .mid{color:var(--muted);}
+
+  /* ===== NEW: per-day nutrition strip (unfolded) ===== */
+  .nstrip{display:flex;align-items:center;gap:13px;margin-top:12px;margin-left:50px;padding-top:11px;border-top:1px solid var(--hair);}
+  .nstrip.noindent{margin-left:0;}
+  .nitem{display:inline-flex;align-items:baseline;gap:4px;}
+  .nitem .nic{align-self:center;line-height:0;}
+  .nitem .nv{font-family:var(--sfmono);font-size:12.5px;color:var(--ink);}
+  .nitem .nv.dash{color:var(--muted);}
+  .nitem .nu{font-size:9.5px;color:var(--muted);}
+  .nsrc{margin-left:auto;line-height:0;align-self:center;}
+
+  /* ===== Hue clearance swatches ===== */
+  .swrow{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin-top:6px;}
+  .sw{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:10px;color:var(--muted2);width:64px;text-align:center;}
+  .sw .chip{width:40px;height:40px;border-radius:12px;}
+  .sw.cand .chip{outline:2px solid var(--ink);outline-offset:2px;}
+
+  .decisions{width:100%;max-width:820px;margin-top:34px;border-top:1px solid #3a382f;padding-top:16px;}
+  .decisions .lab{font-size:12px;color:#9d988a;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+  .decisions ol{font-size:13px;line-height:1.7;color:#cfc9b8;padding-left:20px;margin:8px 0 0;}
+</style>
+</head>
+<body>
+
+<h1>Nutrition signals on the Day card</h1>
+<p class="sub">Demo feature on <b>feat/nutrition-signals-demo</b> (stacked on 009-healthkit-signals). Four signals (<b>Dietary kcal · Protein · Caffeine · Active energy</b>): folded token(s) in the header summary line, plus a per-day strip at the bottom of the unfolded card. Card chrome is verbatim from <b>daycard-prototype-v8</b> (spec 023). Sample day: In 2,150 kcal · Protein 82 g · Caffeine 220 mg · Out 410 kcal.</p>
+
+<div id="root"></div>
+
+<div class="decisions">
+  <span class="lab">Owner decisions needed</span>
+  <ol>
+    <li><b>Folded token variant</b>: V1 single kcal / V2 in–out pair / V3 kcal + caffeine (recommended: V3, caffeine is the ADHD-salient signal next to stimulant meds).</li>
+    <li><b>Protein treatment in the strip</b>: fish glyph vs "P" text prefix (recommended: "P" prefix; the fish glyph reads as a food category, protein is a number).</li>
+    <li><b>Nutrition hue</b>: clay vs teal (recommended: teal; clay sits close to mood-1 burnt orange in the same card, teal clears every taken lane). Pick becomes a DESIGN.md Decisions Log entry.</li>
+  </ol>
+</div>
+
+<script>
+/* ===== palettes (hex mirrors of the v8 tokens; SVGs need literals) ===== */
+const PAL={
+  light:{card:'#FCF8EF',ink:'#221E16',muted:'#7A7361',muted2:'#615A49',hair:'#E3DAC7',med:'#7E5CA8',
+    m:['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'],
+    mw:['#8E470F','#8A5600','#41691F','#2C6B3B','#1E5C38'],
+    e:['#7C6E2E','#A89236','#D2BB40','#EEDA4C','#FCEE64'],
+    f:['#44546E','#4E6F94','#5889BA','#63A4E0','#79C4FF'],
+    sleep:'#5566A6', nutClay:'#B5674A', nutTeal:'#3E8E86'},
+  dark:{card:'#1E1C16',ink:'#F3EEE0',muted:'#9A917C',muted2:'#B6AD97',hair:'#322E22',med:'#9277BE',
+    m:['#DA7A2A','#EDA94A','#9FCB79','#5FB36E','#2E8B57'],
+    mw:['#E89A5A','#EDA94A','#B7D897','#79C98E','#57C98A'],
+    e:['#7C6E2E','#A89236','#D2BB40','#EEDA4C','#FCEE64'],
+    f:['#44546E','#4E6F94','#5889BA','#63A4E0','#79C4FF'],
+    sleep:'#7386C6', nutClay:'#CB8266', nutTeal:'#5FAEA5'}
+};
+const ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Distracted','Present','Sharp','Locked in'];
+const MOODW=['Low','Flat','Okay','Good','Great'];
+const tint=(h,p,card)=>`color-mix(in srgb, ${h} ${p}%, ${card})`;
+let UID=0;
+
+/* ===== glyphs (verbatim from v8) ===== */
+function gMood(hex,l,px){const lift=0.66+l*0.068,open=l>=4,top=open?9:11,fill=Math.min(1,0.42+l*0.145).toFixed(2);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26"><g transform="translate(12 13) scale(${lift}) translate(-12 -13)">`+
+    `<path d="M12 25 C12 18 12 14 12 ${top}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6" stroke-linecap="round"/>`+
+    `<path d="M12 ${top} C ${open?4:6} ${open?13:14}, ${open?5:6} ${open?2:5}, 12 1 C ${open?19:18} ${open?2:5}, ${open?20:18} ${open?13:14}, 12 ${top} Z" fill="${hex}" fill-opacity="${fill}" stroke="${hex}" stroke-width="1.3" stroke-linejoin="round"/>`+
+    (l>=3?`<path d="M12 ${top} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:'')+
+    (l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:'')+`</g></svg>`;}
+function gEnergy(hex,l,px){const lift=0.6+l*0.08,fill=Math.min(1,0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26"><g transform="translate(12 13) scale(${lift}) translate(-12 -13)"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${fill}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></g></svg>`;}
+function gFocus(hex,l,px){const cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;
+  if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;
+  if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;
+  if(l>=3){const r=((l-1)*0.85).toFixed(2);o+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26">${o}</svg>`;}
+function iMed(hex,px){const id='cr'+(++UID);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 24">`+
+    `<defs><clipPath id="${id}"><rect x="3.4" y="8.4" width="17.2" height="7.2" rx="3.6"/></clipPath></defs>`+
+    `<rect x="12" y="8" width="9" height="9" fill="${hex}" clip-path="url(#${id})"/>`+
+    `<rect x="3.4" y="8.4" width="17.2" height="7.2" rx="3.6" fill="none" stroke="${hex}" stroke-width="1.5"/></svg>`;}
+function iHeart(px,c){return `<svg width="${px}" height="${px}" viewBox="0 0 24 24"><path d="M12 20.7C12 20.7 3.8 16 3.8 9.7 A4.1 4.1 0 0 1 12 7.1 A4.1 4.1 0 0 1 20.2 9.7 C20.2 16 12 20.7 12 20.7Z" fill="${c}"/></svg>`;}
+const zp=(cx,cy,s)=>`M${cx-s} ${cy-s} L${cx+s} ${cy-s} L${cx-s} ${cy+s} L${cx+s} ${cy+s}`;
+function iSleep(px,c){return `<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="${zp(6.6,16.6,2.1)}"/><path d="${zp(12.2,11.4,2.9)}"/><path d="${zp(18,6,3.6)}"/></svg>`;}
+
+/* ===== NEW nutrition glyphs (SF-symbol lookalikes: fork.knife, flame, cup, fish, pencil) ===== */
+function iFork(px,c){return `<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">`+
+  `<path d="M5 2.5v4.5a2.5 2.5 0 0 0 5 0V2.5M7.5 2.5V21.5"/>`+
+  `<path d="M17.5 21.5V2.5c-2.6 2.8-3 8-1 10.5h2"/></svg>`;}
+function iFlame(px,c){return `<svg width="${px}" height="${px}" viewBox="0 0 24 24"><path d="M12 2.6c.9 3.3 4.9 5.3 4.9 10a4.9 4.9 0 0 1-9.8 0c0-2.6 1.6-3.9 2.2-5.6.9 1.2 1.4 1.7 2.4 2.2-.6-2.7-.6-4.6.3-6.6z" fill="${c}"/></svg>`;}
+function iCup(px,c){return `<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">`+
+  `<path d="M4.5 8.5h11.5v5.5a5 5 0 0 1-5 5h-1.5a5 5 0 0 1-5-5V8.5z"/>`+
+  `<path d="M16 10h1.4a2.4 2.4 0 0 1 0 4.8H16"/><path d="M4 21.5h14"/></svg>`;}
+function iFish(px,c){return `<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">`+
+  `<path d="M7 12c2.4-3.2 5.3-4.6 8.4-4.6 2.9 1.3 4.6 3 5.6 4.6-1 1.6-2.7 3.3-5.6 4.6-3.1 0-6-1.4-8.4-4.6z"/>`+
+  `<path d="M7 12L3 8.6v6.8L7 12z" fill="${c}" stroke="none"/><circle cx="16.6" cy="10.9" r="1" fill="${c}" stroke="none"/></svg>`;}
+function iPencil(px,c){return `<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l.9-3.6L16.6 4.7a1.9 1.9 0 0 1 2.7 2.7L8.1 18.6l-3.6.9z"/><path d="M14.8 6.5l2.7 2.7"/></svg>`;}
+
+const wrap=s=>`<span style="display:inline-flex;line-height:0">${s}</span>`;
+
+/* ===== card builders (v8 structure, static) ===== */
+function header(p,d,extraSummary){
+  const strip=d.empty?'transparent':tint(p.m[d.m-1],24,p.card);
+  const glyph=d.empty?'':`<span class="gcol">${gMood(p.m[d.m-1],d.m,36)}</span>`;
+  const title=d.empty
+    ?`<div class="tline">${d.label}</div>`
+    :`<div class="tline"><span style="color:${p.mw[d.m-1]}">${MOODW[d.m-1]}</span><span class="t-sep"> · </span>${d.label}</div>`;
+  let sum='';
+  if(d.open){ sum=''; }
+  else if(d.empty && !extraSummary){ sum=`<div class="fempty">No check-ins this day. That’s alright.</div>`; }
+  else{
+    let toks=[];
+    if(!d.empty){
+      toks.push(`<span class="sig">${wrap(gEnergy(p.e[d.se-1],d.se,12))} ${ENW[d.se-1]}</span>`);
+      toks.push(`<span class="sig">${wrap(gFocus(p.f[d.sf-1],d.sf,12))} ${FOW[d.sf-1]}</span>`);
+      if(d.med)toks.push(`<span class="sig medname">${wrap(iMed(p.med,13))} ${d.med}</span>`);
+    }
+    if(extraSummary)toks.push(...extraSummary);
+    sum=`<div class="fsum">${toks.join(`<span class="sep">·</span>`)}</div>`;
+    if(d.empty)sum=`<div class="fsum"><span class="fempty" style="margin-top:0">No check-ins</span><span class="sep">·</span>${extraSummary.join(`<span class="sep">·</span>`)}</div>`;
+  }
+  return `<div style="background:${strip}"><div class="hrow">${glyph}<div class="tcol">${title}${sum}</div><span class="chev">${d.open?'⌃':'⌄'}</span></div></div>`;
+}
+function tRow(p,r,isLast){
+  const badge=tint(p.m[r.m-1],50,p.card);
+  let ramp='';
+  if(r.e)ramp+=`<span class="sig2">${wrap(gEnergy(p.e[r.e-1],r.e,13))} ${ENW[r.e-1]}</span>`;
+  if(r.f)ramp+=`<span class="sig2">${wrap(gFocus(p.f[r.f-1],r.f,13))} ${FOW[r.f-1]}</span>`;
+  const med=r.med?`<div class="medL">${wrap(iMed(p.med,14))} Taken ${r.med}</div>`:'';
+  let ctx=[];
+  if(r.sleep)ctx.push(`<span class="item">${wrap(iSleep(12,p.muted2))} ${r.sleep}</span>`);
+  if(r.emo)ctx.push(`<span class="item">${wrap(iHeart(11,p.muted2))} ${r.emo}</span>`);
+  const ctxH=ctx.length?`<div class="ctx">${ctx.join('<span class="mid">·</span>')}</div>`:'';
+  return `<div class="row"><div class="beadcol"><div class="bead"><div class="disc" style="background:${badge}">${gMood(p.m[r.m-1],r.m,22)}</div></div>${isLast?'':'<div class="conn"></div>'}</div>
+    <div class="ct" style="${isLast?'':'padding-bottom:20px'}"><div class="rtop"><span class="mword" style="color:${p.mw[r.m-1]}">${MOODW[r.m-1]}</span><span class="rtime">${r.time}</span><span class="rchev">›</span></div>
+    ${ramp?`<div class="run">${ramp}</div>`:''}${med}${ctxH}</div></div>`;
+}
+/* the NEW strip. vals: {kcalIn, protein, caffeine, kcalOut}; null renders "—". */
+function nStrip(p,hue,vals,opt){
+  opt=opt||{};
+  const v=(x,unit)=>x==null?`<span class="nv dash">—</span>`:`<span class="nv">${x}</span><span class="nu">${unit}</span>`;
+  const proteinIcon=opt.proteinText
+    ?`<span class="nv" style="color:${hue};font-weight:700;font-family:var(--sf);font-size:11px">P</span>`
+    :`<span class="nic">${iFish(13,hue)}</span>`;
+  const src=opt.manual?iPencil(12,p.muted):iHeart(12,p.muted);
+  return `<div class="nstrip${opt.noindent?' noindent':''}">
+    <span class="nitem"><span class="nic">${iFork(13,hue)}</span>${v(vals.kcalIn,'kcal')}</span>
+    <span class="nitem">${proteinIcon}${v(vals.protein,'g')}</span>
+    <span class="nitem"><span class="nic">${iCup(13,hue)}</span>${v(vals.caffeine,'mg')}</span>
+    <span class="nitem"><span class="nic">${iFlame(13,hue)}</span>${v(vals.kcalOut,'kcal')}</span>
+    <span class="nsrc" title="${opt.manual?'Added by you':'From Apple Health'}">${src}</span>
+  </div>`;
+}
+function card(p,d,bodyHTML){
+  return `<div class="card${d.open?' open':''}">${header(p,d,d.nutToks)}${bodyHTML||''}</div>`;
+}
+
+/* folded token variants */
+function nutTokens(p,hue,variant){
+  const tok=(icon,txt)=>`<span class="sig nut" style="color:${hue}">${wrap(icon)} ${txt}</span>`;
+  if(variant===1)return [tok(iFork(12,hue),'2,150 kcal')];
+  if(variant===2)return [tok(iFork(12,hue),'In 2,150'),tok(iFlame(12,hue),'Out 410')];
+  return [tok(iFork(12,hue),'2,150 kcal'),tok(iCup(12,hue),'220 mg')];
+}
+
+/* ===== page assembly ===== */
+const DAY={m:4,label:'Monday 8',se:4,sf:3,med:'Concerta'};
+const ROWS=[
+  {time:'16:12',m:4,e:4,f:3,med:'Concerta 36mg',sleep:'5h sleep',emo:'Calm · Focused'},
+  {time:'12:40',m:3,e:3,f:null,emo:'Restless'},
+];
+const FULL={kcalIn:'2,150',protein:'82',caffeine:'220',kcalOut:'410'};
+
+function pair(build){
+  return `<div class="pair">
+    <div class="scheme light">${build(PAL.light)}</div>
+    <div class="scheme dark">${build(PAL.dark)}</div></div>`;
+}
+function section(label,note,inner){
+  return `<div class="sect"><span class="lab">${label}</span>${note?`<p class="note">${note}</p>`:''}${inner}</div>`;
+}
+
+const hueOf=p=>p.nutTeal; /* default hue for sections 1–2 & 4; section 3 shows both */
+
+let html='';
+
+/* ===== 1 · FOLDED VARIANTS ===== */
+html+=section('1 · Folded · token variants',
+  'Nutrition joins the existing energy · focus · med summary line (same FlowLayout, same 11.5px tier). Cap is two tokens: the line already wraps at large Dynamic Type. No data → no tokens (matches the med token’s conditional).',
+  `<div class="vlab">V1 · single kcal token (lowest load)</div>`+
+  pair(p=>card(p,{...DAY,nutToks:nutTokens(p,hueOf(p),1)}))+
+  `<div class="vlab">V2 · energy balance, In / Out pair</div>`+
+  pair(p=>card(p,{...DAY,nutToks:nutTokens(p,hueOf(p),2)}))+
+  `<div class="vlab">V3 · kcal + caffeine <span class="rec">Recommended</span> (caffeine is the ADHD-salient signal next to stimulant meds; kcal anchors the day)</div>`+
+  pair(p=>card(p,{...DAY,nutToks:nutTokens(p,hueOf(p),3)}))
+);
+
+/* ===== 2 · UNFOLDED STRIP ===== */
+html+=section('2 · Unfolded · per-day signals strip',
+  'Nutrition is per-day, not per-check-in, so it sits once at the card foot: hairline, then four metrics left-aligned to the row content (right of the bead rail). SF Mono values, muted units, one trailing provenance glyph for the whole group (heart = Apple Health). Two protein treatments: fish glyph vs a "P" text prefix.',
+  `<div class="vlab">A · protein as fish glyph</div>`+
+  pair(p=>card(p,{...DAY,open:true},
+    `<div class="cbody">${ROWS.map((r,i)=>tRow(p,r,i===ROWS.length-1)).join('')}${nStrip(p,hueOf(p),FULL,{})}</div>`))+
+  `<div class="vlab">B · protein as “P” prefix <span class="rec">Recommended</span> (the fish reads as a food category; protein is a number)</div>`+
+  pair(p=>card(p,{...DAY,open:true},
+    `<div class="cbody">${ROWS.map((r,i)=>tRow(p,r,i===ROWS.length-1)).join('')}${nStrip(p,hueOf(p),FULL,{proteinText:true})}</div>`))
+);
+
+/* ===== 3 · HUE A/B ===== */
+function swatches(p,cand,candName){
+  const taken=[['Mood 1',p.m[0]],['Mood 5',p.m[4]],['Energy',p.e[2]],['Focus',p.f[2]],['Sleep',p.sleep],['Meds',p.med]];
+  return `<div class="swrow">`+
+    taken.map(([n,c])=>`<div class="sw"><div class="chip" style="background:${c}"></div>${n}</div>`).join('')+
+    `<div class="sw cand"><div class="chip" style="background:${cand}"></div><b>${candName}</b></div></div>`;
+}
+html+=section('3 · Nutrition hue · clay vs teal',
+  'No nutrition hue exists in the system; taken lanes are burnt→green (mood), lemon (energy), voltage blue (focus), indigo (sleep), purple (meds). <b>Caution:</b> clay sits in the same warm lane as mood-1/2 burnt orange (visible in the swatch row and on the tinted header). Teal is the cleanest open lane. Color is never the only cue: every value keeps its glyph.',
+  `<div class="vlab">A · Clay #B5674A (dark: #CB8266)</div>`+
+  pair(p=>card(p,{...DAY,open:true,nutToks:null},
+    `<div class="cbody">${tRow(p,ROWS[0],true)}${nStrip(p,p.nutClay,FULL,{proteinText:true})}</div>`)
+    +card(p,{...DAY,nutToks:nutTokens(p,p.nutClay,3)})
+    +swatches(p,p.nutClay,'Clay'))+
+  `<div class="vlab">B · Teal #3E8E86 (dark: #5FAEA5) <span class="rec">Recommended</span></div>`+
+  pair(p=>card(p,{...DAY,open:true,nutToks:null},
+    `<div class="cbody">${tRow(p,ROWS[0],true)}${nStrip(p,p.nutTeal,FULL,{proteinText:true})}</div>`)
+    +card(p,{...DAY,nutToks:nutTokens(p,p.nutTeal,3)})
+    +swatches(p,p.nutTeal,'Teal'))
+);
+
+/* ===== 4 · STATES ===== */
+html+=section('4 · States',
+  'Top→bottom: partial data (only caffeine logged; absent metrics render “—”, folded shows only what exists); a nutrition-only day (no check-ins, but Health has data: plain header, no mood tint, strip without the rail indent); manual provenance (pencil instead of heart, e.g. after a future editor entry); and a truly empty day, unchanged.',
+  `<div class="vlab">Partial data · caffeine only</div>`+
+  pair(p=>card(p,{...DAY,nutToks:[`<span class="sig nut" style="color:${hueOf(p)}">${wrap(iCup(12,hueOf(p)))} 220 mg</span>`]})
+    +card(p,{...DAY,open:true},
+    `<div class="cbody">${tRow(p,ROWS[0],true)}${nStrip(p,hueOf(p),{kcalIn:null,protein:null,caffeine:'220',kcalOut:'410'},{proteinText:true})}</div>`))+
+  `<div class="vlab">Nutrition-only day · no check-ins, expanded shows just the strip</div>`+
+  pair(p=>card(p,{empty:true,label:'Wednesday 3',nutToks:nutTokens(p,hueOf(p),3)})
+    +card(p,{empty:true,label:'Wednesday 3',open:true},
+    `<div class="cbody" style="padding-top:0">${nStrip(p,hueOf(p),FULL,{proteinText:true,noindent:true})}</div>`))+
+  `<div class="vlab">Provenance · manual entry (pencil)</div>`+
+  pair(p=>card(p,{...DAY,open:true},
+    `<div class="cbody">${tRow(p,ROWS[0],true)}${nStrip(p,hueOf(p),FULL,{proteinText:true,manual:true})}</div>`))+
+  `<div class="vlab">Empty day · unchanged</div>`+
+  pair(p=>card(p,{empty:true,label:'Today, 5 Jul'}))
+);
+
+document.getElementById('root').innerHTML=html;
+</script>
+</body>
+</html>
