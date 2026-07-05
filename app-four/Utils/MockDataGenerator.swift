@@ -132,7 +132,18 @@ class MockDataGenerator {
     /// on the med-seeded days (offsets 0..<10, where `generate` always logs a morning
     /// dose) and high on the rest: the ADHD self-medication storyline. Two skip days
     /// (offsets 5 and 18) keep partial-data realism.
+    /// Deletes all mock nutrition rows — run before re-seeding so the (deterministic)
+    /// seed can't double totals, and by "Wipe & Reseed" in TestServicesView.
+    static func wipeMockNutritionEvents(context: ModelContext) {
+        let mock = (try? context.fetch(FetchDescriptor<NutritionEvent>(
+            predicate: #Predicate { $0.isMockData == true }
+        ))) ?? []
+        for event in mock { context.delete(event) }
+        try? context.save()
+    }
+
     static func seedNutritionEvents(context: ModelContext, calendar: Calendar = .current, now: Date = Date()) {
+        wipeMockNutritionEvents(context: context)
         let today = calendar.startOfDay(for: now)
         for dayOffset in 0..<30 {
             if dayOffset == 5 || dayOffset == 18 { continue }

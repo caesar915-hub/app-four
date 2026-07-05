@@ -73,6 +73,7 @@ struct TestServicesView: View {
                         MockDataGenerator.generate(context: modelContext)
                         store.loadRecordings()
                         NotificationCenter.default.post(name: .medicationEventsDidChange, object: nil)
+                        NotificationCenter.default.post(name: .nutritionEventsDidChange, object: nil)
                     }
                     .disabled(hasMock)
 
@@ -82,11 +83,31 @@ struct TestServicesView: View {
                         let mockEvents = (try? modelContext.fetch(FetchDescriptor<MedicationEvent>()))?.filter { $0.isMockData } ?? []
                         for event in mockEvents { modelContext.delete(event) }
                         try? modelContext.save()
-                        MockDataGenerator.generate(context: modelContext)
+                        MockDataGenerator.generate(context: modelContext)   // re-seeds nutrition too (self-wiping)
                         store.loadRecordings()
                         NotificationCenter.default.post(name: .medicationEventsDidChange, object: nil)
+                        NotificationCenter.default.post(name: .nutritionEventsDidChange, object: nil)
                     }
                     .disabled(!hasMock)
+                }
+
+                Section("Nutrition demo (spec 031)") {
+                    let mockCount = (try? modelContext.fetchCount(FetchDescriptor<NutritionEvent>(
+                        predicate: #Predicate { $0.isMockData == true }))) ?? 0
+                    let realCount = (try? modelContext.fetchCount(FetchDescriptor<NutritionEvent>(
+                        predicate: #Predicate { $0.isMockData == false }))) ?? 0
+                    LabeledContent("Events", value: "\(mockCount) mock · \(realCount) real")
+
+                    Button("Reseed 30-Day Nutrition") {
+                        MockDataGenerator.seedNutritionEvents(context: modelContext)
+                        NotificationCenter.default.post(name: .nutritionEventsDidChange, object: nil)
+                    }
+
+                    Button("Wipe Nutrition Data", role: .destructive) {
+                        MockDataGenerator.wipeMockNutritionEvents(context: modelContext)
+                        NotificationCenter.default.post(name: .nutritionEventsDidChange, object: nil)
+                    }
+                    .disabled(mockCount == 0)
                 }
 
                 Section("Exports & Actions") {

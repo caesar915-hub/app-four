@@ -29,6 +29,7 @@ final class MoodLibraryViewModel {
     /// explicitly after those complete.
     private var nutritionEvents: [NutritionEvent] = []
     @ObservationIgnored private var medObserver: NSObjectProtocol?
+    @ObservationIgnored private var nutritionObserver: NSObjectProtocol?
     @ObservationIgnored private let dayFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "d MMM"
@@ -131,10 +132,18 @@ final class MoodLibraryViewModel {
             // Delivered on the main queue → already on the main actor.
             MainActor.assumeIsolated { self?.loadMedicationEvents() }
         }
+        nutritionObserver = NotificationCenter.default.addObserver(
+            forName: .nutritionEventsDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            MainActor.assumeIsolated { self?.loadNutrition() }
+        }
     }
 
     deinit {
         if let medObserver { NotificationCenter.default.removeObserver(medObserver) }
+        if let nutritionObserver { NotificationCenter.default.removeObserver(nutritionObserver) }
     }
 
     private func loadMedicationEvents() {

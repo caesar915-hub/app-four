@@ -42,6 +42,12 @@ final class NutritionEvent {
     }
 }
 
+extension Notification.Name {
+    /// Posted after nutrition events are seeded, wiped, or synced out-of-band so the
+    /// calendar view-model re-fetches (same pattern as `medicationEventsDidChange`).
+    static let nutritionEventsDidChange = Notification.Name("nutritionEventsDidChange")
+}
+
 extension NutritionEvent {
     var kind: NutritionEventKind {
         get { NutritionEventKind(rawValue: kindValue) ?? .food }
