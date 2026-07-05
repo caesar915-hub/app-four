@@ -63,9 +63,9 @@
 
 ### Implementation
 
-- [ ] T018 [US1] Add `seedNutritionEvents(context:)` to app-four/Utils/MockDataGenerator.swift per research D11 (values pure functions of dayOffset — no RNG, no `Date.now` beyond the existing generator anchor); call it from `generate(context:)`
-- [ ] T019 [US1] Run suite: T016 GREEN — commit
-- [ ] T020 [US1] (View — exempt, mockup V3) Extend `parts` in app-four/Views/Components/FoldedDayCardHeader.swift: append ≤2 `Part(kind: nil, systemImage:)` tokens — `fork.knife` "N kcal", `cup.and.saucer.fill` "N mg" — colored `Palette.nutritionFood`, only when `day.nutrition?.summary` has the value; extend the combined `accessibilityLabel` (lines ~115–119) with "N calories eaten, N milligrams caffeine"
+- [X] T018 [US1] Add `seedNutritionEvents(context:)` to app-four/Utils/MockDataGenerator.swift per research D11 (values pure functions of dayOffset — no RNG, no `Date.now` beyond the existing generator anchor); call it from `generate(context:)`
+- [X] T019 [US1] Run suite: T016 GREEN — commit
+- [X] T020 [US1] (View — exempt, mockup V3) Extend `parts` in app-four/Views/Components/FoldedDayCardHeader.swift: append ≤2 `Part(kind: nil, systemImage:)` tokens — `fork.knife` "N kcal", `cup.and.saucer.fill` "N mg" — colored `Palette.nutritionFood`, only when `day.nutrition?.summary` has the value; extend the combined `accessibilityLabel` (lines ~115–119) with "N calories eaten, N milligrams caffeine"
 - [ ] T021 [US1] Owner checkpoint: build + device run — seed mock data, verify folded tokens light/dark, skip days empty, VoiceOver label, Dynamic Type wrap (quickstart §2.2, §4)
 
 **Checkpoint**: MVP demonstrable — folded story complete on demo data.

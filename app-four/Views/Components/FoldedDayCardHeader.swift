@@ -19,7 +19,7 @@ struct FoldedDayCardHeader: View {
             titleRow
                 .padding(.horizontal, Spacing.l)
             if showsSummary {
-                if !summary.isEmpty {
+                if !summary.isEmpty || !nutritionParts.isEmpty {
                     Rectangle().fill(Theme.separator).frame(height: 1)   // full-width divider
                 }
                 summaryLine
@@ -70,20 +70,25 @@ struct FoldedDayCardHeader: View {
     }
 
     @ViewBuilder private var summaryLine: some View {
-        if summary.isEmpty {
+        if summary.isEmpty && nutritionParts.isEmpty {
             Text(DayCardSummary.emptyCopy)
                 .font(Typography.callout)
                 .foregroundStyle(Theme.textSecondary)
                 .lineLimit(2)
         } else {
             FlowLayout(spacing: Spacing.s) {
-                ForEach(Array(parts.enumerated()), id: \.offset) { idx, part in
+                ForEach(Array(displayParts.enumerated()), id: \.offset) { idx, part in
                     HStack(spacing: Spacing.xs) {
                         if idx > 0 {
                             Text("·").foregroundStyle(Theme.textSecondary)
                         }
                         if let kind = part.kind {
                             SignalGlyph(kind, level: part.level, size: Metrics.summarySignal, decorative: true)
+                        } else if let systemImage = part.systemImage {
+                            Image(systemName: systemImage)
+                                .font(Typography.caption)
+                                .foregroundStyle(part.color)
+                                .accessibilityHidden(true)
                         }
                         Text(part.text)
                             .font(Typography.caption)
@@ -101,6 +106,15 @@ struct FoldedDayCardHeader: View {
         let level: Int?
         let text: String
         let color: Color
+        var systemImage: String? = nil   // SF Symbol tokens (nutrition, spec 031); kind wins when both set
+    }
+
+    /// What the summary FlowLayout renders: the signal parts, or — on a day with
+    /// nutrition data but no check-ins — a quiet lead-in plus the nutrition tokens
+    /// (spec 031 approved states mockup).
+    private var displayParts: [Part] {
+        guard summary.isEmpty else { return parts }
+        return [Part(kind: nil, level: nil, text: "No check-ins", color: Theme.textSecondary)] + nutritionParts
     }
 
     /// Summary signals below the divider — energy · focus · medication name. The mood is no longer
@@ -118,12 +132,37 @@ struct FoldedDayCardHeader: View {
         if let med = summary.mostRecentMedicationName {
             p.append(Part(kind: .medication, level: nil, text: med, color: Palette.medication))
         }
+        return p + nutritionParts
+    }
+
+    /// Folded nutrition tokens (spec 031, approved mockup V3): dietary kcal + caffeine,
+    /// capped at two so the FlowLayout stays scannable. Absent metrics render nothing.
+    private var nutritionParts: [Part] {
+        guard let totals = day.nutrition?.summary else { return [] }
+        var p: [Part] = []
+        if let kcal = totals.kcalIn {
+            p.append(Part(kind: nil, level: nil, text: "\(Int(kcal.rounded()).formatted()) kcal",
+                          color: Palette.nutritionFood, systemImage: "fork.knife"))
+        }
+        if let mg = totals.caffeineMg {
+            p.append(Part(kind: nil, level: nil, text: "\(Int(mg.rounded())) mg",
+                          color: Palette.nutritionFood, systemImage: "cup.and.saucer.fill"))
+        }
         return p
     }
 
     private var accessibilityLabel: String {
-        if summary.isEmpty { return "\(day.label). \(DayCardSummary.emptyCopy)" }
-        let signals = [summary.mood, summary.energy, summary.focus, summary.mostRecentMedicationName].compactMap { $0 }
-        return ([day.label] + signals).joined(separator: ", ")
+        if summary.isEmpty && nutritionParts.isEmpty { return "\(day.label). \(DayCardSummary.emptyCopy)" }
+        var pieces: [String] = [day.label]
+        if summary.isEmpty {
+            pieces.append("No check-ins")
+        } else {
+            pieces += [summary.mood, summary.energy, summary.focus, summary.mostRecentMedicationName].compactMap { $0 }
+        }
+        if let totals = day.nutrition?.summary {
+            if let kcal = totals.kcalIn { pieces.append("\(Int(kcal.rounded())) calories eaten") }
+            if let mg = totals.caffeineMg { pieces.append("\(Int(mg.rounded())) milligrams caffeine") }
+        }
+        return pieces.joined(separator: ", ")
     }
 }

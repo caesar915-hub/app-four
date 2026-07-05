@@ -66,7 +66,11 @@ struct MockDataGeneratorNutritionTests {
         var offDayTotals: [Double] = []
         for (day, events) in byDay {
             let offset = calendar.dateComponents([.day], from: day, to: today).day ?? 0
-            (offset < 10 ? medDayTotals : offDayTotals).append(caffeineTotal(events))
+            if offset < 10 {
+                medDayTotals.append(caffeineTotal(events))
+            } else {
+                offDayTotals.append(caffeineTotal(events))
+            }
         }
         let maxMed = try #require(medDayTotals.max())
         let minOff = try #require(offDayTotals.min())
