@@ -16,9 +16,9 @@
 
 **Purpose**: Branch verification + the design-system lanes every story's UI needs.
 
-- [ ] T001 Verify branch `feat/nutrition-signals-demo` is at/ahead of `984ccc68` with clean status; confirm mockups exist in docs/superpowers/plans/ (three 2026-07-05-nutrition-*.html files)
-- [ ] T002 [P] Add `Palette.nutritionFood` (clay #B5674A light / #CB8266 dark) and `Palette.nutritionExercise` (teal #3E8E86 light / #5FAEA5 dark) beside the existing signal colors in Packages/SquirlDesignSystem/Sources/SquirlDesignSystem/Palette+Signals.swift (or the file where `Palette.medication` lives)
-- [ ] T003 [P] Record the two new lanes in DESIGN.md Decisions Log (owner approval = Pair 2 mockup sign-off 2026-07-05); bump the `Updated:` timestamp header via `date "+%Y-%m-%d %H:%M %Z"`
+- [X] T001 Verify branch `feat/nutrition-signals-demo` is at/ahead of `984ccc68` with clean status; confirm mockups exist in docs/superpowers/plans/ (three 2026-07-05-nutrition-*.html files)
+- [X] T002 [P] Add `Palette.nutritionFood` (clay #B5674A light / #CB8266 dark) and `Palette.nutritionExercise` (teal #3E8E86 light / #5FAEA5 dark) beside the existing signal colors in Packages/SquirlDesignSystem/Sources/SquirlDesignSystem/Palette+Signals.swift (or the file where `Palette.medication` lives)
+- [X] T003 [P] Record the two new lanes in DESIGN.md Decisions Log (owner approval = Pair 2 mockup sign-off 2026-07-05); bump the `Updated:` timestamp header via `date "+%Y-%m-%d %H:%M %Z"`
 
 **Checkpoint**: package + app still build.
 
@@ -30,11 +30,11 @@
 
 ### Tests (write → run → confirm RED)
 
-- [ ] T004 [P] Write app-fourTests/Models/NutritionEventTests.swift: defaults (`sourceValue == healthKit`, `isMockData == false`, all metrics nil, `kindValue == "food"`), kind computed-property bridging both directions — in-memory ModelContainer fixture per existing DailySignalsTests pattern
-- [ ] T005 [P] Write summary cases in app-fourTests/Services/NutritionEventGroupingTests.swift: Σ per metric over food events; `kcalOut` = Σ exercise kcal ONLY (no food contribution, no DailySignals input); each Σ nil when no contributor; mixed-source events → summary source `.manual` if any contributor manual else `.healthKit`
-- [ ] T006 [P] Write fetch/insert cases in app-fourTests/Store/SignalsStoreEventTests.swift: `fetchEvents(from:to:)` range inclusion (23:58 event belongs to its day — SignalDayKey edge), `insertMockEvent` persists with `isMockData == true`
-- [ ] T007 [P] Write mapping cases in app-fourTests/ViewModels/MoodLibraryViewModelNutritionTests.swift: events group by day key into `TimelineDay.nutrition`; days without events get nil; summary values surface for folded tokens; `debugMockMode` off hides mock events (fixture: container with Recording + MedicationEvent + NutritionEvent, per existing VM test pattern)
-- [ ] T008 Run the suite; confirm T004–T007 tests FAIL (RED) — commit the failing tests
+- [X] T004 [P] Write app-fourTests/Models/NutritionEventTests.swift: defaults (`sourceValue == healthKit`, `isMockData == false`, all metrics nil, `kindValue == "food"`), kind computed-property bridging both directions — in-memory ModelContainer fixture per existing DailySignalsTests pattern
+- [X] T005 [P] Write summary cases in app-fourTests/Services/NutritionEventGroupingTests.swift: Σ per metric over food events; `kcalOut` = Σ exercise kcal ONLY (no food contribution, no DailySignals input); each Σ nil when no contributor; mixed-source events → summary source `.manual` if any contributor manual else `.healthKit`
+- [X] T006 [P] Write fetch/insert cases in app-fourTests/Store/SignalsStoreEventTests.swift: `fetchEvents(from:to:)` range inclusion (23:58 event belongs to its day — SignalDayKey edge), `insertMockEvent` persists with `isMockData == true`
+- [X] T007 [P] Write mapping cases in app-fourTests/ViewModels/MoodLibraryViewModelNutritionTests.swift: events group by day key into `TimelineDay.nutrition`; days without events get nil; summary values surface for folded tokens; `debugMockMode` off hides mock events (fixture: container with Recording + MedicationEvent + NutritionEvent, per existing VM test pattern)
+- [X] T008 Run the suite; confirm T004–T007 tests FAIL (RED) — commit the failing tests
 
 ### Implementation (make them GREEN)
 
