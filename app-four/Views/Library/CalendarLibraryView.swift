@@ -12,6 +12,8 @@ struct CalendarLibraryView: View {
     @State private var topDayID: Date?
     @State private var expandedCards = ExpandedDayCards()
     @AppStorage("autoExpandOnSelection") private var autoExpandOnSelection = true
+    @AppStorage("didOfferHealthAccess") private var didOfferHealthAccess = false
+    @AppStorage("healthSyncEnabled") private var healthSyncEnabled = true
     @Environment(AppServices.self) private var services
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     private let store: RecordingStore
@@ -44,6 +46,14 @@ struct CalendarLibraryView: View {
             }
         }
         .trackScreen("CalendarLibraryView")
+        .task {
+            // Silent nutrition/signal sync (spec 031 FR-010): only when access was already
+            // offered elsewhere AND the user hasn't paused syncing. The calendar NEVER
+            // presents the HealthKit primer — that stays in the Insights flow.
+            guard didOfferHealthAccess, healthSyncEnabled else { return }
+            try? await AppDependencies.signalSyncCoordinator.syncRecentIfNeeded(lastDays: 30)
+            viewModel.loadNutrition()
+        }
         .onChange(of: selectedTab) { oldValue, newValue in
             if oldValue == .calendar && newValue != .calendar {
                 path.removeLast(path.count)

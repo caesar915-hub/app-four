@@ -111,12 +111,12 @@
 
 ### Implementation
 
-- [ ] T034 [US3] Add `readNutritionEvents(from:to:)` to app-four/Services/HealthKit/HealthDataReading.swift (contracts §1) and implement `NutritionEventGrouping.hourlyFoodEvents` in app-four/Services/HealthKit/NutritionEventGrouping.swift
-- [ ] T035 [US3] Implement `replaceHealthKitEvents(dayStart:with:)` in app-four/Store/SignalsStore.swift and the event sweep inside `sync(from:to:)` in app-four/Store/SignalSyncCoordinator.swift (single `store.save()`, existing once-per-day gate)
-- [ ] T036 [US3] Run suite: T029–T032 GREEN — commit
-- [ ] T037 [US3] Implement the HealthKit queries in app-four/Services/HealthKit/HealthKitServiceImpl.swift (device-verified, no unit test): extend `readTypes` (+3 dietary types + `HKObjectType.workoutType()`); food correlations via `HKSampleQueryDescriptor` + `.correlation(type:predicate:)` (name from `HKMetadataKeyFoodType`, contained samples via `objects(for:)`); loose dietary samples via `.quantitySample` minus correlation-claimed UUIDs → `hourlyFoodEvents`; workouts via `.workout(_:)` with `duration` + `statistics(for: HKQuantityType(.activeEnergyBurned))?.sumQuantity()` — NOT deprecated `totalEnergyBurned` (research D2–D4); units kcal/.gram/.milli-gram
-- [ ] T038 [P] [US3] (View — exempt) Add the sync trigger to app-four/Views/Library/CalendarLibraryView.swift `.task`: only when `didOfferHealthAccess` → `await coordinator.syncRecentIfNeeded(lastDays: 30)` then `viewModel.loadNutrition()`; never present the primer (FR-010)
-- [ ] T039 [P] [US3] Update app-four/Info.plist `NSHealthShareUsageDescription` and app-four/Views/Signals/HealthAccessPrimerView.swift copy to include "nutrition and workouts"
+- [X] T034 [US3] Add `readNutritionEvents(from:to:)` to app-four/Services/HealthKit/HealthDataReading.swift (contracts §1) and implement `NutritionEventGrouping.hourlyFoodEvents` in app-four/Services/HealthKit/NutritionEventGrouping.swift
+- [X] T035 [US3] Implement `replaceHealthKitEvents(dayStart:with:)` in app-four/Store/SignalsStore.swift and the event sweep inside `sync(from:to:)` in app-four/Store/SignalSyncCoordinator.swift (single `store.save()`, existing once-per-day gate)
+- [X] T036 [US3] Run suite: T029–T032 GREEN — commit
+- [X] T037 [US3] Implement the HealthKit queries in app-four/Services/HealthKit/HealthKitServiceImpl.swift (device-verified, no unit test): extend `readTypes` (+3 dietary types + `HKObjectType.workoutType()`); food correlations via `HKSampleQueryDescriptor` + `.correlation(type:predicate:)` (name from `HKMetadataKeyFoodType`, contained samples via `objects(for:)`); loose dietary samples via `.quantitySample` minus correlation-claimed UUIDs → `hourlyFoodEvents`; workouts via `.workout(_:)` with `duration` + `statistics(for: HKQuantityType(.activeEnergyBurned))?.sumQuantity()` — NOT deprecated `totalEnergyBurned` (research D2–D4); units kcal/.gram/.milli-gram
+- [X] T038 [P] [US3] (View — exempt) Add the sync trigger to app-four/Views/Library/CalendarLibraryView.swift `.task`: only when `didOfferHealthAccess` → `await coordinator.syncRecentIfNeeded(lastDays: 30)` then `viewModel.loadNutrition()`; never present the primer (FR-010)
+- [X] T039 [P] [US3] Update app-four/Info.plist `NSHealthShareUsageDescription` and app-four/Views/Signals/HealthAccessPrimerView.swift copy to include "nutrition and workouts"
 - [ ] T040 [US3] Owner checkpoint: device run per quickstart §3 — grant via Insights, log real food/caffeine/workout, verify values match Health app, real-wins with mock on, footer kcal-out = workout sum, no prompt from calendar
 
 **Checkpoint**: all three display stories complete.

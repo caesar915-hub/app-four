@@ -89,4 +89,33 @@ final class SignalsStore {
         event.isMockData = true
         modelContext.insert(event)
     }
+
+    /// Replace-per-day dedup (spec 031): deletes the day's real HealthKit events and inserts
+    /// the fresh DTOs. Mock rows and `.manual` rows are never touched, so re-syncing is
+    /// idempotent without any unique constraint (Constitution IX). Caller saves.
+    func replaceHealthKitEvents(dayStart: Date, with dtos: [NutritionEventDTO]) {
+        let start = SignalDayKey.dayStart(for: dayStart)
+        guard let endExclusive = Calendar.current.date(byAdding: .day, value: 1, to: start) else { return }
+        let hkRaw = SignalSource.healthKit.rawValue
+        let descriptor = FetchDescriptor<NutritionEvent>(
+            predicate: #Predicate {
+                $0.startDate >= start && $0.startDate < endExclusive
+                    && $0.sourceValue == hkRaw && $0.isMockData == false
+            }
+        )
+        let stale = (try? modelContext.fetch(descriptor)) ?? []
+        for event in stale { modelContext.delete(event) }
+        for dto in dtos {
+            let event = NutritionEvent(startDate: dto.startDate, kind: dto.kind)
+            event.endDate = dto.endDate
+            event.name = dto.name
+            event.kcal = dto.kcal
+            event.proteinGrams = dto.proteinGrams
+            event.caffeineMg = dto.caffeineMg
+            event.durationMinutes = dto.durationMinutes
+            event.source = .healthKit
+            event.isMockData = false
+            modelContext.insert(event)
+        }
+    }
 }

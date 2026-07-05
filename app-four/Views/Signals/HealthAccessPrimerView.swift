@@ -17,7 +17,7 @@ struct HealthAccessPrimerView: View {
                 .foregroundStyle(Palette.sleepIndigo)
             Text("Connect Apple Health")
                 .font(.title2.bold())
-            Text("Squirl can show your sleep, activity, heart, and cycle data next to your check-ins. It's read-only and stays on your device — nothing is uploaded.")
+            Text("Squirl can show your sleep, activity, heart, cycle, nutrition, and workout data next to your check-ins. It's read-only and stays on your device — nothing is uploaded.")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal)

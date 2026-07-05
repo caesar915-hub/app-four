@@ -76,6 +76,18 @@ final class SignalSyncCoordinator {
             if let heart = dto.heart { merge(heart, into: row) }
             if let cycle = dto.cycle { merge(cycle, into: row) }
         }
+
+        // Nutrition/exercise events (spec 031): grouped per day, replace-per-day so a
+        // re-sync never duplicates. Same window, same single save below.
+        let events = try await reader.readNutritionEvents(from: start, to: end)
+        let eventsByDay = Dictionary(grouping: events) { SignalDayKey.dayStart(for: $0.startDate, calendar: calendar) }
+        var cursor = start
+        while cursor <= end {
+            store.replaceHealthKitEvents(dayStart: cursor, with: eventsByDay[cursor] ?? [])
+            guard let next = calendar.date(byAdding: .day, value: 1, to: cursor) else { break }
+            cursor = next
+        }
+
         try store.save()
         return .completed(daysWritten: dtos.count)
     }

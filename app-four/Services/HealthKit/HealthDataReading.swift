@@ -22,4 +22,8 @@ protocol HealthDataReading: Sendable {
     /// Reads all four signals for each day in `[startDay, endDay]` inclusive. Days with
     /// no samples are omitted or returned with nil fields. Never throws for "no data".
     func readSignals(from startDay: Date, to endDay: Date) async throws -> [DaySignalsDTO]
+    /// Timestamped food + workout events across `[startDay, endDay]` (spec 031). Food events
+    /// come from `.food` correlations first, then loose dietary samples bucketed per clock
+    /// hour; exercise events from workouts. Never throws for "no data".
+    func readNutritionEvents(from startDay: Date, to endDay: Date) async throws -> [NutritionEventDTO]
 }

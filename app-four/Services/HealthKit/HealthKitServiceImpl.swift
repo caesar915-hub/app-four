@@ -30,7 +30,12 @@ actor HealthKitServiceImpl: HealthDataReading {
             HKQuantityType(.appleExerciseTime),
             HKQuantityType(.restingHeartRate),
             HKQuantityType(.heartRateVariabilitySDNN),
-            HKCategoryType(.menstrualFlow)
+            HKCategoryType(.menstrualFlow),
+            // Nutrition + exercise (spec 031).
+            HKQuantityType(.dietaryEnergyConsumed),
+            HKQuantityType(.dietaryProtein),
+            HKQuantityType(.dietaryCaffeine),
+            HKObjectType.workoutType()
         ]
         for (id, _) in symptomMap { types.insert(HKCategoryType(id)) }
         return types
@@ -66,6 +71,106 @@ actor HealthKitServiceImpl: HealthDataReading {
             cursor = next
         }
         return results
+    }
+
+    // MARK: - Nutrition + exercise events (spec 031)
+
+    func readNutritionEvents(from startDay: Date, to endDay: Date) async throws -> [NutritionEventDTO] {
+        guard HKHealthStore.isHealthDataAvailable() else { return [] }
+        var results: [NutritionEventDTO] = []
+        var cursor = calendar.startOfDay(for: startDay)
+        let last = calendar.startOfDay(for: endDay)
+        while cursor <= last {
+            try Task.checkCancellation()
+            results.append(contentsOf: try await readFoodEvents(on: cursor))
+            results.append(contentsOf: try await readWorkouts(on: cursor))
+            guard let next = calendar.date(byAdding: .day, value: 1, to: cursor) else { break }
+            cursor = next
+        }
+        return results
+    }
+
+    /// Food correlations become named meals; dietary samples not in any correlation are
+    /// bucketed per clock hour by the pure `NutritionEventGrouping` mapper.
+    private func readFoodEvents(on day: Date) async throws -> [NutritionEventDTO] {
+        let (start, end) = dayInterval(day)
+        let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
+        let energyType = HKQuantityType(.dietaryEnergyConsumed)
+        let proteinType = HKQuantityType(.dietaryProtein)
+        let caffeineType = HKQuantityType(.dietaryCaffeine)
+        let caffeineUnit = HKUnit.gramUnit(with: .milli)
+
+        // 1. Correlations → one event per logged meal, named from HKMetadataKeyFoodType.
+        let corrDescriptor = HKSampleQueryDescriptor(
+            predicates: [.correlation(type: HKCorrelationType(.food), predicate: predicate)],
+            sortDescriptors: []
+        )
+        var claimed = Set<UUID>()
+        var events: [NutritionEventDTO] = []
+        for correlation in try await corrDescriptor.result(for: store) {
+            func sum(_ type: HKQuantityType, _ unit: HKUnit) -> Double? {
+                let samples = correlation.objects(for: type).compactMap { $0 as? HKQuantitySample }
+                samples.forEach { claimed.insert($0.uuid) }
+                guard !samples.isEmpty else { return nil }
+                return samples.reduce(0) { $0 + $1.quantity.doubleValue(for: unit) }
+            }
+            let kcal = sum(energyType, .kilocalorie())
+            let protein = sum(proteinType, .gram())
+            let caffeine = sum(caffeineType, caffeineUnit)
+            guard kcal != nil || protein != nil || caffeine != nil else { continue }
+            events.append(NutritionEventDTO(
+                kind: .food, startDate: correlation.startDate, endDate: nil,
+                name: correlation.metadata?[HKMetadataKeyFoodType] as? String,
+                kcal: kcal.map { ($0 * 10).rounded() / 10 },
+                proteinGrams: protein.map { ($0 * 10).rounded() / 10 },
+                caffeineMg: caffeine.map { $0.rounded() },
+                durationMinutes: nil
+            ))
+        }
+
+        // 2. Loose samples (not claimed by a correlation) → hourly food events.
+        var loose: [LooseDietarySample] = []
+        loose += try await looseSamples(energyType, unit: .kilocalorie(), predicate: predicate, claimed: claimed)
+            .map { LooseDietarySample(startDate: $0.date, kcal: ($0.value * 10).rounded() / 10, proteinGrams: nil, caffeineMg: nil) }
+        loose += try await looseSamples(proteinType, unit: .gram(), predicate: predicate, claimed: claimed)
+            .map { LooseDietarySample(startDate: $0.date, kcal: nil, proteinGrams: ($0.value * 10).rounded() / 10, caffeineMg: nil) }
+        loose += try await looseSamples(caffeineType, unit: caffeineUnit, predicate: predicate, claimed: claimed)
+            .map { LooseDietarySample(startDate: $0.date, kcal: nil, proteinGrams: nil, caffeineMg: $0.value.rounded()) }
+        events += NutritionEventGrouping.hourlyFoodEvents(loose: loose, calendar: calendar)
+        return events
+    }
+
+    private func looseSamples(_ type: HKQuantityType, unit: HKUnit, predicate: NSPredicate,
+                              claimed: Set<UUID>) async throws -> [(date: Date, value: Double)] {
+        let descriptor = HKSampleQueryDescriptor(
+            predicates: [.quantitySample(type: type, predicate: predicate)],
+            sortDescriptors: []
+        )
+        return try await descriptor.result(for: store).compactMap { sample in
+            guard !claimed.contains(sample.uuid) else { return nil }
+            return (sample.startDate, sample.quantity.doubleValue(for: unit))
+        }
+    }
+
+    private func readWorkouts(on day: Date) async throws -> [NutritionEventDTO] {
+        let (start, end) = dayInterval(day)
+        let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
+        let descriptor = HKSampleQueryDescriptor(
+            predicates: [.workout(predicate)],
+            sortDescriptors: [SortDescriptor(\.startDate)]
+        )
+        return try await descriptor.result(for: store).map { workout in
+            // Modern API: per-workout statistics, NOT the deprecated `totalEnergyBurned`.
+            let kcal = workout.statistics(for: HKQuantityType(.activeEnergyBurned))?
+                .sumQuantity()?.doubleValue(for: .kilocalorie())
+            return NutritionEventDTO(
+                kind: .exercise, startDate: workout.startDate, endDate: workout.endDate,
+                name: workout.workoutActivityType.squirlName,
+                kcal: kcal.map { ($0 * 10).rounded() / 10 },
+                proteinGrams: nil, caffeineMg: nil,
+                durationMinutes: (workout.duration / 60 * 10).rounded() / 10
+            )
+        }
     }
 
     // MARK: - Per-signal reads (nil when no samples)
@@ -182,5 +287,22 @@ actor HealthKitServiceImpl: HealthDataReading {
         }
         if flow == nil, symptoms.isEmpty { return nil }
         return CycleDTO(flow: flow, symptoms: symptoms)
+    }
+}
+
+private extension HKWorkoutActivityType {
+    /// A short, human name for the common activities; everything else reads "Workout".
+    /// HealthKit has no built-in display name, so we map only what the demo surfaces.
+    var squirlName: String {
+        switch self {
+        case .running: "Run"
+        case .walking: "Walk"
+        case .cycling: "Cycling"
+        case .traditionalStrengthTraining, .functionalStrengthTraining: "Strength"
+        case .highIntensityIntervalTraining: "HIIT"
+        case .yoga: "Yoga"
+        case .swimming: "Swim"
+        default: "Workout"
+        }
     }
 }
