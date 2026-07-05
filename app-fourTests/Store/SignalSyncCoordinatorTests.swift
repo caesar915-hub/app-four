@@ -229,4 +229,29 @@ struct SignalSyncCoordinatorTests {
         let count = await reader.nutritionReadCallCount
         #expect(count == 0)
     }
+
+    // MARK: US4 — sync-disabled gate
+
+    @Test func syncSkippedWhenDisabled() async throws {
+        defer { UserDefaults.standard.removeObject(forKey: "healthSyncEnabled") }
+        let (coordinator, _, container, reader) = try makeFixture(); _ = container
+        UserDefaults.standard.set(false, forKey: "healthSyncEnabled")
+
+        let result = try await coordinator.sync(from: day, to: day)
+        #expect(result == .disabled)
+        let reads = await reader.readCallCount
+        #expect(reads == 0)                     // reader never touched
+    }
+
+    @Test func syncResumesWhenReEnabled() async throws {
+        defer { UserDefaults.standard.removeObject(forKey: "healthSyncEnabled") }
+        let (coordinator, _, container, reader) = try makeFixture(); _ = container
+        UserDefaults.standard.set(false, forKey: "healthSyncEnabled")
+        _ = try await coordinator.sync(from: day, to: day)
+
+        UserDefaults.standard.set(true, forKey: "healthSyncEnabled")
+        _ = try await coordinator.sync(from: day, to: day)
+        let reads = await reader.readCallCount
+        #expect(reads == 1)                     // read only after re-enabling
+    }
 }

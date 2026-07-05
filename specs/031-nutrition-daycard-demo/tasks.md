@@ -135,9 +135,9 @@
 
 ### Tests (RED first)
 
-- [ ] T045 [P] [US4] Add gate cases to app-fourTests/Store/SignalSyncCoordinatorTests.swift: `healthSyncEnabled == false` → `sync(lastDays:)`/`syncRecentIfNeeded` return without calling the reader (readCallCount stays 0) and report a distinct disabled result; flag back on → reads resume; in-flight semantics untouched
-- [ ] T046 [P] [US4] Add deletion cases to app-fourTests/Store/SignalsStoreEventTests.swift (+ a DailySignals case): `deleteImportedHealthData()` removes `source == .healthKit && !isMockData` NutritionEvents AND clears HealthKit-sourced groups on DailySignals rows (fields nil, source `.none`); manual-source rows, mock rows, and `.manual` groups survive
-- [ ] T047 [US4] Run suite; confirm T045–T046 FAIL (RED) — commit
+- [X] T045 [P] [US4] Add gate cases to app-fourTests/Store/SignalSyncCoordinatorTests.swift: `healthSyncEnabled == false` → `sync(lastDays:)`/`syncRecentIfNeeded` return without calling the reader (readCallCount stays 0) and report a distinct disabled result; flag back on → reads resume; in-flight semantics untouched
+- [X] T046 [P] [US4] Add deletion cases to app-fourTests/Store/SignalsStoreEventTests.swift (+ a DailySignals case): `deleteImportedHealthData()` removes `source == .healthKit && !isMockData` NutritionEvents AND clears HealthKit-sourced groups on DailySignals rows (fields nil, source `.none`); manual-source rows, mock rows, and `.manual` groups survive
+- [X] T047 [US4] Run suite; confirm T045–T046 FAIL (RED) — commit
 
 ### Implementation
 

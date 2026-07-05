@@ -97,6 +97,48 @@ struct SignalsStoreEventTests {
         #expect(store.fetchEvents(from: day, to: day).count == 1)   // no duplication
     }
 
+    // MARK: - deleteImportedHealthData (US4)
+
+    @Test func deleteImportedRemovesRealHKEventsKeepsMockAndManual() throws {
+        let (store, _) = try makeStore()
+        let day = SignalDayKey.dayStart(for: Date(timeIntervalSince1970: 1_000_000))
+        let real = try insert(store, at: day.addingTimeInterval(8 * 3600))
+        let mock = try insert(store, at: day.addingTimeInterval(9 * 3600), mock: true)
+        let manual = try insert(store, at: day.addingTimeInterval(10 * 3600))
+        manual.source = .manual
+        try store.save()
+        _ = real
+
+        store.deleteImportedHealthData()
+        try store.save()
+
+        let events = store.fetchEvents(from: day, to: day)
+        #expect(events.count == 2)
+        #expect(events.contains { $0.id == mock.id })
+        #expect(events.contains { $0.id == manual.id })
+        #expect(!events.contains { $0.source == .healthKit && !$0.isMockData })
+    }
+
+    @Test func deleteImportedClearsHealthKitDayGroupsKeepsManual() throws {
+        let (store, container) = try makeStore()
+        let day = SignalDayKey.dayStart(for: Date(timeIntervalSince1970: 1_000_000))
+        let row = store.upsert(dayStart: day)
+        row.sleepHours = 8; row.sleepSource = .healthKit          // HK → cleared
+        row.restingHeartRate = 55; row.heartSource = .manual      // manual → kept
+        try store.save()
+
+        store.deleteImportedHealthData()
+        try store.save()
+
+        let refreshed = try #require(store.fetch(dayStart: day))
+        #expect(refreshed.sleepHours == nil)
+        #expect(refreshed.sleepSource == .none)
+        #expect(refreshed.restingHeartRate == 55)                 // manual survives
+        #expect(refreshed.heartSource == .manual)
+        // the row itself is not deleted
+        #expect(try container.mainContext.fetchCount(FetchDescriptor<DailySignals>()) == 1)
+    }
+
     @Test func insertMockEventPersistsWithMockFlag() throws {
         let (store, container) = try makeStore()
         let day = SignalDayKey.dayStart(for: Date(timeIntervalSince1970: 1_000_000))
