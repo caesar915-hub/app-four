@@ -141,8 +141,8 @@
 
 ### Implementation
 
-- [ ] T048 [US4] Implement the guard in app-four/Store/SignalSyncCoordinator.swift (single `healthSyncEnabled` check at the sweep entry points, UserDefaults-backed so the Settings toggle and coordinator share state) and `deleteImportedHealthData()` in app-four/Store/SignalsStore.swift; run suite → GREEN — commit
-- [ ] T049 [US4] (View — exempt, T044 mockup) Add the "Apple Health" section to app-four/Views/SettingsView.swift: `Toggle("Sync from Apple Health")` on `@AppStorage("healthSyncEnabled")` (default true), "Last sync" row, destructive "Delete Imported Health Data…" with `confirmationDialog` (copy per mockup: manual/demo kept, Health itself unchanged), same dialog offered inline on toggle-off ("Stop and delete?", default Keep); post `.nutritionEventsDidChange` after delete; footer notes permission lives in the Health app
+- [X] T048 [US4] Implement the guard in app-four/Store/SignalSyncCoordinator.swift (single `healthSyncEnabled` check at the sweep entry points, UserDefaults-backed so the Settings toggle and coordinator share state) and `deleteImportedHealthData()` in app-four/Store/SignalsStore.swift; run suite → GREEN — commit
+- [X] T049 [US4] (View — exempt, T044 mockup) Add the "Apple Health" section to app-four/Views/SettingsView.swift: `Toggle("Sync from Apple Health")` on `@AppStorage("healthSyncEnabled")` (default true), "Last sync" row, destructive "Delete Imported Health Data…" with `confirmationDialog` (copy per mockup: manual/demo kept, Health itself unchanged), same dialog offered inline on toggle-off ("Stop and delete?", default Keep); post `.nutritionEventsDidChange` after delete; footer notes permission lives in the Health app
 - [ ] T050 [US4] Owner checkpoint: toggle off → no sync from calendar/Insights (Last sync stays); delete → nutrition tokens/rows AND 009 signal rows vanish, mock demo survives with mock mode on; re-enable → next visit re-imports; VoiceOver pass on the section
 
 **Checkpoint**: user controls the sync lifecycle end-to-end.

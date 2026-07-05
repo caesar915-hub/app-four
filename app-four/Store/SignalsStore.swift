@@ -118,4 +118,37 @@ final class SignalsStore {
             modelContext.insert(event)
         }
     }
+
+    /// Deletes everything imported from Apple Health (spec 031 US4 / FR-016): real
+    /// HealthKit nutrition events, and the HealthKit-sourced groups on each real day-signal
+    /// row (fields nil, source `.none`). Manual entries, mock rows, and the rows themselves
+    /// survive. Caller saves.
+    func deleteImportedHealthData() {
+        let hkRaw = SignalSource.healthKit.rawValue
+        let events = (try? modelContext.fetch(FetchDescriptor<NutritionEvent>(
+            predicate: #Predicate { $0.sourceValue == hkRaw && $0.isMockData == false }
+        ))) ?? []
+        for event in events { modelContext.delete(event) }
+
+        let rows = (try? modelContext.fetch(FetchDescriptor<DailySignals>(
+            predicate: #Predicate { $0.isMockData == false }
+        ))) ?? []
+        for row in rows { clearHealthKitGroups(row) }
+    }
+
+    private func clearHealthKitGroups(_ row: DailySignals) {
+        if row.sleepSource == .healthKit {
+            row.sleepHours = nil; row.sleepLevel = nil; row.sleepSource = .none
+        }
+        if row.activitySource == .healthKit {
+            row.steps = nil; row.activeEnergyKcal = nil; row.exerciseMinutes = nil; row.activitySource = .none
+        }
+        if row.heartSource == .healthKit {
+            row.restingHeartRate = nil; row.hrvSDNN = nil; row.heartSource = .none
+        }
+        if row.cycleSource == .healthKit {
+            row.menstrualFlow = nil; row.cycleSymptoms = []; row.cycleSource = .none
+        }
+        row.updatedAt = Date()
+    }
 }

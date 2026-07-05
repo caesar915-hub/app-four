@@ -57,12 +57,15 @@ final class SignalSyncCoordinator {
 
     // MARK: - Orchestration
 
-    enum SyncResult: Sendable, Equatable { case completed(daysWritten: Int), unavailable }
+    enum SyncResult: Sendable, Equatable { case completed(daysWritten: Int), unavailable, disabled }
 
     /// Reads HealthKit for the inclusive day range and merges into SwiftData, honoring
     /// per-group provenance. Saves once at the end.
     @discardableResult
     func sync(from startDay: Date, to endDay: Date) async throws -> SyncResult {
+        // User pause switch (spec 031 US4 / FR-015): the single gate for every sync path —
+        // calendar, Insights, and pull-to-refresh all route through here. Default on.
+        guard UserDefaults.standard.object(forKey: "healthSyncEnabled") as? Bool ?? true else { return .disabled }
         // Short-circuit when HealthKit isn't available, so a missing-HealthKit device is
         // distinguishable from "synced, no data" (FR-014 / SyncResult.unavailable).
         guard await reader.authorizationState() != .unavailable else { return .unavailable }
@@ -89,6 +92,7 @@ final class SignalSyncCoordinator {
         }
 
         try store.save()
+        UserDefaults.standard.set(Date().timeIntervalSinceReferenceDate, forKey: "healthLastSyncAt")
         return .completed(daysWritten: dtos.count)
     }
 

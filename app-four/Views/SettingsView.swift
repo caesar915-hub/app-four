@@ -50,6 +50,7 @@ struct SettingsView: View {
                     transcriptionSection
                     dayCardSection
                     medicationBarSection
+                    HealthSettingsSection()
                     accessibilitySection
                     YourDataSection()
                     journalExportSection
