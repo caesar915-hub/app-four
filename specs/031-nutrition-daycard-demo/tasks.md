@@ -80,8 +80,8 @@
 
 ### Tests (RED first)
 
-- [ ] T022 [P] [US2] Add interleave cases to app-fourTests/ViewModels/MoodLibraryViewModelNutritionTests.swift: merged food/exercise items order correctly among check-in nodes using the existing row ordering convention (3 check-ins + 4 food + 1 workout fixture → 8 positions asserted); nutrition-only day yields `nutrition != nil` with empty nodes
-- [ ] T023 [US2] Run suite; confirm T022 FAILS (RED) — commit
+- [X] T022 [P] [US2] Add interleave cases to app-fourTests/ViewModels/MoodLibraryViewModelNutritionTests.swift: merged food/exercise items order correctly among check-in nodes using the existing row ordering convention (3 check-ins + 4 food + 1 workout fixture → 8 positions asserted); nutrition-only day yields `nutrition != nil` with empty nodes
+- [X] T023 [US2] Run suite; confirm T022 FAILS (RED) — commit
 
 ### Implementation
 

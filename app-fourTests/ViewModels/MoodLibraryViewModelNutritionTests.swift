@@ -92,6 +92,57 @@ struct MoodLibraryViewModelNutritionTests {
         #expect(vm.timelineDays.first { $0.date == today }?.nutrition == nil)
     }
 
+    // MARK: - US2 interleave
+
+    private func insertRecording(at date: Date) throws {
+        let recording = Recording(audioFileName: "c.m4a", duration: 0, title: "Okay", mood: "okay")
+        recording.createdAt = date
+        context.insert(recording)
+        try context.save()
+        store.loadRecordings()
+    }
+
+    @Test func displayItemsInterleaveCheckInsAndNutritionNewestFirst() throws {
+        let today = calendar.startOfDay(for: Date())
+        func at(_ h: Int, _ m: Int = 0) -> Date { today.addingTimeInterval(TimeInterval(h) * 3600 + TimeInterval(m) * 60) }
+
+        try insertRecording(at: at(9, 15))
+        try insertRecording(at: at(16, 12))
+        try insertEvent(kind: .food, at: at(7, 40), kcal: 520)
+        try insertEvent(kind: .food, at: at(13, 5), kcal: 780)
+        try insertEvent(kind: .exercise, at: at(18), kcal: 310)
+        try insertEvent(kind: .food, at: at(20, 15), kcal: 845)
+
+        let vm = makeVM()
+        let day = try #require(vm.timelineDays.first { $0.date == today })
+        let items = day.displayItems
+        #expect(items.count == 6)   // 2 check-ins + 4 events, one merged rail
+
+        // newest → oldest by time, kinds interleaved
+        let times = items.map(\.time)
+        #expect(times == times.sorted(by: >))
+        #expect(times.first == at(20, 15))   // dinner on top
+        #expect(times.last == at(7, 40))     // breakfast at the bottom
+
+        // the 16:12 check-in sits between the 18:00 workout and the 13:05 lunch
+        let idx16 = try #require(items.firstIndex { if case .checkIn = $0, $0.time == at(16, 12) { return true } else { return false } })
+        #expect(items[idx16 - 1].time == at(18))
+        #expect(items[idx16 + 1].time == at(13, 5))
+    }
+
+    @Test func nutritionOnlyDayHasItemsButNoNodes() throws {
+        let today = calendar.startOfDay(for: Date())
+        try insertRecording(at: today.addingTimeInterval(-2 * 86400 + 9 * 3600))   // a check-in two days ago
+        try insertEvent(kind: .food, at: today.addingTimeInterval(8 * 3600), kcal: 500)   // nutrition only, today
+
+        let vm = makeVM()
+        let day = try #require(vm.timelineDays.first { $0.date == today })
+        #expect(day.nodes.isEmpty)
+        #expect(day.nutrition != nil)
+        #expect(day.displayItems.count == 1)
+        if case .nutrition = day.displayItems[0] {} else { Issue.record("expected a nutrition item") }
+    }
+
     @Test func mockEventsShowWhenMockModeIsOn() throws {
         defer { TestSupport.useRealData() }
         let today = calendar.startOfDay(for: Date())
