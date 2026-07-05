@@ -152,7 +152,7 @@
 ## Phase 7: Polish & Ship Gates
 
 - [ ] T041 [P] Regression pass: day with zero nutrition renders identically to pre-feature build (quickstart §4, SC-004 / FR-014); full owner QA per quickstart §2–4
-- [ ] T042 [P] Update docs/BACKLOG.md (031 stage/state) and docs/DEVLOG.md checkpoint entry; real date via `date "+%Y-%m-%d %H:%M %Z"`
+- [X] T042 [P] Update docs/BACKLOG.md (031 stage/state) and docs/DEVLOG.md checkpoint entry; real date via `date "+%Y-%m-%d %H:%M %Z"`
 - [ ] T043 Final suite + build green (Constitution II), then open PR to `feat/healthkit-signals` (stacked; flag spec-029 collision + PR #8 conflict status in the body) and run `/code-review`; owner device QA is the merge gate — demo branch does NOT merge to main
 
 ---
