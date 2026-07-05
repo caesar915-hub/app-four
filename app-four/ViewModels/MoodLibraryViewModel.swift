@@ -10,17 +10,24 @@ final class MoodLibraryViewModel {
         let date: Date          // start-of-day; stable id for scroll-sync
         let label: String
         let nodes: [DayTimeline.Node]
+        var nutrition: DayNutrition? = nil   // spec 031; nil = day card unchanged
         var id: Date { date }
     }
 
     var currentMonth: Date = Date()
 
     @ObservationIgnored private let store: RecordingStore
+    @ObservationIgnored private let signalsStore: SignalsStore?
     @ObservationIgnored private let calendar = Calendar.current
 
     /// Taken medication events (manual + transcript). Observed so the timeline
     /// recomputes when the medication bar logs or deletes a dose.
     private var medicationEvents: [MedicationEvent] = []
+
+    /// Nutrition/exercise events (spec 031). Observed like `medicationEvents`; SwiftData
+    /// writes from sync/seeding land out-of-band, so `loadNutrition()` is re-called
+    /// explicitly after those complete.
+    private var nutritionEvents: [NutritionEvent] = []
     @ObservationIgnored private var medObserver: NSObjectProtocol?
     @ObservationIgnored private let dayFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -81,6 +88,7 @@ final class MoodLibraryViewModel {
         let firstOfMonth = calendar.startOfMonth(for: currentMonth)
         let daysInMonth = calendar.range(of: .day, in: .month, for: firstOfMonth)?.count ?? 0
         let startOfToday = calendar.startOfDay(for: Date())
+        let nutritionMap = nutritionByDay
 
         var result: [TimelineDay] = []
         for offset in 0..<daysInMonth {
@@ -93,7 +101,8 @@ final class MoodLibraryViewModel {
                 nodes: DayTimelineBuilder.build(
                     recordings: recordingsByDay[dayStart] ?? [],
                     doses: dosesByDay[dayStart] ?? []
-                )
+                ),
+                nutrition: nutritionMap[dayStart]
             ))
         }
         return result.sorted { $0.date > $1.date }   // newest first
@@ -109,9 +118,11 @@ final class MoodLibraryViewModel {
         return timelineDays.filter { $0.date <= cap }
     }
 
-    init(store: RecordingStore) {
+    init(store: RecordingStore, signalsStore: SignalsStore? = nil) {
         self.store = store
+        self.signalsStore = signalsStore
         loadMedicationEvents()
+        loadNutrition()
         medObserver = NotificationCenter.default.addObserver(
             forName: .medicationEventsDidChange,
             object: nil,
@@ -133,6 +144,34 @@ final class MoodLibraryViewModel {
             sortBy: [SortDescriptor(\.takenAt, order: .reverse)]
         )
         medicationEvents = (try? store.context.fetch(descriptor)) ?? []
+    }
+
+    // MARK: - Nutrition (spec 031)
+
+    /// Re-fetches nutrition/exercise events. Called from `init` and again after HealthKit
+    /// sync or mock seeding completes (out-of-band SwiftData writes don't trigger Observation).
+    /// Fetches BOTH partitions — real-wins-per-day is resolved in `nutritionByDay`.
+    func loadNutrition() {
+        guard let signalsStore else { return }
+        nutritionEvents = signalsStore.fetchEvents(from: .distantPast, to: Date())
+    }
+
+    /// Per-day resolution (spec 031 FR-009): mock mode off → real events only; mock mode
+    /// on → a day with ANY real event uses only its real events, else its mock events.
+    /// Never mixed within a day.
+    private var nutritionByDay: [Date: DayNutrition] {
+        guard !nutritionEvents.isEmpty else { return [:] }
+        let mockMode = UserDefaults.standard.bool(forKey: "debugMockMode")
+        let grouped = Dictionary(grouping: nutritionEvents) { calendar.startOfDay(for: $0.startDate) }
+        var result: [Date: DayNutrition] = [:]
+        for (day, events) in grouped {
+            let real = events.filter { !$0.isMockData }
+            let chosen = mockMode ? (real.isEmpty ? events.filter(\.isMockData) : real) : real
+            guard !chosen.isEmpty else { continue }
+            let items = chosen.sorted { $0.startDate > $1.startDate }.map(NutritionEventItem.init)   // newest first
+            result[day] = DayNutrition(events: items, summary: NutritionEventGrouping.summary(for: items))
+        }
+        return result
     }
 
     func prevMonth() {

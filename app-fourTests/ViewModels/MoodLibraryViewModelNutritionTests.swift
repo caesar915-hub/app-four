@@ -77,6 +77,7 @@ struct MoodLibraryViewModelNutritionTests {
         try insertEvent(at: lateYesterday, kcal: 300)
 
         let vm = makeVM()
+        vm.currentMonth = lateYesterday   // robust on the 1st of a month
         let yesterday = calendar.startOfDay(for: lateYesterday)
         #expect(vm.timelineDays.first { $0.date == yesterday }?.nutrition != nil)
         #expect(vm.timelineDays.first { $0.date == today }?.nutrition == nil)

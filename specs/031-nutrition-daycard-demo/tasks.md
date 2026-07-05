@@ -38,13 +38,13 @@
 
 ### Implementation (make them GREEN)
 
-- [ ] T009 [P] Create app-four/Models/NutritionEvent.swift: `@Model` per data-model.md (all attributes optional/defaulted, no unique — Constitution IX) + `NutritionEventKind` enum + kind/source computed bridges
-- [ ] T010 [P] Add `NutritionEventDTO` (Sendable) to app-four/Services/HealthKit/HealthSignalsDTO.swift per contracts §1
-- [ ] T011 Create app-four/Services/HealthKit/NutritionEventGrouping.swift with `summary(for:)` (contracts §2; `hourlyFoodEvents` arrives in US3, T031)
-- [ ] T012 Add `fetchEvents(from:to:)` + `insertMockEvent(_:)` to app-four/Store/SignalsStore.swift (date-range `#Predicate` only — no `isEmpty`/unsupported operations per SwiftData predicate rules)
-- [ ] T013 Extend app-four/ViewModels/MoodLibraryViewModel.swift: `signalsStore` init param, `DayNutrition`/`NutritionEventItem`/`NutritionSummary` value types, observable `nutritionByDay`, `loadNutrition()` (mock-mode filter mirroring `loadMedicationEvents()` at line ~129), `TimelineDay.nutrition`
-- [ ] T014 Wire `AppDependencies.signalsStore` into the VM init in app-four/Views/Library/CalendarLibraryView.swift (init-arg only; the `.task` sync trigger is US3)
-- [ ] T015 Run the suite: T004–T007 GREEN, zero regressions elsewhere; refactor if needed, keep green — commit
+- [X] T009 [P] Create app-four/Models/NutritionEvent.swift: `@Model` per data-model.md (all attributes optional/defaulted, no unique — Constitution IX) + `NutritionEventKind` enum + kind/source computed bridges
+- [X] T010 [P] Add `NutritionEventDTO` (Sendable) to app-four/Services/HealthKit/HealthSignalsDTO.swift per contracts §1
+- [X] T011 Create app-four/Services/HealthKit/NutritionEventGrouping.swift with `summary(for:)` (contracts §2; `hourlyFoodEvents` arrives in US3, T031)
+- [X] T012 Add `fetchEvents(from:to:)` + `insertMockEvent(_:)` to app-four/Store/SignalsStore.swift (date-range `#Predicate` only — no `isEmpty`/unsupported operations per SwiftData predicate rules)
+- [X] T013 Extend app-four/ViewModels/MoodLibraryViewModel.swift: `signalsStore` init param, `DayNutrition`/`NutritionEventItem`/`NutritionSummary` value types, observable `nutritionByDay`, `loadNutrition()` (mock-mode filter mirroring `loadMedicationEvents()` at line ~129), `TimelineDay.nutrition`
+- [X] T014 Wire `AppDependencies.signalsStore` into the VM init in app-four/Views/Library/CalendarLibraryView.swift (init-arg only; the `.task` sync trigger is US3)
+- [X] T015 Run the suite: T004–T007 GREEN, zero regressions elsewhere; refactor if needed, keep green — commit
 
 **Checkpoint**: data layer + VM plumbing complete; nothing visible in UI yet.
 

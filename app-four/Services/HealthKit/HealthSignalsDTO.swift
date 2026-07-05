@@ -32,6 +32,20 @@ struct CycleDTO: Sendable, Equatable {
     var symptoms: [String]
 }
 
+/// One food or exercise event read from HealthKit — timestamped and per-event, unlike
+/// the per-day DTOs above (spec 031). Food events come from `.food` correlations or
+/// hourly-bucketed loose samples; exercise events from workouts.
+struct NutritionEventDTO: Sendable, Equatable {
+    var kind: NutritionEventKind
+    var startDate: Date
+    var endDate: Date?
+    var name: String?
+    var kcal: Double?
+    var proteinGrams: Double?
+    var caffeineMg: Double?
+    var durationMinutes: Double?
+}
+
 /// One day's worth of whatever HealthKit returned. Any field may be nil when there is
 /// no sample for it that day.
 struct DaySignalsDTO: Sendable, Equatable {

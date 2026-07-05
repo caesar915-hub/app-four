@@ -13,7 +13,8 @@ enum AppModelContainer {
             AppSettings.self,
             RecordingTag.self,
             MedicationEvent.self,
-            DailySignals.self
+            DailySignals.self,
+            NutritionEvent.self
         ])
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
         let storeDir = config.url.deletingLastPathComponent()
@@ -68,7 +69,8 @@ enum AppModelContainer {
             AppSettings.self,
             RecordingTag.self,
             MedicationEvent.self,
-            DailySignals.self
+            DailySignals.self,
+            NutritionEvent.self
         ])
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         do {

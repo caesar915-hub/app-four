@@ -61,4 +61,32 @@ final class SignalsStore {
     func save() throws {
         try modelContext.save()
     }
+
+    // MARK: - Nutrition events (spec 031)
+
+    /// All events whose `startDate` falls inside the inclusive `[startDay, endDay]` day
+    /// range, oldest first. Returns BOTH mock and real rows — real-wins-per-day is the
+    /// view-model's call and needs to see both partitions.
+    func fetchEvents(from startDay: Date, to endDay: Date) -> [NutritionEvent] {
+        let start = SignalDayKey.dayStart(for: startDay)
+        let endDayStart = SignalDayKey.dayStart(for: endDay)
+        guard let endExclusive = Calendar.current.date(byAdding: .day, value: 1, to: endDayStart) else { return [] }
+        let descriptor = FetchDescriptor<NutritionEvent>(
+            predicate: #Predicate { $0.startDate >= start && $0.startDate < endExclusive },
+            sortBy: [SortDescriptor(\.startDate)]
+        )
+        do {
+            return try modelContext.fetch(descriptor)
+        } catch {
+            AppLogger.log("SignalsStore.fetchEvents failed [\(start)…\(endExclusive)]: \(error)")
+            return []
+        }
+    }
+
+    /// Seeding path: forces the mock partition so a generator bug can never write a row
+    /// that later blocks real HealthKit data (replace-per-day only touches real rows).
+    func insertMockEvent(_ event: NutritionEvent) {
+        event.isMockData = true
+        modelContext.insert(event)
+    }
 }

@@ -19,7 +19,7 @@ struct CalendarLibraryView: View {
 
     init(store: RecordingStore, selectedTab: Binding<Tab>) {
         self.store = store
-        _viewModel = State(wrappedValue: MoodLibraryViewModel(store: store))
+        _viewModel = State(wrappedValue: MoodLibraryViewModel(store: store, signalsStore: AppDependencies.signalsStore))
         _selectedTab = selectedTab
     }
 
