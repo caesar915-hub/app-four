@@ -12,6 +12,33 @@ final class MoodLibraryViewModel {
         let nodes: [DayTimeline.Node]
         var nutrition: DayNutrition? = nil   // spec 031; nil = day card unchanged
         var id: Date { date }
+
+        /// Check-ins and nutrition/exercise events on one merged rail, newest first —
+        /// so the expanded card renders straight through with zero sorting (spec 031 US2).
+        var displayItems: [DayCardItem] {
+            let checkIns = nodes.map(DayCardItem.checkIn)
+            let events = (nutrition?.events ?? []).map(DayCardItem.nutrition)
+            return (checkIns + events).sorted { $0.time > $1.time }
+        }
+    }
+
+    /// One row of the expanded day card: a mood/med check-in or a nutrition event.
+    enum DayCardItem: Identifiable {
+        case checkIn(DayTimeline.Node)
+        case nutrition(NutritionEventItem)
+
+        var id: String {
+            switch self {
+            case .checkIn(let node): "checkin-\(node.id)"
+            case .nutrition(let item): "nutrition-\(item.id)"
+            }
+        }
+        var time: Date {
+            switch self {
+            case .checkIn(let node): node.time
+            case .nutrition(let item): item.startDate
+            }
+        }
     }
 
     var currentMonth: Date = Date()
@@ -53,7 +80,7 @@ final class MoodLibraryViewModel {
     }
 
     var hasAnyEntries: Bool {
-        !store.recordings.isEmpty || !medicationEvents.isEmpty
+        !store.recordings.isEmpty || !medicationEvents.isEmpty || !nutritionByDay.isEmpty
     }
 
     /// Grid model for the currently displayed month.

@@ -12,7 +12,9 @@ struct FoldedDayCardHeader: View {
 
     private var summary: DayCardSummary { DayCardSummary(day: day) }
     private var level: MoodLevel? { MoodLevel(name: summary.mood) }
-    private var showsSummary: Bool { !isExpanded || summary.isEmpty }
+    // Folded → always show the summary. Expanded → hide it (the rows/footer carry the
+    // detail), except a truly empty day with nothing to expand keeps its calm copy.
+    private var showsSummary: Bool { !isExpanded || (summary.isEmpty && day.nutrition == nil) }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.s) {

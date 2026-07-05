@@ -85,10 +85,10 @@
 
 ### Implementation
 
-- [ ] T024 [US2] Implement the time-merge in app-four/ViewModels/MoodLibraryViewModel.swift (expose ordered display items on `TimelineDay` or `DayNutrition` so views do zero sorting); run suite → GREEN — commit
-- [ ] T025 [P] [US2] (View — exempt, variant A) Create app-four/Views/Components/NutritionEventRow.swift: 28pt hollow bead (1.5pt stroke, 12% tint) on the 38pt rail, `fork.knife`/`flame.fill` glyph, name in lane color (14pt, 600), SF Mono values with muted units, time right of name, no chevron/no button trait; single combined VoiceOver element; #Preview for food/exercise/partial variants
-- [ ] T026 [P] [US2] (View — exempt) Create app-four/Views/Components/DayNutritionFooter.swift: hairline top, 4 metrics with "—" placeholders, trailing provenance glyph (`heart.fill`/`pencil`) with a11y label; indent variants (50pt rail vs full-width); #Preview full/partial/manual
-- [ ] T027 [US2] (View — exempt) Edit app-four/Views/Components/DayCard.swift: expansion gate → `isExpanded && (!day.nodes.isEmpty || day.nutrition != nil)` (line ~23); expanded VStack renders the VM's merged item order (TimelineRow | NutritionEventRow) + footer last; nutrition-only day renders footer full-width
+- [X] T024 [US2] Implement the time-merge in app-four/ViewModels/MoodLibraryViewModel.swift (expose ordered display items on `TimelineDay` or `DayNutrition` so views do zero sorting); run suite → GREEN — commit
+- [X] T025 [P] [US2] (View — exempt, variant A) Create app-four/Views/Components/NutritionEventRow.swift: 28pt hollow bead (1.5pt stroke, 12% tint) on the 38pt rail, `fork.knife`/`flame.fill` glyph, name in lane color (14pt, 600), SF Mono values with muted units, time right of name, no chevron/no button trait; single combined VoiceOver element; #Preview for food/exercise/partial variants
+- [X] T026 [P] [US2] (View — exempt) Create app-four/Views/Components/DayNutritionFooter.swift: hairline top, 4 metrics with "—" placeholders, trailing provenance glyph (`heart.fill`/`pencil`) with a11y label; indent variants (50pt rail vs full-width); #Preview full/partial/manual
+- [X] T027 [US2] (View — exempt) Edit app-four/Views/Components/DayCard.swift: expansion gate → `isExpanded && (!day.nodes.isEmpty || day.nutrition != nil)` (line ~23); expanded VStack renders the VM's merged item order (TimelineRow | NutritionEventRow) + footer last; nutrition-only day renders footer full-width
 - [ ] T028 [US2] Owner checkpoint: build + device run — interleaved day, nutrition-only day expands, read-only rows, footer placeholders, dark mode, VoiceOver on rows/footer (quickstart §2, §4)
 
 **Checkpoint**: full demo works end-to-end on seeded data.

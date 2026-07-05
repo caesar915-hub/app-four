@@ -27,6 +27,9 @@ enum Metrics {
     static let rowMoodText: CGFloat = 14
     static let rowTime: CGFloat = 11
     static let rowSignal: CGFloat = 13
+    /// Hollow food/exercise bead on the shared timeline rail (spec 031) — smaller than the
+    /// 42pt mood bead so nutrition rows read as subordinate to mood check-ins.
+    static let nutritionBead: CGFloat = 30
 
     /// Decorative SF Symbol sizes (large hero glyphs, not Dynamic Type text).
     /// These use a fixed point size intentionally because they are imagery, not copy.
