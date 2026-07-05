@@ -58,8 +58,8 @@
 
 ### Tests (RED first)
 
-- [ ] T016 [P] [US1] Write app-fourTests/Utils/MockDataGeneratorNutritionTests.swift: 30-day window, ~2 skip days, determinism (two runs → identical values), caffeine inversely correlated with mock med days, 3–4 food events at realistic hours + 0–1 workouts per day, all `isMockData == true` / `source == .healthKit`
-- [ ] T017 [US1] Run suite; confirm T016 FAILS (RED) — commit
+- [X] T016 [P] [US1] Write app-fourTests/Utils/MockDataGeneratorNutritionTests.swift: 30-day window, ~2 skip days, determinism (two runs → identical values), caffeine inversely correlated with mock med days, 3–4 food events at realistic hours + 0–1 workouts per day, all `isMockData == true` / `source == .healthKit`
+- [X] T017 [US1] Run suite; confirm T016 FAILS (RED) — commit
 
 ### Implementation
 
