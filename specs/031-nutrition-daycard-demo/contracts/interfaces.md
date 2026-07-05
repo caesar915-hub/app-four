@@ -102,7 +102,13 @@ func loadNutrition()   // fetch month range once, group by SignalDayKey, apply r
 - `HealthAccessPrimerView` copy: same extension.
 - `MockDataGenerator.generate(context:)` calls new `seedNutritionEvents(context:)` (research D11).
 
-## 9. Test contracts (RED-first, Swift Testing)
+## 9. Sync control & deletion (US4, added 2026-07-05 — FR-015–FR-017)
+
+- **Gate**: `SignalSyncCoordinator.sync(lastDays:)` / `syncRecentIfNeeded` return early (distinct disabled result, reader never called) when `UserDefaults "healthSyncEnabled"` is false; default true. One guard covers calendar, Insights, and pull-to-refresh.
+- **Deletion**: `SignalsStore.deleteImportedHealthData()` — deletes `NutritionEvent` rows where `source == .healthKit && isMockData == false` AND clears HealthKit-sourced groups on `DailySignals` (fields → nil, group source → `.none`); `.manual` groups, manual rows, and mock rows untouched; single save.
+- **UI**: "Apple Health" section in `SettingsView` (native grouped chrome, DESIGN.md 2026-06-24 exemption; mockup `docs/superpowers/plans/2026-07-05-health-settings-mockup.html`): `@AppStorage("healthSyncEnabled")` toggle, "Last sync" row (coordinator's last completed sweep), destructive delete with `confirmationDialog`, same dialog offered on toggle-off (default Keep), posts `.nutritionEventsDidChange` after delete, footer points to the Health app for permission revocation.
+
+## 10. Test contracts (RED-first, Swift Testing)
 
 | Test file | Proves |
 |-----------|--------|
@@ -113,3 +119,5 @@ func loadNutrition()   // fetch month range once, group by SignalDayKey, apply r
 | `MockDataGeneratorNutritionTests` | 30-day window, ~2 skip days, determinism (two runs identical), caffeine↓ on med days, isMockData true |
 | `MoodLibraryViewModelNutritionTests` | day grouping via SignalDayKey (23:58 edge), real-wins-per-day matrix (mock on/off × real present/absent), TimelineDay.nutrition mapping, summary in tokens |
 | `MockHealthDataReading` (+stub) | `setNutritionEvents(_:)`, records requested range |
+| `SignalSyncCoordinatorTests` (+US4 cases) | sync-disabled gate: reader never called, distinct result; resumes on re-enable |
+| `SignalsStoreEventTests` (+US4 cases) | `deleteImportedHealthData`: real healthKit events + HK day-signal groups cleared; manual/mock survive |

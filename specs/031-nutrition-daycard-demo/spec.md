@@ -16,6 +16,7 @@
 - Q: How are raw per-nutrient Apple Health samples grouped into displayed "food events"? → A: Use Apple Health's food-correlation grouping when present; group remaining loose samples into one event per clock hour.
 - Q: Are food/exercise events persisted on-device or read live from Apple Health at render? → A: Persisted on-device, synced from Apple Health like the existing per-day signals; demo seeds write the same store.
 - Q: What does the totals footer's "energy out" mean? → A: Sum of the day's workout entries' active energy only; the footer equals the timeline's exercise entries. Days with no workouts show "—".
+- Q: Can the user stop syncing and remove imported data? → A: Yes — new US4 (added 2026-07-05 after US1 review): a Settings "Apple Health" section with a sync on/off switch and an explicit delete of all imported Health copies. Owner-approved mockup: `docs/superpowers/plans/2026-07-05-health-settings-mockup.html`.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -71,6 +72,24 @@ As the owner demoing on my own phone, when I have real food, caffeine, or workou
 
 ---
 
+### User Story 4 - Stop syncing and delete imported Health data (Priority: P4)
+
+As the person whose health data this is, I want to pause Apple Health syncing whenever I choose, and separately delete everything the app has copied from Health — without touching my manual entries, my demo data, or Apple Health itself.
+
+**Why this priority**: Once access is granted, syncing is silent and continuous; control and deletion are a privacy obligation for a health app, not a convenience. Ordered after US3 because the switch gates the sync that US3 builds.
+
+**Independent Test**: With synced data present, turn "Sync from Apple Health" off → no read occurs on any surface; tap "Delete Imported Health Data" and confirm → all Health-sourced values disappear (including the pre-existing sleep/activity/heart/cycle day signals), while manual and demo data remain; re-enable the switch → the next calendar/Insights visit re-imports.
+
+**Acceptance Scenarios**:
+
+1. **Given** syncing is on, **When** the user turns the switch off, **Then** no HealthKit read happens anywhere (calendar, Insights, pull-to-refresh) until it is turned back on, and already-imported data remains visible.
+2. **Given** imported data exists, **When** the user taps delete and confirms, **Then** every Health-sourced copy is removed — nutrition/exercise events AND the day-signal groups (sleep, activity, heart, cycle) — while manual entries and demo data are untouched, and Apple Health's own store is not modified.
+3. **Given** the user turns the switch off, **When** the toggle flips, **Then** the same delete choice is offered inline ("Stop and delete?" — Keep Data / Delete), defaulting to keeping.
+4. **Given** syncing was off, **When** the user turns it back on, **Then** the once-per-day sweep resumes on the next surface visit and re-imports (the delete is not a block-list).
+5. **Given** the settings section, **Then** it shows the last completed sync time and footer copy explaining that read *permission* is managed in the Health app (the app cannot revoke it programmatically).
+
+---
+
 ### Edge Cases
 
 - **Partial day data**: only some metrics exist (e.g. caffeine only) → folded shows only existing tokens; totals show "—" for missing metrics; missing entries are absent, not placeholder rows.
@@ -81,6 +100,8 @@ As the owner demoing on my own phone, when I have real food, caffeine, or workou
 - **Multiple sources double-logging** (e.g. two apps writing the same meal): values are shown as recorded; de-duplication is out of scope for the demo.
 - **Dark mode**: both new color lanes have dark variants (approved mockups show both).
 - **Demo data toggled off mid-session**: nutrition disappears from cards on next calendar refresh.
+- **Sync disabled mid-sweep**: an in-flight sweep finishes atomically; the switch gates the *start* of reads, no partial-day writes are torn.
+- **Delete while mock mode is on**: seeded demo rows survive (they are not "imported"); the card falls back to demo values per the real-wins rule.
 
 ## Requirements *(mandatory)*
 
@@ -100,6 +121,9 @@ As the owner demoing on my own phone, when I have real food, caffeine, or workou
 - **FR-012**: All nutrition and exercise data MUST remain on-device (no server, no analytics payloads), consistent with the app's privacy posture.
 - **FR-013**: Manual entry/editing of nutrition and exercise is OUT of scope; entries and totals are read-only in this feature.
 - **FR-014**: Days without any nutrition/exercise data MUST render exactly as they do today (zero regression to the existing card).
+- **FR-015**: Settings MUST offer a single "Sync from Apple Health" switch (default on once access was granted) that gates EVERY HealthKit read in the app — calendar, Insights, and pull-to-refresh — through one shared guard; turning it off never deletes data by itself.
+- **FR-016**: Settings MUST offer "Delete Imported Health Data" behind an explicit confirmation: it removes all Health-sourced copies on device (nutrition/exercise events and the sleep/activity/heart/cycle day-signal groups), MUST NOT touch manual entries, demo data, or Apple Health itself, and MUST also be offered inline when the sync switch is turned off (defaulting to keep).
+- **FR-017**: The settings section MUST show the last completed sync time and MUST state that read permission itself is managed in the Health app (Settings exemption applies: native grouped-list chrome per DESIGN.md 2026-06-24).
 
 ### Key Entities
 
@@ -118,6 +142,7 @@ As the owner demoing on my own phone, when I have real food, caffeine, or workou
 - **SC-004**: Days without nutrition data render identically to the current release (side-by-side comparison shows no visual or behavioral difference).
 - **SC-005**: A VoiceOver user can hear the day's calories and caffeine from the folded card and every entry's values from the expanded card.
 - **SC-006**: No permission dialog ever originates from the calendar tab across a full demo run.
+- **SC-007**: After disabling sync and deleting imported data, zero Health-derived values remain visible anywhere in the app and zero HealthKit reads occur on subsequent visits; re-enabling restores sync on the next visit without reinstalling.
 
 ## Assumptions
 

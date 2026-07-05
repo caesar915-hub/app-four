@@ -38,6 +38,14 @@ Expected: build clean; all suites green, including the six nutrition test files 
 - Dark mode: clay/teal dark variants render (`#CB8266` / `#5FAEA5`).
 - Largest Dynamic Type: folded token line wraps without truncation.
 
+## 5. Sync control & deletion (US4, owner device)
+
+1. Settings → Apple Health: toggle **Sync from Apple Health** OFF → revisit Calendar and Insights: no read occurs ("Last sync" unchanged); imported values still visible. → **FR-015**
+2. Tap **Delete Imported Health Data…** → confirm: nutrition tokens/rows AND the 009 sleep/activity/heart/cycle values disappear everywhere; with mock mode ON, seeded demo values remain. Check Apple Health app: its data untouched. → **FR-016, SC-007**
+3. Toggle OFF also offers "Stop and delete?" inline, defaulting to Keep. → **FR-016**
+4. Toggle back ON → next Calendar/Insights visit re-imports; values return. → **SC-007**
+5. VoiceOver pass on the section (toggle state, destructive button, footer).
+
 ## Sign-off gates (house rules)
 
 1. Build + full suite green (Constitution II) — owner runs tests on device/Xcode per no-simulator rule.
