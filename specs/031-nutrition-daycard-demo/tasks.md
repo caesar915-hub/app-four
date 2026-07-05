@@ -103,11 +103,11 @@
 
 ### Tests (RED first)
 
-- [ ] T029 [P] [US3] Add hourly-bucketing cases to app-fourTests/Services/NutritionEventGroupingTests.swift: loose samples same hour → one event; hour boundary splits; never emits all-nil event; correlation-claimed samples excluded from loose input (mapper operates on extracted values — no HealthKit import)
-- [ ] T030 [P] [US3] Add replace cases to app-fourTests/Store/SignalsStoreEventTests.swift: `replaceHealthKitEvents(dayStart:with:)` deletes only `source == .healthKit && !isMockData` rows for that day; mock rows and `.manual` rows survive; second call with same DTOs → no duplicates
-- [ ] T031 [P] [US3] Extend app-fourTests/Mocks/MockHealthDataReading.swift with `setNutritionEvents(_:)` + range recording; add sweep cases to app-fourTests/Store/SignalSyncCoordinatorTests.swift: events written during `sync(from:to:)`, `.unavailable` short-circuits, re-sync replaces (count stable)
-- [ ] T032 [P] [US3] Add real-wins matrix to app-fourTests/ViewModels/MoodLibraryViewModelNutritionTests.swift: (mock on/off) × (real present/absent) per data-model rules — never mixed within a day
-- [ ] T033 [US3] Run suite; confirm T029–T032 FAIL (RED) — commit
+- [X] T029 [P] [US3] Add hourly-bucketing cases to app-fourTests/Services/NutritionEventGroupingTests.swift: loose samples same hour → one event; hour boundary splits; never emits all-nil event; correlation-claimed samples excluded from loose input (mapper operates on extracted values — no HealthKit import)
+- [X] T030 [P] [US3] Add replace cases to app-fourTests/Store/SignalsStoreEventTests.swift: `replaceHealthKitEvents(dayStart:with:)` deletes only `source == .healthKit && !isMockData` rows for that day; mock rows and `.manual` rows survive; second call with same DTOs → no duplicates
+- [X] T031 [P] [US3] Extend app-fourTests/Mocks/MockHealthDataReading.swift with `setNutritionEvents(_:)` + range recording; add sweep cases to app-fourTests/Store/SignalSyncCoordinatorTests.swift: events written during `sync(from:to:)`, `.unavailable` short-circuits, re-sync replaces (count stable)
+- [X] T032 [P] [US3] Add real-wins matrix to app-fourTests/ViewModels/MoodLibraryViewModelNutritionTests.swift: (mock on/off) × (real present/absent) per data-model rules — never mixed within a day
+- [X] T033 [US3] Run suite; confirm T029–T032 FAIL (RED) — commit
 
 ### Implementation
 

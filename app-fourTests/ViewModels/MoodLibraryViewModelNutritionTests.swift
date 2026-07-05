@@ -143,6 +143,24 @@ struct MoodLibraryViewModelNutritionTests {
         if case .nutrition = day.displayItems[0] {} else { Issue.record("expected a nutrition item") }
     }
 
+    @Test func realDataWinsOverMockOnTheSameDayWhenMockModeOn() throws {
+        defer { TestSupport.useRealData() }
+        let today = calendar.startOfDay(for: Date())
+        try insertEvent(kind: .food, at: today.addingTimeInterval(8 * 3600), kcal: 400, mock: true)   // mock
+        try insertEvent(kind: .food, at: today.addingTimeInterval(9 * 3600), kcal: 2000, mock: false) // real
+
+        UserDefaults.standard.set(true, forKey: "debugMockMode")
+        let mockRecording = Recording(audioFileName: "m.m4a", duration: 0, title: "Good", mood: "good")
+        mockRecording.createdAt = Date(); mockRecording.isMockData = true
+        context.insert(mockRecording); try context.save(); store.loadRecordings()
+
+        let vm = makeVM()
+        vm.loadNutrition()
+        let nutrition = try #require(vm.timelineDays.first { $0.date == today }?.nutrition)
+        #expect(nutrition.events.count == 1)          // only the real event
+        #expect(nutrition.summary.kcalIn == 2000)     // real value, mock 400 excluded
+    }
+
     @Test func mockEventsShowWhenMockModeIsOn() throws {
         defer { TestSupport.useRealData() }
         let today = calendar.startOfDay(for: Date())

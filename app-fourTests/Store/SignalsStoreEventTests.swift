@@ -54,6 +54,49 @@ struct SignalsStoreEventTests {
         #expect(events.count == 2)
     }
 
+    // MARK: - replaceHealthKitEvents (US3 dedup)
+
+    private func dto(_ hour: Int, kcal: Double) -> NutritionEventDTO {
+        let cal = Calendar.current
+        let day = SignalDayKey.dayStart(for: Date(timeIntervalSince1970: 1_000_000))
+        return NutritionEventDTO(kind: .food, startDate: cal.date(bySettingHour: hour, minute: 0, second: 0, of: day)!,
+                                 endDate: nil, name: "Meal", kcal: kcal, proteinGrams: nil,
+                                 caffeineMg: nil, durationMinutes: nil)
+    }
+
+    @Test func replaceDeletesOnlyRealHealthKitRowsForTheDay() throws {
+        let (store, _) = try makeStore()
+        let cal = Calendar.current
+        let day = SignalDayKey.dayStart(for: Date(timeIntervalSince1970: 1_000_000))
+
+        // Pre-existing: a real HK row, a mock row, and a manual row — all on the day.
+        let real = try insert(store, at: cal.date(bySettingHour: 8, minute: 0, second: 0, of: day)!)
+        let mock = try insert(store, at: cal.date(bySettingHour: 9, minute: 0, second: 0, of: day)!, mock: true)
+        let manual = try insert(store, at: cal.date(bySettingHour: 10, minute: 0, second: 0, of: day)!)
+        manual.source = .manual
+        try store.save()
+        _ = real
+
+        store.replaceHealthKitEvents(dayStart: day, with: [dto(13, kcal: 700)])
+        try store.save()
+
+        let events = store.fetchEvents(from: day, to: day)
+        #expect(events.count == 3)   // mock + manual survive, old real gone, one new real
+        #expect(events.contains { $0.id == mock.id })
+        #expect(events.contains { $0.id == manual.id })
+        #expect(events.contains { $0.kcal == 700 && $0.source == .healthKit && !$0.isMockData })
+        #expect(!events.contains { $0.kcal == 100 && $0.source == .healthKit && !$0.isMockData })  // old real deleted
+    }
+
+    @Test func replaceIsIdempotentAcrossRepeatedSync() throws {
+        let (store, _) = try makeStore()
+        let day = SignalDayKey.dayStart(for: Date(timeIntervalSince1970: 1_000_000))
+        store.replaceHealthKitEvents(dayStart: day, with: [dto(13, kcal: 700)])
+        store.replaceHealthKitEvents(dayStart: day, with: [dto(13, kcal: 700)])
+        try store.save()
+        #expect(store.fetchEvents(from: day, to: day).count == 1)   // no duplication
+    }
+
     @Test func insertMockEventPersistsWithMockFlag() throws {
         let (store, container) = try makeStore()
         let day = SignalDayKey.dayStart(for: Date(timeIntervalSince1970: 1_000_000))

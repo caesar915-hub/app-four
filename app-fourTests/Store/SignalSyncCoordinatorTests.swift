@@ -187,4 +187,46 @@ struct SignalSyncCoordinatorTests {
         #expect(store.fetch(dayStart: d0)?.sleepHours == 7)
         #expect(store.fetch(dayStart: d1)?.steps == 5000)
     }
+
+    // MARK: US3 — nutrition-event sweep
+
+    private func makeNutritionFixture() throws -> (SignalSyncCoordinator, SignalsStore, ModelContainer, MockHealthDataReading) {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: DailySignals.self, NutritionEvent.self, configurations: config)
+        let store = SignalsStore(context: container.mainContext)
+        let reader = MockHealthDataReading()
+        return (SignalSyncCoordinator(reader: reader, store: store), store, container, reader)
+    }
+
+    private func foodDTO(on day: Date, hour: Int, kcal: Double) -> NutritionEventDTO {
+        NutritionEventDTO(kind: .food, startDate: Calendar.current.date(bySettingHour: hour, minute: 0, second: 0, of: day)!,
+                          endDate: nil, name: "Meal", kcal: kcal, proteinGrams: nil, caffeineMg: nil, durationMinutes: nil)
+    }
+
+    @Test func syncWritesNutritionEvents() async throws {
+        let (coordinator, store, container, reader) = try makeNutritionFixture(); _ = container
+        await reader.setNutritionEvents([foodDTO(on: day, hour: 8, kcal: 500), foodDTO(on: day, hour: 13, kcal: 700)])
+        try await coordinator.sync(from: day, to: day)
+        let events = store.fetchEvents(from: day, to: day)
+        #expect(events.count == 2)
+        #expect(events.allSatisfy { $0.source == .healthKit && !$0.isMockData })
+    }
+
+    @Test func reSyncReplacesNutritionWithoutDuplicating() async throws {
+        let (coordinator, store, container, reader) = try makeNutritionFixture(); _ = container
+        await reader.setNutritionEvents([foodDTO(on: day, hour: 8, kcal: 500)])
+        try await coordinator.sync(from: day, to: day)
+        try await coordinator.sync(from: day, to: day)   // same window again
+        #expect(store.fetchEvents(from: day, to: day).count == 1)   // replaced, not doubled
+    }
+
+    @Test func nutritionSweepShortCircuitsWhenUnavailable() async throws {
+        let (coordinator, store, container, reader) = try makeNutritionFixture(); _ = container
+        await reader.setState(.unavailable)
+        await reader.setNutritionEvents([foodDTO(on: day, hour: 8, kcal: 500)])
+        _ = try await coordinator.sync(from: day, to: day)
+        #expect(store.fetchEvents(from: day, to: day).isEmpty)
+        let count = await reader.nutritionReadCallCount
+        #expect(count == 0)
+    }
 }

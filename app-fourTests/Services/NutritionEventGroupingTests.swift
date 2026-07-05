@@ -71,6 +71,54 @@ struct NutritionEventGroupingTests {
         #expect(summary.kcalOut == nil)
     }
 
+    // MARK: - hourlyFoodEvents(loose:)
+
+    private let cal = Calendar(identifier: .gregorian)
+
+    private func sample(_ h: Int, _ m: Int, kcal: Double? = nil, protein: Double? = nil,
+                        caffeine: Double? = nil) -> LooseDietarySample {
+        var comps = DateComponents(); comps.year = 2026; comps.month = 7; comps.day = 5
+        comps.hour = h; comps.minute = m
+        return LooseDietarySample(startDate: cal.date(from: comps)!, kcal: kcal,
+                                  proteinGrams: protein, caffeineMg: caffeine)
+    }
+
+    @Test func loseSamplesInSameHourCollapseToOneEvent() {
+        let events = NutritionEventGrouping.hourlyFoodEvents(loose: [
+            sample(13, 5, kcal: 500, protein: 20),
+            sample(13, 40, caffeine: 30),
+        ], calendar: cal)
+        #expect(events.count == 1)
+        #expect(events[0].kcal == 500)
+        #expect(events[0].proteinGrams == 20)
+        #expect(events[0].caffeineMg == 30)
+        #expect(events[0].kind == .food)
+    }
+
+    @Test func samplesInDifferentHoursSplit() {
+        let events = NutritionEventGrouping.hourlyFoodEvents(loose: [
+            sample(12, 59, kcal: 300),
+            sample(13, 1, kcal: 400),
+        ], calendar: cal)
+        #expect(events.count == 2)
+        #expect(Set(events.compactMap(\.kcal)) == [300, 400])
+    }
+
+    @Test func hourlyEventTimestampAnchorsToTheHour() {
+        let events = NutritionEventGrouping.hourlyFoodEvents(loose: [sample(8, 45, kcal: 200)], calendar: cal)
+        #expect(events.count == 1)
+        #expect(cal.component(.hour, from: events[0].startDate) == 8)
+    }
+
+    @Test func hourlyGroupingNeverEmitsAnAllNilEvent() {
+        let events = NutritionEventGrouping.hourlyFoodEvents(loose: [
+            sample(9, 0),   // no metrics — must not produce an event
+            sample(9, 30, kcal: 100),
+        ], calendar: cal)
+        #expect(events.count == 1)
+        #expect(events[0].kcal == 100)
+    }
+
     @Test func summarySourceIsManualWhenAnyContributorIsManual() {
         let mixed = NutritionEventGrouping.summary(for: [
             food(kcal: 500, source: .healthKit),
