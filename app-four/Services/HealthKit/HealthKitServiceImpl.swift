@@ -293,7 +293,8 @@ actor HealthKitServiceImpl: HealthDataReading {
 private extension HKWorkoutActivityType {
     /// A short, human name for the common activities; everything else reads "Workout".
     /// HealthKit has no built-in display name, so we map only what the demo surfaces.
-    var squirlName: String {
+    /// `nonisolated` so the HealthKit actor reads it off the MainActor.
+    nonisolated var squirlName: String {
         switch self {
         case .running: "Run"
         case .walking: "Walk"

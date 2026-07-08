@@ -10,8 +10,9 @@ struct LooseDietarySample: Sendable, Equatable {
 }
 
 /// Pure value logic for turning nutrition events into display aggregates. HealthKit-free
-/// so the rules stay unit-testable (pattern: `HealthKitSampleMapping`).
-enum NutritionEventGrouping {
+/// so the rules stay unit-testable (pattern: `HealthKitSampleMapping`). `nonisolated` so the
+/// (non-MainActor) HealthKit actor calls it directly under default-MainActor isolation.
+nonisolated enum NutritionEventGrouping {
 
     /// Buckets loose dietary samples into one food event per clock hour (spec 031, clarify Q1).
     /// A bucket with no metric at all is dropped — never emit an empty event.

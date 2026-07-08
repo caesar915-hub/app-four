@@ -1,10 +1,11 @@
 import SwiftUI
 
-/// The always-visible top of a `DayCard` (Paper & Pollen "#4 Divided · Cream disc", spec 019): a
-/// mood-tinted block holding a cream-disc mood badge, the mood word + weekday on one line, and —
-/// folded — a full-width divider above the one-line summary (energy · focus · medication-name) from
-/// the pure `DayCardSummary`. The summary collapses when expanded, leaving the tinted strip as the
-/// day's header (an empty day keeps its calm copy). Exposed to VoiceOver as one combined element
+/// The always-visible top of a `DayCard` (Paper & Pollen cream-disc header): a mood-tinted block
+/// holding a cream-disc mood badge, the mood word + weekday on one line, and — folded — the summary
+/// directly below it (no divider, per the approved spec-031 V3 mockup): signals on one line
+/// (energy · focus · medication-name) with nutrition (kcal · caffeine) on its own line under them,
+/// from the pure `DayCardSummary`. The summary collapses when expanded, leaving the tinted strip as
+/// the day's header (an empty day keeps its calm copy). Exposed to VoiceOver as one combined element
 /// (FR-017); the mood glyph is decorative.
 struct FoldedDayCardHeader: View {
     let day: MoodLibraryViewModel.TimelineDay
@@ -17,39 +18,34 @@ struct FoldedDayCardHeader: View {
     private var showsSummary: Bool { !isExpanded || (summary.isEmpty && day.nutrition == nil) }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            titleRow
-                .padding(.horizontal, Spacing.l)
-            if showsSummary {
-                if !summary.isEmpty || !nutritionParts.isEmpty {
-                    Rectangle().fill(Theme.separator).frame(height: 1)   // full-width divider
-                }
-                summaryLine
-                    .padding(.horizontal, Spacing.l)
-            }
-        }
-        .padding(.vertical, Spacing.l)
-        .frame(maxWidth: .infinity, minHeight: Metrics.minTapTarget, alignment: .leading)
-        .background(level?.blockTint ?? .clear)   // full-bleed mood tint (matches the approved "#4" mockup; the card clip rounds the corners)
-        .contentShape(Rectangle())
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityLabel)
-        .accessibilityAddTraits(.isButton)
-        .accessibilityHint(isExpanded ? "Expanded, double tap to collapse" : "Double tap to expand")
-    }
-
-    private var titleRow: some View {
+        // Disc on the left, the text column (title + summary) in the middle, chevron on the
+        // right — the summary is tucked under the title inside the text column, indented past
+        // the disc, with no divider (approved spec-031 V3 mockup `.tcol` layout).
         HStack(alignment: .center, spacing: Spacing.m) {
             moodBadge
-            title
-                .font(Typography.dayCardDate)
-                .dynamicTypeSize(...DynamicTypeSize.xLarge)   // cap growth so the weekday/date can't balloon
-                .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                title
+                    .font(Typography.dayCardDate)
+                    .dynamicTypeSize(...DynamicTypeSize.xLarge)   // cap growth so the weekday/date can't balloon
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if showsSummary {
+                    summaryLine
+                }
+            }
             Image(systemName: "chevron.down")
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(Theme.textSecondary)
                 .rotationEffect(.degrees(isExpanded ? 180 : 0))
         }
+        .padding(.horizontal, Spacing.l)
+        .padding(.vertical, Spacing.l)
+        .frame(maxWidth: .infinity, minHeight: Metrics.minTapTarget, alignment: .leading)
+        .background(level?.blockTint ?? .clear)   // full-bleed mood tint; the card clip rounds the corners
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint(isExpanded ? "Expanded, double tap to collapse" : "Double tap to expand")
     }
 
     /// Mood word (deepened mood colour) · weekday, concatenated as one `Text` so it wraps — never
@@ -78,27 +74,44 @@ struct FoldedDayCardHeader: View {
                 .foregroundStyle(Theme.textSecondary)
                 .lineLimit(2)
         } else {
-            FlowLayout(spacing: Spacing.s) {
-                ForEach(Array(displayParts.enumerated()), id: \.offset) { idx, part in
-                    HStack(spacing: Spacing.xs) {
-                        if idx > 0 {
-                            Text("·").foregroundStyle(Theme.textSecondary)
-                        }
-                        if let kind = part.kind {
-                            SignalGlyph(kind, level: part.level, size: Metrics.summarySignal, decorative: true)
-                        } else if let systemImage = part.systemImage {
-                            Image(systemName: systemImage)
-                                .font(Typography.caption)
-                                .foregroundStyle(part.color)
-                                .accessibilityHidden(true)
-                        }
-                        Text(part.text)
+            // Two structured lines, no divider between them: the check-in signals
+            // (energy · focus · medication) always own the first line; nutrition
+            // tokens (kcal · caffeine) always drop to their own line below so a
+            // single token never orphans mid-wrap (spec 031 folded layout).
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                if !signalParts.isEmpty {
+                    tokenRow(signalParts)
+                }
+                if !nutritionParts.isEmpty {
+                    tokenRow(nutritionParts)
+                }
+            }
+        }
+    }
+
+    /// One wrapping line of `·`-separated tokens. Each row restarts its own separator
+    /// indexing so a nutrition-only line never leads with a stray dot.
+    private func tokenRow(_ tokens: [Part]) -> some View {
+        FlowLayout(spacing: Spacing.s) {
+            ForEach(Array(tokens.enumerated()), id: \.offset) { idx, part in
+                HStack(spacing: Spacing.xs) {
+                    if idx > 0 {
+                        Text("·").foregroundStyle(Theme.textSecondary)
+                    }
+                    if let kind = part.kind {
+                        SignalGlyph(kind, level: part.level, size: Metrics.summarySignal, decorative: true)
+                    } else if let systemImage = part.systemImage {
+                        Image(systemName: systemImage)
                             .font(Typography.caption)
                             .foregroundStyle(part.color)
-                            .lineLimit(1)
+                            .accessibilityHidden(true)
                     }
-                    .fixedSize()
+                    Text(part.text)
+                        .font(Typography.caption)
+                        .foregroundStyle(part.color)
+                        .lineLimit(1)
                 }
+                .fixedSize()
             }
         }
     }
@@ -111,17 +124,15 @@ struct FoldedDayCardHeader: View {
         var systemImage: String? = nil   // SF Symbol tokens (nutrition, spec 031); kind wins when both set
     }
 
-    /// What the summary FlowLayout renders: the signal parts, or — on a day with
-    /// nutrition data but no check-ins — a quiet lead-in plus the nutrition tokens
-    /// (spec 031 approved states mockup).
-    private var displayParts: [Part] {
-        guard summary.isEmpty else { return parts }
-        return [Part(kind: nil, level: nil, text: "No check-ins", color: Theme.textSecondary)] + nutritionParts
-    }
-
-    /// Summary signals below the divider — energy · focus · medication name. The mood is no longer
-    /// here (it moved up to the title line beside the weekday).
-    private var parts: [Part] {
+    /// The first summary line — check-in signals only (energy · focus · medication name),
+    /// or the quiet "No check-ins" lead-in on a nutrition-only day. Nutrition never lives
+    /// here; it renders on its own line via `nutritionParts`. Mood moved up to the title row.
+    private var signalParts: [Part] {
+        guard !summary.isEmpty else {
+            return nutritionParts.isEmpty
+                ? []
+                : [Part(kind: nil, level: nil, text: "No check-ins", color: Theme.textSecondary)]
+        }
         var p: [Part] = []
         if let energy = summary.energy {
             p.append(Part(kind: .energy, level: EnergyLevel(rawValue: energy.lowercased())?.numericValue,
@@ -134,7 +145,7 @@ struct FoldedDayCardHeader: View {
         if let med = summary.mostRecentMedicationName {
             p.append(Part(kind: .medication, level: nil, text: med, color: Palette.medication))
         }
-        return p + nutritionParts
+        return p
     }
 
     /// Folded nutrition tokens (spec 031, approved mockup V3): dietary kcal + caffeine,

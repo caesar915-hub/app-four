@@ -1,8 +1,10 @@
 import Foundation
 
 /// Pure value mapping for HealthKit reads. Deliberately imports no HealthKit types so it
-/// is unit-testable; the actor converts samples to these primitive inputs.
-enum HealthKitSampleMapping {
+/// is unit-testable; the actor converts samples to these primitive inputs. `nonisolated`
+/// so the (non-MainActor) HealthKit actor can call these pure functions directly under the
+/// project's default-MainActor isolation.
+nonisolated enum HealthKitSampleMapping {
     /// Maps the raw value of `HKCategoryValueVaginalBleeding` to our domain flow.
     /// Raw integers: 0 = notApplicable (Obj-C only), 1 = unspecified, 2 = light,
     /// 3 = medium, 4 = heavy, 5 = none. Only graded flow is recorded; unspecified /

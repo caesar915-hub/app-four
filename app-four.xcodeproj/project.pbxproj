@@ -79,12 +79,6 @@
 				37F17B2C2FC0CE4F00CAC42E /* app-four */,
 				3724CF872FC9292700427F48 /* app-fourTests */,
 				37F17B2B2FC0CE4F00CAC42E /* Products */,
-				37F17B382FC0D7D900CAC42E /* App 2 */,
-				37F17B392FC0D7D900CAC42E /* Models 2 */,
-				37F17B3A2FC0D7D900CAC42E /* Utils 2 */,
-				37F17B3B2FC0D7D900CAC42E /* ViewModels 2 */,
-				37F17B3C2FC0D7D900CAC42E /* Views 2 */,
-				37F17B3D2FC0D7E700CAC42E /* Models 3 */,
 				F15A23EEC3F0FBE0E5C0317D /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -96,48 +90,6 @@
 				3724CF862FC9292700427F48 /* app-fourTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		37F17B382FC0D7D900CAC42E /* App 2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "App 2";
-			sourceTree = "<group>";
-		};
-		37F17B392FC0D7D900CAC42E /* Models 2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Models 2";
-			sourceTree = "<group>";
-		};
-		37F17B3A2FC0D7D900CAC42E /* Utils 2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Utils 2";
-			sourceTree = "<group>";
-		};
-		37F17B3B2FC0D7D900CAC42E /* ViewModels 2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "ViewModels 2";
-			sourceTree = "<group>";
-		};
-		37F17B3C2FC0D7D900CAC42E /* Views 2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Views 2";
-			sourceTree = "<group>";
-		};
-		37F17B3D2FC0D7E700CAC42E /* Models 3 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Models 3";
 			sourceTree = "<group>";
 		};
 		D01B8D2A3AA8410335F5C01D /* iOS */ = {
