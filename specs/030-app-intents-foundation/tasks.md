@@ -28,16 +28,16 @@
 
 ### RED wave (write, run, confirm FAIL)
 
-- [ ] T003 [P] Extend `app-fourTests/Models/AppSettingsTests.swift`: fresh-defaults assertions for the 5 new fields (`defaultMedicationName == nil`, `defaultMedicationDose == nil`, `doseGuardModeRaw == "off"`, `doseGuardWindowHours == 2`, `nameMedicationInConfirmations == false`) using the existing Mirror no-member pattern — RED (fields don't exist)
-- [ ] T004 [P] Create `app-fourTests/Models/DoseGuardModeTests.swift`: raw-value decode (`"off"`/`"total"`/`"window"`, unknown raw → `.off` forward-safe), boundary semantics helpers (window end exactly reached → guard closed; matches `effectProgress < 1` convention) — RED (type doesn't exist)
-- [ ] T005 [P] Create `app-fourTests/Intents/AppIntentRouterTests.swift`: trigger-state plumbing only — `requestCheckIn()` sets the check-in trigger, consumption is one-shot (second consume is a no-op), `focusMyMedication()` sets Settings tab + one-shot focus flag. (Onboarding-gate cases belong to US2 — T024.) — RED (type doesn't exist)
+- [X] T003 [P] Extend `app-fourTests/Models/AppSettingsTests.swift`: fresh-defaults assertions for the 5 new fields (`defaultMedicationName == nil`, `defaultMedicationDose == nil`, `doseGuardModeRaw == "off"`, `doseGuardWindowHours == 2`, `nameMedicationInConfirmations == false`) using the existing Mirror no-member pattern — RED (fields don't exist)
+- [X] T004 [P] Create `app-fourTests/Models/DoseGuardModeTests.swift`: raw-value decode (`"off"`/`"total"`/`"window"`, unknown raw → `.off` forward-safe), boundary semantics helpers (window end exactly reached → guard closed; matches `effectProgress < 1` convention) — RED (type doesn't exist)
+- [X] T005 [P] Create `app-fourTests/Intents/AppIntentRouterTests.swift`: trigger-state plumbing only — `requestCheckIn()` sets the check-in trigger, consumption is one-shot (second consume is a no-op), `focusMyMedication()` sets Settings tab + one-shot focus flag. (Onboarding-gate cases belong to US2 — T024.) — RED (type doesn't exist)
 - [ ] T006 **RED checkpoint**: run the suite; confirm T003–T005 tests FAIL for the right reason (missing members/types, not compile noise elsewhere)
 
 ### Implementation (GREEN)
 
-- [ ] T007 [P] Add the 5 defaulted fields to `app-four/Models/AppSettings.swift` per [data-model.md](data-model.md) (all defaulted/optional, no `.unique` — Constitution IX) → T003 GREEN
-- [ ] T008 [P] Create `app-four/Models/DoseGuardMode.swift`: non-persisted enum + raw decode + boundary rule per [data-model.md](data-model.md) → T004 GREEN
-- [ ] T009 Create `app-four/Intents/AppIntentRouter.swift`: `@MainActor @Observable` router — check-in trigger flag, one-shot consumption, `focusMyMedication()`; NO gate logic yet (US2) → T005 GREEN
+- [X] T007 [P] Add the 5 defaulted fields to `app-four/Models/AppSettings.swift` per [data-model.md](data-model.md) (all defaulted/optional, no `.unique` — Constitution IX) → T003 GREEN
+- [X] T008 [P] Create `app-four/Models/DoseGuardMode.swift`: non-persisted enum + raw decode + boundary rule per [data-model.md](data-model.md) → T004 GREEN
+- [X] T009 Create `app-four/Intents/AppIntentRouter.swift`: `@MainActor @Observable` router — check-in trigger flag, one-shot consumption, `focusMyMedication()`; NO gate logic yet (US2) → T005 GREEN
 - [ ] T010 Wire the router through the app in `app-four/App/SquirlApp.swift` + `app-four/Store/AppDependencies.swift`: compose router in AppDependencies; register it with `AppDependencyManager.shared` in `SquirlApp.init` (D11); drive `selectedTab`/`shouldAutoStartRecording` from router state; **rewire the `whispernotes://checkin` `onOpenURL` handler through `router.requestCheckIn()`** (D3/D4 — gate lands in US2, plumbing now). Build + full serial suite green. **Checkpoint: foundation ready**
 
 ---
