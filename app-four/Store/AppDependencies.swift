@@ -13,6 +13,8 @@ enum AppDependencies {
     static let aiModelService: AIModelService = AIModelServiceImpl(context: AppModelContainer.container.mainContext)
     static let diagnosticsStore = DiagnosticsStore()
     static let screenTracker = ScreenTracker()
+    /// Single choke point for check-in / My-medication triggers (App Intents + deep link).
+    static let appIntentRouter = AppIntentRouter()
     static let summarizationService: SummarizationService = NLSummarizationService()
     static let connectivity: Connectivity = NetworkConnectivity()
     static let pendingTranscriptionService: PendingTranscriptionService = PendingTranscriptionServiceImpl(

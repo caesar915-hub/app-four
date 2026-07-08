@@ -5,6 +5,7 @@ import SwiftData
 struct SquirlApp: App {
     @State private var selectedTab: Tab = .calendar
     @State private var shouldAutoStartRecording = false
+    @State private var router = AppDependencies.appIntentRouter
 
     init() {
         #if DEBUG
@@ -35,8 +36,15 @@ struct SquirlApp: App {
             .environment(AppDependencies.services)
             .environment(\.diagnosticsStore, AppDependencies.diagnosticsStore)
             // Feedback button unmounted (spec 024) — it crashed the app. Views/Feedback/* retained.
+            // Route the legacy deep link through the shared router (D3/D4) so the
+            // App Intent (US2) and this URL hit ONE choke point; the onboarding gate
+            // (FR-022) lands inside the router in US2.
             .onOpenURL { url in
                 guard url.scheme == "whispernotes", url.host == "checkin" else { return }
+                router.requestCheckIn()
+            }
+            .onChange(of: router.shouldStartCheckIn) { _, armed in
+                guard armed, router.consumeCheckIn() else { return }
                 selectedTab = .checkIn
                 shouldAutoStartRecording = true
             }

@@ -33,12 +33,14 @@ struct AppSettingsTests {
     }
 
     @Test func exposesDoseIntentMembers() {
-        let names = Set(Mirror(reflecting: AppSettings()).children.compactMap(\.label))
+        // `@Model` backing ivars are underscore-prefixed (e.g. "_doseGuardModeRaw"),
+        // so match by substring — the same tolerance `exposesNoReduceMotionMember` relies on.
+        let names = Mirror(reflecting: AppSettings()).children.compactMap(\.label)
         for field in [
             "defaultMedicationName", "defaultMedicationDose",
             "doseGuardModeRaw", "doseGuardWindowHours", "nameMedicationInConfirmations",
         ] {
-            #expect(names.contains(field))
+            #expect(names.contains { $0.localizedCaseInsensitiveContains(field) })
         }
     }
 }
