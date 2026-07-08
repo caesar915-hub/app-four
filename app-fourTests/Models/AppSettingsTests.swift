@@ -20,4 +20,25 @@ struct AppSettingsTests {
         let names = Mirror(reflecting: AppSettings()).children.compactMap(\.label)
         #expect(!names.contains { $0.localizedCaseInsensitiveContains("reduceMotion") })
     }
+
+    // MARK: - 030 App Intents: default-medication, dose-guard, confirmation-style (T003, RED until T007)
+
+    @Test func doseIntentFieldsFreshDefaults() {
+        let settings = AppSettings()
+        #expect(settings.defaultMedicationName == nil)
+        #expect(settings.defaultMedicationDose == nil)
+        #expect(settings.doseGuardModeRaw == "off")
+        #expect(settings.doseGuardWindowHours == 2)
+        #expect(settings.nameMedicationInConfirmations == false)
+    }
+
+    @Test func exposesDoseIntentMembers() {
+        let names = Set(Mirror(reflecting: AppSettings()).children.compactMap(\.label))
+        for field in [
+            "defaultMedicationName", "defaultMedicationDose",
+            "doseGuardModeRaw", "doseGuardWindowHours", "nameMedicationInConfirmations",
+        ] {
+            #expect(names.contains(field))
+        }
+    }
 }

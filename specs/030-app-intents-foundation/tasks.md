@@ -16,7 +16,7 @@
 ## Phase 1: Setup
 
 - [ ] T001 Create branch `feat/030-app-intents` off `main`; verify baseline build + full serial suite green before any change (Constitution II baseline)
-- [ ] T002 **Verify** the iOS 26 baseline is already on `main` (the raise was executed 2026-07-03 on branch `feat/ios26-target` ahead of this feature — pbxproj all four configs + both SPM packages at 26.0, `ScrollPosition` restored in ScreenContainer, dead iOS-16 guard removed): `grep -c "IPHONEOS_DEPLOYMENT_TARGET = 26.0" app-four.xcodeproj/project.pbxproj` == 8. If that branch has NOT merged yet, rebase this feature onto it or land it first — do not re-apply the raise here (D15)
+- [X] T002 **Verify** the iOS 26 baseline is already on `main` (the raise was executed 2026-07-03 on branch `feat/ios26-target` ahead of this feature — pbxproj all four configs + both SPM packages at 26.0, `ScrollPosition` restored in ScreenContainer, dead iOS-16 guard removed): `grep -c "IPHONEOS_DEPLOYMENT_TARGET = 26.0" app-four.xcodeproj/project.pbxproj` == 8. If that branch has NOT merged yet, rebase this feature onto it or land it first — do not re-apply the raise here (D15)
 
 ---
 
