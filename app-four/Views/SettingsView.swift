@@ -48,6 +48,8 @@ struct SettingsView: View {
                     systemSection
                     checkInSection
                     dayCardSection
+                    MyMedicationSection(viewModel: viewModel)
+                    DoseGuardSection(viewModel: viewModel)
                     medicationBarSection
                     accessibilitySection
                     YourDataSection()

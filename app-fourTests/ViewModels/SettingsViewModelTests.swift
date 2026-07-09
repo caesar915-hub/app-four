@@ -199,4 +199,98 @@ struct SettingsViewModelTests {
         #expect(viewModel.whisperModelInstalled == true, "Retry success installs the model")
         #expect(viewModel.downloadError == nil, "A successful retry clears the prior error")
     }
+
+    // MARK: - 030 App Intents settings (T014 / T030): sync round-trips via injected context
+
+    /// Isolated in-memory VM so sync round-trips don't race on the shared app store
+    /// (Swift Testing runs suites in parallel).
+    private func makeSettingsVM() throws -> (SettingsViewModel, ModelContainer) {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
+        let vm = SettingsViewModel(
+            store: RecordingStore(context: container.mainContext),
+            services: MockAppServices().services,
+            context: container.mainContext
+        )
+        return (vm, container)
+    }
+
+    private func reloadedVM(_ container: ModelContainer) -> SettingsViewModel {
+        SettingsViewModel(
+            store: RecordingStore(context: container.mainContext),
+            services: MockAppServices().services,
+            context: container.mainContext
+        )
+    }
+
+    @Test func myMedicationSyncRoundTrips() throws {
+        let (vm, container) = try makeSettingsVM()
+        vm.defaultMedicationName = "Elvanse"
+        vm.medicationDidChange()
+        #expect(vm.defaultMedicationDose == "20 mg", "Picking a medication auto-selects its first dose")
+        vm.defaultMedicationDose = "30 mg"
+        vm.syncMyMedication()
+
+        let reloaded = reloadedVM(container)
+        #expect(reloaded.defaultMedicationName == "Elvanse")
+        #expect(reloaded.defaultMedicationDose == "30 mg")
+    }
+
+    @Test func clearingMedicationClearsDose() throws {
+        let (vm, container) = try makeSettingsVM()
+        vm.defaultMedicationName = "Concerta"
+        vm.medicationDidChange()
+        #expect(vm.defaultMedicationDose == "18 mg")
+        vm.defaultMedicationName = nil
+        vm.medicationDidChange()
+        #expect(vm.defaultMedicationDose == nil)
+
+        let reloaded = reloadedVM(container)
+        #expect(reloaded.defaultMedicationName == nil)
+        #expect(reloaded.defaultMedicationDose == nil)
+    }
+
+    @Test func changingMedicationResetsNowInvalidDose() throws {
+        let (vm, _) = try makeSettingsVM()
+        vm.defaultMedicationName = "Elvanse"; vm.medicationDidChange()
+        vm.defaultMedicationDose = "70 mg"          // valid for Elvanse
+        vm.defaultMedicationName = "Ritalin"; vm.medicationDidChange()
+        #expect(vm.defaultMedicationDose == "5 mg", "70 mg isn't a Ritalin dose → drop to its first option")
+    }
+
+    @Test func nameInConfirmationsDefaultsDiscreetAndSyncs() throws {
+        let (vm, container) = try makeSettingsVM()
+        #expect(vm.nameMedicationInConfirmations == false, "Discreet by default")
+        vm.nameMedicationInConfirmations = true
+        vm.syncNameInConfirmations()
+        #expect(reloadedVM(container).nameMedicationInConfirmations == true)
+    }
+
+    @Test func doseGuardSyncRoundTrips() throws {
+        let (vm, container) = try makeSettingsVM()
+        #expect(vm.doseGuardMode == .off, "Guard off by default")
+        #expect(vm.doseGuardWindowHours == 2, "Default window is 2h")
+        vm.doseGuardMode = .window
+        vm.doseGuardWindowHours = 4
+        vm.syncDoseGuard()
+
+        let reloaded = reloadedVM(container)
+        #expect(reloaded.doseGuardMode == .window)
+        #expect(reloaded.doseGuardWindowHours == 4)
+    }
+
+    @Test func doseGuardTotalModeRoundTrips() throws {
+        let (vm, container) = try makeSettingsVM()
+        vm.doseGuardMode = .total
+        vm.syncDoseGuard()
+        #expect(reloadedVM(container).doseGuardMode == .total)
+    }
+
+    @Test func invalidPersistedGuardRawDecodesToOff() throws {
+        let (_, container) = try makeSettingsVM()
+        let settings = try #require(try container.mainContext.fetch(FetchDescriptor<AppSettings>()).first)
+        settings.doseGuardModeRaw = "someFutureMode"
+        try container.mainContext.save()
+        #expect(reloadedVM(container).doseGuardMode == .off, "Unknown persisted raw is forward-safe")
+    }
 }

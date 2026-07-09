@@ -44,6 +44,13 @@ final class SettingsViewModel {
     var downloadOverCellular: Bool = false
     var promptPace: PromptPace = .relaxed
 
+    // MARK: - 030 App Intents settings (mirror AppSettings; sync writes back)
+    var defaultMedicationName: String?
+    var defaultMedicationDose: String?
+    var nameMedicationInConfirmations: Bool = false
+    var doseGuardMode: DoseGuardMode = .off
+    var doseGuardWindowHours: Int = 2
+
     private var appSettings: AppSettings {
         let descriptor = FetchDescriptor<AppSettings>()
         if let existing = try? context.fetch(descriptor).first {
@@ -55,14 +62,20 @@ final class SettingsViewModel {
         return new
     }
 
-    init(store: RecordingStore, services: AppServices) {
+    init(store: RecordingStore, services: AppServices, context: ModelContext? = nil) {
         self.store = store
         self.aiModelService = services.aiModelService
         self.storageService = services.storageService
         self.exportService = services.exportService
-        self.context = AppModelContainer.container.mainContext
-        self.downloadOverCellular = appSettings.downloadOverCellular
-        self.promptPace = PromptPace(rawValue: appSettings.promptPaceSeconds) ?? .relaxed
+        self.context = context ?? AppModelContainer.container.mainContext
+        let settings = appSettings
+        self.downloadOverCellular = settings.downloadOverCellular
+        self.promptPace = PromptPace(rawValue: settings.promptPaceSeconds) ?? .relaxed
+        self.defaultMedicationName = settings.defaultMedicationName
+        self.defaultMedicationDose = settings.defaultMedicationDose
+        self.nameMedicationInConfirmations = settings.nameMedicationInConfirmations
+        self.doseGuardMode = DoseGuardMode(raw: settings.doseGuardModeRaw)
+        self.doseGuardWindowHours = settings.doseGuardWindowHours
 
         Task { await updateStorage() }
         Task { await checkModels() }
@@ -75,6 +88,41 @@ final class SettingsViewModel {
 
     func syncPromptPace() {
         appSettings.promptPaceSeconds = promptPace.rawValue
+        try? context.save()
+    }
+
+    /// When the medication changes, drop to its first dose option (or clear both when
+    /// the medication is unset / no longer in the catalog), then persist. Keeps a still-valid
+    /// dose if the user re-picks the same medication.
+    func medicationDidChange() {
+        if let name = defaultMedicationName, let entry = MedicationCatalog.entry(matching: name) {
+            if let dose = defaultMedicationDose, entry.doseOptions.contains(dose) {
+                // keep the valid selection
+            } else {
+                defaultMedicationDose = entry.doseOptions.first
+            }
+        } else {
+            defaultMedicationDose = nil
+        }
+        syncMyMedication()
+    }
+
+    func syncMyMedication() {
+        let settings = appSettings
+        settings.defaultMedicationName = defaultMedicationName
+        settings.defaultMedicationDose = defaultMedicationDose
+        try? context.save()
+    }
+
+    func syncNameInConfirmations() {
+        appSettings.nameMedicationInConfirmations = nameMedicationInConfirmations
+        try? context.save()
+    }
+
+    func syncDoseGuard() {
+        let settings = appSettings
+        settings.doseGuardModeRaw = doseGuardMode.rawValue
+        settings.doseGuardWindowHours = doseGuardWindowHours
         try? context.save()
     }
 
