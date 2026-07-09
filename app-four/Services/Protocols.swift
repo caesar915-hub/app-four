@@ -6,7 +6,7 @@ import SwiftData
 
 /// The active network interface class, used only to honor `downloadOverCellular`
 /// when deciding whether a background model download may start.
-enum NetworkInterface: Sendable, Equatable {
+nonisolated enum NetworkInterface: Sendable, Equatable {
     case wifi
     case cellular
     case other

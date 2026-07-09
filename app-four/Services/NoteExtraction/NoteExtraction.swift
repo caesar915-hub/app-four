@@ -130,7 +130,7 @@ public struct NoteExtraction: Sendable, Codable, Equatable {
     }
 }
 
-public enum MoodLevel: String, Sendable, Codable, Equatable, CaseIterable {
+public nonisolated enum MoodLevel: String, Sendable, Codable, Equatable, CaseIterable {
     case low    // 1 — heavy, muted
     case flat   // 2 — neutral, still
     case okay   // 3 — steady, fine
@@ -151,7 +151,7 @@ public enum MoodLevel: String, Sendable, Codable, Equatable, CaseIterable {
     }
 }
 
-public enum EnergyLevel: String, Sendable, Codable, Equatable, CaseIterable {
+public nonisolated enum EnergyLevel: String, Sendable, Codable, Equatable, CaseIterable {
     case sluggish  // 1 — slow, heavy
     case tired     // 2 — low, dim
     case steady    // 3 — moderate, stable
@@ -172,7 +172,7 @@ public enum EnergyLevel: String, Sendable, Codable, Equatable, CaseIterable {
     }
 }
 
-public enum FocusLevel: String, Sendable, Codable, Equatable, CaseIterable {
+public nonisolated enum FocusLevel: String, Sendable, Codable, Equatable, CaseIterable {
     case foggy      // 1 — hazy, drifting
     case distracted // 2 — pulled, unsteady
     case present    // 3 — grounded, there
@@ -230,7 +230,7 @@ public struct MedEvent: Sendable, Codable, Equatable, Hashable {
     }
 }
 
-public enum SleepLevel: String, Sendable, Codable, Equatable, CaseIterable {
+public nonisolated enum SleepLevel: String, Sendable, Codable, Equatable, CaseIterable {
     case restless  // 1 — broken, tossing
     case light     // 2 — thin, barely resting
     case okay      // 3 — decent, adequate

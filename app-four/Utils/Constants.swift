@@ -18,7 +18,7 @@ enum ModelConstants {
     }()
 }
 
-enum SettingsKeys {
+nonisolated enum SettingsKeys {
     static let medicalPromptEnabled = "medicalPromptEnabled"
 }
 

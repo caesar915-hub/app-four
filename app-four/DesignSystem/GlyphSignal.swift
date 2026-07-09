@@ -4,7 +4,7 @@ import Foundation
 /// `SignalKind` (which is the three ramped self-state signals): this adds `sleep` and
 /// `medication`, which are single icons, not 1→5 ramps. Names/synonyms reuse the existing
 /// `MoodLevel`/`EnergyLevel`/`FocusLevel` SSOT — no parallel table.
-enum GlyphSignal: String, CaseIterable, Hashable, Sendable {
+nonisolated enum GlyphSignal: String, CaseIterable, Hashable, Sendable {
     case mood, energy, focus, sleep, medication
 
     /// The three self-state signals that carry a 1→5 level (pickers, ramps).
