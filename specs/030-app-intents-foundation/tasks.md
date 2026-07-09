@@ -50,10 +50,10 @@
 
 ### Tests for User Story 1 (test-first · RED — MANDATORY) ⚠️
 
-- [ ] T011 [US1] HTML mockup gate (Constitution I): create `html-mockups/030-settings-medication.html` covering the three Settings controls — "My medication" picker (catalog med + dose options, clearable), "Name medication in confirmations" toggle, and the "Dose guard" section (US3 builds it later from this same approved mockup) — DESIGN.md Paper & Pollen tokens, base-4 spacing grid; **owner approval before any SwiftUI below**
+- [X] T011 [US1] HTML mockup gate (Constitution I): create `html-mockups/030-settings-medication.html` covering the three Settings controls — "My medication" picker (catalog med + dose options, clearable), "Name medication in confirmations" toggle, and the "Dose guard" section (US3 builds it later from this same approved mockup) — DESIGN.md Paper & Pollen tokens, base-4 spacing grid; **owner approval before any SwiftUI below**
 - [ ] T012 [P] [US1] Create `app-fourTests/Services/DoseLogServiceTests.swift` (in-memory container + `TestSupport.useRealData()`): **full outcome + guard-evaluation matrix** — notConfigured (no default; dangling name not in catalog); logged event field contract (`source == .manual`, `recording == nil`, `isMockData == false`, catalog `durationHours`, `takenAt == now`); guard OFF double-log allowed; **total guard** blocks while `isActive` (respecting a per-event edited duration) and allows at exact effect end; **window guard** blocks `< X h`, allows at exactly `X h` (boundary closed, FR-012); **any-surface reference** — an event created the in-app way blocks a guarded expedited log (clarify Q3=A); `guarded.activeSince` carries the earlier `takenAt`; `.medicationEventsDidChange` posted on logged only — RED (service doesn't exist). *(Guard eval is tested HERE because the service owns it from day one with mode written directly to AppSettings in tests; US3 adds only the UI.)*
 - [ ] T013 [P] [US1] Create `app-fourTests/Views/ConfirmationCopyTests.swift`: pure copy-matrix helper tests per [data-model.md](data-model.md) — named/discreet × logged/guarded/notConfigured, system-short time formatting, guarded copy names time never drug — RED
-- [ ] T014 [P] [US1] Extend `app-fourTests/ViewModels/SettingsViewModelTests.swift`: my-medication + naming-toggle sync round-trips (VM props ↔ AppSettings persistence, clear-default path) — RED
+- [X] T014 [P] [US1] Extend `app-fourTests/ViewModels/SettingsViewModelTests.swift`: my-medication + naming-toggle sync round-trips (VM props ↔ AppSettings persistence, clear-default path) — RED
 - [ ] T015 [US1] **RED checkpoint**: run suite; confirm T012–T014 FAIL for the right reasons
 
 ### Implementation for User Story 1
@@ -64,7 +64,7 @@
 - [ ] T019 [US1] Create `app-four/Intents/LogDefaultDoseIntent.swift`: `static let supportedModes: IntentModes = [.background, .foreground(.dynamic)]` (D2 rev.); thin `perform()` — `@AppDependency` service; outcome → `IntentDialog(full:supporting:)` via T018; explicit `authenticationPolicy = .alwaysAllowed` (D8); notConfigured → calm dialog + `continueInForeground()` → `router.focusMyMedication()` (D9 rev./D13); honest failure dialog on thrown persistence error (SC-007)
 - [ ] T020 [US1] Create `app-four/Intents/SquirlAppShortcuts.swift`: `AppShortcutsProvider` with the dose shortcut (iOS 17+ initializer with `shortTitle`/`systemImageName`, `.applicationName` phrases per contract; check-in entry added in US2)
 - [ ] T021 [US1] Register `DoseLogService` in `app-four/Store/AppDependencies.swift` + `AppDependencyManager` (extends T010 wiring)
-- [ ] T022 [US1] From the approved T011 mockup: create `app-four/Views/Settings/MyMedicationSection.swift` (+ naming toggle — same section or `ConfirmationStyleSection.swift` per mockup decision), add SettingsViewModel sync props → T014 GREEN, mount in `app-four/Views/SettingsView.swift`
+- [X] T022 [US1] From the approved T011 mockup: create `app-four/Views/Settings/MyMedicationSection.swift` (+ naming toggle — same section or `ConfirmationStyleSection.swift` per mockup decision), add SettingsViewModel sync props → T014 GREEN, mount in `app-four/Views/SettingsView.swift`
 - [ ] T023 [US1] **Story checkpoint**: build + full serial suite green; owner device QA quickstart **S1–S10** (iOS 26 device, mock mode OFF). US1 is the shippable MVP
 
 ---
@@ -97,12 +97,12 @@
 
 ### Tests for User Story 3 (test-first · RED — MANDATORY) ⚠️
 
-- [ ] T030 [US3] Extend `app-fourTests/ViewModels/SettingsViewModelTests.swift`: dose-guard mode + window-hours sync round-trips (off/total/window×1–4 h ↔ `doseGuardModeRaw`/`doseGuardWindowHours`), invalid persisted raw surfaces as `.off` — RED
+- [X] T030 [US3] Extend `app-fourTests/ViewModels/SettingsViewModelTests.swift`: dose-guard mode + window-hours sync round-trips (off/total/window×1–4 h ↔ `doseGuardModeRaw`/`doseGuardWindowHours`), invalid persisted raw surfaces as `.off` — RED
 - [ ] T031 [US3] **RED checkpoint**: run suite; confirm T030 FAILS
 
 ### Implementation for User Story 3
 
-- [ ] T032 [US3] From the approved T011 mockup: create `app-four/Views/Settings/DoseGuardSection.swift` (off/total/window control + 1·2·3·4 h picker visible only in window mode — one selected value, never independent toggles), SettingsViewModel sync props → T030 GREEN, mount in `app-four/Views/SettingsView.swift`
+- [X] T032 [US3] From the approved T011 mockup: create `app-four/Views/Settings/DoseGuardSection.swift` (off/total/window control + 1·2·3·4 h picker visible only in window mode — one selected value, never independent toggles), SettingsViewModel sync props → T030 GREEN, mount in `app-four/Views/SettingsView.swift`
 - [ ] T033 [US3] **Story checkpoint**: build + full serial suite green; owner device QA quickstart **S11–S15** (boundary case S14 is unit-covered; device pass validates the UX copy)
 
 ---
