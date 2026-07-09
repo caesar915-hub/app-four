@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>030 · My Medication / Dose Guard / Confirmations — Settings mockup</title>
+<style>
+/*
+  Spec 030 · T011 mockup gate (Constitution I).
+  Native iOS insetGrouped Settings chrome (DESIGN.md §114 — Settings is SF/List-exempt)
+  rendered in Paper & Pollen color tokens. Base-8 spacing (4·8·12·16·24·32).
+  Covers: My Medication picker (FR-001/002) · Name-in-confirmations toggle (FR-023) ·
+  Dose Guard off/total/window + 1–4h (FR-008). Interactive to show the conditional reveals.
+*/
+:root{
+  --bg:#F6F1E7; --surface:#FCF8EF; --surface2:#EFE8D8;
+  --ink:#221E16; --muted:#7A7361; --hair:#E3DAC7;
+  --green:#5F8A4C; --amber:#E0A33A; --bronze:#B8842A; --med:#7E5CA8;
+  --danger:#B4462F;
+  --sp1:4px; --sp2:8px; --sp3:12px; --sp4:16px; --sp6:24px; --sp8:32px;
+  --r-group:14px; --r-chip:999px;
+  --shadow:0 1px 2px rgba(34,30,22,.05), 0 6px 18px rgba(34,30,22,.05);
+}
+:root[data-theme="dark"]{
+  --bg:#14130F; --surface:#1E1C16; --surface2:#272419;
+  --ink:#F3EEE0; --muted:#9A917C; --hair:#322E22;
+  --green:#6E9A58; --amber:#E8B255; --bronze:#D4A24A; --med:#9277BE;
+  --danger:#E08267;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#14130F; --surface:#1E1C16; --surface2:#272419;
+    --ink:#F3EEE0; --muted:#9A917C; --hair:#322E22;
+    --green:#6E9A58; --amber:#E8B255; --bronze:#D4A24A; --med:#9277BE;
+    --danger:#E08267;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font:400 16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  padding:var(--sp6) var(--sp3) 64px; display:flex; flex-direction:column; align-items:center;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.wrap{width:100%; max-width:400px}
+
+/* caption / legend */
+.legend{
+  font-size:12.5px; color:var(--muted); margin:0 auto var(--sp4); max-width:400px;
+  display:flex; gap:var(--sp2); align-items:baseline; justify-content:space-between;
+}
+.legend b{color:var(--ink); font-weight:600}
+.themebtn{
+  border:1px solid var(--hair); background:var(--surface); color:var(--ink);
+  border-radius:var(--r-chip); padding:6px 12px; font-size:12.5px; cursor:pointer; font-weight:600;
+}
+
+/* large title */
+.largeTitle{font-size:30px; font-weight:700; letter-spacing:-.02em; margin:0 var(--sp1) var(--sp4)}
+
+/* grouped list */
+.group{margin:0 0 var(--sp6)}
+.group>.hdr{
+  text-transform:uppercase; font-size:12.5px; letter-spacing:.04em; color:var(--muted);
+  font-weight:600; padding:0 var(--sp4) var(--sp2);
+}
+.card{
+  background:var(--surface); border:1px solid var(--hair); border-radius:var(--r-group);
+  box-shadow:var(--shadow); overflow:hidden;
+}
+.ftr{font-size:12.5px; line-height:1.45; color:var(--muted); padding:var(--sp2) var(--sp4) 0}
+.ftr .mono{color:var(--ink)}
+
+/* rows */
+.row{
+  display:flex; align-items:center; gap:var(--sp3); min-height:48px;
+  padding:11px var(--sp4); background:var(--surface); border:0; width:100%;
+  color:var(--ink); font-size:16px; text-align:left; cursor:pointer; position:relative;
+}
+.row+.row::before{content:""; position:absolute; top:0; left:52px; right:0; height:1px; background:var(--hair)}
+.row.tap:active{background:var(--surface2)}
+.row .ic{
+  width:28px; height:28px; border-radius:7px; flex:0 0 28px;
+  display:grid; place-items:center; color:#fff; font-size:15px;
+}
+.ic.med{background:var(--med)} .ic.guard{background:var(--green)} .ic.name{background:var(--amber)}
+.row .lbl{flex:1; min-width:0}
+.row .lbl small{display:block; color:var(--muted); font-size:12.5px; margin-top:1px}
+.row .val{color:var(--muted); font-size:15.5px; display:flex; align-items:center; gap:6px; white-space:nowrap}
+.val .set{color:var(--bronze); font-weight:600}
+.val .chosen{color:var(--med); font-weight:600}
+.chev{color:var(--muted); opacity:.55; font-size:17px}
+.check{color:var(--green); font-weight:700; font-size:17px}
+.row.selectable .check{visibility:hidden}
+.row.selectable.on .check{visibility:visible}
+.row.destructive{color:var(--danger); justify-content:center; font-weight:500}
+
+/* iOS toggle */
+.sw{width:51px; height:31px; border-radius:999px; background:var(--surface2); border:1px solid var(--hair);
+   position:relative; flex:0 0 51px; transition:background .2s}
+.sw::after{content:""; position:absolute; top:1px; left:1px; width:27px; height:27px; border-radius:50%;
+   background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.2); transition:transform .2s}
+.sw.on{background:var(--green); border-color:transparent}
+.sw.on::after{transform:translateX(20px)}
+
+/* inline picker reveal */
+.reveal{overflow:hidden; max-height:0; transition:max-height .28s ease}
+.reveal.open{max-height:420px}
+.pickerhdr{font-size:12.5px; color:var(--muted); padding:10px var(--sp4) 4px; letter-spacing:.02em}
+.chips{display:flex; flex-wrap:wrap; gap:var(--sp2); padding:6px var(--sp4) 14px}
+.chip{
+  border:1px solid var(--hair); background:var(--bg); color:var(--ink);
+  border-radius:var(--r-chip); padding:7px 14px; font-size:14.5px; cursor:pointer; transition:all .15s;
+}
+.chip.dose{font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:13.5px}
+.chip.on{background:var(--med); border-color:transparent; color:#fff}
+.chips.guardwin .chip.on{background:var(--green)}
+
+/* segmented (window hours) */
+.segwrap{padding:4px var(--sp4) 14px}
+.seg{display:flex; background:var(--surface2); border-radius:9px; padding:2px; gap:2px}
+.seg button{
+  flex:1; border:0; background:transparent; color:var(--ink); font-size:14px; font-weight:600;
+  padding:7px 0; border-radius:7px; cursor:pointer; font-family:ui-monospace,"SF Mono",Menlo,monospace;
+}
+.seg button.on{background:var(--surface); box-shadow:var(--shadow)}
+
+/* confirmation preview banner */
+.banner{
+  margin:2px var(--sp4) 2px; background:var(--surface2); border:1px solid var(--hair);
+  border-radius:12px; padding:10px 12px; display:flex; align-items:center; gap:10px;
+}
+.banner .dot{width:26px;height:26px;border-radius:7px;background:var(--med);flex:0 0 26px;display:grid;place-items:center;color:#fff;font-size:13px}
+.banner .txt{font-size:14px}
+.banner .txt b{font-weight:600}
+.banner .txt .mono{color:var(--muted); font-size:13px}
+.hint{font-size:11.5px; color:var(--muted); text-align:center; margin-top:40px}
+</style>
+</head>
+<body>
+<div class="legend">
+  <span><b>Spec 030 · T011</b> — Settings surface (mockup, not built)</span>
+  <button class="themebtn" id="theme">◐ Theme</button>
+</div>
+
+<div class="wrap">
+  <h1 class="largeTitle">Settings</h1>
+
+  <!-- ── MY MEDICATION (FR-001/002) ── -->
+  <section class="group">
+    <div class="hdr">My Medication</div>
+    <div class="card">
+      <button class="row tap" id="medRow" aria-expanded="false">
+        <span class="ic med">◗</span>
+        <span class="lbl">Medication</span>
+        <span class="val" id="medVal"><span class="set">Set</span></span>
+        <span class="chev">›</span>
+      </button>
+      <div class="reveal" id="medPicker">
+        <div class="pickerhdr">Medication</div>
+        <div class="chips" id="medChips">
+          <button class="chip" data-med="Concerta" data-doses="18 mg,27 mg,36 mg,54 mg">Concerta</button>
+          <button class="chip" data-med="Ritalin"  data-doses="5 mg,10 mg,20 mg">Ritalin</button>
+          <button class="chip" data-med="Elvanse"  data-doses="20 mg,30 mg,40 mg,50 mg,60 mg,70 mg">Elvanse</button>
+        </div>
+        <div id="doseBlock" hidden>
+          <div class="pickerhdr">Dose</div>
+          <div class="chips dose" id="doseChips"></div>
+        </div>
+      </div>
+      <button class="row destructive tap" id="clearRow" hidden>Clear Medication</button>
+    </div>
+    <div class="ftr">Logged by the <b>Log My Meds</b> action (sticker&nbsp;· Siri&nbsp;· Shortcuts). Only this one medication and dose are recorded — change it any time; past logs keep what they recorded.</div>
+  </section>
+
+  <!-- ── CONFIRMATIONS (FR-023) ── -->
+  <section class="group">
+    <div class="hdr">Confirmations</div>
+    <div class="card">
+      <div class="row tap" id="nameRow">
+        <span class="ic name">“</span>
+        <span class="lbl">Name medication in confirmations</span>
+        <span class="sw" id="nameSw" role="switch" aria-checked="false"></span>
+      </div>
+      <div class="banner">
+        <span class="dot">◗</span>
+        <span class="txt"><b id="bannerText">Dose logged</b> · <span class="mono">17:42</span></span>
+      </div>
+    </div>
+    <div class="ftr" id="nameFtr">Off — discreet everywhere; the medication name stays inside the app. On — confirmations name the medication and dose (banner, spoken, and on the lock screen).</div>
+  </section>
+
+  <!-- ── DOSE GUARD (FR-008) ── -->
+  <section class="group">
+    <div class="hdr">Dose Guard</div>
+    <div class="card" id="guardCard">
+      <button class="row selectable tap on" data-mode="off">
+        <span class="ic guard">⛊</span>
+        <span class="lbl">Off<small>Every trigger logs</small></span>
+        <span class="check">✓</span>
+      </button>
+      <button class="row selectable tap" data-mode="total">
+        <span class="ic guard">⛊</span>
+        <span class="lbl">Total<small>Blocked while a dose is still active</small></span>
+        <span class="check">✓</span>
+      </button>
+      <button class="row selectable tap" data-mode="window">
+        <span class="ic guard">⛊</span>
+        <span class="lbl">Time window<small>Blocked for a set time after a dose</small></span>
+        <span class="check">✓</span>
+      </button>
+      <div class="reveal" id="winReveal">
+        <div class="pickerhdr">Blocked for</div>
+        <div class="segwrap">
+          <div class="seg" id="hoursSeg">
+            <button data-h="1">1h</button>
+            <button class="on" data-h="2">2h</button>
+            <button data-h="3">3h</button>
+            <button data-h="4">4h</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ftr">Guards expedited logs only (sticker&nbsp;· Siri&nbsp;· Shortcuts) — the in-app <b>Log Dose</b> sheet is never blocked. A blocked tap changes nothing and answers calmly: “Your 14:00 dose is still active.”</div>
+  </section>
+
+  <p class="hint">Interactive mockup · tap the rows. Approve to unblock the SwiftUI (T022/T032).</p>
+</div>
+
+<script>
+// theme toggle
+const root=document.documentElement;
+document.getElementById('theme').onclick=()=>{
+  const cur=root.getAttribute('data-theme');
+  const sysDark=matchMedia('(prefers-color-scheme:dark)').matches;
+  root.setAttribute('data-theme', cur? (cur==='dark'?'light':'dark') : (sysDark?'light':'dark'));
+};
+
+// ── My Medication picker ──
+let selMed=null, selDose=null;
+const medRow=document.getElementById('medRow'), medPicker=document.getElementById('medPicker'),
+      medVal=document.getElementById('medVal'), doseBlock=document.getElementById('doseBlock'),
+      doseChips=document.getElementById('doseChips'), clearRow=document.getElementById('clearRow');
+
+medRow.onclick=()=>{const o=medPicker.classList.toggle('open'); medRow.setAttribute('aria-expanded',o)};
+
+document.querySelectorAll('#medChips .chip').forEach(c=>c.onclick=()=>{
+  document.querySelectorAll('#medChips .chip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on'); selMed=c.dataset.med; selDose=null;
+  doseChips.innerHTML='';
+  c.dataset.doses.split(',').forEach(d=>{
+    const b=document.createElement('button'); b.className='chip dose'; b.textContent=d;
+    b.onclick=()=>{
+      doseChips.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on'); selDose=d; sync();
+    };
+    doseChips.appendChild(b);
+  });
+  doseBlock.hidden=false; sync();
+});
+
+clearRow.onclick=()=>{
+  selMed=selDose=null;
+  document.querySelectorAll('#medChips .chip').forEach(x=>x.classList.remove('on'));
+  doseBlock.hidden=true; doseChips.innerHTML=''; medPicker.classList.remove('open');
+  medRow.setAttribute('aria-expanded',false); sync();
+};
+
+function sync(){
+  const set = selMed && selDose;
+  medVal.innerHTML = set ? `<span class="chosen">${selMed} ${selDose}</span>`
+                         : (selMed ? `<span class="val">${selMed}</span>` : `<span class="set">Set</span>`);
+  clearRow.hidden = !selMed;
+  updateBanner();
+}
+
+// ── Name in confirmations ──
+let named=false;
+const nameSw=document.getElementById('nameSw'), nameRow=document.getElementById('nameRow');
+nameRow.onclick=()=>{named=!named; nameSw.classList.toggle('on',named); nameSw.setAttribute('aria-checked',named); updateBanner();};
+function updateBanner(){
+  const bt=document.getElementById('bannerText');
+  if(named){ bt.textContent = (selMed&&selDose) ? `${selMed} ${selDose} logged` : 'Elvanse 30 mg logged'; }
+  else { bt.textContent='Dose logged'; }
+}
+
+// ── Dose guard ──
+const winReveal=document.getElementById('winReveal');
+document.querySelectorAll('#guardCard .selectable').forEach(r=>r.onclick=()=>{
+  document.querySelectorAll('#guardCard .selectable').forEach(x=>x.classList.remove('on'));
+  r.classList.add('on');
+  winReveal.classList.toggle('open', r.dataset.mode==='window');
+});
+document.querySelectorAll('#hoursSeg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#hoursSeg button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+});
+</script>
+</body>
+</html>
