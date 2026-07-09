@@ -94,9 +94,22 @@ struct ExtractionReviewView: View {
     @ViewBuilder
     private func synonym(_ name: String?, _ syn: String?) -> some View {
         if let name {
-            Text(name).font(Typography.caption.weight(.semibold)).foregroundStyle(Theme.accent)
-            + Text(syn.map { " · \($0)" } ?? "").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+            Text(synonymText(name, syn))
         }
+    }
+
+    /// Name (accent, semibold) + optional " · synonym" (muted), as one styled `AttributedString`
+    /// so the two runs share a `Text` without the iOS-26-deprecated `Text` `+` operator.
+    private func synonymText(_ name: String, _ syn: String?) -> AttributedString {
+        var result = AttributedString(name)
+        result.font = Typography.caption.weight(.semibold)
+        result.foregroundColor = Theme.accent
+        guard let syn else { return result }
+        var tail = AttributedString(" · \(syn)")
+        tail.font = Typography.caption
+        tail.foregroundColor = Theme.textSecondary
+        result += tail
+        return result
     }
 
     // MARK: - 01 When

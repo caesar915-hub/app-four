@@ -48,14 +48,18 @@ struct FoldedDayCardHeader: View {
         .accessibilityHint(isExpanded ? "Expanded, double tap to collapse" : "Double tap to expand")
     }
 
-    /// Mood word (deepened mood colour) · weekday, concatenated as one `Text` so it wraps — never
-    /// truncating the mood word — at large Dynamic Type (FR-013). Weekday only when mood is unknown.
+    /// Mood word (deepened mood colour) · weekday, built as one styled `AttributedString` so it
+    /// wraps — never truncating the mood word — at large Dynamic Type (FR-013), and avoids the
+    /// iOS-26-deprecated `Text` `+` concatenation. Weekday only when mood is unknown.
     private var title: Text {
-        let weekday = Text(day.label).foregroundColor(.primary)
-        guard let level else { return weekday }
-        return Text(level.displayLabel).foregroundColor(level.wordColor)
-            + Text(" · ").foregroundColor(Theme.textSecondary)
-            + weekday
+        var weekday = AttributedString(day.label)
+        weekday.foregroundColor = .primary
+        guard let level else { return Text(weekday) }
+        var mood = AttributedString(level.displayLabel)
+        mood.foregroundColor = level.wordColor
+        var separator = AttributedString(" · ")
+        separator.foregroundColor = Theme.textSecondary
+        return Text(mood + separator + weekday)
     }
 
     private var moodBadge: some View {

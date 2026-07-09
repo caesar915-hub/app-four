@@ -51,7 +51,7 @@ struct CalendarLibraryView: View {
             // offered elsewhere AND the user hasn't paused syncing. The calendar NEVER
             // presents the HealthKit primer — that stays in the Insights flow.
             guard didOfferHealthAccess, healthSyncEnabled else { return }
-            try? await AppDependencies.signalSyncCoordinator.syncRecentIfNeeded(lastDays: 30)
+            _ = try? await AppDependencies.signalSyncCoordinator.syncRecentIfNeeded(lastDays: 30)
             viewModel.loadNutrition()
         }
         .onChange(of: selectedTab) { oldValue, newValue in

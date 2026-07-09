@@ -51,17 +51,23 @@ struct DayNutritionFooter: View {
         }
     }
 
-    @ViewBuilder
-    private func valueText(_ value: Double?, _ unit: String) -> some View {
-        if let value {
-            (Text("\(Int(value.rounded()))").font(.plexMono(Metrics.rowTime))
-                + Text(" \(unit)").font(Typography.caption))
-                .foregroundStyle(.primary)
-        } else {
-            Text("—")
-                .font(.plexMono(Metrics.rowTime))
-                .foregroundStyle(Theme.textSecondary)
+    /// A mono value with a muted-caption unit, or an em dash for missing data. Built as one
+    /// styled `AttributedString` (per-run font + colour) so the two typefaces coexist in a
+    /// single `Text` without the iOS-26-deprecated `Text` `+` operator.
+    private func valueText(_ value: Double?, _ unit: String) -> Text {
+        guard let value else {
+            var dash = AttributedString("—")
+            dash.font = .plexMono(Metrics.rowTime)
+            dash.foregroundColor = Theme.textSecondary
+            return Text(dash)
         }
+        var number = AttributedString("\(Int(value.rounded()))")
+        number.font = .plexMono(Metrics.rowTime)
+        number.foregroundColor = .primary
+        var suffix = AttributedString(" \(unit)")
+        suffix.font = Typography.caption
+        suffix.foregroundColor = .primary
+        return Text(number + suffix)
     }
 
     private var sourceGlyph: String {
