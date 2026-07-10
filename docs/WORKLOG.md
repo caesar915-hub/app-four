@@ -12,6 +12,7 @@ session. Code changes are grouped by Conventional-Commit type. Generated from `g
 
 **Code changes**
 - _Fixes_
+  - `9a405ea9` fix(031): reset sync throttle on re-enable so US4 re-imports same session — 3 files, +29/−1 (coordinator method + test + Settings toggle wiring)
   - `bdd9ea05` fix(031): strictStartDate on per-day food/workout queries — midnight-spanning samples read once — 1 file, +8/−2
   - `e19abf57` fix(031): clear Swift 6 actor-isolation warnings — 5 files, +8/−8
   - `363bf171` fix(031): clear remaining Swift 6 deprecation warnings — 4 files, +43/−20
@@ -23,7 +24,7 @@ session. Code changes are grouped by Conventional-Commit type. Generated from `g
 **Git actions**
 - 2026-07-09: `git push -u origin feat/nutrition-signals-demo` (first push of the branch).
 - 2026-07-09: opened **PR #27** → base `feat/healthkit-signals` (stacked per T043; demo branch, not for `main`).
-- 2026-07-09/10: pre-merge review (local agent, no CodeRabbit) → 1 confirmed bug, fixed in `bdd9ea05`; 2 non-blocking notes handed to owner device QA.
+- 2026-07-09/10: pre-merge review (local agent, no CodeRabbit) → 2 confirmed bugs fixed (`bdd9ea05` overlap-dedup, `9a405ea9` throttle-reset); remaining notes (disc centering, readSleep overlap on base #8) handed to owner device QA / #8.
 - No merges, no new tags (latest tag remains `v0.8.0`).
 
 **Open PRs** (`gh pr list`, 2026-07-09 17:45 WEST; +#27 opened after)
