@@ -72,5 +72,5 @@ Solo dev; all code written by Claude. PRs exist to give a review surface and kee
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan:
-`specs/020-emotions-lexicon/plan.md`
+`specs/032-newlook-screens/plan.md`
 <!-- SPECKIT END -->
