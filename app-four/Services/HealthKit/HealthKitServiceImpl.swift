@@ -76,8 +76,12 @@ actor HealthKitServiceImpl: HealthDataReading {
     }
 
     private func readSleep(on day: Date) async throws -> SleepDTO? {
-        let (start, end) = dayInterval(day)
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
+        let (dayStart, dayEnd) = dayInterval(day)
+        // Look back a day so a session that ends this morning but *started* last evening is
+        // fetched whole. Overlap matching is fine — session grouping + wake-day attribution
+        // below select only the sessions that belong to `day`.
+        let windowStart = calendar.date(byAdding: .day, value: -1, to: dayStart) ?? dayStart
+        let predicate = HKQuery.predicateForSamples(withStart: windowStart, end: dayEnd)
         let descriptor = HKSampleQueryDescriptor(
             predicates: [.categorySample(type: HKCategoryType(.sleepAnalysis), predicate: predicate)],
             sortDescriptors: []
@@ -85,19 +89,24 @@ actor HealthKitServiceImpl: HealthDataReading {
         let samples = try await descriptor.result(for: store)
         guard !samples.isEmpty else { return nil }
 
-        var asleep: TimeInterval = 0
-        var inBed: TimeInterval = 0
-        for sample in samples {
-            let duration = sample.endDate.timeIntervalSince(sample.startDate)
-            switch HKCategoryValueSleepAnalysis(rawValue: sample.value) {
-            case .inBed: inBed += duration
-            case .asleepCore, .asleepDeep, .asleepREM, .asleepUnspecified: asleep += duration
-            default: break
-            }
+        let segments = samples.map { sample -> SleepSegment in
+            let value = HKCategoryValueSleepAnalysis(rawValue: sample.value)
+            let asleep = value == .asleepCore || value == .asleepDeep
+                || value == .asleepREM || value == .asleepUnspecified
+            return SleepSegment(start: sample.startDate, end: sample.endDate,
+                                asleep: asleep, inBed: value == .inBed)
         }
-        let asleepHours = asleep / 3600
+
+        // Keep only sessions whose wake day is `day` — the pre-midnight portion of last
+        // night now lands here, not split onto the previous calendar day.
+        let target = calendar.startOfDay(for: dayStart)
+        let todays = HealthKitSampleMapping.sleepSessions(from: segments, calendar: calendar)
+            .filter { $0.wakeDay == target }
+        guard !todays.isEmpty else { return nil }
+
+        let asleepHours = todays.reduce(0) { $0 + $1.asleepSeconds } / 3600
         guard asleepHours > 0 else { return nil }
-        let inBedHours = inBed / 3600
+        let inBedHours = todays.reduce(0) { $0 + $1.inBedSeconds } / 3600
         let level = HealthKitSampleMapping.sleepLevel(asleepHours: asleepHours, inBedHours: inBedHours)
         return SleepDTO(hours: (asleepHours * 10).rounded() / 10, level: level)
     }
