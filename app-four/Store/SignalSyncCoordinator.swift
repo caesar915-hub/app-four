@@ -117,4 +117,10 @@ final class SignalSyncCoordinator {
         if case .completed = result { lastFullSyncDay = today }
         return result
     }
+
+    /// Clears the once-per-day throttle so the next `syncRecentIfNeeded` re-runs the full
+    /// sweep. The Settings switch calls this when "Sync from Apple Health" is turned back on:
+    /// the in-memory throttle would otherwise block the re-import until relaunch/next day,
+    /// breaking US4's "re-enable → next surface visit re-imports" (Scenario 4 / SC-007).
+    func resetSyncThrottle() { lastFullSyncDay = nil }
 }

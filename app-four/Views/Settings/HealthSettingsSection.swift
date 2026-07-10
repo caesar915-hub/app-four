@@ -15,7 +15,13 @@ struct HealthSettingsSection: View {
         Section {
             Toggle("Sync from Apple Health", isOn: $syncEnabled)
                 .onChange(of: syncEnabled) { _, enabled in
-                    if !enabled { showStopAndDelete = true }
+                    if enabled {
+                        // Clear the once-per-day throttle so the next calendar/Insights visit
+                        // re-imports this session, not only after relaunch (US4 Scenario 4).
+                        AppDependencies.signalSyncCoordinator.resetSyncThrottle()
+                    } else {
+                        showStopAndDelete = true
+                    }
                 }
 
             LabeledContent("Last sync", value: lastSyncLabel)

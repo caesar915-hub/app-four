@@ -254,4 +254,20 @@ struct SignalSyncCoordinatorTests {
         let reads = await reader.readCallCount
         #expect(reads == 1)                     // read only after re-enabling
     }
+
+    // US4 Scenario 4 / SC-007: re-enabling sync must re-import on the next surface visit
+    // *within the same session*. `syncRecentIfNeeded`'s once-per-day throttle (in-memory)
+    // otherwise blocks it until relaunch/next day — `resetSyncThrottle()` clears it, which the
+    // Settings toggle calls when the switch flips back on.
+    @Test func syncRecentIfNeededResumesAfterThrottleReset() async throws {
+        let (coordinator, _, container, reader) = try makeFixture(); _ = container
+
+        _ = try await coordinator.syncRecentIfNeeded(lastDays: 1)   // runs → throttle set for today
+        _ = try await coordinator.syncRecentIfNeeded(lastDays: 1)   // throttled → skipped, no read
+        #expect(await reader.readCallCount == 1)
+
+        coordinator.resetSyncThrottle()                            // user re-enabled the switch
+        _ = try await coordinator.syncRecentIfNeeded(lastDays: 1)   // throttle cleared → re-runs
+        #expect(await reader.readCallCount == 2)
+    }
 }
