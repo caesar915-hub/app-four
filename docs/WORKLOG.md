@@ -1,5 +1,165 @@
 # WORKLOG
 
+## 2026-07-03 17:56–18:26 · 029 calendar-day-context task breakdown (45 tasks, test-firs · main
+
+**Code changes**
+- _docs_
+  - `3e8b6646` docs: regenerate WORKLOG after 029 plan
+- _other_
+  - `a13b7987` tasks: 029 calendar-day-context task breakdown (45 tasks, test-first, mockup-gated)
+  - `6abd77e2` plan: 029 calendar-day-context implementation plan (research, data-model, contracts, quickstart)
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  a13b7987 [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
+## 2026-07-03 17:37–17:56 · 029 calendar-day-context implementation plan (research, data · main
+
+**Code changes**
+- _docs_
+  - `758c1e03` docs: regenerate WORKLOG after data-flow diagram
+- _other_
+  - `6abd77e2` plan: 029 calendar-day-context implementation plan (research, data-model, contracts, quickstart)
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  6abd77e2 [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
+## 2026-07-03 17:12–17:37 · investor-facing calendar data-flow diagram + root PRODUCT.md · main
+
+**Code changes**
+- _docs_
+  - `7a74284d` docs: investor-facing calendar data-flow diagram + root PRODUCT.md
+  - `c82ed9f7` docs: regenerate WORKLOG after spec 029 clarify
+- _other_
+  - `2e2b9213` spec: 029 clarify session — classified context line (wireframe-decided), full-list UI deferred, check-in-only trigger
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  7a74284d [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
+## 2026-07-03 14:42–17:12 · 029 clarify session — classified context line (wireframe-dec · main
+
+**Code changes**
+- _docs_
+  - `cd387611` docs: regenerate WORKLOG after spec 029
+- _other_
+  - `2e2b9213` spec: 029 clarify session — classified context line (wireframe-decided), full-list UI deferred, check-in-only trigger
+  - `24478e7a` spec: 029 calendar-day-context (Phase 1) via speckit-specify + adversarial validation
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  2e2b9213 [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
+## 2026-07-03 14:03–14:42 · 029 calendar-day-context (Phase 1) via speckit-specify + adv · main
+
+**Code changes**
+- _docs_
+  - `a6518fe6` docs: regenerate WORKLOG; worklog.sh multi-day header fix
+- _other_
+  - `24478e7a` spec: 029 calendar-day-context (Phase 1) via speckit-specify + adversarial validation
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  24478e7a [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
+## 2026-06-30 16:15 – 2026-07-03 14:01 · calendar-integration design spec (post-v1.0 flagship) + BACK · main
+
+**Code changes**
+- _docs_
+  - `a154959d` docs: calendar-integration design spec (post-v1.0 flagship) + BACKLOG/DEVLOG
+  - `26ff1769` docs: Phase 1 grep correction — badgeTint used by TimelineBead
+  - `d0e57a72` docs: fold Phase 0 outcome into Figma plan (PNG@3x glyphs, SF Mono stand-in)
+  - `59d5b106` docs: add deep-plan-review skill + Figma DS reproduction plan
+  - `fa9856a5` docs: regenerate WORKLOG after Stable TestFlight channel merge
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  a154959d [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
+## 2026-06-29 17:07–16:14 · add Stable TestFlight channel (squirl-app.app-four.stable) · main
+
+**Code changes**
+- _Major (feat)_
+  - `35a7ef96` feat: add Stable TestFlight channel (squirl-app.app-four.stable)
+  - `e5491464` feat: add shared schemes app-four and app-four-stable
+  - `32339be1` feat: add AppIcon-Stable asset (desaturated variant for Stable TestFlight channel)
+  - `971fae64` feat: add Debug-Stable / Release-Stable build configurations for Stable TestFlight channel
+- _docs_
+  - `2fa2516e` docs: document Stable TestFlight channel in OPERATIONS.md and BACKLOG.md
+  - `272d7760` docs: regenerate WORKLOG for the docs-convention session
+
+**Git actions**
+- `35a7ef96` feat: add Stable TestFlight channel (squirl-app.app-four.stable)
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  35a7ef96 [main]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              b068a37d [feat/027-recording-detail-ux-pass]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         f032126b [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+```
+
+---
+
 **Invariant:** every line here must reconcile with `git log` / `gh pr list`. If it doesn't,
 the generator is wrong — fix the generator, not the prose.
 

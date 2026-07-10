@@ -34,6 +34,7 @@ struct ScreenContainer<Content: View>: View {
     @ViewBuilder let content: () -> Content
 
     @State private var internalPath = NavigationPath()
+    @State private var scrollPosition = ScrollPosition(edge: .top)
 
     private var resolvedPath: Binding<NavigationPath> {
         path ?? $internalPath
@@ -60,20 +61,18 @@ struct ScreenContainer<Content: View>: View {
     @ViewBuilder
     private var primaryContent: some View {
         if scrollable {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    Color.clear.frame(height: 0).id("_top")
-                    content()
-                }
-                .scrollContentBackground(.hidden)
-                .onChange(of: scrollResetToken) {
-                    withAnimation(.easeOut(duration: 0.25)) {
-                        proxy.scrollTo("_top", anchor: .top)
-                    }
-                }
-                .edgeFadeMask(top: barFadeHeight, bottom: tabBarFadeHeight)
-                .medicationBarOverlay(shown: showsMedicationBar)
+            ScrollView {
+                content()
             }
+            .scrollContentBackground(.hidden)
+            .scrollPosition($scrollPosition)
+            .onChange(of: scrollResetToken) {
+                withAnimation(.easeOut(duration: 0.25)) {
+                    scrollPosition.scrollTo(edge: .top)
+                }
+            }
+            .edgeFadeMask(top: barFadeHeight, bottom: tabBarFadeHeight)
+            .medicationBarOverlay(shown: showsMedicationBar)
         } else {
             content()
                 .medicationBarOverlay(shown: showsMedicationBar)
