@@ -94,7 +94,10 @@ actor HealthKitServiceImpl: HealthDataReading {
     /// bucketed per clock hour by the pure `NutritionEventGrouping` mapper.
     private func readFoodEvents(on day: Date) async throws -> [NutritionEventDTO] {
         let (start, end) = dayInterval(day)
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
+        // .strictStartDate: without it, HealthKit matches on interval OVERLAP, so a sample
+        // spanning local midnight would be returned by both adjacent per-day queries and
+        // double-inserted downstream (replace-per-day dedupes by day, not by sample identity).
+        let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
         let energyType = HKQuantityType(.dietaryEnergyConsumed)
         let proteinType = HKQuantityType(.dietaryProtein)
         let caffeineType = HKQuantityType(.dietaryCaffeine)
@@ -154,7 +157,10 @@ actor HealthKitServiceImpl: HealthDataReading {
 
     private func readWorkouts(on day: Date) async throws -> [NutritionEventDTO] {
         let (start, end) = dayInterval(day)
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: end)
+        // .strictStartDate — a workout crossing midnight must belong to exactly one day
+        // (its start day), or both adjacent day-queries return it and the timeline shows
+        // it twice with kcal-out double-counted (see readFoodEvents).
+        let predicate = HKQuery.predicateForSamples(withStart: start, end: end, options: .strictStartDate)
         let descriptor = HKSampleQueryDescriptor(
             predicates: [.workout(predicate)],
             sortDescriptors: [SortDescriptor(\.startDate)]
