@@ -9,9 +9,7 @@ struct CalendarHeaderView: View {
     @Binding var selectedDay: Date
     @Binding var isExpanded: Bool
     let monthLabel: String
-    let canJumpToToday: Bool
     let onSelect: (CalendarMonthModel.DayCell) -> Void
-    let onJumpToToday: () -> Void
     let onPageMonth: (Int) -> Void   // -1 = older, +1 = newer
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -48,40 +46,42 @@ struct CalendarHeaderView: View {
 
     private var header: some View {
         HStack(spacing: Spacing.xs) {
-            Button {
-                guard !forceWeek else { return }
-                withAnimation(reduceMotion ? nil : Motion.smooth) { isExpanded.toggle() }
-            } label: {
-                HStack(spacing: Spacing.xs) {
-                    Text(monthLabel)
-                        .font(Typography.headline)
-                        .foregroundStyle(.primary)
-                    if !forceWeek {
-                        Image(systemName: "chevron.right")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(Theme.textSecondary)
-                            .rotationEffect(.degrees(effectiveExpanded ? 90 : 0))
-                            .accessibilityHidden(true)   // decorative; the month text is the label
-                    }
-                }
+            if forceWeek {
+                // At AX text sizes the month grid is force-collapsed; the button does
+                // nothing, so render plain text to avoid a no-op interactive element.
+                Text(monthLabel)
+                    .font(Typography.headline)
+                    .foregroundStyle(.primary)
+                    .frame(minHeight: Metrics.minTapTarget, alignment: .leading)
+            } else {
+                expandButton
+                    .accessibilityHint(effectiveExpanded ? "Collapse to week" : "Expand to month")
             }
-            .buttonStyle(.plain)
-            .accessibilityHint(forceWeek ? "" : (effectiveExpanded ? "Collapse to week" : "Expand to month"))
-
             Spacer()
-
-            if canJumpToToday {
-                Button(action: onJumpToToday) {
-                    Text("Today")
-                        .font(Typography.caption.weight(.bold))
-                        .foregroundStyle(Theme.accent)
-                        .padding(.horizontal, Spacing.s)
-                        .padding(.vertical, Spacing.xs)
-                        .overlay(Capsule().strokeBorder(Theme.accent, lineWidth: 1.2))
-                }
-                .buttonStyle(.plain)
-            }
         }
+    }
+
+    private var expandButton: some View {
+        Button {
+            guard !forceWeek else { return }
+            withAnimation(reduceMotion ? nil : Motion.smooth) { isExpanded.toggle() }
+        } label: {
+            HStack(spacing: Spacing.xs) {
+                Text(monthLabel)
+                    .font(Typography.headline)
+                    .foregroundStyle(.primary)
+                if !forceWeek {
+                    Image(systemName: "chevron.right")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Theme.textSecondary)
+                        .rotationEffect(.degrees(effectiveExpanded ? 90 : 0))
+                        .accessibilityHidden(true)   // decorative; the month text is the label
+                }
+            }
+            .frame(minHeight: Metrics.minTapTarget, alignment: .leading)   // ≥44pt tap target (HIG)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 
     private var weekdayCaps: some View {
@@ -103,8 +103,6 @@ struct CalendarHeaderView: View {
                         CalendarDayCell(
                             cell: cell,
                             isSelected: Calendar.current.isDate(cell.date, inSameDayAs: selectedDay),
-                            isAboveSelection: !cell.isFuture
-                                && Calendar.current.startOfDay(for: cell.date) > Calendar.current.startOfDay(for: selectedDay),
                             onTap: { onSelect(cell) }
                         )
                     }
@@ -138,9 +136,7 @@ private extension Array {
         selectedDay: $selected,
         isExpanded: $expanded,
         monthLabel: "June 2026",
-        canJumpToToday: false,
         onSelect: { selected = $0.date },
-        onJumpToToday: {},
         onPageMonth: { _ in }
     )
     .padding()

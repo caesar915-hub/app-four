@@ -59,8 +59,7 @@ each task is one clean, revertable checkpoint.
 | Target user — v0.9 | 1–2 trusted testers |
 | Target user — v1.0 | App Store strangers |
 | Hard constraints | On-device only · SwiftUI + SwiftData + Swift 6 (strict concurrency) · iOS 26+ |
-| In scope (active) | HealthKit signals — read-only, on-device — spec [009-healthkit-signals](../specs/009-healthkit-signals/spec.md) (brought into scope 2026-06-20) |
-| Out of scope (now) | LLM trend summaries · iCloud sync · multilingual |
+| Out of scope (now) | HealthKit · LLM trend summaries · iCloud sync · multilingual |
 | Active focus | v0.8.1 (Insights palette) → v0.9 (onboarding + first-run UX) — intermediate milestones TBD by owner |
 
 State (stage of each item) lives in [BACKLOG.md](BACKLOG.md); the chronological

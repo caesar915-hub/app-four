@@ -397,6 +397,36 @@ struct CheckInViewModelTests {
         #expect(viewModel.hasShownCapApproach == true)
     }
 
+
+    // MARK: FR-015 Preload-task handle (026 RED→GREEN)
+
+    /// RED: `viewModel.modelPreloadTask` does not exist yet — compile failure confirms RED.
+    /// GREEN: property added in T009; cancelRecording() cancels it before the async cleanup body.
+    @Test func preloadTaskIsCancelledOnDiscard() async {
+        await mocks.transcription.setLoadModelHangs(true)
+
+        let start = viewModel.startRecording()
+        await start.value
+
+        await viewModel.cancelRecording().value
+
+        #expect(viewModel.modelPreloadTask?.isCancelled == true)
+    }
+
+    // MARK: FR-017 Phantom-tick guard (026 RED→GREEN)
+
+    /// RED: `viewModel.advanceTick()` does not exist yet — compile failure confirms RED.
+    /// GREEN: extracted in T011 with `guard !Task.isCancelled`; task is cancelled before
+    /// the body starts on @MainActor, so elapsedTime is never incremented.
+    @Test func advanceTickIsNoOpAfterCancellation() async {
+        let t = Task { @MainActor in
+            self.viewModel.advanceTick()
+        }
+        t.cancel()
+        await t.value
+        #expect(viewModel.elapsedTime == 0)
+    }
+
     /// T029 — reaching the cap takes the SAME stop/save path as a manual stop: it goes
     /// `.processing → .done` on success via the mock, i.e. the capped save lands on the
     /// Settle path, never a hard drop (FR-015). `startTimer()`'s auto-stop calls exactly

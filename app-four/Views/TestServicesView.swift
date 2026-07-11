@@ -4,6 +4,7 @@ import SwiftData
 struct TestServicesView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(RecordingStore.self) private var store
+    @Environment(AppServices.self) private var services
     @AppStorage("debugMockMode") private var mockMode: Bool = false
     @Query(sort: \Recording.createdAt, order: .reverse) private var recordings: [Recording]
 
@@ -64,6 +65,7 @@ struct TestServicesView: View {
                     Toggle("Mock Mode", isOn: $mockMode)
                         .onChange(of: mockMode) {
                             store.loadRecordings()
+                            services.dayContextStore.reload()
                             NotificationCenter.default.post(name: .medicationEventsDidChange, object: nil)
                         }
 
@@ -72,8 +74,8 @@ struct TestServicesView: View {
                     Button("Seed Mock Data") {
                         MockDataGenerator.generate(context: modelContext)
                         store.loadRecordings()
+                        services.dayContextStore.reload()
                         NotificationCenter.default.post(name: .medicationEventsDidChange, object: nil)
-                        NotificationCenter.default.post(name: .nutritionEventsDidChange, object: nil)
                     }
                     .disabled(hasMock)
 
@@ -83,31 +85,12 @@ struct TestServicesView: View {
                         let mockEvents = (try? modelContext.fetch(FetchDescriptor<MedicationEvent>()))?.filter { $0.isMockData } ?? []
                         for event in mockEvents { modelContext.delete(event) }
                         try? modelContext.save()
-                        MockDataGenerator.generate(context: modelContext)   // re-seeds nutrition too (self-wiping)
+                        MockDataGenerator.generate(context: modelContext)
                         store.loadRecordings()
+                        services.dayContextStore.reload()
                         NotificationCenter.default.post(name: .medicationEventsDidChange, object: nil)
-                        NotificationCenter.default.post(name: .nutritionEventsDidChange, object: nil)
                     }
                     .disabled(!hasMock)
-                }
-
-                Section("Nutrition demo (spec 031)") {
-                    let mockCount = (try? modelContext.fetchCount(FetchDescriptor<NutritionEvent>(
-                        predicate: #Predicate { $0.isMockData == true }))) ?? 0
-                    let realCount = (try? modelContext.fetchCount(FetchDescriptor<NutritionEvent>(
-                        predicate: #Predicate { $0.isMockData == false }))) ?? 0
-                    LabeledContent("Events", value: "\(mockCount) mock · \(realCount) real")
-
-                    Button("Reseed 30-Day Nutrition") {
-                        MockDataGenerator.seedNutritionEvents(context: modelContext)
-                        NotificationCenter.default.post(name: .nutritionEventsDidChange, object: nil)
-                    }
-
-                    Button("Wipe Nutrition Data", role: .destructive) {
-                        MockDataGenerator.wipeMockNutritionEvents(context: modelContext)
-                        NotificationCenter.default.post(name: .nutritionEventsDidChange, object: nil)
-                    }
-                    .disabled(mockCount == 0)
                 }
 
                 Section("Exports & Actions") {

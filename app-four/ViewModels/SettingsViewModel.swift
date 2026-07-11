@@ -9,6 +9,7 @@ final class SettingsViewModel {
     @ObservationIgnored private let store: RecordingStore
     @ObservationIgnored private let storageService: AudioFileStorageService
     @ObservationIgnored private let exportService: ExportService
+    @ObservationIgnored private let dayContextStore: DayContextStore
     @ObservationIgnored private let context: ModelContext
 
     var whisperModelInstalled: Bool = false
@@ -60,6 +61,7 @@ final class SettingsViewModel {
         self.aiModelService = services.aiModelService
         self.storageService = services.storageService
         self.exportService = services.exportService
+        self.dayContextStore = services.dayContextStore
         self.context = AppModelContainer.container.mainContext
         self.downloadOverCellular = appSettings.downloadOverCellular
         self.promptPace = PromptPace(rawValue: appSettings.promptPaceSeconds) ?? .relaxed
@@ -185,6 +187,7 @@ final class SettingsViewModel {
         for event in standaloneEvents {
             context.delete(event)
         }
+        dayContextStore.purgeAll()
         try? context.save()
         store.loadRecordings()
         NotificationCenter.default.post(name: .medicationEventsDidChange, object: nil)

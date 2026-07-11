@@ -53,29 +53,9 @@ struct SessionSnapshot: Codable, Sendable, Identifiable {
         }
     }
 
-    /// Returns available physical memory in megabytes.
-    /// Uses `os_proc_available_memory` (iOS 16+), falling back to `vm_statistics64`.
+    /// Returns memory available to the process in megabytes.
     private nonisolated static func currentAvailableMemoryMB() -> UInt64 {
-        #if os(iOS)
-        if #available(iOS 16.0, *) {
-            // os_proc_available_memory returns bytes available to the process
-            let bytes = os_proc_available_memory()
-            return UInt64(bytes) / (1024 * 1024)
-        }
-        #endif
-
-        // Fallback: use vm_statistics64
-        var info = vm_statistics64()
-        var count = mach_msg_type_number_t(MemoryLayout<vm_statistics64>.size) / 4
-        let result = withUnsafeMutablePointer(to: &info) { ptr in
-            ptr.withMemoryRebound(to: integer_t.self, capacity: Int(count)) {
-                host_statistics64(mach_host_self(), HOST_VM_INFO64, $0, &count)
-            }
-        }
-        guard result == KERN_SUCCESS else { return 0 }
-        let pageSize = UInt64(vm_kernel_page_size)
-        let freePages = UInt64(info.free_count)
-        return (freePages * pageSize) / (1024 * 1024)
+        UInt64(os_proc_available_memory()) / (1024 * 1024)
     }
 
     nonisolated static func currentOSVersion() -> String {

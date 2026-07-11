@@ -96,6 +96,72 @@ struct SettingsViewModelTests {
         #expect(defaults.medicalPromptEnabled == true, "VM setter round-trips the key back on")
     }
 
+    // MARK: - T036 (029): clearAllData purges DayCalendarContext rows
+
+    /// Seeds one DayCalendarContext row into an isolated in-memory container,
+    /// runs clearAllData(), and asserts zero rows remain.
+    @Test func clearAllDataPurgesDayCalendarContextRows() throws {
+        // Build an isolated in-memory container that includes DayCalendarContext.
+        let schema = Schema([
+            Recording.self,
+            AppSettings.self,
+            MedicationEvent.self,
+            DayCalendarContext.self
+        ])
+        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
+        let dayContainer = try ModelContainer(for: schema, configurations: [config])
+        let dayContext = dayContainer.mainContext
+
+        // Build a DayContextStore backed by this isolated context.
+        let dayContextStore = DayContextStore(context: dayContext)
+
+        // Seed one DayCalendarContext row directly into the context.
+        let seedRow = DayCalendarContext(
+            dayKey: DayKey.make(for: Date()),
+            capturedAt: Date(),
+            titlesIncluded: false,
+            isMockData: false
+        )
+        dayContext.insert(seedRow)
+        try dayContext.save()
+
+        // Confirm the seed is present.
+        let before = try dayContext.fetch(FetchDescriptor<DayCalendarContext>())
+        #expect(before.count == 1, "Precondition: one context row seeded before clearAllData()")
+
+        // Build AppServices with the controlled DayContextStore.
+        let mocks = MockAppServices()
+        let services = AppServices(
+            audioService: mocks.audio,
+            storageService: mocks.storage,
+            transcriptionService: mocks.transcription,
+            aiModelService: mocks.aiModel,
+            summarizationService: mocks.summarization,
+            connectivity: mocks.connectivity,
+            pendingTranscriptionService: mocks.pendingTranscription,
+            exportService: mocks.export,
+            calendarContextService: MockCalendarContextService(),
+            dayContextStore: dayContextStore,
+            calendarCoordinator: CalendarContextCoordinatorImpl(
+                service: MockCalendarContextService(),
+                store: dayContextStore,
+                settingsProvider: { CalendarPreferences.currentSettings() },
+                checkInDaysProvider: { [] },
+                isMockMode: { false }
+            )
+        )
+
+        let localStore = RecordingStore(context: dayContext)
+        let vm = SettingsViewModel(store: localStore, services: services)
+
+        // Exercise.
+        vm.clearAllData()
+
+        // Assert: zero DayCalendarContext rows in the isolated context.
+        let after = try dayContext.fetch(FetchDescriptor<DayCalendarContext>())
+        #expect(after.isEmpty, "clearAllData() must delete all DayCalendarContext rows")
+    }
+
     // MARK: - US2 (017): model-download recovery — cause surfacing, copy mapping, cancel/retry
 
     // T017: the engine reports a typed cause; the VM must capture it as `downloadError`

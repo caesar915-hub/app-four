@@ -70,11 +70,13 @@ final class CheckInViewModel {
     @ObservationIgnored private let transcriptionService: TranscriptionService
     @ObservationIgnored private let aiModelService: AIModelService
     @ObservationIgnored private let store: RecordingStore
+    @ObservationIgnored private let calendarCoordinator: any CalendarContextCoordinator
     private(set) var processingViewModel: ProcessingViewModel
 
     private var timerTask: Task<Void, Never>?
     private var levelTask: Task<Void, Never>?
     private(set) var transcriptionTask: Task<Void, Never>?
+    private(set) var modelPreloadTask: Task<Void, Never>?
 
     var timeString: String {
         AccessibilityHelpers.formatDuration(elapsedTime)
@@ -90,6 +92,7 @@ final class CheckInViewModel {
         self.storageService = services.storageService
         self.transcriptionService = services.transcriptionService
         self.aiModelService = services.aiModelService
+        self.calendarCoordinator = services.calendarCoordinator
         self.processingViewModel = ProcessingViewModel(
             store: store,
             summarizationService: services.summarizationService
@@ -140,7 +143,7 @@ final class CheckInViewModel {
 
                 // Preload model off the main actor while the user records
                 // so post-recording transcription doesn't need to reload.
-                Task.detached(priority: .utility) { [transcriptionService] in
+                self.modelPreloadTask = Task.detached(priority: .utility) { [transcriptionService] in
                     do {
                         try await transcriptionService.loadModel()
                     } catch {
@@ -189,6 +192,8 @@ final class CheckInViewModel {
         do {
             let recording = try storageService.saveRecording(from: buffer.fileURL, duration: buffer.duration)
             self.store.addRecording(recording)
+            let voiceDayKey = DayKey.make(for: recording.createdAt)
+            Task { await self.calendarCoordinator.checkInSaved(dayKey: voiceDayKey) }
             self.lastSavedRecording = recording
             self.pendingSave = nil
             self.saveFailed = false
@@ -331,6 +336,7 @@ final class CheckInViewModel {
     @discardableResult
     func cancelRecording() -> Task<Void, Never> {
         self.stopTasks()
+        modelPreloadTask?.cancel()
         UIApplication.shared.isIdleTimerDisabled = false
         return Task {
             await audioService.cancelRecording()
@@ -348,7 +354,7 @@ final class CheckInViewModel {
         lastSavedRecording = nil
     }
 
-    private static func loadPromptInterval() -> TimeInterval {
+    @MainActor private static func loadPromptInterval() -> TimeInterval {
         let context = AppModelContainer.container.mainContext
         let descriptor = FetchDescriptor<AppSettings>()
         if let settings = try? context.fetch(descriptor).first {
@@ -422,6 +428,8 @@ final class CheckInViewModel {
             textSaveFailed = true
             return
         }
+        let textDayKey = DayKey.make(for: recording.createdAt)
+        Task { await self.calendarCoordinator.checkInSaved(dayKey: textDayKey) }
         textSaveFailed = false
         if !draft.trimmedNote.isEmpty {
             processingViewModel.processRawTranscription(
@@ -436,11 +444,16 @@ final class CheckInViewModel {
         state = .done
     }
 
+    func advanceTick() {
+        guard !Task.isCancelled else { return }
+        elapsedTime += 0.1
+    }
+
     private func startTimer() {
         timerTask = Task {
             while !Task.isCancelled {
                 try? await Task.sleep(nanoseconds: 100_000_000) // 0.1s
-                self.elapsedTime += 0.1
+                self.advanceTick()
                 if self.elapsedTime >= self.maxDuration {
                     self.stopRecording()
                     break

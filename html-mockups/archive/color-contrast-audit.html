@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Mood-word contrast audit & fix</title>
+<style>
+  :root{
+    --ink:#221E16; --muted:#7A7361; --line:#E7E0D2; --bg:#F3EEE2;
+    --surface-light:#FCF8EF; --surface-dark:#1E1C16;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.5 -apple-system,"Segoe UI",system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+  .wrap{max-width:1100px;margin:0 auto;padding:28px 20px 80px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:600;font-size:30px;margin:0 0 6px}
+  h2{font-family:Georgia,serif;font-weight:600;font-size:21px;margin:38px 0 4px}
+  p.sub{color:#5b5648;margin:0 0 8px;max-width:760px}
+  .note{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:14px 0 8px;max-width:820px;font-size:13.5px;color:#4a4638}
+  code{background:#efe9db;padding:1px 5px;border-radius:5px;font-size:12.5px}
+  /* grid of mood rows */
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;color:#5b5648;margin:6px 0 4px}
+  .legend b{color:var(--ink)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px}
+  @media(max-width:760px){.cols{grid-template-columns:1fr}}
+  .panel{border-radius:16px;padding:16px;border:1px solid var(--line)}
+  .panel.light{background:var(--surface-light)}
+  .panel.dark{background:var(--surface-dark);border-color:#39342a}
+  .panel h3{margin:0 0 12px;font:600 13px/1 sans-serif;letter-spacing:.08em;text-transform:uppercase}
+  .panel.light h3{color:#8a8270}
+  .panel.dark h3{color:#9a917c}
+  /* day card */
+  .card{border-radius:14px;padding:12px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;position:relative}
+  .disc{width:38px;height:38px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center}
+  .disc svg{width:20px;height:24px}
+  .cardbody{flex:1;min-width:0}
+  .word{font-family:Georgia,serif;font-weight:600;font-size:18px;line-height:1.1}
+  .date{font-weight:600;font-size:14px}
+  .panel.light .date{color:#221E16}.panel.dark .date{color:#F3EEE2}
+  .chips{margin-top:5px;font-size:12px;display:flex;gap:10px;flex-wrap:wrap}
+  .chip-med{font-weight:600}
+  .badge{position:absolute;top:8px;right:10px;font:700 11px/1 sans-serif;padding:3px 7px;border-radius:20px}
+  .pass{background:#1f7a44;color:#fff}.fail{background:#c0392b;color:#fff}.warn{background:#caa53a;color:#1a1a1a}
+  .ratio{font:600 11px/1 monospace;opacity:.85}
+  /* controls */
+  .ctrls{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
+  @media(max-width:760px){.ctrls{grid-template-columns:repeat(2,1fr)}}
+  .ctrl{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px}
+  .ctrl label{display:block;font:700 11px/1 sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#8a8270;margin-bottom:6px}
+  .ctrl .pair{display:flex;align-items:center;gap:6px}
+  .ctrl input[type=color]{width:30px;height:26px;border:none;background:none;padding:0;cursor:pointer}
+  .ctrl input[type=text]{width:100%;font:12px monospace;border:1px solid var(--line);border-radius:6px;padding:4px 5px}
+  .summary{background:#221E16;color:#F3EEE2;border-radius:14px;padding:18px 20px;margin-top:30px;font:13px/1.7 monospace;white-space:pre-wrap;overflow:auto}
+  .summary b{color:#EDA94A}
+  .tag{display:inline-block;font:700 10px/1 sans-serif;padding:2px 6px;border-radius:5px;background:#efe9db;color:#7a7361;margin-left:8px;vertical-align:middle}
+  .swatch{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:middle;margin-right:4px;border:1px solid rgba(0,0,0,.15)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Mood-word contrast — what's wrong & how the fix reads</h1>
+  <p class="sub">Your folded day-cards, rebuilt in the browser from the <em>actual</em> hexes in <code>MoodLevel+Palette.swift</code>. The contrast numbers are computed live with the real WCAG formula (word color over the <code>color&nbsp;@&nbsp;0.24</code> block tint, composited over the card surface). <b>This is the design-review finding ① made visible</b> — and the proposed column is editable, so the shades you land on are the exact hexes I'll put in the fix.</p>
+
+  <div class="note">
+    <b>The rule (Apple HIG + WCAG):</b> normal text needs <b>≥ 4.5:1</b> contrast. Right now <code>wordColor = color</code> — the mood word is painted in the <em>same saturated hue</em> as the tint behind it, so it washes out (worst case <b>1.54:1</b> in light). The fix is the “deeper, legible shade” your own docstring already promises but never implemented. <span class="tag">drag the swatches / type hexes to tune</span>
+  </div>
+
+  <div class="legend">
+    <span><span class="swatch pass" style="background:#1f7a44"></span><b>PASS</b> ≥ 4.5:1</span>
+    <span><span class="swatch warn" style="background:#caa53a"></span><b>LOW</b> 3.0–4.5 (large-text only)</span>
+    <span><span class="swatch fail" style="background:#c0392b"></span><b>FAIL</b> &lt; 3.0</span>
+  </div>
+
+  <h2>Mood words on their block tint</h2>
+  <div class="cols">
+    <div class="panel light" id="light"><h3>Light · current vs proposed</h3></div>
+    <div class="panel dark" id="dark"><h3>Dark · current vs proposed</h3></div>
+  </div>
+
+  <div class="ctrls" id="ctrls"></div>
+
+  <h2>Other flagged colors (finding ② / ⑤)</h2>
+  <div class="note" id="extra"></div>
+
+  <div class="summary" id="summary"></div>
+</div>
+
+<script>
+// ---- real project tokens ----
+const SURFACE = { light:"#FCF8EF", dark:"#1E1C16" };
+const MOOD_BLOCK = 0.24;
+// base ramp (MoodLevel+Palette.swift:22-30) — used as BOTH tint and (buggy) word color today
+const MOODS = [
+  { key:"low",   label:"Low",   base:"#DA7A2A" },
+  { key:"flat",  label:"Flat",  base:"#EDA94A" },
+  { key:"okay",  label:"Okay",  base:"#9FCB79" },
+  { key:"good",  label:"Good",  base:"#5FB36E" },
+  { key:"great", label:"Great", base:"#2E8B57" },
+];
+// proposed deeper word shades (editable). Light = darkened same hue; Dark = slightly brighter at ramp ends.
+const PROPOSED = {
+  low:  { light:"#8E470F", dark:"#E89A5A" },
+  flat: { light:"#8A5600", dark:"#EDA94A" },
+  okay: { light:"#41691F", dark:"#B7D897" },
+  good: { light:"#2C6B3B", dark:"#79C98E" },
+  great:{ light:"#1E5C38", dark:"#57C98A" },
+};
+
+// ---- WCAG math ----
+const hx = h => { h=h.replace('#',''); return [0,2,4].map(i=>parseInt(h.substr(i,2),16)); };
+const toHex = c => '#'+c.map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('');
+function over(fg, bg, a){ return fg.map((v,i)=> v*a + bg[i]*(1-a)); }           // alpha composite
+function lin(v){ v/=255; return v<=0.03928 ? v/12.92 : Math.pow((v+0.055)/1.055,2.4); }
+function lum(c){ return 0.2126*lin(c[0])+0.7152*lin(c[1])+0.0722*lin(c[2]); }
+function ratio(fg,bg){ const a=lum(fg)+0.05, b=lum(bg)+0.05; return (Math.max(a,b)/Math.min(a,b)); }
+function badge(r){ if(r>=4.5) return ['pass','PASS']; if(r>=3.0) return ['warn','LOW']; return ['fail','FAIL']; }
+
+const sprout = '<svg viewBox="0 0 20 24" fill="none"><path d="M10 23V9" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M10 11C10 8 7 6 3 6c0 4 3 6 7 5z" fill="currentColor"/><path d="M10 9c0-3 3-5 7-5 0 4-3 6-7 5z" fill="currentColor"/></svg>';
+
+function cardHTML(mood, mode, wordColor, surfaceHex){
+  const surf = hx(surfaceHex);
+  const tint = over(hx(mood.base), surf, MOOD_BLOCK);     // color @0.24 over surface
+  const r = ratio(hx(wordColor), tint);
+  const [cls,txt] = badge(r);
+  const discBg = over(hx(mood.base), surf, mode==='light'?0.16:0.30);
+  return `<div class="card" style="background:${toHex(tint)}">
+    <span class="badge ${cls}">${txt} ${r.toFixed(2)}:1</span>
+    <span class="disc" style="background:${toHex(discBg)};color:${wordColor}">${sprout}</span>
+    <span class="cardbody">
+      <span class="word" style="color:${wordColor}">${mood.label}</span> <span class="date">· ${mood.label==='Low'?'Today':'Mon'} 25 Jun</span>
+      <span class="chips"><span style="color:${mode==='light'?'#7A7361':'#9A917C'}">⚡ tired · ◌ foggy</span> <span class="chip-med" style="color:${mode==='light'?'#7E5CA8':'#9277BE'}">▢ Vyvanse</span></span>
+    </span></div>`;
+}
+
+function renderPanel(mode){
+  const el = document.getElementById(mode);
+  el.querySelectorAll('.row').forEach(n=>n.remove());
+  MOODS.forEach(m=>{
+    const cur = m.base;                       // today: wordColor = base
+    const prop = PROPOSED[m.key][mode];
+    const block = document.createElement('div'); block.className='row';
+    block.innerHTML =
+      `<div style="font:700 10px/1 sans-serif;letter-spacing:.06em;color:${mode==='light'?'#a89f88':'#6f6757'};margin:2px 0 4px">${m.label.toUpperCase()} — current</div>`+
+      cardHTML(m, mode, cur, SURFACE[mode])+
+      `<div style="font:700 10px/1 sans-serif;letter-spacing:.06em;color:${mode==='light'?'#a89f88':'#6f6757'};margin:2px 0 4px">proposed</div>`+
+      cardHTML(m, mode, prop, SURFACE[mode]);
+    el.appendChild(block);
+  });
+}
+
+function renderControls(){
+  const el = document.getElementById('ctrls'); el.innerHTML='';
+  MOODS.forEach(m=>{
+    const c = document.createElement('div'); c.className='ctrl';
+    c.innerHTML = `<label>${m.label} word shade</label>
+      <div class="pair" title="light"><input type="color" data-k="${m.key}" data-m="light" value="${PROPOSED[m.key].light}"><input type="text" data-k="${m.key}" data-m="light" value="${PROPOSED[m.key].light}"></div>
+      <div class="pair" title="dark" style="margin-top:5px"><input type="color" data-k="${m.key}" data-m="dark" value="${PROPOSED[m.key].dark}"><input type="text" data-k="${m.key}" data-m="dark" value="${PROPOSED[m.key].dark}"></div>`;
+    el.appendChild(c);
+  });
+  el.addEventListener('input', e=>{
+    const k=e.target.dataset.k, m=e.target.dataset.m; if(!k) return;
+    let v=e.target.value; if(!/^#?[0-9a-fA-F]{6}$/.test(v.replace('#',''))) return;
+    if(v[0]!=='#') v='#'+v; PROPOSED[k][m]=v;
+    // sync sibling input
+    el.querySelectorAll(`[data-k="${k}"][data-m="${m}"]`).forEach(i=>{ if(i!==e.target) i.value=v; });
+    renderAll();
+  });
+}
+
+function renderExtra(){
+  // finding ②: med purple on tint (dark) and on 0.13 purple chip; ⑤: muted ink
+  const medL="#7E5CA8", medD="#9277BE";
+  const tintDarkOkay = over(hx("#9FCB79"), hx(SURFACE.dark), MOOD_BLOCK);
+  const r1 = ratio(hx(medD), tintDarkOkay);
+  const chipL = over(hx(medL), hx(SURFACE.light), 0.13), chipD = over(hx(medD), hx(SURFACE.dark), 0.13);
+  const r2 = ratio(hx(medL), chipL), r3 = ratio(hx(medD), chipD);
+  const r4 = ratio(hx("#7A7361"), hx(SURFACE.light));   // muted ink light
+  const b=(r)=>{const[c,t]=badge(r);return `<span class="badge ${c}" style="position:static;display:inline-block">${t} ${r.toFixed(2)}:1</span>`};
+  document.getElementById('extra').innerHTML =
+    `<b>② Medication purple as text.</b> On a mood tint (dark): ${b(r1)} · on the 0.13 purple chip — light ${b(r2)} / dark ${b(r3)}. All below 4.5:1.<br>
+     <b>⑤ Muted ink</b> (<code>Theme.textSecondary #7A7361</code>) on the light card: ${b(r4)} — a hair under.<br>
+     <span style="color:#6f6757">Fix options: a lighter on-tint purple token (or let the capsule glyph carry the purple + neutral text); darken <code>textSecondary</code> light → ~<code>#736C5A</code>.</span>`;
+}
+
+function renderSummary(){
+  let s = "// Proposed wordColor variants — hand these back and I'll wire them into\n// MoodLevel.wordColor (or Color(lightHex:darkHex:…) with a high-contrast branch).\n\n";
+  MOODS.forEach(m=>{
+    const pl=PROPOSED[m.key].light, pd=PROPOSED[m.key].dark;
+    const rl=ratio(hx(pl), over(hx(m.base),hx(SURFACE.light),MOOD_BLOCK));
+    const rd=ratio(hx(pd), over(hx(m.base),hx(SURFACE.dark),MOOD_BLOCK));
+    s+=`.${m.key}:  light "${pl}" (${rl.toFixed(2)}:1)   dark "${pd}" (${rd.toFixed(2)}:1)\n`;
+  });
+  document.getElementById('summary').innerHTML = s.replace(/(\d\.\d\d:1)/g, x=>parseFloat(x)>=4.5?`<b>${x}</b>`:x);
+}
+
+function renderAll(){ renderPanel('light'); renderPanel('dark'); renderExtra(); renderSummary(); }
+renderControls(); renderAll();
+</script>
+</body>
+</html>

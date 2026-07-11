@@ -10,53 +10,23 @@ final class MoodLibraryViewModel {
         let date: Date          // start-of-day; stable id for scroll-sync
         let label: String
         let nodes: [DayTimeline.Node]
-        var nutrition: DayNutrition? = nil   // spec 031; nil = day card unchanged
+        var context: CapturedDayEvents?
         var id: Date { date }
-
-        /// Check-ins and nutrition/exercise events on one merged rail, newest first —
-        /// so the expanded card renders straight through with zero sorting (spec 031 US2).
-        var displayItems: [DayCardItem] {
-            let checkIns = nodes.map(DayCardItem.checkIn)
-            let events = (nutrition?.events ?? []).map(DayCardItem.nutrition)
-            return (checkIns + events).sorted { $0.time > $1.time }
-        }
-    }
-
-    /// One row of the expanded day card: a mood/med check-in or a nutrition event.
-    enum DayCardItem: Identifiable {
-        case checkIn(DayTimeline.Node)
-        case nutrition(NutritionEventItem)
-
-        var id: String {
-            switch self {
-            case .checkIn(let node): "checkin-\(node.id)"
-            case .nutrition(let item): "nutrition-\(item.id)"
-            }
-        }
-        var time: Date {
-            switch self {
-            case .checkIn(let node): node.time
-            case .nutrition(let item): item.startDate
-            }
-        }
     }
 
     var currentMonth: Date = Date()
 
     @ObservationIgnored private let store: RecordingStore
-    @ObservationIgnored private let signalsStore: SignalsStore?
     @ObservationIgnored private let calendar = Calendar.current
+    // Observed (not @ObservationIgnored): attach() sets this post-init in a .task, and the
+    // day cards must re-render once it lands so captured context lines appear on first load.
+    private var dayContextStore: DayContextStore?
+    @ObservationIgnored private var calendarCoordinator: (any CalendarContextCoordinator)?
 
     /// Taken medication events (manual + transcript). Observed so the timeline
     /// recomputes when the medication bar logs or deletes a dose.
     private var medicationEvents: [MedicationEvent] = []
-
-    /// Nutrition/exercise events (spec 031). Observed like `medicationEvents`; SwiftData
-    /// writes from sync/seeding land out-of-band, so `loadNutrition()` is re-called
-    /// explicitly after those complete.
-    private var nutritionEvents: [NutritionEvent] = []
     @ObservationIgnored private var medObserver: NSObjectProtocol?
-    @ObservationIgnored private var nutritionObserver: NSObjectProtocol?
     @ObservationIgnored private let dayFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "d MMM"
@@ -80,7 +50,7 @@ final class MoodLibraryViewModel {
     }
 
     var hasAnyEntries: Bool {
-        !store.recordings.isEmpty || !medicationEvents.isEmpty || !nutritionByDay.isEmpty
+        !store.recordings.isEmpty || !medicationEvents.isEmpty
     }
 
     /// Grid model for the currently displayed month.
@@ -116,21 +86,20 @@ final class MoodLibraryViewModel {
         let firstOfMonth = calendar.startOfMonth(for: currentMonth)
         let daysInMonth = calendar.range(of: .day, in: .month, for: firstOfMonth)?.count ?? 0
         let startOfToday = calendar.startOfDay(for: Date())
-        let nutritionMap = nutritionByDay
 
         var result: [TimelineDay] = []
         for offset in 0..<daysInMonth {
             guard let day = calendar.date(byAdding: .day, value: offset, to: firstOfMonth) else { continue }
             let dayStart = calendar.startOfDay(for: day)
             if dayStart > startOfToday { break }     // never show future days
+            let dayRecordings = recordingsByDay[dayStart] ?? []
+            let dayDoses = dosesByDay[dayStart] ?? []
+            guard !dayRecordings.isEmpty || !dayDoses.isEmpty else { continue }
             result.append(TimelineDay(
                 date: dayStart,
                 label: dayLabel(for: dayStart),
-                nodes: DayTimelineBuilder.build(
-                    recordings: recordingsByDay[dayStart] ?? [],
-                    doses: dosesByDay[dayStart] ?? []
-                ),
-                nutrition: nutritionMap[dayStart]
+                nodes: DayTimelineBuilder.build(recordings: dayRecordings, doses: dayDoses),
+                context: dayContextStore?.context(for: dayStart)
             ))
         }
         return result.sorted { $0.date > $1.date }   // newest first
@@ -146,11 +115,9 @@ final class MoodLibraryViewModel {
         return timelineDays.filter { $0.date <= cap }
     }
 
-    init(store: RecordingStore, signalsStore: SignalsStore? = nil) {
+    init(store: RecordingStore) {
         self.store = store
-        self.signalsStore = signalsStore
         loadMedicationEvents()
-        loadNutrition()
         medObserver = NotificationCenter.default.addObserver(
             forName: .medicationEventsDidChange,
             object: nil,
@@ -159,18 +126,15 @@ final class MoodLibraryViewModel {
             // Delivered on the main queue → already on the main actor.
             MainActor.assumeIsolated { self?.loadMedicationEvents() }
         }
-        nutritionObserver = NotificationCenter.default.addObserver(
-            forName: .nutritionEventsDidChange,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            MainActor.assumeIsolated { self?.loadNutrition() }
-        }
     }
 
     deinit {
         if let medObserver { NotificationCenter.default.removeObserver(medObserver) }
-        if let nutritionObserver { NotificationCenter.default.removeObserver(nutritionObserver) }
+    }
+
+    func attach(dayContextStore: DayContextStore, coordinator: any CalendarContextCoordinator) {
+        self.dayContextStore = dayContextStore
+        self.calendarCoordinator = coordinator
     }
 
     private func loadMedicationEvents() {
@@ -180,34 +144,6 @@ final class MoodLibraryViewModel {
             sortBy: [SortDescriptor(\.takenAt, order: .reverse)]
         )
         medicationEvents = (try? store.context.fetch(descriptor)) ?? []
-    }
-
-    // MARK: - Nutrition (spec 031)
-
-    /// Re-fetches nutrition/exercise events. Called from `init` and again after HealthKit
-    /// sync or mock seeding completes (out-of-band SwiftData writes don't trigger Observation).
-    /// Fetches BOTH partitions — real-wins-per-day is resolved in `nutritionByDay`.
-    func loadNutrition() {
-        guard let signalsStore else { return }
-        nutritionEvents = signalsStore.fetchEvents(from: .distantPast, to: Date())
-    }
-
-    /// Per-day resolution (spec 031 FR-009): mock mode off → real events only; mock mode
-    /// on → a day with ANY real event uses only its real events, else its mock events.
-    /// Never mixed within a day.
-    private var nutritionByDay: [Date: DayNutrition] {
-        guard !nutritionEvents.isEmpty else { return [:] }
-        let mockMode = UserDefaults.standard.bool(forKey: "debugMockMode")
-        let grouped = Dictionary(grouping: nutritionEvents) { calendar.startOfDay(for: $0.startDate) }
-        var result: [Date: DayNutrition] = [:]
-        for (day, events) in grouped {
-            let real = events.filter { !$0.isMockData }
-            let chosen = mockMode ? (real.isEmpty ? events.filter(\.isMockData) : real) : real
-            guard !chosen.isEmpty else { continue }
-            let items = chosen.sorted { $0.startDate > $1.startDate }.map(NutritionEventItem.init)   // newest first
-            result[day] = DayNutrition(events: items, summary: NutritionEventGrouping.summary(for: items))
-        }
-        return result
     }
 
     func prevMonth() {
@@ -220,7 +156,10 @@ final class MoodLibraryViewModel {
     }
 
     func delete(_ recording: Recording) {
+        let dayKey = DayKey.make(for: recording.createdAt)
         store.deleteRecording(recording)
+        // Coordinator re-derives day membership at execution time (reentrancy-safe).
+        Task { await calendarCoordinator?.checkInDeleted(dayKey: dayKey) }
     }
 
     func recording(for id: UUID) -> Recording? {

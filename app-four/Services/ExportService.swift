@@ -13,8 +13,9 @@ struct JournalArchive: Codable, Sendable {
     let formatVersion: Int
     let exportedAt: Date
     let recordings: [RecordingDTO]
+    let dayContexts: [DayContextDTO]
 
-    static let currentFormatVersion = 1
+    static let currentFormatVersion = 2
 }
 
 struct RecordingDTO: Codable, Sendable {
@@ -76,6 +77,13 @@ struct TagDTO: Codable, Sendable {
     let createdAt: Date
 }
 
+struct DayContextDTO: Codable, Sendable {
+    let dayKey: Date
+    let capturedAt: Date
+    let titlesIncluded: Bool
+    let events: CapturedDayEvents
+}
+
 struct MedicationEventDTO: Codable, Sendable {
     let id: UUID
     let name: String
@@ -124,11 +132,11 @@ struct ExportServiceImpl: ExportService {
     @MainActor
     func export(from context: ModelContext) async throws -> ExportResult {
         let archive = try Self.snapshot(context)
-
-        // Serialize + seal off the main actor: JSON encode then AES-GCM seal.
-        // The archive is a `Sendable` value graph, so it crosses the boundary cleanly.
+        // Encode on the main actor where the @MainActor-isolated Codable conformance
+        // is valid, then cross the boundary with plain Data (Sendable) to seal.
+        let plaintext = try JSONEncoder().encode(archive)
         return try await Task.detached(priority: .userInitiated) {
-            try seal(archive)
+            try seal(plaintext)
         }.value
     }
 
@@ -148,10 +156,26 @@ struct ExportServiceImpl: ExportService {
             throw ExportError.audioTooLarge(totalBytes: totalAudioBytes, limitBytes: limitBytes)
         }
 
+        // Real data only — never export the mock partition (data-model.md).
+        let ctxDescriptor = FetchDescriptor<DayCalendarContext>(
+            predicate: #Predicate { $0.isMockData == false },
+            sortBy: [SortDescriptor(\.dayKey)]
+        )
+        let dayCalendarContexts = try context.fetch(ctxDescriptor)
+        let dayContexts = dayCalendarContexts.map { row in
+            DayContextDTO(
+                dayKey: row.dayKey,
+                capturedAt: row.capturedAt,
+                titlesIncluded: row.titlesIncluded,
+                events: row.decodedEvents ?? CapturedDayEvents(events: [])
+            )
+        }
+
         return JournalArchive(
             formatVersion: JournalArchive.currentFormatVersion,
             exportedAt: .now,
-            recordings: recordings.map(dto(for:))
+            recordings: recordings.map(dto(for:)),
+            dayContexts: dayContexts
         )
     }
 
@@ -214,8 +238,7 @@ struct ExportServiceImpl: ExportService {
 /// auto-generates a random nonce per seal and includes the auth tag in `combined`,
 /// so no nonce is ever set or reused by hand. Pure value-in/value-out → `Sendable`,
 /// safe to run on a detached task.
-private nonisolated func seal(_ archive: JournalArchive) throws -> ExportResult {
-    let plaintext = try JSONEncoder().encode(archive)
+private nonisolated func seal(_ plaintext: Data) throws -> ExportResult {
     let key = SymmetricKey(size: .bits256)
     let sealed = try AES.GCM.seal(plaintext, using: key)
     guard let combined = sealed.combined else {

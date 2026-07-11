@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · Library row density · current UI · 6 proposals</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Tokens lifted verbatim from the design-system package (Theme.swift, MoodLevel+Palette.swift,
+     Palette.swift, Palette+Signals.swift, Opacity.swift) so this matches the shipped SwiftUI, not the
+     old mockup. Mood = Meadow·Burnt; energy = Lemon; focus = Voltage. */
+  :root{
+    --bg:#F6F1E7; --card:#FCF8EF; --surface2:#EFE8D8; --elevated:#FCF8EF;
+    --ink:#221E16; --muted:#7A7361; --hair:#E3DAC7;
+    --med:#7E5CA8; --sleep:#5566A6; --warning:#C2772E;
+    /* mood base (color) — dark end of fills, glyph tint */
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    /* mood word colour (light) — AA-legible deepened shade */
+    --mw1:#8E470F; --mw2:#8A5600; --mw3:#41691F; --mw4:#2C6B3B; --mw5:#1E5C38;
+    /* energy ramp (Lemon) */
+    --e1:#7C6E2E; --e2:#A89236; --e3:#D2BB40; --e4:#EEDA4C; --e5:#FCEE64;
+    /* focus ramp (Voltage) */
+    --f1:#44546E; --f2:#4E6F94; --f3:#5889BA; --f4:#63A4E0; --f5:#79C4FF;
+    --moodBlock:0.24; --moodBadge:0.50;
+    --shadow-sm:0 1px 2px rgba(40,48,24,.06);
+  }
+  [data-theme="dark"]{
+    --bg:#14130F; --card:#1E1C16; --surface2:#272419; --elevated:#272419;
+    --ink:#F3EEE0; --muted:#9A917C; --hair:#322E22;
+    --med:#9277BE; --sleep:#5566A6; --warning:#D98A3E;
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    /* mood word colour (dark) — brightened ramp ends */
+    --mw1:#E89A5A; --mw2:#EDA94A; --mw3:#B7D897; --mw4:#79C98E; --mw5:#57C98A;
+    --e1:#7C6E2E; --e2:#A89236; --e3:#D2BB40; --e4:#EEDA4C; --e5:#FCEE64;
+    --f1:#44546E; --f2:#4E6F94; --f3:#5889BA; --f4:#63A4E0; --f5:#79C4FF;
+    --moodBlock:0.30;
+    --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1240px;margin:0 auto;padding:46px 28px 120px;}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:700;margin:0 0 12px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(30px,5vw,48px);line-height:1.02;margin:0;letter-spacing:-.03em;}
+  .lede{font-family:'Fraunces',serif;font-style:italic;font-size:18px;color:var(--warning);margin:14px 0 0;max-width:70ch;}
+  .controls{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 22px;}
+  .btn{font-size:13px;font-weight:600;cursor:pointer;background:var(--card);color:var(--ink);border:1px solid var(--hair);border-radius:999px;padding:9px 16px;box-shadow:var(--shadow-sm);}
+  .btn:hover{border-color:var(--muted);}
+  .note{margin-top:10px;display:flex;gap:10px;align-items:flex-start;background:color-mix(in srgb,var(--warning) 8%,var(--card));border:1px solid color-mix(in srgb,var(--warning) 22%,var(--hair));border-radius:14px;padding:14px 16px;font-size:13.5px;max-width:88ch;}
+  .note b{color:var(--ink);}
+
+  .grid{display:grid;grid-template-columns:1fr;gap:38px;align-items:start;}
+  .cell .lab{display:flex;align-items:baseline;gap:8px;margin:0 0 2px;}
+  .cell .nm{font-family:'Fraunces',serif;font-size:18px;font-weight:600;letter-spacing:-.01em;}
+  .cell .nm.rec{color:var(--warning);}
+  .cell .rc{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);margin:0 0 12px;line-height:1.5;}
+  .cell .rc b{color:var(--ink);}
+
+  /* folded | unfolded pair — fixed two-column track so the cards never reflow or mis-size */
+  .pair{display:grid;grid-template-columns:352px 352px;gap:30px;align-items:start;}
+  .state{display:flex;flex-direction:column;gap:8px;min-width:0;}
+  .state .tag{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+  @media (max-width:820px){ .pair{grid-template-columns:352px;} }
+
+  /* phone-width card — DayCard: cream surface, mood-tinted header strip, rows on cream */
+  .card{width:352px;border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm);background:var(--card);border:1px solid var(--hair);}
+
+  /* FoldedDayCardHeader — a vertical block: title row, then (folded) full-bleed divider + summary.
+     Column layout so the divider/summary stack cleanly under the title without flex-wrap hacks. */
+  .ohdr{display:flex;flex-direction:column;padding:16px;background-clip:padding-box;}
+  .otop{display:flex;align-items:center;gap:12px;min-height:44px;}
+  .gdisc{flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:0;}
+  .otitle{flex:1;min-width:0;font-family:'Fraunces',serif;font-size:18px;font-weight:600;letter-spacing:-.01em;}
+  .t-sep{color:var(--muted);font-weight:600;} .oday{color:var(--ink);}
+  .ochev{flex:none;font-size:13px;color:var(--muted);font-weight:700;line-height:1;}
+  /* full-bleed divider: cancel the 16px header padding so the rule spans edge-to-edge */
+  .fdiv{height:1px;background:var(--hair);margin:12px -16px 0;}
+  .fsum{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;}
+  .fsum .sig{font-weight:500;}
+  .fsum .sep{color:var(--muted);}
+  .fsum .medname{color:var(--med);font-weight:600;}
+
+  .cbody{padding:12px 16px 16px;}
+
+  /* TimelineRow: bead column (bead + downward connector) + content */
+  .row{display:flex;gap:12px;align-items:flex-start;}
+  .beadcol{flex:none;display:flex;flex-direction:column;align-items:center;}
+  .bead{position:relative;display:flex;align-items:center;justify-content:center;flex:none;}
+  .disc{border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:0;}
+  .disc.hollow{background:var(--bg);border:1px solid var(--hair);}
+  .medbadge{position:absolute;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono';font-weight:800;color:var(--med);background:var(--elevated);border:0.5px solid color-mix(in srgb,var(--hair) 30%,transparent);border-radius:999px;padding:1px 5px;white-space:nowrap;}
+  .conn{width:1px;background:var(--hair);flex:1;min-height:18px;}
+  .ct{flex:1;min-width:0;display:flex;flex-direction:column;}
+  .rhead{display:flex;align-items:baseline;gap:8px;}
+  .mword{font-family:'Fraunces',serif;font-weight:600;}
+  .rtime{font-family:'IBM Plex Mono';color:var(--muted);}
+  .rchev{margin-left:auto;color:var(--muted);font-weight:700;align-self:center;}
+  .ramp{display:flex;align-items:center;gap:12px;}
+  .sig{display:inline-flex;align-items:center;gap:4px;color:var(--ink);font-weight:500;}
+  .glyph{display:inline-flex;vertical-align:middle;line-height:0;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;}
+  .chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;background:var(--surface2);color:var(--ink);font-weight:500;}
+  .chip.med{color:var(--med);background:color-mix(in srgb,var(--med) 13%,transparent);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">Squirl · Paper &amp; Pollen · Library row density · CURRENT UI</p>
+  <h1>Lighten the check-in rows</h1>
+  <p class="lede">The DayCard both ways — folded beside unfolded — at six row densities. Header held constant (disc 42, title Fraunces 18). Unlike the old ring mockup, this reproduces the real row: a mood-glyph disc bead with an inside-edge carry-over ring + flush % badge, a head (mood · time · ›), a ramp line (energy · focus), and the Taken / emotion chips. Two cards isolate one variable — disc-only, type-only — the rest are balanced.</p>
+  <div class="controls"><button class="btn" onclick="toggleTheme()">◐ light / dark</button></div>
+  <div class="note">⌖ Folded shows the tinted block alone — title (<b>Good · Monday 8</b>), full-bleed divider, then the <b>latest</b> check-in's summary: energy · focus · medication <i>name only</i> (no dose, no %). It's identical across all six because density only changes the unfolded rows. Note vs. the old mockup: shipped code already sets <b>bead = header badge = 42</b> (Metrics.swift) — the "ring 52 &gt; badge 42" bug is gone. The real ring is the thin <b>purple medication carry-over</b> drawn <i>inside</i> the disc edge (only for a dose still active from earlier); a dose taken <i>at</i> a check-in is a purple "Taken …" chip instead.</div>
+  <div class="grid" id="grid" style="margin-top:26px"></div>
+</div>
+
+<script>
+const mC=['var(--m1)','var(--m2)','var(--m3)','var(--m4)','var(--m5)'];
+const mW=['var(--mw1)','var(--mw2)','var(--mw3)','var(--mw4)','var(--mw5)'];
+const eC=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
+const fC=['var(--f1)','var(--f2)','var(--f3)','var(--f4)','var(--f5)'];
+const MOODW=['Low','Flat','Okay','Good','Great'],ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Distracted','Present','Sharp','Locked in'];
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p,base)=>`color-mix(in srgb, ${h} ${p}%, ${base||'var(--card)'})`;
+
+/* ---- glyphs ported 1:1 from the SwiftUI Canvas geometry (24×26 design space) ---- */
+// SproutGlyph.swift — lift, crown bud→open, fill depth, stem notch(≥3), crown dot(5)
+function gMood(hex,l,px){const lift=0.66+l*0.068;const open=l>=4,top=open?9:11,fill=Math.min(1,0.42+l*0.145).toFixed(2);
+  const inner=`<g transform="translate(12 13) scale(${lift}) translate(-12 -13)">`+
+    `<path d="M12 25 C12 18 12 14 12 ${top}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6" stroke-linecap="round"/>`+
+    `<path d="M12 ${top} C ${open?4:6} ${open?13:14}, ${open?5:6} ${open?2:5}, 12 1 C ${open?19:18} ${open?2:5}, ${open?20:18} ${open?13:14}, 12 ${top} Z" fill="${hex}" fill-opacity="${fill}" stroke="${hex}" stroke-width="1.3" stroke-linejoin="round"/>`+
+    (l>=3?`<path d="M12 ${top} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:'')+
+    (l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:'')+`</g>`;
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26">${inner}</svg>`;}
+// BoltGlyph.swift — lift, fill depth, stroke weight
+function gEnergy(hex,l,px){const lift=0.6+l*0.08,fill=Math.min(1,0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26"><g transform="translate(12 13) scale(${lift}) translate(-12 -13)"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${fill}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></g></svg>`;}
+// ApertureGlyph.swift — ring ladder, dash(≤2), solid core(≥3), sharp ring(≥4)
+function gFocus(hex,l,px){const cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;
+  if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;
+  if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;
+  if(l>=3){const r=((l-1)*0.85).toFixed(2);o+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26">${o}</svg>`;}
+// CapsuleGlyph.swift — two-tone horizontal capsule w/ seam (chip badge, no level)
+function gCapsule(hex,px){const w=px*0.86,h=px*0.42,x=(px-w)/2,y=(px-h)/2,r=h/2;
+  return `<svg width="${px}" height="${px}" viewBox="0 0 ${px} ${px}"><defs><clipPath id="cp"><rect x="${x}" y="${y}" width="${w/2}" height="${h}"/></clipPath></defs>`+
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${hex}" fill-opacity="0.22"/>`+
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${hex}" fill-opacity="0.5" clip-path="url(#cp)"/>`+
+    `<rect x="${x+1}" y="${y+1}" width="${w-2}" height="${h-2}" rx="${r-1}" fill="none" stroke="${hex}" stroke-width="2"/>`+
+    `<rect x="${px/2-0.8}" y="${py(y,h)}" width="1.6" height="${(h*0.66).toFixed(2)}" fill="${hex}" fill-opacity="0.8"/></svg>`;}
+function py(y,h){return (y+h*0.17).toFixed(2);}
+const mg=(l,px)=>`<span class="glyph">${gMood(cssv(mC[l-1]),l,px)}</span>`;
+const eg=(l,px)=>`<span class="glyph">${gEnergy(cssv(eC[l-1]),l,px)}</span>`;
+const fg=(l,px)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,px)}</span>`;
+
+/* ---- TimelineBead: disc + (carry-over) inside-edge ring + flush % badge ---- */
+function bead(r,cfg){const D=cfg.disc;
+  let inner;
+  if(r.m!=null){const badge=tint(mC[r.m-1],50,'var(--card)');
+    inner=`<div class="disc" style="width:${D}px;height:${D}px;background:${badge}">${mg(r.m,Math.round(D*0.6))}</div>`;}
+  else{inner=`<div class="disc hollow" style="width:${D}px;height:${D}px"></div>`;}
+  // carry-over ring drawn inside the disc edge; stroke 3.3, starts 12 o'clock
+  let ringSvg='',badgeHtml='';
+  if(r.carry!=null){const sw=3.3,rr=(D-sw)/2,c=D/2,C=2*Math.PI*rr,p=Math.max(0.003,r.carry);
+    ringSvg=`<svg width="${D}" height="${D}" viewBox="0 0 ${D} ${D}" style="position:absolute;inset:0;transform:rotate(-90deg)"><circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}"/></svg>`;
+    const fs=Math.max(8,cfg.disc*0.21).toFixed(1);
+    badgeHtml=`<span class="medbadge" style="font-size:${fs}px;bottom:-2px">${Math.round(r.carry*100)}%</span>`;}
+  return `<div class="bead" style="width:${D+2}px;height:${D+2}px">${inner}${ringSvg}${badgeHtml}</div>`;}
+
+/* ---- one TimelineRow ---- */
+function rowHTML(r,cfg,isLast){
+  // ramp line (energy · focus)
+  let ramp='';
+  if(r.e!=null)ramp+=`<span class="sig" style="font-size:${cfg.sig}px">${eg(r.e,cfg.sg)} ${ENW[r.e-1]}</span>`;
+  if(r.f!=null)ramp+=`<span class="sig" style="font-size:${cfg.sig}px">${fg(r.f,cfg.sg)} ${FOW[r.f-1]}</span>`;
+  // chips: Taken pill(s) + emotion/sleep inputs
+  let chips='';
+  (r.taken||[]).forEach(t=>{chips+=`<span class="chip med" style="font-size:${cfg.chip}px;padding:${cfg.chipPad}">${gCapsule(cssv('var(--med)'),Math.round(cfg.chip*1.5))} Taken ${t}</span>`;});
+  (r.chips||[]).forEach(c=>{chips+=`<span class="chip" style="font-size:${cfg.chip}px;padding:${cfg.chipPad}">${c}</span>`;});
+  const headGap=cfg.headGap;
+  return `<div class="row">
+    <div class="beadcol">${bead(r,cfg)}${isLast?'':`<div class="conn"></div>`}</div>
+    <div class="ct" style="padding-top:${cfg.ctTop}px;gap:${cfg.rowGap}px;padding-bottom:${isLast?0:cfg.between}px">
+      <div style="display:flex;flex-direction:column;gap:${headGap}px">
+        <div class="rhead">
+          <span class="mword" style="font-size:${cfg.mood}px;color:${cssv(mW[r.m-1])}">${MOODW[r.m-1]}</span>
+          <span class="rtime" style="font-size:${cfg.time}px">${r.time}</span>
+          <span class="rchev" style="font-size:${Math.round(cfg.mood*0.8)}px">›</span>
+        </div>
+        ${ramp?`<div class="ramp">${ramp}</div>`:''}
+      </div>
+      ${chips?`<div class="chips">${chips}</div>`:''}
+    </div>
+  </div>`;
+}
+
+/* representative day data (mirrors a real expanded card: a recent rich check-in, a mid one, a bare morning one) */
+const R=[
+  {time:'16:12',m:4,e:4,f:3,carry:0.58,taken:['Concerta 36mg'],chips:['Calm','5h sleep']},
+  {time:'12:40',m:3,e:3,f:null,carry:0.34,taken:[],chips:['Restless']},
+  {time:'09:15',m:3,e:null,f:null,carry:null,taken:[],chips:[]},
+];
+
+/* header — title row is identical folded/open; chevron rotates; folded adds divider + summary line.
+   `folded` toggles the full-bleed divider + latest-recording summary (energy · focus · med-name). */
+function foldedSummary(){
+  // latest recording = the 16:12 node → Alert · Present · Concerta (name only, no dose)
+  return `<div class="fsum" style="font-size:13px">
+    <span class="sig">${eg(4,13)} Alert</span><span class="sep">·</span>
+    <span class="sig">${fg(3,13)} Present</span><span class="sep">·</span>
+    <span class="sig medname">${gCapsule(cssv('var(--med)'),18)} Concerta</span>
+  </div>`;}
+function header(folded){const m=4,strip=tint(mC[m-1],24,'var(--card)'),badge=tint(mC[m-1],50,'var(--card)');
+  // chevron points up (⌃) folded, flips to point down when expanded
+  const chev=`<span class="ochev" style="transform:rotate(${folded?0:180}deg)">⌃</span>`;
+  const otop=`<div class="otop">
+    <span class="gdisc" style="width:42px;height:42px;background:${badge}">${mg(m,Math.round(42*0.56))}</span>
+    <span class="otitle"><span style="color:${cssv(mW[m-1])}">Good</span><span class="t-sep"> · </span><span class="oday">Monday 8</span></span>
+    ${chev}
+  </div>`;
+  return `<div class="ohdr" style="background:${strip}">
+    ${otop}${folded?`<div class="fdiv"></div>${foldedSummary()}`:''}
+  </div>`;}
+
+/* density configs — header constant; vary disc, type, padding, chip scale.
+   #1 baseline = today's real Metrics (disc 42, mood 14, time 11, signal 13, summarySignal-ish).
+   #2 isolates the disc, #3 isolates the type. */
+const CFG=[
+ {id:1,name:'Baseline (current)',disc:42,mood:14,time:11,sig:13,sg:13,chip:12,chipPad:'4px 8px',ctTop:16,headGap:4,rowGap:8,between:32,desc:'today — Metrics.swift values'},
+ {id:2,name:'Small disc only',disc:34,mood:14,time:11,sig:13,sg:13,chip:12,chipPad:'4px 8px',ctTop:13,headGap:4,rowGap:8,between:32,desc:'type UNCHANGED, disc 42→34 (isolate the bead)'},
+ {id:3,name:'Small type only',disc:42,mood:13,time:10,sig:11,sg:11,chip:11,chipPad:'3px 7px',ctTop:16,headGap:3,rowGap:7,between:32,desc:'disc UNCHANGED, type shrunk (isolate the type)'},
+ {id:4,name:'Gentle −10%',disc:38,mood:13.5,time:10.5,sig:12,sg:12,chip:11.5,chipPad:'3px 7px',ctTop:14,headGap:4,rowGap:7,between:28,desc:'everything eased a notch, proportions kept'},
+ {id:5,name:'Balanced',rec:true,disc:36,mood:13,time:10.5,sig:11.5,sg:12,chip:11,chipPad:'3px 7px',ctTop:13,headGap:3,rowGap:6,between:24,desc:'disc slightly under the 42 header badge; rows clearly recede'},
+ {id:6,name:'Compact',disc:32,mood:12.5,time:10,sig:11,sg:11,chip:10.5,chipPad:'2px 6px',ctTop:11,headGap:2,rowGap:5,between:20,desc:'tightest — max density, rows fully subordinate'},
+];
+
+function cardHTML(c){
+  const folded=`<div class="card">${header(true)}</div>`;
+  const open=`<div class="card">${header(false)}<div class="cbody">${R.map((r,i)=>rowHTML(r,c,i===R.length-1)).join('')}</div></div>`;
+  return `<div class="cell">
+    <div class="lab"><span class="nm${c.rec?' rec':''}">${c.id} · ${c.name}${c.rec?' ✦':''}</span></div>
+    <div class="rc">${c.desc}<br><b>disc ${c.disc}</b> · mood ${c.mood} · time ${c.time} · signal ${c.sig} · chip ${c.chip} · between ${c.between}</div>
+    <div class="pair">
+      <div class="state"><span class="tag">Folded</span>${folded}</div>
+      <div class="state"><span class="tag">Unfolded</span>${open}</div>
+    </div>
+  </div>`;
+}
+function render(){document.getElementById('grid').innerHTML=CFG.map(cardHTML).join('');}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

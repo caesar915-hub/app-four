@@ -26,6 +26,7 @@ struct SignalBead {
     let date: Date
     let level: (any SignalLevel)?
     let recordingID: UUID?
+    let weekdayLabel: String?
 }
 
 struct SignalStrip {
@@ -117,7 +118,36 @@ extension InsightsViewModel {
                     .sorted { $0.createdAt > $1.createdAt }
                 let latest = dayRecs.first
                 let level: (any SignalLevel)? = signalLevel(for: kind, from: latest)
-                return SignalBead(date: day, level: level, recordingID: latest?.id)
+                return SignalBead(date: day, level: level, recordingID: latest?.id, weekdayLabel: nil)
+            }
+            return SignalStrip(kind: kind, beads: beads, summary: stripSummary(kind: kind))
+        }
+    }
+
+    // MARK: weekdaySignalStrips
+
+    var weekdaySignalStrips: [SignalStrip] {
+        let slots: [(Int, String)] = [(2,"Mo"),(3,"Tu"),(4,"We"),(5,"Th"),(6,"Fr"),(7,"Sa"),(1,"Su")]
+        let byWeekday = Dictionary(grouping: monthRecordings) {
+            calendar.component(.weekday, from: $0.createdAt)
+        }
+        return SignalKind.allCases.map { kind in
+            let beads: [SignalBead] = slots.map { (weekday, label) in
+                let recs = byWeekday[weekday] ?? []
+                let values = recs.compactMap { signalLevel(for: kind, from: $0)?.numericValue }
+                let level: (any SignalLevel)?
+                if values.isEmpty {
+                    level = nil
+                } else {
+                    let avg = Double(values.reduce(0, +)) / Double(values.count)
+                    level = resolvedLevel(kind: kind, numericValue: Int(avg.rounded()))
+                }
+                return SignalBead(
+                    date: Date(timeIntervalSinceReferenceDate: Double(weekday)),
+                    level: level,
+                    recordingID: nil,
+                    weekdayLabel: label
+                )
             }
             return SignalStrip(kind: kind, beads: beads, summary: stripSummary(kind: kind))
         }

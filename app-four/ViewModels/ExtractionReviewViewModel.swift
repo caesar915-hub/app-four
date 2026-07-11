@@ -31,6 +31,7 @@ final class ExtractionReviewViewModel: Identifiable {
     let recording: Recording
 
     private let store: RecordingStore
+    private let calendarCoordinator: any CalendarContextCoordinator
     private let originalTitle: String          // used to detect user-edited name
     private var editedFields: Set<TagCategory> = []
     var onComplete: (Recording) -> Void
@@ -39,11 +40,13 @@ final class ExtractionReviewViewModel: Identifiable {
         result: SummaryResult,
         recording: Recording,
         store: RecordingStore,
+        calendarCoordinator: any CalendarContextCoordinator,
         onComplete: @escaping (Recording) -> Void
     ) {
         self.originalResult = result
         self.recording = recording
         self.store = store
+        self.calendarCoordinator = calendarCoordinator
         self.onComplete = onComplete
         self.originalTitle = recording.title
         self.name = recording.title
@@ -61,6 +64,7 @@ final class ExtractionReviewViewModel: Identifiable {
     convenience init(
         recording: Recording,
         store: RecordingStore,
+        calendarCoordinator: any CalendarContextCoordinator,
         onComplete: @escaping (Recording) -> Void
     ) {
         // Map persisted MedicationEvent rows back to the transient MedEvent DTO
@@ -99,7 +103,7 @@ final class ExtractionReviewViewModel: Identifiable {
             topics: recording.topicCategories.map(\.rawValue),
             noteExtraction: nil
         )
-        self.init(result: result, recording: recording, store: store, onComplete: onComplete)
+        self.init(result: result, recording: recording, store: store, calendarCoordinator: calendarCoordinator, onComplete: onComplete)
     }
 
     // MARK: - Setters
@@ -213,7 +217,12 @@ final class ExtractionReviewViewModel: Identifiable {
 
         // Set the new date BEFORE materializing med events so each event's
         // takenAt resolves against the corrected day, not the old one (Bug 5).
+        let oldDay = DayKey.make(for: recording.createdAt)
         recording.createdAt = date
+        let newDay = DayKey.make(for: date)
+        if oldDay != newDay {
+            Task { await calendarCoordinator.checkInDateChanged(from: oldDay, to: newDay) }
+        }
         recording.applySummary(correctedResult)
         recording.setMedicationEvents(
             from: correctedResult.medications,

@@ -20,36 +20,24 @@ struct DayCard: View {
             }
             .buttonStyle(.plain)
 
-            if isExpanded && (!day.nodes.isEmpty || day.nutrition != nil) {
-                expandedBody
+            if isExpanded && !day.nodes.isEmpty {
+                VStack(alignment: .leading, spacing: 0) {
+                    ForEach(Array(day.nodes.enumerated()), id: \.element.id) { index, node in
+                        TimelineRow(
+                            node: node,
+                            isLast: index == day.nodes.count - 1,
+                            onTapRecording: onTapRecording
+                        )
+                    }
+                }
+                .padding(.horizontal, Spacing.l)
+                .padding(.top, Spacing.m)
+                .padding(.bottom, Spacing.l)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Theme.cardBackground)
         .clipShape(shape)
-    }
-
-    /// Check-ins and nutrition events on one rail (spec 031 US2), then a per-day totals
-    /// footer. The VM pre-merges `displayItems`, so the view only renders and tracks `isLast`.
-    private var expandedBody: some View {
-        let items = day.displayItems
-        return VStack(alignment: .leading, spacing: 0) {
-            ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                let isLast = index == items.count - 1
-                switch item {
-                case .checkIn(let node):
-                    TimelineRow(node: node, isLast: isLast, onTapRecording: onTapRecording)
-                case .nutrition(let event):
-                    NutritionEventRow(item: event, isLast: isLast)
-                }
-            }
-            if let summary = day.nutrition?.summary {
-                DayNutritionFooter(summary: summary, railIndent: items.isEmpty ? 0 : Metrics.timeBead + 2 + Spacing.m)
-            }
-        }
-        .padding(.horizontal, Spacing.l)
-        .padding(.top, Spacing.m)
-        .padding(.bottom, Spacing.l)
     }
 }
 

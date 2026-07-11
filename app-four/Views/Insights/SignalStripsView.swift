@@ -1,11 +1,11 @@
 import SwiftUI
 
-/// Three horizontal bead strips — one per signal (mood/energy/focus).
-/// Each bead is one check-in day, in chronological order. Tapping a bead
-/// triggers `onBeadTap` with the day's date so the caller can open DayDetailSheet.
+/// Three fixed-slot strips — one per signal (mood/energy/focus).
+/// In weekday-average mode each strip shows 7 Mo–Su slots coloured by the averaged level.
+/// In date mode each slot is one check-in day; provide `onBeadTap` to make slots interactive.
 struct SignalStripsView: View {
     let strips: [SignalStrip]
-    let onBeadTap: (Date) -> Void
+    var onBeadTap: ((Date) -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.m) {
@@ -19,10 +19,8 @@ struct SignalStripsView: View {
 
 private struct StripRow: View {
     let strip: SignalStrip
-    let onBeadTap: (Date) -> Void
+    let onBeadTap: ((Date) -> Void)?
 
-    /// The strip's modal (most-common) level, so the row glyph reflects the month rather
-    /// than a hardcoded value. Falls back to mid-scale when the month has no data.
     private var representativeLevel: Int {
         let levels = strip.beads.compactMap { $0.level?.numericValue }
         guard !levels.isEmpty else { return 3 }
@@ -45,74 +43,90 @@ private struct StripRow: View {
             }
             .padding(.horizontal, Spacing.l)
 
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack(spacing: Spacing.xs) {
-                    ForEach(strip.beads, id: \.date) { bead in
-                        BeadButton(bead: bead) { onBeadTap(bead.date) }
-                    }
+            HStack(spacing: 0) {
+                ForEach(strip.beads, id: \.date) { bead in
+                    BeadSlot(
+                        bead: bead,
+                        glyphSignal: strip.kind.glyphSignal,
+                        action: onBeadTap.map { tap in { tap(bead.date) } }
+                    )
                 }
-                .padding(.horizontal, Spacing.l)
-                .padding(.vertical, 4)
             }
+            .padding(.horizontal, Spacing.l)
+            .padding(.vertical, Spacing.xs)
         }
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("\(strip.kind.label) strip: \(strip.beads.count) check-in\(strip.beads.count == 1 ? "" : "s"), \(strip.summary)")
+        .accessibilityLabel(stripA11yLabel)
+    }
+
+    private var stripA11yLabel: String {
+        let isWeekday = strip.beads.first?.weekdayLabel != nil
+        if isWeekday {
+            return "\(strip.kind.label) weekday averages: \(strip.summary)"
+        }
+        let n = strip.beads.count
+        return "\(strip.kind.label) strip: \(n) check-in\(n == 1 ? "" : "s"), \(strip.summary)"
     }
 }
 
-private struct BeadButton: View {
+private struct BeadSlot: View {
     let bead: SignalBead
-    let action: () -> Void
-
-    private let beadSize: CGFloat = 28
-    private let hitSize: CGFloat = 44
+    let glyphSignal: GlyphSignal
+    let action: (() -> Void)?
 
     var body: some View {
-        Button(action: action) {
-            beadShape
-                .frame(width: hitSize, height: hitSize)
-                .contentShape(Rectangle())
+        Group {
+            if let action {
+                Button(action: action) { content }
+                    .buttonStyle(.plain)
+            } else {
+                content
+            }
         }
-        .buttonStyle(.plain)
         .accessibilityLabel(beadA11yLabel)
     }
 
-    @ViewBuilder
-    private var beadShape: some View {
-        if let level = bead.level {
-            Circle()
-                .fill(level.fillGradient)
-                .frame(width: beadSize, height: beadSize)
-        } else {
-            Circle()
-                .strokeBorder(Theme.textSecondary.opacity(0.4), style: StrokeStyle(lineWidth: 1.5, dash: [3, 2]))
-                .frame(width: beadSize, height: beadSize)
+    private var content: some View {
+        VStack(spacing: Spacing.xs) {
+            SignalGlyph(glyphSignal, level: bead.level?.numericValue, size: 28, decorative: true)
+            if let label = bead.weekdayLabel {
+                Text(label)
+                    .font(Typography.text(9, weight: .medium, relativeTo: .caption1))
+                    .foregroundStyle(Theme.textSecondary)
+            }
         }
+        .frame(maxWidth: .infinity, minHeight: 44)
     }
 
     private var beadA11yLabel: String {
-        let dateLabel = DateFormatter.localizedString(from: bead.date, dateStyle: .short, timeStyle: .none)
-        if let level = bead.level {
-            return "\(dateLabel): \(level.displayLabel)"
+        if let label = bead.weekdayLabel {
+            return bead.level.map { "\(label): \($0.displayLabel)" } ?? "\(label): no data"
         }
-        return "\(dateLabel): no data"
+        let dateLabel = DateFormatter.localizedString(from: bead.date, dateStyle: .short, timeStyle: .none)
+        return bead.level.map { "\(dateLabel): \($0.displayLabel)" } ?? "\(dateLabel): no data"
     }
 }
 
-#Preview {
-    let cal = Calendar.current
+#Preview("Weekday average strips") {
+    let slots: [(Int, String)] = [(2,"Mo"),(3,"Tu"),(4,"We"),(5,"Th"),(6,"Fr"),(7,"Sa"),(1,"Su")]
     let strips: [SignalStrip] = SignalKind.allCases.map { kind in
-        let beads = (1...12).map { day -> SignalBead in
-            let date = cal.date(from: DateComponents(year: 2025, month: 6, day: day))!
-            let level: (any SignalLevel)? = switch kind {
-            case .mood:   day % 3 == 0 ? nil : MoodLevel(name: ["okay", "good", "great"][day % 3])
-            case .energy: EnergyLevel(rawValue: ["steady", "alert", "charged"][day % 3])
-            case .focus:  FocusLevel(rawValue: ["present", "sharp", "lockedIn"][day % 3])
+        let beads = slots.enumerated().map { (i, slot) -> SignalBead in
+            let (weekday, label) = slot
+            let baseLevel: (any SignalLevel)? = switch kind {
+            case .mood:   MoodLevel(name: ["okay", "good", "great"][i % 3])
+            case .energy: EnergyLevel(rawValue: ["steady", "alert", "charged"][i % 3])
+            case .focus:  FocusLevel(rawValue: ["present", "sharp", "lockedIn"][i % 3])
             }
-            return SignalBead(date: date, level: level, recordingID: nil)
+            let level: (any SignalLevel)? = i % 4 == 0 ? nil : baseLevel
+            return SignalBead(
+                date: Date(timeIntervalSinceReferenceDate: Double(weekday)),
+                level: level,
+                recordingID: nil,
+                weekdayLabel: label
+            )
         }
-        return SignalStrip(kind: kind, beads: beads, summary: "mostly \(kind.label.lowercased())")
+        return SignalStrip(kind: kind, beads: beads, summary: "mostly good")
     }
-    SignalStripsView(strips: strips, onBeadTap: { _ in })
+    SignalStripsView(strips: strips)
         .padding(.vertical)
 }
