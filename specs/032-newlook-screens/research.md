@@ -118,7 +118,12 @@ label** (medication chips = solid medication purple).
 
 **Rationale.** These three are the New Look's whole visual grammar; centralizing them as
 modifiers keeps both screens literal-free (FR-006) and makes US2 reuse US1's work. The `.card()`
-modifier is left untouched so the other 3 P&P consumers are unaffected (FR-011).
+modifier **definition** is left untouched. Note the actual `.card()` consumers are 4 files
+(`RecordingDetailView`, `ADHDSummarySection`, `RecordingRow`, `MedicationBarView`); US2 migrates
+the first two to `.newLookCard()`, so the **2 that stay Paper & Pollen are `RecordingRow` and
+`MedicationBarView`** — those are what "unaffected" protects (FR-011). `RecordingDetailView` also
+composes `.medicationBarOverlay()` (a `.card()` surface); its P&P appearance inside the re-skinned
+a02 is an accepted **within-screen seam**, decided explicitly at implementation (T017), not silent.
 
 ---
 

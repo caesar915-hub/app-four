@@ -18,8 +18,10 @@ extension View  { func newLookCard(padding:) -> some View }          // borderle
                   func newLookChip(selected:, role:) -> some View     // white+hairline / solid+white
 // nav-row helper: back pill · centered title · Save pill
 ```
-- `Theme`, `Palette`, `Typography`, `.card()` are **unchanged** — the contract adds, never mutates
-  (protects the 4 P&P `.card()` consumers and every `Theme.*` screen — FR-011).
+- `Theme`, `Palette`, `Typography`, and the `.card()` **definition** are **unchanged** — the
+  contract adds, never mutates. US2 migrates 2 of the 4 `.card()`-consuming files
+  (`RecordingDetailView`, `ADHDSummarySection`) to `.newLookCard()`; the **2 that stay Paper &
+  Pollen are `RecordingRow` and `MedicationBarView`** (plus every `Theme.*` screen) — FR-011.
 
 ## US1 — a03 Edit check-in (node `308:1654`) — required visual states
 
@@ -43,7 +45,7 @@ extension View  { func newLookCard(padding:) -> some View }          // borderle
 | C11 | Hero strip | 3 equal columns (glyph · level word · uppercase micro-label · level bar) |
 | C12 | Info cards | `.newLookCard()`; bold sentence-case header + leading icon: Medications · Sleep · Emotions · Side effects · Transcript |
 | C13 | Card body | `inkPrimary`, `NewLook.card` surface, one body size across cards |
-| C14 | Audio card | play control (medication purple), progress track, duration mono label |
+| C14 | Audio card | play control (medication purple), progress track, mono duration label — **card internals restyled (T017), not just the container** |
 | C15 | Delete row | destructive treatment (`Theme.danger` reused — warm clay, never raw red) |
 | C16 | Transcript | full text wraps, no clip/overlap at any Dynamic Type size |
 | C17 | Behavior | playback / edit entry / delete identical to current (FR-005) |
@@ -55,7 +57,7 @@ extension View  { func newLookCard(padding:) -> some View }          // borderle
 | X1 | No literals | style-literal audit of both view files returns zero hardcoded color/radius/shadow (SC-003, FR-006) |
 | X2 | Both appearances | every token legible in light AND dark; contrast holds (FR-009, SC-004) |
 | X3 | No behavior change | existing VM suites green; manual flow parity (SC-002) |
-| X4 | Isolation | non-target screens + `.card()` consumers visually unchanged (FR-011) |
+| X4 | Isolation | non-target screens + the 2 remaining P&P `.card()` consumers (`RecordingRow`, `MedicationBarView`) + mascot tab bar / `RootTabView` / status chrome visually unchanged (FR-011) |
 | X5 | Glyphs | sprout/bolt/aperture/bed/capsule shapes unchanged; only container/color restyled (FR-008) |
 
 ## Out of contract (explicitly excluded)

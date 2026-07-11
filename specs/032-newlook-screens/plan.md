@@ -40,8 +40,10 @@ code (FR-006); `.card()` and all non-target screens must remain byte-identical i
 (FR-011); mixed look accepted (FR-010)
 
 **Scale/Scope**: 2 screens re-skinned now (US1, US2) + 1 token file (US0); US3 (calendar,
-1 more screen cluster) gated out. ~2 view files (~465 + ~259 lines) restyled, 1 new token file,
-DESIGN.md amended.
+1 more screen cluster) gated out. **5 view/component files edited** — `ExtractionReviewView` (~465
+lines), `RecordingDetailView` (~259), `ADHDSummarySection` (a02's info cards, US2), `Chip.swift`
+(US1-only consumer), `GlyphRampPicker.swift` (parameterized, shared with Check-in) — plus 1 new
+token file (`NewLook.swift`), `Radius.swift` (+1 constant), and DESIGN.md amended.
 
 ## Constitution Check
 
@@ -96,8 +98,12 @@ Packages/SquirlDesignSystem/Sources/SquirlDesignSystem/
 └── Typography.swift      # UNCHANGED — mapped to existing roles (D2)
 
 app-four/Views/
-├── ExtractionReviewView.swift   # EDIT (US1, a03) — Theme.* → NewLook.*, chips/nav re-skinned
-└── RecordingDetailView.swift    # EDIT (US2, a02) — Theme.* → NewLook.*, hero + cards re-skinned
+├── ExtractionReviewView.swift          # EDIT (US1, a03) — Theme.* → NewLook.*, cards/nav/chips
+├── RecordingDetailView.swift           # EDIT (US2, a02) — Theme.* → NewLook.*, hero + cards
+└── Components/
+    ├── ADHDSummarySection.swift        # EDIT (US2) — a02 info cards .card() → .newLookCard()
+    ├── Chip.swift                      # EDIT (US1) — Chip.filter selected/unselected New Look (US1-only consumer)
+    └── GlyphRampPicker.swift           # EDIT (US1) — add New Look tint PARAM (shared w/ TextCheckInComposer — default stays P&P)
 
 app-fourTests/ViewModels/
 ├── ExtractionReviewViewModelTests.swift   # UNCHANGED — regression gate (must stay green)
@@ -117,8 +123,9 @@ Look is one new file in the design package plus in-place edits to exactly two vi
 - **US1 — a03 Edit check-in (P1)**: switch `ExtractionReviewView` to New Look tokens + grammar;
   bold sentence-case headers + a03 naming; centered nav title; selection-green chips, medication
   purple; device QA vs a02… a03. Existing VM suite green.
-- **US2 — a02 Recording detail (P2)**: switch `RecordingDetailView`; signal hero strip, info
-  cards, audio card, delete row per a02. Existing VM suite green.
+- **US2 — a02 Recording detail (P2)**: switch `RecordingDetailView` **and `ADHDSummarySection`**
+  (its info cards); signal hero strip, info cards, audio card (C14 internals), delete row per a02.
+  Decide the `.medicationBarOverlay()` P&P seam explicitly. Existing VM suite green.
 - **US3 — a01 Calendar timeline (P3, GATED)**: excluded from this PR; starts only when spec-029
   is merged/abandoned (FR-012). Separate follow-up PR.
 - **Ship**: build + full suite green on branch → `/code-review` → PR to `main` (US1+US2+US0) →
