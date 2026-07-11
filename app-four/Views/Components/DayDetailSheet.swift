@@ -19,12 +19,6 @@ struct DayDetailSheet: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: Spacing.s) { // was 10
-                    DaySignalsSummaryView(
-                        dayStart: SignalDayKey.dayStart(for: day.date),
-                        store: AppDependencies.signalsStore,
-                        coordinator: AppDependencies.signalSyncCoordinator,
-                        health: AppDependencies.healthService
-                    )
                     ForEach(day.recordings) { recording in
                         Button {
                             dismiss()

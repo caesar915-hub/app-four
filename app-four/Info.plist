@@ -4,19 +4,11 @@
 <dict>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Squirl shows what was on your calendar alongside your check-ins. Events are read on this device only and never leave it.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
 	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Fraunces.ttf</string>
-		<string>FrauncesItalic.ttf</string>
-		<string>DMSans.ttf</string>
-		<string>IBMPlexMono-Regular.ttf</string>
-		<string>IBMPlexMono-Medium.ttf</string>
-	</array>
-	<key>NSHealthShareUsageDescription</key>
-	<string>Squirl reads your sleep, activity, heart, cycle, nutrition, and workout data from Apple Health so you can see them alongside your check-ins. This is read-only and stays on your device.</string>
 </dict>
 </plist>

@@ -1,0 +1,30 @@
+name: SquirlSandbox
+options:
+  deploymentTarget:
+    iOS: "26.4"
+  createIntermediateGroups: true
+packages:
+  SquirlDesignSystem:
+    path: ../Packages/SquirlDesignSystem
+  SquirlSignals:
+    path: ../Packages/SquirlSignals
+targets:
+  SquirlSandbox:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources
+    dependencies:
+      - package: SquirlDesignSystem
+      - package: SquirlSignals
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: Rythm-App.SquirlSandbox
+        GENERATE_INFOPLIST_FILE: "YES"
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        INFOPLIST_KEY_UILaunchScreen_Generation: "YES"
+        INFOPLIST_KEY_CFBundleDisplayName: Squirl Sandbox
+        ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: "NO"
+        SWIFT_APPROACHABLE_CONCURRENCY: "YES"
+        SWIFT_DEFAULT_ACTOR_ISOLATION: MainActor

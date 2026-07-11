@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl · DayCard reorganization · NO pills · 3 grounded directions · TRUE scale</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Reorganization study — Balanced density, NO pill containers. Three grounded directions.
+     Principle (research): a capsule is an INTERACTIVE affordance; read-only check-in data must
+     read as bare glyph+text (like the energy/focus ramp already does). Group by proximity +
+     whitespace, not boxes. Spend the single purple accent once, on medication. Color reinforces,
+     never sole cue. Sources cited in the footer. */
+  :root{
+    --bg:#F6F1E7; --card:#FCF8EF; --elevated:#FCF8EF;
+    --ink:#221E16; --muted:#7A7361; --muted2:#615A49; --hair:#E3DAC7;  /* muted2 = darkened secondary, ~4:1 on cream */
+    --med:#7E5CA8; --warning:#A8602B;
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    --mw1:#8E470F; --mw2:#8A5600; --mw3:#41691F; --mw4:#2C6B3B; --mw5:#1E5C38;
+    --e1:#7C6E2E; --e2:#A89236; --e3:#D2BB40; --e4:#EEDA4C; --e5:#FCEE64;
+    --f1:#44546E; --f2:#4E6F94; --f3:#5889BA; --f4:#63A4E0; --f5:#79C4FF;
+  }
+  [data-theme="dark"]{
+    --bg:#14130F; --card:#1E1C16; --elevated:#272419;
+    --ink:#F3EEE0; --muted:#9A917C; --muted2:#B6AD97; --hair:#322E22; --med:#9277BE; --warning:#D98A3E;
+    --mw1:#E89A5A; --mw2:#EDA94A; --mw3:#B7D897; --mw4:#79C98E; --mw5:#57C98A;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:#1d1c1a;color:#EDE9DC;font-family:'DM Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased;padding:42px 24px 60px;}
+  .head{max-width:1240px;margin:0 auto 26px;}
+  .head h1{font-family:'Fraunces',serif;font-weight:600;font-size:27px;margin:0 0 6px;}
+  .head p{color:#9d988a;font-size:13.5px;line-height:1.55;max-width:90ch;margin:0;}
+  .btn{margin-top:14px;font-size:13px;font-weight:600;cursor:pointer;background:#2a2823;color:#EDE9DC;border:1px solid #3a382f;border-radius:999px;padding:8px 16px;}
+
+  .board{display:flex;flex-wrap:wrap;gap:30px;justify-content:center;align-items:flex-start;}
+  .proposal{flex:none;width:393px;}
+  .plabel{padding:0 16px 10px;}
+  .pid{font-family:'Fraunces',serif;font-size:18px;font-weight:600;}
+  .pid.rec{color:#EAD08A;}
+  .ptag{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9d988a;font-weight:700;margin-left:8px;border:1px solid #3a382f;border-radius:6px;padding:2px 6px;vertical-align:2px;}
+  .pdesc{display:block;color:#a9a392;font-size:12.5px;margin-top:5px;line-height:1.5;}
+
+  .band{width:393px;background:var(--bg);border-radius:20px;padding:14px 16px;display:flex;flex-direction:column;gap:12px;}
+  .stag{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:700;padding-left:2px;}
+
+  .card{border-radius:16px;overflow:hidden;background:var(--card);box-shadow:0 1px 3px rgba(40,48,24,.05);}
+  .ohdr{display:flex;flex-direction:column;gap:8px;padding:16px 0;}
+  .otop{display:flex;align-items:center;gap:12px;min-height:44px;padding:0 16px;}
+  .gdisc{flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:0;}
+  .otitle{flex:1;min-width:0;font-family:'Fraunces',serif;font-size:16px;font-weight:500;}
+  .t-sep{color:var(--muted);} .oday{color:var(--ink);}
+  .ochev{flex:none;font-size:13px;color:var(--muted);font-weight:700;line-height:1;}
+  .fdiv{height:1px;background:var(--hair);}
+  .fsum{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:0 16px;font-size:11.5px;}
+  .fsum .sig{display:inline-flex;align-items:center;gap:4px;color:var(--ink);}
+  .fsum .sep{color:var(--muted);} .fsum .medname{color:var(--med);font-weight:600;}
+
+  .cbody{padding:12px 16px 16px;}
+  .row{display:flex;gap:12px;align-items:flex-start;}
+  .beadcol{flex:none;display:flex;flex-direction:column;align-items:center;}
+  .bead{position:relative;display:flex;align-items:center;justify-content:center;flex:none;}
+  .disc{border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:0;}
+  .medbadge{position:absolute;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono';font-weight:800;color:var(--med);background:var(--elevated);border:0.5px solid color-mix(in srgb,var(--hair) 30%,transparent);border-radius:999px;padding:1px 4px;white-space:nowrap;}
+  .conn{width:1px;background:var(--hair);flex:1;min-height:18px;}
+  .ct{flex:1;min-width:0;display:flex;flex-direction:column;}
+
+  .rtop{display:flex;align-items:baseline;gap:8px;}
+  .mword{font-family:'Fraunces',serif;font-weight:500;font-size:13px;}
+  .rtime{font-family:'IBM Plex Mono';color:var(--muted);font-size:10.5px;}
+  .rchev{margin-left:auto;color:var(--muted);font-weight:700;align-self:center;font-size:11px;}
+
+  /* the shared, container-free grammar */
+  .run{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;}            /* a bare glyph+word run */
+  .sig{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;color:var(--ink);}
+  .glyph{display:inline-flex;vertical-align:middle;line-height:0;}
+  .med{display:inline-flex;align-items:center;gap:4px;color:var(--med);font-weight:600;}
+  .ctx{display:flex;flex-wrap:wrap;align-items:center;gap:3px 6px;color:var(--muted2);font-size:11px;}
+  .ctx .item{display:inline-flex;align-items:center;gap:4px;}
+  .ctx .mid{color:var(--muted);}
+  /* definition-list (B) */
+  .dl{display:flex;flex-direction:column;gap:4px;}
+  .dl .dlrow{display:flex;align-items:baseline;gap:8px;font-size:11px;color:var(--muted2);}
+  .dl .dlrow.medrow{color:var(--med);font-weight:600;font-size:11.5px;}
+  .dl .gcol{flex:none;width:16px;display:flex;justify-content:center;}
+  .dl .val .mid{color:var(--muted);}
+
+  .foot{max-width:1240px;margin:30px auto 0;color:#8f8a7c;font-size:12px;line-height:1.6;border-top:1px solid #2f2d28;padding-top:16px;}
+  .foot b{color:#cfc9b8;} .foot a{color:#bdae84;text-decoration:none;} .foot code{font-family:'IBM Plex Mono';color:#cdbf95;font-size:11px;}
+</style>
+</head>
+<body>
+<div class="head">
+  <h1>DayCard — remove the pills, reorganize</h1>
+  <p>Balanced density, every capsule removed. The fix the research converges on: render <b>all</b> read-only check-in data as bare glyph+word — the way energy/focus already are — and create grouping with <b>whitespace + a leading glyph + the single purple accent</b>, not boxes. Three directions differ only in how the former-chip data (medication / sleep / side-effects / emotions) is reorganized. The no-signal “General” topic is dropped. ✦ = recommended.</p>
+  <button class="btn" onclick="toggleTheme()">◐ light / dark</button>
+</div>
+
+<div class="board" id="board"></div>
+
+<div class="foot" id="foot"></div>
+
+<script>
+const mC=['var(--m1)','var(--m2)','var(--m3)','var(--m4)','var(--m5)'];
+const mW=['var(--mw1)','var(--mw2)','var(--mw3)','var(--mw4)','var(--mw5)'];
+const eC=['var(--e1)','var(--e2)','var(--e3)','var(--e4)','var(--e5)'];
+const fC=['var(--f1)','var(--f2)','var(--f3)','var(--f4)','var(--f5)'];
+const ENW=['Sluggish','Tired','Steady','Alert','Charged'],FOW=['Foggy','Distracted','Present','Sharp','Locked in'];
+const cssv=v=>v&&v.startsWith('var(')?getComputedStyle(document.documentElement).getPropertyValue(v.slice(4,-1).trim()).trim():v;
+const tint=(h,p,base)=>`color-mix(in srgb, ${h} ${p}%, ${base||'var(--card)'})`;
+
+/* ---- signal glyphs ported 1:1 from SwiftUI Canvas geometry ---- */
+function gMood(hex,l,px){const lift=0.66+l*0.068,open=l>=4,top=open?9:11,fill=Math.min(1,0.42+l*0.145).toFixed(2);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26"><g transform="translate(12 13) scale(${lift}) translate(-12 -13)">`+
+    `<path d="M12 25 C12 18 12 14 12 ${top}" stroke="${hex}" stroke-width="1.5" fill="none" opacity="0.6" stroke-linecap="round"/>`+
+    `<path d="M12 ${top} C ${open?4:6} ${open?13:14}, ${open?5:6} ${open?2:5}, 12 1 C ${open?19:18} ${open?2:5}, ${open?20:18} ${open?13:14}, 12 ${top} Z" fill="${hex}" fill-opacity="${fill}" stroke="${hex}" stroke-width="1.3" stroke-linejoin="round"/>`+
+    (l>=3?`<path d="M12 ${top} L12 4" stroke="${hex}" stroke-width="1" opacity="0.5"/>`:'')+
+    (l>=5?`<circle cx="12" cy="6" r="2" fill="${hex}"/>`:'')+`</g></svg>`;}
+function gEnergy(hex,l,px){const lift=0.6+l*0.08,fill=Math.min(1,0.35+l*0.15).toFixed(2),sw=(0.9+l*0.16).toFixed(2);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26"><g transform="translate(12 13) scale(${lift}) translate(-12 -13)"><path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${hex}" fill-opacity="${fill}" stroke="${hex}" stroke-width="${sw}" stroke-linejoin="round"/></g></svg>`;}
+function gFocus(hex,l,px){const cx=12,cy=13;let o=`<circle cx="${cx}" cy="${cy}" r="9" fill="none" stroke="${hex}" stroke-width="1.2" opacity="${(0.3+l*0.12).toFixed(2)}" ${l<=2?'stroke-dasharray="3 3"':''}/>`;
+  if(l>=2)o+=`<circle cx="${cx}" cy="${cy}" r="6" fill="none" stroke="${hex}" stroke-width="1.3" opacity="${(0.4+l*0.11).toFixed(2)}"/>`;
+  if(l>=4)o+=`<circle cx="${cx}" cy="${cy}" r="3.3" fill="none" stroke="${hex}" stroke-width="1.4" opacity="0.92"/>`;
+  if(l>=3){const r=((l-1)*0.85).toFixed(2);o+=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${hex}" fill-opacity="${(0.5+l*0.1).toFixed(2)}"/>`;}
+  return `<svg width="${px}" height="${px}" viewBox="0 0 24 26">${o}</svg>`;}
+function gCapsule(hex,px){const w=px*0.86,h=px*0.42,x=(px-w)/2,y=(px-h)/2,r=h/2,id='cp'+Math.round(px*10);
+  return `<svg width="${px}" height="${px}" viewBox="0 0 ${px} ${px}"><defs><clipPath id="${id}"><rect x="${x}" y="${y}" width="${w/2}" height="${h}"/></clipPath></defs>`+
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${hex}" fill-opacity="0.22"/>`+
+    `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${hex}" fill-opacity="0.5" clip-path="url(#${id})"/>`+
+    `<rect x="${x+1}" y="${y+1}" width="${w-2}" height="${h-2}" rx="${r-1}" fill="none" stroke="${hex}" stroke-width="2"/>`+
+    `<rect x="${px/2-0.8}" y="${(y+h*0.17).toFixed(2)}" width="1.6" height="${(h*0.66).toFixed(2)}" fill="${hex}" fill-opacity="0.8"/></svg>`;}
+/* ---- category leading icons (inherit muted ink unless coloured) ---- */
+const iBed=(px,c)=>`<svg width="${px}" height="${(px*0.92).toFixed(0)}" viewBox="0 0 24 22" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6v12M3 12h18v6M21 18v-3a3 3 0 0 0-3-3H9"/><circle cx="6.5" cy="9.5" r="1.5"/></svg>`;
+const iBandage=(px,c)=>`<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5" transform="rotate(-45 12 12)"/><circle cx="12" cy="12" r="0.7" fill="${c}" stroke="none"/><circle cx="9.5" cy="9.5" r="0.6" fill="${c}" stroke="none"/><circle cx="14.5" cy="14.5" r="0.6" fill="${c}" stroke="none"/></svg>`;
+const iHeart=(px,c)=>`<svg width="${px}" height="${px}" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linejoin="round"><path d="M12 20s-7-4.5-7-9.5A3.8 3.8 0 0 1 12 7a3.8 3.8 0 0 1 7 3.5C19 15.5 12 20 12 20Z"/></svg>`;
+
+const mg=(l,px)=>`<span class="glyph">${gMood(cssv(mC[l-1]),l,px)}</span>`;
+const eg=(l,px)=>`<span class="glyph">${gEnergy(cssv(eC[l-1]),l,px)}</span>`;
+const fg=(l,px)=>`<span class="glyph">${gFocus(cssv(fC[l-1]),l,px)}</span>`;
+const cap=(px,c)=>`<span class="glyph">${gCapsule(c||cssv('var(--med)'),px)}</span>`;
+const MOODW=m=>['Low','Flat','Okay','Good','Great'][m-1];
+
+/* Balanced density */
+const CFG={disc:36,mood:13,time:10.5,sg:12,between:24};
+
+function bead(r){const D=CFG.disc;const badge=tint(mC[r.m-1],50,'var(--card)');
+  let ring='',bdg='';
+  if(r.carry!=null){const sw=3.0,rr=(D-sw)/2,c=D/2,C=2*Math.PI*rr,p=Math.max(0.003,r.carry);
+    ring=`<svg width="${D}" height="${D}" viewBox="0 0 ${D} ${D}" style="position:absolute;inset:0;transform:rotate(-90deg)"><circle cx="${c}" cy="${c}" r="${rr}" fill="none" stroke="${cssv('var(--med)')}" stroke-width="${sw}" stroke-linecap="round" stroke-dasharray="${(p*C).toFixed(1)} ${C.toFixed(1)}"/></svg>`;
+    bdg=`<span class="medbadge" style="font-size:8.5px;bottom:-2px">${Math.round(r.carry*100)}%</span>`;}
+  return `<div class="bead" style="width:${D+2}px;height:${D+2}px"><div class="disc" style="width:${D}px;height:${D}px;background:${badge}">${mg(r.m,Math.round(D*0.6))}</div>${ring}${bdg}</div>`;}
+
+function headRamp(r,withMed){
+  let ramp='';
+  if(r.e!=null)ramp+=`<span class="sig">${eg(r.e,CFG.sg)} ${ENW[r.e-1]}</span>`;
+  if(r.f!=null)ramp+=`<span class="sig">${fg(r.f,CFG.sg)} ${FOW[r.f-1]}</span>`;
+  if(withMed&&r.med)ramp+=`<span class="med">${cap(13)} ${r.med}</span>`;
+  const head=`<div class="rtop"><span class="mword" style="color:${cssv(mW[r.m-1])}">${MOODW(r.m)}</span><span class="rtime">${r.time}</span><span class="rchev">›</span></div>`;
+  return {head, ramp:ramp?`<div class="run" style="margin-top:4px">${ramp}</div>`:''};
+}
+/* muted context run: sleep -> side-effects -> emotions, leading glyph + value, joined by middot */
+function ctxRun(r){
+  const m=cssv('var(--muted2)');const parts=[];
+  if(r.sleep)parts.push(`<span class="item">${iBed(12,m)} ${r.sleep}</span>`);
+  if(r.se&&r.se.length)parts.push(`<span class="item">${iBandage(12,m)} ${r.se.join(' · ')}</span>`);
+  if(r.emo&&r.emo.length)parts.push(`<span class="item">${iHeart(12,m)} ${r.emo.join(' · ')}</span>`);
+  if(!parts.length)return '';
+  return `<div class="ctx" style="margin-top:6px">${parts.join('<span class="mid">·</span>')}</div>`;
+}
+
+/* ---------- DIRECTION A: minimal inline (med joins the signal run) ---------- */
+function rowA(r,isLast){const hr=headRamp(r,true);
+  return `<div class="row"><div class="beadcol">${bead(r)}${isLast?'':'<div class="conn"></div>'}</div>
+    <div class="ct" style="padding-top:14px;padding-bottom:${isLast?0:CFG.between}px">${hr.head}${hr.ramp}${ctxRun(r)}</div></div>`;}
+
+/* ---------- DIRECTION B: definition list (key=glyph, value=text) ---------- */
+function rowB(r,isLast){const hr=headRamp(r,false);const m=cssv('var(--muted2)');
+  const rows=[];
+  if(r.med)rows.push(`<div class="dlrow medrow"><span class="gcol">${cap(13)}</span><span class="val">${r.med}</span></div>`);
+  if(r.sleep)rows.push(`<div class="dlrow"><span class="gcol">${iBed(13,m)}</span><span class="val">${r.sleep}</span></div>`);
+  if(r.se&&r.se.length)rows.push(`<div class="dlrow"><span class="gcol">${iBandage(13,m)}</span><span class="val">${r.se.join(' <span class="mid">·</span> ')}</span></div>`);
+  if(r.emo&&r.emo.length)rows.push(`<div class="dlrow"><span class="gcol">${iHeart(13,m)}</span><span class="val">${r.emo.join(' <span class="mid">·</span> ')}</span></div>`);
+  const dl=rows.length?`<div class="dl" style="margin-top:8px">${rows.join('')}</div>`:'';
+  return `<div class="row"><div class="beadcol">${bead(r)}${isLast?'':'<div class="conn"></div>'}</div>
+    <div class="ct" style="padding-top:14px;padding-bottom:${isLast?0:CFG.between}px">${hr.head}${hr.ramp}${dl}</div></div>`;}
+
+/* ---------- DIRECTION C: grouped two-line (primary med line + context line) ---------- */
+function rowC(r,isLast){const hr=headRamp(r,false);
+  const medLine=r.med?`<div class="med" style="margin-top:8px;font-weight:600;font-size:12px">${cap(14)} Taken ${r.med}</div>`:'';
+  const ctx=ctxRun(r);const ctxSpaced=ctx?ctx.replace('margin-top:6px',`margin-top:${r.med?10:6}px`):'';
+  return `<div class="row"><div class="beadcol">${bead(r)}${isLast?'':'<div class="conn"></div>'}</div>
+    <div class="ct" style="padding-top:14px;padding-bottom:${isLast?0:CFG.between}px">${hr.head}${hr.ramp}${medLine}${ctxSpaced}</div></div>`;}
+
+/* header (constant): folded adds full-bleed divider + bare summary (energy·focus·med name) */
+function header(folded){const m=4,strip=tint(mC[m-1],24,'var(--card)'),badge=tint(mC[m-1],50,'var(--card)');
+  const otop=`<div class="otop"><span class="gdisc" style="width:42px;height:42px;background:${badge}">${mg(m,Math.round(42*0.56))}</span>
+    <span class="otitle"><span style="color:${cssv(mW[m-1])}">Good</span><span class="t-sep"> · </span><span class="oday">Monday 8</span></span>
+    <span class="ochev" style="transform:rotate(${folded?0:180}deg)">⌄</span></div>`;
+  if(!folded)return `<div class="ohdr" style="background:${strip}">${otop}</div>`;
+  const sum=`<div class="fsum"><span class="sig">${eg(4,12)} Alert</span><span class="sep">·</span><span class="sig">${fg(3,12)} Present</span><span class="sep">·</span><span class="sig medname">${cap(13)} Concerta</span></div>`;
+  return `<div class="ohdr" style="background:${strip}">${otop}<div class="fdiv"></div>${sum}</div>`;}
+
+/* representative day — one rich check-in (all categories), one carry-over-only, one bare */
+const R=[
+  {time:'16:12',m:4,e:4,f:3,carry:0.58,med:'Concerta 36mg',sleep:'5h sleep',se:['Nausea','Jitters'],emo:['Calm','Focused']},
+  {time:'12:40',m:3,e:3,f:null,carry:0.34,med:null,sleep:null,se:[],emo:['Restless']},
+  {time:'09:15',m:3,e:null,f:null,carry:null,med:null,sleep:null,se:[],emo:[]},
+];
+
+const DIRS=[
+ {id:'A',name:'Minimal inline',rec:false,fn:rowA,desc:'Med joins the energy/focus run (purple ink). One muted context line carries sleep · side-effects · emotions. Calmest, smallest diff — a strict subset of C.'},
+ {id:'B',name:'Definition list',rec:false,fn:rowB,desc:'One labeled key→value row per category (glyph = key, text = value), baseline-aligned. Most scannable for a single fact; tallest. Best when days are data-rich.'},
+ {id:'C',name:'Grouped two-line',rec:true,fn:rowC,desc:'Medication gets its own isolated primary line (the lone color/weight accent + the bead ring); everything descriptive recedes to one muted context line. Encodes the real ranking for a med journal.'},
+];
+
+function proposalHTML(d){
+  const folded=`<div class="card">${header(true)}</div>`;
+  const open=`<div class="card">${header(false)}<div class="cbody">${R.map((r,i)=>d.fn(r,i===R.length-1)).join('')}</div></div>`;
+  return `<div class="proposal">
+    <div class="plabel"><span class="pid${d.rec?' rec':''}">${d.id} · ${d.name}${d.rec?' ✦':''}</span><span class="ptag">no pills</span><span class="pdesc">${d.desc}</span></div>
+    <div class="band"><span class="stag">Folded</span>${folded}<span class="stag">Unfolded</span>${open}</div>
+  </div>`;
+}
+function render(){document.getElementById('board').innerHTML=DIRS.map(proposalHTML).join('');}
+function toggleTheme(){const r=document.documentElement;r.setAttribute('data-theme',r.getAttribute('data-theme')==='dark'?'light':'dark');render();}
+
+document.getElementById('foot').innerHTML=`<b>Grounding</b> — chips/pills are an interactive affordance, not a display style (<a href="https://github.com/material-components/material-components-android/blob/master/docs/components/Chip.md">Material</a>, <a href="https://smart-interface-design-patterns.com/articles/badges-chips-tags-pills/">Smart Interface Design Patterns</a>); group by proximity + whitespace not boxes (<a href="https://www.nngroup.com/articles/common-region/">NN/g common region</a>, <a href="https://www.nngroup.com/articles/gestalt-proximity/">proximity</a>); hierarchy via weight/colour, emphasize by de-emphasizing (<a href="https://refactoringui.com/previews/labels-are-a-last-resort/">Refactoring UI</a>, <a href="https://polaris-react.shopify.com/components/feedback-indicators/badge">Polaris</a>); colour is reinforcement, never the sole cue (<a href="https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html">WCAG 1.4.1</a>); keep glyph+label, informative glyphs need 3:1 (<a href="https://www.nngroup.com/articles/icon-usability/">NN/g icons</a>, <a href="https://www.w3.org/WAI/WCAG21/Techniques/general/G207">WCAG G207</a>); native rows use bare glyph+text, capsules reserved for filters (<a href="https://sosumi.ai/design/human-interface-guidelines/lists-and-tables">Apple HIG</a>).<br><br><b>Before merge (research):</b> <code>--muted2</code> secondary ink + every informative glyph must be re-checked to clear 3:1 on cream and on the mood tint (color-contrast-audit.html); add an <code>accessibilityLabel</code> per glyph; the “General” topic is dropped as no-signal; confirm the row chevron is a real push to detail; delete <code>TimelineChip.swift</code>.`;
+document.documentElement.setAttribute('data-theme','light');
+render();
+</script>
+</body>
+</html>

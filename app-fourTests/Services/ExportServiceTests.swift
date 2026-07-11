@@ -18,6 +18,7 @@ struct ExportServiceTests {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         return try ModelContainer(
             for: Recording.self, TranscriptionSegment.self, RecordingTag.self, MedicationEvent.self,
+            DayCalendarContext.self,
             configurations: config
         )
     }
@@ -154,5 +155,94 @@ struct ExportServiceTests {
         let archive = try JSONDecoder().decode(JournalArchive.self, from: json)
 
         #expect(archive.recordings.isEmpty)
+        #expect(archive.dayContexts.isEmpty)
+    }
+
+    // MARK: - Format version
+
+    @Test func archiveFormatVersionIsTwo() async throws {
+        let container = try makeContainer()
+
+        let service: ExportService = ExportServiceImpl()
+        let result = try await service.export(from: container.mainContext)
+
+        let box = try AES.GCM.SealedBox(combined: result.data)
+        let json = try AES.GCM.open(box, using: result.key)
+        let archive = try JSONDecoder().decode(JournalArchive.self, from: json)
+
+        #expect(archive.formatVersion == 2)
+    }
+
+    // MARK: - Day context round-trip
+
+    @Test func dayContextsRoundTripThroughArchive() async throws {
+        let container = try makeContainer()
+        let ctx = container.mainContext
+
+        let dayKey = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_750_000_000))
+        let capturedAt = Date(timeIntervalSince1970: 1_750_003_600)
+        let payload = CapturedDayEvents(events: [
+            CapturedEvent(
+                title: "Team Sync",
+                start: Date(timeIntervalSince1970: 1_750_010_000),
+                end: Date(timeIntervalSince1970: 1_750_013_600),
+                isAllDay: false,
+                attendeeCount: 3,
+                availability: "busy"
+            )
+        ])
+
+        let row = DayCalendarContext(
+            dayKey: dayKey,
+            capturedAt: capturedAt,
+            titlesIncluded: true,
+            isMockData: false
+        )
+        row.encodeEvents(payload)
+        ctx.insert(row)
+        try ctx.save()
+
+        let service: ExportService = ExportServiceImpl()
+        let result = try await service.export(from: container.mainContext)
+
+        let box = try AES.GCM.SealedBox(combined: result.data)
+        let json = try AES.GCM.open(box, using: result.key)
+        let archive = try JSONDecoder().decode(JournalArchive.self, from: json)
+
+        #expect(archive.formatVersion == 2)
+        #expect(archive.dayContexts.count == 1)
+
+        let dc = try #require(archive.dayContexts.first)
+        #expect(dc.dayKey == dayKey)
+        #expect(dc.capturedAt == capturedAt)
+        #expect(dc.titlesIncluded == true)
+        #expect(dc.events == payload)
+    }
+
+    @Test func dayContextWithNilEventsJSONFallsBackToEmpty() async throws {
+        let container = try makeContainer()
+        let ctx = container.mainContext
+
+        let dayKey = Calendar.current.startOfDay(for: Date(timeIntervalSince1970: 1_750_000_000))
+        let row = DayCalendarContext(
+            dayKey: dayKey,
+            eventsJSON: nil,
+            capturedAt: Date(timeIntervalSince1970: 1_750_003_600),
+            titlesIncluded: false,
+            isMockData: false
+        )
+        ctx.insert(row)
+        try ctx.save()
+
+        let service: ExportService = ExportServiceImpl()
+        let result = try await service.export(from: container.mainContext)
+
+        let box = try AES.GCM.SealedBox(combined: result.data)
+        let json = try AES.GCM.open(box, using: result.key)
+        let archive = try JSONDecoder().decode(JournalArchive.self, from: json)
+
+        #expect(archive.dayContexts.count == 1)
+        let dc = try #require(archive.dayContexts.first)
+        #expect(dc.events.events.isEmpty, "nil eventsJSON must fall back to CapturedDayEvents(events: [])")
     }
 }

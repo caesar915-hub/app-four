@@ -59,12 +59,12 @@ extension Recording {
             } else {
                 label = "sleep"
             }
-            tags.append(DisplayTag(id: "sleep", label: label, icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
+            tags.append(DisplayTag(id: "sleep", label: label, icon: "bed.double.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
         } else if let hours = sleepHours {
             let label = hours == hours.rounded() ? "\(Int(hours))h sleep" : "\(hours)h sleep"
-            tags.append(DisplayTag(id: "sleep", label: label, icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
+            tags.append(DisplayTag(id: "sleep", label: label, icon: "bed.double.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
         } else if let quality = sleepQuality {
-            tags.append(DisplayTag(id: "sleep", label: "\(quality) sleep", icon: "moon.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
+            tags.append(DisplayTag(id: "sleep", label: "\(quality) sleep", icon: "bed.double.fill", color: .indigo, glyph: GlyphBadge(kind: .sleep)))
         }
 
         for (i, effect) in decodedSideEffects.enumerated() {
@@ -86,6 +86,35 @@ extension Recording {
         }
 
         return tags
+    }
+
+    // MARK: - DayCard redesign (spec 023): line-3 sleep + line-4 caps
+
+    /// Human sleep label ("5h sleep", "calm sleep") or nil when no sleep was logged.
+    @MainActor var sleepLabel: String? {
+        if let event = decodedSleepEvent {
+            if let h = event.hours { return h == h.rounded() ? "\(Int(h))h sleep" : "\(h)h sleep" }
+            if let q = event.quality { return "\(q) sleep" }
+            return "sleep"
+        }
+        if let hours = sleepHours { return hours == hours.rounded() ? "\(Int(hours))h sleep" : "\(hours)h sleep" }
+        if let quality = sleepQuality { return "\(quality) sleep" }
+        return nil
+    }
+
+    /// Sleep for the check-in row's line 3, in the sleep blue. nil when no sleep was logged.
+    @MainActor var sleepLine: (label: String, color: Color)? {
+        sleepLabel.map { ($0, Palette.sleepIndigo) }
+    }
+
+    /// Feelings (emotions) for line 4, capped to `max` capitalised values + an overflow count.
+    func feelings(max: Int = 4) -> (shown: [String], overflow: Int) { Self.capped(decodedEmotions, max: max) }
+
+    /// Side-effects for line 4, capped to `max` capitalised values + an overflow count.
+    func sideEffects(max: Int = 4) -> (shown: [String], overflow: Int) { Self.capped(decodedSideEffects, max: max) }
+
+    private static func capped(_ all: [String], max: Int) -> (shown: [String], overflow: Int) {
+        (all.prefix(max).map(\.capitalized), Swift.max(0, all.count - max))
     }
 }
 

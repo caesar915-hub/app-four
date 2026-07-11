@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spec 029: Day-card context line: Variant A vs B</title>
+<style>
+  :root{
+    --paper:#F6F1E7; --card:#FCF8EF; --inset:#EFE8D8; --ink:#221E16;
+    --muted:#7A7361; --hair:#E3DAC7; --green:#5F8A4C; --mood5:#2E8B57;
+    --amber:#E0A33A; --purple:#7E5CA8; --focus:#3E73B0; --energy:#EAD22A;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:-apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+    padding:32px 24px 64px; max-width:920px; margin:0 auto;
+  }
+  h1{font-size:28px; font-weight:700; margin-bottom:6px;}
+  .sub{color:var(--muted); font-size:14px; margin-bottom:28px; line-height:1.5;}
+  .variants{display:flex; flex-wrap:wrap; gap:28px; align-items:flex-start;}
+  .variant{width:390px; max-width:100%;}
+  .vlabel{font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:4px;}
+  .vdesc{font-size:13px; color:var(--muted); line-height:1.45; margin-bottom:12px; min-height:56px;}
+
+  /* folded day card (approx. spec-023 shape) */
+  .daycard{
+    background:color-mix(in srgb, var(--mood5) 24%, var(--card));
+    border:1px solid var(--hair); border-radius:16px;
+    padding:14px 16px 12px; margin-bottom:10px;
+  }
+  .dc-top{display:flex; align-items:baseline; gap:8px;}
+  .glyph{width:22px; height:22px; flex:none; align-self:center;}
+  .mood{font-size:20px; font-weight:700;}
+  .dow{font-size:13px; font-weight:600; letter-spacing:.05em; color:var(--muted);}
+  .spacer{flex:1;}
+  .chev{color:var(--muted); font-size:14px;}
+  .chips{display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:6px; font-size:13.5px;}
+  .chip{display:flex; align-items:center; gap:4px;}
+  .chip .dot{width:5px;height:5px;border-radius:50%;background:var(--muted);opacity:.5;}
+  .c-energy{color:#8a7a10;} .c-focus{color:var(--focus);} .c-med{color:var(--purple);}
+
+  /* THE context line */
+  .ctx{
+    display:flex; align-items:center; gap:6px;
+    margin-top:9px; padding-top:8px;
+    border-top:1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+    font-size:13px; color:var(--muted); line-height:1.35;
+    white-space:nowrap; overflow:hidden;
+  }
+  .ctx svg{flex:none; opacity:.55;}
+  .ctx .txt{overflow:hidden; text-overflow:ellipsis;}
+  .ctx b{font-weight:600; color:var(--muted);}
+
+  .note{font-size:12px; color:var(--muted); background:var(--inset);
+        border-radius:10px; padding:10px 12px; line-height:1.5;}
+  .note strong{color:var(--ink);}
+  .divider{border:none; border-top:1px solid var(--hair); margin:36px 0 28px;}
+  h2{font-size:16px; margin-bottom:14px;}
+  table{border-collapse:collapse; font-size:13px; width:100%;}
+  td,th{border:1px solid var(--hair); padding:8px 10px; text-align:left; vertical-align:top;}
+  th{background:var(--inset); font-weight:600;}
+</style>
+</head>
+<body>
+  <h1>Spec 029 · Day-card context line: Variant A vs B</h1>
+  <p class="sub">Same folded day card (a "Great" Monday, two chips + a med), same day on the calendar:
+  <em>Team standup 9:00 · Design review 11:00 · 1:1 Sarah 14:00 · Dentist 16:30 · Mum's birthday (all-day)</em>.
+  Only the context line at the bottom of the card differs.</p>
+
+  <div class="variants">
+
+    <div class="variant">
+      <div class="vlabel">Variant A · titles + overflow</div>
+      <div class="vdesc">First titles in day order, then “+N”. No classification: what you wrote in your calendar is what you see. Captured fields stay title · times · all-day.</div>
+      <div class="daycard">
+        <div class="dc-top">
+          <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="#2E8B57" stroke-width="2" stroke-linecap="round"><path d="M12 21v-8"/><path d="M12 13c0-3 2.5-5 5.5-5 0 3-2.5 5-5.5 5z" fill="#2E8B57"/><path d="M12 10c0-2.5-2-4-4.5-4 0 2.5 2 4 4.5 4z" fill="#5FB36E"/></svg>
+          <span class="mood">Great</span><span class="dow">MON</span>
+          <span class="spacer"></span><span class="chev">⌄</span>
+        </div>
+        <div class="chips">
+          <span class="chip c-energy">⚡ Charged</span><span class="chip"><span class="dot"></span></span>
+          <span class="chip c-focus">◎ Sharp</span><span class="chip"><span class="dot"></span></span>
+          <span class="chip c-med">▭ Concerta</span>
+        </div>
+        <div class="ctx">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7A7361" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <span class="txt">Team standup · Design review · Dentist <b>+2</b></span>
+        </div>
+      </div>
+      <div class="note"><strong>Reads:</strong> concrete and personal (the words are yours). <strong>Costs:</strong> long titles crowd the line; order is start-time, so the "interesting" event (Dentist, birthday) may fall into the +N.</div>
+    </div>
+
+    <div class="variant">
+      <div class="vlabel">Variant B · classified summary</div>
+      <div class="vdesc">Alike events are folded into a class word (“3 meetings”), distinctive ones keep their name. Needs one extra captured fact per event (has-attendees / busy) to know what a “meeting” is.</div>
+      <div class="daycard">
+        <div class="dc-top">
+          <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="#2E8B57" stroke-width="2" stroke-linecap="round"><path d="M12 21v-8"/><path d="M12 13c0-3 2.5-5 5.5-5 0 3-2.5 5-5.5 5z" fill="#2E8B57"/><path d="M12 10c0-2.5-2-4-4.5-4 0 2.5 2 4 4.5 4z" fill="#5FB36E"/></svg>
+          <span class="mood">Great</span><span class="dow">MON</span>
+          <span class="spacer"></span><span class="chev">⌄</span>
+        </div>
+        <div class="chips">
+          <span class="chip c-energy">⚡ Charged</span><span class="chip"><span class="dot"></span></span>
+          <span class="chip c-focus">◎ Sharp</span><span class="chip"><span class="dot"></span></span>
+          <span class="chip c-med">▭ Concerta</span>
+        </div>
+        <div class="ctx">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7A7361" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <span class="txt"><b>3 meetings</b> · Dentist · Mum's birthday</span>
+        </div>
+      </div>
+      <div class="note"><strong>Reads:</strong> the day's <em>shape</em> at a glance, load first, standouts named. <strong>Costs:</strong> captures attendee/busy data (wider privacy surface); classification can be wrong ("Focus block" with 2 attendees = "meeting"?); the folded word hides which meetings.</div>
+    </div>
+
+    <div class="variant">
+      <div class="vlabel">Reference · titles off (both variants)</div>
+      <div class="vdesc">The FR-007 privacy state, unchanged by this choice: title capture off means counts only. Shown so the A/B call is made knowing the floor.</div>
+      <div class="daycard">
+        <div class="dc-top">
+          <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="#2E8B57" stroke-width="2" stroke-linecap="round"><path d="M12 21v-8"/><path d="M12 13c0-3 2.5-5 5.5-5 0 3-2.5 5-5.5 5z" fill="#2E8B57"/><path d="M12 10c0-2.5-2-4-4.5-4 0 2.5 2 4 4.5 4z" fill="#5FB36E"/></svg>
+          <span class="mood">Great</span><span class="dow">MON</span>
+          <span class="spacer"></span><span class="chev">⌄</span>
+        </div>
+        <div class="chips">
+          <span class="chip c-energy">⚡ Charged</span><span class="chip"><span class="dot"></span></span>
+          <span class="chip c-focus">◎ Sharp</span><span class="chip"><span class="dot"></span></span>
+          <span class="chip c-med">▭ Concerta</span>
+        </div>
+        <div class="ctx">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7A7361" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+          <span class="txt">5 events · 1 all-day</span>
+        </div>
+      </div>
+      <div class="note">With titles off, A and B are identical: classification data (variant B) would still be captured unless also gated.</div>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+  <h2>Side-by-side on more day shapes</h2>
+  <table>
+    <tr><th>Day</th><th>A · titles + overflow</th><th>B · classified</th></tr>
+    <tr><td>Heavy office day<br><span style="color:var(--muted)">6 meetings, nothing else</span></td><td>Standup · Sprint plan · Retro <b>+3</b></td><td><b>6 meetings</b></td></tr>
+    <tr><td>Quiet day, one thing<br><span style="color:var(--muted)">Therapy 15:00</span></td><td>Therapy</td><td>Therapy</td></tr>
+    <tr><td>Mixed day<br><span style="color:var(--muted)">2 meetings, dentist, trip (multi-day)</span></td><td>Standup · Dentist · Lisbon trip <b>+1</b></td><td><b>2 meetings</b> · Dentist · Lisbon trip</td></tr>
+    <tr><td>Ambiguous events<br><span style="color:var(--muted)">"Focus block", "Lunch w/ Ana"</span></td><td>Focus block · Lunch w/ Ana</td><td><b>1 meeting</b> · Focus block <em style="color:var(--muted)">(Lunch classified as meeting, right?)</em></td></tr>
+  </table>
+</body>
+</html>

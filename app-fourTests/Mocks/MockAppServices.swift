@@ -11,7 +11,6 @@ struct MockAppServices {
     let transcription = MockTestTranscriptionService()
     let aiModel = MockAIModelService()
     let summarization = MockSummarizationService()
-    let health = MockHealthDataReading()
     let connectivity = MockConnectivity()
     let pendingTranscription = MockPendingTranscriptionService()
     let export = MockExportService()
@@ -23,10 +22,18 @@ struct MockAppServices {
             transcriptionService: transcription,
             aiModelService: aiModel,
             summarizationService: summarization,
-            healthService: health,
             connectivity: connectivity,
             pendingTranscriptionService: pendingTranscription,
-            exportService: export
+            exportService: export,
+            calendarContextService: MockCalendarContextService(),
+            dayContextStore: DayContextStore(context: AppModelContainer.container.mainContext),
+            calendarCoordinator: CalendarContextCoordinatorImpl(
+                service: MockCalendarContextService(),
+                store: DayContextStore(context: AppModelContainer.container.mainContext),
+                settingsProvider: { CalendarPreferences.currentSettings() },
+                checkInDaysProvider: { [] },
+                isMockMode: { true }
+            )
         )
     }
 }

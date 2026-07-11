@@ -12,13 +12,12 @@ Map of the project's documentation. Source of truth for *where things live*.
 ## product/
 Product definition — PRD, persona, success metric, monetization.
 
-> **Canonical product docs live in the organizer, not here.** The master PRD and FSD
-> are maintained in `~/Projects/app-two-organizer/product/` (`MASTER-PRD.md`,
-> `MASTER-FSD.md`), seeded 2026-06-24 from this repo's `impeccable-design/PRODUCT.md`,
-> `DESIGN.md`, constitution, BACKLOG, and the per-feature `specs/`. This repo remains
-> the source of truth for the **per-feature** specs under `specs/NNN-*/`; the organizer
-> consolidates them into the app-wide master docs. Update the masters there when specs
-> change materially.
+> **Canonical master product docs are maintained separately, not here.** The master PRD
+> and FSD live in a separate private docs repo (seeded 2026-06-24 from this repo's
+> `impeccable-design/PRODUCT.md`, `DESIGN.md`, constitution, BACKLOG, and the per-feature
+> `specs/`). This repo remains the source of truth for the **per-feature** specs under
+> `specs/NNN-*/`; the master docs consolidate them app-wide. Update the masters there when
+> specs change materially.
 
 ## engineering/
 - [ARCHITECTURE.md](engineering/ARCHITECTURE.md) — MVVM + Store + DI, SwiftData schema, ML model management.

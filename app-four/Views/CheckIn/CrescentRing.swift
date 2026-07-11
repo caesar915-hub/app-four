@@ -1,53 +1,59 @@
 import SwiftUI
 
-/// The Paper & Pollen check-in ring: a soft ~295° arc that fades **green → amber**.
+/// The Paper & Pollen check-in ring: a full circle, green-dominant with amber at the bottom.
 /// At rest it **breathes** (idle); while recording it **spins** (active). Decorative.
 struct CrescentRing: View {
     var isActive: Bool = false
     var lineWidth: CGFloat = 22
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var spinning = false
-    @State private var breathing = false
+    var body: some View {
+        AnimatedArc(isActive: isActive, lineWidth: lineWidth)
+            .id(isActive)
+            .accessibilityHidden(true)
+    }
+}
 
-    private var arc: some View {
-        Circle()
-            .trim(from: 0, to: 0.82)
+/// Child view that owns animation state. `.id(isActive)` on the parent forces
+/// SwiftUI to destroy and recreate this view on every isActive flip, resetting
+/// `animating` to false and re-triggering onAppear with the correct animation.
+private struct AnimatedArc: View {
+    let isActive: Bool
+    let lineWidth: CGFloat
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var animating = false
+
+    var body: some View {
+        let arc = Circle()
+            .trim(from: 0, to: 1.0)
             .stroke(
                 AngularGradient(
                     gradient: Gradient(stops: [
-                        .init(color: .clear, location: 0.0),
-                        .init(color: Theme.meadowGreen, location: 0.18),
-                        .init(color: Theme.meadowAmber, location: 0.62),
-                        .init(color: .clear, location: 0.82),
+                        .init(color: Theme.meadowGreen, location: 0.00),
+                        .init(color: Theme.meadowAmber, location: 0.50),
+                        .init(color: Theme.meadowGreen, location: 1.00),
                     ]),
                     center: .center,
-                    startAngle: .degrees(135),
-                    endAngle: .degrees(135 + 360)
+                    startAngle: .degrees(270),
+                    endAngle: .degrees(270 + 360)
                 ),
-                style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
+                style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
             )
             .padding(lineWidth / 2)
-    }
 
-    var body: some View {
-        Group {
-            if isActive {
-                arc
-                    .rotationEffect(.degrees(spinning ? 360 : 0))
-                    .animation(reduceMotion ? nil : .linear(duration: 7).repeatForever(autoreverses: false),
-                               value: spinning)
-                    .onAppear { spinning = true }
-            } else {
-                arc
-                    .scaleEffect(breathing ? 1.035 : 1.0)
-                    .opacity(breathing ? 1.0 : 0.94)
-                    .animation(reduceMotion ? nil : .easeInOut(duration: 5).repeatForever(autoreverses: true),
-                               value: breathing)
-                    .onAppear { breathing = true }
-            }
+        if isActive {
+            arc
+                .rotationEffect(.degrees(animating ? 360 : 0))
+                .animation(reduceMotion ? nil : .linear(duration: 7).repeatForever(autoreverses: false),
+                           value: animating)
+                .onAppear { animating = true }
+        } else {
+            arc
+                .scaleEffect(animating ? 1.035 : 1.0)
+                .opacity(animating ? 1.0 : 0.94)
+                .animation(reduceMotion ? nil : .easeInOut(duration: 5).repeatForever(autoreverses: true),
+                           value: animating)
+                .onAppear { animating = true }
         }
-        .accessibilityHidden(true)
     }
 }
 

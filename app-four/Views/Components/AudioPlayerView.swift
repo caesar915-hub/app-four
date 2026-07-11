@@ -12,7 +12,8 @@ struct AudioPlayerView: View {
     var body: some View {
         HStack(spacing: Spacing.m) {
             playPauseButton
-                .frame(width: 36, height: 36)
+                .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
+                .contentShape(.rect)
 
             PlaybackWaveformBars(
                 seed: recording.id.uuidString,

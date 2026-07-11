@@ -19,12 +19,16 @@ actor MockSummarizationService: SummarizationService {
         noteExtraction: nil
     )
     var shouldThrow = false
+    var hangs = false
 
     func setShouldThrow(_ value: Bool) {
         shouldThrow = value
     }
 
+    func setHangs(_ v: Bool) { hangs = v }
+
     func summarize(rawTranscription: String) async throws -> SummaryResult {
+        if hangs { while !Task.isCancelled { await Task.yield() } }
         if shouldThrow { throw SummarizationError.inferenceFailed("Mock error") }
         return stubResult
     }

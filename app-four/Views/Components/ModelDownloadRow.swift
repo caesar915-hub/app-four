@@ -58,6 +58,7 @@ struct ModelDownloadRow: View {
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
+        .accessibilityAddTraits(.isButton)
         .accessibilityActions { accessibilityActions }
     }
 
@@ -82,7 +83,7 @@ struct ModelDownloadRow: View {
             Button("Cancel", action: onCancel)
                 .buttonStyle(.plain)
                 .font(Typography.caption.weight(.medium))
-                .foregroundStyle(Theme.accent)
+                .foregroundStyle(Theme.meadowGreen)
         } else if hasError {
             Circle()
                 .fill(Theme.danger)
@@ -124,7 +125,7 @@ struct ModelDownloadRow: View {
         Button(action: action) {
             Text(label)
                 .font(Typography.caption.weight(.medium))
-                .foregroundStyle(Theme.accent)
+                .foregroundStyle(Theme.meadowGreen)
                 .padding(.horizontal, Spacing.m)
                 .padding(.vertical, Spacing.s)
                 .frame(minHeight: Metrics.minTapTarget)

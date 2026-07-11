@@ -3,10 +3,19 @@ import Testing
 import SwiftData
 @testable import app_four
 
+private struct NoOpCalendarContextCoordinator: CalendarContextCoordinator {
+    func checkInSaved(dayKey: Date) async {}
+    func checkInDateChanged(from oldDay: Date, to newDay: Date) async {}
+    func checkInDeleted(dayKey: Date) async {}
+    func sweep() async {}
+    func recaptureAll() async {}
+}
+
 @MainActor
 struct ExtractionReviewViewModelTests {
     let container: ModelContainer
     let store: RecordingStore
+    let coordinator = NoOpCalendarContextCoordinator()
 
     init() throws {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
@@ -46,7 +55,7 @@ struct ExtractionReviewViewModelTests {
     // P0.5 — a user-edited title survives confirm (not clobbered by auto-title).
     @Test func userEditedTitleIsPreserved() {
         let rec = makeRecording(title: "Voice Note")
-        let vm = ExtractionReviewViewModel(result: result(), recording: rec, store: store, onComplete: { _ in })
+        let vm = ExtractionReviewViewModel(result: result(), recording: rec, store: store, calendarCoordinator: coordinator, onComplete: { _ in })
         vm.name = "My Custom Name"
         vm.confirm()
         #expect(rec.title == "My Custom Name")
@@ -55,7 +64,7 @@ struct ExtractionReviewViewModelTests {
     // P0.5 — when the user does NOT edit the title, the auto "Mood · Energy · Focus" title applies.
     @Test func uneditedTitleGetsAutoTitle() {
         let rec = makeRecording(title: "Voice Note")
-        let vm = ExtractionReviewViewModel(result: result(mood: "good"), recording: rec, store: store, onComplete: { _ in })
+        let vm = ExtractionReviewViewModel(result: result(mood: "good"), recording: rec, store: store, calendarCoordinator: coordinator, onComplete: { _ in })
         vm.confirm()
         #expect(rec.title.contains("Good"))
         #expect(rec.title != "My Custom Name")
@@ -66,7 +75,7 @@ struct ExtractionReviewViewModelTests {
         let oldDate = Date(timeIntervalSince1970: 1_700_000_000) // fixed
         let rec = makeRecording(date: oldDate)
         let meds = [MedEvent(name: "Concerta", dose: "36mg", time: "08:00", timeLabel: "morning")]
-        let vm = ExtractionReviewViewModel(result: result(meds: meds), recording: rec, store: store, onComplete: { _ in })
+        let vm = ExtractionReviewViewModel(result: result(meds: meds), recording: rec, store: store, calendarCoordinator: coordinator, onComplete: { _ in })
 
         let newDate = Calendar.current.date(byAdding: .day, value: 3, to: oldDate)!
         vm.date = newDate
@@ -81,7 +90,7 @@ struct ExtractionReviewViewModelTests {
     // P0.5 (Bug 12) — edited mood scalar matches the persisted JSON's mood.
     @Test func editedMoodMatchesPersistedJSON() {
         let rec = makeRecording()
-        let vm = ExtractionReviewViewModel(result: result(mood: "good"), recording: rec, store: store, onComplete: { _ in })
+        let vm = ExtractionReviewViewModel(result: result(mood: "good"), recording: rec, store: store, calendarCoordinator: coordinator, onComplete: { _ in })
         vm.setMood("low")
         vm.confirm()
         // The scalar column is the single source of truth (P1.4)…
@@ -95,7 +104,7 @@ struct ExtractionReviewViewModelTests {
     // the 6 fields that have dedicated columns (no redundancy = no drift).
     @Test func jsonKeepsColumnlessFieldsDropsRedundant() {
         let rec = makeRecording()
-        let vm = ExtractionReviewViewModel(result: result(mood: "good"), recording: rec, store: store, onComplete: { _ in })
+        let vm = ExtractionReviewViewModel(result: result(mood: "good"), recording: rec, store: store, calendarCoordinator: coordinator, onComplete: { _ in })
         vm.confirm()
         let json = rec.decodedNoteExtraction
         // Column-less field survives (consumed by InsightsViewModel.activityCounts).

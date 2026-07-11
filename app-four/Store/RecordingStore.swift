@@ -115,6 +115,10 @@ class RecordingStore {
         return recording
     }
 
+    func checkInDayKeys() -> Set<Date> {
+        Set(recordings.map { DayKey.make(for: $0.createdAt) })
+    }
+
     private func buildAndInsertCheckInNote(_ draft: CheckInDraft) -> Recording {
         let signalParts = [
             draft.mood?.displayLabel, draft.energy?.displayLabel, draft.focus?.displayLabel,

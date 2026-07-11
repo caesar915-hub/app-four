@@ -7,6 +7,15 @@ struct SquirlApp: App {
     @State private var shouldAutoStartRecording = false
 
     init() {
+        #if DEBUG
+        // UI/UX dev: default the mock-data toggle ON so a cold launch lands on a
+        // populated timeline. Guarded out under XCTest so the suite keeps the
+        // real default (false). Registered before AppDependencies.store, which
+        // reads the key eagerly via RecordingStore.loadRecordings().
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            UserDefaults.standard.register(defaults: ["debugMockMode": true])
+        }
+        #endif
         // Touch global dependencies at startup so stores begin observing the DB.
         _ = AppDependencies.store
         MetricManager.shared.start()
@@ -25,13 +34,7 @@ struct SquirlApp: App {
             .environment(AppDependencies.screenTracker)
             .environment(AppDependencies.services)
             .environment(\.diagnosticsStore, AppDependencies.diagnosticsStore)
-            .overlay(alignment: .bottomTrailing) {
-                #if DEBUG || TESTFLIGHT
-                FeedbackButton()
-                    .padding(.trailing, Spacing.l)
-                    .padding(.bottom, 120) // clears tab bar (49) + home indicator (~34) + extra breathing room
-                #endif
-            }
+            // Feedback button unmounted (spec 024) — it crashed the app. Views/Feedback/* retained.
             .onOpenURL { url in
                 guard url.scheme == "whispernotes", url.host == "checkin" else { return }
                 selectedTab = .checkIn
@@ -64,7 +67,13 @@ private struct RootContainerView: View {
         }
         .task {
             #if DEBUG
-            if CommandLine.arguments.contains("-skipOnboarding") { showOnboarding = false; return }
+            // Mock-dev mode (the DEBUG default) implies a returning user: skip the
+            // first-run ceremony so dev lands straight on the populated app. Flip
+            // Mock Mode off in TestServices to restore the real onboarding gate.
+            if CommandLine.arguments.contains("-skipOnboarding")
+                || UserDefaults.standard.bool(forKey: "debugMockMode") {
+                showOnboarding = false; return
+            }
             #endif
             showOnboarding = !hasCompletedOnboarding
         }
@@ -77,9 +86,11 @@ private struct RootContainerView: View {
         // that finished while backgrounded). The service no-ops when the model isn't
         // ready or when already draining (FR-013/016).
         .task { await services.pendingTranscriptionService.drainIfModelReady() }
+        .task { await services.calendarCoordinator.sweep() }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
                 Task { await services.pendingTranscriptionService.drainIfModelReady() }
+                Task { await services.calendarCoordinator.sweep() }
             }
         }
         .onChange(of: hasCompletedOnboarding) { _, completed in
