@@ -95,9 +95,43 @@ Glyphs encode level by **shape + hue + fill simultaneously** (triple-redundant; 
 - **Edit sheet (`ExtractionReviewView`).** One scrolling modal reached by "Edit check-in", in order: **When** (date/time) · **Mood · Energy · Focus** (glyph pickers showing the named 1–5 level **+ a synonym line**, e.g. "Great · bright, thriving") · **Sleep** (named scale Restless→Deep, **no synonyms**, with 2/4/6/8/10h presets **plus a custom-hours text input**; bed icon, ramp deferred) · **Medications** · **Emotions · Side-effects** (chip groups). **Medications:** **Stimulants only** (Non-stimulants + Off-label removed for now); multi-select, **removable (×)**, **no count limit**; each selected med uses the **inline-expand (P1)** layout — dosage from the table, an **info-only default time**, and a **duration text box defaulted to the shortest** for that med. Each med is an **independent `MedicationEvent`** (same timestamp allowed). "Save corrections" writes `RecordingTag(source: .userCorrected)` → trains the personal lexicon. Low friction here is functional: if correcting is a chore, the NLP never learns.
 - **Medication bar.** Capsule icon + single medication purple. The bar **fills from empty (just taken) to full (worn off)** over `MedicationEvent.durationHours`; onset (~first 20 min) shows a gentle pulse ("kicking in"). One consistent purple — only the fill changes, so onset and fading never share a color. Worn-off → quiet, overlay fades out. Inside the medication card/detail, the fuller **effect curve** (rise → peak → decline) may be shown where there's room.
 
+## New Look (spec 032) — second visual language, in adoption
+
+A cool, iOS-native alternative to Paper & Pollen, approved from the Figma a-screens (file
+Squil-Design → "Screens (v2)": a03 Edit check-in, a02 Recording detail, a01 Calendar — a01 gated
+on spec-029). Runs **alongside** Paper & Pollen: spec 032 re-skins **only Edit check-in
+(`ExtractionReviewView`) and Recording detail (`RecordingDetailView` + `ADHDSummarySection`)**; every
+other screen stays Paper & Pollen. The **mixed look is an accepted, temporary transition state** —
+no runtime theme toggle. Tokens live in `SquirlDesignSystem/NewLook.swift`, additive; `Theme`,
+`Palette`, `Typography`, and the `.card()` modifier are untouched.
+
+- **Palette** (adaptive light/dark; dark derived per iOS convention, QA-validated):
+
+  | Token | Light | Dark | Role |
+  |---|---|---|---|
+  | `NewLook.screen` | `#EFF2EB` | `#12140F` | screen ground (cool sage) |
+  | `NewLook.card` | `#FFFFFF` | `#1C1E19` | card surface (borderless) |
+  | `NewLook.inkPrimary` | `#1C1B1F` | `#F2F3EE` | primary text |
+  | `NewLook.inkSecondary` | `#8A8A8E` | `#9BA09A` | secondary text / labels |
+  | `NewLook.hairline` | `#DBDDDE` | `#33362F` | chip / field borders |
+  | `NewLook.selection` | `#54B492` | `#5FC49F` | selected chip fill (non-medication) |
+  | (medication) | `#7E5CA8` | `#9277BE` | reuses `Palette.medication`, never redefined |
+
+- **Cards** — `.newLookCard()`: white, **radius 20** (`Radius.newLookCard`), soft shadow, **no
+  border** (contrast with `.card()`'s bordered radius-16). 16px screen gutter.
+- **Chips/pills** — `.newLookChip(selected:role:)`: unselected = white + hairline + ink; selected =
+  solid `selection` (or `Palette.medication` for `role == .medication`) + white label; capsule.
+- **Nav** — `NewLookNavBar`: leading pill · **centered title** (ZStack, width-independent) · trailing pill.
+- **Typography** — native SF (unchanged rule); the Figma Inter ramp maps to existing `Typography`
+  roles (headers → `.headline`, body → `.callout`, eyebrows → `.label`, 24pt nav title via
+  `Typography.text(24,.bold,relativeTo:.title)`); Dynamic Type preserved.
+- **Glyphs** — unchanged shapes (sprout/bolt/aperture/bed/capsule); only container/selection color
+  context changes.
+
 ## Decisions Log
 | Date | Decision | Rationale |
 |------|----------|-----------|
+| 2026-07-10 | Adopt "New Look" as a second visual language for Edit check-in + Recording detail (spec 032); dark tokens derived now; mixed P&P/New-Look shipped, no toggle | Owner adoption call after the Figma a-screens reached presentation grade; two lowest-risk screens prove the language before wider rollout. Calendar (a01) gated on spec-029. |
 | 2026-06-15 | Adopt "Paper & Pollen" design system | `/design-consultation`. Warm-paper organic identity differentiates from the blue/purple category; "refine Meadow, don't replace." |
 | 2026-06-15 | Keep shipped signal ramps; Energy stays Lemon | Owner override of the proposed Energy→Ember swap. Mood/Focus untouched. |
 | 2026-06-15 | Signal glyphs = sprout / lightning / aperture | Distinct shapes make the four signals colorblind- and grayscale-safe; chosen over sun/eye/etc. |
