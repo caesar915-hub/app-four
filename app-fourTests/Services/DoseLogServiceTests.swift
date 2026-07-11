@@ -9,12 +9,12 @@ import SwiftData
 @MainActor
 struct DoseLogServiceTests {
 
-    private func make(
+    private func makeStore(
         mode: DoseGuardMode = .off,
         windowHours: Int = 2,
         name: String? = "Elvanse",
         dose: String? = "30 mg"
-    ) throws -> (DoseLogServiceImpl, ModelContext) {
+    ) throws -> ModelContext {
         TestSupport.useRealData()
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(
@@ -29,6 +29,16 @@ struct DoseLogServiceTests {
         settings.doseGuardWindowHours = windowHours
         context.insert(settings)
         try context.save()
+        return context
+    }
+
+    private func make(
+        mode: DoseGuardMode = .off,
+        windowHours: Int = 2,
+        name: String? = "Elvanse",
+        dose: String? = "30 mg"
+    ) throws -> (DoseLogServiceImpl, ModelContext) {
+        let context = try makeStore(mode: mode, windowHours: windowHours, name: name, dose: dose)
         return (DoseLogServiceImpl(context: context), context)
     }
 
@@ -165,7 +175,63 @@ struct DoseLogServiceTests {
         _ = await service.logDefaultDose(now: .now)
         #expect(counter.count == 0)
     }
+
+    // MARK: - Persistence failure (SC-007: honest failure, never a false "logged")
+
+    @Test func saveFailureReturnsFailedWritesNothingPostsNothing() async throws {
+        let context = try makeStore()
+        let service = FailingSaveDoseLogService(context: context)
+        let counter = PostCounter()
+        let token = NotificationCenter.default.addObserver(
+            forName: .medicationEventsDidChange, object: nil, queue: nil
+        ) { _ in counter.count += 1 }
+        defer { NotificationCenter.default.removeObserver(token) }
+
+        #expect(await service.logDefaultDose(now: .now) == .failed)
+        #expect(try eventCount(context) == 0)
+        #expect(counter.count == 0)
+    }
+
+    @Test func saveFailureLeavesNoPendingInsertForAutosave() async throws {
+        let context = try makeStore()
+        let service = FailingSaveDoseLogService(context: context)
+        _ = await service.logDefaultDose(now: .now)
+        #expect(context.insertedModelsArray.isEmpty,
+                "A dangling insert would be persisted by a later autosave — a silent success after a reported failure means a double log on retry")
+    }
+
+    // MARK: - Guard failure semantics (SC-005: armed guard fails closed)
+
+    @Test func armedGuardFailsClosedWhenHistoryUnreadable() async throws {
+        let context = try makeStore(mode: .total)
+        let service = FailingHistoryDoseLogService(context: context)
+        #expect(await service.logDefaultDose(now: .now) == .failed)
+        #expect(try eventCount(context) == 0)
+    }
+
+    @Test func guardOffNeverReadsHistory() async throws {
+        let context = try makeStore(mode: .off)
+        let service = FailingHistoryDoseLogService(context: context)
+        let outcome = await service.logDefaultDose(now: .now)
+        guard case .logged = outcome else {
+            Issue.record("Guard .off must never consult dose history (FR-009); got \(outcome)")
+            return
+        }
+        #expect(try eventCount(context) == 1)
+    }
 }
+
+/// Overridable failure seams — the SwiftData layer can't be made to fail on demand
+/// otherwise (pattern: `RecordingStore.persistCheckInNote`).
+private final class FailingSaveDoseLogService: DoseLogServiceImpl {
+    override func persist() throws { throw DoseLogTestError.forced }
+}
+
+private final class FailingHistoryDoseLogService: DoseLogServiceImpl {
+    override func mostRecentDose() throws -> MedicationEvent? { throw DoseLogTestError.forced }
+}
+
+private enum DoseLogTestError: Error { case forced }
 
 /// Synchronous, same-thread (`queue: nil`) observation counter — the notification is
 /// posted on the MainActor and the block runs inline, so unchecked Sendable is safe.

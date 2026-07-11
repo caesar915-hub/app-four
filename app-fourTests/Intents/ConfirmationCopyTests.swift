@@ -44,6 +44,16 @@ struct ConfirmationCopyTests {
         #expect(discreet == named)
     }
 
+    // MARK: - Failed (same both settings; honest, calm, actionable — SC-007)
+
+    @Test func failedIsIdenticalCalmAndNamesNothing() {
+        let discreet = DoseConfirmationCopy.text(for: .failed, named: false)
+        let named = DoseConfirmationCopy.text(for: .failed, named: true)
+        #expect(discreet == "Couldn't save that dose — nothing was logged. Try again in the app.")
+        #expect(discreet == named)
+        #expect(!discreet.localizedCaseInsensitiveContains("Elvanse"))
+    }
+
     // MARK: - Matrix is non-empty and distinct where it should be
 
     @Test func discreetAndNamedLoggedDiffer() {
@@ -51,5 +61,16 @@ struct ConfirmationCopyTests {
         let named = DoseConfirmationCopy.text(for: .logged(name: "Concerta", dose: "36 mg", at: at), named: true)
         #expect(discreet != named)
         #expect(!discreet.isEmpty && !named.isEmpty)
+    }
+
+    // MARK: - shortTime itself is time-shaped (FR-005)
+
+    /// The matrix tests derive their expected strings through `shortTime`, so a
+    /// regression inside the formatter (e.g. `.shortened` → `.omitted`) would match
+    /// on both sides and stay green. This pins the output's shape independently.
+    @Test func shortTimeIsNonEmptyAndContainsDigits() {
+        let t = DoseConfirmationCopy.shortTime(at)
+        #expect(!t.isEmpty)
+        #expect(t.contains(where: \.isNumber))
     }
 }
