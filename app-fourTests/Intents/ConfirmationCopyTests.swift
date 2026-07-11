@@ -71,6 +71,6 @@ struct ConfirmationCopyTests {
     @Test func shortTimeIsNonEmptyAndContainsDigits() {
         let t = DoseConfirmationCopy.shortTime(at)
         #expect(!t.isEmpty)
-        #expect(t.contains(where: \.isNumber))
+        #expect(t.contains(where: { $0.isNumber }))
     }
 }
