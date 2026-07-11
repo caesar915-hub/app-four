@@ -20,19 +20,26 @@ struct ADHDSummarySection: View {
 
     // MARK: - Medications card
 
+    /// New Look card header — bold sentence-case (spec 032, a02 C12), replacing the P&P eyebrow.
+    private func header(_ title: String) -> some View {
+        Text(title)
+            .font(Typography.headline)
+            .foregroundStyle(NewLook.inkPrimary)
+    }
+
     private var medsCard: some View {
         VStack(alignment: .leading, spacing: Spacing.s) {
-            Text("Medications").cardEyebrow()
+            header("Medications")
             HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
                 SignalGlyph(.medication, size: 18, decorative: true)
                 Text(medsLine)
                     .font(Typography.body)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .card()
+        .newLookCard()
     }
 
     private var medsLine: String {
@@ -67,11 +74,11 @@ struct ADHDSummarySection: View {
         }()
         if let tag {
             VStack(alignment: .leading, spacing: Spacing.s) {
-                Text("Sleep").cardEyebrow()
+                header("Sleep")
                 TagFlowView(tags: [tag])
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .card()
+            .newLookCard()
         }
     }
 
@@ -83,15 +90,15 @@ struct ADHDSummarySection: View {
         }
         if !tags.isEmpty {
             VStack(alignment: .leading, spacing: Spacing.s) {
-                Text("Emotions").cardEyebrow()
+                header("Emotions")
                 TagFlowView(tags: tags)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .card()
+            .newLookCard()
         }
     }
 
-    // MARK: - Side Effects card
+    // MARK: - Side effects card
 
     @ViewBuilder private var sideEffectsCard: some View {
         let tags = recording.decodedSideEffects.enumerated().map { (i, e) in
@@ -99,11 +106,11 @@ struct ADHDSummarySection: View {
         }
         if !tags.isEmpty {
             VStack(alignment: .leading, spacing: Spacing.s) {
-                Text("Side Effects").cardEyebrow()
+                header("Side effects")
                 TagFlowView(tags: tags)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .card()
+            .newLookCard()
         }
     }
 }

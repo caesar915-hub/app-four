@@ -26,7 +26,7 @@ struct AudioPlayerView: View {
             Text(timeString(viewModel.currentTime))
                 .font(Typography.duration)
                 .monospacedDigit()
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
                 .frame(minWidth: 42, alignment: .trailing)
         }
         .onDisappear {
@@ -49,7 +49,7 @@ struct AudioPlayerView: View {
                 .font(Typography.subheadline.weight(.semibold))
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Theme.meadowGradient, in: Circle())
+                .background(Palette.medication, in: Circle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel)
