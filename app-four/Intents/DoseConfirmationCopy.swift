@@ -14,6 +14,8 @@ enum DoseConfirmationCopy {
             return "Your \(shortTime(activeSince)) dose is still active."
         case .notConfigured:
             return "Set your medication first."
+        case .failed:
+            return "Couldn't save that dose — nothing was logged. Try again in the app."
         }
     }
 

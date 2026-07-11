@@ -9,6 +9,9 @@ enum DoseLogOutcome: Equatable, Sendable {
     case guarded(activeSince: Date)
     /// Nothing written — no usable default medication is configured.
     case notConfigured
+    /// Nothing durably written — dose history was unreadable while a guard was armed
+    /// (fails closed, SC-005) or the save itself failed (SC-007). Always safe to retry.
+    case failed
 }
 
 /// Records a dose of the user's default medication without opening the app.
