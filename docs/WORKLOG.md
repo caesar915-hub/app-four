@@ -1,5 +1,53 @@
 # WORKLOG
 
+## 2026-07-03 18:26 – 2026-07-11 02:54 · verification-pass findings — explicit dose tap, flow chips,  · feat/030-app-intents
+
+**Code changes**
+- _Major (feat)_
+  - `5f8d107a` feat(030): GREEN — dose engine fails closed + honest .failed outcome
+  - `b7441e19` feat(030): dose-logging engine — DoseLogService + confirmation copy (T012/T013, T016–T018)
+  - `5fe46cef` feat(030): Settings surface — My Medication · Confirmations · Dose Guard (T014/T022, T030/T032)
+  - `a54cac98` feat(030): GREEN — Foundational (T007–T010)
+  - `003acf20` feat(ios26): raise deployment target 17.0 → 26.0; restore modern APIs
+- _Fixes_
+  - `1e60ee02` fix(030): verification-pass findings — explicit dose tap, flow chips, a11y
+  - `ffeff928` fix(030): Settings sections match the approved T011 mockup — inline, no push
+- _Tests_
+  - `57420d56` test(030): round-trips reload via fresh ModelContext, autosave pinned off
+  - `ce448c58` test(030): RED — failure-path matrix for DoseLogService + copy shape pin
+  - `f1d40680` test(030): RED — Foundational wave (T003–T005)
+- _docs_
+  - `2dd1e82c` docs(030): mark T012/T013/T016/T017/T018 complete (dose-logging engine; device build pending)
+  - `537ee063` docs(030): mark T011/T014/T022, T030/T032 complete (mockup approved + Settings surface; device QA T023/T033 pending)
+  - `8ecfa0be` docs(030): mark Foundational T003–T005, T007–T009 complete (code + review-verified; T006/T010 = owner device build)
+  - `e045dde5` docs(030): App Intents Foundation — spec, plan, tasks + design artifacts
+  - `e490db13` docs: regenerate WORKLOG after 029 tasks
+- _other_
+  - `c4957ac8` design(030): T011 Settings mockup — My Medication · Dose Guard · Confirmations
+  - `a13b7987` tasks: 029 calendar-day-context task breakdown (45 tasks, test-first, mockup-gated)
+
+**gh actions**
+- PR #25 merged `feat/ios26-target` — "feat(ios26): raise deployment target 17.0 → 26.0; restore modern APIs"
+- PR #27 opened `feat/nutrition-signals-demo` — "Spec 031: nutrition + exercise signals on the Day card (demo)" — OPEN/CONFLICTING
+- PR #26 opened `feat/030-app-intents` — "feat(030): App Intents foundation — router, dose-logging engine, Settings surface" — OPEN/MERGEABLE
+- PR #25 opened `feat/ios26-target` — "feat(ios26): raise deployment target 17.0 → 26.0; restore modern APIs" — MERGED/UNKNOWN
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  bb62dd4f [feat/nutrition-signals-demo]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              11a25657 [feat/032-newlook-screens]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                1e60ee02 [feat/030-app-intents]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ios26-target                   b6f5149d [qa/device-ios26-029]
+```
+
+---
+
 ## 2026-07-03 17:56–18:26 · 029 calendar-day-context task breakdown (45 tasks, test-firs · main
 
 **Code changes**
