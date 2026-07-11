@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-03 18:51 (WEST) · Updated: 2026-07-03 19:15 (WEST) -->
+<!-- Created: 2026-07-03 18:51 (WEST) · Updated: 2026-07-11 03:38 (WEST) -->
 # Interface Contracts: App Intents Foundation + NFC Sticker Actions
 
 **Feature**: [spec.md](../spec.md) · **Data model**: [../data-model.md](../data-model.md) · **Research**: [../research.md](../research.md)
@@ -20,7 +20,7 @@ The feature's external interface is the pair of system verbs (what Siri/Shortcut
 1. `logged(name:dose:at:)` → `.result(dialog:)` per the confirmation copy matrix (named vs discreet per `nameMedicationInConfirmations`). `full` = spoken sentence; `supporting` = short visual form.
 2. `guarded(activeSince:)` → no write occurred; calm dialog naming the earlier dose's **time** only ("Your 14:00 dose is still active."). Never alarming language (FR-011).
 3. `notConfigured` → no write; calm dialog then `continueInForeground()` (dynamic mode); on continuation the app opens and the router focuses the "My medication" setting (FR-007). Works spoken on locked Siri (dialog speaks; continuation happens after unlock).
-4. Any thrown persistence error → dialog states the log did not happen (honest failure, SC-007); never a silent no-op.
+4. `failed` → dialog states the log did not happen (honest failure via the `.failed` outcome — 2026-07-11 review fix; SC-007); never a silent no-op. Also the fail-closed answer when an armed guard cannot read dose history (SC-005).
 
 **Guarantees**: event written exactly as in [data-model.md](../data-model.md) (`source: .manual`, `recording: nil`, `isMockData: false`, catalog `durationHours`); `.medicationEventsDidChange` posted after save (FR-006); no journal content in any response beyond the just-logged fact (FR-021).
 
@@ -50,8 +50,9 @@ The feature's external interface is the pair of system verbs (what Siri/Shortcut
 ## Internal seam — `DoseLogService` (protocol, `Services/`)
 
 ```
-protocol DoseLogService  (actor-friendly seam; exact isolation at implementation)
+protocol DoseLogService: Sendable  (crosses into the App Intents runtime via AppDependencyManager — D11)
   func logDefaultDose(now: Date) async -> DoseLogOutcome
+  func namesMedicationInConfirmations() async -> Bool   // copy flag read through the single settings owner (added 2026-07-11, T019)
 ```
 
 - Owns: settings resolution (fetch-first-or-create `AppSettings` singleton), catalog re-validation (`entry(matching:)`), guard evaluation ([data-model.md](../data-model.md) semantics, boundary closed), event write + save, `.medicationEventsDidChange` post.

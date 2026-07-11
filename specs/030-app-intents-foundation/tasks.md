@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-03 19:08 (WEST) · Updated: 2026-07-11 02:13 (WEST) -->
+<!-- Created: 2026-07-03 19:08 (WEST) · Updated: 2026-07-11 03:38 (WEST) -->
 # Tasks: App Intents Foundation + NFC Sticker Actions
 
 **Input**: Design documents from `/specs/030-app-intents-foundation/`
@@ -61,9 +61,9 @@
 - [X] T016 [US1] Create `app-four/Services/DoseLog/DoseLogService.swift`: protocol + `DoseLogOutcome` (logged/guarded/notConfigured) per [contracts/app-intents.md](contracts/app-intents.md)
 - [X] T017 [US1] Create `app-four/Services/DoseLog/DoseLogServiceImpl.swift`: settings resolve (fetch-first-or-create) → catalog re-validation (`entry(matching:)`) → guard evaluation (D6 semantics) → `MedicationEvent` insert + explicit save → `.medicationEventsDidChange` post → T012 GREEN. Isolation: stay MainActor-isolated (repo default) using `AppModelContainer.container.mainContext` — a fetch-limit-1 + insert is trivial work; do NOT introduce a background ModelContext or detached task for it
 - [X] T018 [US1] Create the confirmation copy helper (`app-four/Intents/DoseConfirmationCopy.swift`) → T013 GREEN
-- [ ] T019 [US1] Create `app-four/Intents/LogDefaultDoseIntent.swift`: `static let supportedModes: IntentModes = [.background, .foreground(.dynamic)]` (D2 rev.); thin `perform()` — `@AppDependency` service; outcome → `IntentDialog(full:supporting:)` via T018; explicit `authenticationPolicy = .alwaysAllowed` (D8); notConfigured → calm dialog + `continueInForeground()` → `router.focusMyMedication()` (D9 rev./D13); honest failure dialog via the `.failed` outcome (SC-007; review fix 2026-07-11 — the service returns `.failed` instead of throwing, keeping the 1:1 outcome→dialog mapping)
-- [ ] T020 [US1] Create `app-four/Intents/SquirlAppShortcuts.swift`: `AppShortcutsProvider` with the dose shortcut (iOS 17+ initializer with `shortTitle`/`systemImageName`, `.applicationName` phrases per contract; check-in entry added in US2)
-- [ ] T021 [US1] Register `DoseLogService` in `app-four/Store/AppDependencies.swift` + `AppDependencyManager` (extends T010 wiring)
+- [X] T019 [US1] Create `app-four/Intents/LogDefaultDoseIntent.swift`: `static let supportedModes: IntentModes = [.background, .foreground(.dynamic)]` (D2 rev.); thin `perform()` — `@AppDependency` service; outcome → `IntentDialog(full:supporting:)` via T018; explicit `authenticationPolicy = .alwaysAllowed` (D8); notConfigured → calm dialog + `continueInForeground()` → `router.focusMyMedication()` (D9 rev./D13); honest failure dialog via the `.failed` outcome (SC-007; review fix 2026-07-11 — the service returns `.failed` instead of throwing, keeping the 1:1 outcome→dialog mapping)
+- [X] T020 [US1] Create `app-four/Intents/SquirlAppShortcuts.swift`: `AppShortcutsProvider` with the dose shortcut (iOS 17+ initializer with `shortTitle`/`systemImageName`, `.applicationName` phrases per contract; check-in entry added in US2)
+- [X] T021 [US1] Register `DoseLogService` in `app-four/Store/AppDependencies.swift` + `AppDependencyManager` (extends T010 wiring)
 - [X] T022 [US1] From the approved T011 mockup: create `app-four/Views/Settings/MyMedicationSection.swift` (+ naming toggle — same section or `ConfirmationStyleSection.swift` per mockup decision), add SettingsViewModel sync props → T014 GREEN, mount in `app-four/Views/SettingsView.swift`
 - [ ] T023 [US1] **Story checkpoint**: build + full serial suite green; owner device QA quickstart **S1–S10** (iOS 26 device, mock mode OFF). US1 is the shippable MVP
 

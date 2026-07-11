@@ -63,6 +63,10 @@ class DoseLogServiceImpl: DoseLogService {
         return .logged(name: name, dose: dose, at: now)
     }
 
+    func namesMedicationInConfirmations() async -> Bool {
+        fetchOrCreateSettings().nameMedicationInConfirmations
+    }
+
     private func fetchOrCreateSettings() -> AppSettings {
         if let existing = try? context.fetch(FetchDescriptor<AppSettings>()).first {
             return existing

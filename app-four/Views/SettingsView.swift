@@ -6,6 +6,8 @@ struct SettingsView: View {
     @State private var viewModel: SettingsViewModel
     @State private var showingDebug = false
     @State private var showingClearConfirmation = false
+    @State private var medicationPickerExpanded = false
+    @Environment(AppIntentRouter.self) private var router
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     // Encrypted-export flow. The recovery key lives only here, in transient view
@@ -30,6 +32,7 @@ struct SettingsView: View {
     }
 
     private static let topID = "settings-top"
+    private static let myMedicationID = "settings-my-medication"
 
     init(store: RecordingStore, services: AppServices, selectedTab: Binding<Tab>) {
         _viewModel = State(wrappedValue: SettingsViewModel(store: store, services: services))
@@ -48,7 +51,8 @@ struct SettingsView: View {
                     systemSection
                     checkInSection
                     dayCardSection
-                    MyMedicationSection(viewModel: viewModel)
+                    MyMedicationSection(viewModel: viewModel, isPickerExpanded: $medicationPickerExpanded)
+                        .id(Self.myMedicationID)
                     DoseGuardSection(viewModel: viewModel)
                     medicationBarSection
                     accessibilitySection
@@ -61,11 +65,23 @@ struct SettingsView: View {
                 .scrollContentBackground(.hidden)        // reveal Theme.background (paper) under the grouped list
                 .listRowBackground(Theme.cardBackground)  // cream inset cards instead of system grouped gray
                 // TabView keeps this tab alive, so its scroll offset persists.
-                // Reset to top each time Settings becomes the active tab.
+                // Reset to top each time Settings becomes the active tab — unless a
+                // My-Medication focus is pending, which owns the scroll instead.
                 .onChange(of: selectedTab) { _, newValue in
-                    guard newValue == .settings else { return }
+                    guard newValue == .settings, !router.shouldFocusMyMedication else { return }
                     withAnimation(reduceMotion ? nil : Motion.smooth) {
                         proxy.scrollTo(Self.topID, anchor: .top)
+                    }
+                }
+                // Consumes the intent's one-shot focus (FR-007/D13): scrolls the
+                // My Medication section into view AND opens its picker. `task(id:)`
+                // runs on appear and on re-arm, so it covers a cold headless launch,
+                // a tab switch, and the already-on-Settings case alike.
+                .task(id: router.shouldFocusMyMedication) {
+                    guard router.shouldFocusMyMedication, router.consumeMyMedicationFocus() else { return }
+                    medicationPickerExpanded = true
+                    withAnimation(reduceMotion ? nil : Motion.smooth) {
+                        proxy.scrollTo(Self.myMedicationID, anchor: .top)
                     }
                 }
             }

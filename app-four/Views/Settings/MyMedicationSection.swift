@@ -8,8 +8,10 @@ import SwiftUI
 /// and picking a medication never auto-commits a dose: the dose takes its own tap.
 struct MyMedicationSection: View {
     @Bindable var viewModel: SettingsViewModel
+    /// Owned by `SettingsView`, which also opens the picker when the intent's
+    /// not-configured continuation focuses this section (FR-007/D13).
+    @Binding var isPickerExpanded: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var isPickerExpanded = false
 
     private var selectedEntry: MedicationCatalogEntry? {
         viewModel.defaultMedicationName.flatMap(MedicationCatalog.entry(matching:))

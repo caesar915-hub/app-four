@@ -17,6 +17,10 @@ enum DoseLogOutcome: Equatable, Sendable {
 /// Records a dose of the user's default medication without opening the app.
 /// The single owner of settings resolution, catalog re-validation, guard evaluation,
 /// and the event write (Constitution VIII — an intent cannot depend on a view model).
-protocol DoseLogService {
+/// `Sendable`: instances cross into the App Intents runtime via `AppDependencyManager` (D11).
+protocol DoseLogService: Sendable {
     func logDefaultDose(now: Date) async -> DoseLogOutcome
+    /// The "Name medication in confirmations" preference — read through the service
+    /// so the intent composes copy without duplicating settings resolution.
+    func namesMedicationInConfirmations() async -> Bool
 }

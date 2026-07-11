@@ -10,6 +10,7 @@ extension View {
             .environment(AppDependencies.medicationBarViewModel)
             .environment(AppDependencies.screenTracker)
             .environment(AppDependencies.services)
+            .environment(AppDependencies.appIntentRouter)
             .environment(\.diagnosticsStore, AppDependencies.diagnosticsStore)
     }
 }
