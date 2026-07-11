@@ -60,6 +60,16 @@ struct DoseLogServiceTests {
         #expect(try eventCount(context) == 0)
     }
 
+    // Reachable partial state: switching medication clears the dose
+    // (SettingsViewModel.medicationDidChange), leaving a valid catalog name with a
+    // nil dose durably persisted. Firing the intent mid-reconfiguration must degrade
+    // to not-configured — never log with a stale/empty dose (FR-007).
+    @Test func notConfiguredWhenNameSetButDoseCleared() async throws {
+        let (service, context) = try make(name: "Ritalin", dose: nil)
+        #expect(await service.logDefaultDose(now: .now) == .notConfigured)
+        #expect(try eventCount(context) == 0)
+    }
+
     // MARK: - Logged event contract
 
     @Test func loggedEventMatchesContract() async throws {
@@ -148,6 +158,26 @@ struct DoseLogServiceTests {
         try context.save()
 
         #expect(await service.logDefaultDose(now: now) == .logged(name: "Elvanse", dose: "30 mg", at: now))
+    }
+
+    // MARK: - Armed guard, empty history (FR-009/010: a guard blocks only against a prior dose)
+
+    // A user who enables Dose guard before ever logging: mode != .off but
+    // mostRecentDose() == nil must fall through the `if let previous` and log. A
+    // regression that returned .guarded on nil history would dead-end every guard-on
+    // user's first-ever dose while every prior-dose test stayed green.
+    @Test func totalGuardWithNoPriorDoseStillLogs() async throws {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let (service, context) = try make(mode: .total)
+        #expect(await service.logDefaultDose(now: now) == .logged(name: "Elvanse", dose: "30 mg", at: now))
+        #expect(try eventCount(context) == 1)
+    }
+
+    @Test func windowGuardWithNoPriorDoseStillLogs() async throws {
+        let now = Date(timeIntervalSince1970: 1_700_000_000)
+        let (service, context) = try make(mode: .window, windowHours: 4)
+        #expect(await service.logDefaultDose(now: now) == .logged(name: "Elvanse", dose: "30 mg", at: now))
+        #expect(try eventCount(context) == 1)
     }
 
     // MARK: - Notification side effect
