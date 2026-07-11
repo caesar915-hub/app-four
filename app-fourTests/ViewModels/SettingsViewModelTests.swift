@@ -234,7 +234,7 @@ struct SettingsViewModelTests {
         let (vm, container) = try makeSettingsVM()
         vm.defaultMedicationName = "Elvanse"
         vm.medicationDidChange()
-        #expect(vm.defaultMedicationDose == "20 mg", "Picking a medication auto-selects its first dose")
+        #expect(vm.defaultMedicationDose == nil, "Picking a medication never auto-commits a dose — it takes an explicit tap (T011 mockup)")
         vm.defaultMedicationDose = "30 mg"
         vm.syncMyMedication()
 
@@ -247,7 +247,8 @@ struct SettingsViewModelTests {
         let (vm, container) = try makeSettingsVM()
         vm.defaultMedicationName = "Concerta"
         vm.medicationDidChange()
-        #expect(vm.defaultMedicationDose == "18 mg")
+        vm.defaultMedicationDose = "18 mg"
+        vm.syncMyMedication()
         vm.defaultMedicationName = nil
         vm.medicationDidChange()
         #expect(vm.defaultMedicationDose == nil)
@@ -257,12 +258,13 @@ struct SettingsViewModelTests {
         #expect(reloaded.defaultMedicationDose == nil)
     }
 
-    @Test func changingMedicationResetsNowInvalidDose() throws {
-        let (vm, _) = try makeSettingsVM()
+    @Test func changingMedicationClearsDose() throws {
+        let (vm, container) = try makeSettingsVM()
         vm.defaultMedicationName = "Elvanse"; vm.medicationDidChange()
-        vm.defaultMedicationDose = "70 mg"          // valid for Elvanse
+        vm.defaultMedicationDose = "70 mg"; vm.syncMyMedication()
         vm.defaultMedicationName = "Ritalin"; vm.medicationDidChange()
-        #expect(vm.defaultMedicationDose == "5 mg", "70 mg isn't a Ritalin dose → drop to its first option")
+        #expect(vm.defaultMedicationDose == nil, "A switched medication must be re-confirmed with an explicit dose tap")
+        #expect(reloadedVM(container).defaultMedicationDose == nil, "The cleared dose persists — hands-free stays not-configured until the tap")
     }
 
     @Test func nameInConfirmationsDefaultsDiscreetAndSyncs() throws {

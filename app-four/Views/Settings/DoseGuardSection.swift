@@ -7,12 +7,13 @@ import SwiftUI
 /// the in-app Log Dose sheet is never blocked.
 struct DoseGuardSection: View {
     @Bindable var viewModel: SettingsViewModel
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         Section {
             ForEach(DoseGuardMode.allCases, id: \.self) { mode in
                 Button {
-                    withAnimation(.snappy) { viewModel.doseGuardMode = mode }
+                    withAnimation(reduceMotion ? nil : Motion.snappy) { viewModel.doseGuardMode = mode }
                     viewModel.syncDoseGuard()
                 } label: {
                     HStack {
@@ -36,7 +37,7 @@ struct DoseGuardSection: View {
                 }
                 .foregroundStyle(.primary)
                 .accessibilityAddTraits(viewModel.doseGuardMode == mode ? .isSelected : [])
-                .accessibilityHint("Blocks a second hands-free dose log so you don’t double-log.")
+                .accessibilityHint(hint(for: mode))
             }
 
             if viewModel.doseGuardMode == .window {
@@ -75,6 +76,14 @@ struct DoseGuardSection: View {
         case .off: "Every trigger logs"
         case .total: "Blocked while a dose is still active"
         case .window: "Blocked for a set time after a dose"
+        }
+    }
+
+    private func hint(for mode: DoseGuardMode) -> String {
+        switch mode {
+        case .off: "Turns off double-log protection — every hands-free trigger logs a dose."
+        case .total: "Blocks a second hands-free dose log while your last dose is still active."
+        case .window: "Blocks a second hands-free dose log for a time you set."
         }
     }
 

@@ -91,19 +91,11 @@ final class SettingsViewModel {
         try? context.save()
     }
 
-    /// When the medication changes, drop to its first dose option (or clear both when
-    /// the medication is unset / no longer in the catalog), then persist. Keeps a still-valid
-    /// dose if the user re-picks the same medication.
+    /// Any medication change clears the dose (approved T011 mockup): the default the
+    /// hands-free action logs must be re-confirmed with an explicit dose tap — never
+    /// auto-committed. Until then the action answers not-configured (FR-007).
     func medicationDidChange() {
-        if let name = defaultMedicationName, let entry = MedicationCatalog.entry(matching: name) {
-            if let dose = defaultMedicationDose, entry.doseOptions.contains(dose) {
-                // keep the valid selection
-            } else {
-                defaultMedicationDose = entry.doseOptions.first
-            }
-        } else {
-            defaultMedicationDose = nil
-        }
+        defaultMedicationDose = nil
         syncMyMedication()
     }
 
