@@ -207,6 +207,9 @@ struct SettingsViewModelTests {
     private func makeSettingsVM() throws -> (SettingsViewModel, ModelContainer) {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         let container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
+        // Autosave off so the round-trips prove the sync methods' EXPLICIT save();
+        // a stray autosave firing mid-test would mask a dropped save() call.
+        container.mainContext.autosaveEnabled = false
         let vm = SettingsViewModel(
             store: RecordingStore(context: container.mainContext),
             services: MockAppServices().services,
@@ -215,11 +218,15 @@ struct SettingsViewModelTests {
         return (vm, container)
     }
 
+    /// Reload through a FRESH context, never `mainContext`: the writing context
+    /// returns its own registered in-memory objects (unsaved mutations included),
+    /// so reusing it keeps every round-trip green even with the `save()` calls
+    /// deleted. A fresh context only sees what was durably persisted.
     private func reloadedVM(_ container: ModelContainer) -> SettingsViewModel {
         SettingsViewModel(
-            store: RecordingStore(context: container.mainContext),
+            store: RecordingStore(context: ModelContext(container)),
             services: MockAppServices().services,
-            context: container.mainContext
+            context: ModelContext(container)
         )
     }
 
