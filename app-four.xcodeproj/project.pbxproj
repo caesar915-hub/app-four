@@ -27,6 +27,7 @@
 
 /* Begin PBXFileReference section */
 		3724CF862FC9292700427F48 /* app-fourTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "app-fourTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3754204D3002E661008105B0 /* app-four.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "app-four.xctestplan"; sourceTree = "<group>"; };
 		37F17B2A2FC0CE4F00CAC42E /* app-four.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "app-four.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CCD2F9756D1779993777649 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
@@ -84,15 +85,10 @@
 		37F17B212FC0CE4F00CAC42E = {
 			isa = PBXGroup;
 			children = (
+				3754204D3002E661008105B0 /* app-four.xctestplan */,
 				37F17B2C2FC0CE4F00CAC42E /* app-four */,
 				3724CF872FC9292700427F48 /* app-fourTests */,
 				37F17B2B2FC0CE4F00CAC42E /* Products */,
-				37F17B382FC0D7D900CAC42E /* App 2 */,
-				37F17B392FC0D7D900CAC42E /* Models 2 */,
-				37F17B3A2FC0D7D900CAC42E /* Utils 2 */,
-				37F17B3B2FC0D7D900CAC42E /* ViewModels 2 */,
-				37F17B3C2FC0D7D900CAC42E /* Views 2 */,
-				37F17B3D2FC0D7E700CAC42E /* Models 3 */,
 				F15A23EEC3F0FBE0E5C0317D /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -104,48 +100,6 @@
 				3724CF862FC9292700427F48 /* app-fourTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		37F17B382FC0D7D900CAC42E /* App 2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "App 2";
-			sourceTree = "<group>";
-		};
-		37F17B392FC0D7D900CAC42E /* Models 2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Models 2";
-			sourceTree = "<group>";
-		};
-		37F17B3A2FC0D7D900CAC42E /* Utils 2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Utils 2";
-			sourceTree = "<group>";
-		};
-		37F17B3B2FC0D7D900CAC42E /* ViewModels 2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "ViewModels 2";
-			sourceTree = "<group>";
-		};
-		37F17B3C2FC0D7D900CAC42E /* Views 2 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Views 2";
-			sourceTree = "<group>";
-		};
-		37F17B3D2FC0D7E700CAC42E /* Models 3 */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Models 3";
 			sourceTree = "<group>";
 		};
 		D01B8D2A3AA8410335F5C01D /* iOS */ = {
@@ -226,7 +180,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2650;
-				LastUpgradeCheck = 2650;
+				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					3724CF852FC9292700427F48 = {
 						CreatedOnToolsVersion = 26.5;
@@ -306,6 +260,50 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		3724CF8AFFC9292700427F48 /* Debug-Stable */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = SWFNK3KULQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 0.8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "squirl-app.app-fourTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/app-four.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/app-four";
+			};
+			name = "Debug-Stable";
+		};
+		3724CF8BFFC9292700427F48 /* Release-Stable */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = SWFNK3KULQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				MARKETING_VERSION = 0.8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "squirl-app.app-fourTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/app-four.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/app-four";
+			};
+			name = "Release-Stable";
+		};
 		3724CF8C2FC9292700427F48 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -409,6 +407,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -466,6 +465,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "TESTFLIGHT $(inherited)";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
@@ -611,6 +611,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -668,6 +669,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "TESTFLIGHT $(inherited)";
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
@@ -751,50 +753,6 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = "Release-Stable";
-		};
-		3724CF8AFFC9292700427F48 /* Debug-Stable */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = SWFNK3KULQ;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 0.8.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "squirl-app.app-fourTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/app-four.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/app-four";
-			};
-			name = "Debug-Stable";
-		};
-		3724CF8BFFC9292700427F48 /* Release-Stable */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = SWFNK3KULQ;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 0.8.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "squirl-app.app-fourTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/app-four.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/app-four";
 			};
 			name = "Release-Stable";
 		};
