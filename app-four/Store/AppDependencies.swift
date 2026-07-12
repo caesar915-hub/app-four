@@ -14,7 +14,13 @@ enum AppDependencies {
     static let diagnosticsStore = DiagnosticsStore()
     static let screenTracker = ScreenTracker()
     /// Single choke point for check-in / My-medication triggers (App Intents + deep link).
-    static let appIntentRouter = AppIntentRouter()
+    /// Reads live onboarding state so the FR-022 gate reflects the current install.
+    static let appIntentRouter = AppIntentRouter(
+        isOnboardingComplete: {
+            let context = AppModelContainer.container.mainContext
+            return (try? context.fetch(FetchDescriptor<AppSettings>()).first)?.hasCompletedOnboarding ?? false
+        }
+    )
     /// Owns the expedited dose write (030); consumed only by `LogDefaultDoseIntent`,
     /// never by the in-app Log Dose sheet (clarification Option A).
     static let doseLogService: any DoseLogService = DoseLogServiceImpl()

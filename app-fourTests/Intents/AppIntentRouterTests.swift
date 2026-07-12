@@ -2,10 +2,10 @@ import Testing
 import Foundation
 @testable import app_four
 
-/// T005 (030 / FR-013, FR-022 plumbing) — RED until `AppIntentRouter` exists (T009).
-/// Scope: trigger-state plumbing and one-shot consumption ONLY. The onboarding
-/// gate (FR-022) is US2 / T024 and is deliberately not exercised here — a fresh
-/// router with no gate always arms the check-in trigger.
+/// T005 (plumbing) + T024 (US2 / FR-022 gate). Trigger-state plumbing, one-shot
+/// consumption, AND the onboarding gate. The default `AppIntentRouter()` models a
+/// returning user (onboarding complete) so the plumbing tests arm the trigger; the
+/// gate tests inject `isOnboardingComplete` explicitly.
 @MainActor
 struct AppIntentRouterTests {
 
@@ -39,5 +39,33 @@ struct AppIntentRouterTests {
     @Test func consumeMyMedicationFocusWithoutRequestIsNoOp() {
         let router = AppIntentRouter()
         #expect(router.consumeMyMedicationFocus() == false)
+    }
+
+    // MARK: - T024 (US2 / FR-022) — strict onboarding gate on the check-in trigger
+
+    @Test func onboardingIncompleteGatesAndArmsNoTrigger() {
+        let router = AppIntentRouter(isOnboardingComplete: { false })
+        #expect(router.requestCheckIn() == .gatedOnboarding)
+        // Strict gate: no recording is ever armed while onboarding is incomplete.
+        #expect(router.consumeCheckIn() == false)
+    }
+
+    @Test func onboardingCompleteStartsAndArmsTrigger() {
+        let router = AppIntentRouter(isOnboardingComplete: { true })
+        #expect(router.requestCheckIn() == .started)
+        #expect(router.selectedTab == .checkIn)
+        #expect(router.consumeCheckIn() == true)
+    }
+
+    // The gate is re-evaluated per call (not captured once), so finishing onboarding
+    // between a gated attempt and a later one flips the outcome — the choke point both
+    // the intent (US2) and the legacy whispernotes://checkin URL (D4) pass through.
+    @Test func gateIsReevaluatedPerCall() {
+        var complete = false
+        let router = AppIntentRouter(isOnboardingComplete: { complete })
+        #expect(router.requestCheckIn() == .gatedOnboarding)
+        complete = true
+        #expect(router.requestCheckIn() == .started)
+        #expect(router.consumeCheckIn() == true)
     }
 }

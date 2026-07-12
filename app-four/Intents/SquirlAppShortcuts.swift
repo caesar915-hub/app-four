@@ -1,9 +1,9 @@
 import AppIntents
 
-/// 030 / US1 — zero-setup system exposure (FR-017/SC-003): Siri, Spotlight, and the
-/// Shortcuts app discover these from install, no user setup. The check-in shortcut
-/// joins in US2 (T028). Every phrase carries `.applicationName` (contract); no
-/// parameters, so no `updateAppShortcutParameters()`.
+/// 030 / US1+US2 — zero-setup system exposure (FR-017/SC-003): Siri, Spotlight, and
+/// the Shortcuts app discover these from install, no user setup. Every phrase carries
+/// `.applicationName` (contract); no parameters, so no `updateAppShortcutParameters()`.
+/// Two shortcuts, well under the 10-shortcut cap.
 struct SquirlAppShortcuts: AppShortcutsProvider {
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -15,6 +15,15 @@ struct SquirlAppShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Log My Meds",
             systemImageName: "pills.fill"
+        )
+        AppShortcut(
+            intent: StartCheckInIntent(),
+            phrases: [
+                "Check in on \(.applicationName)",
+                "Start a \(.applicationName) check-in"
+            ],
+            shortTitle: "Check In",
+            systemImageName: "waveform"
         )
     }
 }
