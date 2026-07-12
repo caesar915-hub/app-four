@@ -9,7 +9,7 @@ struct YourDataSection: View {
         Section("Your data") {
             Text("Your recordings, check-ins, and signals stay on this device. Nothing is uploaded.")
                 .font(Typography.body)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
 
             NavigationLink {
                 AcknowledgementsView()
@@ -45,10 +45,10 @@ private struct AcknowledgementsView: View {
         VStack(alignment: .leading, spacing: Spacing.s) {
             Text(name)
                 .font(Typography.headline)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
             Text(detail)
                 .font(Typography.callout)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
         }
     }
 }

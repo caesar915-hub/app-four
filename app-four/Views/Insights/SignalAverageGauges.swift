@@ -32,7 +32,7 @@ private struct GaugeColumn: View {
             ZStack(alignment: .bottom) {
                 // Track
                 RoundedRectangle(cornerRadius: Radius.control)
-                    .fill(Theme.cardBackground)
+                    .fill(NewLook.tintNeutral)
                     .frame(width: gaugeWidth, height: gaugeHeight)
 
                 // Dashed tick lines (5 levels)
@@ -48,7 +48,7 @@ private struct GaugeColumn: View {
 
             Text(average.caption.isEmpty ? "—" : average.caption)
                 .font(Typography.caption)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: gaugeWidth)
         }
@@ -78,11 +78,11 @@ private struct GaugeColumn: View {
 
     private var fillGradient: AnyShapeStyle {
         if let filled = levelFill { return AnyShapeStyle(filled.fillGradient) }
-        return AnyShapeStyle(Theme.cardBackground)
+        return AnyShapeStyle(NewLook.tintNeutral)
     }
 
     private var fillInkColor: Color {
-        guard let filled = levelFill else { return Theme.textPrimary }
+        guard let filled = levelFill else { return NewLook.inkPrimary }
         return Color.contrastingInk(for: filled.color, in: colorScheme)
     }
 
@@ -110,7 +110,7 @@ private struct TickLines: View {
             ForEach(1...5, id: \.self) { level in
                 let y = gaugeHeight - (gaugeHeight * CGFloat(level) / 5)
                 Rectangle()
-                    .fill(Theme.separator)
+                    .fill(NewLook.hairline)
                     .frame(width: gaugeWidth, height: 1)
                     .offset(y: y - gaugeHeight / 2)
                     .mask(

@@ -30,7 +30,7 @@ struct FoldedDayCardHeader: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: "chevron.down")
                 .font(.caption.weight(.semibold))
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
                 .rotationEffect(.degrees(isExpanded ? 180 : 0))
         }
         .padding(.horizontal, Spacing.l)
@@ -50,7 +50,7 @@ struct FoldedDayCardHeader: View {
         let weekday = Text(day.label).foregroundStyle(.primary)
         guard let level else { return weekday }
         let mood = Text(level.displayLabel).foregroundStyle(level.wordColor)
-        let separator = Text(" · ").foregroundStyle(Theme.textSecondary)
+        let separator = Text(" · ").foregroundStyle(NewLook.inkSecondary)
         return Text("\(mood)\(separator)\(weekday)")
     }
 
@@ -58,14 +58,14 @@ struct FoldedDayCardHeader: View {
         if summary.isEmpty {
             Text(DayCardSummary.emptyCopy)
                 .font(Typography.callout)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
                 .lineLimit(2)
         } else {
             FlowLayout(spacing: Spacing.s) {
                 ForEach(Array(parts.enumerated()), id: \.offset) { idx, part in
                     HStack(spacing: Spacing.xs) {
                         if idx > 0 {
-                            Text("·").foregroundStyle(Theme.textSecondary)
+                            Text("·").foregroundStyle(NewLook.inkSecondary)
                         }
                         if let kind = part.kind {
                             SignalGlyph(kind, level: part.level, size: Metrics.summarySignal, decorative: true)

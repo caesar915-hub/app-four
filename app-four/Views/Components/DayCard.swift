@@ -11,7 +11,7 @@ struct DayCard: View {
     let onToggleExpand: () -> Void
     let onTapRecording: (UUID) -> Void
 
-    private let shape = RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
+    private let shape = RoundedRectangle(cornerRadius: Radius.newLookCard, style: .continuous)
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -36,8 +36,10 @@ struct DayCard: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.cardBackground)
+        .background(NewLook.card)
         .clipShape(shape)
+        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+        .shadow(color: .black.opacity(0.03), radius: 2, x: 0, y: 1)
     }
 }
 

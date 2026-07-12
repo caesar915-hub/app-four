@@ -11,12 +11,12 @@ struct InsightsSectionHeader: View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             Text(title)
                 .font(Typography.display)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
             if let subtitle {
                 Text(subtitle)
                     .font(Typography.callout)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

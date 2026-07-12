@@ -72,7 +72,7 @@ struct SandboxCalendar: View {
             }
             .padding(16)
         }
-        .background(Theme.background.ignoresSafeArea())
+        .background(NewLook.screen.ignoresSafeArea())
     }
 }
 
@@ -94,25 +94,24 @@ private struct DayCardMock: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.cardBackground)
+        .background(NewLook.card)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Theme.separator, lineWidth: 1))
     }
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 12) {
                 ZStack {
-                    Circle().fill(day.mood?.badgeTint ?? Theme.surface2)
+                    Circle().fill(day.mood?.badgeTint ?? NewLook.tintNeutral)
                     if let m = day.mood { SignalGlyph(.mood, level: m.numericValue, size: 24, decorative: true) }
                 }.frame(width: 42, height: 42)
                 titleText.font(.fraunces(16)).frame(maxWidth: .infinity, alignment: .leading)
                 Image(systemName: "chevron.down").font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.textSecondary).rotationEffect(.degrees(isOpen ? 180 : 0))
+                    .foregroundStyle(NewLook.inkSecondary).rotationEffect(.degrees(isOpen ? 180 : 0))
             }
             .padding(.horizontal, 16)
             if !isOpen {
-                Rectangle().fill(Theme.separator).frame(height: 1)
+                Rectangle().fill(NewLook.hairline).frame(height: 1)
                 summaryLine.padding(.horizontal, 16)
             }
         }
@@ -125,7 +124,7 @@ private struct DayCardMock: View {
         let weekday = Text(day.label).foregroundColor(.primary)
         guard let m = day.mood else { return weekday }
         return Text(m.displayLabel).foregroundColor(m.wordColor).bold()
-            + Text(" · ").foregroundColor(Theme.textSecondary) + weekday
+            + Text(" · ").foregroundColor(NewLook.inkSecondary) + weekday
     }
 
     @ViewBuilder private var summaryLine: some View {
@@ -159,16 +158,16 @@ private struct TimelineRowMock: View {
                             .rotationEffect(.degrees(-90)).frame(width: 38, height: 38)
                     }
                 }
-                if !isLast { Rectangle().fill(Theme.separator).frame(width: 1).frame(maxHeight: .infinity) }
+                if !isLast { Rectangle().fill(NewLook.hairline).frame(width: 1).frame(maxHeight: .infinity) }
             }
             .fixedSize(horizontal: true, vertical: false)
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
                     Text(entry.mood.displayLabel).font(.fraunces(14)).foregroundStyle(entry.mood.wordColor)
-                    Text(entry.time).font(.plexMono(11)).foregroundStyle(Theme.textSecondary)
+                    Text(entry.time).font(.plexMono(11)).foregroundStyle(NewLook.inkSecondary)
                     Spacer(minLength: 8)
-                    Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(Theme.textSecondary)
+                    Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(NewLook.inkSecondary)
                 }
                 if entry.energy != nil || entry.focus != nil {
                     HStack(spacing: 12) {
@@ -176,7 +175,7 @@ private struct TimelineRowMock: View {
                         if let f = entry.focus { sg { SignalGlyph(.focus, level: f.numericValue, size: 13, decorative: true); Text(f.displayLabel) } }
                     }.font(Typography.caption)
                 }
-                Text(entry.note).font(Typography.callout).foregroundStyle(Theme.textPrimary)
+                Text(entry.note).font(Typography.callout).foregroundStyle(NewLook.inkPrimary)
                 chips
             }
             .padding(.top, 16)
@@ -194,7 +193,7 @@ private struct TimelineRowMock: View {
                         Text(item.label)
                     }
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(item.med ? Palette.medication : Theme.textPrimary)
+                    .foregroundStyle(item.med ? Palette.medication : NewLook.inkPrimary)
                     .padding(.horizontal, 8).padding(.vertical, 4)
                     .background(item.med ? Palette.medication.opacity(0.13) : Color(.secondarySystemFill), in: .capsule)
                 }

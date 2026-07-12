@@ -35,11 +35,11 @@ private struct StripRow: View {
                 Text(strip.kind.label)
                     .font(Typography.subheadline)
                     .fontWeight(.medium)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                 Spacer()
                 Text(strip.summary)
                     .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
             }
             .padding(.horizontal, Spacing.l)
 
@@ -92,7 +92,7 @@ private struct BeadSlot: View {
             if let label = bead.weekdayLabel {
                 Text(label)
                     .font(Typography.text(9, weight: .medium, relativeTo: .caption1))
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
             }
         }
         .frame(maxWidth: .infinity, minHeight: 44)

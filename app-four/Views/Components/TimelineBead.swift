@@ -46,8 +46,8 @@ struct TimelineBead: View {
             }
         } else {
             Circle()
-                .fill(Theme.background)
-                .overlay(Circle().strokeBorder(Theme.separator, lineWidth: 1))
+                .fill(NewLook.screen)
+                .overlay(Circle().strokeBorder(NewLook.hairline, lineWidth: 1))
         }
     }
 
@@ -77,8 +77,8 @@ struct TimelineBead: View {
                 .foregroundStyle(Palette.medication)   // systemPurple brightens in dark mode
                 .padding(.horizontal, Spacing.xs + 2)
                 .padding(.vertical, 1)
-                .background(Theme.elevatedBackground, in: .capsule)
-                .overlay(Capsule().strokeBorder(Theme.separator.opacity(0.3), lineWidth: 0.5))
+                .background(NewLook.card, in: .capsule)
+                .overlay(Capsule().strokeBorder(NewLook.hairline.opacity(0.3), lineWidth: 0.5))
                 .fixedSize()
                 .offset(y: badgeOffsetY)
         }

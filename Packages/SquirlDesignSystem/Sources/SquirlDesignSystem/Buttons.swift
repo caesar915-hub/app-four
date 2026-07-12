@@ -20,13 +20,13 @@ public struct SecondaryButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(Typography.headline)
-            .foregroundStyle(Theme.textPrimary)
+            .foregroundStyle(NewLook.inkPrimary)
             .frame(maxWidth: .infinity, minHeight: Metrics.minTapTarget)
             .padding(.horizontal, Spacing.l)
-            .background(Theme.cardBackground, in: .rect(cornerRadius: Radius.button))
+            .background(NewLook.card, in: .rect(cornerRadius: Radius.button))
             .overlay(
                 RoundedRectangle(cornerRadius: Radius.button)
-                    .strokeBorder(Theme.separator, lineWidth: 1)
+                    .strokeBorder(NewLook.hairline, lineWidth: 1)
             )
             .opacity(configuration.isPressed ? 0.85 : 1)
     }

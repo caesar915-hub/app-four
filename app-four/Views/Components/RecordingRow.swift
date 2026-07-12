@@ -27,7 +27,7 @@ struct RecordingRow: View {
                 }
             }
         }
-        .card(padding: Spacing.m)
+        .newLookCard(padding: Spacing.m)
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityDescription)
     }
@@ -46,7 +46,7 @@ struct RecordingRow: View {
         HStack(alignment: .firstTextBaseline) {
             Text(recording.title)
                 .font(Typography.headline)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
             Spacer()
             statusBadge
         }
@@ -56,15 +56,15 @@ struct RecordingRow: View {
         HStack(spacing: Spacing.xs) {
             Text(recording.createdAt, format: .dateTime.month(.abbreviated).day().hour(.twoDigits(amPM: .abbreviated)).minute(.twoDigits))
                 .font(Typography.caption)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
 
             Text("·")
                 .font(Typography.caption)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
 
             Text(recording.formattedDuration)
                 .font(Typography.caption.monospacedDigit())
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
         }
     }
 
@@ -102,7 +102,7 @@ struct RecordingRow: View {
                 Text("Processing")
                     .font(Typography.caption)
             }
-            .foregroundStyle(Theme.textSecondary)
+            .foregroundStyle(NewLook.inkSecondary)
         case .completed where recording.summary != nil:
             Image(systemName: "checkmark.circle.fill")
                 .font(Typography.caption)

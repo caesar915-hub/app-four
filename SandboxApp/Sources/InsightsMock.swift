@@ -15,13 +15,13 @@ struct SandboxInsights: View {
             .padding(20)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .background(Theme.background.ignoresSafeArea())
+        .background(NewLook.screen.ignoresSafeArea())
     }
 
     private func head(_ t: String, _ s: String? = nil) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(t).font(Typography.title).foregroundStyle(Theme.textPrimary)
-            if let s { Text(s).font(Typography.callout).foregroundStyle(Theme.textSecondary) }
+            Text(t).font(Typography.title).foregroundStyle(NewLook.inkPrimary)
+            if let s { Text(s).font(Typography.callout).foregroundStyle(NewLook.inkSecondary) }
         }
     }
 
@@ -52,7 +52,7 @@ struct SandboxInsights: View {
                 ForEach(moodCounts, id: \.0) { level, count in
                     HStack(spacing: 4) {
                         Circle().fill(level.fillGradient).frame(width: 10, height: 10)
-                        Text("\(level.displayLabel) (\(count))").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+                        Text("\(level.displayLabel) (\(count))").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
                     }
                 }
             }
@@ -69,10 +69,10 @@ struct SandboxInsights: View {
             strip(.focus, "Focus", [3, 5, 4, 2, nil, 3, 4, 5].map { $0.flatMap(FocusLevel.from) }, "sharper lately")
             HStack(spacing: 4) {
                 SignalGlyph(.sleep, size: 15)
-                Text("Sleep · not tracked yet").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+                Text("Sleep · not tracked yet").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
             }
             .padding(.horizontal, 12).padding(.vertical, 8)
-            .overlay(Capsule().strokeBorder(Theme.separator, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
+            .overlay(Capsule().strokeBorder(NewLook.hairline, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
         }
     }
 
@@ -82,14 +82,14 @@ struct SandboxInsights: View {
                 SignalGlyph(kind, level: 3, size: 18, decorative: true)
                 Text(name).font(Typography.subheadline)
                 Spacer()
-                Text(summary).font(Typography.caption).foregroundStyle(Theme.textSecondary)
+                Text(summary).font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
             }
             HStack(spacing: 5) {
                 ForEach(Array(beads.enumerated()), id: \.offset) { _, lvl in
                     if let lvl {
                         Circle().fill(lvl.fillGradient).frame(width: 26, height: 26)
                     } else {
-                        Circle().strokeBorder(Theme.textSecondary.opacity(0.4), style: StrokeStyle(lineWidth: 1.5, dash: [3, 2]))
+                        Circle().strokeBorder(NewLook.inkSecondary.opacity(0.4), style: StrokeStyle(lineWidth: 1.5, dash: [3, 2]))
                             .frame(width: 26, height: 26)
                     }
                 }
@@ -115,7 +115,7 @@ struct SandboxInsights: View {
             SignalGlyph(kind, level: level.numericValue, size: 26, decorative: true)
             GeometryReader { geo in
                 ZStack(alignment: .bottom) {
-                    RoundedRectangle(cornerRadius: 10).fill(Theme.cardBackground)
+                    RoundedRectangle(cornerRadius: 10).fill(NewLook.tintNeutral)
                     RoundedRectangle(cornerRadius: 10).fill(level.fillGradient)
                         .frame(height: geo.size.height * frac)
                         .overlay(alignment: .top) {
@@ -136,19 +136,19 @@ struct SandboxInsights: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Medication × focus").cardEyebrow()
             Text("On medication days, sharp focus appeared 75% of the time.")
-                .font(Typography.title).foregroundStyle(Theme.textPrimary)
-            Capsule().fill(Theme.separator).frame(height: 8)
+                .font(Typography.title).foregroundStyle(NewLook.inkPrimary)
+            Capsule().fill(NewLook.tintNeutral).frame(height: 8)
                 .overlay(alignment: .leading) { Capsule().fill(Theme.accent).frame(width: 180 * 0.75, height: 8) }
             HStack {
-                Text("Med days").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+                Text("Med days").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
                 Spacer()
-                Text("75%").font(Typography.caption).bold().foregroundStyle(Theme.textPrimary)
+                Text("75%").font(Typography.caption).bold().foregroundStyle(NewLook.inkPrimary)
                 Spacer()
-                Text("Sharp+ focus").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+                Text("Sharp+ focus").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .card()
+        .newLookCard()
     }
 }
 

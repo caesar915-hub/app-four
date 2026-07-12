@@ -16,10 +16,10 @@ struct MoodLegend: View {
                         .frame(width: 10, height: 10)
                     Text(share.level.displayLabel)
                         .font(Typography.caption)
-                        .foregroundStyle(Theme.textPrimary)
+                        .foregroundStyle(NewLook.inkPrimary)
                     Text("(\(share.count))")
                         .font(Typography.caption)
-                        .foregroundStyle(Theme.textSecondary)
+                        .foregroundStyle(NewLook.inkSecondary)
                 }
                 .accessibilityLabel("\(share.level.displayLabel): \(share.count)")
             }

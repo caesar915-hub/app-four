@@ -55,11 +55,11 @@ struct Chip: View {
             Text(title)
                 .font(Typography.caption)
                 .fontWeight(.medium)
-                .foregroundStyle(isSelected ? Theme.accent : Theme.textSecondary)
+                .foregroundStyle(isSelected ? NewLook.selection : NewLook.inkSecondary)
                 .padding(.horizontal, Spacing.m)
                 .padding(.vertical, Spacing.xs + 2)
                 .background(
-                    isSelected ? Theme.accent.opacity(0.15) : Theme.cardBackground,
+                    isSelected ? NewLook.selection.opacity(0.15) : NewLook.card,
                     in: .rect(cornerRadius: Radius.control)
                 )
         }

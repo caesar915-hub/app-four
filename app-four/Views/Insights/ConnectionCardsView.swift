@@ -50,13 +50,13 @@ private struct UnlockedCard: View {
         VStack(alignment: .leading, spacing: Spacing.m) {
             Text(title)
                 .font(Typography.label)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
                 .textCase(.uppercase)
                 .tracking(0.5)
 
             Text(sentence)
                 .font(Typography.display)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
 
             MiniBar(
@@ -66,8 +66,7 @@ private struct UnlockedCard: View {
                 trailingText: trailingText
             )
         }
-        .padding(Spacing.l)
-        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.card))
+        .newLookCard()
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(title): \(sentence) \(barLabel)")
     }
@@ -82,24 +81,24 @@ private struct GatedCard: View {
             HStack {
                 Text(title)
                     .font(Typography.label)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
                     .textCase(.uppercase)
                     .tracking(0.5)
                 Spacer()
                 Image(systemName: "lock")
                     .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
             }
             Text(unlockCopy)
                 .font(Typography.callout)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(Spacing.l)
         .overlay(
-            RoundedRectangle(cornerRadius: Radius.card)
+            RoundedRectangle(cornerRadius: Radius.newLookCard)
                 .strokeBorder(
-                    Theme.textSecondary.opacity(0.35),
+                    NewLook.hairline,
                     style: StrokeStyle(lineWidth: 1, dash: [5, 3])
                 )
         )
@@ -121,7 +120,7 @@ private struct MiniBar: View {
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     Capsule()
-                        .fill(Theme.separator)
+                        .fill(NewLook.tintNeutral)
                     Capsule()
                         .fill(Theme.accent)
                         .frame(width: max(barHeight, geo.size.width * fraction))
@@ -133,16 +132,16 @@ private struct MiniBar: View {
             HStack {
                 Text(leadingText)
                     .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
                 Spacer()
                 Text(barLabel)
                     .font(Typography.label)
                     .fontWeight(.semibold)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                 Spacer()
                 Text(trailingText)
                     .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
             }
         }
     }

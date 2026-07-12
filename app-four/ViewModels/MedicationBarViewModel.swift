@@ -117,6 +117,7 @@ final class MedicationBarViewModel {
             durationHours: durationHours,
             source: .manual
         )
+        event.isMockData = UserDefaults.standard.bool(forKey: "debugMockMode")
         context.insert(event)
         try? context.save()
         NotificationCenter.default.post(name: .medicationEventsDidChange, object: nil)

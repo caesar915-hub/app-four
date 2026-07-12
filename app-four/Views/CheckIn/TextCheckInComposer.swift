@@ -25,7 +25,7 @@ struct TextCheckInComposer: View {
                 .padding(Spacing.l)
             }
         }
-        .background(Theme.background.ignoresSafeArea())
+        .background(NewLook.screen.ignoresSafeArea())
         .presentationDragIndicator(.visible)
     }
 
@@ -36,10 +36,10 @@ struct TextCheckInComposer: View {
             Button { dismiss() } label: {
                 Image(systemName: "xmark")
                     .font(Typography.subheadline)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
-                    .background(Theme.cardBackground, in: Circle())
-                    .overlay(Circle().strokeBorder(Theme.separator, lineWidth: 1))
+                    .background(NewLook.card, in: Circle())
+                    .overlay(Circle().strokeBorder(NewLook.hairline, lineWidth: 1))
             }
             .accessibilityLabel("Close")
             .contentShape(.circle)
@@ -47,7 +47,7 @@ struct TextCheckInComposer: View {
             Spacer()
             Text("Type a check-in")
                 .font(Typography.title)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
             Spacer()
 
             Color.clear.frame(width: Metrics.minTapTarget, height: Metrics.minTapTarget)
@@ -61,9 +61,9 @@ struct TextCheckInComposer: View {
     private var signalPickers: some View {
         VStack(spacing: 0) {
             SignalScaleRow(title: "Mood", kind: .mood, selection: $draft.mood)
-            Divider().overlay(Theme.separator)
+            Divider().overlay(NewLook.hairline)
             SignalScaleRow(title: "Energy", kind: .energy, selection: $draft.energy)
-            Divider().overlay(Theme.separator)
+            Divider().overlay(NewLook.hairline)
             SignalScaleRow(title: "Focus", kind: .focus, selection: $draft.focus)
         }
     }
@@ -75,20 +75,19 @@ struct TextCheckInComposer: View {
             if draft.note.isEmpty {
                 Text("Anything you want to remember about today?")
                     .font(Typography.callout)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
                     .padding(.horizontal, Spacing.m)
                     .padding(.vertical, Spacing.m)
                     .allowsHitTesting(false)
             }
             TextEditor(text: $draft.note)
                 .font(Typography.body)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
                 .scrollContentBackground(.hidden)
                 .padding(Spacing.s)
                 .frame(minHeight: noteMinHeight)
         }
-        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.card))
-        .overlay(RoundedRectangle(cornerRadius: Radius.card).strokeBorder(Theme.separator, lineWidth: 1))
+        .newLookCard()
     }
 
     /// Note-box content height (a content dimension, not a spacing-scale value).
@@ -112,7 +111,7 @@ struct TextCheckInComposer: View {
             if showSaveFailed {
                 Text("Couldn't save — tap to try again. Your note is safe.")
                     .font(Typography.callout)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
                     .multilineTextAlignment(.center)
                     .transition(.opacity)
             }
@@ -133,11 +132,11 @@ struct SignalScaleRow<Level: SignalLevel & CaseIterable & Equatable>: View {
             HStack {
                 Text(title)
                     .font(Typography.subheadline.weight(.semibold))
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                 Spacer()
                 Text(readout)
                     .font(Typography.mono12)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
             }
             GlyphRampPicker(kind: kind, selection: $selection)
         }

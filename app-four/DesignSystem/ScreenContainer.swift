@@ -50,8 +50,8 @@ struct ScreenContainer<Content: View>: View {
             primaryContent
                 .navigationTitle(title)
                 .navigationBarTitleDisplayMode(.inline)
-                .background(Theme.background.ignoresSafeArea())
-                .toolbarBackground(Theme.background, for: .navigationBar)
+                .background(NewLook.screen.ignoresSafeArea())
+                .toolbarBackground(NewLook.screen, for: .navigationBar)
         }
         .tint(Theme.meadowGreen)
     }

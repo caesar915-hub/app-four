@@ -73,7 +73,7 @@ struct CalendarHeaderView: View {
                 if !forceWeek {
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(Theme.textSecondary)
+                        .foregroundStyle(NewLook.inkSecondary)
                         .rotationEffect(.degrees(effectiveExpanded ? 90 : 0))
                         .accessibilityHidden(true)   // decorative; the month text is the label
                 }
@@ -89,7 +89,7 @@ struct CalendarHeaderView: View {
             ForEach(weekdaySymbols.indices, id: \.self) { i in
                 Text(weekdaySymbols[i])
                     .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
                     .frame(maxWidth: .infinity)
             }
         }

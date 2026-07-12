@@ -27,7 +27,7 @@ struct TimelineRow: View {
                 .zIndex(1)
             if !isLast {
                 Rectangle()
-                    .fill(Theme.separator)
+                    .fill(NewLook.hairline)
                     .frame(width: 1)
                     .frame(maxHeight: .infinity)
             }
@@ -73,11 +73,11 @@ struct TimelineRow: View {
                     .foregroundStyle(level?.wordColor ?? .primary)
                 Text(node.time, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits))
                     .font(Typography.mono(Metrics.rowTime))
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
                 Spacer(minLength: Spacing.s)
                 Image(systemName: "chevron.right")
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
             }
             rampLine(energy: recording.energyLevel, focus: recording.focusLevel)
         }
@@ -145,10 +145,10 @@ struct TimelineRow: View {
         if !feelings.shown.isEmpty || !sideEffects.shown.isEmpty {
             FlowLayout(spacing: Spacing.m) {
                 if !feelings.shown.isEmpty {
-                    dataItem("heart.fill", joined(feelings), color: Theme.textSecondary)
+                    dataItem("heart.fill", joined(feelings), color: NewLook.inkSecondary)
                 }
                 if !sideEffects.shown.isEmpty {
-                    dataItem("medical.thermometer", joined(sideEffects), color: Theme.textSecondary)
+                    dataItem("medical.thermometer", joined(sideEffects), color: NewLook.inkSecondary)
                 }
             }
         }

@@ -171,10 +171,10 @@ struct CheckInView: View {
             Text(todayDate)
                 .font(Typography.label)
                 .textCase(.uppercase)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
             Text("How do you feel?")
                 .font(Typography.title)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
                 .multilineTextAlignment(.center)
                 .accessibilityAddTraits(.isHeader)
 
@@ -182,7 +182,7 @@ struct CheckInView: View {
             if !checkInHintSeen {
                 Text("Say whatever's on your mind — a few words is plenty.")
                     .font(Typography.callout)
-                    .foregroundStyle(Theme.textSecondary.opacity(0.7))
+                    .foregroundStyle(NewLook.inkSecondary.opacity(0.7))
                     .multilineTextAlignment(.center)
             }
         }
@@ -223,8 +223,8 @@ struct CheckInView: View {
     private func hubOption(_ label: String, icon: String, tint: Color?, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: Spacing.s) {
-                Image(systemName: icon).foregroundStyle(tint ?? Theme.textPrimary)
-                Text(label).font(Typography.headline).foregroundStyle(Theme.textPrimary)
+                Image(systemName: icon).foregroundStyle(tint ?? NewLook.inkPrimary)
+                Text(label).font(Typography.headline).foregroundStyle(NewLook.inkPrimary)
             }
             .frame(width: 220, height: Metrics.minTapTarget)
         }
@@ -256,7 +256,7 @@ struct CheckInView: View {
                 // doesn't chatter.
                 Text(viewModel.timeString)
                     .font(Typography.timer)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(viewModel.state == .paused
                                         ? "Paused, \(viewModel.timeString) elapsed"
@@ -267,12 +267,12 @@ struct CheckInView: View {
                     Text("Paused")
                         .font(Typography.label)
                         .textCase(.uppercase)
-                        .foregroundStyle(Theme.textSecondary)
+                        .foregroundStyle(NewLook.inkSecondary)
                 }
                 stopButton
                 Button("Cancel") { viewModel.cancelRecording() }
                     .font(Typography.callout)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
                     .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
                     .accessibilityLabel("Cancel recording")
 
@@ -280,7 +280,7 @@ struct CheckInView: View {
                 // faint, no red, no ticking bar. Fades after a beat; one-shot via the VM latch.
                 Text("Wrapping up soon")
                     .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary.opacity(0.7))
+                    .foregroundStyle(NewLook.inkSecondary.opacity(0.7))
                     .opacity(showCapApproachCue ? 1 : 0)
                     .accessibilityHidden(!showCapApproachCue)
             }
@@ -291,7 +291,7 @@ struct CheckInView: View {
         GeometryReader { geo in
             ZStack(alignment: .leading) {
                 Rectangle()
-                    .fill(Theme.textSecondary.opacity(0.15))
+                    .fill(NewLook.inkSecondary.opacity(0.15))
                 Rectangle()
                     .fill(Theme.accent.opacity(0.5))
                     .frame(width: geo.size.width * viewModel.promptProgress)
@@ -309,7 +309,7 @@ struct CheckInView: View {
         VStack(spacing: Spacing.s) {
             Text(viewModel.currentPrompt.question)
                 .font(Typography.display)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
                 .multilineTextAlignment(.center)
                 .id(viewModel.currentPromptIndex)
                 .transition(.asymmetric(
@@ -319,7 +319,7 @@ struct CheckInView: View {
 
             Text(viewModel.currentPrompt.hint)
                 .font(Typography.callout)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
                 .multilineTextAlignment(.center)
                 .id("hint-\(viewModel.currentPromptIndex)")
                 .transition(.opacity)
@@ -338,7 +338,7 @@ struct CheckInView: View {
                 Circle()
                     .fill(index == viewModel.currentPromptIndex
                           ? Theme.accent
-                          : Theme.textSecondary.opacity(0.3))
+                          : NewLook.inkSecondary.opacity(0.3))
                     .frame(width: Metrics.CheckIn.promptDot, height: Metrics.CheckIn.promptDot)
             }
         }
@@ -376,10 +376,10 @@ struct CheckInView: View {
         VStack(spacing: Spacing.s) {
             Text("Couldn't save that one.")
                 .font(Typography.headline)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
             Text("Your check-in is safe — tap to try again.")
                 .font(Typography.callout)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
                 .multilineTextAlignment(.center)
 
             Button { viewModel.retrySave() } label: {
@@ -397,7 +397,7 @@ struct CheckInView: View {
 
             Button("Discard") { viewModel.discardFailedCapture() }
                 .font(Typography.callout)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
                 .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
                 .accessibilityLabel("Discard this check-in")
         }
@@ -433,10 +433,10 @@ private struct CheckInSavedView: View {
 
             Text("Captured.")
                 .font(Typography.title)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
             Text("That's today's check-in. Talk to you next time.")
                 .font(Typography.callout)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: 240)
 

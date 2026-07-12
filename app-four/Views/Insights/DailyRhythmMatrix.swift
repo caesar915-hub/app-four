@@ -16,7 +16,7 @@ struct DailyRhythmMatrix: View {
                 ForEach(TimeBucket.allCases, id: \.self) { bucket in
                     Text(bucket.label)
                         .font(Typography.caption)
-                        .foregroundStyle(Theme.textSecondary)
+                        .foregroundStyle(NewLook.inkSecondary)
                         .frame(maxWidth: .infinity)
                         .multilineTextAlignment(.center)
                 }
@@ -28,7 +28,7 @@ struct DailyRhythmMatrix: View {
                     Text(row.kind.label)
                         .font(Typography.caption)
                         .fontWeight(.medium)
-                        .foregroundStyle(Theme.textSecondary)
+                        .foregroundStyle(NewLook.inkSecondary)
                         .frame(width: rowLabelWidth, alignment: .leading)
 
                     ForEach(Array(row.cells.enumerated()), id: \.offset) { _, cell in
@@ -55,19 +55,19 @@ private struct RhythmCellView: View {
                     .frame(width: blobSize, height: blobSize)
                 Text(level.displayLabel)
                     .font(Typography.label)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
             } else {
                 Circle()
                     .strokeBorder(
-                        Theme.textSecondary.opacity(0.3),
+                        NewLook.inkSecondary.opacity(0.3),
                         style: StrokeStyle(lineWidth: 1.5, dash: [3, 2])
                     )
                     .frame(width: blobSize, height: blobSize)
                 Text("—")
                     .font(Typography.label)
-                    .foregroundStyle(Theme.textSecondary.opacity(0.4))
+                    .foregroundStyle(NewLook.inkSecondary.opacity(0.4))
             }
         }
         .frame(minWidth: 44, minHeight: 44)  // 44pt hit target floor

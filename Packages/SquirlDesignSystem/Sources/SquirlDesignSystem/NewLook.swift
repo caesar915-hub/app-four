@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// **New Look** — the second visual language (spec 032): a cool **sage** ground with white,
-/// borderless, generously-rounded cards and iOS-ink text. It runs alongside Paper & Pollen
-/// (`Theme`) on the two re-skinned screens (Edit check-in, Recording detail) without touching it —
-/// the app-wide mixed look is an accepted, temporary transition state.
+/// **New Look** — a cool **sage** ground with white, borderless, generously-rounded cards and
+/// iOS-ink text. As of spec 033, New Look is the app-wide default. `Theme` (Paper & Pollen) is
+/// retained only for the semantic-color exceptions documented in DESIGN.md (accent, meadow,
+/// status, danger, medication).
 ///
 /// Values map 1:1 to the Figma "Tiimo Colors" variables (file Squil-Design); dark values are
 /// derived per iOS convention (cool-dark surfaces, light ink) and validated at device QA.
@@ -16,9 +16,14 @@ public enum NewLook {
     /// Primary text.
     public static let inkPrimary = Color(lightHex: "#1C1B1F", darkHex: "#F2F3EE")
     /// Secondary text — labels, captions, unselected chip glyphs.
+    /// Known limitation: the light value `#8A8A8E` is below WCAG AA (3.0:1 on `screen`, 3.4:1 on
+    /// `card`) for normal-size body text — kept 1:1 with Figma by owner decision (2026-07-12, see
+    /// DESIGN.md Decisions Log). Do not darken without approval. Dark mode passes (~7:1).
     public static let inkSecondary = Color(lightHex: "#8A8A8E", darkHex: "#9BA09A")
     /// Hairline — chip / field borders (never a card border in New Look).
     public static let hairline = Color(lightHex: "#DBDDDE", darkHex: "#33362F")
+    /// Neutral tint — grooves, tracks, segmented-control fills (never a card background).
+    public static let tintNeutral = Color(lightHex: "#ECEAE6", darkHex: "#272A22")
     /// Selection accent — filled selected chips (non-medication).
     public static let selection = Color(lightHex: "#54B492", darkHex: "#5FC49F")
 }
@@ -26,14 +31,16 @@ public enum NewLook {
 // MARK: - Card
 
 public extension View {
-    /// New Look card: white surface, radius 20, soft shadow, **no border** — distinct from the
-    /// Paper & Pollen `.card()` (which is bordered at radius 16 and left untouched for its
-    /// remaining consumers, `RecordingRow` and `MedicationBarView`).
+    /// New Look card: white surface, radius 20, soft shadow, **no border**. Spec 033 makes New
+    /// Look the app-wide look; `.card()` / `Theme` are retained only for the semantic-color set
+    /// (accent/meadow/status/danger). `RecordingRow` and `MedicationBarView` are no longer
+    /// permanent `.card()` consumers — they migrate to `.newLookCard()` under spec-033.
     func newLookCard(padding: CGFloat = Spacing.l) -> some View {
         self
             .padding(padding)
             .background(NewLook.card, in: .rect(cornerRadius: Radius.newLookCard))
-            .shadow(color: .black.opacity(0.06), radius: 8, y: 2)
+            .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+            .shadow(color: .black.opacity(0.03), radius: 2, x: 0, y: 1)
     }
 }
 
@@ -97,7 +104,7 @@ public struct NewLookNavBar<Leading: View, Trailing: View>: View {
     public var body: some View {
         ZStack {
             Text(title)
-                .font(Typography.text(24, weight: .bold, relativeTo: .title))
+                .font(Typography.text(24, weight: .bold, relativeTo: .title2))
                 .foregroundStyle(NewLook.inkPrimary)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .accessibilityAddTraits(.isHeader)

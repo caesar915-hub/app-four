@@ -95,15 +95,18 @@ Glyphs encode level by **shape + hue + fill simultaneously** (triple-redundant; 
 - **Edit sheet (`ExtractionReviewView`).** One scrolling modal reached by "Edit check-in", in order: **When** (date/time) · **Mood · Energy · Focus** (glyph pickers showing the named 1–5 level **+ a synonym line**, e.g. "Great · bright, thriving") · **Sleep** (named scale Restless→Deep, **no synonyms**, with 2/4/6/8/10h presets **plus a custom-hours text input**; bed icon, ramp deferred) · **Medications** · **Emotions · Side-effects** (chip groups). **Medications:** **Stimulants only** (Non-stimulants + Off-label removed for now); multi-select, **removable (×)**, **no count limit**; each selected med uses the **inline-expand (P1)** layout — dosage from the table, an **info-only default time**, and a **duration text box defaulted to the shortest** for that med. Each med is an **independent `MedicationEvent`** (same timestamp allowed). "Save corrections" writes `RecordingTag(source: .userCorrected)` → trains the personal lexicon. Low friction here is functional: if correcting is a chore, the NLP never learns.
 - **Medication bar.** Capsule icon + single medication purple. The bar **fills from empty (just taken) to full (worn off)** over `MedicationEvent.durationHours`; onset (~first 20 min) shows a gentle pulse ("kicking in"). One consistent purple — only the fill changes, so onset and fading never share a color. Worn-off → quiet, overlay fades out. Inside the medication card/detail, the fuller **effect curve** (rise → peak → decline) may be shown where there's room.
 
-## New Look (spec 032) — second visual language, in adoption
+## New Look (spec 033) — app-wide visual language
 
-A cool, iOS-native alternative to Paper & Pollen, approved from the Figma a-screens (file
-Squil-Design → "Screens (v2)": a03 Edit check-in, a02 Recording detail, a01 Calendar — a01 gated
-on spec-029). Runs **alongside** Paper & Pollen: spec 032 re-skins **only Edit check-in
-(`ExtractionReviewView`) and Recording detail (`RecordingDetailView` + `ADHDSummarySection`)**; every
-other screen stays Paper & Pollen. The **mixed look is an accepted, temporary transition state** —
-no runtime theme toggle. Tokens live in `SquirlDesignSystem/NewLook.swift`, additive; `Theme`,
-`Palette`, `Typography`, and the `.card()` modifier are untouched.
+A cool, iOS-native alternative to Paper & Pollen, originally approved from the Figma a-screens
+(file Squil-Design → "Screens (v2)": a03 Edit check-in, a02 Recording detail, a01 Calendar — a01
+gated on spec-029) and piloted on Edit check-in + Recording detail (spec 032). **Spec 033
+(2026-07-11) supersedes that two-screen pilot scope: New Look is now the app-wide visual
+language** — every screen migrates to `NewLook.screen` / `NewLook.card` / `.newLookCard()` and the
+New Look palette. `Theme` is retained only for the semantic accent/status colours that sit outside
+the New Look palette: `Theme.accent`, `Theme.meadowGreen`, `Theme.meadowAmber`,
+`Theme.meadowGradient`, `Theme.statusDone`, `Theme.statusInProgress`, `Theme.danger`. Tokens live
+in `SquirlDesignSystem/NewLook.swift`, additive to that retained `Theme` subset; `Palette` and
+`Typography` are untouched.
 
 - **Palette** (adaptive light/dark; dark derived per iOS convention, QA-validated):
 
@@ -114,11 +117,21 @@ no runtime theme toggle. Tokens live in `SquirlDesignSystem/NewLook.swift`, addi
   | `NewLook.inkPrimary` | `#1C1B1F` | `#F2F3EE` | primary text |
   | `NewLook.inkSecondary` | `#8A8A8E` | `#9BA09A` | secondary text / labels |
   | `NewLook.hairline` | `#DBDDDE` | `#33362F` | chip / field borders |
+  | `NewLook.tintNeutral` | `#ECEAE6` | `#272A22` | grooves / tracks / segmented-control fills |
   | `NewLook.selection` | `#54B492` | `#5FC49F` | selected chip fill (non-medication) |
   | (medication) | `#7E5CA8` | `#9277BE` | reuses `Palette.medication`, never redefined |
 
-- **Cards** — `.newLookCard()`: white, **radius 20** (`Radius.newLookCard`), soft shadow, **no
-  border** (contrast with `.card()`'s bordered radius-16). 16px screen gutter.
+  > **Known contrast limitation (`NewLook.inkSecondary`, light mode):** `#8A8A8E` measures **3.0:1**
+  > on `screen` and **3.4:1** on `card` — below WCAG AA's 4.5:1 floor for normal-size body text
+  > (dark mode passes at ~7:1). This is the Figma "Tiimo Colors" value, kept **1:1 with Figma by
+  > owner decision (2026-07-12)** rather than darkened. Secondary/caption/label text using this
+  > token in light mode does not clear AA; accept as a documented limitation, not a bug. Revisit
+  > only with explicit approval to deviate from Figma (a compliant value is ~`#6C6C70`).
+
+- **Cards** — `.newLookCard()`: white, **radius 20** (`Radius.newLookCard`), **no border** (contrast
+  with `.card()`'s bordered radius-16), two-layer shadow — `0.05`-opacity black offset `(0, 2)`
+  radius `8` + `0.03`-opacity black offset `(0, 1)` radius `2` (replaces the earlier single-layer
+  approximation). 16px screen gutter.
 - **Chips/pills** — `.newLookChip(selected:role:)`: unselected = white + hairline + ink; selected =
   solid `selection` (or `Palette.medication` for `role == .medication`) + white label; capsule.
 - **Nav** — `NewLookNavBar`: leading pill · **centered title** (ZStack, width-independent) · trailing pill.
@@ -131,6 +144,8 @@ no runtime theme toggle. Tokens live in `SquirlDesignSystem/NewLook.swift`, addi
 ## Decisions Log
 | Date | Decision | Rationale |
 |------|----------|-----------|
+| 2026-07-12 | Keep `NewLook.inkSecondary` at Figma value `#8A8A8E` despite light-mode WCAG AA failure (3.0:1 sage / 3.4:1 white, need 4.5:1) | Owner chose Figma fidelity over the contrast fix when the spec-033 accessibility audit surfaced it app-wide. Documented as a known limitation (see palette note above); dark mode unaffected (~7:1). A compliant alternative (~`#6C6C70`) is on record if revisited. |
+| 2026-07-11 | Adopt "New Look" as the app-wide visual language (spec 033), superseding spec 032's two-screen pilot scope | Two-screen pilot (Edit check-in, Recording detail) validated the language; owner approved app-wide rollout. `Theme` retained only for accent/meadow/status/danger semantic colours — every other screen migrates to `NewLook.screen` / `NewLook.card` / `.newLookCard()`. |
 | 2026-07-10 | Adopt "New Look" as a second visual language for Edit check-in + Recording detail (spec 032); dark tokens derived now; mixed P&P/New-Look shipped, no toggle | Owner adoption call after the Figma a-screens reached presentation grade; two lowest-risk screens prove the language before wider rollout. Calendar (a01) gated on spec-029. |
 | 2026-06-15 | Adopt "Paper & Pollen" design system | `/design-consultation`. Warm-paper organic identity differentiates from the blue/purple category; "refine Meadow, don't replace." |
 | 2026-06-15 | Keep shipped signal ramps; Energy stays Lemon | Owner override of the proposed Energy→Ember swap. Mood/Focus untouched. |

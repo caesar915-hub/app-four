@@ -36,7 +36,7 @@ struct ModelDownloadRow: View {
             } else if !isInstalled && !isDownloading {
                 Text("~150 MB · Wi-Fi recommended")
                     .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
             }
         }
         .contentShape(.rect)
@@ -71,14 +71,14 @@ struct ModelDownloadRow: View {
                     .frame(width: 80)
                 Text("\(Int(downloadProgress * 100))%")
                     .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
                     .monospacedDigit()
             } else {
                 ProgressView()
                     .scaleEffect(0.8)
                 Text("Starting…")
                     .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
             }
             Button("Cancel", action: onCancel)
                 .buttonStyle(.plain)
@@ -96,7 +96,7 @@ struct ModelDownloadRow: View {
                 .accessibilityHidden(true)
             Text(isInstalled ? "Installed" : "Not installed")
                 .font(Typography.caption)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
         }
     }
 
@@ -129,7 +129,7 @@ struct ModelDownloadRow: View {
                 .padding(.horizontal, Spacing.m)
                 .padding(.vertical, Spacing.s)
                 .frame(minHeight: Metrics.minTapTarget)
-                .overlay(Capsule().strokeBorder(Theme.separator, lineWidth: 1))
+                .overlay(Capsule().strokeBorder(NewLook.hairline, lineWidth: 1))
         }
         .buttonStyle(.plain)
     }
