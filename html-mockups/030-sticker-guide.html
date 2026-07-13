@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>030 · Set up your sticker, guided walkthrough mockup</title>
+<style>
+/*
+  Spec 030 · T034 mockup gate (Constitution I).
+  US4 "Set up your sticker" guided walkthrough. Native iOS insetGrouped chrome
+  (DESIGN.md §114, Settings is SF/List-exempt) in Paper & Pollen tokens; base-8
+  spacing. Covers: path selector dose/check-in (FR-019) · Shortcuts hand-off button
+  (FR-019/D12, plain shortcuts://, never promises automation creation) · zero-tap
+  "Run Immediately" recommendation + honest, no-shame lock-behavior copy (FR-020).
+  Reuses the exact token system from 030-settings-medication.html.
+*/
+:root{
+  --bg:#F6F1E7; --surface:#FCF8EF; --surface2:#EFE8D8;
+  --ink:#221E16; --muted:#7A7361; --hair:#E3DAC7;
+  --green:#5F8A4C; --amber:#E0A33A; --bronze:#B8842A; --med:#7E5CA8;
+  --danger:#B4462F;
+  --sp1:4px; --sp2:8px; --sp3:12px; --sp4:16px; --sp6:24px; --sp8:32px;
+  --r-group:14px; --r-chip:999px;
+  --shadow:0 1px 2px rgba(34,30,22,.05), 0 6px 18px rgba(34,30,22,.05);
+}
+:root[data-theme="dark"]{
+  --bg:#14130F; --surface:#1E1C16; --surface2:#272419;
+  --ink:#F3EEE0; --muted:#9A917C; --hair:#322E22;
+  --green:#6E9A58; --amber:#E8B255; --bronze:#D4A24A; --med:#9277BE;
+  --danger:#E08267;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#14130F; --surface:#1E1C16; --surface2:#272419;
+    --ink:#F3EEE0; --muted:#9A917C; --hair:#322E22;
+    --green:#6E9A58; --amber:#E8B255; --bronze:#D4A24A; --med:#9277BE;
+    --danger:#E08267;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font:400 16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  padding:var(--sp6) var(--sp3) 64px; display:flex; flex-direction:column; align-items:center;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.wrap{width:100%; max-width:400px}
+
+.legend{
+  font-size:12.5px; color:var(--muted); margin:0 auto var(--sp4); max-width:400px;
+  display:flex; gap:var(--sp2); align-items:baseline; justify-content:space-between;
+}
+.legend b{color:var(--ink); font-weight:600}
+.themebtn{
+  border:1px solid var(--hair); background:var(--surface); color:var(--ink);
+  border-radius:var(--r-chip); padding:6px 12px; font-size:12.5px; cursor:pointer; font-weight:600;
+}
+
+/* nav bar (sheet/pushed screen) */
+.nav{display:flex; align-items:center; gap:var(--sp2); margin:0 var(--sp1) var(--sp3); color:var(--med)}
+.nav .back{font-size:17px; font-weight:500; display:flex; align-items:center; gap:3px; cursor:pointer}
+.largeTitle{font-size:30px; font-weight:700; letter-spacing:-.02em; margin:0 var(--sp1) var(--sp2)}
+.intro{font-size:14.5px; color:var(--muted); margin:0 var(--sp1) var(--sp6); line-height:1.5}
+.intro .mono{color:var(--ink)}
+
+/* path segmented */
+.pathseg{display:flex; background:var(--surface2); border-radius:11px; padding:3px; gap:3px; margin:0 var(--sp1) var(--sp6)}
+.pathseg button{
+  flex:1; border:0; background:transparent; color:var(--muted); font-size:15px; font-weight:600;
+  padding:9px 0; border-radius:8px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;
+}
+.pathseg button .g{font-size:16px}
+.pathseg button.on{background:var(--surface); color:var(--ink); box-shadow:var(--shadow)}
+.pathseg button.on.dose .g{color:var(--med)}
+.pathseg button.on.checkin .g{color:var(--green)}
+
+/* group */
+.group{margin:0 0 var(--sp6)}
+.group>.hdr{
+  text-transform:uppercase; font-size:12.5px; letter-spacing:.04em; color:var(--muted);
+  font-weight:600; padding:0 var(--sp4) var(--sp2);
+}
+.card{
+  background:var(--surface); border:1px solid var(--hair); border-radius:var(--r-group);
+  box-shadow:var(--shadow); overflow:hidden;
+}
+.ftr{font-size:12.5px; line-height:1.45; color:var(--muted); padding:var(--sp2) var(--sp4) 0}
+
+/* need row */
+.needrow{display:flex; align-items:center; gap:var(--sp3); padding:12px var(--sp4); position:relative}
+.needrow+.needrow::before{content:""; position:absolute; top:0; left:52px; right:0; height:1px; background:var(--hair)}
+.needrow .ic{width:28px;height:28px;border-radius:7px;flex:0 0 28px;display:grid;place-items:center;background:var(--surface2);color:var(--ink);font-size:15px}
+.needrow .lbl{flex:1}
+.needrow .lbl small{display:block;color:var(--muted);font-size:12.5px;margin-top:1px}
+
+/* numbered steps */
+.step{display:flex; gap:var(--sp3); padding:14px var(--sp4); position:relative; align-items:flex-start}
+.step+.step::before{content:""; position:absolute; top:0; left:52px; right:0; height:1px; background:var(--hair)}
+.step .num{
+  width:28px;height:28px;border-radius:50%;flex:0 0 28px;display:grid;place-items:center;
+  background:var(--med); color:#fff; font-size:14px; font-weight:700; margin-top:1px;
+}
+.checkin .step .num{background:var(--green)}
+.step .body{flex:1; min-width:0}
+.step .body .t{font-size:15.5px; line-height:1.4}
+.step .body .t b{font-weight:600}
+.step .body .t .k{
+  font-family:ui-monospace,"SF Mono",Menlo,monospace; font-size:13px; background:var(--surface2);
+  border:1px solid var(--hair); border-radius:6px; padding:1px 6px; white-space:nowrap;
+}
+.step .body small{display:block; color:var(--muted); font-size:12.5px; margin-top:4px; line-height:1.45}
+.actionpill{display:inline-flex; align-items:center; gap:6px; font-weight:600; color:var(--med)}
+.checkin .actionpill{color:var(--green)}
+.recpill{display:inline-block; background:var(--green); color:#fff; font-size:11px; font-weight:700;
+  border-radius:999px; padding:2px 8px; margin-left:6px; letter-spacing:.02em; vertical-align:middle}
+
+/* primary hand-off button (inside step 1) */
+.handoff{
+  display:inline-flex; align-items:center; gap:8px; margin-top:10px;
+  background:var(--med); color:#fff; border:0; border-radius:11px;
+  padding:10px 16px; font-size:15px; font-weight:600; cursor:pointer; box-shadow:var(--shadow);
+}
+.checkin .handoff{background:var(--green)}
+.handoff:active{filter:brightness(.94)}
+.handoff .ar{opacity:.85}
+
+/* callout cards */
+.callout{border-radius:var(--r-group); border:1px solid var(--hair); box-shadow:var(--shadow); overflow:hidden; margin-bottom:var(--sp6)}
+.callout .ch{display:flex; align-items:center; gap:10px; padding:12px var(--sp4) 8px; font-weight:600; font-size:15px}
+.callout .ch .g{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;color:#fff;font-size:14px;flex:0 0 26px}
+.callout.lock{background:var(--surface)} .callout.lock .g{background:var(--bronze)}
+.callout.tip{background:var(--surface)} .callout.tip .g{background:var(--amber)}
+.callout .cb{padding:0 var(--sp4) 14px 52px; font-size:13.5px; color:var(--muted); line-height:1.5}
+.callout .cb .lockline{display:flex; gap:9px; align-items:baseline; margin-top:8px}
+.callout .cb .lockline .st{font-weight:600; color:var(--ink); min-width:74px}
+.callout .cb .reassure{margin-top:10px; color:var(--ink)}
+
+.hint{font-size:11.5px; color:var(--muted); text-align:center; margin-top:40px}
+</style>
+</head>
+<body>
+<div class="legend">
+  <span><b>Spec 030 · T034</b>, Set up your sticker (mockup, not built)</span>
+  <button class="themebtn" id="theme">◐ Theme</button>
+</div>
+
+<div class="wrap">
+  <div class="nav"><span class="back">‹ Settings</span></div>
+  <h1 class="largeTitle">Set up your sticker</h1>
+  <p class="intro">Turn any blank NFC sticker into a one-tap Squirl action. About a minute, once per sticker. Squirl walks you through the Shortcuts app.</p>
+
+  <!-- PATH SELECTOR (FR-019: one path per sticker type) -->
+  <div class="pathseg" id="pathseg">
+    <button class="on dose" data-path="dose"><span class="g">◗</span> Dose sticker</button>
+    <button class="checkin" data-path="checkin"><span class="g">◎</span> Check-in sticker</button>
+  </div>
+
+  <!-- WHAT YOU'LL NEED -->
+  <section class="group">
+    <div class="hdr">What you'll need</div>
+    <div class="card">
+      <div class="needrow">
+        <span class="ic">▤</span>
+        <span class="lbl">A blank NFC sticker<small>Any cheap NDEF tag, nothing pre-written</small></span>
+      </div>
+      <div class="needrow">
+        <span class="ic">◗</span>
+        <span class="lbl" id="needMed">A default medication set<small>Settings › My Medication</small></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEPS -->
+  <section class="group dose" id="stepsGroup">
+    <div class="hdr"><span id="stepsHdr">Log a dose · 5 steps</span></div>
+    <div class="card" id="stepsCard"><!-- injected --></div>
+    <div class="ftr" id="stepsFtr"></div>
+  </section>
+
+  <!-- LOCK BEHAVIOR (FR-020: honest, no-shame) -->
+  <div class="callout lock">
+    <div class="ch"><span class="g">⌂</span> What to expect when you tap it</div>
+    <div class="cb">
+      <div class="lockline"><span class="st">Unlocked</span><span>It runs instantly, no prompt. This is the zero-tap setup working.</span></div>
+      <div class="lockline"><span class="st">Locked</span><span>iPhone shows a notification instead. Tap it and the action runs.</span></div>
+      <div class="reassure">The tap is never lost, and a locked phone showing a notification is just how iOS handles it, not something you did wrong.</div>
+    </div>
+  </div>
+
+  <!-- ANTENNA TIP (from device QA, prevents the #1 "won't trigger" frustration) -->
+  <div class="callout tip">
+    <div class="ch"><span class="g">✦</span> Can't get it to read?</div>
+    <div class="cb">
+      Hold the <b style="color:var(--ink)">top-back of your phone</b>, up by the cameras, flat against the sticker for a second. That's where the NFC reader is. A thick case or a metal surface behind the sticker can block it.
+    </div>
+  </div>
+
+  <p class="hint">Interactive mockup · switch paths above. Approve to unblock the SwiftUI (T035).</p>
+</div>
+
+<script>
+const root=document.documentElement;
+document.getElementById('theme').onclick=()=>{
+  const cur=root.getAttribute('data-theme');
+  const sysDark=matchMedia('(prefers-color-scheme:dark)').matches;
+  root.setAttribute('data-theme', cur? (cur==='dark'?'light':'dark') : (sysDark?'light':'dark'));
+};
+
+// Per-path content. Steps 1–3 + 5 are shared; step 4 (the Squirl action) and the
+// done-line differ. shortcuts:// hand-off is plain (D12), never claims to build the automation.
+const PATHS={
+  dose:{
+    hdr:'Log a dose · 5 steps',
+    action:'Log My Meds', glyph:'◗',
+    done:'log your default dose',
+    ftr:'Squirl never creates the automation for you, iOS doesn’t allow that. The button just opens Shortcuts at the right place; you tap through the steps once.',
+    needMed:true
+  },
+  checkin:{
+    hdr:'Start a check-in · 5 steps',
+    action:'Check In', glyph:'◎',
+    done:'open Squirl already recording',
+    ftr:'A check-in sticker opens the app and starts recording. On a locked phone it asks you to unlock first, that’s expected for anything that opens Squirl.',
+    needMed:false
+  }
+};
+
+function steps(p){
+  return [
+    {t:`Open the <b>Shortcuts</b> app.`, sub:`It’s built into iOS. The button below opens it for you.`, handoff:true},
+    {t:`Go to the <b>Automation</b> tab → <span class="k">+</span> → <b>Create Personal Automation</b> → <b>NFC</b>.`},
+    {t:`Tap <b>Scan</b>, then hold your blank sticker to the phone. Give it a name.`, sub:`Hold the top-back of the phone to the tag for a second.`},
+    {t:`Tap <b>Add Action</b>, search <span class="k">Squirl</span>, and choose <span class="actionpill">${p.glyph} ${p.action}</span>.`},
+    {t:`Turn <b>off</b> “Ask Before Running” → confirm <b>Run Immediately</b>.<span class="recpill">Recommended</span>`, sub:`This is the zero-tap setup: a tap fires the action with no confirmation screen.`}
+  ];
+}
+
+function render(path){
+  const p=PATHS[path];
+  const g=document.getElementById('stepsGroup'), card=document.getElementById('stepsCard');
+  g.className='group '+path;
+  document.getElementById('stepsHdr').textContent=p.hdr;
+  document.getElementById('stepsFtr').textContent=p.ftr;
+  document.getElementById('needMed').parentElement.parentElement.style.display=''; // needrow row2
+  document.querySelector('#needMed').closest('.needrow').style.display = p.needMed ? '' : 'none';
+
+  card.innerHTML='';
+  steps(p).forEach((s,i)=>{
+    const el=document.createElement('div'); el.className='step';
+    let extra='';
+    if(s.handoff) extra=`<button class="handoff">Open Shortcuts <span class="ar">→</span></button>`;
+    el.innerHTML=`<span class="num">${i+1}</span><div class="body"><div class="t">${s.t}</div>${s.sub?`<small>${s.sub}</small>`:''}${extra}</div>`;
+    card.appendChild(el);
+  });
+  const done=document.createElement('div'); done.className='step';
+  done.innerHTML=`<span class="num">✓</span><div class="body"><div class="t"><b>Done.</b> Tap the sticker to ${p.done}, no app-opening, no menus.</div></div>`;
+  card.appendChild(done);
+}
+
+document.querySelectorAll('#pathseg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#pathseg button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');
+  render(b.dataset.path);
+});
+render('dose');
+</script>
+</body>
+</html>
