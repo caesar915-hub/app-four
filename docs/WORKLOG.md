@@ -1,5 +1,52 @@
 # WORKLOG
 
+## 2026-07-10 15:42 – 2026-07-13 17:33 · FR-005 haptic amendment (T037) + BACKLOG/DEVLOG for US1-US4 · feat/030-us3-us4
+
+**Code changes**
+- _Major (feat)_
+  - `3317355c` feat(030): US4 StickerSetupView guided walkthrough + Settings entry (T035)
+  - `db39ed5c` feat(030): US2 hands-free check-in — StartCheckInIntent + FR-022 onboarding gate (T024–T028)
+- _Fixes_
+  - `c8442057` fix(030): compile ConfirmationCopyTests — key-path closure trips #expect throws analysis
+  - `e0ea1cc3` fix(030): mark MedicationCatalog nonisolated — pure static reference data
+- _Tests_
+  - `cfda413d` test(030): fix Swift 6 'mutated after capture' warning in gateIsReevaluatedPerCall
+  - `66a0a40b` test(030): cover two reachable service states the pre-merge review flagged
+- _docs_
+  - `57f21f72` docs(030): FR-005 haptic amendment (T037) + BACKLOG/DEVLOG for US1-US4
+  - `9e8eb1c4` docs(030): DEVLOG US1-intent-layer entry + WORKLOG regen
+- _chore_
+  - `3661a007` chore(030): remove 6 dead PBXGroups + wire test plan so ⌘U runs the suite
+- _other_
+  - `4b8d7573` mockup(030): US4 'Set up your sticker' guided walkthrough (T034 gate)
+  - `81435937` Merge pull request #26 from caesar915-hub/feat/030-app-intents
+  - `2e52eb66` Merge pull request #25 from caesar915-hub/feat/ios26-target
+
+**Git actions**
+- `81435937` Merge pull request #26 from caesar915-hub/feat/030-app-intents
+- `2e52eb66` Merge pull request #25 from caesar915-hub/feat/ios26-target
+
+**gh actions**
+- PR #26 merged `feat/030-app-intents` — "feat(030): App Intents foundation — router, dose-logging engine, Settings surface"
+- PR #28 opened `feat/033-newlook-app-wide` — "feat(033): app-wide New Look migration + medication-bar a01 redesign" — OPEN/UNKNOWN
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  bb62dd4f [feat/nutrition-signals-demo]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              f019e64e [feat/034-daycard-a01]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                57f21f72 [feat/030-us3-us4]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ios26-target                   b6f5149d [qa/device-ios26-029]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/merge-029                      885961a9 [feat/029-calendar-day-context]
+```
+
+---
+
 ## 2026-07-11 02:15–15:13 · US1 intent layer — LogDefaultDoseIntent + Shortcuts + DI (T0 · feat/030-app-intents
 
 **Code changes**
