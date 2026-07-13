@@ -130,7 +130,7 @@ final class AIModelServiceImpl: AIModelService {
         )
     }
 
-    nonisolated private static func findWhisperModelFolder(in base: URL) -> URL? {
+    nonisolated static func findWhisperModelFolder(in base: URL) -> URL? {
         let fm = FileManager.default
         guard let enumerator = fm.enumerator(
             at: base,
@@ -140,6 +140,12 @@ final class AIModelServiceImpl: AIModelService {
         for case let url as URL in enumerator {
             guard url.lastPathComponent == "openai_whisper-small",
                   (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true
+            else { continue }
+            // weights/ is only created during a successful file move, not in the skeleton.
+            let encoderWeights = url.appendingPathComponent("AudioEncoder.mlmodelc/weights", isDirectory: true)
+            let config         = url.appendingPathComponent("config.json")
+            guard fm.fileExists(atPath: encoderWeights.path),
+                  fm.fileExists(atPath: config.path)
             else { continue }
             return url
         }

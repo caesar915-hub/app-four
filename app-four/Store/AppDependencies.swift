@@ -7,7 +7,6 @@ import SwiftData
 enum AppDependencies {
     static let store = RecordingStore(context: AppModelContainer.container.mainContext)
     static let medicationBarViewModel = MedicationBarViewModel(context: AppModelContainer.container.mainContext)
-    static let signalsStore = SignalsStore(context: AppModelContainer.container.mainContext)
     static let audioService: AudioRecordingService = AudioRecordingServiceImpl()
     static let storageService: AudioFileStorageService = AudioFileStorageServiceImpl(context: AppModelContainer.container.mainContext)
     static let transcriptionService: TranscriptionService = sharedWhisperKitService
@@ -15,8 +14,6 @@ enum AppDependencies {
     static let diagnosticsStore = DiagnosticsStore()
     static let screenTracker = ScreenTracker()
     static let summarizationService: SummarizationService = NLSummarizationService()
-    static let healthService: HealthDataReading = HealthKitServiceImpl()
-    static let signalSyncCoordinator = SignalSyncCoordinator(reader: healthService, store: signalsStore)
     static let connectivity: Connectivity = NetworkConnectivity()
     static let pendingTranscriptionService: PendingTranscriptionService = PendingTranscriptionServiceImpl(
         store: store,
@@ -26,6 +23,16 @@ enum AppDependencies {
     )
     static let exportService: ExportService = ExportServiceImpl()
 
+    static let calendarContextService: any CalendarContextService = CalendarContextServiceImpl()
+    static let dayContextStore = DayContextStore(context: AppModelContainer.container.mainContext)
+    static let calendarCoordinator: any CalendarContextCoordinator = CalendarContextCoordinatorImpl(
+        service: calendarContextService,
+        store: dayContextStore,
+        settingsProvider: { CalendarPreferences.currentSettings() },
+        checkInDaysProvider: { [store = AppDependencies.store] in await store.checkInDayKeys() },
+        isMockMode: { UserDefaults.standard.bool(forKey: "debugMockMode") }
+    )
+
     /// Observable bundle for environment injection into ViewModels.
     static let services = AppServices(
         audioService: audioService,
@@ -33,10 +40,12 @@ enum AppDependencies {
         transcriptionService: transcriptionService,
         aiModelService: aiModelService,
         summarizationService: summarizationService,
-        healthService: healthService,
         connectivity: connectivity,
         pendingTranscriptionService: pendingTranscriptionService,
-        exportService: exportService
+        exportService: exportService,
+        calendarContextService: calendarContextService,
+        dayContextStore: dayContextStore,
+        calendarCoordinator: calendarCoordinator
     )
 
     private static let sharedWhisperKitService = WhisperKitTranscriptionService(

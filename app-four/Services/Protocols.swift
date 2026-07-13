@@ -6,11 +6,20 @@ import SwiftData
 
 /// The active network interface class, used only to honor `downloadOverCellular`
 /// when deciding whether a background model download may start.
-nonisolated enum NetworkInterface: Sendable, Equatable {
+enum NetworkInterface: Sendable {
     case wifi
     case cellular
     case other
     case unsatisfied
+}
+
+extension NetworkInterface: Equatable {
+    nonisolated static func == (lhs: Self, rhs: Self) -> Bool {
+        switch (lhs, rhs) {
+        case (.wifi, .wifi), (.cellular, .cellular), (.other, .other), (.unsatisfied, .unsatisfied): true
+        default: false
+        }
+    }
 }
 
 /// A live, on-device connectivity check (no permission, no user data) behind a
@@ -185,4 +194,45 @@ enum SummarizationError: Error, Sendable {
     case timeout
     case parsingFailed
     case inferenceFailed(String)
+}
+
+// MARK: - Calendar Context
+
+/// The app's only EventKit touchpoint. One long-lived EKEventStore, actor-confined
+/// (EKEventStore is not Sendable; Apple documents off-main fetching + singleton lifetime).
+protocol CalendarContextService: Sendable {
+    /// Live authorization state — never cached across calls.
+    func accessState() async -> CalendarAccessState
+    /// Triggers the system prompt (first time only). Returns the resulting state.
+    func requestFullAccess() async -> CalendarAccessState
+    /// All event calendars on the device, with classification facts for the picker.
+    func availableCalendars() async -> [CalendarDescriptor]
+    /// Captures one journal day: full-day window in the device's current time zone,
+    /// included calendars only, declined events filtered, attribution rule applied
+    /// (timed <24h → start day only). Returns nil when access is unavailable.
+    func captureDay(_ dayKey: Date, includeTitles: Bool, includedCalendarIDs: [String]) async -> CapturedDayEvents?
+}
+
+nonisolated enum CalendarAccessState: Sendable, Equatable {
+    case notDetermined, fullAccess, writeOnly, denied, restricted
+}
+
+nonisolated struct CalendarDescriptor: Sendable, Identifiable, Equatable {
+    let id: String
+    let title: String
+    let isBirthdayClass: Bool
+    let isSubscribedClass: Bool
+}
+
+/// Fire-and-forget triggers. Capture paths (saved/dateChanged-to/sweep/recaptureAll)
+/// no-op while debugMockMode is on or access ≠ fullAccess. Local-only deletions
+/// (deleted / dateChanged vacated-day) require no calendar access — FR-014 is
+/// unconditional. Every path re-derives check-in membership at execution time
+/// rather than trusting a caller snapshot (actor-reentrancy safety).
+protocol CalendarContextCoordinator: Sendable {
+    func checkInSaved(dayKey: Date) async
+    func checkInDateChanged(from oldDay: Date, to newDay: Date) async
+    func checkInDeleted(dayKey: Date) async
+    func sweep() async
+    func recaptureAll() async
 }

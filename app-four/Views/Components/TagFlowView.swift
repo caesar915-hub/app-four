@@ -11,6 +11,7 @@ struct TagFlowView: View {
                         SignalGlyph(glyph.kind, level: glyph.level, size: 15, decorative: true)
                     } else {
                         Image(systemName: tag.icon)
+                            .accessibilityHidden(true)
                     }
                     Text(tag.label)
                 }

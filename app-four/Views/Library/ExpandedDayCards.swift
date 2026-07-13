@@ -31,4 +31,11 @@ struct ExpandedDayCards: Equatable {
     func selecting(_ date: Date, autoExpand: Bool) -> ExpandedDayCards {
         autoExpand ? ExpandedDayCards([date]) : ExpandedDayCards()
     }
+
+    /// Whether the card for `date` should render expanded: the "Always expand cards" setting
+    /// (FR-008) opens every card, otherwise the per-card open set decides. Pure value-logic so
+    /// the calendar's effective-expansion rule is unit-testable without a SwiftUI host.
+    func shouldExpand(_ date: Date, alwaysExpand: Bool) -> Bool {
+        alwaysExpand || contains(date)
+    }
 }

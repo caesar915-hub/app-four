@@ -7,8 +7,12 @@ import SwiftUI
 struct YourDataSection: View {
     var body: some View {
         Section("Your data") {
-            Text("Your recordings, check-ins, and signals stay on this device. Nothing is uploaded.")
+            Text("Your recordings, check-ins, signals, and captured calendar day context stay on this device. Nothing is uploaded.")
                 .font(Typography.body)
+                .foregroundStyle(Theme.textSecondary)
+
+            Text("Calendar context, including event titles when title capture is on, is included only in your encrypted export.")
+                .font(Typography.callout)
                 .foregroundStyle(Theme.textSecondary)
 
             NavigationLink {

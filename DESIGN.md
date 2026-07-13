@@ -17,10 +17,8 @@
 - **Reference (anti-pattern):** the mood-tracker category converges on blue/purple "calm" palettes and emoji faces. Squirl deliberately diverges (earth-warm paper, abstract glyphs).
 
 ## Typography
-- **Display / Hero:** **Fraunces** (variable; soft optical axis, slight wonk). Check-in prompts, big mood numbers, titles. Free/OFL.
-- **Body / UI:** **DM Sans**. Buttons, labels, nav, paragraphs. Calm grotesque that recedes. Free/OFL.
-- **Data / numeric:** **DM Sans (tabular figures)** for aligned columns; **IBM Plex Mono** as the optional "instrument readout" voice (timers, time labels). Free/OFL.
-- **Do not** use SF / system as the display or body face (the "gave up on typography" signal). All three faces support Dynamic Type — wire it.
+- **All roles: Apple SF** — SF Pro (display / body / UI) + SF Mono (data / time), defined in `Typography.swift` and `UIFontMetrics`-scaled so every role keeps Dynamic Type. Hierarchy comes from **weight** (SF semibold headings), not a serif voice.
+- **Reversal (spec 023, 2026-06-26):** dropped the original **Fraunces + DM Sans + IBM Plex Mono** system — including the earlier rule *"do not use SF/system as display or body, the 'gave up on typography' signal"* — for native SF app-wide, an explicit owner decision. The bundled faces, `UIAppFonts`, and `SquirlFonts` registration were removed. (Settings was already SF-exempt; it now matches the rest of the app.)
 
 ## Color
 Never pure white, never `#000`. Light = warm paper; dark = warm loam (not black).
@@ -114,4 +112,3 @@ Glyphs encode level by **shape + hue + fill simultaneously** (triple-redundant; 
 | 2026-06-16 | Glyph redesign "Bud" botanical (pod/seedhead) — explored, then **REVERTED** | Owner returned to the canonical sprout/lightning/aperture set. Net glyph change for Mood/Energy/Focus: none. Full register: [design-decisions-ALL](superpowers/plans/2026-06-16-design-decisions-ALL.html). |
 | 2026-06-17 | Sleep = bed, Medication = **horizontal** capsule, Mood icon **fixed** (selectable set removed) | Literal icons for the two non-self-state signals; one fixed Mood glyph. **Build target:** port all signal glyphs from SF Symbols → SwiftUI `Shape`s. |
 | 2026-06-24 | Settings is **exempt** from the "no SF/system as display or body face" rule | Settings deliberately uses the native iOS grouped-`List` chrome (system-font section headers, rows, footers). It is HIG-aligned and more learnable than a custom-typeface settings screen; the Fraunces/DM Sans rule governs Squirl's own content surfaces, not OS-standard utility chrome. |
-| 2026-07-05 | Two new signal lanes: **Nutrition = clay `#B5674A`** (dark `#CB8266`), **Exercise = teal `#3E8E86`** (dark `#5FAEA5`) | Spec 031 nutrition-on-day-card demo; owner approved via Pair 2 hue mockup ([2026-07-05-nutrition-exercise-hues](superpowers/plans/2026-07-05-nutrition-exercise-hues.html)). Clay knowingly shares the warm lane with mood-1/2 burnt orange; teal is the last clear cool gap. Color never sole cue — fork/flame/cup glyphs carry the distinction. |

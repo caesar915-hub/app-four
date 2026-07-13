@@ -120,85 +120,106 @@ class MockDataGenerator {
             }
         }
         
-        try? context.save()
-
-        seedNutritionEvents(context: context)
-    }
-
-    // MARK: - Nutrition events (spec 031)
-
-    /// Deterministic 30-day food/exercise seed. Values are pure functions of `dayOffset`
-    /// (no RNG) so re-seeding produces identical data — a stable demo. Caffeine runs low
-    /// on the med-seeded days (offsets 0..<10, where `generate` always logs a morning
-    /// dose) and high on the rest: the ADHD self-medication storyline. Two skip days
-    /// (offsets 5 and 18) keep partial-data realism.
-    /// Deletes all mock nutrition rows — run before re-seeding so the (deterministic)
-    /// seed can't double totals, and by "Wipe & Reseed" in TestServicesView.
-    static func wipeMockNutritionEvents(context: ModelContext) {
-        let mock = (try? context.fetch(FetchDescriptor<NutritionEvent>(
-            predicate: #Predicate { $0.isMockData == true }
-        ))) ?? []
-        for event in mock { context.delete(event) }
+        seedCalendarContexts(context: context, calendar: calendar, now: now)
         try? context.save()
     }
 
-    static func seedNutritionEvents(context: ModelContext, calendar: Calendar = .current, now: Date = Date()) {
-        wipeMockNutritionEvents(context: context)
-        let today = calendar.startOfDay(for: now)
-        for dayOffset in 0..<30 {
-            if dayOffset == 5 || dayOffset == 18 { continue }
-            guard let day = calendar.date(byAdding: .day, value: -dayOffset, to: today) else { continue }
-            let d = dayOffset
-            let medDay = d < 10
-            let caffeineTotal = medDay
-                ? Double(40 + (d * 7) % 55)          // 40–94 mg — medicated, easing off coffee
-                : Double(180 + (d * 13) % 160)       // 180–339 mg — self-medicating
+    private static func seedCalendarContexts(context: ModelContext, calendar: Calendar, now: Date) {
+        // Five representative days out of the 10 seeded; offsets match the Recording loop above.
+        let fixtures: [(offset: Int, events: CapturedDayEvents)] = [
+            // Day −1: standup + design review meeting, plus a dentist appointment
+            (offset: 1, events: {
+                guard
+                    let base = calendar.date(byAdding: .day, value: -1, to: now),
+                    let s1 = calendar.date(bySettingHour: 9, minute: 30, second: 0, of: base),
+                    let e1 = calendar.date(bySettingHour: 9, minute: 45, second: 0, of: base),
+                    let s2 = calendar.date(bySettingHour: 11, minute: 0, second: 0, of: base),
+                    let e2 = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: base),
+                    let s3 = calendar.date(bySettingHour: 14, minute: 0, second: 0, of: base),
+                    let e3 = calendar.date(bySettingHour: 15, minute: 0, second: 0, of: base)
+                else { return CapturedDayEvents(events: []) }
+                return CapturedDayEvents(events: [
+                    CapturedEvent(title: "Standup", start: s1, end: e1, isAllDay: false, attendeeCount: 5, availability: "busy"),
+                    CapturedEvent(title: "Design Review", start: s2, end: e2, isAllDay: false, attendeeCount: 3, availability: "busy"),
+                    CapturedEvent(title: "Dentist", start: s3, end: e3, isAllDay: false, attendeeCount: 0, availability: "busy"),
+                ])
+            }()),
 
-            func insertFood(_ name: String, hour: Int, minute: Int,
-                            kcal: Double?, protein: Double?, caffeine: Double?) {
-                guard let at = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: day) else { return }
-                let event = NutritionEvent(startDate: at, kind: .food)
-                event.name = name
-                event.kcal = kcal
-                event.proteinGrams = protein
-                event.caffeineMg = caffeine
-                event.isMockData = true
-                context.insert(event)
-            }
+            // Day −3: all-day birthday + one meeting
+            (offset: 3, events: {
+                guard
+                    let base = calendar.date(byAdding: .day, value: -3, to: now),
+                    let dayStart = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: base),
+                    let dayEnd = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: base),
+                    let s1 = calendar.date(bySettingHour: 10, minute: 0, second: 0, of: base),
+                    let e1 = calendar.date(bySettingHour: 10, minute: 30, second: 0, of: base)
+                else { return CapturedDayEvents(events: []) }
+                return CapturedDayEvents(events: [
+                    CapturedEvent(title: "Mom's Birthday", start: dayStart, end: dayEnd, isAllDay: true, attendeeCount: 0, availability: "free"),
+                    CapturedEvent(title: "1:1 with Manager", start: s1, end: e1, isAllDay: false, attendeeCount: 2, availability: "busy"),
+                ])
+            }()),
 
-            let jitter = (d * 3) % 20
-            // Med days: 3 meals, breakfast carries the (small) caffeine. Off days: a 4th
-            // event — the big coffee — carries most of it.
-            insertFood("Breakfast", hour: 7, minute: 30 + jitter,
-                       kcal: Double(420 + (d * 31) % 180),
-                       protein: Double(18 + d % 8),
-                       caffeine: medDay ? caffeineTotal : (caffeineTotal * 0.4).rounded())
-            if !medDay {
-                insertFood("Coffee", hour: 10, minute: 15 + jitter,
-                           kcal: 5, protein: nil,
-                           caffeine: (caffeineTotal * 0.6).rounded())
-            }
-            insertFood("Lunch", hour: 13, minute: jitter,
-                       kcal: Double(650 + (d * 37) % 230),
-                       protein: Double(28 + (d * 3) % 14),
-                       caffeine: nil)
-            insertFood("Dinner", hour: 20, minute: jitter,
-                       kcal: Double(700 + (d * 29) % 260),
-                       protein: Double(24 + (d * 5) % 16),
-                       caffeine: nil)
+            // Day −5: meetings-only day (three back-to-back)
+            (offset: 5, events: {
+                guard
+                    let base = calendar.date(byAdding: .day, value: -5, to: now),
+                    let s1 = calendar.date(bySettingHour: 9, minute: 0, second: 0, of: base),
+                    let e1 = calendar.date(bySettingHour: 9, minute: 30, second: 0, of: base),
+                    let s2 = calendar.date(bySettingHour: 10, minute: 0, second: 0, of: base),
+                    let e2 = calendar.date(bySettingHour: 11, minute: 0, second: 0, of: base),
+                    let s3 = calendar.date(bySettingHour: 14, minute: 0, second: 0, of: base),
+                    let e3 = calendar.date(bySettingHour: 15, minute: 30, second: 0, of: base)
+                else { return CapturedDayEvents(events: []) }
+                return CapturedDayEvents(events: [
+                    CapturedEvent(title: "Standup", start: s1, end: e1, isAllDay: false, attendeeCount: 6, availability: "busy"),
+                    CapturedEvent(title: "Sprint Planning", start: s2, end: e2, isAllDay: false, attendeeCount: 8, availability: "busy"),
+                    CapturedEvent(title: "Retrospective", start: s3, end: e3, isAllDay: false, attendeeCount: 7, availability: "busy"),
+                ])
+            }()),
 
-            if d % 2 == 0 {
-                guard let at = calendar.date(bySettingHour: 18, minute: jitter, second: 0, of: day) else { continue }
-                let minutes = Double(25 + (d * 7) % 20)
-                let workout = NutritionEvent(startDate: at, kind: .exercise)
-                workout.name = ["Run", "Walk", "Strength"][d % 3]
-                workout.durationMinutes = minutes
-                workout.endDate = at.addingTimeInterval(minutes * 60)
-                workout.kcal = Double(180 + (d * 23) % 240)
-                workout.isMockData = true
-                context.insert(workout)
-            }
+            // Day −7: single personal errand, no meetings
+            (offset: 7, events: {
+                guard
+                    let base = calendar.date(byAdding: .day, value: -7, to: now),
+                    let s1 = calendar.date(bySettingHour: 11, minute: 0, second: 0, of: base),
+                    let e1 = calendar.date(bySettingHour: 11, minute: 45, second: 0, of: base)
+                else { return CapturedDayEvents(events: []) }
+                return CapturedDayEvents(events: [
+                    CapturedEvent(title: "Pharmacy", start: s1, end: e1, isAllDay: false, attendeeCount: 0, availability: "busy"),
+                ])
+            }()),
+
+            // Day −9: mixed — standup + focus block + gym
+            (offset: 9, events: {
+                guard
+                    let base = calendar.date(byAdding: .day, value: -9, to: now),
+                    let s1 = calendar.date(bySettingHour: 9, minute: 15, second: 0, of: base),
+                    let e1 = calendar.date(bySettingHour: 9, minute: 30, second: 0, of: base),
+                    let s2 = calendar.date(bySettingHour: 10, minute: 0, second: 0, of: base),
+                    let e2 = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: base),
+                    let s3 = calendar.date(bySettingHour: 17, minute: 30, second: 0, of: base),
+                    let e3 = calendar.date(bySettingHour: 18, minute: 30, second: 0, of: base)
+                else { return CapturedDayEvents(events: []) }
+                return CapturedDayEvents(events: [
+                    CapturedEvent(title: "Standup", start: s1, end: e1, isAllDay: false, attendeeCount: 4, availability: "busy"),
+                    CapturedEvent(title: "Focus Block", start: s2, end: e2, isAllDay: false, attendeeCount: 0, availability: "busy"),
+                    CapturedEvent(title: "Gym", start: s3, end: e3, isAllDay: false, attendeeCount: 0, availability: "free"),
+                ])
+            }()),
+        ]
+
+        for fixture in fixtures {
+            guard let baseDate = calendar.date(byAdding: .day, value: -fixture.offset, to: now) else { continue }
+            let key = DayKey.make(for: baseDate)
+            let ctx = DayCalendarContext(
+                dayKey: key,
+                capturedAt: baseDate,
+                titlesIncluded: true,
+                isMockData: true
+            )
+            ctx.encodeEvents(fixture.events)
+            context.insert(ctx)
         }
-        try? context.save()
     }
 }

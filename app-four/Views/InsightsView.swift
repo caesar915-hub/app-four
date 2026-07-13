@@ -37,6 +37,9 @@ struct InsightsView: View {
             .navigationDestination(for: UUID.self) { id in
                 if let recording = viewModel.recording(for: id) {
                     RecordingDetailView(recording: recording, store: store, services: services)
+                } else {
+                    // Recording deleted out from under an open push → pop back to the list.
+                    Color.clear.onAppear { if !path.isEmpty { path.removeLast() } }
                 }
             }
         }
@@ -159,13 +162,11 @@ struct InsightsView: View {
         VStack(spacing: 0) {
             InsightsSectionHeader(
                 title: "Your month in three signals",
-                subtitle: "Each bead is one check-in day, in order"
+                subtitle: "Average by weekday — this month"
             )
             .opacity(headerOpacity(.signals))
-            SignalStripsView(strips: viewModel.signalStrips) { date in
-                viewModel.selectedDay = viewModel.calendarDay(for: date)
-            }
-            .padding(.top, Spacing.s)
+            SignalStripsView(strips: viewModel.weekdaySignalStrips)
+                .padding(.top, Spacing.s)
             sleepDeferredChip
                 .padding(.top, Spacing.m)
         }

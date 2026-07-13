@@ -1,8 +1,5 @@
 import SwiftUI
 
-/// Lightweight Identifiable wrapper so a recording id can drive `.sheet(item:)`.
-struct RecordingDetailRef: Identifiable { let id: UUID }
-
 struct RecordingDetailView: View {
     let recording: Recording
     @State private var viewModel: RecordingDetailViewModel
@@ -10,9 +7,11 @@ struct RecordingDetailView: View {
     @State private var editViewModel: ExtractionReviewViewModel?
     @State private var isTranscriptExpanded = false
     @State private var pendingDelete = false
+    @State private var showDeleteConfirm = false
     @Environment(\.dismiss) private var dismiss
     @Environment(RecordingStore.self) private var store
     @Environment(AppServices.self) private var services
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     init(recording: Recording, store: RecordingStore, services: AppServices) {
         self.recording = recording
@@ -28,22 +27,18 @@ struct RecordingDetailView: View {
             VStack(alignment: .leading, spacing: Spacing.l) {
                 titleBlock
                 if hasSignals { signalGlyphRow }
-                ADHDSummarySection(
-                    recording: viewModel.recording,
-                    onRegenerate: { Task { await viewModel.regenerateSummary() } }
-                )
+                ADHDSummarySection(recording: viewModel.recording)
                 transcriptSection
                 audioCard
-                editButton
+                deleteButton
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Spacing.l)
         }
         .background(Theme.background.ignoresSafeArea())
         .medicationBarOverlay()
-        // §07: no back button (navigate back by swipe-left); the date rides the nav bar,
-        // and the ⋯ menu carries the quiet Delete affordance.
-        .navigationBarBackButtonHidden(true)
+        // Pushed from the calendar / insights (spec 023): a standard back control returns to the day;
+        // the date rides the nav bar and the ⋯ menu carries the quiet Delete affordance.
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Theme.background, for: .navigationBar)
         .toolbar {
@@ -51,18 +46,22 @@ struct RecordingDetailView: View {
                 Text(navDate).cardEyebrow()
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Menu {
-                    Button(role: .destructive) {
-                        pendingDelete = true
-                        dismiss()
-                    } label: {
-                        Label("Delete check-in", systemImage: "trash")
-                    }
+                Button {
+                    editViewModel = ExtractionReviewViewModel(
+                        recording: viewModel.recording,
+                        store: store,
+                        calendarCoordinator: services.calendarCoordinator,
+                        onComplete: { [self] _ in editViewModel = nil }
+                    )
                 } label: {
-                    Image(systemName: "ellipsis")
+                    Image(systemName: "pencil")
+                        .font(Typography.subheadline)
                         .foregroundStyle(Theme.textPrimary)
+                        .frame(width: 30, height: 30)
+                        .background(Theme.cardBackground, in: Circle())
+                        .overlay(Circle().strokeBorder(Theme.separator, lineWidth: 1))
                 }
-                .accessibilityLabel("More options")
+                .accessibilityLabel("Edit check-in")
             }
         }
         .trackScreen("RecordingDetailView")
@@ -74,6 +73,12 @@ struct RecordingDetailView: View {
         // doing it while the sheet is mounted re-renders a detached object and
         // traps in SwiftData (BackingData "detached without resolving faults").
         .onDisappear { if pendingDelete { viewModel.delete() } }
+        .confirmationDialog("Delete this check-in?", isPresented: $showDeleteConfirm, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                pendingDelete = true
+                dismiss()
+            }
+        }
     }
 
     // MARK: - Title + meta
@@ -128,7 +133,7 @@ struct RecordingDetailView: View {
 
     private func glyphSummaryItem(_ kind: GlyphSignal, level: Int?, label: String) -> some View {
         VStack(spacing: Spacing.xs) {
-            SignalGlyph(kind, level: level, size: 26, decorative: true)
+            SignalGlyph(kind, level: level, size: 30, decorative: true)
             Text(label)
                 .font(Typography.label)
                 .foregroundStyle(Theme.textSecondary)
@@ -143,7 +148,7 @@ struct RecordingDetailView: View {
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: Spacing.m) {
             Button {
-                withAnimation(.easeInOut(duration: 0.2)) {
+                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
                     isTranscriptExpanded.toggle()
                 }
             } label: {
@@ -155,10 +160,12 @@ struct RecordingDetailView: View {
                         .font(Typography.caption)
                         .foregroundStyle(Theme.textSecondary)
                         .rotationEffect(.degrees(isTranscriptExpanded ? 180 : 0))
-                        .animation(.easeInOut(duration: 0.2), value: isTranscriptExpanded)
+                        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: isTranscriptExpanded)
+                        .accessibilityHidden(true)
                 }
             }
             .buttonStyle(.plain)
+            .accessibilityHint(isTranscriptExpanded ? "Collapse transcript" : "Expand transcript")
 
             if viewModel.recording.status == .failed {
                 Button("Retry transcription") {
@@ -228,17 +235,15 @@ struct RecordingDetailView: View {
         .card()
     }
 
-    // MARK: - Edit (single primary action)
+    // MARK: - Delete (visible destructive action)
 
-    private var editButton: some View {
-        Button("Edit check-in") {
-            editViewModel = ExtractionReviewViewModel(
-                recording: viewModel.recording,
-                store: store,
-                onComplete: { [self] _ in editViewModel = nil }
-            )
+    private var deleteButton: some View {
+        Button("Delete check-in", role: .destructive) {
+            showDeleteConfirm = true
         }
-        .buttonStyle(.primary)
+        .buttonStyle(.plain)
+        .foregroundStyle(Theme.danger)
+        .frame(maxWidth: .infinity)
         .padding(.top, Spacing.s)
     }
 }

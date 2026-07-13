@@ -73,7 +73,7 @@ struct TimelineBead: View {
     private var carryoverBadge: some View {
         if let ring = carryoverRing {
             Text("\(Int(ring.progress * 100))%")
-                .font(.plexMono(10).weight(.heavy))
+                .font(Typography.mono(10, weight: .heavy))
                 .foregroundStyle(Palette.medication)   // systemPurple brightens in dark mode
                 .padding(.horizontal, Spacing.xs + 2)
                 .padding(.vertical, 1)

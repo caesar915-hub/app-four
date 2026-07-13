@@ -15,8 +15,7 @@ final class AudioPlaybackViewModel: NSObject {
 
     private(set) var state: PlaybackState = .idle
     private(set) var duration: TimeInterval = 0
-    var currentTime: TimeInterval = 0
-    private(set) var isScrubbing = false
+    private(set) var currentTime: TimeInterval = 0
 
     private var player: AVAudioPlayer?
     private var progressTask: Task<Void, Never>?
@@ -74,23 +73,6 @@ final class AudioPlaybackViewModel: NSObject {
         }
     }
 
-    func beginScrubbing() {
-        isScrubbing = true
-    }
-
-    func endScrubbing(at time: TimeInterval) {
-        isScrubbing = false
-        seek(to: time)
-    }
-
-    func stop() {
-        player?.stop()
-        player?.currentTime = 0
-        progressTask?.cancel()
-        state = .idle
-        currentTime = 0
-    }
-
     func cleanup() {
         progressTask?.cancel()
         player?.stop()
@@ -101,13 +83,13 @@ final class AudioPlaybackViewModel: NSObject {
         progressTask?.cancel()
         progressTask = Task { @MainActor in
             while !Task.isCancelled {
-                if !isScrubbing, let t = player?.currentTime {
+                if let t = player?.currentTime {
                     currentTime = t
                     if case .playing = state {
                         state = .playing(currentTime: t)
                     }
                 }
-                try? await Task.sleep(nanoseconds: 250_000_000)
+                try? await Task.sleep(for: .milliseconds(250))
             }
         }
     }
