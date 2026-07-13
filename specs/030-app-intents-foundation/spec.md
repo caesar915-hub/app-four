@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-03 17:14 (WEST) · Updated: 2026-07-03 19:15 (WEST) -->
+<!-- Created: 2026-07-03 17:14 (WEST) · Updated: 2026-07-13 17:29 (WEST) -->
 # Feature Specification: App Intents Foundation + NFC Sticker Actions
 
 **Feature Branch**: `030-app-intents-foundation`
@@ -35,7 +35,7 @@ If no default medication is configured yet, the action never dead-ends: it respo
 
 **Acceptance Scenarios**:
 
-1. **Given** a default medication "Elvanse 30 mg" is configured, **When** the user triggers the log-dose action from the Shortcuts app, **Then** a dose event for Elvanse 30 mg timestamped "now" is recorded, the app does not visibly open, and a banner + haptic confirm the log — "Dose logged · HH:MM" by default, or "Elvanse 30 mg logged · HH:MM" when "Name medication in confirmations" is on.
+1. **Given** a default medication "Elvanse 30 mg" is configured, **When** the user triggers the log-dose action from the Shortcuts app, **Then** a dose event for Elvanse 30 mg timestamped "now" is recorded, the app does not visibly open, and a system banner confirms the log (no haptic — the log ran in the background; D9) — "Dose logged · HH:MM" by default, or "Elvanse 30 mg logged · HH:MM" when "Name medication in confirmations" is on.
 2. **Given** a default medication is configured and the phone is **locked**, **When** the user says the Siri phrase, **Then** the dose is recorded and Siri speaks the confirmation — no unlock required.
 3. **Given** no default medication is configured, **When** the user triggers the log-dose action, **Then** no dose event is created and the response calmly directs the user to the "My medication" setting, which opens on tap.
 4. **Given** a dose was just logged via the action, **When** the user later opens the app, **Then** the medication bar and day timeline reflect that dose exactly as if it had been logged in-app.
@@ -119,7 +119,7 @@ A non-technical user opens a guided "Set up your sticker" screen in Settings and
 
 - **FR-003**: The system MUST expose a "log my meds" action that records a dose event of the default medication + dose, timestamped at trigger time, without requiring the app to visibly open.
 - **FR-004**: The action MUST work when triggered by voice on a locked device (deliberate decision; accepted risk is a stray journal entry — the action never reads journal content back).
-- **FR-005**: Every successful expedited log MUST produce an acknowledgment — visible as a banner, accompanied by a haptic, and spoken when the trigger was voice — always including the time. System-standard presentation is sufficient (no custom sound in v1).
+- **FR-005**: Every successful expedited log MUST produce an acknowledgment — visible as a banner, spoken when the trigger was voice, and accompanied by a haptic **where the platform allows it (the app is in the foreground)** — always including the time. A background log (the common sticker/Shortcuts case) cannot play a haptic — an Apple platform limit (D9): a background App Intent's engine is suspended, so its acknowledgment is the system banner plus, for a voice trigger, the spoken dialog. System-standard presentation is sufficient (no custom sound in v1). *(Haptic clause amended 2026-07-13 per D9 — owner sign-off; SC-001's 3 s banner is unaffected.)*
 - **FR-023**: Settings MUST offer a "Name medication in confirmations" toggle, **default OFF**: OFF = confirmations say "Dose logged · HH:MM" on every surface (medication name visible only inside the app); ON = confirmations name medication and dose (e.g. "Elvanse 30 mg logged · HH:MM"). The toggle governs all confirmation surfaces uniformly (banner, spoken, locked).
 - **FR-006**: A dose event created by the action MUST be indistinguishable in downstream behavior (medication bar, day timeline, insights) from one logged in-app.
 - **FR-007**: With no default configured, the action MUST create nothing and respond with calm guidance that deep-links to the "My medication" setting; the not-configured path MUST also work for locked/voice triggers.
