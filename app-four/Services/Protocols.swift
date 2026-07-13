@@ -165,7 +165,7 @@ protocol AIModelService: Sendable {
 
 // MARK: - Summarization
 
-struct SummaryResult: Sendable {
+nonisolated struct SummaryResult: Sendable {
     let bullets: [String]
     let medications: [MedEvent]
     let generatedTitle: String

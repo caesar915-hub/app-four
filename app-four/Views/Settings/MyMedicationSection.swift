@@ -84,7 +84,7 @@ struct MyMedicationSection: View {
                 if let dose = viewModel.defaultMedicationDose {
                     Text("\(name) · \(dose)")
                         .fontWeight(.semibold)
-                        .foregroundStyle(.purple)
+                        .foregroundStyle(Palette.medication)
                 } else {
                     Text(name)
                         .foregroundStyle(.secondary)
@@ -150,7 +150,7 @@ struct MyMedicationSection: View {
                 .font(.caption)
                 .foregroundStyle(.white)
                 .frame(width: 26, height: 26)
-                .background(.purple, in: .rect(cornerRadius: 7))
+                .background(Palette.medication, in: .rect(cornerRadius: 7))
             Text(previewLine)
                 .font(.subheadline.weight(.semibold))
             Text("· 17:42")
@@ -192,7 +192,7 @@ private struct SettingsChip: View {
                 .foregroundStyle(isSelected ? .white : .primary)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
-                .background(isSelected ? AnyShapeStyle(.purple) : AnyShapeStyle(.quaternary), in: .capsule)
+                .background(isSelected ? AnyShapeStyle(Palette.medication) : AnyShapeStyle(.quaternary), in: .capsule)
         }
         .buttonStyle(.plain)
         .accessibilityHint(hint)
