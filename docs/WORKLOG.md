@@ -1,5 +1,34 @@
 # WORKLOG
 
+## 2026-07-11 02:15–15:13 · US1 intent layer — LogDefaultDoseIntent + Shortcuts + DI (T0 · feat/030-app-intents
+
+**Code changes**
+- _Major (feat)_
+  - `4c07f7bb` feat(030): US1 intent layer — LogDefaultDoseIntent + Shortcuts + DI (T019–T021)
+- _Fixes_
+  - `1e60ee02` fix(030): verification-pass findings — explicit dose tap, flow chips, a11y
+  - `ffeff928` fix(030): Settings sections match the approved T011 mockup — inline, no push
+- _Tests_
+  - `57420d56` test(030): round-trips reload via fresh ModelContext, autosave pinned off
+- _docs_
+  - `6947d03b` docs(030): DEVLOG review-cycle entry + WORKLOG regen
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  bb62dd4f [feat/nutrition-signals-demo]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              11a25657 [feat/032-newlook-screens]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                4c07f7bb [feat/030-app-intents]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ios26-target                   b6f5149d [qa/device-ios26-029]
+```
+
+---
+
 ## 2026-07-03 17:56–18:26 · 029 calendar-day-context task breakdown (45 tasks, test-firs · main
 
 **Code changes**

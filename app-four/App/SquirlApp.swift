@@ -1,3 +1,4 @@
+import AppIntents
 import SwiftUI
 import SwiftData
 
@@ -5,6 +6,7 @@ import SwiftData
 struct SquirlApp: App {
     @State private var selectedTab: Tab = .calendar
     @State private var shouldAutoStartRecording = false
+    @State private var router = AppDependencies.appIntentRouter
 
     init() {
         #if DEBUG
@@ -19,6 +21,14 @@ struct SquirlApp: App {
         // Touch global dependencies at startup so stores begin observing the DB.
         _ = AppDependencies.store
         MetricManager.shared.start()
+        // D11: intent dependencies must be registered before any perform() — a
+        // background intent launch runs this init first. Values are captured
+        // eagerly so the manager's @Sendable autoclosure never hops back to the
+        // MainActor-isolated AppDependencies accessors.
+        let doseLogService = AppDependencies.doseLogService
+        let router = AppDependencies.appIntentRouter
+        AppDependencyManager.shared.add(dependency: doseLogService)
+        AppDependencyManager.shared.add(dependency: router)
     }
 
     var body: some Scene {
@@ -33,12 +43,29 @@ struct SquirlApp: App {
             .environment(AppDependencies.medicationBarViewModel)
             .environment(AppDependencies.screenTracker)
             .environment(AppDependencies.services)
+            .environment(router)
             .environment(\.diagnosticsStore, AppDependencies.diagnosticsStore)
             // Feedback button unmounted (spec 024) — it crashed the app. Views/Feedback/* retained.
+            // Route the legacy deep link through the shared router (D3/D4) so the
+            // App Intent (US2) and this URL hit ONE choke point; the onboarding gate
+            // (FR-022) lands inside the router in US2.
             .onOpenURL { url in
                 guard url.scheme == "whispernotes", url.host == "checkin" else { return }
+                router.requestCheckIn()
+            }
+            .onChange(of: router.shouldStartCheckIn) { _, armed in
+                guard armed, router.consumeCheckIn() else { return }
                 selectedTab = .checkIn
                 shouldAutoStartRecording = true
+            }
+            // A background intent (dose, not-configured path) arms the flag around
+            // the time a headless launch foregrounds — either side of this body
+            // attaching. `initial: true` covers armed-before-attach; the reactive
+            // fire covers armed-after. Consumption stays with SettingsView (it
+            // scrolls + expands the picker); this observer only switches the tab.
+            .onChange(of: router.shouldFocusMyMedication, initial: true) { _, armed in
+                guard armed else { return }
+                selectedTab = .settings
             }
         }
     }

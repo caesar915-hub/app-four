@@ -13,7 +13,7 @@ struct MedicationCatalogEntry: Identifiable, Hashable, Sendable {
 
 /// The curated stimulant catalog. Beta subset: the three meds the first testers take.
 /// Extends to the fuller EU list by appending entries — no other code needs to change.
-enum MedicationCatalog {
+nonisolated enum MedicationCatalog {
     static let all: [MedicationCatalogEntry] = [
         MedicationCatalogEntry(
             name: "Concerta",

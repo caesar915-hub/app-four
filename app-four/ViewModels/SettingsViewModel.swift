@@ -44,6 +44,13 @@ final class SettingsViewModel {
     var downloadOverCellular: Bool = false
     var promptPace: PromptPace = .relaxed
 
+    // MARK: - 030 App Intents settings (mirror AppSettings; sync writes back)
+    var defaultMedicationName: String?
+    var defaultMedicationDose: String?
+    var nameMedicationInConfirmations: Bool = false
+    var doseGuardMode: DoseGuardMode = .off
+    var doseGuardWindowHours: Int = 2
+
     private var appSettings: AppSettings {
         let descriptor = FetchDescriptor<AppSettings>()
         if let existing = try? context.fetch(descriptor).first {
@@ -55,14 +62,20 @@ final class SettingsViewModel {
         return new
     }
 
-    init(store: RecordingStore, services: AppServices) {
+    init(store: RecordingStore, services: AppServices, context: ModelContext? = nil) {
         self.store = store
         self.aiModelService = services.aiModelService
         self.storageService = services.storageService
         self.exportService = services.exportService
-        self.context = AppModelContainer.container.mainContext
-        self.downloadOverCellular = appSettings.downloadOverCellular
-        self.promptPace = PromptPace(rawValue: appSettings.promptPaceSeconds) ?? .relaxed
+        self.context = context ?? AppModelContainer.container.mainContext
+        let settings = appSettings
+        self.downloadOverCellular = settings.downloadOverCellular
+        self.promptPace = PromptPace(rawValue: settings.promptPaceSeconds) ?? .relaxed
+        self.defaultMedicationName = settings.defaultMedicationName
+        self.defaultMedicationDose = settings.defaultMedicationDose
+        self.nameMedicationInConfirmations = settings.nameMedicationInConfirmations
+        self.doseGuardMode = DoseGuardMode(raw: settings.doseGuardModeRaw)
+        self.doseGuardWindowHours = settings.doseGuardWindowHours
 
         Task { await updateStorage() }
         Task { await checkModels() }
@@ -75,6 +88,33 @@ final class SettingsViewModel {
 
     func syncPromptPace() {
         appSettings.promptPaceSeconds = promptPace.rawValue
+        try? context.save()
+    }
+
+    /// Any medication change clears the dose (approved T011 mockup): the default the
+    /// hands-free action logs must be re-confirmed with an explicit dose tap — never
+    /// auto-committed. Until then the action answers not-configured (FR-007).
+    func medicationDidChange() {
+        defaultMedicationDose = nil
+        syncMyMedication()
+    }
+
+    func syncMyMedication() {
+        let settings = appSettings
+        settings.defaultMedicationName = defaultMedicationName
+        settings.defaultMedicationDose = defaultMedicationDose
+        try? context.save()
+    }
+
+    func syncNameInConfirmations() {
+        appSettings.nameMedicationInConfirmations = nameMedicationInConfirmations
+        try? context.save()
+    }
+
+    func syncDoseGuard() {
+        let settings = appSettings
+        settings.doseGuardModeRaw = doseGuardMode.rawValue
+        settings.doseGuardWindowHours = doseGuardWindowHours
         try? context.save()
     }
 

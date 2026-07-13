@@ -10,6 +10,14 @@ final class AppSettings {
     var transcriptionCount: Int = 0
     var promptPaceSeconds: Int = PromptPace.relaxed.rawValue
 
+    // MARK: - 030 App Intents (default medication · dose guard · confirmation style)
+    // All defaulted/optional, no `.unique` (Constitution IX, CloudKit-compatible).
+    var defaultMedicationName: String? = nil
+    var defaultMedicationDose: String? = nil
+    var doseGuardModeRaw: String = "off"
+    var doseGuardWindowHours: Int = 2
+    var nameMedicationInConfirmations: Bool = false
+
     init(
         id: UUID = UUID(),
         hasCompletedOnboarding: Bool = false,

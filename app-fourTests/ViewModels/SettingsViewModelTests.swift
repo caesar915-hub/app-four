@@ -199,4 +199,107 @@ struct SettingsViewModelTests {
         #expect(viewModel.whisperModelInstalled == true, "Retry success installs the model")
         #expect(viewModel.downloadError == nil, "A successful retry clears the prior error")
     }
+
+    // MARK: - 030 App Intents settings (T014 / T030): sync round-trips via injected context
+
+    /// Isolated in-memory VM so sync round-trips don't race on the shared app store
+    /// (Swift Testing runs suites in parallel).
+    private func makeSettingsVM() throws -> (SettingsViewModel, ModelContainer) {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
+        // Autosave off so the round-trips prove the sync methods' EXPLICIT save();
+        // a stray autosave firing mid-test would mask a dropped save() call.
+        container.mainContext.autosaveEnabled = false
+        let vm = SettingsViewModel(
+            store: RecordingStore(context: container.mainContext),
+            services: MockAppServices().services,
+            context: container.mainContext
+        )
+        return (vm, container)
+    }
+
+    /// Reload through a FRESH context, never `mainContext`: the writing context
+    /// returns its own registered in-memory objects (unsaved mutations included),
+    /// so reusing it keeps every round-trip green even with the `save()` calls
+    /// deleted. A fresh context only sees what was durably persisted.
+    private func reloadedVM(_ container: ModelContainer) -> SettingsViewModel {
+        SettingsViewModel(
+            store: RecordingStore(context: ModelContext(container)),
+            services: MockAppServices().services,
+            context: ModelContext(container)
+        )
+    }
+
+    @Test func myMedicationSyncRoundTrips() throws {
+        let (vm, container) = try makeSettingsVM()
+        vm.defaultMedicationName = "Elvanse"
+        vm.medicationDidChange()
+        #expect(vm.defaultMedicationDose == nil, "Picking a medication never auto-commits a dose — it takes an explicit tap (T011 mockup)")
+        vm.defaultMedicationDose = "30 mg"
+        vm.syncMyMedication()
+
+        let reloaded = reloadedVM(container)
+        #expect(reloaded.defaultMedicationName == "Elvanse")
+        #expect(reloaded.defaultMedicationDose == "30 mg")
+    }
+
+    @Test func clearingMedicationClearsDose() throws {
+        let (vm, container) = try makeSettingsVM()
+        vm.defaultMedicationName = "Concerta"
+        vm.medicationDidChange()
+        vm.defaultMedicationDose = "18 mg"
+        vm.syncMyMedication()
+        vm.defaultMedicationName = nil
+        vm.medicationDidChange()
+        #expect(vm.defaultMedicationDose == nil)
+
+        let reloaded = reloadedVM(container)
+        #expect(reloaded.defaultMedicationName == nil)
+        #expect(reloaded.defaultMedicationDose == nil)
+    }
+
+    @Test func changingMedicationClearsDose() throws {
+        let (vm, container) = try makeSettingsVM()
+        vm.defaultMedicationName = "Elvanse"; vm.medicationDidChange()
+        vm.defaultMedicationDose = "70 mg"; vm.syncMyMedication()
+        vm.defaultMedicationName = "Ritalin"; vm.medicationDidChange()
+        #expect(vm.defaultMedicationDose == nil, "A switched medication must be re-confirmed with an explicit dose tap")
+        #expect(reloadedVM(container).defaultMedicationDose == nil, "The cleared dose persists — hands-free stays not-configured until the tap")
+    }
+
+    @Test func nameInConfirmationsDefaultsDiscreetAndSyncs() throws {
+        let (vm, container) = try makeSettingsVM()
+        #expect(vm.nameMedicationInConfirmations == false, "Discreet by default")
+        vm.nameMedicationInConfirmations = true
+        vm.syncNameInConfirmations()
+        #expect(reloadedVM(container).nameMedicationInConfirmations == true)
+    }
+
+    @Test func doseGuardSyncRoundTrips() throws {
+        let (vm, container) = try makeSettingsVM()
+        #expect(vm.doseGuardMode == .off, "Guard off by default")
+        #expect(vm.doseGuardWindowHours == 2, "Default window is 2h")
+        vm.doseGuardMode = .window
+        vm.doseGuardWindowHours = 4
+        vm.syncDoseGuard()
+
+        let reloaded = reloadedVM(container)
+        #expect(reloaded.doseGuardMode == .window)
+        #expect(reloaded.doseGuardWindowHours == 4)
+    }
+
+    @Test func doseGuardTotalModeRoundTrips() throws {
+        let (vm, container) = try makeSettingsVM()
+        vm.doseGuardMode = .total
+        vm.syncDoseGuard()
+        #expect(reloadedVM(container).doseGuardMode == .total)
+    }
+
+    @Test func invalidPersistedGuardRawDecodesToOff() throws {
+        let (_, container) = try makeSettingsVM()
+        let settings = try #require(try container.mainContext.fetch(FetchDescriptor<AppSettings>()).first)
+        settings.doseGuardModeRaw = "someFutureMode"
+        try container.mainContext.save()
+        #expect(reloadedVM(container).doseGuardMode == .off, "Unknown persisted raw is forward-safe")
+    }
 }
