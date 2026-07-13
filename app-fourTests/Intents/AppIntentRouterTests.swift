@@ -57,14 +57,18 @@ struct AppIntentRouterTests {
         #expect(router.consumeCheckIn() == true)
     }
 
+    /// Mutated through a MainActor reference (not a captured `var`) so the closure's
+    /// Sendable boundary stays clean under Swift 6.
+    @MainActor private final class OnboardingFlag { var isComplete = false }
+
     // The gate is re-evaluated per call (not captured once), so finishing onboarding
     // between a gated attempt and a later one flips the outcome — the choke point both
     // the intent (US2) and the legacy whispernotes://checkin URL (D4) pass through.
     @Test func gateIsReevaluatedPerCall() {
-        var complete = false
-        let router = AppIntentRouter(isOnboardingComplete: { complete })
+        let flag = OnboardingFlag()
+        let router = AppIntentRouter(isOnboardingComplete: { flag.isComplete })
         #expect(router.requestCheckIn() == .gatedOnboarding)
-        complete = true
+        flag.isComplete = true
         #expect(router.requestCheckIn() == .started)
         #expect(router.consumeCheckIn() == true)
     }
