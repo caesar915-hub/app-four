@@ -11,10 +11,13 @@ struct StickerSetupView: View {
         case dose, checkIn
         var id: String { rawValue }
         var label: String { self == .dose ? "Dose sticker" : "Check-in sticker" }
-        var tint: Color { self == .dose ? .purple : Theme.meadowGreen }
+        var tint: Color { self == .dose ? Palette.medication : Theme.meadowGreen }
         var action: String { self == .dose ? "Log My Meds" : "Check In" }
         var doneLine: String {
             self == .dose ? "log your default dose" : "open Squirl already recording"
+        }
+        var doneTail: String {
+            self == .dose ? "No app-opening, no menus." : "No menus, no taps. Just start talking."
         }
         var needsMedication: Bool { self == .dose }
         var stepsHeader: String {
@@ -27,8 +30,7 @@ struct StickerSetupView: View {
         }
     }
 
-    private struct Step: Identifiable {
-        let id = UUID()
+    private struct Step {
         let text: String
         var detail: String?
         var handoff = false
@@ -38,6 +40,9 @@ struct StickerSetupView: View {
     @State private var path: StickerPath = .dose
     @Environment(\.openURL) private var openURL
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// Badge/icon discs scale with Dynamic Type so digits and SF Symbols never spill
+    /// their frame at accessibility text sizes.
+    @ScaledMetric(relativeTo: .body) private var badge: CGFloat = 28
 
     var body: some View {
         ScreenContainer(title: "Set up your sticker", showsMedicationBar: false) {
@@ -50,7 +55,6 @@ struct StickerSetupView: View {
                     ForEach(StickerPath.allCases) { Text($0.label).tag($0) }
                 }
                 .pickerStyle(.segmented)
-                .onChange(of: path) { } // segmented control drives the reveal below
 
                 needSection
                 stepsSection
@@ -71,8 +75,8 @@ struct StickerSetupView: View {
             row(symbol: "tag", tint: Theme.textSecondary,
                 title: "A blank NFC sticker", subtitle: "Any cheap NDEF tag, nothing pre-written")
             if path.needsMedication {
-                Divider().overlay(Theme.separator).padding(.leading, 40)
-                row(symbol: "pills.fill", tint: .purple,
+                Divider().overlay(Theme.separator).padding(.leading, badge + Spacing.m)
+                row(symbol: "pills.fill", tint: Palette.medication,
                     title: "A default medication set", subtitle: "Settings › My Medication")
             }
         }
@@ -97,11 +101,13 @@ struct StickerSetupView: View {
     private var stepsSection: some View {
         card(header: path.stepsHeader, footnote: path.footnote) {
             let items = steps
-            ForEach(Array(items.enumerated()), id: \.element.id) { index, step in
-                if index > 0 { Divider().overlay(Theme.separator).padding(.leading, 40) }
+            // Keyed by position (offset), not a per-render UUID, so switching paths
+            // updates step 4 in place instead of remove-inserting all five rows.
+            ForEach(Array(items.enumerated()), id: \.offset) { index, step in
+                if index > 0 { Divider().overlay(Theme.separator).padding(.leading, badge + Spacing.m) }
                 stepRow(number: "\(index + 1)", step: step)
             }
-            Divider().overlay(Theme.separator).padding(.leading, 40)
+            Divider().overlay(Theme.separator).padding(.leading, badge + Spacing.m)
             doneRow
         }
     }
@@ -147,8 +153,8 @@ struct StickerSetupView: View {
             Image(systemName: "checkmark.circle.fill")
                 .font(.title3)
                 .foregroundStyle(path.tint)
-                .frame(width: 28, height: 28)
-            Text(.init("**Done.** Tap the sticker to \(path.doneLine). No app-opening, no menus."))
+                .frame(width: badge, height: badge)
+            Text(.init("**Done.** Tap the sticker to \(path.doneLine). \(path.doneTail)"))
                 .font(Typography.body)
                 .foregroundStyle(Theme.textPrimary)
         }
@@ -167,7 +173,7 @@ struct StickerSetupView: View {
                     .foregroundStyle(Theme.textPrimary)
                     .padding(.top, Spacing.xs)
             }
-            .padding(.leading, 40)
+            .padding(.leading, badge + Spacing.m)
         }
     }
 
@@ -177,7 +183,7 @@ struct StickerSetupView: View {
             Text(.init("Hold the **top-back of your phone**, up by the cameras, flat against the sticker for a second. That's where the NFC reader is. A thick case or a metal surface behind the sticker can block it."))
                 .font(Typography.callout)
                 .foregroundStyle(Theme.textSecondary)
-                .padding(.leading, 40)
+                .padding(.leading, badge + Spacing.m)
         }
     }
 
@@ -187,7 +193,7 @@ struct StickerSetupView: View {
         Text(number)
             .font(.subheadline.weight(.bold))
             .foregroundStyle(.white)
-            .frame(width: 28, height: 28)
+            .frame(width: badge, height: badge)
             .background(path.tint, in: .circle)
     }
 
@@ -196,8 +202,8 @@ struct StickerSetupView: View {
             Image(systemName: symbol)
                 .font(.body)
                 .foregroundStyle(tint)
-                .frame(width: 28, height: 28)
-            VStack(alignment: .leading, spacing: 1) {
+                .frame(width: badge, height: badge)
+            VStack(alignment: .leading, spacing: 2) {
                 Text(title).font(Typography.body).foregroundStyle(Theme.textPrimary)
                 Text(subtitle).font(Typography.caption).foregroundStyle(Theme.textSecondary)
             }
@@ -209,13 +215,13 @@ struct StickerSetupView: View {
             Image(systemName: symbol)
                 .font(.body)
                 .foregroundStyle(tint)
-                .frame(width: 28, height: 28)
+                .frame(width: badge, height: badge)
             Text(title).font(Typography.headline).foregroundStyle(Theme.textPrimary)
         }
     }
 
     private func lockLine(_ state: String, _ detail: String) -> some View {
-        VStack(alignment: .leading, spacing: 1) {
+        VStack(alignment: .leading, spacing: 2) {
             Text(state).font(Typography.subheadline).foregroundStyle(Theme.textPrimary)
             Text(detail).font(Typography.callout).foregroundStyle(Theme.textSecondary)
         }
@@ -229,19 +235,13 @@ struct StickerSetupView: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: Spacing.s) {
             if let header {
-                Text(header.uppercased())
-                    .font(Typography.label)
-                    .tracking(0.5)
-                    .foregroundStyle(Theme.textSecondary)
-                    .padding(.horizontal, Spacing.xs)
+                Text(header).cardEyebrow().padding(.horizontal, Spacing.xs)
             }
             VStack(alignment: .leading, spacing: Spacing.m) {
                 content()
             }
-            .padding(Spacing.l)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Theme.cardBackground, in: .rect(cornerRadius: 14))
-            .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Theme.cardStroke, lineWidth: 1))
+            .card()
             if let footnote {
                 Text(footnote)
                     .font(Typography.caption)
