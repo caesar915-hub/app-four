@@ -21,17 +21,13 @@ struct DayCard: View {
             .buttonStyle(.plain)
 
             if isExpanded && !day.nodes.isEmpty {
-                VStack(alignment: .leading, spacing: 0) {
-                    ForEach(Array(day.nodes.enumerated()), id: \.element.id) { index, node in
-                        TimelineRow(
-                            node: node,
-                            isLast: index == day.nodes.count - 1,
-                            onTapRecording: onTapRecording
-                        )
+                VStack(alignment: .leading, spacing: Spacing.xxl) {
+                    ForEach(day.nodes) { node in
+                        TimelineRow(node: node, onTapRecording: onTapRecording)
                     }
                 }
                 .padding(.horizontal, Spacing.l)
-                .padding(.top, Spacing.m)
+                .padding(.top, Spacing.l)
                 .padding(.bottom, Spacing.l)
             }
         }

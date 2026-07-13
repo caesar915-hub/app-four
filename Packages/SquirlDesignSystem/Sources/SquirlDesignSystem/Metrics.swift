@@ -13,26 +13,25 @@ public enum Metrics {
     /// Standard minimum row height
     public static let rowMinHeight: CGFloat = 44
 
-    /// Diameter of the mood-bead circle (wrapped by the medication-phase ring) in a check-in row.
-    /// Spec 023 "Balanced": smaller than the no-disc day-header's 40pt inline mood glyph, so the
-    /// per-row beads read as detail beneath the day header rather than as peers of it.
-    public static let timeBead: CGFloat = 36
     /// Diameter of the cream-disc mood badge in the day-card header (folded block + open strip)
     public static let headerMoodBadge: CGFloat = 42
     /// Base size for the folded-card summary's inline signal glyph (fixed-point, decorative) and
     /// its mood text (scales with Dynamic Type) — the two align at the default text size.
     public static let summarySignal: CGFloat = 15
-    /// Check-in row type (spec 023, SF): the mood word (SF semibold, scales), the inline time (SF Mono),
-    /// and the energy/focus signal glyph. Mood is the row headline; medication/sleep/feelings recede by
-    /// weight and colour, not size.
-    public static let rowMoodText: CGFloat = 17
-    public static let rowTime: CGFloat = 13
+    /// Check-in row signal-glyph size — the energy/focus chip glyphs in the expanded entry row.
     public static let rowSignal: CGFloat = 12
-    /// Optical top inset pulling the row head toward the bead's top edge (spec 023 "mid-high") — an
-    /// alignment nudge, not a grid value (cf. `Spacing.ringStroke`).
-    public static let rowHeadTop: CGFloat = 7
     /// Diameter of the no-disc day-header's inline mood glyph, folded + expanded (spec 023).
     public static let dayHeaderGlyph: CGFloat = 40
+
+    // MARK: - DayCard a01 (spec 034)
+    /// Unfolded entry-row mood disc (a01 node 308:1957 — 43pt), tinted with the row's own
+    /// mood at `Opacity.moodBadge`.
+    public static let rowMoodDisc: CGFloat = 43
+    /// Mood sprout size inside the entry-row disc — a badge glyph with a visible tint ring
+    /// (smaller than the disc so the disc reads as an avatar, matching the app's bead proportions).
+    public static let rowMoodGlyph: CGFloat = 28
+    /// Outlined "more" (⋯) affordance circle on an unfolded entry row (a01 — 30pt).
+    public static let moreAffordance: CGFloat = 30
 
     /// Decorative SF Symbol sizes (large hero glyphs, not Dynamic Type text).
     /// These use a fixed point size intentionally because they are imagery, not copy.
