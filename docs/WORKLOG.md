@@ -1,5 +1,31 @@
 # WORKLOG
 
+## 2026-07-13 17:33–17:47 · US4 review findings — Palette.medication, stable identity, . · feat/030-us3-us4
+
+**Code changes**
+- _Fixes_
+  - `6b3ebada` fix(030): US4 review findings — Palette.medication, stable identity, .card(), Dynamic Type, honest check-in copy
+- _docs_
+  - `7d8b5176` docs(030): regenerate WORKLOG after US4 build + FR-005 amendment
+  - `57f21f72` docs(030): FR-005 haptic amendment (T037) + BACKLOG/DEVLOG for US1-US4
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  bb62dd4f [feat/nutrition-signals-demo]
+/Users/caesargrey/Projects/app-four-localization                                     18c3cdd4 [feat/023-localization-multilang]
+/Users/caesargrey/Projects/app-four-nlp-recall                                       29af639f (detached HEAD)
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              55201477 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              f019e64e [feat/034-daycard-a01]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                6b3ebada [feat/030-us3-us4]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+weather-checkin           ca0f81fc [worktree-feat+weather-checkin]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 08e16e53 [fix/022-view-audit-remediation]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ios26-target                   b6f5149d [qa/device-ios26-029]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/merge-029                      885961a9 [feat/029-calendar-day-context]
+```
+
+---
+
 ## 2026-07-10 15:42 – 2026-07-13 17:33 · FR-005 haptic amendment (T037) + BACKLOG/DEVLOG for US1-US4 · feat/030-us3-us4
 
 **Code changes**
