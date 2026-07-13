@@ -8,7 +8,7 @@ import Foundation
 /// Shape mirrors `Lexicon` 1:1 so the loader is a pure mapping (no behaviour
 /// change vs. the former hard-coded `defaultX` lists). The two label/keyword maps
 /// (mood, time-of-day) are encoded as `[entry]` pairs to stay JSON-friendly.
-public struct LexiconData: Codable, Sendable {
+public nonisolated struct LexiconData: Codable, Sendable {
 
     public struct MoodEntry: Codable, Sendable {
         public let word: String
@@ -116,7 +116,7 @@ public struct PersonalLexicon: Codable, Sendable {
     }
 }
 
-public enum LexiconLoader {
+public nonisolated enum LexiconLoader {
     /// Loads the bundled `lexicon.json`. Falls back to the code defaults if the
     /// resource is missing or malformed, so extraction never silently breaks.
     public static func loadBundled(overlay: PersonalLexicon? = nil) -> Lexicon {

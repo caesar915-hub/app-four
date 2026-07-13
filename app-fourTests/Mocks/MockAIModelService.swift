@@ -29,8 +29,11 @@ actor MockAIModelService: AIModelService {
         stubLocalPathEnabled = value
     }
 
-    func status(for type: AIModelType) async -> ModelMetadata? {
-        ModelMetadata(modelName: type.rawValue, modelType: type.rawValue, isDownloaded: stubIsDownloaded)
+    nonisolated func status(for type: AIModelType) async -> ModelMetadata? {
+        // Read the nonisolated mirror (kept in sync with stubIsDownloaded) so a fresh,
+        // unattached ModelMetadata is created and returned without crossing the actor
+        // boundary — matches the @MainActor real impl's isolated conformance.
+        ModelMetadata(modelName: type.rawValue, modelType: type.rawValue, isDownloaded: stubLocalPathEnabled)
     }
 
     nonisolated func localPath(for type: AIModelType) -> URL? {

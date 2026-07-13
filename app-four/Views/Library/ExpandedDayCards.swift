@@ -4,7 +4,7 @@ import Foundation
 /// the expand / selection rules are pure and unit-testable (Constitution Principle X). The
 /// view holds it as `@State` and replaces it wholesale on each change. Keys are normalised
 /// to start-of-day so a card is identified by its calendar day regardless of check-in time.
-struct ExpandedDayCards: Equatable {
+nonisolated struct ExpandedDayCards: Equatable {
     private var dates: Set<Date>
 
     init(_ dates: Set<Date> = []) {
