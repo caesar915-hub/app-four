@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-03 19:08 (WEST) · Updated: 2026-07-11 03:38 (WEST) -->
+<!-- Created: 2026-07-03 19:08 (WEST) · Updated: 2026-07-14 00:45 (WEST) -->
 # Tasks: App Intents Foundation + NFC Sticker Actions
 
 **Input**: Design documents from `/specs/030-app-intents-foundation/`
