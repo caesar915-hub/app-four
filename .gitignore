@@ -16,6 +16,12 @@ xcuserdata/
 .build/
 .swiftpm/
 
+# Stray compiled module artifacts (never track build output)
+*.swiftmodule
+
+# Downloaded ML model dumps (spikes) — hundreds of MB, must never be tracked
+spikes/flan-t5-summarizer/
+
 # OS X
 #
 .DS_Store
