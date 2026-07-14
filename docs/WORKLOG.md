@@ -1,5 +1,42 @@
 # WORKLOG
 
+## 2026-07-10 15:42 – 2026-07-14 01:55 · reconcile stashes/PRs/worktrees debt (round 2) — DEBT.md + D · main
+
+**Code changes**
+- _Tests_
+  - `cfda413d` test(030): fix Swift 6 'mutated after capture' warning in gateIsReevaluatedPerCall
+- _docs_
+  - `a65010de` docs: reconcile stashes/PRs/worktrees debt (round 2) — DEBT.md + DEVLOG + BACKLOG
+  - `f1dfcf54` docs: regen WORKLOG after 2026-07-14 hygiene pass (derived from git/gh)
+- _chore_
+  - `23dc5180` chore: repo-hygiene pass — remove stray artifact, gitignore model dump, doc debt registry
+- _other_
+  - `81435937` Merge pull request #26 from caesar915-hub/feat/030-app-intents
+  - `2e52eb66` Merge pull request #25 from caesar915-hub/feat/ios26-target
+
+**Git actions**
+- `81435937` Merge pull request #26 from caesar915-hub/feat/030-app-intents
+- `2e52eb66` Merge pull request #25 from caesar915-hub/feat/ios26-target
+
+**gh actions**
+- PR #26 merged `feat/030-app-intents` — "feat(030): App Intents foundation — router, dose-logging engine, Settings surface"
+- PR #30 opened `chore/swift6-tech-debt` — "chore: clear Swift-6-language-mode test warnings + med color token" — OPEN/MERGEABLE
+- PR #29 opened `feat/030-us3-us4` — "feat(030): US4 guided NFC sticker setup (StickerSetupView) + FR-005 amendment" — OPEN/CONFLICTING
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  a65010de [main]
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              575d8902 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              f13abb5e [feat/034-daycard-a01]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                00cca98a [feat/030-us3-us4]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 8d9b7ab8 [fix/022-view-audit-remediation]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ios26-target                   d04eb5ea [qa/device-ios26-029]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/merge-029                      885961a9 [feat/029-calendar-day-context]
+```
+
+---
+
 ## 2026-07-10 15:42 – 2026-07-14 00:51 · repo-hygiene pass — remove stray artifact, gitignore model d · main
 
 **Code changes**
