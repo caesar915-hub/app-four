@@ -4,17 +4,24 @@ import SwiftData
 @testable import app_four
 
 /// P2.3 — personal lexicon overlay built from the user's own corrections.
+@Suite(.serialized)
 @MainActor
 struct PersonalLexiconTests {
-    let container: ModelContainer
-    var context: ModelContext { container.mainContext }
-
-    init() throws {
+    private static let container: ModelContainer = {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(
+        return try! ModelContainer(
             for: Recording.self, MedicationEvent.self, RecordingTag.self, AppSettings.self,
             configurations: config
         )
+    }()
+
+    var context: ModelContext { Self.container.mainContext }
+
+    init() throws {
+        try context.delete(model: Recording.self)
+        try context.delete(model: MedicationEvent.self)
+        try context.delete(model: RecordingTag.self)
+        try context.delete(model: AppSettings.self)
     }
 
     @Test func buildsOverlayFromUserCorrectedTags() throws {

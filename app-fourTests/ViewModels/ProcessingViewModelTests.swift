@@ -6,19 +6,24 @@ import Foundation
 /// ProcessingViewModel no longer exposes an in-memory state machine (it was
 /// unobserved); the pipeline's outcome lives on the persisted `Recording.summaryStatus`,
 /// which is the single source of truth the UI observes. These tests assert on that.
+@Suite(.serialized)
 @MainActor
 struct ProcessingViewModelTests {
+    private static let container: ModelContainer = {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try! ModelContainer(for: Recording.self, configurations: config)
+    }()
+
     var viewModel: ProcessingViewModel
     var mockSummarizationService: MockSummarizationService
     var mockAIModelService: MockAIModelService
     var store: RecordingStore
-    var container: ModelContainer
 
     init() throws {
         TestSupport.useRealData()
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: Recording.self, configurations: config)
-        store = RecordingStore(context: container.mainContext)
+        let context = Self.container.mainContext
+        try context.delete(model: Recording.self)
+        store = RecordingStore(context: context)
         mockSummarizationService = MockSummarizationService()
         mockAIModelService = MockAIModelService()
         viewModel = ProcessingViewModel(

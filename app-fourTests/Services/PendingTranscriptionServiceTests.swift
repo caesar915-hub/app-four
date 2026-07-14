@@ -7,17 +7,22 @@ import SwiftData
 /// transcription model is not yet installed are persisted `.pendingTranscription` and
 /// drained automatically, in capture order, serialized on the single engine, through
 /// the EXACT existing transcribe → applySummary/setMedicationEvents path.
+@Suite(.serialized)
 @MainActor
 struct PendingTranscriptionServiceTests {
+    private static let container: ModelContainer = {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try! ModelContainer(for: Recording.self, configurations: config)
+    }()
+
     var store: RecordingStore
-    var container: ModelContainer
     let aiModel = MockAIModelService()
     let summarization = MockSummarizationService()
 
     init() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: Recording.self, configurations: config)
-        store = RecordingStore(context: container.mainContext)
+        let context = Self.container.mainContext
+        try context.delete(model: Recording.self)
+        store = RecordingStore(context: context)
     }
 
     private func makePending(_ name: String, createdAt: Date) -> Recording {

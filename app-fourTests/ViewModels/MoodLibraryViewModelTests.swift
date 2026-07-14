@@ -3,20 +3,26 @@ import Testing
 import SwiftData
 @testable import app_four
 
+@Suite(.serialized)
 @MainActor
 struct MoodLibraryViewModelTests {
-    var container: ModelContainer
+    private static let container: ModelContainer = {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try! ModelContainer(
+            for: Recording.self, MedicationEvent.self, AppSettings.self,
+            configurations: config
+        )
+    }()
+
     var context: ModelContext
     var store: RecordingStore
 
     init() throws {
         TestSupport.useRealData()
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(
-            for: Recording.self, MedicationEvent.self, AppSettings.self,
-            configurations: config
-        )
-        context = container.mainContext
+        context = Self.container.mainContext
+        try context.delete(model: Recording.self)
+        try context.delete(model: MedicationEvent.self)
+        try context.delete(model: AppSettings.self)
         store = RecordingStore(context: context)
     }
 

@@ -3,17 +3,24 @@ import Foundation
 import SwiftData
 @testable import app_four
 
+@Suite(.serialized)
 @MainActor
 struct SettingsViewModelTests {
+    private static let container: ModelContainer = {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try! ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
+    }()
+
     var viewModel: SettingsViewModel
     var mocks: MockAppServices
     var store: RecordingStore
-    var container: ModelContainer
 
     init() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
-        store = RecordingStore(context: container.mainContext)
+        let context = Self.container.mainContext
+        try context.delete(model: Recording.self)
+        try context.delete(model: AppSettings.self)
+        context.autosaveEnabled = true   // a prior test's makeSettingsVM() may have disabled it
+        store = RecordingStore(context: context)
         mocks = MockAppServices()
 
         viewModel = SettingsViewModel(store: store, services: mocks.services)
@@ -59,9 +66,7 @@ struct SettingsViewModelTests {
         }
         defaults.removeObject(forKey: key)
 
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
-        let store = RecordingStore(context: container.mainContext)
+        let store = RecordingStore(context: Self.container.mainContext)
         _ = SettingsViewModel(store: store, services: MockAppServices().services)
 
         #expect(defaults.object(forKey: key) == nil, "Constructing the VM must not write a reduceMotion default")
@@ -81,9 +86,7 @@ struct SettingsViewModelTests {
 
         // Default is `true` with no value written (matches existing-user opt-out semantics).
         defaults.removeObject(forKey: key)
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
-        let store = RecordingStore(context: container.mainContext)
+        let store = RecordingStore(context: Self.container.mainContext)
         let vm = SettingsViewModel(store: store, services: MockAppServices().services)
         #expect(vm.medicalPromptEnabled == true, "Medical prompt defaults to true")
 
@@ -202,20 +205,16 @@ struct SettingsViewModelTests {
 
     // MARK: - 030 App Intents settings (T014 / T030): sync round-trips via injected context
 
-    /// Isolated in-memory VM so sync round-trips don't race on the shared app store
-    /// (Swift Testing runs suites in parallel).
     private func makeSettingsVM() throws -> (SettingsViewModel, ModelContainer) {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
         // Autosave off so the round-trips prove the sync methods' EXPLICIT save();
         // a stray autosave firing mid-test would mask a dropped save() call.
-        container.mainContext.autosaveEnabled = false
+        Self.container.mainContext.autosaveEnabled = false
         let vm = SettingsViewModel(
-            store: RecordingStore(context: container.mainContext),
+            store: RecordingStore(context: Self.container.mainContext),
             services: MockAppServices().services,
-            context: container.mainContext
+            context: Self.container.mainContext
         )
-        return (vm, container)
+        return (vm, Self.container)
     }
 
     /// Reload through a FRESH context, never `mainContext`: the writing context

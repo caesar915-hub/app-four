@@ -10,16 +10,26 @@ import CryptoKit
 /// seeded plaintext marker survives in the bytes — and (b) losslessly recoverable
 /// with the returned key. The key is surfaced once to the user (recovery key) and
 /// never persisted, so the round-trip here is the only proof of correctness.
+@Suite(.serialized)
 @MainActor
 struct ExportServiceTests {
     private static let plaintextMarker = "ZZQ_SECRET_MARKER_42_methylphenidate"
 
-    private func makeContainer() throws -> ModelContainer {
+    private static let container: ModelContainer = {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        return try ModelContainer(
+        return try! ModelContainer(
             for: Recording.self, TranscriptionSegment.self, RecordingTag.self, MedicationEvent.self,
             configurations: config
         )
+    }()
+
+    private func makeContainer() throws -> ModelContainer {
+        let context = Self.container.mainContext
+        try context.delete(model: Recording.self)
+        try context.delete(model: TranscriptionSegment.self)
+        try context.delete(model: RecordingTag.self)
+        try context.delete(model: MedicationEvent.self)
+        return Self.container
     }
 
     /// Seeds two recordings: one rich (transcript marker, signals, a transcript-sourced

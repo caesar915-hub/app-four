@@ -7,12 +7,18 @@ import Foundation
 /// `complete(modelContext:)` must: persist `hasCompletedOnboarding == true`,
 /// be idempotent (no duplicate `AppSettings` row), and signal completion even
 /// when the persist write fails so the cover can always dismiss to the hub (FR-005).
+@Suite(.serialized)
 @MainActor
 struct WelcomeViewModelTests {
 
-    private func makeContainer() throws -> ModelContainer {
+    private static let container: ModelContainer = {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        return try ModelContainer(for: AppSettings.self, configurations: config)
+        return try! ModelContainer(for: AppSettings.self, configurations: config)
+    }()
+
+    private func makeContainer() throws -> ModelContainer {
+        try Self.container.mainContext.delete(model: AppSettings.self)
+        return Self.container
     }
 
     @Test func completePersistsHasCompletedOnboarding() throws {

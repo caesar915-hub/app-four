@@ -3,15 +3,20 @@ import Testing
 import SwiftData
 @testable import app_four
 
+@Suite(.serialized)
 @MainActor
 struct RecordingApplySummaryTests {
-    let container: ModelContainer
+    private static let container: ModelContainer = {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try! ModelContainer(for: Recording.self, configurations: config)
+    }()
+
     let context: ModelContext
 
     init() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: Recording.self, configurations: config)
-        context = container.mainContext
+        context = Self.container.mainContext
+        try context.delete(model: Recording.self)
+        try context.delete(model: MedicationEvent.self)
     }
 
     private func makeResult(

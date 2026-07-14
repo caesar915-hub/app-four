@@ -3,19 +3,24 @@ import Testing
 import SwiftData
 @testable import app_four
 
+@Suite(.serialized)
 @MainActor
 struct RecordingDetailViewModelTests {
+    private static let container: ModelContainer = {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try! ModelContainer(for: Recording.self, configurations: config)
+    }()
+
     var viewModel: RecordingDetailViewModel
     var mocks: MockAppServices
     var store: RecordingStore
-    var container: ModelContainer
     var recording: Recording
 
     init() throws {
         TestSupport.useRealData()
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: Recording.self, configurations: config)
-        store = RecordingStore(context: container.mainContext)
+        let context = Self.container.mainContext
+        try context.delete(model: Recording.self)
+        store = RecordingStore(context: context)
         mocks = MockAppServices()
         recording = Recording(audioFileName: "test-026.m4a")
         store.context.insert(recording)

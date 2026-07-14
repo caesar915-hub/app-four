@@ -3,19 +3,25 @@ import SwiftData
 import Testing
 @testable import app_four
 
+@Suite(.serialized)
 @MainActor
 struct MedicationPickerViewModelTests {
 
-    private let container: ModelContainer
-    private let context: ModelContext
-
-    init() throws {
+    private static let container: ModelContainer = {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(
+        return try! ModelContainer(
             for: Recording.self, MedicationEvent.self, AppSettings.self,
             configurations: config
         )
-        context = container.mainContext
+    }()
+
+    private let context: ModelContext
+
+    init() throws {
+        context = Self.container.mainContext
+        try context.delete(model: Recording.self)
+        try context.delete(model: MedicationEvent.self)
+        try context.delete(model: AppSettings.self)
     }
 
     @Test func mergePutsCatalogFirstThenNovelHistory() {
