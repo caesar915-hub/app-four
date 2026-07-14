@@ -14,7 +14,15 @@ enum AppModelContainer {
             RecordingTag.self,
             MedicationEvent.self
         ])
-        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        // Under XCTest the host app's on-disk, seeded container would coexist with each
+        // test's own in-memory container (overlapping @Model types) and trap inside
+        // SwiftData. Keep the host container in-memory and unseeded during tests.
+        #if DEBUG
+        let underTest = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+        #else
+        let underTest = false
+        #endif
+        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: underTest)
         let storeDir = config.url.deletingLastPathComponent()
         // Pre-create Application Support so SwiftData doesn't log a wall of CoreData
         // diagnostic errors on first launch while it recovers the missing directory.
@@ -29,10 +37,12 @@ enum AppModelContainer {
             // Seed 10 days of dummy data on debug builds (simulator and device) when
             // the store is empty — so on-device test runs have content. Never in release.
             #if DEBUG
-            let context = c.mainContext
-            let fetchDescriptor = FetchDescriptor<Recording>()
-            if (try? context.fetchCount(fetchDescriptor)) == 0 {
-                MockDataGenerator.generate(context: context)
+            if !underTest {
+                let context = c.mainContext
+                let fetchDescriptor = FetchDescriptor<Recording>()
+                if (try? context.fetchCount(fetchDescriptor)) == 0 {
+                    MockDataGenerator.generate(context: context)
+                }
             }
             #endif
 
