@@ -4,10 +4,25 @@ import SwiftData
 @testable import app_four
 
 /// T012 (030 / US1) — full outcome + guard-evaluation matrix for `DoseLogService`.
-/// Isolated in-memory container per test (parallel-safe); real-data mode so the
-/// guard's `isMockData == false` fetch behaves.
+/// Real-data mode so the guard's `isMockData == false` fetch behaves.
+///
+/// One shared in-memory container for the whole suite: building a fresh
+/// `ModelContainer` per test (18 of them) accumulates in the host process and traps
+/// inside SwiftData under `xcodebuild test` (SIGTRAP; a single container is fine).
+/// `.serialized` so the shared store isn't raced; each test gets a fresh context and
+/// wipes the store first, so isolation holds without per-test container churn.
+@Suite(.serialized)
 @MainActor
 struct DoseLogServiceTests {
+
+    private static let container: ModelContainer = {
+        TestSupport.useRealData()
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try! ModelContainer(
+            for: Recording.self, MedicationEvent.self, AppSettings.self,
+            configurations: config
+        )
+    }()
 
     private func makeStore(
         mode: DoseGuardMode = .off,
@@ -15,13 +30,14 @@ struct DoseLogServiceTests {
         name: String? = "Elvanse",
         dose: String? = "30 mg"
     ) throws -> ModelContext {
-        TestSupport.useRealData()
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(
-            for: Recording.self, MedicationEvent.self, AppSettings.self,
-            configurations: config
-        )
-        let context = container.mainContext
+        // Use the container's own mainContext (autosave on) so the
+        // save-failure/orphan-insert test still exercises autosave semantics.
+        let context = Self.container.mainContext
+        // Wipe anything a prior test left on the shared in-memory store (.serialized
+        // guarantees no concurrent test is mid-run).
+        try context.delete(model: Recording.self)
+        try context.delete(model: MedicationEvent.self)
+        try context.delete(model: AppSettings.self)
         let settings = AppSettings()
         settings.defaultMedicationName = name
         settings.defaultMedicationDose = dose
@@ -226,8 +242,12 @@ struct DoseLogServiceTests {
         let context = try makeStore()
         let service = FailingSaveDoseLogService(context: context)
         _ = await service.logDefaultDose(now: .now)
-        #expect(context.insertedModelsArray.isEmpty,
-                "A dangling insert would be persisted by a later autosave — a silent success after a reported failure means a double log on retry")
+        // The failed log inserts then withdraws the event. Force the save that a later
+        // autosave would perform: if the insert had leaked, this resurrects it as a
+        // silent success (a double log on retry). Nothing must persist.
+        try? context.save()
+        #expect(try eventCount(context) == 0,
+                "a withdrawn insert must not be resurrected by a later autosave")
     }
 
     // MARK: - Guard failure semantics (SC-005: armed guard fails closed)
