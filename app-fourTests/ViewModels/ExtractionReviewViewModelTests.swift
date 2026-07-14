@@ -3,18 +3,25 @@ import Testing
 import SwiftData
 @testable import app_four
 
+@Suite(.serialized)
 @MainActor
 struct ExtractionReviewViewModelTests {
-    let container: ModelContainer
-    let store: RecordingStore
-
-    init() throws {
+    private static let container: ModelContainer = {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(
+        return try! ModelContainer(
             for: Recording.self, MedicationEvent.self, AppSettings.self,
             configurations: config
         )
-        store = RecordingStore(context: container.mainContext)
+    }()
+
+    let store: RecordingStore
+
+    init() throws {
+        let context = Self.container.mainContext
+        try context.delete(model: Recording.self)
+        try context.delete(model: MedicationEvent.self)
+        try context.delete(model: AppSettings.self)
+        store = RecordingStore(context: context)
     }
 
     private func makeRecording(title: String = "Voice Note", date: Date = Date()) -> Recording {

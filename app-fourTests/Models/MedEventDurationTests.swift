@@ -6,18 +6,24 @@ import SwiftData
 /// Per-med duration (Edit-sheet inline-expand) must flow from the `MedEvent` DTO through
 /// `Recording.setMedicationEvents` onto the materialized `MedicationEvent`, and fall back
 /// to the catalog/default when nil. (008 mockup-parity, FR-009 — the one sanctioned hook.)
+@Suite(.serialized)
 @MainActor
 struct MedEventDurationTests {
-    var container: ModelContainer
-    var context: ModelContext
-
-    init() throws {
+    private static let container: ModelContainer = {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(
+        return try! ModelContainer(
             for: Recording.self, MedicationEvent.self, AppSettings.self,
             configurations: config
         )
-        context = container.mainContext
+    }()
+
+    var context: ModelContext
+
+    init() throws {
+        context = Self.container.mainContext
+        try context.delete(model: Recording.self)
+        try context.delete(model: MedicationEvent.self)
+        try context.delete(model: AppSettings.self)
     }
 
     private func transcriptEvent(after meds: [MedEvent]) throws -> MedicationEvent? {
