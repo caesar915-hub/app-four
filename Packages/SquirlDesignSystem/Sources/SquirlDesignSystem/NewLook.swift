@@ -15,6 +15,9 @@ public enum NewLook {
     public static let card = Color(lightHex: "#FFFFFF", darkHex: "#1C1E19")
     /// Primary text.
     public static let inkPrimary = Color(lightHex: "#1C1B1F", darkHex: "#F2F3EE")
+    /// Inverse label — text/glyphs placed ON an `inkPrimary` fill (e.g. the check-in stop button's
+    /// dark capsule). The inverse of `inkPrimary`; ≈16:1 on that capsule in both light and dark.
+    public static let onInk = Color(lightHex: "#F2F3EE", darkHex: "#1C1B1F")
     /// Secondary text — labels, captions, unselected chip glyphs.
     /// Known limitation: the light value `#8A8A8E` is below WCAG AA (3.0:1 on `screen`, 3.4:1 on
     /// `card`) for normal-size body text — kept 1:1 with Figma by owner decision (2026-07-12, see

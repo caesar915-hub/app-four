@@ -167,7 +167,7 @@ struct MedicationLogSheet: View {
                             .padding(.horizontal, Spacing.m)
                             .padding(.vertical, Spacing.s)
                             .background(
-                                selected ? Palette.medication.opacity(0.25) : Color.secondary.opacity(0.15),
+                                selected ? Palette.medication.opacity(0.25) : NewLook.tintNeutral,
                                 in: .capsule
                             )
                             .overlay(Capsule().strokeBorder(

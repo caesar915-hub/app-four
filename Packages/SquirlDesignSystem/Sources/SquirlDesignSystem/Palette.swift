@@ -16,6 +16,8 @@ public enum Palette {
     /// Warning / caution accents and side-effect tags — a warm clay, not `systemOrange`.
     public static let warning = Color(lightHex: "#C2772E", darkHex: "#D98A3E")
     /// Sleep — a cool indigo, bluer than medication purple so the two never read as one.
-    /// Single, non-varying (the sleep 1→5 ramp is deferred).
-    public static let sleepIndigo = Color(hex: "#5566A6")
+    /// Single, non-varying (the sleep 1→5 ramp is deferred). The dark value is lightened to a
+    /// periwinkle so the sleep chip clears WCAG AA (~6.3:1) on the dark card; the base `#5566A6`
+    /// alone measured ≈3.15:1 there (spec-034 owner decision, 2026-07-15).
+    public static let sleepIndigo = Color(lightHex: "#5566A6", darkHex: "#8E9BD4")
 }

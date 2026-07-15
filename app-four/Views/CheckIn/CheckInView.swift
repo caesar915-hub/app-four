@@ -351,19 +351,19 @@ struct CheckInView: View {
         } label: {
             HStack(spacing: Spacing.s) {
                 if viewModel.state == .processing {
-                    ProgressView().tint(Theme.background)
+                    ProgressView().tint(NewLook.onInk)
                 } else {
                     RoundedRectangle(cornerRadius: Metrics.CheckIn.stopGlyphRadius)
-                        .fill(Theme.background)
+                        .fill(NewLook.onInk)
                         .frame(width: Metrics.CheckIn.stopGlyph, height: Metrics.CheckIn.stopGlyph)
                     Text("Stop & save").font(Typography.headline)
                 }
             }
-            .foregroundStyle(Theme.background)
+            .foregroundStyle(NewLook.onInk)
             .padding(.vertical, Spacing.m)
             .padding(.horizontal, Spacing.xxl)
             .frame(minHeight: Metrics.minTapTarget)
-            .background(Theme.textPrimary, in: Capsule())
+            .background(NewLook.inkPrimary, in: Capsule())
         }
         .buttonStyle(.plain)
         .disabled(viewModel.state == .processing)
