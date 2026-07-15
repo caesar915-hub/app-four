@@ -64,14 +64,24 @@ struct TimelineRow: View {
     }
 
     /// Mood word (24pt Bold, word colour) + time, as one concatenated `Text` so the space between
-    /// them is the break opportunity — the single-word mood label can never truncate.
+    /// them is the break opportunity — the single-word mood label can never truncate. When no mood
+    /// was extracted (a transcribing/pending or untagged check-in) the recording's `displayTitle`
+    /// takes the headline slot so the row still reads a status, never a bare timestamp (FR-017).
     private var headlineText: Text {
         let time = Text(node.time, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits))
             .font(Typography.text(13, relativeTo: .subheadline))
             .foregroundStyle(NewLook.inkSecondary)
-        guard let level else { return time }
-        let word = Text(level.displayLabel).font(Typography.moodWord).foregroundStyle(level.wordColor)
-        return Text("\(word)  \(time)")
+        if let level {
+            let word = Text(level.displayLabel).font(Typography.moodWord).foregroundStyle(level.wordColor)
+            return Text("\(word)  \(time)")
+        }
+        if let recording = node.recording {
+            let title = Text(recording.displayTitle)
+                .font(Typography.text(17, weight: .semibold, relativeTo: .body))
+                .foregroundStyle(NewLook.inkPrimary)
+            return Text("\(title)  \(time)")
+        }
+        return time   // dose-only node: no check-in, so the time alone is the headline
     }
 
     /// Outlined ⋯ circle (a01). Decorative — the whole row already opens the detail.
@@ -91,9 +101,6 @@ struct TimelineRow: View {
         let level: Int?
         let text: String
         let color: Color
-        /// Free-text chips (feelings/side-effects) can be long → allow them to truncate rather than
-        /// clip; short glyph chips keep their intrinsic width.
-        var truncatable = false
     }
 
     @ViewBuilder
@@ -114,7 +121,6 @@ struct TimelineRow: View {
                             .foregroundStyle(chip.color)
                             .lineLimit(1)
                     }
-                    .fixedSize(horizontal: !chip.truncatable, vertical: true)
                 }
             }
         }
@@ -139,11 +145,11 @@ struct TimelineRow: View {
         if let recording {
             let feelings = recording.feelings()
             if !feelings.shown.isEmpty {
-                c.append(Chip(kind: nil, level: nil, text: "♥ " + joined(feelings), color: NewLook.inkSecondary, truncatable: true))
+                c.append(Chip(kind: nil, level: nil, text: "♥ " + joined(feelings), color: NewLook.inkSecondary))
             }
             let sideEffects = recording.sideEffects()
             if !sideEffects.shown.isEmpty {
-                c.append(Chip(kind: nil, level: nil, text: joined(sideEffects), color: NewLook.inkSecondary, truncatable: true))
+                c.append(Chip(kind: nil, level: nil, text: joined(sideEffects), color: NewLook.inkSecondary))
             }
         }
         return c
@@ -166,7 +172,7 @@ struct TimelineRow: View {
     private var accessibilityLabel: String {
         var parts: [String] = []
         if let level { parts.append(level.displayLabel) }
-        parts.append(Self.timeFormatter.string(from: node.time))
+        parts.append(node.time.formatted(.dateTime.hour().minute(.twoDigits)))
         if let energy = node.recording?.energyLevel, !energy.isEmpty { parts.append(energy) }
         if let focus = node.recording?.focusLevel, !focus.isEmpty { parts.append(focus) }
         parts.append(contentsOf: distinctMedicationNames)
@@ -179,10 +185,4 @@ struct TimelineRow: View {
         }
         return parts.joined(separator: ", ")
     }
-
-    private static let timeFormatter: DateFormatter = {
-        let f = DateFormatter()
-        f.dateFormat = "HH:mm"
-        return f
-    }()
 }
