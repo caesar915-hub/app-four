@@ -56,6 +56,10 @@ import Foundation
         let footnote = Path.checkIn.footnote
         #expect(footnote.localizedCaseInsensitiveContains("expected"))
         #expect(footnote.localizedCaseInsensitiveContains("unlock"))
+        // A substring check for "expected" is also satisfied by "unexpected" — the exact
+        // apology/defect framing FR-020 forbids. Pin the negation out so a regression to
+        // "…on a locked phone this is unexpected…" fails instead of passing green.
+        #expect(!footnote.localizedCaseInsensitiveContains("unexpected"))
     }
 
     @Test func doneCopyNamesTheCorrectOutcomePerPath() {
