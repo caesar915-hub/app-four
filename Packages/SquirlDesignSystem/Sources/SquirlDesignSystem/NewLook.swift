@@ -29,6 +29,10 @@ public enum NewLook {
     public static let tintNeutral = Color(lightHex: "#ECEAE6", darkHex: "#272A22")
     /// Selection accent — filled selected chips (non-medication).
     public static let selection = Color(lightHex: "#54B492", darkHex: "#5FC49F")
+    /// Label on a selection/medication fill. White per Figma in light mode; in dark mode the
+    /// derived fills are light enough that white fails AA, so the label flips to dark ink
+    /// (~8:1 on `selection`, ~4.8:1 on `Palette.medication`). Owner decision 2026-07-16.
+    public static let onSelection = Color(lightHex: "#FFFFFF", darkHex: "#1C1B1F")
 }
 
 // MARK: - Card
@@ -71,13 +75,14 @@ public enum NewLookChipRole {
 
 public extension View {
     /// New Look pill/chip styling applied to a chip's label content: unselected = white fill +
-    /// hairline border + primary ink; selected = solid role fill + white label. Shape is a capsule
+    /// hairline border + primary ink; selected = solid role fill + `onSelection` label (white in
+    /// light, dark ink in dark — the derived dark fills are too light for white). Shape is a capsule
     /// (matches a03's 26pt pills). Pair with the caller's own `Button` + accessibility traits.
     func newLookChip(selected: Bool, role: NewLookChipRole = .standard) -> some View {
         self
             .font(Typography.caption)
             .fontWeight(.medium)
-            .foregroundStyle(selected ? .white : NewLook.inkPrimary)
+            .foregroundStyle(selected ? NewLook.onSelection : NewLook.inkPrimary)
             .padding(.horizontal, Spacing.m)
             .padding(.vertical, Spacing.s)
             .background(selected ? role.selectedFill : NewLook.card, in: .capsule)

@@ -300,10 +300,10 @@ struct ExtractionReviewView: View {
                 Button { viewModel.toggleMedTaken(med) } label: {
                     Text(med.taken ? "Taken" : "Missed")
                         .font(Typography.label)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(med.taken ? NewLook.onSelection : NewLook.inkPrimary)
                         .padding(.horizontal, Spacing.s)
                         .padding(.vertical, Spacing.xs)
-                        .background(med.taken ? Palette.medication : NewLook.inkSecondary, in: .capsule)
+                        .background(med.taken ? Palette.medication : NewLook.tintNeutral, in: .capsule)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Mark \(med.name) as taken or missed")

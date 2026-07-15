@@ -6,8 +6,10 @@ import SwiftUI
 /// no raw `.orange`/`.purple` literals leak into models or views.
 public enum Palette {
     /// Medication purple — the single medication hue (bar fill, capsule glyph, tags).
-    /// Paper & Pollen spec value; never `systemPurple`.
-    public static let medication = Color(lightHex: "#7E5CA8", darkHex: "#9277BE")
+    /// Paper & Pollen spec value; never `systemPurple`. Dark value nudged `#9277BE` → `#957BC1`
+    /// (2026-07-16) so 12pt purple text clears WCAG AA on the dark card (was 4.49:1, now ~4.7:1);
+    /// imperceptible hue shift, derived value — not Figma-locked.
+    public static let medication = Color(lightHex: "#7E5CA8", darkHex: "#957BC1")
     /// End-stop of the medication progress-track gradient (a01, node 308:1933). Figma's own
     /// `#AF99C3` is an unbound literal even in the source file; dark value is derived (no
     /// Figma dark variant exists) by lightening `medication`'s dark pairing the same way the

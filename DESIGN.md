@@ -120,7 +120,8 @@ in `SquirlDesignSystem/NewLook.swift`, additive to that retained `Theme` subset;
   | `NewLook.tintNeutral` | `#ECEAE6` | `#272A22` | grooves / tracks / segmented-control fills / unselected med chip (T044) |
   | `NewLook.selection` | `#54B492` | `#5FC49F` | selected chip fill (non-medication) |
   | `NewLook.onInk` | `#F2F3EE` | `#1C1B1F` | inverse label on an `inkPrimary` fill (stop button, T043) |
-  | (medication) | `#7E5CA8` | `#9277BE` | reuses `Palette.medication`, never redefined |
+  | `NewLook.onSelection` | `#FFFFFF` | `#1C1B1F` | label on a selection/medication fill (white per Figma in light; dark ink in dark for AA) |
+  | (medication) | `#7E5CA8` | `#957BC1` | reuses `Palette.medication`; dark nudged from `#9277BE` for AA text on the dark card (2026-07-16) |
   | `Palette.medicationFillEnd` | `#AF99C3` | `#B3A1D6` | light end of the med-bar dose-track gradient |
   | `Palette.sleepIndigo` | `#5566A6` | `#8E9BD4` | sleep chip/text; dark variant lightened for AA on the dark card (2026-07-15) |
 
@@ -131,12 +132,21 @@ in `SquirlDesignSystem/NewLook.swift`, additive to that retained `Theme` subset;
   > token in light mode does not clear AA; accept as a documented limitation, not a bug. Revisit
   > only with explicit approval to deviate from Figma (a compliant value is ~`#6C6C70`).
 
+  > **Known contrast limitation (`NewLook.selection`, light mode):** the Figma green `#54B492`
+  > measures **2.52:1** on white — below AA for the white chip label (4.5:1), for green text on
+  > the card (Save/Cancel pills, synonym line), and for the ramp-picker selection ring's 3:1
+  > non-text floor; the dose-track gradient end `#AF99C3` is **2.14:1** against its groove.
+  > All four are Figma 1:1 values kept **by owner decision (2026-07-16)** — same ruling as
+  > `inkSecondary`. Dark mode is unaffected: the dark values are derived, and every derived-value
+  > failure was fixed the same day (`onSelection` dark ink label, medication dark nudge).
+
 - **Cards** — `.newLookCard()`: white, **radius 20** (`Radius.newLookCard`), **no border** (contrast
   with `.card()`'s bordered radius-16), two-layer shadow — `0.05`-opacity black offset `(0, 2)`
   radius `8` + `0.03`-opacity black offset `(0, 1)` radius `2` (replaces the earlier single-layer
   approximation). 16px screen gutter.
 - **Chips/pills** — `.newLookChip(selected:role:)`: unselected = white + hairline + ink; selected =
-  solid `selection` (or `Palette.medication` for `role == .medication`) + white label; capsule.
+  solid `selection` (or `Palette.medication` for `role == .medication`) + `onSelection` label
+  (white in light per Figma; dark ink in dark for AA); capsule.
 - **Nav** — `NewLookNavBar`: leading pill · **centered title** (ZStack, width-independent) · trailing pill.
 - **Typography** — native SF (unchanged rule); the Figma Inter ramp maps to existing `Typography`
   roles (headers → `.headline`, body → `.callout`, eyebrows → `.label`, 24pt nav title via
@@ -147,6 +157,7 @@ in `SquirlDesignSystem/NewLook.swift`, additive to that retained `Theme` subset;
 ## Decisions Log
 | Date | Decision | Rationale |
 |------|----------|-----------|
+| 2026-07-16 | Contrast ruling on the spec-033 review's 8 WCAG findings: **fix derived dark-mode values, keep Figma-locked light values 1:1 and log them** | Figma specs light only; dark is derived, so fixing it isn't a deviation. Fixed: `onSelection` label token (dark ink on selection/medication fills in dark), medication dark `#9277BE`→`#957BC1`, Taken/Missed toggle re-grammar (`tintNeutral`+ink). Kept+logged: selection-green light family (chip label 2.52:1, green-on-white text, ramp ring, gradient/groove 2.14:1) — see palette note. |
 | 2026-07-12 | Keep `NewLook.inkSecondary` at Figma value `#8A8A8E` despite light-mode WCAG AA failure (3.0:1 sage / 3.4:1 white, need 4.5:1) | Owner chose Figma fidelity over the contrast fix when the spec-033 accessibility audit surfaced it app-wide. Documented as a known limitation (see palette note above); dark mode unaffected (~7:1). A compliant alternative (~`#6C6C70`) is on record if revisited. |
 | 2026-07-11 | Adopt "New Look" as the app-wide visual language (spec 033), superseding spec 032's two-screen pilot scope | Two-screen pilot (Edit check-in, Recording detail) validated the language; owner approved app-wide rollout. `Theme` retained only for accent/meadow/status/danger semantic colours — every other screen migrates to `NewLook.screen` / `NewLook.card` / `.newLookCard()`. |
 | 2026-07-10 | Adopt "New Look" as a second visual language for Edit check-in + Recording detail (spec 032); dark tokens derived now; mixed P&P/New-Look shipped, no toggle | Owner adoption call after the Figma a-screens reached presentation grade; two lowest-risk screens prove the language before wider rollout. Calendar (a01) gated on spec-029. |
