@@ -7,7 +7,10 @@ import SwiftUI
 /// an antenna tip. Pure guidance, no journal behavior — view-only per Constitution X;
 /// correctness is the build + device QA (quickstart S21–S24), so no unit tasks.
 struct StickerSetupView: View {
-    private enum StickerPath: String, CaseIterable, Identifiable {
+    /// Internal (not `private`) so `StickerSetupViewTests` can exercise the copy
+    /// contract directly — this enum holds the entire D12/FR-020 honesty guarantee
+    /// and has no SwiftUI dependency of its own.
+    enum StickerPath: String, CaseIterable, Identifiable {
         case dose, checkIn
         var id: String { rawValue }
         var label: String { self == .dose ? "Dose sticker" : "Check-in sticker" }
