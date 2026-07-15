@@ -1,14 +1,8 @@
 import SwiftUI
 
 /// Retained from the retired Paper & Pollen system: semantic colours with no New Look
-/// equivalent (spec-033), plus `background`/`textPrimary` pending T043's owner decision
-/// on `CheckInView.swift`'s stopButton inverted-contrast pairing — do not delete those two
-/// until that decision lands and the last consumer migrates.
+/// equivalent (spec-033).
 public enum Theme {
-    // MARK: - Pending T043 (spec-033 owner decision)
-    public static let background = Color(lightHex: "#F6F1E7", darkHex: "#14130F")
-    public static let textPrimary = Color(lightHex: "#221E16", darkHex: "#F3EEE0")
-
     // MARK: - Accent + Meadow
     /// Bronze accent — links, focus, the "current" ring.
     public static let accent = Color(lightHex: "#B8842A", darkHex: "#D4A24A")

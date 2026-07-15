@@ -72,7 +72,7 @@ struct MedicationLogSheet: View {
                 .foregroundStyle(NewLook.inkSecondary)
             VStack(spacing: 0) {
                 medicationChips
-                NewLook.hairline
+                Divider().overlay(NewLook.hairline)
                 TextField("Name", text: $name)
                     .autocorrectionDisabled()
                     .font(Typography.body)
@@ -98,7 +98,7 @@ struct MedicationLogSheet: View {
                     .foregroundStyle(NewLook.inkPrimary)
                     .padding(.horizontal, Spacing.m)
                     .padding(.vertical, Spacing.s)
-                    NewLook.hairline
+                    Divider().overlay(NewLook.hairline)
                     HStack {
                         Text("Onset").font(Typography.body).foregroundStyle(NewLook.inkPrimary)
                         Spacer()

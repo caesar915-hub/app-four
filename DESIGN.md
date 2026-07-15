@@ -117,9 +117,12 @@ in `SquirlDesignSystem/NewLook.swift`, additive to that retained `Theme` subset;
   | `NewLook.inkPrimary` | `#1C1B1F` | `#F2F3EE` | primary text |
   | `NewLook.inkSecondary` | `#8A8A8E` | `#9BA09A` | secondary text / labels |
   | `NewLook.hairline` | `#DBDDDE` | `#33362F` | chip / field borders |
-  | `NewLook.tintNeutral` | `#ECEAE6` | `#272A22` | grooves / tracks / segmented-control fills |
+  | `NewLook.tintNeutral` | `#ECEAE6` | `#272A22` | grooves / tracks / segmented-control fills / unselected med chip (T044) |
   | `NewLook.selection` | `#54B492` | `#5FC49F` | selected chip fill (non-medication) |
+  | `NewLook.onInk` | `#F2F3EE` | `#1C1B1F` | inverse label on an `inkPrimary` fill (stop button, T043) |
   | (medication) | `#7E5CA8` | `#9277BE` | reuses `Palette.medication`, never redefined |
+  | `Palette.medicationFillEnd` | `#AF99C3` | `#B3A1D6` | light end of the med-bar dose-track gradient |
+  | `Palette.sleepIndigo` | `#5566A6` | `#8E9BD4` | sleep chip/text; dark variant lightened for AA on the dark card (2026-07-15) |
 
   > **Known contrast limitation (`NewLook.inkSecondary`, light mode):** `#8A8A8E` measures **3.0:1**
   > on `screen` and **3.4:1** on `card` — below WCAG AA's 4.5:1 floor for normal-size body text

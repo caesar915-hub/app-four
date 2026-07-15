@@ -34,8 +34,6 @@ struct RootTabView: View {
                 .tag(Tab.settings)
         }
         .tint(Theme.meadowGreen)
-        .toolbarBackground(NewLook.screen, for: .tabBar)
-        .toolbarBackgroundVisibility(.visible, for: .tabBar)
     }
 }
 

@@ -34,14 +34,20 @@ public enum NewLook {
 // MARK: - Card
 
 public extension View {
-    /// New Look card: white surface, radius 20, soft shadow, **no border**. Spec 033 makes New
-    /// Look the app-wide look; `.card()` / `Theme` are retained only for the semantic-color set
-    /// (accent/meadow/status/danger). `RecordingRow` and `MedicationBarView` are no longer
-    /// permanent `.card()` consumers — they migrate to `.newLookCard()` under spec-033.
+    /// New Look card: white surface, radius 20, soft shadow, **no border** — the app-wide
+    /// card treatment since spec 033.
     func newLookCard(padding: CGFloat = Spacing.l) -> some View {
         self
             .padding(padding)
             .background(NewLook.card, in: .rect(cornerRadius: Radius.newLookCard))
+            .newLookCardShadow()
+    }
+
+    /// The New Look card elevation — the canonical two-layer soft shadow. For full-bleed cards
+    /// that manage their own background/clip (e.g. `DayCard`) and can't take `newLookCard()`'s
+    /// padding; every card surface must source its shadow here, never inline the literals.
+    func newLookCardShadow() -> some View {
+        self
             .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
             .shadow(color: .black.opacity(0.03), radius: 2, x: 0, y: 1)
     }
