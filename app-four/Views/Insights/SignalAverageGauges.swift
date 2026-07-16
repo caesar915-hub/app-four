@@ -129,9 +129,9 @@ private struct TickLines: View {
 
 #Preview {
     let averages: [SignalAverage] = [
-        SignalAverage(kind: .mood,   fillLabel: "Okay+",  caption: "between Okay & Good", fraction: 0.70),
-        SignalAverage(kind: .energy, fillLabel: "Steady",  caption: "Steady on average",   fraction: 0.60),
-        SignalAverage(kind: .focus,  fillLabel: "—",       caption: "",                    fraction: 0.00),
+        SignalAverage(kind: .mood,   fillLabel: "Okay+",  caption: "between Okay & Good", fraction: 0.70, level: 3),
+        SignalAverage(kind: .energy, fillLabel: "Steady",  caption: "Steady on average",   fraction: 0.60, level: 3),
+        SignalAverage(kind: .focus,  fillLabel: "—",       caption: "",                    fraction: 0.00, level: 0),
     ]
     SignalAverageGauges(averages: averages)
         .padding()
