@@ -105,7 +105,7 @@ struct TextCheckInComposer: View {
                     Haptics.error()
                 }
             }
-            .buttonStyle(.primary)
+            .buttonStyle(.checkInPrimary)
             .disabled(draft.isEmpty)
 
             if showSaveFailed {

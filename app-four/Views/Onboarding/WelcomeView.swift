@@ -55,7 +55,7 @@ struct WelcomeView: View {
             Spacer(minLength: Spacing.section)
 
             Button("Start", action: start)
-                .buttonStyle(.primary)
+                .buttonStyle(.checkInPrimary)
                 .accessibilityHint("Opens your check-in")
         }
         .padding(.horizontal, Spacing.xxl)

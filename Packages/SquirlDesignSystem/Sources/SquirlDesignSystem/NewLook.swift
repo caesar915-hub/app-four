@@ -33,10 +33,15 @@ public enum NewLook {
     /// derived fills are light enough that white fails AA, so the label flips to dark ink
     /// (~8:1 on `selection`, ~4.8:1 on `Palette.medication`). Owner decision 2026-07-16.
     public static let onSelection = Color(lightHex: "#FFFFFF", darkHex: "#1C1B1F")
-    /// Soft end-stop of the check-in ring gradient (a04/a05, spec 036) — pinned from the
-    /// canvas render (`#96C19F` at the ring's bottom); dark value derived by the same
-    /// lighten-toward-surface move the other soft partners use. Ring-gradient scope only.
-    public static let selectionSoft = Color(lightHex: "#96C19F", darkHex: "#86BC9D")
+    /// Capture-flow accent (check-in · onboarding · recording-detail edit) — the day check-in
+    /// card's "Good"-mood green (`MoodLevel.good` base `#5FB36E`), adopted as the single green
+    /// for those three surfaces by owner decision 2026-07-16. Dark value derived (lifted toward
+    /// the dark surface for legibility); validate at device QA. Deliberately scoped: selected
+    /// chips elsewhere keep `selection`, and other primary buttons keep the meadow gradient.
+    public static let checkInGreen = Color(lightHex: "#5FB36E", darkHex: "#6FC47E")
+    /// Soft end-stop of the check-in ring gradient (a04/a05) — the light green partner paired
+    /// with `checkInGreen` at the ring's bottom. Ring-gradient scope only.
+    public static let checkInGreenSoft = Color(lightHex: "#96C19F", darkHex: "#86BC9D")
 }
 
 // MARK: - Card
@@ -68,11 +73,15 @@ public extension View {
 public enum NewLookChipRole {
     case standard
     case medication
+    /// Capture-flow chips (check-in · recording-detail edit) — fill with `checkInGreen` instead
+    /// of the app-wide `selection`, so those surfaces read one green without shifting Insights.
+    case checkIn
 
     var selectedFill: Color {
         switch self {
         case .standard:   NewLook.selection
         case .medication: Palette.medication
+        case .checkIn:    NewLook.checkInGreen
         }
     }
 }

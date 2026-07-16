@@ -64,7 +64,7 @@ struct ExtractionReviewView: View {
         } label: {
             Image(systemName: "chevron.backward")
                 .font(Typography.headline)
-                .foregroundStyle(NewLook.selection)
+                .foregroundStyle(NewLook.checkInGreen)
                 .frame(width: 44, height: 44)
                 .background(NewLook.card, in: .circle)
         }
@@ -75,7 +75,7 @@ struct ExtractionReviewView: View {
         Button(action: save) {
             Text("Save")
                 .font(Typography.headline)
-                .foregroundStyle(NewLook.selection)
+                .foregroundStyle(NewLook.checkInGreen)
                 .padding(.horizontal, Spacing.l)
                 .frame(height: 44)
                 .background(NewLook.card, in: .capsule)
@@ -107,7 +107,7 @@ struct ExtractionReviewView: View {
     @ViewBuilder
     private func synonym(_ name: String?, _ syn: String?) -> some View {
         if let name {
-            let nameText = Text(name).font(Typography.caption.weight(.semibold)).foregroundStyle(NewLook.selection)
+            let nameText = Text(name).font(Typography.caption.weight(.semibold)).foregroundStyle(NewLook.checkInGreen)
             let synText = Text(syn.map { " · \($0)" } ?? "").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
             Text("\(nameText)\(synText)")
         }
@@ -152,18 +152,18 @@ struct ExtractionReviewView: View {
         VStack(alignment: .leading, spacing: Spacing.m) {
             cardHeader("Signals")
             signalRow("MOOD", ramp: {
-                GlyphRampPicker(kind: .mood, selection: moodBinding, ringTint: NewLook.selection)
+                GlyphRampPicker(kind: .mood, selection: moodBinding, ringTint: NewLook.checkInGreen)
             }, value: {
                 let level = MoodLevel(rawValue: viewModel.mood)
                 synonym(level?.displayLabel, level?.subtitle)
             })
             signalRow("ENERGY", ramp: {
-                GlyphRampPicker(kind: .energy, selection: energyBinding, ringTint: NewLook.selection)
+                GlyphRampPicker(kind: .energy, selection: energyBinding, ringTint: NewLook.checkInGreen)
             }, value: {
                 synonym(viewModel.energy?.displayLabel, viewModel.energy?.subtitle)
             })
             signalRow("FOCUS", ramp: {
-                GlyphRampPicker(kind: .focus, selection: focusBinding, ringTint: NewLook.selection)
+                GlyphRampPicker(kind: .focus, selection: focusBinding, ringTint: NewLook.checkInGreen)
             }, value: {
                 synonym(viewModel.focus?.displayLabel, viewModel.focus?.subtitle)
             })
@@ -224,8 +224,9 @@ struct ExtractionReviewView: View {
         .newLookCard()
     }
 
-    /// A New Look selectable chip (standard selection green). Tapping toggles via `action`.
-    private func chipButton(_ text: String, selected: Bool, role: NewLookChipRole = .standard, action: @escaping () -> Void) -> some View {
+    /// A New Look selectable chip (capture-flow green by default; medication chips pass `.medication`).
+    /// Tapping toggles via `action`.
+    private func chipButton(_ text: String, selected: Bool, role: NewLookChipRole = .checkIn, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Text(text).newLookChip(selected: selected, role: role)
         }
@@ -256,7 +257,7 @@ struct ExtractionReviewView: View {
         .padding(.horizontal, Spacing.m)
         .padding(.vertical, Spacing.s)
         .background(NewLook.card, in: .capsule)
-        .overlay(Capsule().strokeBorder(isCustomHours ? NewLook.selection : NewLook.hairline, lineWidth: 1))
+        .overlay(Capsule().strokeBorder(isCustomHours ? NewLook.checkInGreen : NewLook.hairline, lineWidth: 1))
         .accessibilityLabel("Custom sleep hours")
     }
 

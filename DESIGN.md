@@ -121,6 +121,8 @@ in `SquirlDesignSystem/NewLook.swift`, additive to that retained `Theme` subset;
   | `NewLook.selection` | `#54B492` | `#5FC49F` | selected chip fill (non-medication) |
   | `NewLook.onInk` | `#F2F3EE` | `#1C1B1F` | inverse label on an `inkPrimary` fill (stop button, T043) |
   | `NewLook.onSelection` | `#FFFFFF` | `#1C1B1F` | label on a selection/medication fill (white per Figma in light; dark ink in dark for AA) |
+  | `NewLook.checkInGreen` | `#5FB36E` | `#6FC47E` | capture-flow accent — check-in · onboarding · recording-detail **edit** (the day-card "Good"-mood green; **scoped, not app-wide**, 2026-07-16) |
+  | `NewLook.checkInGreenSoft` | `#96C19F` | `#86BC9D` | soft partner at the check-in ring gradient's bottom (was `selectionSoft`) |
   | (medication) | `#7E5CA8` | `#957BC1` | reuses `Palette.medication`; dark nudged from `#9277BE` for AA text on the dark card (2026-07-16) |
   | `Palette.medicationFillEnd` | `#AF99C3` | `#B3A1D6` | light end of the med-bar dose-track gradient |
   | `Palette.sleepIndigo` | `#5566A6` | `#8E9BD4` | sleep chip/text; dark variant lightened for AA on the dark card (2026-07-15) |
@@ -145,8 +147,8 @@ in `SquirlDesignSystem/NewLook.swift`, additive to that retained `Theme` subset;
   radius `8` + `0.03`-opacity black offset `(0, 1)` radius `2` (replaces the earlier single-layer
   approximation). 16px screen gutter.
 - **Chips/pills** — `.newLookChip(selected:role:)`: unselected = white + hairline + ink; selected =
-  solid `selection` (or `Palette.medication` for `role == .medication`) + `onSelection` label
-  (white in light per Figma; dark ink in dark for AA); capsule.
+  solid `selection` (or `Palette.medication` for `.medication`, `checkInGreen` for `.checkIn` on the
+  capture-flow surfaces) + `onSelection` label (white in light per Figma; dark ink in dark for AA); capsule.
 - **Nav** — `NewLookNavBar`: leading pill · **centered title** (ZStack, width-independent) · trailing pill.
 - **Typography** — native SF (unchanged rule); the Figma Inter ramp maps to existing `Typography`
   roles (headers → `.headline`, body → `.callout`, eyebrows → `.label`, 24pt nav title via
@@ -157,6 +159,7 @@ in `SquirlDesignSystem/NewLook.swift`, additive to that retained `Theme` subset;
 ## Decisions Log
 | Date | Decision | Rationale |
 |------|----------|-----------|
+| 2026-07-16 | Capture-flow surfaces (check-in · onboarding · recording-detail **edit**) adopt one green — `NewLook.checkInGreen` `#5FB36E`, the day-card "Good"-mood green — replacing the mint `selection` + meadow-gradient mix | Owner wanted these three to match the day check-in card, which has no fixed green (mood ramp), so its "Good" green was chosen. **Scoped, not app-wide** (owner call): new token + `.checkIn` chip role + `CheckInPrimaryButtonStyle` (green-only gradient); Insights chips and other primary buttons keep `selection`/meadow. `selectionSoft` → `checkInGreenSoft`. Landed straight to `main` per owner. |
 | 2026-07-16 | Contrast ruling on the spec-033 review's 8 WCAG findings: **fix derived dark-mode values, keep Figma-locked light values 1:1 and log them** | Figma specs light only; dark is derived, so fixing it isn't a deviation. Fixed: `onSelection` label token (dark ink on selection/medication fills in dark), medication dark `#9277BE`→`#957BC1`, Taken/Missed toggle re-grammar (`tintNeutral`+ink). Kept+logged: selection-green light family (chip label 2.52:1, green-on-white text, ramp ring, gradient/groove 2.14:1) — see palette note. |
 | 2026-07-12 | Keep `NewLook.inkSecondary` at Figma value `#8A8A8E` despite light-mode WCAG AA failure (3.0:1 sage / 3.4:1 white, need 4.5:1) | Owner chose Figma fidelity over the contrast fix when the spec-033 accessibility audit surfaced it app-wide. Documented as a known limitation (see palette note above); dark mode unaffected (~7:1). A compliant alternative (~`#6C6C70`) is on record if revisited. |
 | 2026-07-11 | Adopt "New Look" as the app-wide visual language (spec 033), superseding spec 032's two-screen pilot scope | Two-screen pilot (Edit check-in, Recording detail) validated the language; owner approved app-wide rollout. `Theme` retained only for accent/meadow/status/danger semantic colours — every other screen migrates to `NewLook.screen` / `NewLook.card` / `.newLookCard()`. |

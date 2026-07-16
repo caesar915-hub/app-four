@@ -213,7 +213,7 @@ struct CheckInView: View {
             .foregroundStyle(NewLook.onSelection)
             .padding(.horizontal, Spacing.xl)
             .frame(minHeight: 48)
-            .background(NewLook.selection, in: Capsule())
+            .background(NewLook.checkInGreen, in: Capsule())
             .newLookCardShadow()
         }
         .buttonStyle(.plain)
@@ -307,7 +307,7 @@ struct CheckInView: View {
                 Capsule()
                     .fill(NewLook.tintNeutral)
                 Capsule()
-                    .fill(NewLook.selection)
+                    .fill(NewLook.checkInGreen)
                     .frame(width: geo.size.width * viewModel.promptProgress)
                     .animation(reduceMotion ? nil : .linear(duration: 0.1), value: viewModel.promptProgress)
                     // New identity per prompt so the per-window reset snaps to 0
@@ -351,7 +351,7 @@ struct CheckInView: View {
             ForEach(0..<CheckInViewModel.nudgePrompts.count, id: \.self) { index in
                 Circle()
                     .fill(index == viewModel.currentPromptIndex
-                          ? NewLook.selection
+                          ? NewLook.checkInGreen
                           : NewLook.inkSecondary.opacity(0.3))
                     .frame(width: Metrics.CheckIn.promptDot, height: Metrics.CheckIn.promptDot)
             }
@@ -377,7 +377,7 @@ struct CheckInView: View {
             .padding(.vertical, Spacing.m)
             .padding(.horizontal, Spacing.xxl)
             .frame(minHeight: Metrics.minTapTarget)
-            .background(NewLook.selection, in: Capsule())
+            .background(NewLook.checkInGreen, in: Capsule())
         }
         .buttonStyle(.plain)
         .disabled(viewModel.state == .processing)
@@ -434,7 +434,7 @@ private struct CheckInSavedView: View {
             Spacer()
             ZStack {
                 Circle()
-                    .fill(NewLook.selection)
+                    .fill(NewLook.checkInGreen)
                     .frame(width: Metrics.CheckIn.savedDisc, height: Metrics.CheckIn.savedDisc)
                     .newLookCardShadow()
                 Image(systemName: "checkmark")
@@ -461,7 +461,7 @@ private struct CheckInSavedView: View {
                     .font(Typography.headline)
                     .foregroundStyle(NewLook.onSelection)
                     .frame(maxWidth: .infinity, minHeight: 50)
-                    .background(NewLook.selection, in: Capsule())
+                    .background(NewLook.checkInGreen, in: Capsule())
             }
             .buttonStyle(.plain)
             .padding(.bottom, Spacing.hero)

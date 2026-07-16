@@ -24,29 +24,8 @@ struct ModelDownloadRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.s) {
-            HStack {
-                Label(title, systemImage: icon)
-                    .font(Typography.body)
-                Spacer()
-                trailingStatus
-            }
-
-            if hasError, let errorMessage {
-                errorBlock(errorMessage)
-            } else if !isInstalled && !isDownloading {
-                Text("~150 MB · Wi-Fi recommended")
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkSecondary)
-            }
-        }
-        .contentShape(.rect)
-        .onTapGesture {
-            guard !isDownloading, !hasError else { return }
-            if isInstalled {
-                showingActions = true
-            } else {
-                onDownload()
-            }
+            mainRow
+            subline
         }
         .confirmationDialog(
             "\(title) Options",
@@ -56,10 +35,53 @@ struct ModelDownloadRow: View {
             Button("Delete Model", role: .destructive, action: onDelete)
             Button("Cancel", role: .cancel) {}
         }
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel(accessibilityLabel)
-        .accessibilityAddTraits(.isButton)
-        .accessibilityActions { accessibilityActions }
+    }
+
+    /// The install switch mirrors the *filesystem* truth (`isInstalled`) and drives the existing
+    /// download / delete actions — this flips the visual, not the behavior. ON downloads at once;
+    /// OFF opens the same delete confirmation, and because the binding reads `isInstalled`
+    /// (unchanged until the user confirms), cancelling the dialog leaves the switch on.
+    private var installBinding: Binding<Bool> {
+        Binding(
+            get: { isInstalled },
+            set: { wantsInstalled in
+                if wantsInstalled { onDownload() } else { showingActions = true }
+            }
+        )
+    }
+
+    @ViewBuilder
+    private var mainRow: some View {
+        if isDownloading || hasError {
+            HStack {
+                Label(title, systemImage: icon)
+                    .font(Typography.body)
+                Spacer()
+                trailingStatus
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel(accessibilityLabel)
+            .accessibilityActions { accessibilityActions }
+        } else {
+            Toggle(isOn: installBinding) {
+                Label(title, systemImage: icon)
+                    .font(Typography.body)
+            }
+            .accessibilityHint(isInstalled
+                ? "Removes the on-device transcription model"
+                : "Downloads the on-device transcription model, about 150 megabytes")
+        }
+    }
+
+    @ViewBuilder
+    private var subline: some View {
+        if hasError, let errorMessage {
+            errorBlock(errorMessage)
+        } else if !isInstalled && !isDownloading {
+            Text("~150 MB · Wi-Fi recommended")
+                .font(Typography.caption)
+                .foregroundStyle(NewLook.inkSecondary)
+        }
     }
 
     @ViewBuilder
