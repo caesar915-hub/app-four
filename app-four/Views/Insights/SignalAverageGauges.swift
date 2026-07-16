@@ -12,7 +12,6 @@ struct SignalAverageGauges: View {
                 GaugeColumn(average: avg)
             }
         }
-        .padding(.horizontal, Spacing.l)
         .accessibilityElement(children: .contain)
     }
 }

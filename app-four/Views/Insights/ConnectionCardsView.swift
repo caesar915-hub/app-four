@@ -12,7 +12,6 @@ struct ConnectionCardsView: View {
                 ConnectionCard(connection: connection)
             }
         }
-        .padding(.horizontal, Spacing.l)
         .accessibilityElement(children: .contain)
     }
 }

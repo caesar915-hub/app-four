@@ -21,7 +21,6 @@ struct DailyRhythmMatrix: View {
                         .multilineTextAlignment(.center)
                 }
             }
-            .padding(.horizontal, Spacing.l)
 
             ForEach(matrix, id: \.kind) { row in
                 HStack(spacing: 0) {
@@ -36,7 +35,6 @@ struct DailyRhythmMatrix: View {
                             .frame(maxWidth: .infinity)
                     }
                 }
-                .padding(.horizontal, Spacing.l)
             }
         }
         .accessibilityElement(children: .contain)

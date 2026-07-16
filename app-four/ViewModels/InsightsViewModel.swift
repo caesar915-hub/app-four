@@ -6,16 +6,6 @@ import SwiftUI
 @MainActor
 final class InsightsViewModel {
 
-    struct CalendarDay: Identifiable {
-        var id: Date { date }
-        let date: Date
-        let isCurrentMonth: Bool
-        let recordings: [Recording]
-
-        var dominantColor: Color? { recordings.first?.moodColor }
-        var hasEntries: Bool { !recordings.isEmpty }
-    }
-
     var currentMonth: Date = Date()
 
     @ObservationIgnored private let store: RecordingStore
