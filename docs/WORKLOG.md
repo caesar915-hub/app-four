@@ -1,4 +1,22 @@
-# WORKLOG
+## 2026-07-16 20:56–20:58 · DEVLOG/BACKLOG for capture-green + whisper toggle (81ce578c) · main
+
+**Code changes**
+- _Major (feat)_
+  - `81ce578c` feat: unify capture-flow green (#5FB36E) + whisper install toggle
+- _docs_
+  - `c2322336` docs: DEVLOG/BACKLOG for capture-green + whisper toggle (81ce578c)
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                          c2322336 [main]
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                      575d8902 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                      a490bbab [feat/036-newlook-checkin-insights]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents        9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4            f96bf1f1 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals 5db316a6 [feat/healthkit-signals]
+```
+
+---
 
 ## 2026-07-10 14:43 – 2026-07-16 19:46 · Merge feat/033-036: app-wide New Look migration, DayCard a01 · main
 
