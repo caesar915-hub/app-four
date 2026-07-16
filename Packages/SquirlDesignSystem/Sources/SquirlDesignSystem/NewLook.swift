@@ -33,6 +33,10 @@ public enum NewLook {
     /// derived fills are light enough that white fails AA, so the label flips to dark ink
     /// (~8:1 on `selection`, ~4.8:1 on `Palette.medication`). Owner decision 2026-07-16.
     public static let onSelection = Color(lightHex: "#FFFFFF", darkHex: "#1C1B1F")
+    /// Soft end-stop of the check-in ring gradient (a04/a05, spec 036) — pinned from the
+    /// canvas render (`#96C19F` at the ring's bottom); dark value derived by the same
+    /// lighten-toward-surface move the other soft partners use. Ring-gradient scope only.
+    public static let selectionSoft = Color(lightHex: "#96C19F", darkHex: "#86BC9D")
 }
 
 // MARK: - Card

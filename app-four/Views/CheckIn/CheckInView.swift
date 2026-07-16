@@ -173,7 +173,7 @@ struct CheckInView: View {
                 .textCase(.uppercase)
                 .foregroundStyle(NewLook.inkSecondary)
             Text("How do you feel?")
-                .font(Typography.title)
+                .font(Typography.text(24, weight: .bold, relativeTo: .title2))
                 .foregroundStyle(NewLook.inkPrimary)
                 .multilineTextAlignment(.center)
                 .accessibilityAddTraits(.isHeader)
@@ -210,23 +210,28 @@ struct CheckInView: View {
                 Image(systemName: "mic.fill")
                 Text("Speak check-in").font(Typography.headline)
             }
-            .foregroundStyle(.white)
-            .frame(width: 220)
-            .padding(.vertical, Spacing.l)
-            .background(Theme.meadowGradient, in: RoundedRectangle(cornerRadius: Radius.button))
-            .shadow(color: Theme.meadowAmber.opacity(0.34), radius: 12, y: 5)
+            .foregroundStyle(NewLook.onSelection)
+            .padding(.horizontal, Spacing.xl)
+            .frame(minHeight: 48)
+            .background(NewLook.selection, in: Capsule())
+            .newLookCardShadow()
         }
         .buttonStyle(.plain)
         .accessibilityLabel("Start voice check-in")
     }
 
+    /// White hub pill (a04): card capsule + soft shadow, hugging its content — the calm
+    /// secondary actions flanking the solid-green speak pill.
     private func hubOption(_ label: String, icon: String, tint: Color?, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: Spacing.s) {
                 Image(systemName: icon).foregroundStyle(tint ?? NewLook.inkPrimary)
                 Text(label).font(Typography.headline).foregroundStyle(NewLook.inkPrimary)
             }
-            .frame(width: 220, height: Metrics.minTapTarget)
+            .padding(.horizontal, Spacing.xl)
+            .frame(minHeight: Metrics.minTapTarget)
+            .background(NewLook.card, in: Capsule())
+            .newLookCardShadow()
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
@@ -234,12 +239,13 @@ struct CheckInView: View {
 
     // MARK: Recording chrome
 
+    /// a05 prompt card: bar + question + hint + dots on one white New Look card.
     private var recordingHeader: some View {
-        VStack(spacing: Spacing.xl) {
+        VStack(spacing: Spacing.m) {
             promptProgressBar
             heroPrompt
-                .padding(.horizontal, Spacing.l)
         }
+        .newLookCard()
     }
 
     /// The timer + controls that sit over the anchored crescent while recording; a save failure
@@ -270,11 +276,19 @@ struct CheckInView: View {
                         .foregroundStyle(NewLook.inkSecondary)
                 }
                 stopButton
-                Button("Cancel") { viewModel.cancelRecording() }
-                    .font(Typography.callout)
-                    .foregroundStyle(NewLook.inkSecondary)
-                    .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
-                    .accessibilityLabel("Cancel recording")
+                Button {
+                    viewModel.cancelRecording()
+                } label: {
+                    Text("Cancel")
+                        .font(Typography.callout)
+                        .foregroundStyle(NewLook.inkSecondary)
+                        .padding(.horizontal, Spacing.l)
+                        .frame(minWidth: Metrics.minTapTarget, minHeight: 38)
+                        .background(NewLook.card, in: Capsule())
+                        .newLookCardShadow()
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Cancel recording")
 
                 // FR-014 / R5: a single calm "wrapping up soon" line on the approach to the cap —
                 // faint, no red, no ticking bar. Fades after a beat; one-shot via the VM latch.
@@ -290,10 +304,10 @@ struct CheckInView: View {
     private var promptProgressBar: some View {
         GeometryReader { geo in
             ZStack(alignment: .leading) {
-                Rectangle()
-                    .fill(NewLook.inkSecondary.opacity(0.15))
-                Rectangle()
-                    .fill(Theme.accent.opacity(0.5))
+                Capsule()
+                    .fill(NewLook.tintNeutral)
+                Capsule()
+                    .fill(NewLook.selection)
                     .frame(width: geo.size.width * viewModel.promptProgress)
                     .animation(reduceMotion ? nil : .linear(duration: 0.1), value: viewModel.promptProgress)
                     // New identity per prompt so the per-window reset snaps to 0
@@ -308,7 +322,7 @@ struct CheckInView: View {
     private var heroPrompt: some View {
         VStack(spacing: Spacing.s) {
             Text(viewModel.currentPrompt.question)
-                .font(Typography.display)
+                .font(Typography.text(24, weight: .bold, relativeTo: .title2))
                 .foregroundStyle(NewLook.inkPrimary)
                 .multilineTextAlignment(.center)
                 .id(viewModel.currentPromptIndex)
@@ -337,7 +351,7 @@ struct CheckInView: View {
             ForEach(0..<CheckInViewModel.nudgePrompts.count, id: \.self) { index in
                 Circle()
                     .fill(index == viewModel.currentPromptIndex
-                          ? Theme.accent
+                          ? NewLook.selection
                           : NewLook.inkSecondary.opacity(0.3))
                     .frame(width: Metrics.CheckIn.promptDot, height: Metrics.CheckIn.promptDot)
             }
@@ -351,19 +365,19 @@ struct CheckInView: View {
         } label: {
             HStack(spacing: Spacing.s) {
                 if viewModel.state == .processing {
-                    ProgressView().tint(NewLook.onInk)
+                    ProgressView().tint(NewLook.onSelection)
                 } else {
                     RoundedRectangle(cornerRadius: Metrics.CheckIn.stopGlyphRadius)
-                        .fill(NewLook.onInk)
+                        .fill(NewLook.onSelection)
                         .frame(width: Metrics.CheckIn.stopGlyph, height: Metrics.CheckIn.stopGlyph)
                     Text("Stop & save").font(Typography.headline)
                 }
             }
-            .foregroundStyle(NewLook.onInk)
+            .foregroundStyle(NewLook.onSelection)
             .padding(.vertical, Spacing.m)
             .padding(.horizontal, Spacing.xxl)
             .frame(minHeight: Metrics.minTapTarget)
-            .background(NewLook.inkPrimary, in: Capsule())
+            .background(NewLook.selection, in: Capsule())
         }
         .buttonStyle(.plain)
         .disabled(viewModel.state == .processing)
@@ -385,12 +399,11 @@ struct CheckInView: View {
             Button { viewModel.retrySave() } label: {
                 Text("Try again")
                     .font(Typography.headline)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(NewLook.onInk)
                     .padding(.vertical, Spacing.m)
                     .padding(.horizontal, Spacing.xxl)
                     .frame(minHeight: Metrics.minTapTarget)
-                    .background(Theme.meadowGradient, in: Capsule())
-                    .shadow(color: Theme.meadowAmber.opacity(0.34), radius: 12, y: 5)
+                    .background(NewLook.inkPrimary, in: Capsule())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Try saving again")
@@ -408,8 +421,8 @@ struct CheckInView: View {
 
 // MARK: - Saved
 
-/// §05 Saved — pure confirmation: a gradient checkmark that settles in with a success haptic,
-/// "Captured." in Fraunces, a calm subtitle, and a single Done. No card, no transcribing UI.
+/// §05 Saved (a06) — pure confirmation: a selection-green check disc that settles in with a
+/// success haptic, "Captured.", a calm subtitle, and a full-width green Done pill.
 private struct CheckInSavedView: View {
     let recording: Recording?
     let onNewCheckIn: () -> Void
@@ -421,18 +434,18 @@ private struct CheckInSavedView: View {
             Spacer()
             ZStack {
                 Circle()
-                    .fill(Theme.meadowGradient)
+                    .fill(NewLook.selection)
                     .frame(width: Metrics.CheckIn.savedDisc, height: Metrics.CheckIn.savedDisc)
-                    .shadow(color: Theme.meadowAmber.opacity(0.3), radius: 20, y: 8)
+                    .newLookCardShadow()
                 Image(systemName: "checkmark")
                     .font(.system(size: Metrics.CheckIn.savedCheck, weight: .bold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(NewLook.onSelection)
             }
             .scaleEffect(popped ? 1 : 0.6)
             .opacity(popped ? 1 : 0)
 
             Text("Captured.")
-                .font(Typography.title)
+                .font(Typography.text(24, weight: .bold, relativeTo: .title2))
                 .foregroundStyle(NewLook.inkPrimary)
             Text("That's today's check-in. Talk to you next time.")
                 .font(Typography.callout)
@@ -441,9 +454,17 @@ private struct CheckInSavedView: View {
                 .frame(maxWidth: 240)
 
             Spacer()
-            Button("Done", action: onNewCheckIn)
-                .buttonStyle(.primary)
-                .padding(.bottom, Spacing.hero)
+            // a06 full-width green pill — a local style; the shared `.primary` (meadow)
+            // stays untouched for its other consumers.
+            Button(action: onNewCheckIn) {
+                Text("Done")
+                    .font(Typography.headline)
+                    .foregroundStyle(NewLook.onSelection)
+                    .frame(maxWidth: .infinity, minHeight: 50)
+                    .background(NewLook.selection, in: Capsule())
+            }
+            .buttonStyle(.plain)
+            .padding(.bottom, Spacing.hero)
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, Spacing.l)

@@ -57,8 +57,9 @@ public enum Metrics {
         public static let stopGlyphRadius: CGFloat = 3
         /// Diameter of a single prompt-progress dot, and the gap between dots.
         public static let promptDot: CGFloat = 6
-        /// Height of the thin prompt-progress bar at the top of the recording stage.
-        public static let promptBarHeight: CGFloat = 3
+        /// Height of the thin prompt-progress bar at the top of the recording stage
+        /// (4pt per Figma a05, spec 036 — was 3 pre-New-Look).
+        public static let promptBarHeight: CGFloat = 4
         /// Saved-state confirmation disc diameter.
         public static let savedDisc: CGFloat = 78
         /// Saved-state checkmark glyph point size.

@@ -40,6 +40,9 @@ struct SignalAverage {
     let fillLabel: String
     let caption: String
     let fraction: Double
+    /// The ordinal (1–5) the `fillLabel` word encodes; 0 when empty. Shipped explicitly so
+    /// the gauge never re-derives it from `fraction` (lossy float round-trip, spec-036 FR-010).
+    let level: Int
     var isEmpty: Bool { fillLabel == "—" }
 }
 
@@ -161,7 +164,7 @@ extension InsightsViewModel {
                 signalLevel(for: kind, from: r).map { Double($0.numericValue) }
             }
             guard !values.isEmpty else {
-                return SignalAverage(kind: kind, fillLabel: "—", caption: "", fraction: 0)
+                return SignalAverage(kind: kind, fillLabel: "—", caption: "", fraction: 0, level: 0)
             }
             let avg = values.reduce(0, +) / Double(values.count)
             let fraction = avg / 5.0
@@ -179,7 +182,7 @@ extension InsightsViewModel {
                 fillLabel = "\(lowerLabel)+"
                 caption = "between \(lowerLabel) & \(upperLabel)"
             }
-            return SignalAverage(kind: kind, fillLabel: fillLabel, caption: caption, fraction: fraction)
+            return SignalAverage(kind: kind, fillLabel: fillLabel, caption: caption, fraction: fraction, level: lower)
         }
     }
 

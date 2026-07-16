@@ -99,6 +99,17 @@ struct InsightsViewModelTests {
         #expect(f.fillLabel == "—")
     }
 
+    // spec-036 FR-010: the view must never re-derive the ordinal from `fraction` —
+    // the VM ships the level explicitly so fill/glyph and fillLabel cannot disagree.
+    @Test func averageLevelMatchesLabelOrdinal() {
+        add(mood: "okay"); add(mood: "good"); add(mood: "okay")   // avg 3.33… → "Okay+"
+        let a = vm().signalAverages.first { $0.kind == .mood }!
+        #expect(a.level == 3)
+        #expect(a.fillLabel.hasPrefix("Okay"))
+        let empty = vm().signalAverages.first { $0.kind == .focus }!
+        #expect(empty.level == 0)
+    }
+
     // MARK: - rhythmMatrix
 
     @Test func rhythmDominantPerBucket() {
