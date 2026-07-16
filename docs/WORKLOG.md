@@ -1,5 +1,44 @@
 # WORKLOG
 
+## 2026-07-10 15:42 – 2026-07-16 19:24 · App Store readiness — audit findings, submission playbook, p · main
+
+**Code changes**
+- _docs_
+  - `7e4c9ed3` docs: App Store readiness — audit findings, submission playbook, privacy-policy draft
+  - `d29c177b` docs: regen WORKLOG after debt-reconciliation round 2
+  - `a65010de` docs: reconcile stashes/PRs/worktrees debt (round 2) — DEBT.md + DEVLOG + BACKLOG
+  - `f1dfcf54` docs: regen WORKLOG after 2026-07-14 hygiene pass (derived from git/gh)
+- _chore_
+  - `23dc5180` chore: repo-hygiene pass — remove stray artifact, gitignore model dump, doc debt registry
+- _other_
+  - `81435937` Merge pull request #26 from caesar915-hub/feat/030-app-intents
+  - `2e52eb66` Merge pull request #25 from caesar915-hub/feat/ios26-target
+
+**Git actions**
+- `81435937` Merge pull request #26 from caesar915-hub/feat/030-app-intents
+- `2e52eb66` Merge pull request #25 from caesar915-hub/feat/ios26-target
+
+**gh actions**
+- PR #33 opened `feat/036-newlook-checkin-insights` — "feat(036): New Look check-in (a04-a06) + Insights a07 re-skin" — OPEN/MERGEABLE
+- PR #32 opened `feat/035-calendar-scroll-collapse` — "feat(035): calendar strip scroll-collapse & fade — Tiimo pattern" — OPEN/MERGEABLE
+- PR #31 opened `feat/034-daycard-a01` — "feat(034): DayCard a01 redesign — folded chip summary + unfolded mood-disc rows" — OPEN/MERGEABLE
+- PR #30 opened `chore/swift6-tech-debt` — "chore: clear Swift-6-language-mode test warnings + med color token" — OPEN/MERGEABLE
+- PR #29 opened `feat/030-us3-us4` — "feat(030): US4 guided NFC sticker setup (StickerSetupView) + FR-005 amendment" — OPEN/CONFLICTING
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  7e4c9ed3 [main]
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              575d8902 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              a490bbab [feat/036-newlook-checkin-insights]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                    9843f17a [feat/030-us3-us4]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 8d9b7ab8 [fix/022-view-audit-remediation]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ios26-target                   d04eb5ea [qa/device-ios26-029]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/merge-029                      885961a9 [feat/029-calendar-day-context]
+```
+
+---
 ## 2026-07-10 15:42 – 2026-07-14 01:55 · reconcile stashes/PRs/worktrees debt (round 2) — DEBT.md + D · main
 
 **Code changes**
