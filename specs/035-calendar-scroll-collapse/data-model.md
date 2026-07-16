@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-16 14:05 (WEST) · Updated: 2026-07-16 14:05 (WEST) -->
+<!-- Created: 2026-07-16 14:05 (WEST) · Updated: 2026-07-16 14:41 (WEST) -->
 # Data Model — Calendar Strip Scroll-Collapse & Fade (spec-035)
 
 No persisted entities, no SwiftData schema surface, no view-model changes. All state is ephemeral,
@@ -16,7 +16,7 @@ view-local, and derived from scroll geometry.
 
 | Function | Signature | Range / contract |
 |---|---|---|
-| `progress` | `(offset: CGFloat, stripHeight: CGFloat) → CGFloat` | 0 ∀ offset ≤ deadZone (incl. negative rubber-band); 1 at offset ≥ deadZone + band; linear between; quantized to 1/100 for Equatable dedupe |
+| `progress` | `(offset: CGFloat, stripHeight: CGFloat) → CGFloat` | 0 ∀ offset ≤ deadZone (incl. negative rubber-band); 1 at offset ≥ deadZone + band; linear between; **floor**-quantized to 1/100 (Equatable dedupe, never completes early — C4/C6) |
 | `stripOpacity` | `(progress: CGFloat) → CGFloat` | `1 − progress` |
 | `showsTitle` | `(progress: CGFloat) → Bool` | `progress ≥ titleReveal (0.8)` |
 

@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-16 14:05 (WEST) · Updated: 2026-07-16 14:05 (WEST) -->
+<!-- Created: 2026-07-16 14:05 (WEST) · Updated: 2026-07-16 14:41 (WEST) -->
 # Implementation Plan: Calendar Strip Scroll-Collapse & Fade
 
 **Branch**: `feat/035-calendar-scroll-collapse` | **Date**: 2026-07-16 | **Spec**: [spec.md](spec.md)
@@ -148,7 +148,7 @@ enum CalendarStripFade {
     static func progress(offset: CGFloat, stripHeight: CGFloat) -> CGFloat {
         let band = max(stripHeight - deadZone, minFadeDistance)
         let raw = (offset - deadZone) / band
-        return (min(max(raw, 0), 1) * 100).rounded() / 100
+        return (min(max(raw, 0), 1) * 100).rounded(.down) / 100   // FLOOR: never completes early (C4)
     }
     static func stripOpacity(progress: CGFloat) -> CGFloat { 1 - progress }
     static func showsTitle(progress: CGFloat) -> Bool { progress >= titleReveal }

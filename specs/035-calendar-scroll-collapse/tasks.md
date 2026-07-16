@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-16 14:20 (WEST) · Updated: 2026-07-16 14:20 (WEST) -->
+<!-- Created: 2026-07-16 14:20 (WEST) · Updated: 2026-07-16 14:41 (WEST) -->
 # Tasks: Calendar Strip Scroll-Collapse & Fade
 
 **Input**: Design documents from `/specs/035-calendar-scroll-collapse/`
@@ -31,8 +31,8 @@ Single Xcode project: app code in `app-four/`, tests in `app-fourTests/` (Swift 
 
 **⚠️ CRITICAL**: RED before GREEN; no view work before this phase is green.
 
-- [ ] T002 RED — create `app-fourTests/Views/CalendarStripFadeTests.swift` (Swift Testing, style of `app-fourTests/Views/DayCardExpandStateTests.swift`) pinning contract rows C1–C8 of `contracts/strip-fade-behavior.md`: rest → progress 0 (C1); dead-zone boundary incl. negative rubber-band offsets → bit-exact 0 (C2); mid-band linearity (C3); completion exactly at `offset == stripHeight` for 130 and 290 heights (C4, C8); `stripHeight == 0` floors the band at `minFadeDistance` — finite, no instant collapse (C5); clamp + 1/100 quantization (C6); `showsTitle` false at 0.79 / true at 0.80 (C7). Run the suite — it MUST FAIL to compile/pass (the enum doesn't exist yet). Record the RED evidence in the task log.
-- [ ] T003 GREEN — create `app-four/Views/Library/CalendarStripFade.swift`: pure `enum CalendarStripFade` (no SwiftUI import) with documented constants `deadZone = 24`, `minFadeDistance = 44`, `titleReveal = 0.8` and functions `progress(offset:stripHeight:)`, `stripOpacity(progress:)`, `showsTitle(progress:)` exactly per plan.md §D. Full suite green; no other file touched.
+- [X] T002 RED — create `app-fourTests/Views/CalendarStripFadeTests.swift` (Swift Testing, style of `app-fourTests/Views/DayCardExpandStateTests.swift`) pinning contract rows C1–C8 of `contracts/strip-fade-behavior.md`: rest → progress 0 (C1); dead-zone boundary incl. negative rubber-band offsets → bit-exact 0 (C2); mid-band linearity (C3); completion exactly at `offset == stripHeight` for 130 and 290 heights (C4, C8); `stripHeight == 0` floors the band at `minFadeDistance` — finite, no instant collapse (C5); clamp + 1/100 quantization (C6); `showsTitle` false at 0.79 / true at 0.80 (C7). Run the suite — it MUST FAIL to compile/pass (the enum doesn't exist yet). Record the RED evidence in the task log.
+- [X] T003 GREEN — create `app-four/Views/Library/CalendarStripFade.swift`: pure `enum CalendarStripFade` (no SwiftUI import) with documented constants `deadZone = 24`, `minFadeDistance = 44`, `titleReveal = 0.8` and functions `progress(offset:stripHeight:)`, `stripOpacity(progress:)`, `showsTitle(progress:)` exactly per plan.md §D. Full suite green; no other file touched.
 
 **Checkpoint**: contract C1–C8 pinned green — view wiring may begin.
 
