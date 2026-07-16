@@ -1,5 +1,39 @@
 # WORKLOG
 
+## 2026-07-15 23:41 – 2026-07-16 16:16 · T004-T010 — strip scrolls + fades in-content; compact title  · feat/035-calendar-scroll-collapse
+
+**Code changes**
+- _Major (feat)_
+  - `cfc24983` feat(035): T004-T010 — strip scrolls + fades in-content; compact title cross-fade
+  - `493bb3cf` feat(035): T002-T003 RED->GREEN — CalendarStripFade pure math + contract suite
+  - `dbfa0bf3` feat(034): DayCard a01 redesign — folded chip summary + unfolded mood-disc rows
+- _Fixes_
+  - `c3481b88` fix(034): address code-review findings — headline fallback, locale-aware a11y time, drop dead truncatable flag
+  - `bfaeb754` fix(033): contrast ruling — fix derived dark-mode failures, log Figma-locked light values
+  - `ac6d5976` fix(033): address code-review findings — mechanical set (6 of 12)
+- _docs_
+  - `198eec24` docs: DEVLOG checkpoint + WORKLOG block for the #28 review cycle
+- _other_
+  - `710545ab` tasks: 035 calendar scroll-collapse — 14 tasks, merge-gate -> RED/GREEN math -> US1 restructure+fade -> US2 title -> owner QA
+  - `c10817a4` plan: 035 calendar scroll-collapse — research (D1-D9), plan, data-model, behavior contract, quickstart
+  - `fe5ddd98` spec: 035 calendar strip scroll-collapse & fade — Tiimo pattern, supersedes 001
+  - `15855acd` spec: 034 DayCard a01 redesign — folded 24pt word + chip summary w/ sleep; unfolded caps band + mood-disc rows, bead/ring dropped
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  cfc24983 [feat/035-calendar-scroll-collapse]
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              575d8902 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              c3481b88 [feat/034-daycard-a01]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                    9843f17a [feat/030-us3-us4]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 8d9b7ab8 [fix/022-view-audit-remediation]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ios26-target                   d04eb5ea [qa/device-ios26-029]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/merge-029                      885961a9 [feat/029-calendar-day-context]
+```
+
+---
+
 ## 2026-07-10 15:42 – 2026-07-16 00:45 · contrast ruling — fix derived dark-mode failures, log Figma- · feat/033-newlook-app-wide
 
 **Code changes**
