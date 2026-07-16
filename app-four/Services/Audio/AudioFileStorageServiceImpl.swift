@@ -10,19 +10,10 @@ final class AudioFileStorageServiceImpl: AudioFileStorageService {
     
     init(context: ModelContext) {
         self.context = context
-        
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        self.recordingsDir = documents.appendingPathComponent("Recordings", isDirectory: true)
-        self.exportsDir = documents.appendingPathComponent("Exports", isDirectory: true)
-        
-        createDirectoriesIfNeeded()
+        self.recordingsDir = AppPaths.recordings
+        self.exportsDir = AppPaths.exports
     }
-    
-    private func createDirectoriesIfNeeded() {
-        try? FileManager.default.createDirectory(at: recordingsDir, withIntermediateDirectories: true)
-        try? FileManager.default.createDirectory(at: exportsDir, withIntermediateDirectories: true)
-    }
-    
+
     @MainActor func saveRecording(from temporaryURL: URL, duration: TimeInterval) throws -> Recording {
         let id = UUID()
         let fileName = "recording_\(id.uuidString.lowercased()).m4a"

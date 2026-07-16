@@ -115,6 +115,12 @@ struct MedicationLogSheet: View {
                 }
             }
             .newLookCard()
+
+            if catalogEntry != nil {
+                Text("Typical values from product labeling — your response may differ.")
+                    .font(Typography.caption)
+                    .foregroundStyle(Theme.textPrimary)
+            }
         }
     }
 

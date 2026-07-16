@@ -134,10 +134,7 @@ extension Recording {
 
     /// Local URL for the audio file
     var audioURL: URL {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-        return documents
-            .appendingPathComponent("Recordings", isDirectory: true)
-            .appendingPathComponent(audioFileName)
+        AppPaths.recordings.appendingPathComponent(audioFileName)
     }
 
     // MARK: - UI Compatibility Properties

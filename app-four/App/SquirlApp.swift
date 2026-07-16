@@ -9,6 +9,9 @@ struct SquirlApp: App {
     @State private var router = AppDependencies.appIntentRouter
 
     init() {
+        // Relocate any pre-1.0 user data out of the Files-app-exposed Documents
+        // directory before any store or service reads from disk. Idempotent.
+        StorageMigration.run()
         #if DEBUG
         // UI/UX dev: default the mock-data toggle ON so a cold launch lands on a
         // populated timeline. Guarded out under XCTest so the suite keeps the

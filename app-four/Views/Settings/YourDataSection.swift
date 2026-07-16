@@ -3,13 +3,25 @@ import SwiftUI
 /// The "Your data" trust home in Settings — designed to live inside the grouped
 /// `List`. Restates the onboarding on-device promise (`WelcomeView`) in calm,
 /// non-technical language and pushes a brief acknowledgements screen for the
-/// open-source components and font licences Squirl owes credit (FR-016/017).
+/// open-source components Squirl owes credit (FR-016/017).
 struct YourDataSection: View {
     var body: some View {
         Section("Your data") {
+            if AppModelContainer.isEphemeral {
+                Label {
+                    Text("Storage couldn't be opened this session, so new check-ins won't be saved. Restarting the app usually fixes this.")
+                        .font(Typography.body)
+                        .foregroundStyle(Theme.textPrimary)
+                } icon: {
+                    Image(systemName: "exclamationmark.triangle")
+                        .foregroundStyle(Theme.danger)
+                }
+                .accessibilityLabel("Warning: storage couldn't be opened this session, so new check-ins won't be saved. Restarting the app usually fixes this.")
+            }
+
             Text("Your recordings, check-ins, and signals stay on this device. Nothing is uploaded.")
                 .font(Typography.body)
-                .foregroundStyle(NewLook.inkSecondary)
+                .foregroundStyle(Theme.textPrimary)
 
             NavigationLink {
                 AcknowledgementsView()
@@ -20,8 +32,8 @@ struct YourDataSection: View {
     }
 }
 
-/// Plain-text credits for the open-source components and fonts Squirl builds on.
-/// Kept calm and brief; the fonts ship under the SIL Open Font License (FR-016).
+/// Plain-text credits for the open-source components Squirl builds on. Kept calm
+/// and brief. (Bundled-font credits removed with the spec-023 switch to native SF.)
 private struct AcknowledgementsView: View {
     var body: some View {
         ScreenContainer(title: "Acknowledgements", showsMedicationBar: false) {
@@ -29,10 +41,6 @@ private struct AcknowledgementsView: View {
                 credit(
                     "WhisperKit",
                     detail: "On-device speech recognition that turns your voice into text without leaving the device."
-                )
-                credit(
-                    "Fraunces · DM Sans · IBM Plex Mono",
-                    detail: "Typefaces used throughout Squirl, under the SIL Open Font License."
                 )
             }
             .frame(maxWidth: .infinity, alignment: .leading)

@@ -55,6 +55,7 @@ struct SettingsView: View {
                         .id(Self.myMedicationID)
                     DoseGuardSection(viewModel: viewModel)
                     medicationBarSection
+                    MedicalInfoSection()
                     accessibilitySection
                     YourDataSection()
                     journalExportSection
