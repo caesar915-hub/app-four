@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-16 14:05 (WEST) · Updated: 2026-07-16 14:41 (WEST) -->
+<!-- Created: 2026-07-16 14:05 (WEST) · Updated: 2026-07-16 20:05 (WEST) -->
 # UI Behavior Contract — strip fade ↔ scroll ↔ title (spec-035)
 
 The externally observable contract between the user's scroll gesture and the Calendar tab's chrome.
@@ -8,7 +8,7 @@ Consumed by `CalendarStripFadeTests` (C1–C8 are directly unit-testable; C9–C
 |---|---|---|---|
 | C1 | list at rest (`offset = 0`) | — | strip opacity **1.0**, title hidden |
 | C2 | any `offset ≤ 24` (dead zone), incl. negative rubber-band | scrolling | progress **0**, opacity **1.0** — bit-exact, no flicker |
-| C3 | `offset = deadZone + band/2` | scrolling | progress **0.5** ± quantization (0.01), opacity **0.5** |
+| C3 | `offset = deadZone + band/2` | scrolling | progress **0.5** ± quantization (0.01); opacity **0.375** (opacity leads: fully transparent at `titleReveal`, amended 2026-07-16 — a fixed-height title band cannot occlude the taller month strip's residual, so the strip fades out before the band reveals) |
 | C4 | `offset ≥ stripHeight` (week or month height) | scrolling | progress **1.0**, opacity **0** — fade completes exactly as the strip clears |
 | C5 | `stripHeight = 0` (pre-measurement frame) | any offset | band floors at `minFadeDistance` (44) — finite, no div-by-zero, no instant collapse |
 | C6 | any inputs | — | progress is clamped to [0, 1] and **floor**-quantized to 1/100 (Equatable dedupe without ever reporting full collapse early — nearest-rounding would hit 1.0 half a quantum before the strip clears, violating C4; caught RED→GREEN 2026-07-16) |

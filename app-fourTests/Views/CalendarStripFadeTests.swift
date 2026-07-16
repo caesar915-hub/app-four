@@ -42,7 +42,8 @@ import Foundation
         let p = CalendarStripFade.progress(offset: CalendarStripFade.deadZone + band / 2,
                                            stripHeight: week)
         #expect(abs(p - 0.5) <= 0.01)   // quantization tolerance (C6)
-        #expect(abs(CalendarStripFade.stripOpacity(progress: p) - 0.5) <= 0.01)
+        // Opacity leads progress (fades out by titleReveal): 1 − p/0.8 at the midpoint.
+        #expect(abs(CalendarStripFade.stripOpacity(progress: p) - 0.375) <= 0.02)
     }
 
     // MARK: - C4/C8: completion exactly at the strip's own height, for BOTH heights
@@ -83,7 +84,9 @@ import Foundation
         for offset: CGFloat in [-100, 0, 17, 31.37, 77.7, 129, 130, 500] {
             let p = CalendarStripFade.progress(offset: offset, stripHeight: week)
             #expect(p >= 0 && p <= 1)
-            #expect((p * 100).rounded() == p * 100,
+            // Tolerance form: n/100 is not always exactly representable in binary64
+            // (n = 7, 14, 28, 29, 55–58 round-trip inexactly), so assert nearness, not identity.
+            #expect(abs(p * 100 - (p * 100).rounded()) < 1e-9,
                     "progress must be quantized to 1/100 so Equatable dedupe stops state churn")
         }
     }
@@ -97,11 +100,12 @@ import Foundation
         #expect(CalendarStripFade.showsTitle(progress: 1))
     }
 
-    // MARK: - Opacity is the exact complement of progress (FR-002)
+    // MARK: - Opacity leads progress: fully transparent at titleReveal (FR-002 amended)
 
-    @Test func opacityIsOneMinusProgress() {
-        for p: CGFloat in [0, 0.25, 0.5, 0.8, 1] {
-            #expect(CalendarStripFade.stripOpacity(progress: p) == 1 - p)
-        }
+    @Test func opacityReachesZeroAtTitleReveal() {
+        #expect(CalendarStripFade.stripOpacity(progress: 0) == 1)
+        #expect(abs(CalendarStripFade.stripOpacity(progress: 0.4) - 0.5) <= 0.001)
+        #expect(CalendarStripFade.stripOpacity(progress: CalendarStripFade.titleReveal) == 0)
+        #expect(CalendarStripFade.stripOpacity(progress: 1) == 0)
     }
 }

@@ -29,7 +29,13 @@ enum CalendarStripFade {
         return (min(max(raw, 0), 1) * 100).rounded(.down) / 100
     }
 
-    static func stripOpacity(progress: CGFloat) -> CGFloat { 1 - progress }
+    /// Fades ahead of the geometric exit: opacity reaches 0 at `titleReveal`, not at full
+    /// collapse — so when the compact band snap-reveals, the strip behind it is already fully
+    /// transparent regardless of its measured height (week or expanded month). Review finding
+    /// 2026-07-16: a fixed-height band cannot occlude the taller month strip's last ~53pt.
+    static func stripOpacity(progress: CGFloat) -> CGFloat {
+        1 - min(1, progress / titleReveal)
+    }
 
     static func showsTitle(progress: CGFloat) -> Bool { progress >= titleReveal }
 }

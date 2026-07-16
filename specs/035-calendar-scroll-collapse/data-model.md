@@ -17,7 +17,7 @@ view-local, and derived from scroll geometry.
 | Function | Signature | Range / contract |
 |---|---|---|
 | `progress` | `(offset: CGFloat, stripHeight: CGFloat) → CGFloat` | 0 ∀ offset ≤ deadZone (incl. negative rubber-band); 1 at offset ≥ deadZone + band; linear between; **floor**-quantized to 1/100 (Equatable dedupe, never completes early — C4/C6) |
-| `stripOpacity` | `(progress: CGFloat) → CGFloat` | `1 − progress` |
+| `stripOpacity` | `(progress: CGFloat) → CGFloat` | `1 − min(1, progress/titleReveal)` — reaches 0 at the title reveal (amended 2026-07-16, review fix) |
 | `showsTitle` | `(progress: CGFloat) → Bool` | `progress ≥ titleReveal (0.8)` |
 
 Constants: `deadZone = 24`, `minFadeDistance = 44`, `titleReveal = 0.8` (documented statics; owner-tunable).
