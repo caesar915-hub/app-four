@@ -1,0 +1,122 @@
+<!-- Created: 2026-07-16 20:05 (WEST) · Updated: 2026-07-16 20:05 (WEST) -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>037 · Check-in Live Activity — Lock Screen mockup</title>
+<style>
+  /* Design-principles skill: base-4 spacing, ≤5 font sizes, one font design,
+     semantic-style colors, single accent (meadow green = check-in). This is the
+     Lock Screen presentation of the ActivityKit Live Activity (spec 037 US1/US2). */
+  :root {
+    --green: #4f8a5b;      /* Theme.meadowGreen — check-in accent */
+    --amber: #b8863b;      /* paused state */
+    --ink: #1c1c1e;
+    --ink-2: #6b6b70;
+    --card: rgba(255,255,255,0.92);
+    --stroke: rgba(0,0,0,0.08);
+    --grid: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font: 15px/1.3 -apple-system, "SF Pro Text", system-ui, sans-serif;
+    /* stand-in Lock Screen wallpaper so the card material reads correctly */
+    background: linear-gradient(160deg, #3a4a5a, #23303c 60%, #161f28);
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; gap: 24px;
+    padding: 48px 20px; color: var(--ink);
+  }
+  .clock { color: #fff; text-align: center; font-weight: 300; letter-spacing: -1px; }
+  .clock .time { font-size: 64px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .clock .date { font-size: 15px; opacity: 0.85; margin-top: 4px; }
+  .label { color: #cdd6df; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; align-self: flex-start; margin: 8px 0 -12px 4px; }
+
+  /* ---- The Live Activity card ---- */
+  .activity {
+    width: 100%; max-width: 360px;
+    background: var(--card);
+    border: 1px solid var(--stroke);
+    border-radius: 22px;                 /* system Live Activity radius */
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  }
+  .row { display: flex; align-items: center; gap: 12px; }
+  .app-glyph {
+    width: 28px; height: 28px; border-radius: 8px; flex: none;
+    background: var(--green); color: #fff;
+    display: grid; place-items: center; font-size: 15px;
+  }
+  .state { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .state .what { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .state .sub { font-size: 12px; color: var(--ink-2); }
+
+  /* pulsing record indicator */
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); flex: none; }
+  .dot.rec { animation: pulse 1.4s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.7); } }
+  .paused .dot { background: var(--amber); }
+
+  .timer {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 24px; font-weight: 300; font-variant-numeric: tabular-nums;
+    letter-spacing: 0.5px; color: var(--ink);
+  }
+  .paused .timer { color: var(--amber); }
+
+  /* controls: allowed on Lock Screen + expanded Dynamic Island (research D5) */
+  .controls { display: flex; gap: 8px; }
+  .btn {
+    flex: 1; border: 0; border-radius: 12px; padding: 12px;
+    font: 600 15px -apple-system, system-ui, sans-serif; cursor: default;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn.secondary { background: rgba(0,0,0,0.06); color: var(--ink); }
+  .btn.stop { background: var(--green); color: #fff; }
+  .paused .btn.stop { background: var(--amber); }
+  .note { color: #cdd6df; font-size: 12px; max-width: 360px; align-self: flex-start; margin-left: 4px; }
+  h2.caption { color:#fff; font-weight:600; font-size:13px; text-transform:uppercase; letter-spacing:1.5px; opacity:.7; align-self:flex-start; margin: 16px 0 -12px 4px;}
+</style>
+</head>
+<body>
+  <div class="clock"><div class="time">9:41</div><div class="date">Thursday, 16 July</div></div>
+
+  <h2 class="caption">Recording · US1 + US2</h2>
+  <!-- RECORDING state: elapsed timer runs via Text(timerInterval:), Pause + Stop -->
+  <div class="activity">
+    <div class="row">
+      <div class="app-glyph">◐</div>
+      <div class="state">
+        <div class="what"><span class="dot rec"></span> Recording check-in</div>
+        <div class="sub">Tap to open · or control from here</div>
+      </div>
+      <div class="timer">02:14</div>
+    </div>
+    <div class="controls">
+      <button class="btn secondary">⏸ Pause</button>
+      <button class="btn stop">■ Stop &amp; save</button>
+    </div>
+  </div>
+
+  <h2 class="caption">Paused · US2</h2>
+  <!-- PAUSED state: timer frozen via Text(timerInterval:pauseTime:), Resume + Stop -->
+  <div class="activity paused">
+    <div class="row">
+      <div class="app-glyph" style="background:var(--amber)">◐</div>
+      <div class="state">
+        <div class="what"><span class="dot"></span> Paused</div>
+        <div class="sub">Resume to keep the same recording</div>
+      </div>
+      <div class="timer">02:14</div>
+    </div>
+    <div class="controls">
+      <button class="btn secondary">▶ Resume</button>
+      <button class="btn stop">■ Stop &amp; save</button>
+    </div>
+  </div>
+
+  <p class="note">Buttons run <code>LiveActivityIntent</code>s in the app process with no unlock (research D7/D8). Elapsed time self-updates on-device; no per-second app wake. Surface carries only elapsed + state — never transcript/mood/med (FR-016).</p>
+</body>
+</html>

@@ -10,6 +10,8 @@
 
 **Architecture**: MVVM + service-oriented (Constitution VIII) — matches the codebase. Two new `Services/` protocols injected via `AppDependencies`; `@MainActor @Observable` owner; heavy work stays off-main.
 
+> **Implementation status (2026-07-16)**: `[X]` marks a task whose code/artifact is **authored**. Per the project's no-simulator-build workflow, Claude does not compile/run; the **owner builds, confirms RED→GREEN, and device-QAs**. Batch 1 (foundation scaffolding) is authored; it needs the Xcode wiring in the "Owner Xcode steps" note below before it compiles.
+
 ## Format: `[ID] [P?] [Story] Description`
 - **[P]**: parallelizable (different files, no dependency on an incomplete task)
 - **[Story]**: US1 / US2 / US3 (setup/foundational/polish carry no story label)
@@ -37,13 +39,13 @@
 
 > Write these FIRST and RUN them — they MUST FAIL before implementation.
 
-- [ ] T005 [P] RED: `app-fourTests/Services/LiveActivityContentStateTests.swift` — the pure `RecordingState → RecordingActivityPhase` mapping table (data-model §2), the `ContentState` derivation, `phase == .paused ⇒ pausedAt != nil`, and the **privacy invariant**: an encoded `ContentState` contains no transcript / mood / medication substring (FR-016). Confirm FAIL.
+- [X] T005 [P] RED: `app-fourTests/Services/LiveActivityContentStateTests.swift` — the pure `RecordingState → RecordingActivityPhase` mapping table (data-model §2), the `ContentState` derivation, `phase == .paused ⇒ pausedAt != nil`, and the **privacy invariant**: an encoded `ContentState` contains no transcript / mood / medication substring (FR-016). Confirm FAIL.
 - [ ] T006 [P] RED: `app-fourTests/Services/RecordingSessionControllerTests.swift` — lifecycle transitions (idle→recording→paused→resume→stop), **idempotent finalize by `captureID`** (finalize twice → exactly one saved `Recording`), stop-while-paused finalizes, and model-absent → pending path. Against mock `AudioRecordingService` / `RecordingStore` / `TranscriptionService` (existing `app-fourTests/Mocks` patterns). Confirm FAIL.
 
 ### Implementation
 
-- [ ] T007 Implement `CheckInActivityAttributes` (+ nested `ContentState: Codable & Hashable`) and `RecordingActivityPhase` in `SquirlLiveActivity/Sources/SquirlLiveActivity/CheckInActivityAttributes.swift`, plus the pure `RecordingState → ContentState` mapping. GREEN for T005. (data-model §1–§2)
-- [ ] T008 Define the `RecordingSessionController` and `LiveActivityController` protocols in `app-four/Services/Protocols.swift` (contracts §1–§2).
+- [X] T007 Implement `CheckInActivityAttributes` (+ nested `ContentState: Codable & Hashable`) and `RecordingActivityPhase` in `SquirlLiveActivity/Sources/SquirlLiveActivity/CheckInActivityAttributes.swift`, plus the pure `RecordingState → ContentState` mapping. GREEN for T005. (data-model §1–§2)
+- [X] T008 Define the `RecordingSessionController` and `LiveActivityController` protocols in `app-four/Services/Protocols.swift` (contracts §1–§2).
 - [ ] T009 Implement `RecordingSessionControllerImpl` in `app-four/Services/Recording/RecordingSessionControllerImpl.swift` — process-level lifecycle owner extracted from `CheckInViewModel`: `start`/`pause`/`resume`/`stopAndSave`/`recoverIfNeeded`; **one idempotent capture-id-keyed finalize** wrapping the existing save pipeline (`pendingSave` buffer + transcription chaining, not a copy); start recorder via `record(forDuration: cap)` (research D17); wrap the awaited finalize in `UIApplication.beginBackgroundTask` (research D9). GREEN for T006.
 - [ ] T010 Implement `LiveActivityControllerImpl` in `app-four/Services/LiveActivity/LiveActivityControllerImpl.swift` — `begin`/`update`/`end` via ActivityKit (`Activity.request/.update/.end(.immediate)`), maps phase→`ContentState`, **no-ops when Live Activities are unavailable/disabled** (FR-014); sets `staleDate` (research D3/D15).
 - [ ] T011 Pin data protection to `.completeUntilFirstUserAuthentication` on the SwiftData store files (`.sqlite`/`-wal`/`-shm`) and the finalized audio file, in `app-four/App/AppModelContainer.swift` + `app-four/Services/Audio/AudioFileStorageServiceImpl.swift` (research D13; SwiftData `ModelConfiguration` has no protection knob → use `FileManager`/`URLResourceValues`).
@@ -66,7 +68,7 @@
 
 ### Implementation
 
-- [ ] T015 [US1] HTML mockup of the **Lock Screen** recording presentation (recording indicator + elapsed + Stop) → `specs/037-live-activity-controls/mockups/lock-screen.html` (Constitution I gate before SwiftUI).
+- [X] T015 [US1] HTML mockup of the **Lock Screen** recording presentation (recording indicator + elapsed + Stop) → `specs/037-live-activity-controls/mockups/lock-screen.html` (Constitution I gate before SwiftUI).
 - [ ] T016 [US1] Implement `StopRecordingIntent` (`LiveActivityIntent`, background `supportedModes`, default `.alwaysAllowed`) in `app-four/Intents/StopRecordingIntent.swift` → `controller.stopAndSave()`. GREEN for T013.
 - [ ] T017 [US1] Implement the Lock Screen presentation in `SquirlWidgets/CheckInLiveActivity.swift` — recording indicator + `Text(timerInterval:)` elapsed (research D4) + Stop `Button(intent: StopRecordingIntent())`. SwiftUI, view-exempt (build + device QA).
 - [ ] T018 [US1] Wire activity lifecycle: `RecordingSessionController.start()` calls `LiveActivityController.begin(...)`; `stopAndSave()` ends it (`.immediate`), so the surface appears < 1 s on start (SC-002) and clears within seconds on stop (SC-005). Enforce one-activity-at-a-time (FR-010).
