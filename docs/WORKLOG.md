@@ -1,5 +1,33 @@
 # WORKLOG
 
+## 2026-07-16 16:23–18:54 · US2 — Insights a07: continuous scroll, carded sections, dead · feat/036-newlook-checkin-insights
+
+**Code changes**
+- _Major (feat)_
+  - `6810220e` feat(036): US2 — Insights a07: continuous scroll, carded sections, dead path deleted
+  - `4c3b7366` feat(036): US1 — check-in a04-a06 re-skin + selectionSoft token + gauge level RED->GREEN
+- _Fixes_
+  - `90dce2f1` fix(035): title band below the med bar; restore the bar's app-wide position
+- _docs_
+  - `7511e3ad` docs: 035 code-complete checkpoint — DEVLOG/BACKLOG/WORKLOG + restored parallel-session entries
+- _other_
+  - `570f483b` spec+plan+tasks: 036 New Look check-in (a04-a06) + insights (a07) re-skin
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  5d6f0056 [fix/app-store-readiness]
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              575d8902 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              6810220e [feat/036-newlook-checkin-insights]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                    9843f17a [feat/030-us3-us4]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 8d9b7ab8 [fix/022-view-audit-remediation]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ios26-target                   d04eb5ea [qa/device-ios26-029]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/merge-029                      885961a9 [feat/029-calendar-day-context]
+```
+
+---
+
 ## 2026-07-15 23:41 – 2026-07-16 16:16 · T004-T010 — strip scrolls + fades in-content; compact title  · feat/035-calendar-scroll-collapse
 
 **Code changes**
