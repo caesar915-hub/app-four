@@ -27,7 +27,7 @@ private struct GaugeColumn: View {
     var body: some View {
         VStack(spacing: Spacing.s) {
             SignalGlyph(average.kind.glyphSignal,
-                        level: average.isEmpty ? nil : clampedSignalLevel(Int((average.fraction * 5).rounded())),
+                        level: average.isEmpty ? nil : average.level,
                         size: 26)
             ZStack(alignment: .bottom) {
                 // Track
@@ -87,8 +87,9 @@ private struct GaugeColumn: View {
     }
 
     private var levelFill: (any SignalLevel)? {
-        let lowerValue = Int(average.fraction * 5)
-        let clamped = max(1, min(5, lowerValue))
+        // The VM ships the ordinal explicitly — never re-derive it from `fraction`
+        // (lossy float round-trip could disagree with fillLabel; spec-036 FR-010).
+        let clamped = max(1, min(5, average.level))
         switch average.kind {
         case .mood:   return MoodLevel.allCases.first { $0.numericValue == clamped }
         case .energy: return EnergyLevel.allCases.first { $0.numericValue == clamped }

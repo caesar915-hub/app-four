@@ -95,6 +95,7 @@ private struct GatedCard: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(Spacing.l)
+        .background(NewLook.card, in: .rect(cornerRadius: Radius.newLookCard))
         .overlay(
             RoundedRectangle(cornerRadius: Radius.newLookCard)
                 .strokeBorder(
@@ -122,7 +123,7 @@ private struct MiniBar: View {
                     Capsule()
                         .fill(NewLook.tintNeutral)
                     Capsule()
-                        .fill(Theme.accent)
+                        .fill(Palette.medication)
                         .frame(width: max(barHeight, geo.size.width * fraction))
                 }
                 .frame(height: barHeight)

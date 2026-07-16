@@ -1,17 +1,14 @@
 import SwiftUI
 
+/// Insights tab (a07, spec 036): one continuous scroll — title, month chips, then every
+/// section on its own white New Look card at natural height. The former 5-page snap-pager
+/// (one section per flick, dimmed headings) was retired by owner ruling 2026-07-16.
 struct InsightsView: View {
     @Binding var selectedTab: Tab
     @State private var viewModel: InsightsViewModel
     @State private var path = NavigationPath()
-    @State private var activeSectionID: SectionID? = .breakdown
     @Environment(AppServices.self) private var services
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     private let store: RecordingStore
-
-    private enum SectionID: Hashable {
-        case breakdown, signals, averages, rhythm, connections
-    }
 
     init(store: RecordingStore, selectedTab: Binding<Tab>) {
         self.store = store
@@ -23,8 +20,6 @@ struct InsightsView: View {
         ScreenContainer(title: "", scrollable: false, path: $path) {
             Group {
                 if viewModel.hasAnyData {
-                    // Month selector rides at the top of the first page so it scrolls
-                    // (and pages) away with the content rather than staying pinned.
                     sectionsScroll
                 } else {
                     VStack(spacing: 0) {
@@ -44,15 +39,6 @@ struct InsightsView: View {
             }
         }
         .trackScreen("InsightsView")
-        .sheet(item: $viewModel.selectedDay) { day in
-            DayDetailSheet(day: day) { id in path.append(id) }
-        }
-        .onChange(of: selectedTab) { _, newValue in
-            guard newValue == .insights else { return }
-            withAnimation(.easeOut(duration: 0.25)) {
-                activeSectionID = .breakdown
-            }
-        }
     }
 
     private var monthSelector: some View {
@@ -63,19 +49,17 @@ struct InsightsView: View {
         .padding(.vertical, Spacing.s)
     }
 
-    /// Screen identity — Fraunces "Insights" + the "<month> · today vs your usual" framing.
+    /// Screen identity — "Insights" + the "<month> · today vs your usual" framing.
     private var insightsIdentity: some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             Text("Insights")
-                .font(Typography.largeTitle)
+                .font(Typography.text(24, weight: .bold, relativeTo: .title2))
                 .foregroundStyle(NewLook.inkPrimary)
             Text("\(viewModel.currentMonth.formatted(.dateTime.month(.wide))) · today vs your usual")
                 .font(Typography.subheadline)
                 .foregroundStyle(NewLook.inkSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, Spacing.l)
-        .padding(.top, Spacing.l)
         .accessibilityAddTraits(.isHeader)
     }
 
@@ -91,127 +75,114 @@ struct InsightsView: View {
         .padding(.vertical, Spacing.s)
         .overlay(Capsule().strokeBorder(NewLook.hairline, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, Spacing.l)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("Sleep, not tracked yet")
     }
 
-    // MARK: - Snapping scroll
+    // MARK: - Continuous scroll (a07)
 
     private var sectionsScroll: some View {
-        GeometryReader { proxy in
-            let pageHeight = proxy.size.height
-            ScrollView {
-                VStack(spacing: 0) {
-                    page(breakdownSection, height: pageHeight)
-                    page(signalsSection, height: pageHeight)
-                    page(averagesSection, height: pageHeight)
-                    page(rhythmSection, height: pageHeight)
-                    page(connectionsSection, height: pageHeight)
-                }
-                .scrollTargetLayout()
+        ScrollView {
+            VStack(alignment: .leading, spacing: Spacing.l) {
+                insightsIdentity
+                monthSelector
+                breakdownCard
+                signalsCard
+                averagesCard
+                rhythmCard
+                connectionsBlock
             }
-            .scrollTargetBehavior(.paging)
-            .scrollPosition(id: $activeSectionID, anchor: .top)
-            .edgeFadeMask(top: 0, bottom: 36)
+            .padding(.horizontal, Spacing.l)
+            .padding(.top, Spacing.l)
+            .padding(.bottom, Spacing.hero)
         }
+        .edgeFadeMask(top: 0, bottom: 36)
     }
 
-    /// Sizes a section to exactly one viewport so paging snaps one section per
-    /// flick with no peek of the next. Content top-aligns for a consistent title Y.
-    private func page(_ section: some View, height: CGFloat) -> some View {
-        section
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .frame(height: height)
+    /// In-card section header (a07): bold title with an optional trailing count and caption line.
+    private func cardHeader(_ title: String, trailing: String? = nil, subtitle: String? = nil) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            HStack(alignment: .firstTextBaseline) {
+                Text(title)
+                    .font(Typography.headline)
+                    .foregroundStyle(NewLook.inkPrimary)
+                    .accessibilityAddTraits(.isHeader)
+                if let trailing {
+                    Spacer(minLength: Spacing.s)
+                    Text(trailing)
+                        .font(Typography.caption)
+                        .foregroundStyle(NewLook.inkSecondary)
+                }
+            }
+            if let subtitle {
+                Text(subtitle)
+                    .font(Typography.caption)
+                    .foregroundStyle(NewLook.inkSecondary)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// Active heading at full emphasis; every other heading (incl. the peeking
-    /// next one) dimmed. 0.4 ≈ the dimmed peek in the reference video.
-    private func headerOpacity(_ id: SectionID) -> Double {
-        activeSectionID == id ? 1.0 : 0.4
-    }
-
-    private var headerAnimation: Animation? {
-        reduceMotion ? nil : Motion.snappy
-    }
-
-    // MARK: - Sections
+    // MARK: - Cards
 
     @ViewBuilder
-    private var breakdownSection: some View {
+    private var breakdownCard: some View {
         let count = viewModel.monthRecordings.count
-        let subtitle = "\(count) check-in\(count == 1 ? "" : "s")"
-        VStack(spacing: 0) {
-            insightsIdentity
-            monthSelector
-            InsightsSectionHeader(title: "Your overall check-in breakdown", subtitle: subtitle)
-                .opacity(headerOpacity(.breakdown))
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            cardHeader("Your overall check-in breakdown",
+                       trailing: "\(count) check-in\(count == 1 ? "" : "s")")
             if !viewModel.moodShares.isEmpty {
                 MoodBubbleChart(shares: viewModel.moodShares)
-                    .padding(.horizontal, Spacing.l)
-                    .padding(.top, Spacing.s)
                 MoodLegend(shares: viewModel.moodShares)
-                    .padding(.top, Spacing.xs)
             }
         }
-        .id(SectionID.breakdown)
-        .animation(headerAnimation, value: activeSectionID)
+        .newLookCard()
     }
 
-    private var signalsSection: some View {
-        VStack(spacing: 0) {
-            InsightsSectionHeader(
-                title: "Your month in three signals",
-                subtitle: "Average by weekday — this month"
-            )
-            .opacity(headerOpacity(.signals))
+    private var signalsCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            cardHeader("Your month in three signals",
+                       subtitle: "Average by weekday — this month")
             SignalStripsView(strips: viewModel.weekdaySignalStrips)
-                .padding(.top, Spacing.s)
             sleepDeferredChip
-                .padding(.top, Spacing.m)
         }
-        .id(SectionID.signals)
-        .animation(headerAnimation, value: activeSectionID)
+        .newLookCard()
     }
 
-    private var averagesSection: some View {
-        VStack(spacing: 0) {
-            InsightsSectionHeader(title: "Where you averaged")
-                .opacity(headerOpacity(.averages))
+    private var averagesCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            cardHeader("Where you averaged")
             SignalAverageGauges(averages: viewModel.signalAverages)
-                .padding(.top, Spacing.s)
         }
-        .id(SectionID.averages)
-        .animation(headerAnimation, value: activeSectionID)
+        .newLookCard()
     }
 
-    private var rhythmSection: some View {
-        VStack(spacing: 0) {
-            InsightsSectionHeader(
-                title: "Your daily rhythm",
-                subtitle: "Dominant level per signal by time of day"
-            )
-            .opacity(headerOpacity(.rhythm))
+    private var rhythmCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            cardHeader("Your daily rhythm",
+                       subtitle: "Dominant level per signal by time of day")
             DailyRhythmMatrix(matrix: viewModel.rhythmMatrix)
-                .padding(.top, Spacing.s)
         }
-        .id(SectionID.rhythm)
-        .animation(headerAnimation, value: activeSectionID)
+        .newLookCard()
     }
 
-    private var connectionsSection: some View {
-        VStack(spacing: 0) {
-            InsightsSectionHeader(
-                title: "Connections",
-                subtitle: "Patterns across signals — 3 or more days to unlock"
-            )
-            .opacity(headerOpacity(.connections))
+    /// CONNECTIONS block (a07): caps eyebrow + caption outside the cards; the card
+    /// treatments live in `ConnectionCardsView`.
+    private var connectionsBlock: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                Text("CONNECTIONS")
+                    .font(Typography.label)
+                    .tracking(1.3)
+                    .foregroundStyle(NewLook.inkSecondary)
+                    .accessibilityAddTraits(.isHeader)
+                Text("Patterns across signals — 3 or more days to unlock")
+                    .font(Typography.caption)
+                    .foregroundStyle(NewLook.inkSecondary)
+            }
             ConnectionCardsView(connections: viewModel.connections)
-                .padding(.top, Spacing.s)
-                .padding(.bottom, Spacing.hero)
         }
-        .id(SectionID.connections)
-        .animation(headerAnimation, value: activeSectionID)
+        .padding(.top, Spacing.m)
     }
 
     private var emptyState: some View {

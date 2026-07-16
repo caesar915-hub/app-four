@@ -2,15 +2,15 @@ import SwiftUI
 
 /// Three fixed-slot strips — one per signal (mood/energy/focus).
 /// In weekday-average mode each strip shows 7 Mo–Su slots coloured by the averaged level.
-/// In date mode each slot is one check-in day; provide `onBeadTap` to make slots interactive.
+/// In date mode each slot is one check-in day. (The old `onBeadTap` hook was dead —
+/// never wired by any caller — and was removed with the a07 re-skin, spec-036 FR-011.)
 struct SignalStripsView: View {
     let strips: [SignalStrip]
-    var onBeadTap: ((Date) -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: Spacing.m) {
             ForEach(strips, id: \.kind) { strip in
-                StripRow(strip: strip, onBeadTap: onBeadTap)
+                StripRow(strip: strip)
             }
         }
         .accessibilityElement(children: .contain)
@@ -19,7 +19,6 @@ struct SignalStripsView: View {
 
 private struct StripRow: View {
     let strip: SignalStrip
-    let onBeadTap: ((Date) -> Void)?
 
     private var representativeLevel: Int {
         let levels = strip.beads.compactMap { $0.level?.numericValue }
@@ -41,18 +40,12 @@ private struct StripRow: View {
                     .font(Typography.caption)
                     .foregroundStyle(NewLook.inkSecondary)
             }
-            .padding(.horizontal, Spacing.l)
 
             HStack(spacing: 0) {
                 ForEach(strip.beads, id: \.date) { bead in
-                    BeadSlot(
-                        bead: bead,
-                        glyphSignal: strip.kind.glyphSignal,
-                        action: onBeadTap.map { tap in { tap(bead.date) } }
-                    )
+                    BeadSlot(bead: bead, glyphSignal: strip.kind.glyphSignal)
                 }
             }
-            .padding(.horizontal, Spacing.l)
             .padding(.vertical, Spacing.xs)
         }
         .accessibilityElement(children: .contain)
@@ -72,18 +65,10 @@ private struct StripRow: View {
 private struct BeadSlot: View {
     let bead: SignalBead
     let glyphSignal: GlyphSignal
-    let action: (() -> Void)?
 
     var body: some View {
-        Group {
-            if let action {
-                Button(action: action) { content }
-                    .buttonStyle(.plain)
-            } else {
-                content
-            }
-        }
-        .accessibilityLabel(beadA11yLabel)
+        content
+            .accessibilityLabel(beadA11yLabel)
     }
 
     private var content: some View {
