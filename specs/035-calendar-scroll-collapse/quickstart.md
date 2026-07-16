@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-16 14:05 (WEST) · Updated: 2026-07-16 14:05 (WEST) -->
+<!-- Created: 2026-07-16 14:05 (WEST) · Updated: 2026-07-16 18:22 (WEST) -->
 # Quickstart / Device-QA — Calendar Strip Scroll-Collapse (spec-035)
 
 Owner builds + QAs on a physical device (no simulator). Behavioral reference: the owner's Tiimo
@@ -21,7 +21,7 @@ frame-by-frame analysis (2026-07-15). Contract table: [contracts/strip-fade-beha
 - [ ] Slow scroll up: zero fade for the first ~24pt (C2); then the strip moves *with* the content while fading; fully transparent as it clears the top content area (C4); no flicker at the threshold.
 - [ ] Scroll back: exact reverse; opacity exactly 1 at rest, no residual dimming (C1).
 - [ ] Rubber-band pull past top: never over-brightens, no flash (C2).
-- [ ] The list scrolls under the nav area and frosts under the floating med bar — same look as Insights (confirms the `Group` top-edge/safe-area change).
+- [ ] The list stays strictly BELOW the med bar and hard-clips at the bar line (the 034 behavior — the `Group` top-edge experiment was reverted 2026-07-16); nothing ever renders above or beneath the bar.
 - [ ] Date tap: list jumps to top of the filtered day and the **strip stays fully visible** (C9 — regression guard for the `topDayID` → edge-scroll swap); tapping a **partially faded** strip still selects.
 - [ ] Month expand at rest: grid opens with no scroll jump; scroll while expanded: whole grid fades uniformly, band feels proportional (C8); expand **while partially scrolled**: small opacity step acceptable, no glitch/jump.
 - [ ] Month swipe-paging still works; Today jump (tab re-tap) lands at rest with a fully opaque week strip.
@@ -30,7 +30,7 @@ frame-by-frame analysis (2026-07-15). Contract table: [contracts/strip-fade-beha
 
 ## US2 — compact title (spec §US2)
 
-- [ ] Title snap-fades in only near full collapse (~80%), not gradually tracking the finger (C7).
+- [ ] Title band (solid screen-colour + hairline) sits directly BELOW the med bar and snap-fades in only near full collapse (~80%), not gradually tracking the finger (C7). The med bar itself never moves — pixel-identical position to Insights/Settings (amended 2026-07-16).
 - [ ] Correct strings: "Today, 16 Jul" / "Yesterday, …" / "Wednesday, 15 Jul" — identical wording to the day labels used elsewhere.
 - [ ] Disappears the same way scrolling back; no ghost title at rest; no conflict with the empty inline `navigationTitle`.
 

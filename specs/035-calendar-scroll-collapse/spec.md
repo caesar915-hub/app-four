@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-16 13:57 (WEST) · Updated: 2026-07-16 13:57 (WEST) -->
+<!-- Created: 2026-07-16 13:57 (WEST) · Updated: 2026-07-16 18:22 (WEST) -->
 # Feature Specification: Calendar Strip Scroll-Collapse & Fade
 
 **Feature Branch**: `feat/035-calendar-scroll-collapse`
@@ -38,7 +38,7 @@ A user with several check-ins on the selected day scrolls down through their day
 
 ### User Story 2 - A compact date title keeps context when scrolled deep (Priority: P2)
 
-Once the strip has (almost) fully faded away, a compact title with the selected day (e.g. "Today, 16 Jul" / "Wednesday, 15 Jul") snap-fades into the top navigation area — the Tiimo cross-fade — so the user always knows which day they're reading. It disappears the same way when the strip returns.
+Once the strip has (almost) fully faded away, a compact title with the selected day (e.g. "Today, 16 Jul" / "Wednesday, 15 Jul") snap-fades into a solid band directly below the medication bar — the Tiimo cross-fade (owner amendment 2026-07-16: never in the navigation bar, which renders above the med bar and displaces it; everything on this screen happens below the bar) — so the user always knows which day they're reading. It disappears the same way when the strip returns.
 
 **Why this priority**: Without it the user loses all date context when scrolled deep. Valuable but meaningless without US1.
 
@@ -73,7 +73,7 @@ Once the strip has (almost) fully faded away, a compact title with the selected 
 - **FR-002**: The strip MUST remain fully opaque for the first ~24pt of scroll travel (dead zone), then fade linearly to fully transparent over a band that scales with the strip's current rendered height, completing exactly as the strip clears the top content area.
 - **FR-003**: The fade MUST reverse symmetrically when scrolling back; at rest the strip is always fully opaque.
 - **FR-004**: Rubber-band overscroll (negative travel) MUST clamp — opacity never exceeds 100% and never flickers.
-- **FR-005**: A compact title with the selected day's label MUST appear in the top navigation area when collapse progress passes ~80%, using the same day-label wording as the rest of the app, and disappear below that point (supersedes 001-FR-004).
+- **FR-005**: A compact title with the selected day's label MUST appear in a solid band directly BELOW the medication bar when collapse progress passes ~80%, using the same day-label wording as the rest of the app, and disappear below that point (supersedes 001-FR-004; amended 2026-07-16 — never a navigation-bar item, and the medication bar's position MUST remain identical to every other tab).
 - **FR-006**: The title's appearance MUST be a quick snap-fade (not continuous finger-tracking), suppressed entirely under Reduce Motion.
 - **FR-007**: The floating medication bar MUST be completely unaffected — position, opacity, behavior, and its show/hide setting all unchanged.
 - **FR-008**: Tapping a date in the strip MUST behave as today (select + jump the list to top) and MUST NOT scroll the strip itself out of view — the existing top-item-anchored programmatic scroll is replaced by an edge-anchored one, and the now-unused top-item state is removed.

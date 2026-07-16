@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-16 14:05 (WEST) · Updated: 2026-07-16 14:41 (WEST) -->
+<!-- Created: 2026-07-16 14:05 (WEST) · Updated: 2026-07-16 18:22 (WEST) -->
 # Data Model — Calendar Strip Scroll-Collapse & Fade (spec-035)
 
 No persisted entities, no SwiftData schema surface, no view-model changes. All state is ephemeral,
@@ -29,7 +29,7 @@ rest (progress 0, strip opaque, no title)
   │ scroll up past deadZone
   ▼
 fading (0 < progress < 1, strip opacity 1−p, no title while p < 0.8)
-  │ p crosses 0.8 ────────────► title snap-fades IN (Motion.snappy, RM-gated)
+  │ p crosses 0.8 ────────────► title band (below med bar) snap-fades IN (Motion.snappy, RM-gated)
   │ scroll up past band end
   ▼
 collapsed (progress 1, strip invisible + non-focusable, title shown)

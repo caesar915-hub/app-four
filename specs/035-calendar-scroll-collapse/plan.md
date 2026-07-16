@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-16 14:05 (WEST) · Updated: 2026-07-16 14:41 (WEST) -->
+<!-- Created: 2026-07-16 14:05 (WEST) · Updated: 2026-07-16 18:22 (WEST) -->
 # Implementation Plan: Calendar Strip Scroll-Collapse & Fade
 
 **Branch**: `feat/035-calendar-scroll-collapse` | **Date**: 2026-07-16 | **Spec**: [spec.md](spec.md)
@@ -157,9 +157,9 @@ enum CalendarStripFade {
 
 Band scales with **measured** height → the week strip (~130pt) and expanded month (~290pt) both finish fading exactly as they clear (FR-002); negative offsets clamp (FR-004).
 
-### E. Compact title (FR-005/006, US2)
+### E. Compact title (FR-005/006, US2) — AMENDED 2026-07-16 after first device build
 
-`ToolbarItem(placement: .principal)` in `CalendarLibraryView` (content sits inside the container's `NavigationStack`; `navigationTitle("")` leaves principal free): `Text(viewModel.dayLabel(for: selectedDay))` in `Typography.headline`, `.opacity(showsTitle ? 1 : 0)`, `.animation(reduceMotion ? nil : Motion.snappy, value: showsTitle)` where `showsTitle = CalendarStripFade.showsTitle(progress: collapseProgress)`. Snap-fade, native large-title-handoff feel. Reuses `MoodLibraryViewModel.dayLabel(for:)` — zero VM changes.
+~~ToolbarItem(placement: .principal)~~ **REJECTED on device**: the nav bar renders ABOVE the med bar in ScreenContainer's hierarchy, so a principal item both displaced the bar downward (Calendar was the only tab root with a toolbar item — the empty inline bar materialized) and put the title above the bar. Replacement (owner ruling): the content root is a `ZStack(alignment: .top)` (a non-scroll container is laid out BELOW the med-bar `safeAreaInset`, restoring the bar's app-wide position and the 034-style hard clip at the bar line), and `compactTitleBand` — a solid `NewLook.screen` band + bottom hairline holding `dayLabel(for:)` in `Typography.headline` — overlays at the top of that region, `.opacity(showsTitle ? 1 : 0)` + RM-gated `Motion.snappy`, `accessibilityHidden`/`allowsHitTesting` off while hidden. Cards visibly disappear under the band (Tiimo look). The `Group`-owns-the-top-edge idea in §A is superseded by this ZStack.
 
 ### F. Reduce Motion (FR-006, edge cases)
 

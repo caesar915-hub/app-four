@@ -27,11 +27,15 @@ struct CalendarLibraryView: View {
 
     var body: some View {
         ScreenContainer(title: "", showsMedicationBar: true, scrollable: false, path: $path) {
-            // `Group`, not `VStack`: the ScrollView must own the screen's top edge so the
-            // med-bar safe-area inset lets the list scroll UNDER the floating bar (spec-035).
-            Group {
+            // `ZStack`, not a bare ScrollView: a non-scroll container is laid out BELOW the
+            // med-bar safe-area inset, so the bar keeps its app-wide position and nothing on
+            // this screen can render above or beneath it (owner ruling 2026-07-16 — the earlier
+            // nav-bar title displaced the bar). The compact title band overlays at the top of
+            // this below-the-bar region.
+            ZStack(alignment: .top) {
                 if viewModel.hasAnyEntries {
                     timelineList
+                    compactTitleBand
                 } else {
                     VStack(spacing: 0) {
                         pinnedHeader
@@ -40,7 +44,6 @@ struct CalendarLibraryView: View {
                     }
                 }
             }
-            .toolbar { compactTitle }
             .navigationDestination(for: UUID.self) { id in
                 if let recording = viewModel.recording(for: id) {
                     RecordingDetailView(recording: recording, store: store, services: services)
@@ -67,22 +70,29 @@ struct CalendarLibraryView: View {
         headerBlock
     }
 
-    /// Whether the compact nav title has taken over from the (almost fully faded) strip.
+    /// Whether the compact title band has taken over from the (almost fully faded) strip.
     private var showsTitle: Bool {
         CalendarStripFade.showsTitle(progress: collapseProgress)
     }
 
-    /// Tiimo cross-fade (spec-035 US2): the selected day snap-fades into the otherwise-empty
-    /// inline nav bar once the strip is nearly gone, so date context survives deep scrolls.
-    private var compactTitle: some ToolbarContent {
-        ToolbarItem(placement: .principal) {
+    /// Tiimo cross-fade (spec-035 US2): the selected day snap-fades in once the strip is
+    /// nearly gone, so date context survives deep scrolls. A solid in-content band directly
+    /// BELOW the med bar — never a nav-bar item, which renders above the bar and displaces it
+    /// (owner ruling 2026-07-16). Cards visibly disappear under the band while it's shown.
+    private var compactTitleBand: some View {
+        VStack(spacing: 0) {
             Text(viewModel.dayLabel(for: selectedDay))
                 .font(Typography.headline)
                 .foregroundStyle(NewLook.inkPrimary)
-                .opacity(showsTitle ? 1 : 0)
-                .animation(reduceMotion ? nil : Motion.snappy, value: showsTitle)
-                .accessibilityHidden(!showsTitle)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, Spacing.s)
+            Divider().overlay(NewLook.hairline)
         }
+        .background(NewLook.screen)
+        .opacity(showsTitle ? 1 : 0)
+        .animation(reduceMotion ? nil : Motion.snappy, value: showsTitle)
+        .accessibilityHidden(!showsTitle)
+        .allowsHitTesting(showsTitle)
     }
 
     private var headerBlock: some View {
