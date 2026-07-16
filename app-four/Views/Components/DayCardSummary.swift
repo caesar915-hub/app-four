@@ -22,6 +22,16 @@ struct DayCardSummary {
         day.nodes.first { !$0.intakeDoses.isEmpty }?.intakeDoses.first?.name
     }
 
+    /// Most recent captured sleep for the day ("7h sleep" / "calm sleep"), or nil when no
+    /// check-in that day logged sleep (spec 034). Nodes are newest-first, so the first
+    /// recording carrying a sleep label is the most recent one.
+    @MainActor var sleep: String? {
+        for node in day.nodes {
+            if let label = node.recording?.sleepLabel { return label }
+        }
+        return nil
+    }
+
     /// A day with no check-ins (FR-004).
     var isEmpty: Bool { day.nodes.isEmpty }
 

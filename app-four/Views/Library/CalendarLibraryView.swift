@@ -8,8 +8,10 @@ struct CalendarLibraryView: View {
     @State private var path = NavigationPath()
     @State private var selectedDay = Calendar.current.startOfDay(for: Date())
     @State private var isCalendarExpanded = false
-    @State private var topDayID: Date?
+    @State private var listPosition = ScrollPosition(edge: .top)
     @State private var expandedCards = ExpandedDayCards()
+    @State private var collapseProgress: CGFloat = 0
+    @State private var stripHeight: CGFloat = 0
     @AppStorage("autoExpandOnSelection") private var autoExpandOnSelection = true
     @AppStorage("alwaysExpandCards") private var alwaysExpandCards = false
     @Environment(AppServices.self) private var services
@@ -25,13 +27,21 @@ struct CalendarLibraryView: View {
 
     var body: some View {
         ScreenContainer(title: "", showsMedicationBar: true, scrollable: false, path: $path) {
-            VStack(spacing: 0) {
+            // `ZStack`, not a bare ScrollView: a non-scroll container is laid out BELOW the
+            // med-bar safe-area inset, so the bar keeps its app-wide position and nothing on
+            // this screen can render above or beneath it (owner ruling 2026-07-16 — the earlier
+            // nav-bar title displaced the bar). The compact title band overlays at the top of
+            // this below-the-bar region.
+            ZStack(alignment: .top) {
                 if viewModel.hasAnyEntries {
                     timelineList
+                    compactTitleBand
                 } else {
-                    pinnedHeader
-                    emptyState.frame(maxWidth: .infinity).padding(.top, Spacing.hero)
-                    Spacer()
+                    VStack(spacing: 0) {
+                        pinnedHeader
+                        emptyState.frame(maxWidth: .infinity).padding(.top, Spacing.hero)
+                        Spacer()
+                    }
                 }
             }
             .navigationDestination(for: UUID.self) { id in
@@ -54,8 +64,35 @@ struct CalendarLibraryView: View {
 
     // MARK: - Header
 
+    /// Empty-state only: with no scroll there is nothing to collapse, so the strip stays
+    /// fixed and fully opaque (FR-012).
     private var pinnedHeader: some View {
         headerBlock
+    }
+
+    /// Whether the compact title band has taken over from the (almost fully faded) strip.
+    private var showsTitle: Bool {
+        CalendarStripFade.showsTitle(progress: collapseProgress)
+    }
+
+    /// Tiimo cross-fade (spec-035 US2): the selected day snap-fades in once the strip is
+    /// nearly gone, so date context survives deep scrolls. A solid in-content band directly
+    /// BELOW the med bar — never a nav-bar item, which renders above the bar and displaces it
+    /// (owner ruling 2026-07-16). Cards visibly disappear under the band while it's shown.
+    private var compactTitleBand: some View {
+        VStack(spacing: 0) {
+            Text(viewModel.dayLabel(for: selectedDay))
+                .font(Typography.headline)
+                .foregroundStyle(NewLook.inkPrimary)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, Spacing.s)
+            Divider().overlay(NewLook.hairline)
+        }
+        .background(NewLook.screen)
+        .opacity(showsTitle ? 1 : 0)
+        .animation(reduceMotion ? nil : Motion.snappy, value: showsTitle)
+        .accessibilityHidden(!showsTitle)
+        .allowsHitTesting(showsTitle)
     }
 
     private var headerBlock: some View {
@@ -78,9 +115,15 @@ struct CalendarLibraryView: View {
     // MARK: - Timeline
 
     private var timelineList: some View {
-        VStack(spacing: 0) {
-            pinnedHeader
-            ScrollView {
+        ScrollView {
+            // Plain VStack: the strip must always be materialized (it drives the fade
+            // geometry); the cards keep their laziness in the nested LazyVStack. In-content
+            // placement reclaims the strip's space by layout and fades by compositor —
+            // never a scroll-driven height animation (spec-035 D1, FR-011).
+            VStack(spacing: 0) {
+                headerBlock
+                    .opacity(CalendarStripFade.stripOpacity(progress: collapseProgress))
+                    .onGeometryChange(for: CGFloat.self, of: { $0.size.height }) { stripHeight = $0 }
                 LazyVStack(spacing: Spacing.m) {
                     ForEach(viewModel.timelineDaysFilteredToSelectedDate(selectedDay)) { day in
                         DayCard(
@@ -93,16 +136,24 @@ struct CalendarLibraryView: View {
                             },
                             onTapRecording: { path.append($0) }
                         )
-                        .id(day.date)
                     }
                 }
                 .padding(.horizontal, Spacing.l)
                 .padding(.top, Spacing.m)
                 .padding(.bottom, Spacing.xxl)
             }
-            .scrollPosition(id: $topDayID, anchor: .top)
-            .edgeFadeMask(top: 0, bottom: Spacing.section)
         }
+        .scrollPosition($listPosition)
+        .onScrollGeometryChange(for: CGFloat.self) { geo in
+            // contentOffset.y + contentInsets.top == 0 at rest by documented contract —
+            // the clean origin the dead zone needs (spec-035 D2).
+            CalendarStripFade.progress(offset: geo.contentOffset.y + geo.contentInsets.top,
+                                       stripHeight: stripHeight)
+        } action: { _, new in
+            collapseProgress = new
+        }
+        .scrollBounceBehavior(.basedOnSize, axes: .vertical)   // short filtered lists can't flicker-fade (FR-013)
+        .edgeFadeMask(top: 0, bottom: Spacing.section)
     }
 
     // MARK: - Selection / navigation
@@ -117,12 +168,14 @@ struct CalendarLibraryView: View {
     }
 
     /// Selection (the filter boundary) is tap/jump-only — scrolling never re-filters, so
-    /// browsing older days can't ratchet newer days out of the list.
+    /// browsing older days can't ratchet newer days out of the list. Edge-based, not
+    /// id-based: the strip is now the first scroll item, and anchoring the selected day's
+    /// card to `.top` would scroll the calendar itself off-screen on every tap (spec-035 D3).
     private func scrollList(to day: Date) {
         let target = calendar.startOfDay(for: day)
         selectedDay = target
         withAnimation(reduceMotion ? nil : Motion.smooth) {
-            topDayID = target
+            listPosition.scrollTo(edge: .top)
             expandedCards = expandedCards.selecting(target, autoExpand: autoExpandOnSelection)   // collapse all, open selected (FR-009/FR-019)
         }
     }

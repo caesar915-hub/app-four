@@ -62,8 +62,8 @@ struct SettingsView: View {
                     versionSection
                 }
                 .listStyle(.insetGrouped)
-                .scrollContentBackground(.hidden)        // reveal Theme.background (paper) under the grouped list
-                .listRowBackground(Theme.cardBackground)  // cream inset cards instead of system grouped gray
+                .scrollContentBackground(.hidden)        // reveal NewLook.screen under the grouped list
+                .listRowBackground(NewLook.card)  // white inset cards instead of system grouped gray
                 // TabView keeps this tab alive, so its scroll offset persists.
                 // Reset to top each time Settings becomes the active tab — unless a
                 // My-Medication focus is pending, which owns the scroll instead.
@@ -152,7 +152,7 @@ struct SettingsView: View {
             LabeledContent("Storage") {
                 let count = viewModel.recordingCount
                 Text("\(count) \(count == 1 ? "recording" : "recordings") · \(String(format: "%.1f", viewModel.storageUsedMB)) MB")
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
             }
             Toggle(isOn: $viewModel.downloadOverCellular) {
                 Label("Download over Cellular", systemImage: "antenna.radiowaves.left.and.right")
@@ -191,7 +191,7 @@ struct SettingsView: View {
         Section("Accessibility") {
             Text("Squirl follows the iOS motion setting. Turn on Reduce Motion in Settings › Accessibility to still animations.")
                 .font(Typography.caption)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
         }
     }
 
@@ -250,7 +250,7 @@ struct SettingsView: View {
                 Spacer()
                 Text(versionLabel)
                     .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
                     #if DEBUG || TESTFLIGHT
                     .onTapGesture(count: 5) { showingDebug = true }
                     #endif

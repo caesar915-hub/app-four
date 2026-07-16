@@ -1,6 +1,7 @@
 import SwiftUI
 
-/// The Paper & Pollen check-in ring: a full circle, green-dominant with amber at the bottom.
+/// The New Look check-in ring (a04/a05, spec 036): a full circle, selection green at the top
+/// softening toward `selectionSoft` at the bottom.
 /// At rest it **breathes** (idle); while recording it **spins** (active). Decorative.
 struct CrescentRing: View {
     var isActive: Bool = false
@@ -28,9 +29,9 @@ private struct AnimatedArc: View {
             .stroke(
                 AngularGradient(
                     gradient: Gradient(stops: [
-                        .init(color: Theme.meadowGreen, location: 0.00),
-                        .init(color: Theme.meadowAmber, location: 0.50),
-                        .init(color: Theme.meadowGreen, location: 1.00),
+                        .init(color: NewLook.selection, location: 0.00),
+                        .init(color: NewLook.selectionSoft, location: 0.50),
+                        .init(color: NewLook.selection, location: 1.00),
                     ]),
                     center: .center,
                     startAngle: .degrees(270),

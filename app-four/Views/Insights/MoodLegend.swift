@@ -1,30 +1,33 @@
 import SwiftUI
 
-/// Dot + label legend used under `MoodBubbleChart`.
+/// Legend chips under `MoodBubbleChart` (a07): white hairline capsules — dot + label + count.
 struct MoodLegend: View {
     let shares: [MoodShare]
 
     var body: some View {
         LazyVGrid(
-            columns: [GridItem(.adaptive(minimum: 90), spacing: Spacing.s)],
+            columns: [GridItem(.adaptive(minimum: 100), spacing: Spacing.s)],
             spacing: Spacing.s
         ) {
             ForEach(shares, id: \.level) { share in
                 HStack(spacing: Spacing.xs) {
                     Circle()
                         .fill(share.level.fillGradient)
-                        .frame(width: 10, height: 10)
+                        .frame(width: 8, height: 8)
                     Text(share.level.displayLabel)
                         .font(Typography.caption)
-                        .foregroundStyle(Theme.textPrimary)
+                        .foregroundStyle(NewLook.inkPrimary)
                     Text("(\(share.count))")
                         .font(Typography.caption)
-                        .foregroundStyle(Theme.textSecondary)
+                        .foregroundStyle(NewLook.inkSecondary)
                 }
+                .padding(.horizontal, Spacing.m)
+                .padding(.vertical, Spacing.xs)
+                .background(NewLook.card, in: Capsule())
+                .overlay(Capsule().strokeBorder(NewLook.hairline, lineWidth: 1))
                 .accessibilityLabel("\(share.level.displayLabel): \(share.count)")
             }
         }
-        .padding(.horizontal, Spacing.l)
     }
 }
 

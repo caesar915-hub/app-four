@@ -26,7 +26,7 @@ struct MedicationLogSheet: View {
                 .padding(Spacing.l)
             }
         }
-        .background(Theme.background.ignoresSafeArea())
+        .background(NewLook.screen.ignoresSafeArea())
         .presentationDragIndicator(.visible)
         .onChange(of: name) { _, newName in applyCatalogDefaults(for: newName) }
     }
@@ -38,17 +38,17 @@ struct MedicationLogSheet: View {
             Button { dismiss() } label: {
                 Image(systemName: "xmark")
                     .font(Typography.subheadline)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .frame(width: 30, height: 30)
-                    .background(Theme.cardBackground, in: Circle())
-                    .overlay(Circle().strokeBorder(Theme.separator, lineWidth: 1))
+                    .background(NewLook.card, in: Circle())
+                    .overlay(Circle().strokeBorder(NewLook.hairline, lineWidth: 1))
             }
             .accessibilityLabel("Cancel")
 
             Spacer()
             Text("Log Dose")
                 .font(Typography.title)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
             Spacer()
 
             Button("Save") {
@@ -56,7 +56,7 @@ struct MedicationLogSheet: View {
                 dismiss()
             }
             .font(Typography.subheadline.weight(.semibold))
-            .foregroundStyle(trimmedName.isEmpty ? Theme.textSecondary : Theme.meadowGreen)
+            .foregroundStyle(trimmedName.isEmpty ? NewLook.inkSecondary : Theme.meadowGreen)
             .disabled(trimmedName.isEmpty)
         }
         .padding(.horizontal, Spacing.l)
@@ -69,18 +69,17 @@ struct MedicationLogSheet: View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             Text("Medication")
                 .font(Typography.label.weight(.semibold))
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
             VStack(spacing: 0) {
                 medicationChips
-                Divider().overlay(Theme.separator)
+                Divider().overlay(NewLook.hairline)
                 TextField("Name", text: $name)
                     .autocorrectionDisabled()
                     .font(Typography.body)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .padding(Spacing.m)
             }
-            .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.card))
-            .overlay(RoundedRectangle(cornerRadius: Radius.card).strokeBorder(Theme.separator, lineWidth: 1))
+            .newLookCard()
         }
     }
 
@@ -88,7 +87,7 @@ struct MedicationLogSheet: View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             Text("Dose")
                 .font(Typography.label.weight(.semibold))
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
             VStack(spacing: 0) {
                 if let entry = catalogEntry {
                     Picker("Dose", selection: $dose) {
@@ -96,14 +95,14 @@ struct MedicationLogSheet: View {
                         ForEach(entry.doseOptions, id: \.self) { Text($0).tag($0) }
                     }
                     .pickerStyle(.menu)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .padding(.horizontal, Spacing.m)
                     .padding(.vertical, Spacing.s)
-                    Divider().overlay(Theme.separator)
+                    Divider().overlay(NewLook.hairline)
                     HStack {
-                        Text("Onset").font(Typography.body).foregroundStyle(Theme.textPrimary)
+                        Text("Onset").font(Typography.body).foregroundStyle(NewLook.inkPrimary)
                         Spacer()
-                        Text("≈ \(entry.onsetMinutes) min").font(Typography.body).foregroundStyle(Theme.textSecondary)
+                        Text("≈ \(entry.onsetMinutes) min").font(Typography.body).foregroundStyle(NewLook.inkSecondary)
                     }
                     .padding(.horizontal, Spacing.m)
                     .padding(.vertical, Spacing.s)
@@ -111,12 +110,11 @@ struct MedicationLogSheet: View {
                     TextField("Dose (optional)", text: $dose)
                         .autocorrectionDisabled()
                         .font(Typography.body)
-                        .foregroundStyle(Theme.textPrimary)
+                        .foregroundStyle(NewLook.inkPrimary)
                         .padding(Spacing.m)
                 }
             }
-            .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.card))
-            .overlay(RoundedRectangle(cornerRadius: Radius.card).strokeBorder(Theme.separator, lineWidth: 1))
+            .newLookCard()
         }
     }
 
@@ -124,21 +122,20 @@ struct MedicationLogSheet: View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             Text("Effect Duration")
                 .font(Typography.label.weight(.semibold))
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
             HStack {
-                Text("Hours").font(Typography.body).foregroundStyle(Theme.textPrimary)
+                Text("Hours").font(Typography.body).foregroundStyle(NewLook.inkPrimary)
                 Spacer()
                 TextField("", value: $durationHours, format: .number)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
                     .font(Typography.body)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .frame(width: 60)
             }
             .padding(.horizontal, Spacing.m)
             .padding(.vertical, Spacing.s)
-            .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.card))
-            .overlay(RoundedRectangle(cornerRadius: Radius.card).strokeBorder(Theme.separator, lineWidth: 1))
+            .newLookCard()
         }
     }
 
@@ -146,14 +143,13 @@ struct MedicationLogSheet: View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             Text("Taken At")
                 .font(Typography.label.weight(.semibold))
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
             DatePicker("Time", selection: $takenAt, in: ...Date(), displayedComponents: .hourAndMinute)
                 .labelsHidden()
                 .padding(.horizontal, Spacing.m)
                 .padding(.vertical, Spacing.s)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.card))
-                .overlay(RoundedRectangle(cornerRadius: Radius.card).strokeBorder(Theme.separator, lineWidth: 1))
+                .newLookCard()
         }
     }
 
@@ -171,7 +167,7 @@ struct MedicationLogSheet: View {
                             .padding(.horizontal, Spacing.m)
                             .padding(.vertical, Spacing.s)
                             .background(
-                                selected ? Palette.medication.opacity(0.25) : Color.secondary.opacity(0.15),
+                                selected ? Palette.medication.opacity(0.25) : NewLook.tintNeutral,
                                 in: .capsule
                             )
                             .overlay(Capsule().strokeBorder(

@@ -25,6 +25,9 @@ public enum Typography {
     public static let title: Font = sf(22, .semibold, .title2)
     /// Folded day-card weekday label.
     public static let dayCardDate: Font = sf(16, .semibold, .subheadline)
+    /// Day-card mood word (spec 034 folded title + expanded entry row) — SF Bold 24, Dynamic-Type
+    /// scaled relative to `.title2`. One role so the folded card and the entry rows stay identical.
+    public static let moodWord: Font = sf(24, .bold, .title2)
 
     // MARK: Content (SF Pro)
     /// Row / card headline.

@@ -36,7 +36,7 @@ struct DayCardPaletteTests {
         for style in [UIUserInterfaceStyle.light, .dark] {
             let traits = UITraitCollection(userInterfaceStyle: style)
             let mode = style == .light ? "light" : "dark"
-            let surface = Self.rgb(Theme.cardBackground, traits)
+            let surface = Self.rgb(NewLook.card, traits)
             for level in MoodLevel.allCases {
                 let tint = Self.composite(Self.rgb(level.color, traits), over: surface, alpha: Opacity.moodBlock)
                 let ratio = Self.contrast(Self.rgb(level.wordColor, traits), tint)

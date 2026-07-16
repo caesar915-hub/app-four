@@ -40,19 +40,19 @@ struct RecoveryKeySheet: View {
                 VStack(alignment: .leading, spacing: Spacing.m) {
                     Text("Keep this key safe")
                         .font(Typography.title)
-                        .foregroundStyle(Theme.textPrimary)
+                        .foregroundStyle(NewLook.inkPrimary)
                     Text("This file can only be opened by a future version of Squirl, using this exact key. If you lose the key, the backup can't be recovered — not even by us. Save it somewhere only you can reach.")
                         .font(Typography.body)
-                        .foregroundStyle(Theme.textSecondary)
+                        .foregroundStyle(NewLook.inkSecondary)
                 }
 
                 Text(keyBase64)
                     .font(Typography.mono12)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .textSelection(.enabled)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(Spacing.l)
-                    .background(Theme.surface2, in: .rect(cornerRadius: Radius.card))
+                    .background(NewLook.tintNeutral, in: .rect(cornerRadius: Radius.card))
                     .accessibilityLabel("Recovery key")
                     .accessibilityValue(keyBase64)
 
@@ -75,7 +75,7 @@ struct RecoveryKeySheet: View {
             .padding(.horizontal, Spacing.l)
             .padding(.top, Spacing.section)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Theme.background.ignoresSafeArea())
+            .background(NewLook.screen.ignoresSafeArea())
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done", action: onDone)

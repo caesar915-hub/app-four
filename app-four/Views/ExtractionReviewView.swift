@@ -30,82 +30,94 @@ struct ExtractionReviewView: View {
     private let sleepDurations = [2.0, 4.0, 6.0, 8.0, 10.0]
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
+            NewLookNavBar("Edit check-in") {
+                cancelPill
+            } trailing: {
+                savePill
+            }
             ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    whenField
-                    moodField
-                    energyField
-                    focusField
-                    sleepField
-                    medicationsField
-                    emotionsField
-                    sideEffectsField
-                    Button("Save corrections") { save() }
-                        .buttonStyle(.primary)
-                        .padding(.top, Spacing.l)
+                VStack(alignment: .leading, spacing: Spacing.m) {
+                    whenCard
+                    signalsCard
+                    sleepCard
+                    medicationsCard
+                    emotionsCard
+                    sideEffectsCard
                 }
                 .padding(.horizontal, Spacing.l)
                 .padding(.bottom, Spacing.l)
             }
-            .background(Theme.background.ignoresSafeArea())
-            .scrollContentBackground(.hidden)
-            .navigationTitle("Edit check-in")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(Theme.background, for: .navigationBar)
-            .tint(Theme.accent)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { viewModel.cancel(); dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") { save() }.fontWeight(.semibold)
-                }
-            }
         }
+        .background(NewLook.screen.ignoresSafeArea())
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
         .onAppear(perform: syncCustomHours)
     }
 
-    // MARK: - Field scaffold (hairline-separated, not cards)
+    // MARK: - Nav pills
 
-    private func field<H: View, C: View>(@ViewBuilder header: () -> H, @ViewBuilder content: () -> C) -> some View {
-        VStack(alignment: .leading, spacing: 0) {
-            VStack(alignment: .leading, spacing: Spacing.m) {
-                header()
-                content()
-            }
-            .padding(.vertical, Spacing.l)
-            Divider().overlay(Theme.separator)
+    private var cancelPill: some View {
+        Button {
+            viewModel.cancel()
+            dismiss()
+        } label: {
+            Image(systemName: "chevron.backward")
+                .font(Typography.headline)
+                .foregroundStyle(NewLook.selection)
+                .frame(width: 44, height: 44)
+                .background(NewLook.card, in: .circle)
         }
+        .accessibilityLabel("Cancel")
     }
 
-    private func numberedHeader<T: View>(_ number: String, _ name: String, @ViewBuilder trailing: () -> T) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
-            Text(number).font(Typography.mono12).foregroundStyle(Theme.accent)
-            Text(name).cardEyebrow()
+    private var savePill: some View {
+        Button(action: save) {
+            Text("Save")
+                .font(Typography.headline)
+                .foregroundStyle(NewLook.selection)
+                .padding(.horizontal, Spacing.l)
+                .frame(height: 44)
+                .background(NewLook.card, in: .capsule)
+        }
+        .accessibilityLabel("Save corrections")
+    }
+
+    // MARK: - Card scaffold
+
+    private func cardHeader(_ title: String, @ViewBuilder trailing: () -> some View = { EmptyView() }) -> some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(title)
+                .font(Typography.headline)
+                .foregroundStyle(NewLook.inkPrimary)
             Spacer()
             trailing()
         }
     }
 
-    /// The "Great · bright, thriving" current-value line: name accent, synonym muted.
+    private func groupEyebrow(_ text: String) -> some View {
+        Text(text)
+            .font(Typography.label)
+            .textCase(.uppercase)
+            .tracking(0.6)
+            .foregroundStyle(NewLook.inkSecondary)
+    }
+
+    /// The "Great · bright, thriving" current-value line: name in selection accent, synonym muted.
     @ViewBuilder
     private func synonym(_ name: String?, _ syn: String?) -> some View {
         if let name {
-            let nameText = Text(name).font(Typography.caption.weight(.semibold)).foregroundStyle(Theme.accent)
-            let synText = Text(syn.map { " · \($0)" } ?? "").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+            let nameText = Text(name).font(Typography.caption.weight(.semibold)).foregroundStyle(NewLook.selection)
+            let synText = Text(syn.map { " · \($0)" } ?? "").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
             Text("\(nameText)\(synText)")
         }
     }
 
-    // MARK: - 01 When
+    // MARK: - When
 
-    private var whenField: some View {
-        field {
-            numberedHeader("01", "When") { EmptyView() }
-        } content: {
+    private var whenCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            cardHeader("When")
             HStack(spacing: Spacing.s) {
                 dateBox("Date") {
                     DatePicker("", selection: $viewModel.date, in: ...Date(), displayedComponents: .date)
@@ -117,51 +129,57 @@ struct ExtractionReviewView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .newLookCard()
     }
 
     private func dateBox<P: View>(_ label: String, @ViewBuilder picker: () -> P) -> some View {
         HStack {
-            Text(label).font(Typography.caption).foregroundStyle(Theme.textSecondary)
+            Text(label).font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
             Spacer()
             picker()
         }
         .padding(.horizontal, Spacing.m)
         .padding(.vertical, Spacing.s)
         .frame(maxWidth: .infinity)
-        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.control))
-        .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(Theme.separator, lineWidth: 1))
+        .background(NewLook.card, in: .rect(cornerRadius: Radius.control))
+        .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(NewLook.hairline, lineWidth: 1))
     }
 
-    // MARK: - 02/03/04 Mood / Energy / Focus
+    // MARK: - Signals (Mood · Energy · Focus grouped)
 
-    private var moodField: some View {
-        field {
-            numberedHeader("02", "Mood") {
+    private var signalsCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            cardHeader("Signals")
+            signalRow("MOOD", ramp: {
+                GlyphRampPicker(kind: .mood, selection: moodBinding, ringTint: NewLook.selection)
+            }, value: {
                 let level = MoodLevel(rawValue: viewModel.mood)
                 synonym(level?.displayLabel, level?.subtitle)
-            }
-        } content: {
-            GlyphRampPicker(kind: .mood, selection: moodBinding)
-        }
-    }
-
-    private var energyField: some View {
-        field {
-            numberedHeader("03", "Energy") {
+            })
+            signalRow("ENERGY", ramp: {
+                GlyphRampPicker(kind: .energy, selection: energyBinding, ringTint: NewLook.selection)
+            }, value: {
                 synonym(viewModel.energy?.displayLabel, viewModel.energy?.subtitle)
-            }
-        } content: {
-            GlyphRampPicker(kind: .energy, selection: energyBinding)
+            })
+            signalRow("FOCUS", ramp: {
+                GlyphRampPicker(kind: .focus, selection: focusBinding, ringTint: NewLook.selection)
+            }, value: {
+                synonym(viewModel.focus?.displayLabel, viewModel.focus?.subtitle)
+            })
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .newLookCard()
     }
 
-    private var focusField: some View {
-        field {
-            numberedHeader("04", "Focus") {
-                synonym(viewModel.focus?.displayLabel, viewModel.focus?.subtitle)
+    private func signalRow<R: View, V: View>(_ label: String, @ViewBuilder ramp: () -> R, @ViewBuilder value: () -> V) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.xs) {
+            HStack {
+                groupEyebrow(label)
+                Spacer()
+                value()
             }
-        } content: {
-            GlyphRampPicker(kind: .focus, selection: focusBinding)
+            ramp()
         }
     }
 
@@ -175,67 +193,55 @@ struct ExtractionReviewView: View {
         Binding(get: { viewModel.focus }, set: { viewModel.setFocus($0) })
     }
 
-    // MARK: - 05 Sleep (named scale, no synonyms, + hours)
+    // MARK: - Sleep
 
-    private var sleepField: some View {
-        field {
-            HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
-                SignalGlyph(.sleep, size: 16, decorative: true)
-                Text("05").font(Typography.mono12).foregroundStyle(Theme.accent)
-                Text("Sleep").cardEyebrow()
-                Spacer()
-                Text("no synonyms").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+    private var sleepCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            cardHeader("Sleep") {
+                HStack(spacing: Spacing.xs) {
+                    SignalGlyph(.sleep, size: 16, decorative: true)
+                    Text("no synonyms").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
+                }
             }
-        } content: {
-            VStack(alignment: .leading, spacing: Spacing.s) {
-                HStack(spacing: Spacing.xs) {
-                    ForEach(SleepLevel.allCases, id: \.self) { level in
-                        segPill(level.rawValue.capitalized,
-                                on: viewModel.sleepLevel == level,
-                                tint: Palette.sleepIndigo,
-                                selectedText: Theme.textPrimary) {
-                            viewModel.setSleepLevel(viewModel.sleepLevel == level ? nil : level)
-                        }
+            FlowLayout(spacing: Spacing.s) {
+                ForEach(SleepLevel.allCases, id: \.self) { level in
+                    chipButton(level.rawValue.capitalized, selected: viewModel.sleepLevel == level) {
+                        viewModel.setSleepLevel(viewModel.sleepLevel == level ? nil : level)
                     }
                 }
-                HStack(spacing: Spacing.xs) {
-                    ForEach(sleepDurations, id: \.self) { hours in
-                        segPill("\(Int(hours))h",
-                                on: viewModel.sleepHours == hours,
-                                tint: Theme.accent,
-                                selectedText: Theme.accent) {
-                            viewModel.setSleepHours(viewModel.sleepHours == hours ? nil : hours)
-                            customHoursText = ""
-                        }
+            }
+            FlowLayout(spacing: Spacing.s) {
+                ForEach(sleepDurations, id: \.self) { hours in
+                    chipButton("\(Int(hours))h", selected: viewModel.sleepHours == hours) {
+                        viewModel.setSleepHours(viewModel.sleepHours == hours ? nil : hours)
+                        customHoursText = ""
                     }
-                    customHoursBox
                 }
+                customHoursBox
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .newLookCard()
     }
 
-    private func segPill(_ text: String, on: Bool, tint: Color, selectedText: Color, action: @escaping () -> Void) -> some View {
+    /// A New Look selectable chip (standard selection green). Tapping toggles via `action`.
+    private func chipButton(_ text: String, selected: Bool, role: NewLookChipRole = .standard, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Text(text)
-                .font(Typography.caption.weight(.semibold))
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, Spacing.s)
-                .background(on ? tint.opacity(0.16) : Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.control))
-                .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(on ? tint : Theme.separator, lineWidth: 1))
-                .foregroundStyle(on ? selectedText : Theme.textSecondary)
+            Text(text).newLookChip(selected: selected, role: role)
         }
         .buttonStyle(.plain)
-        .accessibilityAddTraits(on ? [.isSelected] : [])
+        .accessibilityAddTraits(selected ? [.isSelected] : [])
     }
 
     private var customHoursBox: some View {
         HStack(spacing: Spacing.xs) {
             TextField("7.5", text: $customHoursText)
                 .keyboardType(.decimalPad)
-                .multilineTextAlignment(.trailing)
-                .font(Typography.mono12)
-                .foregroundStyle(Theme.textPrimary)
-                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
+                .font(Typography.caption)
+                .foregroundStyle(NewLook.inkPrimary)
+                .fixedSize()
+                .frame(minWidth: 24)
                 .onChange(of: customHoursText) { _, text in
                     let norm = text.replacingOccurrences(of: ",", with: ".")
                     if let h = Double(norm) {
@@ -245,13 +251,12 @@ struct ExtractionReviewView: View {
                         viewModel.setSleepHours(nil)
                     }
                 }
-            Text("h").font(Typography.mono12).foregroundStyle(Theme.textSecondary)
+            Text("h").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
         }
-        .padding(.horizontal, Spacing.s)
+        .padding(.horizontal, Spacing.m)
         .padding(.vertical, Spacing.s)
-        .frame(maxWidth: .infinity)
-        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.control))
-        .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(isCustomHours ? Theme.accent : Theme.separator, lineWidth: 1))
+        .background(NewLook.card, in: .capsule)
+        .overlay(Capsule().strokeBorder(isCustomHours ? NewLook.selection : NewLook.hairline, lineWidth: 1))
         .accessibilityLabel("Custom sleep hours")
     }
 
@@ -266,24 +271,23 @@ struct ExtractionReviewView: View {
         }
     }
 
-    // MARK: - 06 Medications (inline-expand)
+    // MARK: - Medications (inline-expand)
 
-    private var medicationsField: some View {
-        field {
-            numberedHeader("06", "Medications") {
-                Text("Stimulants · no limit").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+    private var medicationsCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            cardHeader("Medications") {
+                Text("Stimulants · no limit").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
             }
-        } content: {
-            VStack(alignment: .leading, spacing: Spacing.s) {
-                ForEach(viewModel.medications, id: \.editRowID) { med in
-                    selectedMedCard(med)
-                }
-                medGrid
-                Text("Tap to add · expands inline · × to remove · independent events")
-                    .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary)
+            ForEach(viewModel.medications, id: \.editRowID) { med in
+                selectedMedCard(med)
             }
+            medGrid
+            Text("Tap to add · expands inline · × to remove · independent events")
+                .font(Typography.caption)
+                .foregroundStyle(NewLook.inkSecondary)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .newLookCard()
     }
 
     private func selectedMedCard(_ med: MedEvent) -> some View {
@@ -291,21 +295,21 @@ struct ExtractionReviewView: View {
         return VStack(alignment: .leading, spacing: Spacing.s) {
             HStack(spacing: Spacing.s) {
                 SignalGlyph(.medication, size: 22, decorative: true)
-                Text(med.name).font(Typography.subheadline.weight(.semibold)).foregroundStyle(Theme.textPrimary)
+                Text(med.name).font(Typography.subheadline.weight(.semibold)).foregroundStyle(NewLook.inkPrimary)
                 Spacer()
                 Button { viewModel.toggleMedTaken(med) } label: {
                     Text(med.taken ? "Taken" : "Missed")
                         .font(Typography.label)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(med.taken ? NewLook.onSelection : NewLook.inkPrimary)
                         .padding(.horizontal, Spacing.s)
                         .padding(.vertical, Spacing.xs)
-                        .background(med.taken ? Palette.medication : Theme.textSecondary, in: Capsule())
+                        .background(med.taken ? Palette.medication : NewLook.tintNeutral, in: .capsule)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Mark \(med.name) as taken or missed")
                 .accessibilityValue(med.taken ? "Taken" : "Missed")
                 Button { viewModel.removeMedication(id: med.editRowID) } label: {
-                    Image(systemName: "xmark").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+                    Image(systemName: "xmark").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Remove \(med.name)")
@@ -314,49 +318,37 @@ struct ExtractionReviewView: View {
             if let entry {
                 Grid(alignment: .leading, horizontalSpacing: Spacing.s, verticalSpacing: Spacing.s) {
                     GridRow(alignment: .top) {
-                        Text("Dose").cardEyebrow()
+                        groupEyebrow("Dose")
                         FlowLayout(spacing: Spacing.xs) {
                             ForEach(entry.doseOptions, id: \.self) { dose in
-                                dosePill(dose, on: med.dose == dose) { viewModel.setMedDose(med, dose: dose) }
+                                chipButton(dose, selected: med.dose == dose, role: .medication) {
+                                    viewModel.setMedDose(med, dose: dose)
+                                }
                             }
                         }
                     }
                     GridRow {
-                        Text("Time").cardEyebrow()
-                        Text("\(med.time ?? "08:00") · info").font(Typography.mono12).foregroundStyle(Theme.textSecondary)
+                        groupEyebrow("Time")
+                        Text("\(med.time ?? "08:00") · info").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
                     }
                     GridRow(alignment: .center) {
-                        Text("Dur").cardEyebrow()
+                        groupEyebrow("Dur")
                         HStack(spacing: Spacing.xs) {
                             DurationField(current: med.durationHours, fallback: entry.durationHours) {
                                 viewModel.setMedDuration(med, hours: $0)
                             }
-                            Text("shortest").font(Typography.caption).foregroundStyle(Theme.textSecondary)
+                            Text("shortest").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
                         }
                     }
                 }
             } else if let dose = med.dose {
-                Text(dose).font(Typography.caption).foregroundStyle(Theme.textSecondary)
+                Text(dose).font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
             }
         }
         .padding(Spacing.m)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.cardBackground, in: RoundedRectangle(cornerRadius: Radius.card))
-        .overlay(RoundedRectangle(cornerRadius: Radius.card).strokeBorder(Palette.medication.opacity(0.35), lineWidth: 1))
-    }
-
-    private func dosePill(_ text: String, on: Bool, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(text)
-                .font(Typography.caption.weight(.semibold))
-                .padding(.horizontal, Spacing.s)
-                .padding(.vertical, Spacing.xs)
-                .background(on ? Palette.medication.opacity(0.18) : Theme.surface2, in: Capsule())
-                .overlay(Capsule().strokeBorder(on ? Palette.medication : Theme.separator, lineWidth: 1))
-                .foregroundStyle(on ? Palette.medication : Theme.textSecondary)
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(on ? [.isSelected] : [])
+        .background(NewLook.card, in: .rect(cornerRadius: Radius.newLookCard))
+        .overlay(RoundedRectangle(cornerRadius: Radius.newLookCard).strokeBorder(Palette.medication.opacity(0.35), lineWidth: 1))
     }
 
     /// Per-med duration input — backed by local `@State` so partial/fractional typing
@@ -373,19 +365,19 @@ struct ExtractionReviewView: View {
                 TextField(Self.format(fallback), text: $text)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
-                    .font(Typography.mono12)
-                    .foregroundStyle(Theme.textPrimary)
+                    .font(Typography.caption)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .fixedSize()
                     .onChange(of: text) { _, value in
                         let norm = value.replacingOccurrences(of: ",", with: ".")
                         onCommit(norm.isEmpty ? nil : Double(norm))
                     }
-                Text("h").font(Typography.mono12).foregroundStyle(Theme.textSecondary)
+                Text("h").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
             }
             .padding(.horizontal, Spacing.s)
             .padding(.vertical, Spacing.xs)
-            .background(Theme.surface2, in: RoundedRectangle(cornerRadius: Radius.control))
-            .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(Theme.separator, lineWidth: 1))
+            .background(NewLook.card, in: .rect(cornerRadius: Radius.control))
+            .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(NewLook.hairline, lineWidth: 1))
             .onAppear { if let h = current { text = Self.format(h) } }
             .accessibilityLabel("Duration hours")
         }
@@ -399,61 +391,51 @@ struct ExtractionReviewView: View {
         FlowLayout(spacing: Spacing.s) {
             ForEach(MedicationCatalog.all) { entry in
                 let on = viewModel.medications.contains { $0.name == entry.name }
-                Button {
+                chipButton(entry.name, selected: on, role: .medication) {
                     if on { viewModel.removeMedication(entry.name) } else { viewModel.addMedication(entry.name) }
-                } label: {
-                    Text(entry.name)
-                        .font(Typography.caption.weight(.semibold))
-                        .padding(.horizontal, Spacing.m)
-                        .padding(.vertical, Spacing.s)
-                        .background(on ? Palette.medication.opacity(0.16) : Theme.cardBackground, in: Capsule())
-                        .overlay(Capsule().strokeBorder(on ? Palette.medication : Theme.separator, lineWidth: 1))
-                        .foregroundStyle(on ? Palette.medication : Theme.textPrimary)
                 }
-                .buttonStyle(.plain)
                 .accessibilityLabel("\(entry.name)\(on ? ", selected" : "")")
-                .accessibilityAddTraits(on ? [.isSelected] : [])
             }
         }
     }
 
-    // MARK: - 07/08 Emotions / Side effects
+    // MARK: - Emotions / Side effects
 
-    private var emotionsField: some View {
-        field {
-            numberedHeader("07", "Emotions") { EmptyView() }
-        } content: {
-            VStack(alignment: .leading, spacing: Spacing.m) {
-                ForEach(emotionGroups) { group in
-                    VStack(alignment: .leading, spacing: Spacing.s) {
-                        Text(group.label).font(Typography.caption).foregroundStyle(Theme.textSecondary)
-                        FlowLayout(spacing: Spacing.s) {
-                            ForEach(group.items, id: \.self) { emotion in
-                                Chip.filter(emotion.capitalized, isSelected: viewModel.emotions.contains(emotion)) {
-                                    viewModel.toggleEmotion(emotion)
-                                }
-                                .accessibilityLabel("\(emotion)\(viewModel.emotions.contains(emotion) ? ", selected" : "")")
+    private var emotionsCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            cardHeader("Emotions")
+            ForEach(emotionGroups) { group in
+                VStack(alignment: .leading, spacing: Spacing.s) {
+                    groupEyebrow(group.label)
+                    FlowLayout(spacing: Spacing.s) {
+                        ForEach(group.items, id: \.self) { emotion in
+                            chipButton(emotion.capitalized, selected: viewModel.emotions.contains(emotion)) {
+                                viewModel.toggleEmotion(emotion)
                             }
+                            .accessibilityLabel("\(emotion)\(viewModel.emotions.contains(emotion) ? ", selected" : "")")
                         }
                     }
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .newLookCard()
     }
 
-    private var sideEffectsField: some View {
-        field {
-            numberedHeader("08", "Side effects") { EmptyView() }
-        } content: {
+    private var sideEffectsCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            cardHeader("Side effects")
             FlowLayout(spacing: Spacing.s) {
                 ForEach(commonSideEffects, id: \.self) { effect in
-                    Chip.filter(effect.capitalized, isSelected: viewModel.sideEffects.contains(effect)) {
+                    chipButton(effect.capitalized, selected: viewModel.sideEffects.contains(effect)) {
                         viewModel.toggleSideEffect(effect)
                     }
                     .accessibilityLabel("\(effect)\(viewModel.sideEffects.contains(effect) ? ", selected" : "")")
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .newLookCard()
     }
 
     // MARK: - Commit

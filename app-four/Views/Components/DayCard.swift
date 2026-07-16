@@ -11,7 +11,7 @@ struct DayCard: View {
     let onToggleExpand: () -> Void
     let onTapRecording: (UUID) -> Void
 
-    private let shape = RoundedRectangle(cornerRadius: Radius.card, style: .continuous)
+    private let shape = RoundedRectangle(cornerRadius: Radius.newLookCard, style: .continuous)
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -21,23 +21,20 @@ struct DayCard: View {
             .buttonStyle(.plain)
 
             if isExpanded && !day.nodes.isEmpty {
-                VStack(alignment: .leading, spacing: 0) {
-                    ForEach(Array(day.nodes.enumerated()), id: \.element.id) { index, node in
-                        TimelineRow(
-                            node: node,
-                            isLast: index == day.nodes.count - 1,
-                            onTapRecording: onTapRecording
-                        )
+                VStack(alignment: .leading, spacing: Spacing.xxl) {
+                    ForEach(day.nodes) { node in
+                        TimelineRow(node: node, onTapRecording: onTapRecording)
                     }
                 }
                 .padding(.horizontal, Spacing.l)
-                .padding(.top, Spacing.m)
+                .padding(.top, Spacing.l)
                 .padding(.bottom, Spacing.l)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.cardBackground)
+        .background(NewLook.card)
         .clipShape(shape)
+        .newLookCardShadow()
     }
 }
 

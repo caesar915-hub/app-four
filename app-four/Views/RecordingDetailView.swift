@@ -24,9 +24,9 @@ struct RecordingDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Spacing.l) {
+            VStack(alignment: .leading, spacing: Spacing.m) {
                 titleBlock
-                if hasSignals { signalGlyphRow }
+                if hasSignals { signalHeroStrip }
                 ADHDSummarySection(recording: viewModel.recording)
                 transcriptSection
                 audioCard
@@ -35,15 +35,21 @@ struct RecordingDetailView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(Spacing.l)
         }
-        .background(Theme.background.ignoresSafeArea())
+        .background(NewLook.screen.ignoresSafeArea())
+        // The medication bar rides above as its own floating Paper & Pollen element — an accepted
+        // within-screen seam (spec 032, T017): it is a shared overlay, not part of this re-skin.
         .medicationBarOverlay()
         // Pushed from the calendar / insights (spec 023): a standard back control returns to the day;
         // the date rides the nav bar and the ⋯ menu carries the quiet Delete affordance.
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Theme.background, for: .navigationBar)
+        .toolbarBackground(NewLook.screen, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text(navDate).cardEyebrow()
+                Text(navDate)
+                    .font(Typography.label)
+                    .textCase(.uppercase)
+                    .tracking(0.6)
+                    .foregroundStyle(NewLook.inkSecondary)
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
@@ -55,10 +61,9 @@ struct RecordingDetailView: View {
                 } label: {
                     Image(systemName: "pencil")
                         .font(Typography.subheadline)
-                        .foregroundStyle(Theme.textPrimary)
-                        .frame(width: 30, height: 30)
-                        .background(Theme.cardBackground, in: Circle())
-                        .overlay(Circle().strokeBorder(Theme.separator, lineWidth: 1))
+                        .foregroundStyle(NewLook.inkPrimary)
+                        .frame(width: 44, height: 44)
+                        .background(NewLook.card, in: .circle)
                 }
                 .accessibilityLabel("Edit check-in")
             }
@@ -86,11 +91,11 @@ struct RecordingDetailView: View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
             Text(viewModel.recording.displayTitle)
                 .font(Typography.title)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
                 .fixedSize(horizontal: false, vertical: true)
             Text(metaLine)
                 .font(Typography.mono12)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }
@@ -105,7 +110,7 @@ struct RecordingDetailView: View {
         return "\(time) · \(viewModel.recording.durationString)"
     }
 
-    // MARK: - Signal glyph summary row
+    // MARK: - Signal hero strip (glyph · level word · micro-label · level bar)
 
     private var hasSignals: Bool {
         viewModel.recording.mood != nil
@@ -113,32 +118,68 @@ struct RecordingDetailView: View {
             || viewModel.recording.focusLevel != nil
     }
 
-    private var signalGlyphRow: some View {
-        HStack(alignment: .top, spacing: Spacing.xl) {
-            if let mood = viewModel.recording.mood {
-                glyphSummaryItem(.mood, level: MoodLevel(name: mood)?.numericValue, label: mood.capitalized)
+    private var signalHeroStrip: some View {
+        HStack(alignment: .top, spacing: Spacing.s) {
+            if let mood = viewModel.recording.mood, let level = MoodLevel(name: mood) {
+                heroColumn(.mood, level: level.numericValue, word: mood.capitalized, tint: level.deepFill)
             }
             // energyLevel / focusLevel are stored as the canonical enum rawValue
             // ("charged", "lockedIn"); match it verbatim and show the human displayLabel.
             if let energy = viewModel.recording.energyLevel, let level = EnergyLevel(rawValue: energy) {
-                glyphSummaryItem(.energy, level: level.numericValue, label: level.displayLabel)
+                heroColumn(.energy, level: level.numericValue, word: level.displayLabel, tint: rampColor(.energy, level.numericValue))
             }
             if let focus = viewModel.recording.focusLevel, let level = FocusLevel(rawValue: focus) {
-                glyphSummaryItem(.focus, level: level.numericValue, label: level.displayLabel)
+                heroColumn(.focus, level: level.numericValue, word: level.displayLabel, tint: rampColor(.focus, level.numericValue))
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .newLookCard()
     }
 
-    private func glyphSummaryItem(_ kind: GlyphSignal, level: Int?, label: String) -> some View {
+    private func heroColumn(_ kind: GlyphSignal, level: Int?, word: String, tint: Color) -> some View {
         VStack(spacing: Spacing.xs) {
             SignalGlyph(kind, level: level, size: 30, decorative: true)
-            Text(label)
+            Text(word)
+                .font(Typography.headline)
+                .foregroundStyle(NewLook.inkPrimary)
+            Text(kind.title)
                 .font(Typography.label)
-                .foregroundStyle(Theme.textSecondary)
+                .textCase(.uppercase)
+                .tracking(0.6)
+                .foregroundStyle(NewLook.inkSecondary)
+            levelBar(level: level, tint: tint)
         }
+        .frame(maxWidth: .infinity)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(kind.title): \(label)")
+        .accessibilityLabel("\(kind.title): \(word)")
+    }
+
+    private func levelBar(level: Int?, tint: Color) -> some View {
+        GeometryReader { proxy in
+            let fraction = CGFloat(level ?? 0) / 5
+            ZStack(alignment: .leading) {
+                Capsule().fill(NewLook.hairline)
+                Capsule().fill(tint).frame(width: max(0, proxy.size.width * fraction))
+            }
+        }
+        .frame(height: 4)
+    }
+
+    private func rampColor(_ kind: GlyphSignal, _ level: Int) -> Color {
+        guard level >= 1, level <= 5 else { return NewLook.inkSecondary }
+        switch kind {
+        case .energy: return Palette.energyRamp[level - 1]
+        case .focus:  return Palette.focusRamp[level - 1]
+        default:      return NewLook.selection
+        }
+    }
+
+    // MARK: - Card header
+
+    private func cardHeader(_ title: String) -> some View {
+        Text(title)
+            .font(Typography.headline)
+            .foregroundStyle(NewLook.inkPrimary)
     }
 
     // MARK: - Transcript
@@ -152,12 +193,12 @@ struct RecordingDetailView: View {
                 }
             } label: {
                 HStack {
-                    Text("Transcript").cardEyebrow()
+                    cardHeader("Transcript")
                     Spacer()
                     transcriptionStatusPill
                     Image(systemName: "chevron.down")
                         .font(Typography.caption)
-                        .foregroundStyle(Theme.textSecondary)
+                        .foregroundStyle(NewLook.inkSecondary)
                         .rotationEffect(.degrees(isTranscriptExpanded ? 180 : 0))
                         .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: isTranscriptExpanded)
                         .accessibilityHidden(true)
@@ -179,23 +220,23 @@ struct RecordingDetailView: View {
                         ProgressView().scaleEffect(0.8)
                         Text("Transcribing…")
                             .font(Typography.body)
-                            .foregroundStyle(Theme.textSecondary)
+                            .foregroundStyle(NewLook.inkSecondary)
                     }
                     .padding(.vertical, Spacing.s)
                 } else if viewModel.recording.fullTranscriptText.isEmpty {
                     Text("No transcript available yet.")
                         .font(Typography.body)
-                        .foregroundStyle(Theme.textSecondary)
+                        .foregroundStyle(NewLook.inkSecondary)
                 } else {
                     Text(viewModel.recording.transcriptText)
                         .font(Typography.body)
-                        .foregroundStyle(Theme.textPrimary)
+                        .foregroundStyle(NewLook.inkPrimary)
                         .lineSpacing(4)
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .card()
+        .newLookCard()
     }
 
     @ViewBuilder
@@ -204,7 +245,7 @@ struct RecordingDetailView: View {
         case .recorded:
             statusLabel("Recorded", color: Theme.meadowAmber)
         case .transcribing:
-            statusLabel("Transcribing", color: Theme.accent)
+            statusLabel("Transcribing", color: NewLook.selection)
         case .completed:
             statusLabel("Completed", color: Theme.statusDone)
         case .failed:
@@ -227,11 +268,11 @@ struct RecordingDetailView: View {
 
     private var audioCard: some View {
         VStack(alignment: .leading, spacing: Spacing.s) {
-            Text("Audio").cardEyebrow()
+            cardHeader("Audio")
             AudioPlayerView(recording: viewModel.recording, storageService: services.storageService)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .card()
+        .newLookCard()
     }
 
     // MARK: - Delete (visible destructive action)

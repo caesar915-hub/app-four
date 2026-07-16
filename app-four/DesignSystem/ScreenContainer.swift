@@ -50,10 +50,14 @@ struct ScreenContainer<Content: View>: View {
             primaryContent
                 .navigationTitle(title)
                 .navigationBarTitleDisplayMode(.inline)
-                .background(Theme.background.ignoresSafeArea())
-                .toolbarBackground(Theme.background, for: .navigationBar)
+                .background(NewLook.screen.ignoresSafeArea())
+                .toolbarBackground(NewLook.screen, for: .navigationBar)
         }
         .tint(Theme.meadowGreen)
+        // Tab-bar appearance is a preference that flows UP from tab content — it must live here
+        // (every tab's root), not on the TabView, where it silently no-ops.
+        .toolbarBackground(NewLook.screen, for: .tabBar)
+        .toolbarBackgroundVisibility(.visible, for: .tabBar)
     }
 
     // MARK: - Private

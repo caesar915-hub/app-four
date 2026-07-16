@@ -95,9 +95,72 @@ Glyphs encode level by **shape + hue + fill simultaneously** (triple-redundant; 
 - **Edit sheet (`ExtractionReviewView`).** One scrolling modal reached by "Edit check-in", in order: **When** (date/time) · **Mood · Energy · Focus** (glyph pickers showing the named 1–5 level **+ a synonym line**, e.g. "Great · bright, thriving") · **Sleep** (named scale Restless→Deep, **no synonyms**, with 2/4/6/8/10h presets **plus a custom-hours text input**; bed icon, ramp deferred) · **Medications** · **Emotions · Side-effects** (chip groups). **Medications:** **Stimulants only** (Non-stimulants + Off-label removed for now); multi-select, **removable (×)**, **no count limit**; each selected med uses the **inline-expand (P1)** layout — dosage from the table, an **info-only default time**, and a **duration text box defaulted to the shortest** for that med. Each med is an **independent `MedicationEvent`** (same timestamp allowed). "Save corrections" writes `RecordingTag(source: .userCorrected)` → trains the personal lexicon. Low friction here is functional: if correcting is a chore, the NLP never learns.
 - **Medication bar.** Capsule icon + single medication purple. The bar **fills from empty (just taken) to full (worn off)** over `MedicationEvent.durationHours`; onset (~first 20 min) shows a gentle pulse ("kicking in"). One consistent purple — only the fill changes, so onset and fading never share a color. Worn-off → quiet, overlay fades out. Inside the medication card/detail, the fuller **effect curve** (rise → peak → decline) may be shown where there's room.
 
+## New Look (spec 033) — app-wide visual language
+
+A cool, iOS-native alternative to Paper & Pollen, originally approved from the Figma a-screens
+(file Squil-Design → "Screens (v2)": a03 Edit check-in, a02 Recording detail, a01 Calendar — a01
+gated on spec-029) and piloted on Edit check-in + Recording detail (spec 032). **Spec 033
+(2026-07-11) supersedes that two-screen pilot scope: New Look is now the app-wide visual
+language** — every screen migrates to `NewLook.screen` / `NewLook.card` / `.newLookCard()` and the
+New Look palette. `Theme` is retained only for the semantic accent/status colours that sit outside
+the New Look palette: `Theme.accent`, `Theme.meadowGreen`, `Theme.meadowAmber`,
+`Theme.meadowGradient`, `Theme.statusDone`, `Theme.statusInProgress`, `Theme.danger`. Tokens live
+in `SquirlDesignSystem/NewLook.swift`, additive to that retained `Theme` subset; `Palette` and
+`Typography` are untouched.
+
+- **Palette** (adaptive light/dark; dark derived per iOS convention, QA-validated):
+
+  | Token | Light | Dark | Role |
+  |---|---|---|---|
+  | `NewLook.screen` | `#EFF2EB` | `#12140F` | screen ground (cool sage) |
+  | `NewLook.card` | `#FFFFFF` | `#1C1E19` | card surface (borderless) |
+  | `NewLook.inkPrimary` | `#1C1B1F` | `#F2F3EE` | primary text |
+  | `NewLook.inkSecondary` | `#8A8A8E` | `#9BA09A` | secondary text / labels |
+  | `NewLook.hairline` | `#DBDDDE` | `#33362F` | chip / field borders |
+  | `NewLook.tintNeutral` | `#ECEAE6` | `#272A22` | grooves / tracks / segmented-control fills / unselected med chip (T044) |
+  | `NewLook.selection` | `#54B492` | `#5FC49F` | selected chip fill (non-medication) |
+  | `NewLook.onInk` | `#F2F3EE` | `#1C1B1F` | inverse label on an `inkPrimary` fill (stop button, T043) |
+  | `NewLook.onSelection` | `#FFFFFF` | `#1C1B1F` | label on a selection/medication fill (white per Figma in light; dark ink in dark for AA) |
+  | (medication) | `#7E5CA8` | `#957BC1` | reuses `Palette.medication`; dark nudged from `#9277BE` for AA text on the dark card (2026-07-16) |
+  | `Palette.medicationFillEnd` | `#AF99C3` | `#B3A1D6` | light end of the med-bar dose-track gradient |
+  | `Palette.sleepIndigo` | `#5566A6` | `#8E9BD4` | sleep chip/text; dark variant lightened for AA on the dark card (2026-07-15) |
+
+  > **Known contrast limitation (`NewLook.inkSecondary`, light mode):** `#8A8A8E` measures **3.0:1**
+  > on `screen` and **3.4:1** on `card` — below WCAG AA's 4.5:1 floor for normal-size body text
+  > (dark mode passes at ~7:1). This is the Figma "Tiimo Colors" value, kept **1:1 with Figma by
+  > owner decision (2026-07-12)** rather than darkened. Secondary/caption/label text using this
+  > token in light mode does not clear AA; accept as a documented limitation, not a bug. Revisit
+  > only with explicit approval to deviate from Figma (a compliant value is ~`#6C6C70`).
+
+  > **Known contrast limitation (`NewLook.selection`, light mode):** the Figma green `#54B492`
+  > measures **2.52:1** on white — below AA for the white chip label (4.5:1), for green text on
+  > the card (Save/Cancel pills, synonym line), and for the ramp-picker selection ring's 3:1
+  > non-text floor; the dose-track gradient end `#AF99C3` is **2.14:1** against its groove.
+  > All four are Figma 1:1 values kept **by owner decision (2026-07-16)** — same ruling as
+  > `inkSecondary`. Dark mode is unaffected: the dark values are derived, and every derived-value
+  > failure was fixed the same day (`onSelection` dark ink label, medication dark nudge).
+
+- **Cards** — `.newLookCard()`: white, **radius 20** (`Radius.newLookCard`), **no border** (contrast
+  with `.card()`'s bordered radius-16), two-layer shadow — `0.05`-opacity black offset `(0, 2)`
+  radius `8` + `0.03`-opacity black offset `(0, 1)` radius `2` (replaces the earlier single-layer
+  approximation). 16px screen gutter.
+- **Chips/pills** — `.newLookChip(selected:role:)`: unselected = white + hairline + ink; selected =
+  solid `selection` (or `Palette.medication` for `role == .medication`) + `onSelection` label
+  (white in light per Figma; dark ink in dark for AA); capsule.
+- **Nav** — `NewLookNavBar`: leading pill · **centered title** (ZStack, width-independent) · trailing pill.
+- **Typography** — native SF (unchanged rule); the Figma Inter ramp maps to existing `Typography`
+  roles (headers → `.headline`, body → `.callout`, eyebrows → `.label`, 24pt nav title via
+  `Typography.text(24,.bold,relativeTo:.title)`); Dynamic Type preserved.
+- **Glyphs** — unchanged shapes (sprout/bolt/aperture/bed/capsule); only container/selection color
+  context changes.
+
 ## Decisions Log
 | Date | Decision | Rationale |
 |------|----------|-----------|
+| 2026-07-16 | Contrast ruling on the spec-033 review's 8 WCAG findings: **fix derived dark-mode values, keep Figma-locked light values 1:1 and log them** | Figma specs light only; dark is derived, so fixing it isn't a deviation. Fixed: `onSelection` label token (dark ink on selection/medication fills in dark), medication dark `#9277BE`→`#957BC1`, Taken/Missed toggle re-grammar (`tintNeutral`+ink). Kept+logged: selection-green light family (chip label 2.52:1, green-on-white text, ramp ring, gradient/groove 2.14:1) — see palette note. |
+| 2026-07-12 | Keep `NewLook.inkSecondary` at Figma value `#8A8A8E` despite light-mode WCAG AA failure (3.0:1 sage / 3.4:1 white, need 4.5:1) | Owner chose Figma fidelity over the contrast fix when the spec-033 accessibility audit surfaced it app-wide. Documented as a known limitation (see palette note above); dark mode unaffected (~7:1). A compliant alternative (~`#6C6C70`) is on record if revisited. |
+| 2026-07-11 | Adopt "New Look" as the app-wide visual language (spec 033), superseding spec 032's two-screen pilot scope | Two-screen pilot (Edit check-in, Recording detail) validated the language; owner approved app-wide rollout. `Theme` retained only for accent/meadow/status/danger semantic colours — every other screen migrates to `NewLook.screen` / `NewLook.card` / `.newLookCard()`. |
+| 2026-07-10 | Adopt "New Look" as a second visual language for Edit check-in + Recording detail (spec 032); dark tokens derived now; mixed P&P/New-Look shipped, no toggle | Owner adoption call after the Figma a-screens reached presentation grade; two lowest-risk screens prove the language before wider rollout. Calendar (a01) gated on spec-029. |
 | 2026-06-15 | Adopt "Paper & Pollen" design system | `/design-consultation`. Warm-paper organic identity differentiates from the blue/purple category; "refine Meadow, don't replace." |
 | 2026-06-15 | Keep shipped signal ramps; Energy stays Lemon | Owner override of the proposed Energy→Ember swap. Mood/Focus untouched. |
 | 2026-06-15 | Signal glyphs = sprout / lightning / aperture | Distinct shapes make the four signals colorblind- and grayscale-safe; chosen over sun/eye/etc. |

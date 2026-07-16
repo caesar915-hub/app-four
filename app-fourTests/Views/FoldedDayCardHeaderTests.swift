@@ -19,6 +19,11 @@ import Foundation
         r.focusLevel = focus
         return r
     }
+    private func recSleep(_ mood: String?, hours: Double?) -> Recording {
+        let r = rec(mood)
+        r.sleepHours = hours
+        return r
+    }
     private func med(_ name: String) -> MedicationEvent {
         MedicationEvent(name: name, dose: "18mg", takenAt: Date(), taken: true, durationHours: 8, source: .manual)
     }
@@ -66,5 +71,31 @@ import Foundation
         let s = summary([])
         #expect(s.isEmpty)
         #expect(DayCardSummary.emptyCopy == "No check-ins this day. That's alright.")
+    }
+
+    // MARK: - spec 034 FR-003: sleep summary derivation (most recent captured sleep)
+
+    @Test func sleepComesFromMostRecentRecording() {
+        let nodes = [
+            node(at(16), rec: recSleep("Good", hours: 6)),   // newest → wins
+            node(at(9),  rec: recSleep("Okay", hours: 8)),
+        ]
+        #expect(summary(nodes).sleep == "6h sleep")
+    }
+
+    @Test func sleepFallsBackToOlderNodeWhenNewestHasNone() {
+        let nodes = [
+            node(at(16), rec: rec("Good")),                  // newest, no sleep
+            node(at(9),  rec: recSleep("Okay", hours: 7)),
+        ]
+        #expect(summary(nodes).sleep == "7h sleep")
+    }
+
+    @Test func noSleepAnywhereYieldsNil() {
+        #expect(summary([node(at(10), rec: rec("Okay"))]).sleep == nil)
+    }
+
+    @Test func sleepHoursFormatsWithoutDecimalWhenWhole() {
+        #expect(summary([node(at(10), rec: recSleep("Okay", hours: 7))]).sleep == "7h sleep")
     }
 }

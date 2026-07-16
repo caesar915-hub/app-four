@@ -10,4 +10,6 @@ public enum Radius {
     public static let button: CGFloat = 16
     /// 15pt — signal / emotion / side-effect chips in the expanded check-in row
     public static let chip: CGFloat = 15
+    /// 20pt — New Look card radius (spec 032). Paper & Pollen keeps `card` at 16.
+    public static let newLookCard: CGFloat = 20
 }

@@ -73,10 +73,8 @@ struct RecordingMoodDisplayTests {
         #expect(rec(sideEffects: []).sideEffects().overflow == 0)
     }
 
-    @Test func sleepLineUsesSleepIndigoOrNil() {
-        #expect(rec(sleepHours: nil).sleepLine == nil)
-        let line = rec(sleepHours: 5).sleepLine
-        #expect(line?.label == "5h sleep")
-        #expect(line?.color == Palette.sleepIndigo)
+    @Test func sleepLabelFormatsHoursOrNil() {
+        #expect(rec(sleepHours: nil).sleepLabel == nil)
+        #expect(rec(sleepHours: 5).sleepLabel == "5h sleep")
     }
 }

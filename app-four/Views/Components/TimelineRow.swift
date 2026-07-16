@@ -1,185 +1,188 @@
 import SwiftUI
 
-/// One row of the day timeline (spec 023): the mood bead (mood glyph + medication-phase ring) with its
-/// downward connector on the left, and the check-in content on the right as four bare glyph+text lines —
-/// (1) mood word + time + a push chevron, (2) energy + focus, (3) medication + sleep, (4) feelings +
-/// side-effects. No pill containers: read-only data reads as quiet text; medication is the single accent.
-/// Tapping the row (content or chevron) pushes the recording detail.
+/// One check-in row of the expanded day card, redesigned to Figma a01 (spec 034, node `308:1957`):
+/// a 43pt mood disc (tinted with the row's own mood) holding that mood's sprout, the mood word large
+/// + bold in its word colour, the time, an outlined ⋯ affordance, and a single wrapping dot-chip line
+/// (energy · focus · medication · sleep · ♥ feelings · side-effects). No timeline bead, no connector,
+/// no medication-phase ring — rows are separated by whitespace on the white card. Tapping the row
+/// (anywhere, including the ⋯) opens the recording detail.
 struct TimelineRow: View {
     let node: DayTimeline.Node
-    let isLast: Bool
     let onTapRecording: (UUID) -> Void
 
+    /// Outlined ⋯ affordance border — a hairline-plus stroke matching a01 (1.5pt).
+    private static let affordanceBorder: CGFloat = 1.5
+
+    private var level: MoodLevel? { MoodLevel(name: node.recording?.mood) }
+
     var body: some View {
-        HStack(alignment: .top, spacing: Spacing.m) {
-            beadColumn
-            content
-                .padding(.bottom, isLast ? 0 : Spacing.section)   // breathing room between check-ins
+        Group {
+            if let recording = node.recording {
+                Button { onTapRecording(recording.id) } label: { row(recording) }
+                    .buttonStyle(.plain)
+                    .accessibilityHint("Opens recording detail")
+            } else {
+                row(nil)   // dose-only node (logged dose, no check-in): still shown, no ⋯, not tappable
+            }
         }
         .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
     }
 
-    // MARK: - Bead + connector
+    // MARK: - Row
 
-    private var beadColumn: some View {
-        VStack(spacing: 0) {
-            TimelineBead(node: node)
-                .zIndex(1)
-            if !isLast {
-                Rectangle()
-                    .fill(Theme.separator)
-                    .frame(width: 1)
-                    .frame(maxHeight: .infinity)
+    private func row(_ recording: Recording?) -> some View {
+        HStack(alignment: .top, spacing: Spacing.l) {
+            disc
+            VStack(alignment: .leading, spacing: Spacing.s) {
+                headline(tappable: recording != nil)
+                chipLine(recording)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .contentShape(Rectangle())
+    }
+
+    private var disc: some View {
+        Circle()
+            .fill(level?.badgeTint ?? NewLook.tintNeutral)
+            .frame(width: Metrics.rowMoodDisc, height: Metrics.rowMoodDisc)
+            .overlay {
+                SignalGlyph(.mood, level: level?.numericValue, size: Metrics.rowMoodGlyph, decorative: true)
+            }
+    }
+
+    private func headline(tappable: Bool) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: Spacing.m) {
+            headlineText
+                .fixedSize(horizontal: false, vertical: true)   // wrap word↔time at large Dynamic Type, never truncate
+            Spacer(minLength: Spacing.s)
+            if tappable {
+                moreAffordance
             }
         }
-        .fixedSize(horizontal: true, vertical: false)
     }
 
-    // MARK: - Content
-
-    @ViewBuilder
-    private var content: some View {
+    /// Mood word (24pt Bold, word colour) + time, as one concatenated `Text` so the space between
+    /// them is the break opportunity — the single-word mood label can never truncate. When no mood
+    /// was extracted (a transcribing/pending or untagged check-in) the recording's `displayTitle`
+    /// takes the headline slot so the row still reads a status, never a bare timestamp (FR-017).
+    private var headlineText: Text {
+        let time = Text(node.time, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits))
+            .font(Typography.text(13, relativeTo: .subheadline))
+            .foregroundStyle(NewLook.inkSecondary)
+        if let level {
+            let word = Text(level.displayLabel).font(Typography.moodWord).foregroundStyle(level.wordColor)
+            return Text("\(word)  \(time)")
+        }
         if let recording = node.recording {
-            Button { onTapRecording(recording.id) } label: { contentBody }
-                .buttonStyle(.plain)
-                .accessibilityHint("Opens recording detail")
-        } else {
-            contentBody
+            let title = Text(recording.displayTitle)
+                .font(Typography.text(17, weight: .semibold, relativeTo: .body))
+                .foregroundStyle(NewLook.inkPrimary)
+            return Text("\(title)  \(time)")
         }
+        return time   // dose-only node: no check-in, so the time alone is the headline
     }
 
-    private var contentBody: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            if let recording = node.recording {
-                rowHead(recording)        // line 1 (mood + time) + line 2 (energy + focus)
-            }
-            medicationSleepLine           // line 3
-            if let recording = node.recording {
-                feelingsSideEffectsLine(recording)   // line 4
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, Metrics.rowHeadTop)   // pull the head toward the bead's top (mid-high)
+    /// Outlined ⋯ circle (a01). Decorative — the whole row already opens the detail.
+    private var moreAffordance: some View {
+        Image(systemName: "ellipsis")
+            .font(.caption)
+            .foregroundStyle(NewLook.inkSecondary)
+            .frame(width: Metrics.moreAffordance, height: Metrics.moreAffordance)
+            .overlay { Circle().strokeBorder(NewLook.inkSecondary, lineWidth: Self.affordanceBorder) }
+            .accessibilityHidden(true)
     }
 
-    // MARK: - Line 1 + 2 (mood · time · chevron / energy · focus)
+    // MARK: - Chip line
 
-    private func rowHead(_ recording: Recording) -> some View {
-        let level = MoodLevel(name: recording.mood)
-        return VStack(alignment: .leading, spacing: Spacing.xs) {
-            HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
-                Text(level?.displayLabel ?? recording.displayTitle)
-                    .font(Typography.text(Metrics.rowMoodText, weight: .semibold))
-                    .foregroundStyle(level?.wordColor ?? .primary)
-                Text(node.time, format: .dateTime.hour(.twoDigits(amPM: .omitted)).minute(.twoDigits))
-                    .font(Typography.mono(Metrics.rowTime))
-                    .foregroundStyle(Theme.textSecondary)
-                Spacer(minLength: Spacing.s)
-                Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.textSecondary)
-            }
-            rampLine(energy: recording.energyLevel, focus: recording.focusLevel)
-        }
+    private struct Chip {
+        let kind: GlyphSignal?
+        let level: Int?
+        let text: String
+        let color: Color
     }
 
     @ViewBuilder
-    private func rampLine(energy: String?, focus: String?) -> some View {
-        let items = rampItems(energy: energy, focus: focus)
+    private func chipLine(_ recording: Recording?) -> some View {
+        let items = chips(recording)
         if !items.isEmpty {
-            HStack(spacing: Spacing.m) {
-                ForEach(items) { item in
+            FlowLayout(spacing: Spacing.s) {
+                ForEach(Array(items.enumerated()), id: \.offset) { idx, chip in
                     HStack(spacing: Spacing.xs) {
-                        SignalGlyph(item.kind, level: item.level, size: Metrics.rowSignal, decorative: true)
-                        Text(item.word)
+                        if idx > 0 {
+                            Text("·").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
+                        }
+                        if let kind = chip.kind {
+                            SignalGlyph(kind, level: chip.level, size: Metrics.rowSignal, decorative: true)
+                        }
+                        Text(chip.text)
                             .font(Typography.caption)
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(chip.color)
+                            .lineLimit(1)
                     }
                 }
             }
         }
     }
 
-    private struct RampItem: Identifiable {
-        let kind: GlyphSignal
-        let level: Int?
-        let word: String
-        var id: GlyphSignal { kind }
-    }
-
-    private func rampItems(energy: String?, focus: String?) -> [RampItem] {
-        var items: [RampItem] = []
-        if let energy, !energy.isEmpty {
-            items.append(.init(kind: .energy, level: EnergyLevel(rawValue: energy.lowercased())?.numericValue, word: energy))
+    private func chips(_ recording: Recording?) -> [Chip] {
+        var c: [Chip] = []
+        if let energy = recording?.energyLevel, !energy.isEmpty {
+            c.append(Chip(kind: .energy, level: EnergyLevel(rawValue: energy.lowercased())?.numericValue, text: energy, color: .primary))
         }
-        if let focus, !focus.isEmpty {
-            items.append(.init(kind: .focus, level: FocusLevel(rawValue: focus.lowercased())?.numericValue, word: focus))
+        if let focus = recording?.focusLevel, !focus.isEmpty {
+            c.append(Chip(kind: .focus, level: FocusLevel(rawValue: focus.lowercased())?.numericValue, text: focus, color: .primary))
         }
-        return items
-    }
-
-    // MARK: - Line 3 (medication · sleep) — the single accent + the sleep blue
-
-    @ViewBuilder
-    private var medicationSleepLine: some View {
-        let taken = takenLabels
-        let sleep = node.recording?.sleepLine
-        if !taken.isEmpty || sleep != nil {
-            FlowLayout(spacing: Spacing.m) {
-                ForEach(taken, id: \.self) { label in
-                    dataItem("capsule.righthalf.filled", label, color: Palette.medication, weight: .semibold)
-                }
-                if let sleep {
-                    dataItem("zzz", sleep.label, color: sleep.color)
-                }
+        for name in distinctMedicationNames {
+            c.append(Chip(kind: .medication, level: nil, text: name, color: Palette.medication))
+        }
+        // Sleep: indigo text, no glyph — per a01 node 308:1957 (the folded summary pairs the bed glyph
+        // with primary-ink text instead; the two states match their respective Figma nodes).
+        if let sleep = recording?.sleepLabel {
+            c.append(Chip(kind: nil, level: nil, text: sleep, color: Palette.sleepIndigo))
+        }
+        if let recording {
+            let feelings = recording.feelings()
+            if !feelings.shown.isEmpty {
+                c.append(Chip(kind: nil, level: nil, text: "♥ " + joined(feelings), color: NewLook.inkSecondary))
+            }
+            let sideEffects = recording.sideEffects()
+            if !sideEffects.shown.isEmpty {
+                c.append(Chip(kind: nil, level: nil, text: joined(sideEffects), color: NewLook.inkSecondary))
             }
         }
+        return c
     }
 
-    // MARK: - Line 4 (feelings · side-effects) — muted context, capped at 4 each
-
-    @ViewBuilder
-    private func feelingsSideEffectsLine(_ recording: Recording) -> some View {
-        let feelings = recording.feelings()
-        let sideEffects = recording.sideEffects()
-        if !feelings.shown.isEmpty || !sideEffects.shown.isEmpty {
-            FlowLayout(spacing: Spacing.m) {
-                if !feelings.shown.isEmpty {
-                    dataItem("heart.fill", joined(feelings), color: Theme.textSecondary)
-                }
-                if !sideEffects.shown.isEmpty {
-                    dataItem("medical.thermometer", joined(sideEffects), color: Theme.textSecondary)
-                }
-            }
-        }
-    }
-
-    // MARK: - Shared bare glyph+text item
-
-    private func dataItem(_ systemImage: String, _ text: String, color: Color, weight: Font.Weight = .regular) -> some View {
-        HStack(spacing: Spacing.xs) {
-            Image(systemName: systemImage)
-                .font(Typography.caption)
-                .accessibilityHidden(true)   // the value text carries the meaning; the glyph is reinforcement
-            Text(text)
-                .font(Typography.caption.weight(weight))
-        }
-        .foregroundStyle(color)
+    /// Distinct medication names logged at this node (name only — no dose, no "Taken").
+    private var distinctMedicationNames: [String] {
+        var seen = Set<String>()
+        return node.intakeDoses.compactMap { seen.insert($0.name).inserted ? $0.name : nil }
     }
 
     private func joined(_ capped: (shown: [String], overflow: Int)) -> String {
-        var text = capped.shown.joined(separator: " · ")
+        var text = capped.shown.joined(separator: ", ")
         if capped.overflow > 0 { text += " +\(capped.overflow)" }
         return text
     }
 
-    /// "Taken Concerta 36mg" for each distinct dose logged at this instant.
-    private var takenLabels: [String] {
-        var seen = Set<String>()
-        return node.intakeDoses.compactMap { dose in
-            guard seen.insert(dose.name).inserted else { return nil }
-            let med = dose.dose.map { "\(dose.name) \($0)" } ?? dose.name
-            return "Taken \(med)"
+    // MARK: - Accessibility
+
+    private var accessibilityLabel: String {
+        var parts: [String] = []
+        if let level { parts.append(level.displayLabel) }
+        parts.append(node.time.formatted(.dateTime.hour().minute(.twoDigits)))
+        if let energy = node.recording?.energyLevel, !energy.isEmpty { parts.append(energy) }
+        if let focus = node.recording?.focusLevel, !focus.isEmpty { parts.append(focus) }
+        parts.append(contentsOf: distinctMedicationNames)
+        if let sleep = node.recording?.sleepLabel { parts.append(sleep) }
+        if let recording = node.recording {
+            let feelings = recording.feelings()
+            if !feelings.shown.isEmpty { parts.append(joined(feelings)) }
+            let sideEffects = recording.sideEffects()
+            if !sideEffects.shown.isEmpty { parts.append(joined(sideEffects)) }
         }
+        return parts.joined(separator: ", ")
     }
 }

@@ -6,18 +6,7 @@ import SwiftUI
 @MainActor
 final class InsightsViewModel {
 
-    struct CalendarDay: Identifiable {
-        var id: Date { date }
-        let date: Date
-        let isCurrentMonth: Bool
-        let recordings: [Recording]
-
-        var dominantColor: Color? { recordings.first?.moodColor }
-        var hasEntries: Bool { !recordings.isEmpty }
-    }
-
     var currentMonth: Date = Date()
-    var selectedDay: CalendarDay?
 
     @ObservationIgnored private let store: RecordingStore
     @ObservationIgnored let calendar = Calendar.current
@@ -73,16 +62,6 @@ final class InsightsViewModel {
         store.recordings.first { $0.id == id }
     }
 
-    func calendarDay(for date: Date) -> CalendarDay {
-        let dayStart = calendar.startOfDay(for: date)
-        let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart)!
-        let dayRecs = store.recordings
-            .filter { $0.createdAt >= dayStart && $0.createdAt < dayEnd }
-            .sorted { $0.createdAt > $1.createdAt }
-        return CalendarDay(date: date,
-                           isCurrentMonth: calendar.isDate(date, equalTo: currentMonth, toGranularity: .month),
-                           recordings: dayRecs)
-    }
 
     var hasAnyData: Bool { !monthRecordings.isEmpty }
 }

@@ -102,11 +102,6 @@ extension Recording {
         return nil
     }
 
-    /// Sleep for the check-in row's line 3, in the sleep blue. nil when no sleep was logged.
-    @MainActor var sleepLine: (label: String, color: Color)? {
-        sleepLabel.map { ($0, Palette.sleepIndigo) }
-    }
-
     /// Feelings (emotions) for line 4, capped to `max` capitalised values + an overflow count.
     func feelings(max: Int = 4) -> (shown: [String], overflow: Int) { Self.capped(decodedEmotions, max: max) }
 

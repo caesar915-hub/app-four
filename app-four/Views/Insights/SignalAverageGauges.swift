@@ -12,7 +12,6 @@ struct SignalAverageGauges: View {
                 GaugeColumn(average: avg)
             }
         }
-        .padding(.horizontal, Spacing.l)
         .accessibilityElement(children: .contain)
     }
 }
@@ -27,12 +26,12 @@ private struct GaugeColumn: View {
     var body: some View {
         VStack(spacing: Spacing.s) {
             SignalGlyph(average.kind.glyphSignal,
-                        level: average.isEmpty ? nil : clampedSignalLevel(Int((average.fraction * 5).rounded())),
+                        level: average.isEmpty ? nil : average.level,
                         size: 26)
             ZStack(alignment: .bottom) {
                 // Track
                 RoundedRectangle(cornerRadius: Radius.control)
-                    .fill(Theme.cardBackground)
+                    .fill(NewLook.tintNeutral)
                     .frame(width: gaugeWidth, height: gaugeHeight)
 
                 // Dashed tick lines (5 levels)
@@ -48,7 +47,7 @@ private struct GaugeColumn: View {
 
             Text(average.caption.isEmpty ? "—" : average.caption)
                 .font(Typography.caption)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: gaugeWidth)
         }
@@ -78,17 +77,18 @@ private struct GaugeColumn: View {
 
     private var fillGradient: AnyShapeStyle {
         if let filled = levelFill { return AnyShapeStyle(filled.fillGradient) }
-        return AnyShapeStyle(Theme.cardBackground)
+        return AnyShapeStyle(NewLook.tintNeutral)
     }
 
     private var fillInkColor: Color {
-        guard let filled = levelFill else { return Theme.textPrimary }
+        guard let filled = levelFill else { return NewLook.inkPrimary }
         return Color.contrastingInk(for: filled.color, in: colorScheme)
     }
 
     private var levelFill: (any SignalLevel)? {
-        let lowerValue = Int(average.fraction * 5)
-        let clamped = max(1, min(5, lowerValue))
+        // The VM ships the ordinal explicitly — never re-derive it from `fraction`
+        // (lossy float round-trip could disagree with fillLabel; spec-036 FR-010).
+        let clamped = max(1, min(5, average.level))
         switch average.kind {
         case .mood:   return MoodLevel.allCases.first { $0.numericValue == clamped }
         case .energy: return EnergyLevel.allCases.first { $0.numericValue == clamped }
@@ -110,7 +110,7 @@ private struct TickLines: View {
             ForEach(1...5, id: \.self) { level in
                 let y = gaugeHeight - (gaugeHeight * CGFloat(level) / 5)
                 Rectangle()
-                    .fill(Theme.separator)
+                    .fill(NewLook.hairline)
                     .frame(width: gaugeWidth, height: 1)
                     .offset(y: y - gaugeHeight / 2)
                     .mask(
@@ -128,9 +128,9 @@ private struct TickLines: View {
 
 #Preview {
     let averages: [SignalAverage] = [
-        SignalAverage(kind: .mood,   fillLabel: "Okay+",  caption: "between Okay & Good", fraction: 0.70),
-        SignalAverage(kind: .energy, fillLabel: "Steady",  caption: "Steady on average",   fraction: 0.60),
-        SignalAverage(kind: .focus,  fillLabel: "—",       caption: "",                    fraction: 0.00),
+        SignalAverage(kind: .mood,   fillLabel: "Okay+",  caption: "between Okay & Good", fraction: 0.70, level: 3),
+        SignalAverage(kind: .energy, fillLabel: "Steady",  caption: "Steady on average",   fraction: 0.60, level: 3),
+        SignalAverage(kind: .focus,  fillLabel: "—",       caption: "",                    fraction: 0.00, level: 0),
     ]
     SignalAverageGauges(averages: averages)
         .padding()

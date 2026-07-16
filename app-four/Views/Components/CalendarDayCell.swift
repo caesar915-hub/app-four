@@ -50,7 +50,7 @@ struct CalendarDayCell: View {
     @ViewBuilder private var marker: some View {
         switch cell.marker {
         case .mood(let color): Circle().fill(color)
-        case .neutral:         Circle().fill(Theme.textSecondary)
+        case .neutral:         Circle().fill(NewLook.inkSecondary)
         case .none:            Color.clear
         }
     }

@@ -27,7 +27,7 @@ struct WelcomeView: View {
                     .frame(maxWidth: .infinity, minHeight: geo.size.height)
             }
         }
-        .background(Theme.background.ignoresSafeArea())
+        .background(NewLook.screen.ignoresSafeArea())
     }
 
     private var content: some View {
@@ -41,13 +41,13 @@ struct WelcomeView: View {
             VStack(spacing: Spacing.m) {
                 Text("Welcome to Squirl")
                     .font(Typography.largeTitle)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
 
                 Text("A calm place to speak your day. Everything stays on this device.")
                     .font(Typography.body)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
                     .multilineTextAlignment(.center)
             }
             .padding(.horizontal, Spacing.l)

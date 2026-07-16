@@ -143,6 +143,15 @@ struct MedicationBarViewModelTests {
         #expect(viewModel.activeDoses.first?.name == "Ritalin")
     }
 
+    @Test func logManualDoseTaggedWithCurrentMockModeAppearsInActiveDoses() {
+        UserDefaults.standard.set(true, forKey: "debugMockMode")
+        defer { UserDefaults.standard.removeObject(forKey: "debugMockMode") }
+
+        viewModel.logManualDose(name: "Concerta", dose: "36mg", takenAt: Date())
+
+        #expect(viewModel.activeDoses.first?.name == "Concerta")
+    }
+
     @Test func deleteEventRemovesFromActiveDoses() throws {
         let event = MedicationEvent(name: "Concerta", dose: "36mg", takenAt: Date(), taken: true, source: .manual)
         context.insert(event)

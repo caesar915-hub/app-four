@@ -30,6 +30,111 @@
 /Users/caesargrey/Projects/app-four                                                  7e4c9ed3 [main]
 /Users/caesargrey/Projects/app-four-nlp-recall-emotions                              575d8902 [fix/nlp-english-recall-on-emotions]
 /Users/caesargrey/Projects/app-four-spm                                              a490bbab [feat/036-newlook-checkin-insights]
+## 2026-07-16 16:23–18:54 · US2 — Insights a07: continuous scroll, carded sections, dead · feat/036-newlook-checkin-insights
+
+**Code changes**
+- _Major (feat)_
+  - `6810220e` feat(036): US2 — Insights a07: continuous scroll, carded sections, dead path deleted
+  - `4c3b7366` feat(036): US1 — check-in a04-a06 re-skin + selectionSoft token + gauge level RED->GREEN
+- _Fixes_
+  - `90dce2f1` fix(035): title band below the med bar; restore the bar's app-wide position
+- _docs_
+  - `7511e3ad` docs: 035 code-complete checkpoint — DEVLOG/BACKLOG/WORKLOG + restored parallel-session entries
+- _other_
+  - `570f483b` spec+plan+tasks: 036 New Look check-in (a04-a06) + insights (a07) re-skin
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  5d6f0056 [fix/app-store-readiness]
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              575d8902 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              6810220e [feat/036-newlook-checkin-insights]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                    9843f17a [feat/030-us3-us4]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 8d9b7ab8 [fix/022-view-audit-remediation]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ios26-target                   d04eb5ea [qa/device-ios26-029]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/merge-029                      885961a9 [feat/029-calendar-day-context]
+```
+
+---
+
+## 2026-07-15 23:41 – 2026-07-16 16:16 · T004-T010 — strip scrolls + fades in-content; compact title  · feat/035-calendar-scroll-collapse
+
+**Code changes**
+- _Major (feat)_
+  - `cfc24983` feat(035): T004-T010 — strip scrolls + fades in-content; compact title cross-fade
+  - `493bb3cf` feat(035): T002-T003 RED->GREEN — CalendarStripFade pure math + contract suite
+  - `dbfa0bf3` feat(034): DayCard a01 redesign — folded chip summary + unfolded mood-disc rows
+- _Fixes_
+  - `c3481b88` fix(034): address code-review findings — headline fallback, locale-aware a11y time, drop dead truncatable flag
+  - `bfaeb754` fix(033): contrast ruling — fix derived dark-mode failures, log Figma-locked light values
+  - `ac6d5976` fix(033): address code-review findings — mechanical set (6 of 12)
+- _docs_
+  - `198eec24` docs: DEVLOG checkpoint + WORKLOG block for the #28 review cycle
+- _other_
+  - `710545ab` tasks: 035 calendar scroll-collapse — 14 tasks, merge-gate -> RED/GREEN math -> US1 restructure+fade -> US2 title -> owner QA
+  - `c10817a4` plan: 035 calendar scroll-collapse — research (D1-D9), plan, data-model, behavior contract, quickstart
+  - `fe5ddd98` spec: 035 calendar strip scroll-collapse & fade — Tiimo pattern, supersedes 001
+  - `15855acd` spec: 034 DayCard a01 redesign — folded 24pt word + chip summary w/ sleep; unfolded caps band + mood-disc rows, bead/ring dropped
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  cfc24983 [feat/035-calendar-scroll-collapse]
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              575d8902 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              c3481b88 [feat/034-daycard-a01]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                    9843f17a [feat/030-us3-us4]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation 8d9b7ab8 [fix/022-view-audit-remediation]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ios26-target                   d04eb5ea [qa/device-ios26-029]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/merge-029                      885961a9 [feat/029-calendar-day-context]
+```
+
+---
+
+## 2026-07-10 15:42 – 2026-07-16 00:45 · contrast ruling — fix derived dark-mode failures, log Figma- · feat/033-newlook-app-wide
+
+**Code changes**
+- _Major (feat)_
+  - `ef94c869` feat(033): resolve T043/T044 owner decisions + sleepIndigo dark-mode AA
+  - `8fde5caf` feat(033): app-wide New Look migration + medication-bar a01 redesign
+  - `300ea271` feat(032): US2 GREEN — a02 Recording detail re-skin (T017-T021)
+  - `0a15e400` feat(032): US1 GREEN — a03 Edit check-in re-skin (T009-T015)
+  - `77533049` feat(032): US0 — NewLook token set + card/chip/nav grammar (T002-T008)
+- _Fixes_
+  - `bfaeb754` fix(033): contrast ruling — fix derived dark-mode failures, log Figma-locked light values
+  - `ac6d5976` fix(033): address code-review findings — mechanical set (6 of 12)
+- _docs_
+  - `4004719e` docs(033): record commit+rebase onto main; iOS 26 reconciliation
+  - `50fd573b` docs(032): mark T002-T021 complete (code); T001/T007/T016/T022 = owner device gates
+  - `d29c177b` docs: regen WORKLOG after debt-reconciliation round 2
+  - `a65010de` docs: reconcile stashes/PRs/worktrees debt (round 2) — DEBT.md + DEVLOG + BACKLOG
+  - `f1dfcf54` docs: regen WORKLOG after 2026-07-14 hygiene pass (derived from git/gh)
+- _chore_
+  - `be7ec5b2` chore(docs): add What/Why/How/Next-Action closing block to project CLAUDE.md
+  - `23dc5180` chore: repo-hygiene pass — remove stray artifact, gitignore model dump, doc debt registry
+- _other_
+  - `82da5059` analyze: 032 cross-artifact audit (3 Opus agents) — resolve 11 findings
+  - `9c04a31d` tasks: 032 New Look screens — 28 tasks, US0 tokens -> US1 a03 -> US2 a02, US3 gated
+  - `ac99df28` plan: 032 New Look screens — research (D1-D5), plan, data-model, contract, quickstart
+  - `742635a0` spec: 032 New Look screens — a03 Edit check-in + a02 Recording Detail re-skin (a01 gated on 029); clarified dark-derive + mixed-look ship
+  - `81435937` Merge pull request #26 from caesar915-hub/feat/030-app-intents
+  - `2e52eb66` Merge pull request #25 from caesar915-hub/feat/ios26-target
+
+**Git actions**
+- `81435937` Merge pull request #26 from caesar915-hub/feat/030-app-intents
+- `2e52eb66` Merge pull request #25 from caesar915-hub/feat/ios26-target
+
+**gh actions**
+- PR #31 opened `feat/034-daycard-a01` — "feat(034): DayCard a01 redesign — folded chip summary + unfolded mood-disc rows" — OPEN/MERGEABLE
+- PR #30 opened `chore/swift6-tech-debt` — "chore: clear Swift-6-language-mode test warnings + med color token" — OPEN/MERGEABLE
+- PR #29 opened `feat/030-us3-us4` — "feat(030): US4 guided NFC sticker setup (StickerSetupView) + FR-005 amendment" — OPEN/CONFLICTING
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                  d29c177b [main]
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                              575d8902 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                              bfaeb754 [feat/033-newlook-app-wide]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                9e98adab [chore/swift6-tech-debt]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                    9843f17a [feat/030-us3-us4]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals         5db316a6 [feat/healthkit-signals]

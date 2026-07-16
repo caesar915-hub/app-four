@@ -18,7 +18,7 @@ struct FeedbackButton: View {
                 .font(Typography.title.weight(.semibold))
                 .foregroundStyle(.primary)
                 .frame(width: 48, height: 48)
-                .background(.ultraThinMaterial)
+                .background(NewLook.card)
                 .clipShape(Circle())
                 .shadow(radius: 4)
         }
