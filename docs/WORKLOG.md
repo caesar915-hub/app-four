@@ -1,5 +1,67 @@
 # WORKLOG
 
+## 2026-07-10 14:43 – 2026-07-16 19:46 · Merge feat/033-036: app-wide New Look migration, DayCard a01 · main
+
+**Code changes**
+- _Major (feat)_
+  - `0fc4a3b0` feat(036): US2 — Insights a07: continuous scroll, carded sections, dead path deleted
+  - `c5b8a748` feat(036): US1 — check-in a04-a06 re-skin + selectionSoft token + gauge level RED->GREEN
+  - `cfc24983` feat(035): T004-T010 — strip scrolls + fades in-content; compact title cross-fade
+  - `493bb3cf` feat(035): T002-T003 RED->GREEN — CalendarStripFade pure math + contract suite
+  - `dbfa0bf3` feat(034): DayCard a01 redesign — folded chip summary + unfolded mood-disc rows
+  - `ef94c869` feat(033): resolve T043/T044 owner decisions + sleepIndigo dark-mode AA
+  - `8fde5caf` feat(033): app-wide New Look migration + medication-bar a01 redesign
+  - `300ea271` feat(032): US2 GREEN — a02 Recording detail re-skin (T017-T021)
+  - `0a15e400` feat(032): US1 GREEN — a03 Edit check-in re-skin (T009-T015)
+  - `77533049` feat(032): US0 — NewLook token set + card/chip/nav grammar (T002-T008)
+- _Fixes_
+  - `a490bbab` fix(036): review round — kill double insets inside cards; delete orphaned CalendarDay
+  - `027f67c5` fix(036): add level: to the SignalAverageGauges #Preview constructors missed by T003
+  - `78df923f` fix(035): review round — strip fades out by titleReveal; harden quantization test
+  - `90dce2f1` fix(035): title band below the med bar; restore the bar's app-wide position
+  - `c3481b88` fix(034): address code-review findings — headline fallback, locale-aware a11y time, drop dead truncatable flag
+  - `bfaeb754` fix(033): contrast ruling — fix derived dark-mode failures, log Figma-locked light values
+  - `ac6d5976` fix(033): address code-review findings — mechanical set (6 of 12)
+- _docs_
+  - `ed126440` docs: regen WORKLOG after App Store readiness round (derived from git/gh)
+  - `58b5a374` docs(036): quickstart QA guide, tasks T001-T012 checked, DEVLOG/BACKLOG/WORKLOG
+  - `7511e3ad` docs: 035 code-complete checkpoint — DEVLOG/BACKLOG/WORKLOG + restored parallel-session entries
+  - `198eec24` docs: DEVLOG checkpoint + WORKLOG block for the #28 review cycle
+  - `4004719e` docs(033): record commit+rebase onto main; iOS 26 reconciliation
+  - `50fd573b` docs(032): mark T002-T021 complete (code); T001/T007/T016/T022 = owner device gates
+- _chore_
+  - `be7ec5b2` chore(docs): add What/Why/How/Next-Action closing block to project CLAUDE.md
+- _other_
+  - `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
+  - `0420164d` spec+plan+tasks: 036 New Look check-in (a04-a06) + insights (a07) re-skin
+  - `710545ab` tasks: 035 calendar scroll-collapse — 14 tasks, merge-gate -> RED/GREEN math -> US1 restructure+fade -> US2 title -> owner QA
+  - `c10817a4` plan: 035 calendar scroll-collapse — research (D1-D9), plan, data-model, behavior contract, quickstart
+  - `fe5ddd98` spec: 035 calendar strip scroll-collapse & fade — Tiimo pattern, supersedes 001
+  - `15855acd` spec: 034 DayCard a01 redesign — folded 24pt word + chip summary w/ sleep; unfolded caps band + mood-disc rows, bead/ring dropped
+  - `82da5059` analyze: 032 cross-artifact audit (3 Opus agents) — resolve 11 findings
+  - `9c04a31d` tasks: 032 New Look screens — 28 tasks, US0 tokens -> US1 a03 -> US2 a02, US3 gated
+  - `ac99df28` plan: 032 New Look screens — research (D1-D5), plan, data-model, contract, quickstart
+  - `742635a0` spec: 032 New Look screens — a03 Edit check-in + a02 Recording Detail re-skin (a01 gated on 029); clarified dark-derive + mixed-look ship
+
+**Git actions**
+- `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                                                    c713ba62 [fix/app-store-readiness]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/f4c955f9-a44b-4930-8e07-c4c8116a8635/scratchpad/main-merge 432525e9 [main]
+/Users/caesargrey/Projects/app-four-nlp-recall-emotions                                                                575d8902 [fix/nlp-english-recall-on-emotions]
+/Users/caesargrey/Projects/app-four-spm                                                                                a490bbab [feat/036-newlook-checkin-insights]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                                  9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                      83b95975 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                           5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/fix+022-view-audit-remediation                                   8d9b7ab8 [fix/022-view-audit-remediation]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ios26-target                                                     d04eb5ea [qa/device-ios26-029]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/merge-029                                                        885961a9 [feat/029-calendar-day-context]
+```
+
+---
+
 ## 2026-07-10 15:42 – 2026-07-16 19:24 · App Store readiness — audit findings, submission playbook, p · main
 
 **Code changes**
