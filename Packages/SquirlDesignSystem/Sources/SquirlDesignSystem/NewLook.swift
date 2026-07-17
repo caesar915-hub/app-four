@@ -69,7 +69,7 @@ public extension View {
 // MARK: - Chip grammar
 
 /// Which accent a selected chip fills with. Medication chips are always purple; everything else
-/// uses the selection green (contract C7/C8).
+/// uses the meadow green — unified with the check-in ring/button and the Check-in tab.
 public enum NewLookChipRole {
     case standard
     case medication
@@ -79,7 +79,7 @@ public enum NewLookChipRole {
 
     var selectedFill: Color {
         switch self {
-        case .standard:   NewLook.selection
+        case .standard:   Theme.meadowGreen
         case .medication: Palette.medication
         case .checkIn:    NewLook.checkInGreen
         }

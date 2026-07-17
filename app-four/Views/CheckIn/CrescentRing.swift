@@ -1,8 +1,8 @@
 import SwiftUI
 
-/// The New Look check-in ring (a04/a05, spec 036): a full circle, `checkInGreen` at the top
-/// softening toward `checkInGreenSoft` at the bottom.
-/// At rest it **breathes** (idle); while recording it **spins** (active). Decorative.
+/// The New Look check-in ring (a04/a05, spec 036): a full circle in a solid `Theme.meadowGreen`,
+/// matching the selected Check-in tab. At rest it **breathes** (idle); while recording it rotates
+/// (active) — a uniform stroke, so the spin reads as a hold rather than a visible sweep. Decorative.
 struct CrescentRing: View {
     var isActive: Bool = false
     var lineWidth: CGFloat = 22
@@ -25,18 +25,8 @@ private struct AnimatedArc: View {
 
     var body: some View {
         let arc = Circle()
-            .trim(from: 0, to: 1.0)
             .stroke(
-                AngularGradient(
-                    gradient: Gradient(stops: [
-                        .init(color: NewLook.checkInGreen, location: 0.00),
-                        .init(color: NewLook.checkInGreenSoft, location: 0.50),
-                        .init(color: NewLook.checkInGreen, location: 1.00),
-                    ]),
-                    center: .center,
-                    startAngle: .degrees(270),
-                    endAngle: .degrees(270 + 360)
-                ),
+                Theme.meadowGreen,
                 style: StrokeStyle(lineWidth: lineWidth, lineCap: .butt)
             )
             .padding(lineWidth / 2)
