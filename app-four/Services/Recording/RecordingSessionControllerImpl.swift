@@ -51,14 +51,47 @@ final class RecordingSessionControllerImpl: RecordingSessionController {
         isFinalizing = false
     }
 
+    func interruptionDidChangeState() async {
+        guard let session else { return }
+        switch session.state {
+        case .paused:
+            // Already reflected (e.g. a Lock-Screen pause raced the interruption) → no-op.
+            guard pausedAt == nil else { return }
+            let now = Date()
+            pausedAt = now
+            await liveActivity.update(for: .paused, startedAt: anchor, pausedAt: now)
+        case .recording:
+            guard let pausedAt else { return }
+            anchor = anchor.addingTimeInterval(Date().timeIntervalSince(pausedAt))
+            self.pausedAt = nil
+            await liveActivity.update(for: .recording, startedAt: anchor, pausedAt: nil)
+        case .idle, .processing, .done:
+            return
+        }
+    }
+
     func recoverIfNeeded() async {
+        await liveActivity.endAllStale()
+    }
+
+    /// A Lock-Screen tap on an ORPHANED surface (its process died mid-recording) is the
+    /// only code guaranteed to run in that background launch — reap the lie instead of
+    /// silently no-oping (QA 07-17: "dead" buttons over immortal cards). Never fires
+    /// while a live capture or finalize exists: the guard passes only when there is no
+    /// session or it is terminal.
+    private func endOrphanedSurfaceIfSessionless() async {
+        guard session == nil || session?.state == .idle || session?.state == .done else { return }
+        AppLogger.log("Live Activity intent arrived with no live session — reaping orphaned surfaces")
         await liveActivity.endAllStale()
     }
 
     // MARK: RecordingControlSurface (driven by the Live Activity intents)
 
     func pause() async {
-        guard let session, session.state == .recording else { return }
+        guard let session, session.state == .recording else {
+            await endOrphanedSurfaceIfSessionless()
+            return
+        }
         await session.pauseCapture()
         // Re-check the SAME session is still live after the await: a racing finalize could
         // have run recordingDidFinish (session = nil) during the suspension.
@@ -69,7 +102,10 @@ final class RecordingSessionControllerImpl: RecordingSessionController {
     }
 
     func resume() async throws {
-        guard let session, session.state == .paused, let pausedAt else { return }
+        guard let session, session.state == .paused, let pausedAt else {
+            await endOrphanedSurfaceIfSessionless()
+            return
+        }
         try await session.resumeCapture()
         // Re-check the SAME session is still live after the await (a racing finalize could
         // have detached it during the suspension).
@@ -83,7 +119,12 @@ final class RecordingSessionControllerImpl: RecordingSessionController {
 
     func stopAndSave() async {
         guard !isFinalizing, let session,
-              session.state == .recording || session.state == .paused else { return }
+              session.state == .recording || session.state == .paused else {
+            // Mid-finalize the session is retained in `.processing`, so the helper's
+            // own guard makes this a no-op there — it reaps only true orphans.
+            await endOrphanedSurfaceIfSessionless()
+            return
+        }
         isFinalizing = true
         // The background-task assertion now lives in `CheckInViewModel.stopRecording()`
         // so EVERY finalize path (in-app, Lock Screen, cap auto-stop) holds it — not just

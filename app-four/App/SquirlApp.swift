@@ -125,6 +125,11 @@ private struct RootContainerView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
                 Task { await services.pendingTranscriptionService.drainIfModelReady() }
+                // 037 — re-reap orphaned Live Activities on EVERY foreground: the root
+                // .task above is one-shot per scene and can race ActivityKit's cold-start
+                // population, so a long-lived process would otherwise never sweep again
+                // (QA 07-17: orphans survived a relaunch).
+                Task { await services.recordingSessionController.recoverIfNeeded() }
             }
         }
         .onChange(of: hasCompletedOnboarding) { _, completed in

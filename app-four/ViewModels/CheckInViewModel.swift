@@ -77,7 +77,10 @@ final class CheckInViewModel: CheckInSession {
     @ObservationIgnored private var finalizeAssertion: UIBackgroundTaskIdentifier = .invalid
     private var levelTask: Task<Void, Never>?
     private(set) var transcriptionTask: Task<Void, Never>?
-    private(set) var modelPreloadTask: Task<Void, Never>?
+    /// Synchronous re-entry latch for `startRecording()` — held from the guard until the
+    /// spawned Task exits, covering the window where `state` is still `.idle` across the
+    /// disk/permission/audio awaits.
+    @ObservationIgnored private var isStartingCapture = false
 
     var timeString: String {
         AccessibilityHelpers.formatDuration(elapsedTime)
@@ -102,12 +105,15 @@ final class CheckInViewModel: CheckInSession {
 
     @discardableResult
     func startRecording() -> Task<Void, Never> {
-        // Re-entry guard (FR-016): a capture is already live or finishing. Bail
-        // before any disk/permission/audio-session work so a rapid double-tap or a
-        // re-firing auto-start can't zero a running timer or open a second session.
-        guard state == .idle || state == .done else {
+        // Re-entry guard (FR-016): a capture is already live, finishing, or STARTING.
+        // `state` alone can't carry the last case — it flips to `.recording` only after
+        // the disk/permission/audio awaits inside the Task, so a rapid tap burst would
+        // pass a state-only guard N times and the concurrent start Tasks would clobber
+        // the shared recorder. The latch closes that gap synchronously.
+        guard !isStartingCapture, state == .idle || state == .done else {
             return Task {}
         }
+        isStartingCapture = true
         // Clean start: drop any stale recovery flags from a prior failed attempt and
         // reset the VoiceOver announcement gate so a prior session can't leak a held
         // announcement or a stale speaking state into this one.
@@ -118,6 +124,7 @@ final class CheckInViewModel: CheckInSession {
         hasShownCapApproach = false
 
         return Task {
+            defer { self.isStartingCapture = false }
             let available = await storageService.availableStorage()
             guard available > LayoutConstants.minDiskSpaceForRecordingBytes else {
                 AppLogger.log("Disk space too low: \(available) bytes")
@@ -154,16 +161,9 @@ final class CheckInViewModel: CheckInSession {
 
                 self.startTimer()
                 self.startLevelMonitoring()
-
-                // Preload model off the main actor while the user records
-                // so post-recording transcription doesn't need to reload.
-                self.modelPreloadTask = Task.detached(priority: .utility) { [transcriptionService] in
-                    do {
-                        try await transcriptionService.loadModel()
-                    } catch {
-                        AppLogger.log("Model preload failed (will retry on stop): \(error)")
-                    }
-                }
+                // No model preload here: WhisperKit resident during capture is jetsam
+                // bait when the phone locks (QA 07-17 — the process died mid-recording).
+                // `transcribe()` self-loads on demand; transcription is background either way.
             } catch {
                 AppLogger.log("Failed to start recording: \(error)")
             }
@@ -365,7 +365,6 @@ final class CheckInViewModel: CheckInSession {
         // finalize race to guard here — and flipping to `.processing` would make the UI
         // announce "Saving…" while the capture is actually being discarded.
         self.stopTasks()
-        modelPreloadTask?.cancel()
         UIApplication.shared.isIdleTimerDisabled = false
         return Task {
             await audioService.cancelRecording()
@@ -402,11 +401,11 @@ final class CheckInViewModel: CheckInSession {
 
     /// Mirror a mic interruption into recording state (037). The audio service already
     /// paused/resumed the recorder, so this ONLY updates view-model state + freezes/restarts
-    /// the elapsed timer, synchronously and in emission order. It deliberately does NOT
-    /// re-drive the recorder (that would race the service's own interruption path on a
-    /// different executor) and does NOT touch the Live Activity (an async update from here
-    /// could reorder). Consequence: the Lock-Screen surface keeps counting during a brief
-    /// interruption, but the SAVED duration (service accumulatedTime) stays correct.
+    /// the elapsed timer, synchronously and in emission order — it never re-drives the
+    /// recorder (that would race the service's own interruption path on a different
+    /// executor). The Live Activity is synced through a Task that reads the session's
+    /// CURRENT state (not this event), so reordered deliveries converge on the truth —
+    /// QA 07-17 showed the surface ticking "Recording" over a mic a call had killed.
     private func handleInterruptionEvent(_ event: RecordingInterruption) {
         switch event {
         case .paused, .endedWithoutResume:
@@ -419,6 +418,7 @@ final class CheckInViewModel: CheckInSession {
             startTimer()
             startLevelMonitoring()
         }
+        Task { await recordingController.interruptionDidChangeState() }
     }
 
     func reset() {

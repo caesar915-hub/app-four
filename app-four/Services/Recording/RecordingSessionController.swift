@@ -3,10 +3,10 @@ import SquirlLiveActivity
 
 /// 037 — the seam the recording session exposes to the process-level controller.
 ///
-/// `CheckInViewModel` conforms; the controller holds it `weak` and drives finalize /
-/// pause / resume THROUGH it rather than owning the (view-coupled) save pipeline —
-/// reuse, not a copy (Constitution III). Kept to the few calls the controller needs so
-/// the controller stays unit-testable against a mock session (Constitution X).
+/// `CheckInViewModel` conforms; the controller retains it for the session's lifetime and
+/// drives finalize / pause / resume THROUGH it rather than owning the (view-coupled) save
+/// pipeline — reuse, not a copy (Constitution III). Kept to the few calls the controller
+/// needs so the controller stays unit-testable against a mock session (Constitution X).
 @MainActor
 protocol CheckInSession: AnyObject {
     var state: RecordingState { get }
@@ -36,6 +36,11 @@ protocol RecordingSessionController: RecordingControlSurface {
     func recordingDidStart(_ session: CheckInSession, startedAt: Date, cap: TimeInterval) async
     /// Recording finished (saved, failed, or cancelled): end the Live Activity.
     func recordingDidFinish() async
-    /// Launch reconcile (research D15): clear any stale surface left by a killed-app run.
+    /// A mic interruption changed the session's state (paused by a call/Siri, or resumed).
+    /// Reads the session's CURRENT state rather than taking an event, so out-of-order
+    /// delivery converges on the truth — the surface freezes/re-anchors to match.
+    func interruptionDidChangeState() async
+    /// Reconcile (research D15): clear any stale surface left by a killed-app run. Runs
+    /// at launch AND on every foreground — orphans outlive the process that made them.
     func recoverIfNeeded() async
 }

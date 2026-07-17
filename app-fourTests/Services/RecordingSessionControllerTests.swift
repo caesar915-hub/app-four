@@ -5,8 +5,9 @@ import Foundation
 /// 037 / T006 — the process-level coordinator's control flow, against mocks for the
 /// session (the finalize pipeline) and the ActivityKit surface. Verifies delegation,
 /// idempotency, the terminal release, and that a Lock-Screen tap with no live session
-/// is a safe no-op (the data-loss guard the review surfaced). Timing of the resume
-/// re-anchor is a device-QA concern (elapsed == recorded); here we assert the call flow.
+/// reaps orphaned surfaces instead of silently no-oping (QA 07-17: immortal cards +
+/// "dead" buttons after a process death). Timing of the resume re-anchor is a
+/// device-QA concern (elapsed == recorded); here we assert the call flow.
 @Suite @MainActor
 struct RecordingSessionControllerTests {
 
@@ -75,9 +76,29 @@ struct RecordingSessionControllerTests {
         #expect(session.stopCalled == 1)
     }
 
-    @Test func stopAndSaveWithoutASessionIsASafeNoOp() async {
-        let (sut, _, _) = makeSUT()
-        await sut.stopAndSave()   // must not crash (no session attached)
+    @Test func stopAndSaveWithoutASessionReapsOrphanedSurfaces() async {
+        let (sut, _, la) = makeSUT()
+        // A tap on an orphaned card (its process died) is the only code that runs in
+        // that background launch — it must clear the surface, not silently return.
+        await sut.stopAndSave()
+        #expect(la.endAllStaleCalled == 1)
+    }
+
+    @Test func pauseAndResumeWithoutASessionReapOrphanedSurfaces() async throws {
+        let (sut, _, la) = makeSUT()
+        await sut.pause()
+        try await sut.resume()
+        #expect(la.endAllStaleCalled == 2)
+    }
+
+    @Test func intentNoOpDoesNotReapWhileFinalizing() async {
+        let (sut, session, la) = makeSUT()
+        await sut.recordingDidStart(session, startedAt: .now, cap: 480)
+        session.state = .processing
+        // The session is retained mid-finalize — a racing tap must not kill the live
+        // surface out from under recordingDidFinish.
+        await sut.stopAndSave()
+        #expect(la.endAllStaleCalled == 0)
     }
 
     @Test func stopAndSaveIsANoOpOnceProcessing() async {
@@ -115,6 +136,37 @@ struct RecordingSessionControllerTests {
         await sut.recordingDidStart(session, startedAt: .now, cap: 480)
         await sut.pause()
         #expect(session.pauseCalled == 0)  // guard requires .recording
+    }
+
+    // MARK: Interruption sync (QA 07-17 — the surface lied "Recording" over a dead mic)
+
+    @Test func interruptionPauseFreezesTheSurface() async {
+        let (sut, session, la) = makeSUT()
+        await sut.recordingDidStart(session, startedAt: .now, cap: 480)
+        session.state = .paused   // the service + VM already paused; controller syncs to it
+        await sut.interruptionDidChangeState()
+        #expect(la.updates.last?.state == .paused)
+        #expect(la.updates.last?.pausedAt != nil)
+    }
+
+    @Test func interruptionResumeReturnsTheSurfaceToRecording() async {
+        let (sut, session, la) = makeSUT()
+        await sut.recordingDidStart(session, startedAt: .now, cap: 480)
+        session.state = .paused
+        await sut.interruptionDidChangeState()
+        session.state = .recording
+        await sut.interruptionDidChangeState()
+        #expect(la.updates.last?.state == .recording)
+        #expect(la.updates.last?.pausedAt == nil)
+    }
+
+    @Test func interruptionSyncIsIdempotentPerState() async {
+        let (sut, session, la) = makeSUT()
+        await sut.recordingDidStart(session, startedAt: .now, cap: 480)
+        session.state = .paused
+        await sut.interruptionDidChangeState()
+        await sut.interruptionDidChangeState()   // duplicate delivery converges, no re-update
+        #expect(la.updates.count == 1)
     }
 
     // MARK: Recovery

@@ -406,19 +406,32 @@ struct CheckInViewModelTests {
     }
 
 
-    // MARK: FR-015 Preload-task handle (026 RED→GREEN)
+    // MARK: FR-015 → superseded (037 QA): no model residency during capture
 
-    /// RED: `viewModel.modelPreloadTask` does not exist yet — compile failure confirms RED.
-    /// GREEN: property added in T009; cancelRecording() cancels it before the async cleanup body.
-    @Test func preloadTaskIsCancelledOnDiscard() async {
-        await mocks.transcription.setLoadModelHangs(true)
+    /// The 026 capture-time preload was REMOVED: WhisperKit resident while recording is
+    /// jetsam bait when the phone locks (QA 07-17 — the process died mid-recording and
+    /// orphaned the Live Activity). `transcribe()` self-loads on demand, so nothing is
+    /// lost. This pins the absence: starting a capture must not touch the model.
+    @Test func startingACaptureDoesNotLoadTheModel() async {
+        await enterRecording()
+        #expect(await mocks.transcription.loadModelCallCount == 0)
+    }
 
-        let start = viewModel.startRecording()
-        await start.value
+    // MARK: FR-016 Start-burst latch (037 QA)
 
-        await viewModel.cancelRecording().value
-
-        #expect(viewModel.modelPreloadTask?.isCancelled == true)
+    /// `state` flips to `.recording` only after the disk/permission/audio awaits, so a
+    /// state-only guard passes for every tap in a rapid burst — the concurrent start
+    /// Tasks then clobber the shared recorder. The synchronous latch admits exactly one.
+    @Test func rapidStartBurstOpensExactlyOneCapture() async {
+        await mocks.audio.setPermissionGranted(true)
+        let first = viewModel.startRecording()
+        let second = viewModel.startRecording()   // latched out synchronously
+        let third = viewModel.startRecording()
+        await first.value
+        await second.value
+        await third.value
+        #expect(await mocks.audio.startRecordingCallCount == 1)
+        #expect(viewModel.state == .recording)
     }
 
     // MARK: FR-017 Phantom-tick guard (026 RED→GREEN)
