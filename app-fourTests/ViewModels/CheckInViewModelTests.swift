@@ -101,6 +101,7 @@ struct CheckInViewModelTests {
     /// the `.done`/"Captured." UI state — the audio queues for later draining (FR-011/012).
     @Test func stopWhenModelNotReadyPersistsPendingAndStillReachesDone() async throws {
         await mocks.aiModel.setStubIsDownloaded(false)  // localPath(for: .whisper) == nil
+        await enterRecording()  // 037: stopRecording now no-ops unless a capture is active
 
         let task = viewModel.stopRecording()
         await task.value
@@ -117,6 +118,7 @@ struct CheckInViewModelTests {
     /// today and ends `.completed` (guards that the pending branch doesn't leak in).
     @Test func stopWhenModelReadyTranscribesAsToday() async throws {
         await mocks.aiModel.setStubIsDownloaded(true)
+        await enterRecording()  // 037: stopRecording now no-ops unless a capture is active
 
         let task = viewModel.stopRecording()
         await task.value
