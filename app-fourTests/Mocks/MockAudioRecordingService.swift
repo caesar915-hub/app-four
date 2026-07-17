@@ -6,6 +6,8 @@ actor MockAudioRecordingService: AudioRecordingService {
         AsyncStream { continuation in continuation.finish() }
     }
 
+    nonisolated func setInterruptionHandler(_ handler: (@Sendable (RecordingInterruption) -> Void)?) {}
+
     var permissionGranted = true
     var shouldThrowError = false
 

@@ -18,7 +18,7 @@ The single owner of the active check-in recording. Both `CheckInView` (via `Chec
     func pause() async                                // FR-004; updates activity → .paused (D4 pauseTime)
     func resume() async throws                        // FR-004; updates activity → .recording
     func stopAndSave() async                          // FR-003; idempotent finalize (D14), background-task-wrapped (D9)
-    func recoverIfNeeded() async                      // launch reconcile: end stale activities, recover orphaned capture (D15)
+    func recoverIfNeeded() async                      // launch reconcile: end stale Live Activity surfaces (D15). Orphaned-capture (app killed mid-record) recovery is DEFERRED — see BACKLOG.
 }
 ```
 

@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-16 19:58 (WEST) · Updated: 2026-07-16 19:58 (WEST) -->
+<!-- Created: 2026-07-16 19:58 (WEST) · Updated: 2026-07-17 20:40 (WEST) -->
 # Tasks: Live Activity Recording Controls for Check-In (037)
 
 **Input**: Design documents from `specs/037-live-activity-controls/`
@@ -10,7 +10,7 @@
 
 **Architecture**: MVVM + service-oriented (Constitution VIII) — matches the codebase. Two new `Services/` protocols injected via `AppDependencies`; `@MainActor @Observable` owner; heavy work stays off-main.
 
-> **Implementation status (2026-07-16)**: `[X]` marks a task whose code/artifact is **authored**. Per the project's no-simulator-build workflow, Claude does not compile/run; the **owner builds, confirms RED→GREEN, and device-QAs**. Batch 1 (foundation scaffolding) is authored; it needs the Xcode wiring in the "Owner Xcode steps" note below before it compiles.
+> **Implementation status (2026-07-17)**: the **full feature is authored** — all phases (shared package + 3 intents, ActivityKit `LiveActivityController`, `RecordingSessionController` + finalize delegation, the `CheckInViewModel` surgery, DI wiring, the Lock Screen + Dynamic Island views, the mapper + controller tests) — and has passed **two adversarial multi-agent reviews** (every blocker resolved; see DEVLOG 2026-07-17). It is **UNBUILT**: per the no-simulator workflow the owner builds, confirms RED→GREEN, and device-QAs. The Xcode wiring (widget target + package on 3 targets + `NSSupportsLiveActivities` + version match) is done. **Two items are FLAGGED for a build-in-the-loop fix** (they do not block compiling): make `AudioRecordingServiceImpl` `@MainActor` (pre-existing interruption race), and rewrite the VM elapsed timer to a wall-clock anchor (drift vs the Lock-Screen clock). Full assumptions + QA list in the session summary.
 
 ## Format: `[ID] [P?] [Story] Description`
 - **[P]**: parallelizable (different files, no dependency on an incomplete task)

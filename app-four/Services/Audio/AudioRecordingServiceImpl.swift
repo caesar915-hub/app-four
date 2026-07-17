@@ -10,6 +10,7 @@ final class AudioRecordingServiceImpl: NSObject, AudioRecordingService, AVAudioR
     private var accumulatedTime: TimeInterval = 0
     private var isRecording: Bool = false
     private var wasInterrupted: Bool = false
+    private var interruptionHandler: (@Sendable (RecordingInterruption) -> Void)?
 
     private let recordingSettings: [String: Any] = [
         AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -83,7 +84,10 @@ final class AudioRecordingServiceImpl: NSObject, AudioRecordingService, AVAudioR
         wasInterrupted = false
 
         setupInterruptionObserver()
-        startMaxDurationTimer()
+        // 037 — the max-duration cap is enforced solely by CheckInViewModel's timer now
+        // (which counts pause-adjusted elapsed time). The former service-level timer
+        // raced the view model's finalize and could nil the recorder mid-save → lost
+        // capture; it was removed.
         
         AppLogger.log("Recording started at \(url.path)")
         return url
@@ -136,6 +140,10 @@ final class AudioRecordingServiceImpl: NSObject, AudioRecordingService, AVAudioR
         try? FileManager.default.removeItem(at: url)
         cleanup()
         AppLogger.log("Recording cancelled and file deleted")
+    }
+
+    func setInterruptionHandler(_ handler: (@Sendable (RecordingInterruption) -> Void)?) {
+        interruptionHandler = handler
     }
     
     private var totalDuration: TimeInterval {
@@ -217,7 +225,9 @@ final class AudioRecordingServiceImpl: NSObject, AudioRecordingService, AVAudioR
                                          isRecording: isRecording, wasInterrupted: wasInterrupted) {
         case .pause:      pauseForInterruption()
         case .resume:     resumeFromInterruption()
-        case .stayPaused: AppLogger.log("Interruption ended without .shouldResume — staying paused; recording preserved")
+        case .stayPaused:
+            AppLogger.log("Interruption ended without .shouldResume — staying paused; recording preserved")
+            interruptionHandler?(.endedWithoutResume)
         case .ignore:     break
         }
     }
@@ -230,6 +240,7 @@ final class AudioRecordingServiceImpl: NSObject, AudioRecordingService, AVAudioR
         isRecording = false
         wasInterrupted = true
         AppLogger.log("Interruption began — recording paused (\(accumulatedTime)s captured)")
+        interruptionHandler?(.paused)
     }
 
     private func resumeFromInterruption() {
@@ -240,24 +251,12 @@ final class AudioRecordingServiceImpl: NSObject, AudioRecordingService, AVAudioR
                 startTime = Date()
                 isRecording = true
                 AppLogger.log("Interruption ended — recording resumed")
+                interruptionHandler?(.resumed)
             } else {
                 AppLogger.log("Interruption ended — recorder failed to resume")
             }
         } catch {
             AppLogger.log("Interruption ended — failed to reactivate session: \(error)")
-        }
-    }
-    
-    private func startMaxDurationTimer() {
-        Task {
-            while isRecording {
-                if totalDuration >= LayoutConstants.maxRecordingDuration {
-                    AppLogger.log("Max duration reached (\(LayoutConstants.maxRecordingDuration)s). Auto-stopping.")
-                    _ = try? await stopRecording()
-                    break
-                }
-                try? await Task.sleep(nanoseconds: 100_000_000) // 100ms check
-            }
         }
     }
     

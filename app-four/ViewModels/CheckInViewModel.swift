@@ -5,7 +5,7 @@ import UIKit
 
 @Observable
 @MainActor
-final class CheckInViewModel {
+final class CheckInViewModel: CheckInSession {
     var state: RecordingState = .idle
     var elapsedTime: TimeInterval = 0
     let maxDuration: TimeInterval = LayoutConstants.maxRecordingDuration
@@ -70,9 +70,11 @@ final class CheckInViewModel {
     @ObservationIgnored private let transcriptionService: TranscriptionService
     @ObservationIgnored private let aiModelService: AIModelService
     @ObservationIgnored private let store: RecordingStore
+    @ObservationIgnored private let recordingController: RecordingSessionController
     private(set) var processingViewModel: ProcessingViewModel
 
     private var timerTask: Task<Void, Never>?
+    @ObservationIgnored private var finalizeAssertion: UIBackgroundTaskIdentifier = .invalid
     private var levelTask: Task<Void, Never>?
     private(set) var transcriptionTask: Task<Void, Never>?
     private(set) var modelPreloadTask: Task<Void, Never>?
@@ -87,6 +89,7 @@ final class CheckInViewModel {
 
     init(store: RecordingStore, services: AppServices) {
         self.store = store
+        self.recordingController = services.recordingSessionController
         self.audioService = services.audioService
         self.storageService = services.storageService
         self.transcriptionService = services.transcriptionService
@@ -131,9 +134,22 @@ final class CheckInViewModel {
 
             do {
                 _ = try await audioService.startRecording()
+                let startedAt = Date()
                 self.state = .recording
                 UIApplication.shared.isIdleTimerDisabled = true
                 self.elapsedTime = 0
+                // 037 — attach this session to the process-level controller + begin the
+                // Live Activity so a Lock-Screen stop/pause reaches this same pipeline.
+                await self.recordingController.recordingDidStart(self, startedAt: startedAt, cap: self.maxDuration)
+                // 037 — mirror mic interruptions (call/Siri) into recording state so the
+                // timer + Live Activity freeze instead of counting over a dead mic. [weak self]
+                // + the controller's state guards make a stale handler a safe no-op.
+                self.audioService.setInterruptionHandler { [weak self] event in
+                    // Synchronous on the main queue (assumeIsolated) so .paused/.resumed
+                    // apply in strict emission order — a per-event Task could reorder a
+                    // rapid .paused→.resumed and wedge the capture stuck-paused.
+                    MainActor.assumeIsolated { self?.handleInterruptionEvent(event) }
+                }
                 self.promptInterval = Self.loadPromptInterval()
 
                 self.startTimer()
@@ -156,6 +172,10 @@ final class CheckInViewModel {
 
     @discardableResult
     func stopRecording() -> Task<Void, Never> {
+        // Idempotency (037): any finalize path — in-app stop, Lock-Screen intent, cap
+        // auto-stop — is a no-op once past .recording/.paused. The guard + `.processing`
+        // are synchronous (no await before them), so two racing callers can't both pass.
+        guard state == .recording || state == .paused else { return Task {} }
         // Keep any prior recording's transcription running — we chain after it below.
         self.stopTasks(cancelTranscription: false)
         UIApplication.shared.isIdleTimerDisabled = false
@@ -167,6 +187,10 @@ final class CheckInViewModel {
         let priorTranscription = self.transcriptionTask
 
         return Task {
+            // Hold a background-task assertion across deactivate→save-commit so iOS can't
+            // suspend the app mid-finalize — covers ALL finalize paths, incl. a locked cap
+            // auto-stop (037 / research D9). Balanced + idempotent on `.invalid`.
+            self.beginFinalizeAssertion()
             do {
                 let result = try await audioService.stopRecording()
                 // The audio is now on disk. Hold it in the retry buffer BEFORE the
@@ -178,6 +202,10 @@ final class CheckInViewModel {
                 AppLogger.log("Failed to stop recording: \(error)")
                 self.state = .idle
             }
+            // Recording has stopped → clear the Lock Screen surface (a failed save is
+            // retried in-app, not from the Live Activity).
+            await self.recordingController.recordingDidFinish()
+            self.endFinalizeAssertion()
         }
     }
 
@@ -331,6 +359,11 @@ final class CheckInViewModel {
 
     @discardableResult
     func cancelRecording() -> Task<Void, Never> {
+        guard state == .recording || state == .paused else { return Task {} }
+        // No synchronous state flip: in-app Cancel and a Lock-Screen Stop cannot coexist
+        // (Cancel is in the foregrounded app; Stop is on the locked screen), so there is no
+        // finalize race to guard here — and flipping to `.processing` would make the UI
+        // announce "Saving…" while the capture is actually being discarded.
         self.stopTasks()
         modelPreloadTask?.cancel()
         UIApplication.shared.isIdleTimerDisabled = false
@@ -340,6 +373,51 @@ final class CheckInViewModel {
             self.state = .idle
             self.elapsedTime = 0
             self.lastSavedRecording = nil
+            await self.recordingController.recordingDidFinish()   // end the Live Activity on cancel
+        }
+    }
+
+    // MARK: - Pause / resume (037 — Live Activity control)
+
+    /// FR-004 — freeze the timer + pause the recorder without ending the capture. State
+    /// flips BEFORE the await so a racing stop (which reads `.paused`) can't be overwritten
+    /// back to `.paused` after it has moved to `.processing`.
+    func pauseCapture() async {
+        guard state == .recording else { return }
+        state = .paused
+        stopTasks(cancelTranscription: false)   // cancels the 0.1s timer → elapsedTime freezes
+        await audioService.pauseRecording()
+    }
+
+    /// FR-004 — resume the same capture and restart the elapsed timer from where it froze.
+    func resumeCapture() async throws {
+        guard state == .paused else { return }
+        try await audioService.resumeRecording()
+        // Re-check after the await: a stop may have moved us to `.processing`.
+        guard state == .paused else { return }
+        state = .recording
+        startTimer()
+        startLevelMonitoring()
+    }
+
+    /// Mirror a mic interruption into recording state (037). The audio service already
+    /// paused/resumed the recorder, so this ONLY updates view-model state + freezes/restarts
+    /// the elapsed timer, synchronously and in emission order. It deliberately does NOT
+    /// re-drive the recorder (that would race the service's own interruption path on a
+    /// different executor) and does NOT touch the Live Activity (an async update from here
+    /// could reorder). Consequence: the Lock-Screen surface keeps counting during a brief
+    /// interruption, but the SAVED duration (service accumulatedTime) stays correct.
+    private func handleInterruptionEvent(_ event: RecordingInterruption) {
+        switch event {
+        case .paused, .endedWithoutResume:
+            guard state == .recording else { return }
+            state = .paused
+            stopTasks(cancelTranscription: false)   // freeze the elapsed timer
+        case .resumed:
+            guard state == .paused else { return }
+            state = .recording
+            startTimer()
+            startLevelMonitoring()
         }
     }
 
@@ -491,5 +569,25 @@ final class CheckInViewModel {
     /// structured contexts so cancellation isn't dropped on the floor.
     private func cancelInFlightServices() async {
         await transcriptionService.cancelTranscription()
+    }
+
+    // MARK: - Background-task assertion (037 — locked finalize, research D9)
+
+    private func beginFinalizeAssertion() {
+        // End any still-live prior assertion first: `finalizeAssertion` is a single scalar,
+        // so a back-to-back finalize (a 2nd capture stopped inside the 1st's liveActivity.end
+        // window) would otherwise orphan the 1st id → unbalanced assertion → the OS kills the
+        // app. Safe because a prior assertion is only still live after its save committed.
+        endFinalizeAssertion()
+        finalizeAssertion = UIApplication.shared.beginBackgroundTask(withName: "checkin-finalize") { [weak self] in
+            // Called synchronously on the main thread when the assertion expires.
+            MainActor.assumeIsolated { self?.endFinalizeAssertion() }
+        }
+    }
+
+    private func endFinalizeAssertion() {
+        guard finalizeAssertion != .invalid else { return }
+        UIApplication.shared.endBackgroundTask(finalizeAssertion)
+        finalizeAssertion = .invalid
     }
 }

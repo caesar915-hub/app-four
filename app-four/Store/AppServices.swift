@@ -15,6 +15,9 @@ final class AppServices {
     let connectivity: Connectivity
     let pendingTranscriptionService: PendingTranscriptionService
     let exportService: ExportService
+    /// 037 — the process-level coordinator the check-in view model delegates finalize /
+    /// pause / resume to, so a Lock-Screen intent reaches the same recording pipeline.
+    let recordingSessionController: RecordingSessionController
 
     init(
         audioService: AudioRecordingService,
@@ -24,7 +27,8 @@ final class AppServices {
         summarizationService: SummarizationService,
         connectivity: Connectivity,
         pendingTranscriptionService: PendingTranscriptionService,
-        exportService: ExportService
+        exportService: ExportService,
+        recordingSessionController: RecordingSessionController
     ) {
         self.audioService = audioService
         self.storageService = storageService
@@ -34,5 +38,6 @@ final class AppServices {
         self.connectivity = connectivity
         self.pendingTranscriptionService = pendingTranscriptionService
         self.exportService = exportService
+        self.recordingSessionController = recordingSessionController
     }
 }

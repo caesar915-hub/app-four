@@ -1,6 +1,7 @@
 import AppIntents
 import SwiftUI
 import SwiftData
+import SquirlLiveActivity
 
 @main
 struct SquirlApp: App {
@@ -27,8 +28,14 @@ struct SquirlApp: App {
         // MainActor-isolated AppDependencies accessors.
         let doseLogService = AppDependencies.doseLogService
         let router = AppDependencies.appIntentRouter
+        // 037 — register as the EXACT existential the Live Activity intents resolve
+        // (`any RecordingControlSurface`); the SAME instance is threaded into AppServices,
+        // so the intents and the view model drive one shared session (a second instance
+        // would leave the intents' `session` nil forever → silent no-op).
+        let recordingControl: any RecordingControlSurface = AppDependencies.recordingSessionController
         AppDependencyManager.shared.add(dependency: doseLogService)
         AppDependencyManager.shared.add(dependency: router)
+        AppDependencyManager.shared.add(dependency: recordingControl)
     }
 
     var body: some Scene {
@@ -113,6 +120,8 @@ private struct RootContainerView: View {
         // that finished while backgrounded). The service no-ops when the model isn't
         // ready or when already draining (FR-013/016).
         .task { await services.pendingTranscriptionService.drainIfModelReady() }
+        // 037 — end any stale "recording" Live Activity left by a killed-app run (D15).
+        .task { await services.recordingSessionController.recoverIfNeeded() }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
                 Task { await services.pendingTranscriptionService.drainIfModelReady() }

@@ -12,6 +12,10 @@ let package = Package(
         .library(name: "SquirlLiveActivity", targets: ["SquirlLiveActivity"])
     ],
     targets: [
-        .target(name: "SquirlLiveActivity")
+        // Swift 5 language mode to match the app target (SWIFT_VERSION = 5.0). Without this
+        // the package compiles the ActivityKit/AppIntents contract under Swift 6 strict
+        // concurrency while the app compiles the same shapes under Swift 5 — a mismatch that
+        // would surface as package-only build errors (research: re-review widgets lens).
+        .target(name: "SquirlLiveActivity", swiftSettings: [.swiftLanguageMode(.v5)])
     ]
 )

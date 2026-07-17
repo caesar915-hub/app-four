@@ -14,6 +14,9 @@ struct MockAppServices {
     let connectivity = MockConnectivity()
     let pendingTranscription = MockPendingTranscriptionService()
     let export = MockExportService()
+    // Real coordinator: it no-ops when Live Activities are unavailable (the test env), so
+    // a VM under test can call recordingDidStart/Finish without any ActivityKit side effect.
+    let recordingSession = RecordingSessionControllerImpl(liveActivity: LiveActivityControllerImpl())
 
     var services: AppServices {
         AppServices(
@@ -24,7 +27,8 @@ struct MockAppServices {
             summarizationService: summarization,
             connectivity: connectivity,
             pendingTranscriptionService: pendingTranscription,
-            exportService: export
+            exportService: export,
+            recordingSessionController: recordingSession
         )
     }
 }

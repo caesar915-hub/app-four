@@ -11,9 +11,10 @@ protocol LiveActivityController: Sendable {
     /// unavailable/disabled — recording proceeds without the surface (FR-014, SC-007).
     func begin(startedAt: Date, cap: TimeInterval) async
 
-    /// `activity.update` to reflect a phase change (research D4 — paused passes
-    /// `pausedAt` so `Text(timerInterval:pauseTime:)` freezes).
-    func update(_ phase: RecordingActivityPhase, pausedAt: Date?) async
+    /// `activity.update` reflecting a lifecycle transition. `startedAt` is the
+    /// pause-adjusted anchor (the coordinator advances it on resume). Recomputes the
+    /// stale date and never lets a `.paused` surface self-dim (research D4).
+    func update(for state: RecordingState, startedAt: Date, pausedAt: Date?) async
 
     /// `activity.end(.immediate)` so the surface clears within seconds (SC-005).
     func end() async

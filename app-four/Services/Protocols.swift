@@ -86,10 +86,24 @@ extension TranscriptionService {
     }
 }
 
+/// A microphone-session interruption transition (call, Siri, route loss), surfaced from
+/// the audio service so the view model can mirror it — freeze the elapsed timer and update
+/// the Live Activity instead of counting over a dead mic (037). Pure value type.
+enum RecordingInterruption: Sendable {
+    case paused             // .began — the system paused the recorder
+    case resumed            // .ended + .shouldResume — recording continues
+    case endedWithoutResume // .ended without .shouldResume — stays paused
+}
+
 /// Protocol for managing audio recording state and hardware.
 protocol AudioRecordingService: Sendable {
     /// Stream of normalized audio power levels (0.0 to 1.0).
     var audioLevelStream: AsyncStream<Float> { get }
+
+    /// Registers a handler for mic-interruption transitions so the caller can mirror them
+    /// (freeze the timer, update the surface). Replaces any prior handler; pass nil to
+    /// clear. Invoked on the main queue. (037)
+    func setInterruptionHandler(_ handler: (@Sendable (RecordingInterruption) -> Void)?)
 
     /// Requests microphone permissions.
     func requestPermission() async -> Bool

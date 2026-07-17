@@ -1,0 +1,140 @@
+<!-- Created: 2026-07-17 20:24 (WEST) · Updated: 2026-07-17 20:24 (WEST) -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>037 · Check-in Live Activity · Dynamic Island mockup (US3)</title>
+<style>
+  /* The Dynamic Island presentations of the check-in Live Activity (spec 037 US3).
+     Design-principles: base-4 spacing, one accent (capture green #5FB36E = check-in),
+     monospaced timer, buttons ONLY in the expanded presentation (compact/minimal are
+     display-only, tap-to-expand, research D5 + widgets skill). */
+  :root {
+    --green: #5FB36E;      /* capture-flow green (commit 81ce578c) */
+    --amber: #b8863b;      /* paused */
+    --ink-0: #f5f5f7;
+    --ink-1: #a1a1a6;
+    --island: #000;
+    --grid: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font: 15px/1.35 -apple-system, "SF Pro Text", system-ui, sans-serif;
+    background: linear-gradient(170deg, #2a2f3a, #14181f);
+    min-height: 100vh; color: var(--ink-0);
+    display: flex; flex-direction: column; align-items: center; gap: 32px;
+    padding: 48px 20px;
+  }
+  h2.caption {
+    color: var(--ink-1); font-weight: 600; font-size: 12px; text-transform: uppercase;
+    letter-spacing: 1.5px; align-self: flex-start; margin: 8px 0 -16px 8px;
+  }
+  .phone {
+    width: 100%; max-width: 390px; height: 120px; border-radius: 44px;
+    background: linear-gradient(160deg, #3a4657, #222833);
+    position: relative; display: flex; justify-content: center; padding-top: 12px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06);
+  }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-variant-numeric: tabular-nums; }
+
+  /* ---- Compact ---- */
+  .compact {
+    background: var(--island); height: 37px; border-radius: 20px;
+    display: flex; align-items: center; gap: 8px; padding: 0 14px; min-width: 124px;
+    justify-content: space-between;
+  }
+  .compact .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+  .compact.paused .dot { background: var(--amber); }
+  .compact .t { font-size: 15px; color: var(--ink-0); }
+  .compact.paused .t { color: var(--amber); }
+
+  /* ---- Minimal ---- */
+  .minimal {
+    background: var(--island); height: 37px; width: 37px; border-radius: 50%;
+    display: grid; place-items: center; color: var(--green); font-size: 15px;
+  }
+  .minimal.paused { color: var(--amber); }
+
+  /* ---- Expanded ---- */
+  .expanded {
+    background: var(--island); border-radius: 34px; width: 100%; max-width: 370px;
+    padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 12px;
+  }
+  .exp-top { display: flex; align-items: flex-start; justify-content: space-between; }
+  .exp-lead { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; }
+  .exp-lead .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); }
+  .exp-lead.paused { color: var(--amber); }
+  .exp-lead.paused .dot { background: var(--amber); }
+  .exp-time { font-size: 22px; font-weight: 300; color: var(--green); }
+  .exp-time.paused { color: var(--amber); }
+  .controls { display: flex; gap: 8px; }
+  .btn {
+    flex: 1; border: 0; border-radius: 12px; padding: 10px;
+    font: 600 15px -apple-system, system-ui, sans-serif; color: var(--ink-0);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn.secondary { background: rgba(255,255,255,0.14); }
+  .btn.stop { background: var(--green); color: #05230d; }
+  .paused .btn.stop { background: var(--amber); }
+  .note { color: var(--ink-1); font-size: 12px; align-self: flex-start; margin-left: 8px; max-width: 390px; }
+</style>
+</head>
+<body>
+
+  <h2 class="caption">Compact · recording (default while backgrounded)</h2>
+  <div class="phone">
+    <div class="compact">
+      <span class="dot"></span>
+      <span class="t mono">02:14</span>
+    </div>
+  </div>
+
+  <h2 class="caption">Compact · paused</h2>
+  <div class="phone">
+    <div class="compact paused">
+      <span class="dot"></span>
+      <span class="t mono">02:14</span>
+    </div>
+  </div>
+
+  <h2 class="caption">Minimal (when another activity shares the Island)</h2>
+  <div class="phone">
+    <div class="minimal">◐</div>
+  </div>
+
+  <h2 class="caption">Expanded · recording (long-press), controls allowed here</h2>
+  <div class="phone" style="height:auto; padding:12px 10px 16px; align-items:flex-start;">
+    <div class="expanded">
+      <div class="exp-top">
+        <div class="exp-lead"><span class="dot"></span> Recording check-in</div>
+        <div class="exp-time mono">02:14</div>
+      </div>
+      <div class="controls">
+        <button class="btn secondary">⏸ Pause</button>
+        <button class="btn stop">■ Stop &amp; save</button>
+      </div>
+    </div>
+  </div>
+
+  <h2 class="caption">Expanded · paused</h2>
+  <div class="phone" style="height:auto; padding:12px 10px 16px; align-items:flex-start;">
+    <div class="expanded paused">
+      <div class="exp-top">
+        <div class="exp-lead paused"><span class="dot"></span> Paused</div>
+        <div class="exp-time paused mono">02:14</div>
+      </div>
+      <div class="controls">
+        <button class="btn secondary">▶ Resume</button>
+        <button class="btn stop">■ Stop &amp; save</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="note">Compact/minimal are display-only (tap expands). Buttons run
+  <code>LiveActivityIntent</code>s only in the expanded presentation + on the Lock Screen
+  (widgets skill / research D5). Timer self-updates via <code>Text(timerInterval:)</code>;
+  freezes at <code>pausedAt</code>. Surface carries only elapsed + state, never
+  transcript/mood/med (FR-016).</p>
+</body>
+</html>

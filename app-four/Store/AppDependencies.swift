@@ -13,6 +13,12 @@ enum AppDependencies {
     static let aiModelService: AIModelService = AIModelServiceImpl(context: AppModelContainer.container.mainContext)
     static let diagnosticsStore = DiagnosticsStore()
     static let screenTracker = ScreenTracker()
+    /// 037 — ActivityKit surface + the process-level recording coordinator. ONE instance
+    /// of the coordinator is shared: threaded into `services` (for the view model) AND
+    /// registered with `AppDependencyManager` as `any RecordingControlSurface` (for the
+    /// Live Activity intents), so both drive the same live session.
+    static let liveActivityController: LiveActivityController = LiveActivityControllerImpl()
+    static let recordingSessionController: RecordingSessionController = RecordingSessionControllerImpl(liveActivity: liveActivityController)
     /// Single choke point for check-in / My-medication triggers (App Intents + deep link).
     /// Reads live onboarding state so the FR-022 gate reflects the current install.
     static let appIntentRouter = AppIntentRouter(
@@ -43,7 +49,8 @@ enum AppDependencies {
         summarizationService: summarizationService,
         connectivity: connectivity,
         pendingTranscriptionService: pendingTranscriptionService,
-        exportService: exportService
+        exportService: exportService,
+        recordingSessionController: recordingSessionController
     )
 
     private static let sharedWhisperKitService = WhisperKitTranscriptionService(

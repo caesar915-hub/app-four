@@ -10,6 +10,12 @@
 		03B9F8A9D4C01418AF2D2089 /* SquirlSignals in Frameworks */ = {isa = PBXBuildFile; productRef = 7A34C43D19993F90A188D010 /* SquirlSignals */; };
 		370F53EA2FC3975500504F1C /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = 370F529D2FC2046C00504F1C /* WhisperKit */; };
 		3724CFB42FC9D79A00427F48 /* Tokenizers in Frameworks */ = {isa = PBXBuildFile; productRef = 3724CFB32FC9D79A00427F48 /* Tokenizers */; };
+		37372A12300AA0430034B40A /* SquirlLiveActivity in Frameworks */ = {isa = PBXBuildFile; productRef = 37372A11300AA0430034B40A /* SquirlLiveActivity */; };
+		374320E93009694B009534BD /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374320E83009694B009534BD /* WidgetKit.framework */; };
+		374320EB3009694B009534BD /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 374320EA3009694B009534BD /* SwiftUI.framework */; };
+		374320FC3009694D009534BD /* SquirlWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 374320E73009694B009534BD /* SquirlWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3743210630096B55009534BD /* SquirlLiveActivity in Frameworks */ = {isa = PBXBuildFile; productRef = 3743210530096B55009534BD /* SquirlLiveActivity */; };
+		374322D330096C9A009534BD /* SquirlLiveActivity in Frameworks */ = {isa = PBXBuildFile; productRef = 374322D230096C9A009534BD /* SquirlLiveActivity */; };
 		91528C3C914425C0946CF89F /* SquirlDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8C35CE4B4793A1A8BAC706 /* SquirlDesignSystem */; };
 		99A8DD6F712ED882A9CCCFFA /* SquirlSignals in Frameworks */ = {isa = PBXBuildFile; productRef = AC13466A421DCDB2A4BCB3C5 /* SquirlSignals */; };
 		9CFF548080164D58F7E0D35A /* SquirlDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 90059C596F1B493FEBD81C9B /* SquirlDesignSystem */; };
@@ -23,16 +29,54 @@
 			remoteGlobalIDString = 37F17B292FC0CE4F00CAC42E;
 			remoteInfo = "app-four";
 		};
+		374320FA3009694D009534BD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37F17B222FC0CE4F00CAC42E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 374320E63009694B009534BD;
+			remoteInfo = SquirlWidgetsExtension;
+		};
+		3743210730096B7D009534BD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 37F17B222FC0CE4F00CAC42E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 374320E63009694B009534BD;
+			remoteInfo = SquirlWidgetsExtension;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		374320FD3009694D009534BD /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				374320FC3009694D009534BD /* SquirlWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		3724CF862FC9292700427F48 /* app-fourTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "app-fourTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		374320E73009694B009534BD /* SquirlWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SquirlWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		374320E83009694B009534BD /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		374320EA3009694B009534BD /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		3754204D3002E661008105B0 /* app-four.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "app-four.xctestplan"; sourceTree = "<group>"; };
 		37F17B2A2FC0CE4F00CAC42E /* app-four.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "app-four.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3CCD2F9756D1779993777649 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		374321033009694D009534BD /* Exceptions for "SquirlWidgets" folder in "SquirlWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 374320E63009694B009534BD /* SquirlWidgetsExtension */;
+		};
 		37D44C192FD1AE0E0023530F /* Exceptions for "app-four" folder in "app-four" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -46,6 +90,14 @@
 		3724CF872FC9292700427F48 /* app-fourTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "app-fourTests";
+			sourceTree = "<group>";
+		};
+		374320EC3009694B009534BD /* SquirlWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				374321033009694D009534BD /* Exceptions for "SquirlWidgets" folder in "SquirlWidgetsExtension" target */,
+			);
+			path = SquirlWidgets;
 			sourceTree = "<group>";
 		};
 		37F17B2C2FC0CE4F00CAC42E /* app-four */ = {
@@ -65,6 +117,17 @@
 			files = (
 				99A8DD6F712ED882A9CCCFFA /* SquirlSignals in Frameworks */,
 				9CFF548080164D58F7E0D35A /* SquirlDesignSystem in Frameworks */,
+				374322D330096C9A009534BD /* SquirlLiveActivity in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		374320E43009694B009534BD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				374320EB3009694B009534BD /* SwiftUI.framework in Frameworks */,
+				374320E93009694B009534BD /* WidgetKit.framework in Frameworks */,
+				37372A12300AA0430034B40A /* SquirlLiveActivity in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,6 +135,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3743210630096B55009534BD /* SquirlLiveActivity in Frameworks */,
 				3724CFB42FC9D79A00427F48 /* Tokenizers in Frameworks */,
 				370F53EA2FC3975500504F1C /* WhisperKit in Frameworks */,
 				03B9F8A9D4C01418AF2D2089 /* SquirlSignals in Frameworks */,
@@ -88,6 +152,7 @@
 				3754204D3002E661008105B0 /* app-four.xctestplan */,
 				37F17B2C2FC0CE4F00CAC42E /* app-four */,
 				3724CF872FC9292700427F48 /* app-fourTests */,
+				374320EC3009694B009534BD /* SquirlWidgets */,
 				37F17B2B2FC0CE4F00CAC42E /* Products */,
 				F15A23EEC3F0FBE0E5C0317D /* Frameworks */,
 			);
@@ -98,6 +163,7 @@
 			children = (
 				37F17B2A2FC0CE4F00CAC42E /* app-four.app */,
 				3724CF862FC9292700427F48 /* app-fourTests.xctest */,
+				374320E73009694B009534BD /* SquirlWidgetsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -114,6 +180,8 @@
 			isa = PBXGroup;
 			children = (
 				D01B8D2A3AA8410335F5C01D /* iOS */,
+				374320E83009694B009534BD /* WidgetKit.framework */,
+				374320EA3009694B009534BD /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -141,10 +209,34 @@
 			packageProductDependencies = (
 				AC13466A421DCDB2A4BCB3C5 /* SquirlSignals */,
 				90059C596F1B493FEBD81C9B /* SquirlDesignSystem */,
+				374322D230096C9A009534BD /* SquirlLiveActivity */,
 			);
 			productName = "app-fourTests";
 			productReference = 3724CF862FC9292700427F48 /* app-fourTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		374320E63009694B009534BD /* SquirlWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 374321023009694D009534BD /* Build configuration list for PBXNativeTarget "SquirlWidgetsExtension" */;
+			buildPhases = (
+				374320E33009694B009534BD /* Sources */,
+				374320E43009694B009534BD /* Frameworks */,
+				374320E53009694B009534BD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				374320EC3009694B009534BD /* SquirlWidgets */,
+			);
+			name = SquirlWidgetsExtension;
+			packageProductDependencies = (
+				37372A11300AA0430034B40A /* SquirlLiveActivity */,
+			);
+			productName = SquirlWidgetsExtension;
+			productReference = 374320E73009694B009534BD /* SquirlWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		37F17B292FC0CE4F00CAC42E /* app-four */ = {
 			isa = PBXNativeTarget;
@@ -153,10 +245,13 @@
 				37F17B262FC0CE4F00CAC42E /* Sources */,
 				37F17B272FC0CE4F00CAC42E /* Frameworks */,
 				37F17B282FC0CE4F00CAC42E /* Resources */,
+				374320FD3009694D009534BD /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				374320FB3009694D009534BD /* PBXTargetDependency */,
+				3743210830096B7D009534BD /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				37F17B2C2FC0CE4F00CAC42E /* app-four */,
@@ -167,6 +262,7 @@
 				3724CFB32FC9D79A00427F48 /* Tokenizers */,
 				7A34C43D19993F90A188D010 /* SquirlSignals */,
 				3F8C35CE4B4793A1A8BAC706 /* SquirlDesignSystem */,
+				3743210530096B55009534BD /* SquirlLiveActivity */,
 			);
 			productName = "app-four";
 			productReference = 37F17B2A2FC0CE4F00CAC42E /* app-four.app */;
@@ -179,12 +275,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2650;
+				LastSwiftUpdateCheck = 2660;
 				LastUpgradeCheck = 2660;
 				TargetAttributes = {
 					3724CF852FC9292700427F48 = {
 						CreatedOnToolsVersion = 26.5;
 						TestTargetID = 37F17B292FC0CE4F00CAC42E;
+					};
+					374320E63009694B009534BD = {
+						CreatedOnToolsVersion = 26.6;
 					};
 					37F17B292FC0CE4F00CAC42E = {
 						CreatedOnToolsVersion = 26.5;
@@ -205,6 +304,7 @@
 				3724CFB22FC9D3EC00427F48 /* XCRemoteSwiftPackageReference "swift-transformers" */,
 				EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */,
 				4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */,
+				3743210430096B55009534BD /* XCLocalSwiftPackageReference "SquirlLiveActivity" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 37F17B2B2FC0CE4F00CAC42E /* Products */;
@@ -213,12 +313,20 @@
 			targets = (
 				37F17B292FC0CE4F00CAC42E /* app-four */,
 				3724CF852FC9292700427F48 /* app-fourTests */,
+				374320E63009694B009534BD /* SquirlWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		3724CF842FC9292700427F48 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		374320E53009694B009534BD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -242,6 +350,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		374320E33009694B009534BD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		37F17B262FC0CE4F00CAC42E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -256,6 +371,16 @@
 			isa = PBXTargetDependency;
 			target = 37F17B292FC0CE4F00CAC42E /* app-four */;
 			targetProxy = 3724CF8A2FC9292700427F48 /* PBXContainerItemProxy */;
+		};
+		374320FB3009694D009534BD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 374320E63009694B009534BD /* SquirlWidgetsExtension */;
+			targetProxy = 374320FA3009694D009534BD /* PBXContainerItemProxy */;
+		};
+		3743210830096B7D009534BD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 374320E63009694B009534BD /* SquirlWidgetsExtension */;
+			targetProxy = 3743210730096B7D009534BD /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -347,6 +472,130 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/app-four.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/app-four";
 			};
 			name = Release;
+		};
+		374320FE3009694D009534BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = SWFNK3KULQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SquirlWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SquirlWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "squirl-app.app-four.SquirlWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		374320FF3009694D009534BD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = SWFNK3KULQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SquirlWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SquirlWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "squirl-app.app-four.SquirlWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		374321003009694D009534BD /* Debug-Stable */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = SWFNK3KULQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SquirlWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SquirlWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "squirl-app.app-four.SquirlWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Debug-Stable";
+		};
+		374321013009694D009534BD /* Release-Stable */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = SWFNK3KULQ;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SquirlWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = SquirlWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 0.8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "squirl-app.app-four.SquirlWidgets";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = "Release-Stable";
 		};
 		37F17B332FC0CE5200CAC42E /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -770,6 +1019,17 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		374321023009694D009534BD /* Build configuration list for PBXNativeTarget "SquirlWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				374320FE3009694D009534BD /* Debug */,
+				374320FF3009694D009534BD /* Release */,
+				374321003009694D009534BD /* Debug-Stable */,
+				374321013009694D009534BD /* Release-Stable */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		37F17B252FC0CE4F00CAC42E /* Build configuration list for PBXProject "app-four" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -795,6 +1055,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		3743210430096B55009534BD /* XCLocalSwiftPackageReference "SquirlLiveActivity" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = SquirlLiveActivity;
+		};
 		4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/SquirlDesignSystem;
@@ -834,6 +1098,20 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3724CFB22FC9D3EC00427F48 /* XCRemoteSwiftPackageReference "swift-transformers" */;
 			productName = Tokenizers;
+		};
+		37372A11300AA0430034B40A /* SquirlLiveActivity */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3743210430096B55009534BD /* XCLocalSwiftPackageReference "SquirlLiveActivity" */;
+			productName = SquirlLiveActivity;
+		};
+		3743210530096B55009534BD /* SquirlLiveActivity */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SquirlLiveActivity;
+		};
+		374322D230096C9A009534BD /* SquirlLiveActivity */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3743210430096B55009534BD /* XCLocalSwiftPackageReference "SquirlLiveActivity" */;
+			productName = SquirlLiveActivity;
 		};
 		3F8C35CE4B4793A1A8BAC706 /* SquirlDesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
