@@ -70,6 +70,7 @@ struct ModelDownloadRow: View {
             .accessibilityHint(isInstalled
                 ? "Removes the on-device transcription model"
                 : "Downloads the on-device transcription model, about 150 megabytes")
+            .tint(Theme.meadowGreen)
         }
     }
 

@@ -30,8 +30,8 @@ public enum Metrics {
     /// Mood sprout size inside the entry-row disc — a badge glyph with a visible tint ring
     /// (smaller than the disc so the disc reads as an avatar, matching the app's bead proportions).
     public static let rowMoodGlyph: CGFloat = 28
-    /// Outlined "more" (⋯) affordance circle on an unfolded entry row (a01 — 30pt).
-    public static let moreAffordance: CGFloat = 30
+    /// Outlined "more" (⋯) affordance circle on an unfolded entry row (a01, reduced 30% from 30pt).
+    public static let moreAffordance: CGFloat = 21
 
     /// Decorative SF Symbol sizes (large hero glyphs, not Dynamic Type text).
     /// These use a fixed point size intentionally because they are imagery, not copy.
