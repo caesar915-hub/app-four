@@ -1,28 +1,29 @@
-## 2026-07-16 20:58 – 2026-07-18 01:47 · DEVLOG — 037 Live Activity widget reproduced in Figma (13 fr · main
+## 2026-07-17 23:22 – 2026-07-18 16:51 · docs+design: v3 design database, three design audits, and ap · main
 
 **Code changes**
 - _Major (feat)_
-  - `02f83b17` feat: single meadow green across check-in + Insights month pill
   - `4e6a8004` feat(036): unify check-in + Insights green to Theme.meadowGreen
 - _Fixes_
   - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
 - _docs_
+  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
+  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
   - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
-  - `5edb6732` docs: regen WORKLOG for capture-green + whisper toggle
-  - `c2322336` docs: DEVLOG/BACKLOG for capture-green + whisper toggle (81ce578c)
 - _other_
   - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
 
 **Git actions**
 - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
+- tag `refs/tags/stable-ref/0.8.0`
 
 **Worktrees**
 ```
-/Users/caesargrey/Projects/app-four                                          e5e0d9fb [main]
-/Users/caesargrey/Projects/app-four-spm                                      4e6a8004 [feat/036-newlook-checkin-insights]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents        9e98adab [chore/swift6-tech-debt]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4            3c5f2f53 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals 5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four                                                                                 4822ee28 [feat/038-icloud-sync]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9f3d12a2-8e2f-4a10-bc36-20e06ebe5efc/scratchpad/wt-main 61bcae47 [main]
+/Users/caesargrey/Projects/app-four-spm                                                                             4e6a8004 [feat/036-newlook-checkin-insights]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                               9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                   12038b32 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                        5db316a6 [feat/healthkit-signals]
 ```
 
 ---
