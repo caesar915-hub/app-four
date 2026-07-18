@@ -1,3 +1,32 @@
+## 2026-07-16 20:58 – 2026-07-18 01:47 · DEVLOG — 037 Live Activity widget reproduced in Figma (13 fr · main
+
+**Code changes**
+- _Major (feat)_
+  - `02f83b17` feat: single meadow green across check-in + Insights month pill
+  - `4e6a8004` feat(036): unify check-in + Insights green to Theme.meadowGreen
+- _Fixes_
+  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
+- _docs_
+  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
+  - `5edb6732` docs: regen WORKLOG for capture-green + whisper toggle
+  - `c2322336` docs: DEVLOG/BACKLOG for capture-green + whisper toggle (81ce578c)
+- _other_
+  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
+
+**Git actions**
+- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                          e5e0d9fb [main]
+/Users/caesargrey/Projects/app-four-spm                                      4e6a8004 [feat/036-newlook-checkin-insights]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents        9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4            3c5f2f53 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals 5db316a6 [feat/healthkit-signals]
+```
+
+---
+
 ## 2026-07-16 20:56–20:58 · DEVLOG/BACKLOG for capture-green + whisper toggle (81ce578c) · main
 
 **Code changes**
