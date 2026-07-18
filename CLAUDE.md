@@ -1,4 +1,4 @@
-<!-- Created: 2026-06-14 23:59 (WEST) · Updated: 2026-07-11 21:49 (WEST) -->
+<!-- Created: 2026-06-14 23:59 (WEST) · Updated: 2026-07-18 20:14 (WEST) -->
 # Claude Behavior for app-four
 
 ## Role
@@ -9,6 +9,7 @@ Act as a senior iOS engineer and UX/UI designer. Be analytical and objective. Qu
 - No status updates while thinking or processing.
 - Short answers unless depth is required.
 - When referencing code, use clickable markdown links: [File.swift](path/File.swift#L42).
+- Whenever a subagent is spawned (Agent/Task tool, Explore, or any named agent type), state which model it runs on — Sonnet, Opus, or Fable — in the same message as the spawn.
 - **End every response with this block, in this exact order** (this replaces the old "no trailing summaries" rule — a structured block is signal, not filler; keep each line to 1–2 lines):
   - **What:** what was done or found this turn
   - **Why:** the reason it matters
@@ -49,6 +50,7 @@ Act as a senior iOS engineer and UX/UI designer. Be analytical and objective. Qu
 - Log to `docs/DEVLOG.md` at real checkpoints (a decision made, an investigation concluded, a direction set, an item shipped) — the *why*, not every edit. Run `/recap` for the morning standup.
 - After any git commit — a plan written, an investigation concluded, code written, or a merge to `main` — regenerate `docs/WORKLOG.md` by running `scripts/worklog.sh` and replacing the top block with the freshly generated one. The worklog is derived, not narrated — regenerate it, don't hand-edit it. Commit spec/plan/tasks files before regenerating so they appear in the log.
 - Always build and run tests after code changes before reporting done. Never ask — just do it. Use the `ios-debugger-agent` skill (XcodeBuildMCP).
+- `NEXTDAY.md` is retired (owner, 2026-07-18) — never create, read, update, or cite it; deferred items live in BACKLOG (+ design-database rules flags for design work).
 
 ## Git Workflow
 Solo dev; all code written by Claude. PRs exist to give a review surface and keep `main` releasable — not to coordinate people.
@@ -58,7 +60,7 @@ Solo dev; all code written by Claude. PRs exist to give a review surface and kee
 - Open a PR for every code change; run `/code-review` on the diff and surface findings before merging. I approve/merge — no required reviewers, no branch protection.
 - **No PR is merged without both:** (1) `/code-review` completed and findings addressed, AND (2) manual human QA on device by the owner. Never merge on code review alone — device QA is non-negotiable.
 - Keep `main` always releasable: no half-finished work merged. One PR = one revertable feature.
-- When a commit on `main` is uploaded to TestFlight, tag it (`git tag v0.8.0`) so a tester's exact build is recoverable.
+- When a commit on `main` is uploaded to TestFlight, tag it (`git tag v0.1.0`) so a tester's exact build is recoverable.
 - Don't let feature branches stack unmerged for long — flag growing merge-conflict risk.
 
 ## Backlog
@@ -76,6 +78,6 @@ Solo dev; all code written by Claude. PRs exist to give a review surface and kee
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
-shell commands, and other important information, read the current plan:
-`specs/035-calendar-scroll-collapse/plan.md`
+shell commands, and other important information, read the current plan
+at specs/039-path-b-grouped-table/plan.md
 <!-- SPECKIT END -->
