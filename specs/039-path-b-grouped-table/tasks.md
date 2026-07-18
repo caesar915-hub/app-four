@@ -18,21 +18,21 @@
 
 ## Phase 1: Setup (verify the surface)
 
-- [ ] T001 Verify Figma surface: pages `552:1163` (8 original frames, node IDs above) and backup `597:1393` (8 frozen clones) reachable via `get_metadata`; record any node-ID drift as a correction note at the bottom of specs/039-path-b-grouped-table/tasks.md
-- [ ] T002 [P] Verify reusable tokens exist per research D1: Squirl Tokens `spacing/*` FLOATs (4/8/12/16/20/24/32/40) + `radius/control=10` + `radius/card=20` via `use_figma` variable scan; cross-check against design-database/tokens-variables.csv
+- [X] T001 Verify Figma surface: pages `552:1163` (8 original frames, node IDs above) and backup `597:1393` (8 frozen clones) reachable via `get_metadata`; record any node-ID drift as a correction note at the bottom of specs/039-path-b-grouped-table/tasks.md
+- [X] T002 [P] Verify reusable tokens exist per research D1: Squirl Tokens `spacing/*` FLOATs (4/8/12/16/20/24/32/40) + `radius/control=10` + `radius/card=20` via `use_figma` variable scan; cross-check against design-database/tokens-variables.csv
 
 ---
 
 ## Phase 2: Foundational (tokens + component library — BLOCKS all user stories)
 
-- [ ] T003 Create Figma variable collection **`iOS Semantic`** with Light+Dark modes and the 8 variables at data-model.md §1 exact values (`role/action` #34C759/#30D158, `role/selectionTint`, `role/caption` #6C6C70/#AEAEB2, `role/destructive` #D54037/#FF453A, `role/status`, `surface/groupedBg` #EFF2EB/#12140F, `surface/groupContainer` #FFFFFF/#1C1E19, `separator/hairline` #3C3C43@29%/#545458@65%) via `use_figma`; return variable IDs+keys in the script result
-- [ ] T004 Register the 8 new variables (collection, name, type, light/dark values) as rows in design-database/tokens-variables.csv so the harness stays current for audits
-- [ ] T005 Create page **`iOS Grouped`** in Squil-Design and build group primitives per data-model.md §3 + contract §1: `Group/Container` (r10, `surface/groupContainer`, shadowless), `Group/CaptionHeader` (uppercase 13 `role/caption`, ± trailing action, sits OUTSIDE container), `Group/Footnote` (13 `role/caption`)
-- [ ] T006 Build row components on page `iOS Grouped` per data-model.md §3 + contract §2: `Row/Base` (leading-icon? · label · value?, ≥44pt, hairline separator inset to text leading edge, none after last row), `Row/Toggle` (on/off, system switch, `role/action` on), `Row/Disclosure` (chevron `role/caption`), `Row/Selection` (selected/unselected, checkmark `role/action` + `role/selectionTint`), `Row/Destructive` (centered `role/destructive`)
-- [ ] T007 Build `Control/Segmented` (2–4 segment variants) on page `iOS Grouped` per contract §3 — replaces detached pills on list screens
-- [ ] T008 Build chrome components on page `iOS Grouped` per contract §6: `Chrome/StatusBar` (one component, instanced on every frame) and `Chrome/MedBar` (dose-state variants, ~36pt, tinted not `surface/groupContainer`, unshadowed — must not read as content, FR-009)
-- [ ] T009 Build nav components on page `iOS Grouped` per contract §4: `NavBar/LargeTitle` (a02/a08) and `NavBar/Sheet` (Cancel · inline centered title · Save with `role/action` when enabled — a03)
-- [ ] T010 Validate the library against contract §1–§7 with `get_screenshot` + measured `get_metadata` (r10, 44pt floors, 16pt insets, separator inset, caption outside, role bindings — no raw hexes where a role exists); fix violations before any screen work
+- [X] T003 Create Figma variable collection **`iOS Semantic`** with Light+Dark modes and the 8 variables at data-model.md §1 exact values (`role/action` #34C759/#30D158, `role/selectionTint`, `role/caption` #6C6C70/#AEAEB2, `role/destructive` #D54037/#FF453A, `role/status`, `surface/groupedBg` #EFF2EB/#12140F, `surface/groupContainer` #FFFFFF/#1C1E19, `separator/hairline` #3C3C43@29%/#545458@65%) via `use_figma`; return variable IDs+keys in the script result
+- [X] T004 Register the 8 new variables (collection, name, type, light/dark values) as rows in design-database/tokens-variables.csv so the harness stays current for audits
+- [X] T005 Create page **`iOS Grouped`** in Squil-Design and build group primitives per data-model.md §3 + contract §1: `Group/Container` (r10, `surface/groupContainer`, shadowless), `Group/CaptionHeader` (uppercase 13 `role/caption`, ± trailing action, sits OUTSIDE container), `Group/Footnote` (13 `role/caption`)
+- [X] T006 Build row components on page `iOS Grouped` per data-model.md §3 + contract §2: `Row/Base` (leading-icon? · label · value?, ≥44pt, hairline separator inset to text leading edge, none after last row), `Row/Toggle` (on/off, system switch, `role/action` on), `Row/Disclosure` (chevron `role/caption`), `Row/Selection` (selected/unselected, checkmark `role/action` + `role/selectionTint`), `Row/Destructive` (centered `role/destructive`)
+- [X] T007 Build `Control/Segmented` (2–4 segment variants) on page `iOS Grouped` per contract §3 — replaces detached pills on list screens
+- [X] T008 Build chrome components on page `iOS Grouped` per contract §6: `Chrome/StatusBar` (one component, instanced on every frame) and `Chrome/MedBar` (dose-state variants, ~36pt, tinted not `surface/groupContainer`, unshadowed — must not read as content, FR-009)
+- [X] T009 Build nav components on page `iOS Grouped` per contract §4: `NavBar/LargeTitle` (a02/a08) and `NavBar/Sheet` (Cancel · inline centered title · Save with `role/action` when enabled — a03)
+- [X] T010 Validate the library against contract §1–§7 with `get_screenshot` + measured `get_metadata` (r10, 44pt floors, 16pt insets, separator inset, caption outside, role bindings — no raw hexes where a role exists); fix violations before any screen work
 
 **Checkpoint**: tokens + "iOS Grouped" library exist and pass the contract — screen conversion can begin
 
@@ -44,16 +44,16 @@
 
 **Independent Test**: `a02-b` beside frozen a02 — reviewer confirms native iOS detail grammar and zero content loss (spec US1).
 
-- [ ] T011 [US1] Capture the a02 content inventory (every row, value, control, label, icon) from the backup-page a02 clone via `get_metadata`/`get_screenshot` into specs/039-path-b-grouped-table/inventories/a02.md — the SC-005 parity baseline
-- [ ] T012 [US1] Scaffold `a02-b` beside a02 on Screens v3 (`552:1163`): 390-wide frame, `surface/groupedBg` fill, `Chrome/StatusBar` + `Chrome/MedBar` instances pinned per contract §6, `NavBar/LargeTitle` with a02's title
-- [ ] T013 [US1] Build the signal-summary section in `a02-b` from inventories/a02.md: one grouped container, signal values as legible marks ≥3pt (kills rank-17 hairline bars), one title role per contract §7 (kills rank-9)
-- [ ] T014 [US1] Build the fact groups in `a02-b`: medications, sleep, emotions, side effects as separator-divided `Row/Base` instances inside `Group/Container`s with `Group/CaptionHeader`s — no card-per-fact (kills rank-1/3); footnotes where the original explains
-- [ ] T015 [US1] Build transcript + audio + delete groups in `a02-b`: transcript as a grouped long-form section; audio player with neutral/native controls not medication purple (kills rank-16); `Row/Destructive` "Delete recording" in its own group
-- [ ] T016 [US1] Consistency pass on `a02-b`: unify section-icon style/weight/tint (rank-5 fill-weight discipline; sprout/bolt/aperture shapes unchanged), ≥44pt touch floors (rank-7), collapse padding families to the spacing tiers (rank-10), med-bar reads as chrome not content (rank-6)
-- [ ] T017 [US1] Contract walk: check `a02-b` against every line of contracts/grouped-table-grammar.md §1–§7; record pass/fail per line in specs/039-path-b-grouped-table/checklists/a02-contract.md; fix and re-walk until all pass
-- [ ] T018 [US1] Content-parity check: every item in inventories/a02.md present on `a02-b` (100%, SC-005); log misses in checklists/a02-contract.md and fix
-- [ ] T019 [US1] Findings check: each a02-mapped audit finding (ranks 1/2/3/5/6/9/10/16/17 + icon set, data-model §4) verified gone on `a02-b`; record in checklists/a02-contract.md
-- [ ] T020 [US1] Agent re-audit: run the 4-lens audit workflow (fresh-eyes/checklist/consistency/HIG, 2026-07-18 harness) scoped to `a02-b`; zero high-severity findings required (SC-008 scope-of-one); fix and re-run until clean
+- [X] T011 [US1] Capture the a02 content inventory (every row, value, control, label, icon) from the backup-page a02 clone via `get_metadata`/`get_screenshot` into specs/039-path-b-grouped-table/inventories/a02.md — the SC-005 parity baseline
+- [X] T012 [US1] Scaffold `a02-b` beside a02 on Screens v3 (`552:1163`): 390-wide frame, `surface/groupedBg` fill, `Chrome/StatusBar` + `Chrome/MedBar` instances pinned per contract §6, `NavBar/LargeTitle` with a02's title
+- [X] T013 [US1] Build the signal-summary section in `a02-b` from inventories/a02.md: one grouped container, signal values as legible marks ≥3pt (kills rank-17 hairline bars), one title role per contract §7 (kills rank-9)
+- [X] T014 [US1] Build the fact groups in `a02-b`: medications, sleep, emotions, side effects as separator-divided `Row/Base` instances inside `Group/Container`s with `Group/CaptionHeader`s — no card-per-fact (kills rank-1/3); footnotes where the original explains
+- [X] T015 [US1] Build transcript + audio + delete groups in `a02-b`: transcript as a grouped long-form section; audio player with neutral/native controls not medication purple (kills rank-16); `Row/Destructive` "Delete recording" in its own group
+- [X] T016 [US1] Consistency pass on `a02-b`: unify section-icon style/weight/tint (rank-5 fill-weight discipline; sprout/bolt/aperture shapes unchanged), ≥44pt touch floors (rank-7), collapse padding families to the spacing tiers (rank-10), med-bar reads as chrome not content (rank-6)
+- [X] T017 [US1] Contract walk: check `a02-b` against every line of contracts/grouped-table-grammar.md §1–§7; record pass/fail per line in specs/039-path-b-grouped-table/checklists/a02-contract.md; fix and re-walk until all pass
+- [X] T018 [US1] Content-parity check: every item in inventories/a02.md present on `a02-b` (100%, SC-005); log misses in checklists/a02-contract.md and fix
+- [X] T019 [US1] Findings check: each a02-mapped audit finding (ranks 1/2/3/5/6/9/10/16/17 + icon set, data-model §4) verified gone on `a02-b`; record in checklists/a02-contract.md
+- [X] T020 [US1] Agent re-audit: run the 4-lens audit workflow (fresh-eyes/checklist/consistency/HIG, 2026-07-18 harness) scoped to `a02-b`; zero high-severity findings required (SC-008 scope-of-one); fix and re-run until clean
 
 **Checkpoint**: `a02-b` passes contract + parity + findings + agent audit — ready for US2/US3 system verification, then the owner gate
 
@@ -65,9 +65,9 @@
 
 **Independent Test**: Variable-usage scan of `a02-b` shows every color binding maps to exactly one `iOS Semantic` role.
 
-- [ ] T021 [US2] Role scan on `a02-b` via `use_figma` boundVariables walk: every color binding resolves to one role; brand greens (#5F8A4C/#54B492/#5FB36E) absent from action/control/selection; mood ramp on data marks only (FR-006, SC-002); fix violations
-- [ ] T022 [US2] Selection-state audit on `a02-b`: any selected state uses checkmark/`role/selectionTint` only — no colored fill, no action green, no mood green (FR-007/Q3); fix violations
-- [ ] T023 [US2] AA contrast check on `a02-b`: captions/secondary text ≥4.5:1 against their resolved composited surfaces (FR-019 — waivers dead); compute from extracted fills, darken values if any fail (keep dark-mode counterparts canonical)
+- [X] T021 [US2] Role scan on `a02-b` via `use_figma` boundVariables walk: every color binding resolves to one role; brand greens (#5F8A4C/#54B492/#5FB36E) absent from action/control/selection; mood ramp on data marks only (FR-006, SC-002); fix violations
+- [X] T022 [US2] Selection-state audit on `a02-b`: any selected state uses checkmark/`role/selectionTint` only — no colored fill, no action green, no mood green (FR-007/Q3); fix violations
+- [X] T023 [US2] AA contrast check on `a02-b`: captions/secondary text ≥4.5:1 against their resolved composited surfaces (FR-019 — waivers dead); compute from extracted fills, darken values if any fail (keep dark-mode counterparts canonical)
 
 ---
 
@@ -77,8 +77,8 @@
 
 **Independent Test**: Measured gaps on `a02-b` show between-group (24) > within-group, section breaks (32) > between-group; med bar visually distinct from content.
 
-- [ ] T024 [US3] Measure spacing on `a02-b` via `get_metadata`: within-group vs between-group (`spacing/xxl` 24) vs section (`spacing/section` 32) form distinct tiers (SC-003); bind any hand-set paddings/gaps to `spacing/*` variables
-- [ ] T025 [US3] Chrome verification on `a02-b`: `Chrome/StatusBar` present; `Chrome/MedBar` pinned under it, thinner than a row, tinted, unshadowed — cannot be mistaken for a content group (FR-009/FR-010, rank-6)
+- [X] T024 [US3] Measure spacing on `a02-b` via `get_metadata`: within-group vs between-group (`spacing/xxl` 24) vs section (`spacing/section` 32) form distinct tiers (SC-003); bind any hand-set paddings/gaps to `spacing/*` variables
+- [X] T025 [US3] Chrome verification on `a02-b`: `Chrome/StatusBar` present; `Chrome/MedBar` pinned under it, thinner than a row, tinted, unshadowed — cannot be mistaken for a content group (FR-009/FR-010, rank-6)
 
 ---
 
@@ -94,10 +94,10 @@
 
 **Independent Test**: Both `-b` frames pass the same contract walk + parity + findings checks as the pilot.
 
-- [ ] T027 [P] [US4] Capture a03 content inventory from the backup clone into specs/039-path-b-grouped-table/inventories/a03.md
+- [X] T027 [P] [US4] Capture a03 content inventory from the backup clone into specs/039-path-b-grouped-table/inventories/a03.md
 - [ ] T028 [US4] Build `a03-b` beside a03: `NavBar/Sheet` (Cancel/title/Save — large titles banned in sheets, FR-005), grouped sections from the inventory; chip grids become `Row/Selection` groups or wrap layouts with ≥44pt targets (rank-7); selection reads iOS-standard, no green-vs-purple ambiguity (rank-13); fix mapped ranks 1/2/3/5/9 (data-model §4)
 - [ ] T029 [US4] Verify `a03-b`: contract walk §1–§7 + parity vs inventories/a03.md + mapped-findings check + role scan + AA → specs/039-path-b-grouped-table/checklists/a03-contract.md; fix until clean
-- [ ] T030 [P] [US4] Capture a08 content inventory from the backup clone into specs/039-path-b-grouped-table/inventories/a08.md
+- [X] T030 [P] [US4] Capture a08 content inventory from the backup clone into specs/039-path-b-grouped-table/inventories/a08.md
 - [ ] T031 [US4] Build `a08-b` beside a08: `NavBar/LargeTitle`, settings groups with `Row/Toggle` (system switch on `role/action`, aligning the rank-15 outlier), `Row/Disclosure`, one `Control/Segmented` per multi-option choice (FR-004 — no detached pills), one visual grammar per choice type (rank-13 three-ways-one-choice); fix mapped ranks 1/2/3/6/9
 - [ ] T032 [US4] Verify `a08-b`: contract walk §1–§7 + parity vs inventories/a08.md + mapped-findings check + role scan + AA → specs/039-path-b-grouped-table/checklists/a08-contract.md; fix until clean
 
@@ -111,7 +111,7 @@
 
 **Independent Test**: Five `-b` frames pass contract §5–§8 scope + parity + mapped findings; a07 shows ≤2 mark families.
 
-- [ ] T033 [P] [US5] Capture content inventories for a01/a04/a05/a06/a07 from backup clones into specs/039-path-b-grouped-table/inventories/a01.md, a04.md, a05.md, a06.md, a07.md
+- [X] T033 [P] [US5] Capture content inventories for a01/a04/a05/a06/a07 from backup clones into specs/039-path-b-grouped-table/inventories/a01.md, a04.md, a05.md, a06.md, a07.md
 - [ ] T034 [US5] Build `a01-b` (Calendar, native composition): shared tokens + spacing tiers, day-card fix — remove duplicate indicator/disc, resolve green-on-green (rank-14) — with **expanded + collapsed day-card states**, density relief (rank-11), one chip shape (rank-12), `Chrome/MedBar` + `Chrome/StatusBar` (research D3)
 - [ ] T035 [US5] Build `a04-b` + `a05-b` (Check-in states): ring recomposition + duplicate-indicator removal (rank-8), density (rank-11), role tokens (rank-2), `Chrome/StatusBar` (no med bar — D3)
 - [ ] T036 [US5] Build `a06-b` (Check-in state): rebalance the unbalanced composition (rank-18), role tokens, `Chrome/StatusBar`

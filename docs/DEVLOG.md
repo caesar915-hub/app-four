@@ -1,4 +1,4 @@
-<!-- Created: 2026-06-14 23:59 WEST · Updated: 2026-07-18 20:14 WEST -->
+<!-- Created: 2026-06-14 23:59 WEST · Updated: 2026-07-19 00:05 WEST -->
 # app-four DevLog
 
 Chronological narrative of the project — the *why* behind what happened. Newest day on top.
@@ -8,6 +8,10 @@ This complements, never duplicates: **[BACKLOG.md](BACKLOG.md)** holds current *
 **Entry types:** `Recap` (morning standup, written by `/recap`) · `Decision` (with *why:*) · `Investigation` (with outcome) · `Direction` · `Shipped` · `Open`.
 
 ---
+
+## 2026-07-19
+
+- **[2026-07-19 00:05 WEST] Shipped (Figma, no code) — 039 pilot `a02-b` BUILT, verified, and 4-lens re-audited; owner gate (T026) is the only open step.** _what:_ `iOS Semantic` collection (8 dual-mode roles, `VariableCollectionId:601:1163`) + 13-component **"iOS Grouped"** library (page `602:1163`) + `a02-b` (`610:1393`, below a02 on Screens v3) rebuilt in inset-grouped grammar from the frozen-backup inventory. _verification chain (all in [checklists/a02-contract.md](../specs/039-path-b-grouped-table/checklists/a02-contract.md)):_ contract walk §1–§7 measured green · content parity **100%** (29 strings; transforms documented) · all 10 mapped audit findings addressed · US2 role census (zero brand greens; ramps data-only) · computed AA (caption 4.62–5.23; found+fixed `ACTIVE` 3.49→5.13 and a raw-hex bolt) · **4-lens re-audit** (4 parallel Fable subagents, 20 raw → 13 unique findings) → **9 fixed on canvas** (value-word role, one-AA-step-per-signal marks energy base-2 3.07:1 / focus base-3 3.68:1, aperture weight 2.0, meta dedup, joined emotion/side-effect rows, Back cluster @8pt, status-bar artifact, audio 17pt), **4 documented as intended** (system-green tint contrast ← owner's Q1 ruling — explicit gate item; med-strip-as-chrome; lowercase vocab; sentence-case delete), **2 deferred to the SwiftUI spec** (44pt hit zones; med-bar tap target). _build defects self-caught:_ resize-resets-sizing-mode (root h stuck 900), stale instance fill override on MedBar, rescale-halves-stroke-weights (aperture 0.31px). _also:_ all 7 remaining screen inventories pre-captured (inventories/a0{1,3,4,5,6,7,8}.md) — US4/US5 build-ready but **blocked by FR-016** until the gate passes. 28/45 tasks done. _next:_ owner side-by-side (a02-b vs a02 vs native reference) → pass opens Phases 7–9, fail iterates T013–T025.
 
 ## 2026-07-18
 
