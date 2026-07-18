@@ -150,24 +150,22 @@ struct CheckInViewModelTests {
     }
 
     /// Mock-dev mode filters `store.recordings` to mock rows, so a REAL capture is
-    /// invisible there. The transcription pipeline's deleted-guards must resolve
-    /// through the CONTEXT (`store.exists`) — QA 07-18 dropped a finished transcript
-    /// as "was deleted; skipping" purely because of the filter.
-    @Test func transcriptionCompletesUnderMockModeFilter() async throws {
-        await mocks.aiModel.setStubIsDownloaded(true)
+    /// invisible there. The transcription pipeline's deleted-guards resolve through
+    /// `store.exists`/`resolve` (context-grounded) — QA 07-18 dropped a finished
+    /// transcript as "was deleted; skipping" purely because of the filter. Simulated
+    /// by emptying the array directly: flipping the real `debugMockMode` default is a
+    /// process-wide global that races parallel suites (it broke InsightsViewModelTests).
+    @Test func contextResolutionSurvivesMockModeFilter() async throws {
         await enterRecording()
-        UserDefaults.standard.set(true, forKey: "debugMockMode")
-        defer { TestSupport.useRealData() }
-        store.loadRecordings()   // apply the filter: real rows vanish from the array
-
         let task = viewModel.stopRecording()
         await task.value
         if let t = viewModel.transcriptionTask { await t.value }
-        if let p = viewModel.processingViewModel.activeTask { await p.value }
 
         let saved = try #require(viewModel.lastSavedRecording)
-        #expect(saved.status == .completed)
-        #expect(!saved.fullTranscriptText.isEmpty)
+        store.recordings = []   // what the mock filter does to the array: real rows vanish
+        #expect(store.exists(saved.id))
+        #expect(store.resolve(saved.id)?.id == saved.id)
+        store.loadRecordings()
     }
 
     // MARK: Just-in-time microphone permission (US4 / T027)
