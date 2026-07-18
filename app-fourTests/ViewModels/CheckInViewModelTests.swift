@@ -130,6 +130,46 @@ struct CheckInViewModelTests {
         #expect(viewModel.state == .done)
     }
 
+    /// A Lock-Screen stop finalizes while the app is BACKGROUNDED, where iOS aborts
+    /// GPU work (QA 07-18: kIOGPUCommandBufferCallback…NotPermitted flood). The stop
+    /// path must persist `.pendingTranscription` and never start inference — the
+    /// foreground drain picks it up on the next open.
+    @Test func stopWhileBackgroundedDefersTranscriptionToPending() async throws {
+        await mocks.aiModel.setStubIsDownloaded(true)   // model ready — the gate is app state
+        viewModel.isAppActive = { false }
+        await enterRecording()
+
+        let task = viewModel.stopRecording()
+        await task.value
+        if let t = viewModel.transcriptionTask { await t.value }
+
+        let saved = try #require(viewModel.lastSavedRecording)
+        #expect(saved.status == .pendingTranscription)
+        #expect(saved.fullTranscriptText.isEmpty)   // inference never started
+        #expect(viewModel.state == .done)
+    }
+
+    /// Mock-dev mode filters `store.recordings` to mock rows, so a REAL capture is
+    /// invisible there. The transcription pipeline's deleted-guards must resolve
+    /// through the CONTEXT (`store.exists`) — QA 07-18 dropped a finished transcript
+    /// as "was deleted; skipping" purely because of the filter.
+    @Test func transcriptionCompletesUnderMockModeFilter() async throws {
+        await mocks.aiModel.setStubIsDownloaded(true)
+        await enterRecording()
+        UserDefaults.standard.set(true, forKey: "debugMockMode")
+        defer { TestSupport.useRealData() }
+        store.loadRecordings()   // apply the filter: real rows vanish from the array
+
+        let task = viewModel.stopRecording()
+        await task.value
+        if let t = viewModel.transcriptionTask { await t.value }
+        if let p = viewModel.processingViewModel.activeTask { await p.value }
+
+        let saved = try #require(viewModel.lastSavedRecording)
+        #expect(saved.status == .completed)
+        #expect(!saved.fullTranscriptText.isEmpty)
+    }
+
     // MARK: Just-in-time microphone permission (US4 / T027)
 
     /// Deleting the onboarding permission step (US1) leaves the just-in-time recovery

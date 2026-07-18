@@ -23,7 +23,8 @@ class RecordingStore {
     /// before the model was ready) is legitimately waiting and MUST NOT be swept — it
     /// drains via `PendingTranscriptionService` once the model lands (FR-016).
     private func recoverOrphanedTranscriptions() {
-        let orphaned = recordings.filter { $0.status == .transcribing }
+        let all = (try? modelContext.fetch(FetchDescriptor<Recording>())) ?? []
+        let orphaned = all.filter { $0.status == .transcribing }
         guard !orphaned.isEmpty else { return }
         for recording in orphaned {
             recording.status = .failed
@@ -49,6 +50,26 @@ class RecordingStore {
         }
     }
     
+    /// Context-grounded lookup by stable id. `recordings` carries the mock-mode UI
+    /// filter, so a REAL capture saved while mock-dev mode is on is invisible there —
+    /// the background pipelines (deleted-guards, pending drain) were mistaking
+    /// "filtered out" for "deleted" and dropping transcripts (QA 07-18). Every
+    /// non-UI consumer must resolve through the context, never the filtered array.
+    func resolve(_ id: UUID) -> Recording? {
+        var descriptor = FetchDescriptor<Recording>(predicate: #Predicate { $0.id == id })
+        descriptor.fetchLimit = 1
+        return (try? modelContext.fetch(descriptor))?.first
+    }
+
+    func exists(_ id: UUID) -> Bool { resolve(id) != nil }
+
+    /// All `.pendingTranscription` ids in capture order, regardless of the mock filter.
+    func pendingTranscriptionIDs() -> [UUID] {
+        let descriptor = FetchDescriptor<Recording>(sortBy: [SortDescriptor(\.createdAt)])
+        let all = (try? modelContext.fetch(descriptor)) ?? []
+        return all.filter { $0.status == .pendingTranscription }.map(\.id)
+    }
+
     func addRecording(_ recording: Recording) {
         modelContext.insert(recording)
         try? modelContext.save()

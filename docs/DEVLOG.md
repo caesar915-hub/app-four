@@ -8,6 +8,14 @@ This complements, never duplicates: **[BACKLOG.md](BACKLOG.md)** holds current *
 
 ---
 
+## 2026-07-18
+
+**[2026-07-18 01:33 WEST] Investigation + fix (037 QA round 2, console log) — background GPU inference forbidden + mock-mode filter silently dropping real transcripts.**
+
+Owner's console log from the rebuilt app surfaced two more defects. (1) **`IOGPUMetalError … BackgroundExecutionNotPermitted` flood**: a stop finalizing while locked/backgrounded kicked WhisperKit inference, and iOS aborts Metal work from background processes (debugger-attached runs pick `.cpuAndGPU` via `ComputeEnvironment`, making it loud in QA; ANE in release would dodge this specific error but background inference is wrong regardless — it burns the ~30 s finalize window). _Fix:_ `attemptSave` now gates inference on `isAppActive()` — backgrounded stops persist `.pendingTranscription` and the EXISTING `PendingTranscriptionService` drains on next launch/foreground; a lock **mid**-inference re-queues as pending instead of surfacing `.failed`. (2) **"Transcription finished but recording … was deleted; skipping" for a just-saved capture + `Loaded 33 recordings` never incrementing**: the device runs mock-dev mode (`debugMockMode` registers `true` in DEBUG — SquirlApp.swift:19), so `store.recordings` carries the mock-only predicate and every REAL capture is invisible to it; the transcription pipeline's deleted-guards, the pending-drain scan/resolvers, and launch orphan-recovery all consulted that filtered array — mistaking "filtered out" for "deleted" and **dropping the finished transcript**. _Fix:_ new context-grounded `RecordingStore.resolve/exists/pendingTranscriptionIDs`; all non-UI consumers now resolve through the context (UI consumers keep the filter by design). Two pinning tests added. **Flag for owner:** the device is in mock-dev mode — real check-ins don't appear in the UI (calendar/insights show seeded data); toggle Mock Mode off in TestServices for meaningful device QA.
+
+---
+
 ## 2026-07-17
 
 **[2026-07-17 23:47 WEST] Investigation (037 device QA failure) — three immortal "Recording check-in" cards, dead Lock-Screen buttons, app idle while cards tick. Root causes confirmed by a 4-lens adversarial `Workflow` (one lens refuted with primary build evidence); fix wave implemented 00:18 WEST 07-18 (unbuilt — owner ⌘B/⌘U pending).**

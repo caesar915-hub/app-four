@@ -81,6 +81,12 @@ final class CheckInViewModel: CheckInSession {
     /// spawned Task exits, covering the window where `state` is still `.idle` across the
     /// disk/permission/audio awaits.
     @ObservationIgnored private var isStartingCapture = false
+    /// Seam for the background-inference gate (overridden in tests). iOS aborts Metal
+    /// work from a backgrounded process, so a Lock-Screen stop must never start
+    /// on-device inference — QA 07-18: kIOGPUCommandBufferCallback…NotPermitted flood.
+    @ObservationIgnored var isAppActive: @MainActor () -> Bool = {
+        UIApplication.shared.applicationState == .active
+    }
 
     var timeString: String {
         AccessibilityHelpers.formatDuration(elapsedTime)
@@ -225,10 +231,13 @@ final class CheckInViewModel: CheckInSession {
             // Immediately show done; transcribe in background
             self.state = .done
 
-            // Model not ready: persist as pending and skip transcription. The
-            // PendingTranscriptionService drains it through this exact path once the
-            // model lands — capture stays "Captured.", never a .failed (FR-011/012).
-            guard self.aiModelService.localPath(for: .whisper) != nil else {
+            // Model not ready OR the app is backgrounded (a Lock-Screen stop): persist
+            // as pending and skip inference. iOS aborts GPU work from a background
+            // process, so starting Whisper here would only burn the finalize window and
+            // fail. The PendingTranscriptionService drains through this exact path on
+            // the next launch/foreground — capture stays "Captured.", never a .failed
+            // (FR-011/012).
+            guard self.aiModelService.localPath(for: .whisper) != nil, self.isAppActive() else {
                 recording.status = .pendingTranscription
                 self.store.save()
                 return
@@ -278,8 +287,10 @@ final class CheckInViewModel: CheckInSession {
             try await consumeStreamWithTimeout(stream, for: recording, timeoutSeconds: 90)
 
             // The user may have deleted this recording (library multi-select) while it
-            // transcribed in the background; never touch a freed @Model.
-            guard store.recordings.contains(where: { $0.id == recording.id }) else {
+            // transcribed in the background; never touch a freed @Model. Context-grounded
+            // `exists`, NOT `store.recordings` — the filtered array hides real captures
+            // in mock-dev mode and was dropping their transcripts here (QA 07-18).
+            guard store.exists(recording.id) else {
                 AppLogger.log("Transcription finished but recording \(recording.id) was deleted; skipping")
                 return
             }
@@ -302,7 +313,7 @@ final class CheckInViewModel: CheckInSession {
             Task { @MainActor [store] in
                 // The recording may have been deleted while the cancel raced — re-resolve
                 // by id before touching the @Model so we never mutate a freed object.
-                guard store.recordings.contains(where: { $0.id == recording.id }) else { return }
+                guard store.exists(recording.id) else { return }
                 recording.status = .failed
                 recording.fullTranscriptText = "Transcription cancelled. Tap to retry in the recording detail view."
                 store.save()
@@ -310,15 +321,26 @@ final class CheckInViewModel: CheckInSession {
         } catch RecordingError.timeout {
             AppLogger.log("Transcription timed out for \(recording.id)")
             await transcriptionService.cancelTranscription()
-            guard store.recordings.contains(where: { $0.id == recording.id }) else { return }
-            recording.status = .failed
-            recording.fullTranscriptText = "Transcription timed out. Tap to retry in the recording detail view."
+            guard store.exists(recording.id) else { return }
+            // Locked mid-inference: iOS aborted the GPU work, so the stall is
+            // environmental, not terminal — re-queue for the foreground drain
+            // instead of surfacing a .failed the user never caused.
+            if isAppActive() {
+                recording.status = .failed
+                recording.fullTranscriptText = "Transcription timed out. Tap to retry in the recording detail view."
+            } else {
+                recording.status = .pendingTranscription
+            }
             store.save()
         } catch {
             AppLogger.log("Transcription failed for \(recording.id): \(error)")
-            guard store.recordings.contains(where: { $0.id == recording.id }) else { return }
-            recording.status = .failed
-            recording.fullTranscriptText = "Transcription failed: \(error.localizedDescription)"
+            guard store.exists(recording.id) else { return }
+            if isAppActive() {
+                recording.status = .failed
+                recording.fullTranscriptText = "Transcription failed: \(error.localizedDescription)"
+            } else {
+                recording.status = .pendingTranscription
+            }
             store.save()
         }
     }
@@ -335,7 +357,7 @@ final class CheckInViewModel: CheckInSession {
             // multi-select while transcription is still streaming.
             group.addTask { @MainActor in
                 for await segment in stream {
-                    guard self.store.recordings.contains(where: { $0.id == recording.id }) else { return }
+                    guard self.store.exists(recording.id) else { return }
                     if segment.isError {
                         throw AudioConverterError.conversionFailed(segment.text)
                     }

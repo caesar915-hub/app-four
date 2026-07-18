@@ -54,12 +54,11 @@ actor PendingTranscriptionServiceImpl: PendingTranscriptionService {
     /// Identifies `.pendingTranscription` recordings in capture order by their stable
     /// `id` (UUID). The id (not the `@Model`) crosses the actor hop so we re-resolve each
     /// on the MainActor at drain time — a recording deleted meanwhile simply isn't found.
+    /// Context-grounded (`store.pendingTranscriptionIDs`), never the mock-filtered
+    /// `store.recordings` — a real pending capture must drain in mock-dev mode too.
     @MainActor
     private func pendingRecordingIDsOldestFirst() -> [UUID] {
-        store.recordings
-            .filter { $0.status == .pendingTranscription }
-            .sorted { $0.createdAt < $1.createdAt }
-            .map(\.id)
+        store.pendingTranscriptionIDs()
     }
 
     /// Drains one recording through the existing transcribe → extract path. Serialized
@@ -98,14 +97,14 @@ actor PendingTranscriptionServiceImpl: PendingTranscriptionService {
 
     @MainActor
     private func resolveAudioURL(_ id: UUID) -> URL? {
-        store.recordings.first { $0.id == id }?.audioURL
+        store.resolve(id)?.audioURL
     }
 
     /// Writes one transcript segment; returns false if the recording was deleted so the
     /// caller stops (no crash on a vanished `@Model`).
     @MainActor
     private func writeSegment(_ text: String, to id: UUID) -> Bool {
-        guard let recording = store.recordings.first(where: { $0.id == id }) else {
+        guard let recording = store.resolve(id) else {
             return false
         }
         recording.fullTranscriptText = text
@@ -119,7 +118,7 @@ actor PendingTranscriptionServiceImpl: PendingTranscriptionService {
     /// `.completed`. Skips a recording deleted meanwhile.
     @MainActor
     private func applyResult(_ result: SummaryResult, to id: UUID) {
-        guard let recording = store.recordings.first(where: { $0.id == id }) else {
+        guard let recording = store.resolve(id) else {
             return
         }
         recording.applySummary(result)
@@ -135,7 +134,7 @@ actor PendingTranscriptionServiceImpl: PendingTranscriptionService {
 
     @MainActor
     private func markFailed(_ id: UUID, message: String) {
-        guard let recording = store.recordings.first(where: { $0.id == id }) else {
+        guard let recording = store.resolve(id) else {
             return
         }
         recording.status = .failed
