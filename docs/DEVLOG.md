@@ -1,4 +1,4 @@
-<!-- Created: 2026-06-14 23:59 WEST · Updated: 2026-07-16 20:56 WEST -->
+<!-- Created: 2026-06-14 23:59 WEST · Updated: 2026-07-18 01:46 WEST -->
 # app-four DevLog
 
 Chronological narrative of the project — the *why* behind what happened. Newest day on top.
@@ -8,6 +8,10 @@ This complements, never duplicates: **[BACKLOG.md](BACKLOG.md)** holds current *
 **Entry types:** `Recap` (morning standup, written by `/recap`) · `Decision` (with *why:*) · `Investigation` (with outcome) · `Direction` · `Shipped` · `Open`.
 
 ---
+
+## 2026-07-18
+
+- **[2026-07-18 01:46 WEST] Shipped (Figma, no code) — spec-037 Live Activity widget reproduced on `Screens (v2)` in Squil-Design.** _why:_ owner asked for all widget views mirrored into Figma from the SwiftUI on `feat/037-live-activity-controls` (code as source of truth; branch read via `git show`, working tree + existing designs untouched). _what:_ section "037 · Live Activity (Widget)" (node `544:1130`): 4 presentations × 3 phases = 12 frames (Lock Screen / DI expanded / DI compact / DI minimal × recording / paused / saved) + a 13th `isStale` 50%-opacity example + `LA / Button` component set (pause-light, pause-dark, resume, stop; Stop fill bound to `color/mood/base-4` = `#5FB36E` exactly). Paused amber `#B8863B` has no token (nearest `color/accent` `#B8842A` ≠) — hardcoded per code literal. Lock-screen HTML mockup pre-dates the green unification (`#4f8a5b`); code won. _verify:_ independent read-only agent diffed source vs canvas — all 6 fidelity checks PASS; its 2 canvas nits fixed (compact sensor-housing gap, stale example frame). _flags for the branch:_ (1) `SquirlWidgets` `AccentColor.colorset` is **empty** → the `.bordered` Pause label will fall back to system tint on device, not the neutral ink the mockups show — set it to the capture green or tint explicitly; (2) `.bordered` rendering is a design assumption — confirm on device QA.
 
 ## 2026-07-16
 
