@@ -1,0 +1,9 @@
+node_id,frame_name,type,width,height,x,y,direct_children,total_nodes
+578:1163,Screen a01 / Calendar Timeline,FRAME,390,982,0,0,1,250
+578:1385,Screen a02 / 05-Recording-Detail-newlook,FRAME,390,991,436,0,10,100
+578:1482,Screen a03 / 06-Edit-Extraction-Review-daylio-lookandfeel-compact,FRAME,390,1408,872,0,8,291
+578:1760,Screen a04 / CheckIn-Idle-newlook,FRAME,390,844,1308,0,4,38
+578:3638,Screen a05 / CheckIn-Recording-newlook,FRAME,390,844,1744,0,4,35
+578:3659,Screen a06 / CheckIn-Saved-newlook,FRAME,390,844,2180,0,3,23
+578:3669,Screen a07 / Insights-newlook,FRAME,390,2053,2616,0,2,414
+578:3959,Screen a08 / Settings-newlook,FRAME,390,2295,3052,0,2,185

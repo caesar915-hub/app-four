@@ -1,0 +1,9 @@
+asset_type,name,count,note
+VECTOR,Vector,306,unnamed vector paths — glyph internals and hand-drawn chart strokes
+ELLIPSE,Ellipse,30,dots and discs in charts and rings
+ELLIPSE,sep,17,separator middle-dots
+LINE,Line,15,chart baselines and dividers
+POLYGON,Polygon,1,single triangle marker
+INSTANCE,(all components),61,see components.csv for breakdown
+IMAGE_FILL,(none),0,no raster images in a01-a08 — screens are 100% vector
+COMPONENT,(none inside a-frames),0,all instances reference main components elsewhere in the file

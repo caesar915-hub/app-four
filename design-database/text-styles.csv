@@ -1,0 +1,49 @@
+style_name,family,weight,production_font,size_pt,line_height,letter_spacing,used_on_a_screens
+Tiimo/Body/Small-13,Inter,Regular,SF Pro Regular,13,18px,0px,yes
+Tiimo/Body/Strong-15,Inter,Semi Bold,SF Pro Semibold,15,20px,0px,yes
+Tiimo/Body/Title-17,Inter,Semi Bold,SF Pro Semibold,17,22px,0%,yes
+Tiimo/Body/Body-17,Inter,Regular,SF Pro Regular,17,23px,0%,yes
+Tiimo/Body/Meta-15,Inter,Regular,SF Pro Regular,15,20px,0%,yes
+Tiimo/Display/Title-24,Inter,Bold,SF Pro Bold,24,30px,0px,yes
+Tiimo/Display/Day-40,Inter,Semi Bold,SF Pro Semibold,40,46px,0%,yes
+Tiimo/Number/Day-26,Inter,Regular,SF Pro Regular,26,30px,0%,yes
+Tiimo/Label/Caps-13,Inter,Semi Bold,SF Pro Semibold,13,16px,1.3px,yes
+Tiimo/Label/Day-13,Inter,Semi Bold,SF Pro Semibold,13,16px,0.5px,yes
+Tiimo/Label/Caption-11,Inter,Regular,SF Pro Regular,11,14px,0.5px,yes
+Tiimo/Label/Micro-10,Inter,Regular,SF Pro Regular,10,12px,0.6px,yes
+Tiimo/Display/Header-26,Fraunces,SemiBold,SF Pro Semibold,26,32px,0%,no
+Tiimo/Display/Stat-44,Fraunces,SemiBold,SF Pro Semibold,44,48px,0%,no
+Tiimo/Body/Menu-20,Inter,Regular,SF Pro Regular,20,24px,0%,no
+Tiimo/Body/Banner-20,Inter,Semi Bold,SF Pro Semibold,20,25px,0%,no
+Tiimo/Label/Weekday-11,Inter,Semi Bold,SF Pro Semibold,11,AUTO,0.5px,yes
+Tiimo/Number/Time-16,Inter,Semi Bold,SF Pro Semibold,16,AUTO,0%,yes
+Tiimo/Label/Small-12,Inter,Regular,SF Pro Regular,12,AUTO,0%,yes
+type/display,Inter,Semi Bold,SF Pro Semibold,28,AUTO,0%,no
+type/largeTitle,Inter,Bold,SF Pro Bold,34,AUTO,0%,no
+type/title,Inter,Semi Bold,SF Pro Semibold,22,AUTO,0%,no
+type/dayCardDate,Inter,Semi Bold,SF Pro Semibold,16,AUTO,0%,no
+type/headline,Inter,Semi Bold,SF Pro Semibold,16,AUTO,0%,no
+type/subheadline,Inter,Medium,SF Pro Medium,14,AUTO,0%,no
+type/body,Inter,Regular,SF Pro Regular,16,AUTO,0%,no
+type/callout,Inter,Regular,SF Pro Regular,15,AUTO,0%,no
+type/caption,Inter,Regular,SF Pro Regular,12,AUTO,0%,no
+type/label,Inter,Medium,SF Pro Medium,12,AUTO,0%,no
+type/cardEyebrow,Inter,Medium,SF Pro Medium,12,AUTO,0.7px,no
+type/rowMoodText,Inter,Semi Bold,SF Pro Semibold,17,AUTO,0%,no
+type/timer,Roboto Mono,Medium,SF Mono Medium,22,AUTO,0%,no
+type/duration,Roboto Mono,Regular,SF Mono Regular,12,AUTO,0%,no
+type/mono12,Roboto Mono,Regular,SF Mono Regular,12,AUTO,0%,no
+type/rowTime,Roboto Mono,Regular,SF Mono Regular,13,AUTO,0%,no
+Structured/Display/OnboardTitle-34,Inter,Extra Bold,SF Pro Heavy,34,40px,-0.6px,no
+Structured/Display/DateTitle-28,Inter,Bold,SF Pro Bold,28,34px,-0.4px,no
+Structured/Number/Date-20,Inter,Semi Bold,SF Pro Semibold,20,24px,-0.2px,no
+Structured/Number/Picker-20,Inter,Semi Bold,SF Pro Semibold,20,24px,-0.2px,no
+Structured/Label/Weekday-13,Inter,Medium,SF Pro Medium,13,16px,0.2px,no
+Structured/Label/GutterTime-13,Inter,Regular,SF Pro Regular,13,16px,0%,no
+Structured/Label/Chip-15,Inter,Semi Bold,SF Pro Semibold,15,20px,0%,no
+Structured/Label/Meta-15,Inter,Medium,SF Pro Medium,15,20px,0%,no
+Structured/Label/Nav-11,Inter,Medium,SF Pro Medium,11,13px,0.1px,no
+Structured/Body/Subtitle-17,Inter,Regular,SF Pro Regular,17,23px,0%,no
+Structured/Body/TaskTitle-19,Inter,Semi Bold,SF Pro Semibold,19,24px,-0.2px,no
+Structured/Body/TaskSub-15,Inter,Regular,SF Pro Regular,15,20px,0%,no
+Structured/Button/Label-17,Inter,Semi Bold,SF Pro Semibold,17,22px,0%,no
