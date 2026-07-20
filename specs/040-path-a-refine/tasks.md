@@ -15,11 +15,11 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 Verify surface read-only: originals + `a02-a` + backup reachable at the IDs above; confirm nothing else was added to the a0N columns since 2026-07-20 (`use_figma` page scan, note drift at the bottom of specs/040-path-a-refine/tasks.md)
+- [X] T001 Verify surface read-only: originals + `a02-a` + backup reachable at the IDs above; confirm nothing else was added to the a0N columns since 2026-07-20 (`use_figma` page scan, note drift at the bottom of specs/040-path-a-refine/tasks.md)
 
 ## Phase 2: Foundational (reference numbers — blocks screen work)
 
-- [ ] T002 Measure the accepted `a02-a` (`638:1465`) once and record the live contract values (root itemSpacing, spacer heights, card shadow spec, med-bar anatomy, merged-row metrics, bar/track metrics) into specs/040-path-a-refine/checklists/reference-a02a.md — every later verify compares against these numbers, not memory
+- [X] T002 Measure the accepted `a02-a` (`638:1465`) once and record the live contract values (root itemSpacing, spacer heights, card shadow spec, med-bar anatomy, merged-row metrics, bar/track metrics) into specs/040-path-a-refine/checklists/reference-a02a.md — every later verify compares against these numbers, not memory
 
 **Checkpoint**: reference numbers recorded — all screen phases may proceed independently
 
@@ -29,10 +29,10 @@
 
 **Goal**: worst card-soup screen consolidated + green discipline proven on real controls. **Independent test**: a08-a beside a08 — parity 100%, 12→~7 cards, one green, tiers measured.
 
-- [ ] T003 [US1] Clone a08 (`578:3959`) → `a08-a` at x aligned/y≈1150 on Screens v3; apply chrome + tiers: status bar (keep), med bar → accepted 44pt tint anatomy (clone from `a02-a` med bar), root gap → 20 with 32 section spacers per data-model; single shadow pass on all cards (contract §1/§2/§4)
-- [ ] T004 [US1] Merge pass on `a08-a` per research D2: System+Check-in+Calendar → one "Preferences" card (icon+kicker+row anatomy, contract §2); fold Accessibility + Your-data footnotes into the Your-data card; keep AI Models / My Medication / Dose Guard / Confirmations / Medication Bar / Clear-All-Data cards; capture FULL footnote strings from the canvas (039 inventory truncated at 60 chars) into specs/039-path-b-grouped-table/inventories/a08.md before restructuring
-- [ ] T005 [US1] Controls pass on `a08-a`: all toggles ON = `selection` green (rank-15); Prompt Pace + dose + BLOCKED-FOR chips → contract §5 chip family (h36/r18/≥8 gaps); Dose Guard → one card with three radio rows + chips under Time-window (research D5, rank-13); selection treatment uniform, never purple (med chips keep purple identity, selected = green ring)
-- [ ] T006 [US1] Verify `a08-a`: measured recipe walk (§1–§8) + parity vs inventories/a08.md + findings 1/2/3/6/9/13/15 gone + AA math → specs/040-path-a-refine/checklists/a08-verify.md; fix until clean; screenshot for the owner pack
+- [X] T003 [US1] Clone a08 (`578:3959`) → `a08-a` at x aligned/y≈1150 on Screens v3; apply chrome + tiers: status bar (keep), med bar → accepted 44pt tint anatomy (clone from `a02-a` med bar), root gap → 20 with 32 section spacers per data-model; single shadow pass on all cards (contract §1/§2/§4)
+- [X] T004 [US1] Merge pass on `a08-a` per research D2: System+Check-in+Calendar → one "Preferences" card (icon+kicker+row anatomy, contract §2); fold Accessibility + Your-data footnotes into the Your-data card; keep AI Models / My Medication / Dose Guard / Confirmations / Medication Bar / Clear-All-Data cards; capture FULL footnote strings from the canvas (039 inventory truncated at 60 chars) into specs/039-path-b-grouped-table/inventories/a08.md before restructuring
+- [X] T005 [US1] Controls pass on `a08-a`: all toggles ON = `selection` green (rank-15); Prompt Pace + dose + BLOCKED-FOR chips → contract §5 chip family (h36/r18/≥8 gaps); Dose Guard → one card with three radio rows + chips under Time-window (research D5, rank-13); selection treatment uniform, never purple (med chips keep purple identity, selected = green ring)
+- [X] T006 [US1] Verify `a08-a`: measured recipe walk (§1–§8) + parity vs inventories/a08.md + findings 1/2/3/6/9/13/15 gone + AA math → specs/040-path-a-refine/checklists/a08-verify.md; fix until clean; screenshot for the owner pack
 
 ---
 
