@@ -1,4 +1,4 @@
-<!-- Created: 2026-06-14 23:59 WEST · Updated: 2026-07-19 00:05 WEST -->
+<!-- Created: 2026-06-14 23:59 WEST · Updated: 2026-07-20 09:25 WEST -->
 # app-four DevLog
 
 Chronological narrative of the project — the *why* behind what happened. Newest day on top.
@@ -8,6 +8,10 @@ This complements, never duplicates: **[BACKLOG.md](BACKLOG.md)** holds current *
 **Entry types:** `Recap` (morning standup, written by `/recap`) · `Decision` (with *why:*) · `Investigation` (with outcome) · `Direction` · `Shipped` · `Open`.
 
 ---
+
+## 2026-07-20
+
+- **[2026-07-20 09:25 WEST] Decision — Path B KILLED at the pilot gate (owner); Path A refine pilot `a02-a` built for decision.** _the gate worked:_ every technical check on `a02-b` had passed (contract, parity, AA, 4-lens), but the owner's side-by-side verdict was visceral rejection — the spec's own named risk ("reads as a generic system-settings app rather than Squirl") fired on contact. One screen spent, zero rollout damage. _rollback:_ `a02-b` deleted (originals + frozen backup intact by construction); **parked, not deleted:** `iOS Semantic` collection (8 AA dual-mode roles) + the 13-component `iOS Grouped` page — the semantic split and spacing tiers are path-agnostic assets. 039 tasks.md carries a TERMINATED block; T027–T045 will not run. _Path A pilot (`a02-a` `638:1465`, beside a02 on Screens v3):_ built by **cloning the original a02 and fixing only the audit's root causes inside the card language** — status bar added (FR-010 gap) · med bar 73pt shadowed card → 44pt inset lavender chrome pill (`accent/medication`@10% via node-opacity rect; paint-level opacity is silently stripped by `setBoundVariableForPaint` — 3rd occurrence, now a standing gotcha) · **4 card-per-fact cards merged into one Details card** (icon + 10pt kicker + verbatim 15SB fact per row; icons re-cloned from the backup after the first attempt dragged sub-frame titles into the slots) · signal bars 4→6pt with r3 tracks · aperture ring weight ×1.8 · audio player purple → neutral ink · double shadows → single soft shadow · uniform 12pt auto-layout gap → 20pt base + 32pt section breaks (discovered a02's root frame IS an auto-layout with itemSpacing 12 — the rank-1 "single uniform gap" finding is literally one property). _identity kept:_ r20 cards, sage ground, GREAT/CHARGED/SHARP colored-glyph stats, lowercase vocab, brand voice untouched. _pending:_ owner decides on `a02-a`; if accepted, Path A gets its own spec (039 successor) and rolls out per-screen.
 
 ## 2026-07-19
 

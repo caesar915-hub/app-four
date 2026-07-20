@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-18 20:13 (WEST) · Updated: 2026-07-18 20:13 (WEST) -->
+<!-- Created: 2026-07-18 20:13 (WEST) · Updated: 2026-07-20 09:22 (WEST) -->
 # Tasks: Path B — Native iOS Grouped-Table Redesign (Figma)
 
 **Input**: Design documents from `specs/039-path-b-grouped-table/` — [plan.md](plan.md), [spec.md](spec.md), [research.md](research.md) (D1–D6), [data-model.md](data-model.md), [contracts/grouped-table-grammar.md](contracts/grouped-table-grammar.md), [quickstart.md](quickstart.md)
@@ -154,3 +154,9 @@ T027 inventories/a03.md · T030 inventories/a08.md · T033 inventories/a01+a04�
 ## Implementation Strategy
 
 **MVP = Phases 1–6** (T001–T026): tokens, library, `a02-b`, iterate-until-pass gate. Stop there and demo — the pilot decides whether Path B rolls out. Then increment: US4 list family → US5 non-list → Gate 2. Each `-b` frame is independently revertable (delete it; originals + backup intact by construction, FR-014).
+
+---
+
+## TERMINATED — 2026-07-20 (owner ruling at T026)
+
+Path B **killed at the pilot gate**: owner judged `a02-b` as unacceptable identity loss ("reads generic"). Per quickstart §Rollback: `a02-b` deleted from Screens v3; originals + backup intact. **Parked, not deleted**: `iOS Semantic` collection (`VariableCollectionId:601:1163`) and the `iOS Grouped` component page (`602:1163`) — the semantic-role split, AA values, and spacing-tier work are reusable under Path A. T027–T045 will not execute. Successor: **Path A pilot** `a02-a / Recording Detail (Path A refine)` (`638:1465`, exploration — card language retained, audit root-causes fixed in place), awaiting owner decision; if accepted, Path A gets its own spec.

@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-18 20:52 (WEST) · Updated: 2026-07-19 00:03 (WEST) -->
+<!-- Created: 2026-07-18 20:52 (WEST) · Updated: 2026-07-20 09:25 (WEST) -->
 # a02-b Contract Walk + Parity + Findings — Gate 1 evidence
 
 Target: `a02-b / Recording Detail (Path B)` node `610:1393` on Screens v3 (`552:1163`), built 2026-07-18 (T012–T016). Evidence = `use_figma` measurements (structure dump, this session) + `a02b-final.png`. All checks against [contracts/grouped-table-grammar.md](../contracts/grouped-table-grammar.md) and [inventories/a02.md](../inventories/a02.md).
@@ -104,6 +104,10 @@ Raw: fresh-eyes 9 (2H/4M/3L) · HIG 4 (1M/3L, all §1–§6 anatomy re-measured 
 Residual sample-data notes: "Mon" has no date (original's data); audio shows progress with play icon and no elapsed counter (static mock state).
 
 **SC-008 (scope-of-one)**: all high-severity findings fixed except the back-tint contrast, which is not a defect of a02-b but a consequence of the standing `role/action` ruling — flagged for explicit owner judgment at the gate. Post-fix render: `a02b-postaudit.png` (scratchpad).
+
+## T026 — Owner gate verdict: **FAIL → PATH B KILLED** (2026-07-20)
+
+Owner judgment: a02-b reads as unacceptable identity loss ("completely disgusting") — the spec's named core tradeoff (generic system-settings look vs Squirl character) fired exactly as the pilot was designed to test. Every technical check above passed; the *language itself* was rejected. `a02-b` deleted per quickstart §Rollback; tokens + library parked; successor = Path A refine pilot (`a02-a`, `638:1465`).
 
 ## Notes / deviations for the owner
 - Large title "Recording" and the status bar are **additive** (nav grammar / FR-010) — not in the original.
