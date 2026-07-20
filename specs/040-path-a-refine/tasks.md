@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-20 19:19 (WEST) · Updated: 2026-07-20 20:30 (WEST) -->
+<!-- Created: 2026-07-20 19:19 (WEST) · Updated: 2026-07-20 20:45 (WEST) -->
 # Tasks: Path A — Refine the New Look In Place (Figma)
 
 **Input**: [plan.md](plan.md) · [spec.md](spec.md) · [research.md](research.md) (D1–D7) · [data-model.md](data-model.md) (delta matrix) · [contracts/refine-recipe.md](contracts/refine-recipe.md) · [quickstart.md](quickstart.md)
@@ -99,3 +99,9 @@
 ## Implementation strategy
 
 Each screen = clone → chrome/tiers → screen-specific pass → measured verify → screenshot for the owner pack. Screens ship to review incrementally; the owner can pass them one at a time or in batches. Rollback at any point = delete `a0N-a` frames (FR-016).
+
+---
+
+## SHELVED — 2026-07-20 (owner ruling at T019)
+
+Owner reviewed the full rollout and ruled: **keep the current design unchanged**. All 8 refined frames (incl. the a02-a pilot) moved to Figma page **"Archive — Path A refine (shelved 2026-07-20)"** (`662:1163`); Screens v3 restored to the 8 untouched originals; frozen backup page also intact. T020–T024 will not run. Nothing was swapped, deleted, or applied to the originals; DESIGN.md untouched. The archive preserves the complete refined set + per-screen evidence should the owner ever revisit.

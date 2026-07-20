@@ -1,11 +1,11 @@
-<!-- Created: 2026-07-20 19:05 (WEST) · Updated: 2026-07-20 19:05 (WEST) -->
+<!-- Created: 2026-07-20 19:05 (WEST) · Updated: 2026-07-20 20:45 (WEST) -->
 # Feature Specification: Path A — Refine the New Look In Place (Figma)
 
 **Feature Branch**: `040-path-a-refine`
 
 **Created**: 2026-07-20
 
-**Status**: Draft
+**Status**: Archived (shelved by owner 2026-07-20 — current design retained)
 
 **Scope note**: This is a **Figma design specification** — the deliverable is refined screens in the Figma file **Squil-Design** ("Screens v3"; frozen backup page from 2026-07-18 remains untouched). SwiftUI implementation is a separate downstream spec. The project constitution and DESIGN.md are non-gating per the owner's standing rulings (carried from 039); DESIGN.md is updated *from* the outcome.
 
