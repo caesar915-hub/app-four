@@ -9,11 +9,19 @@ final class RecordingDetailViewModel {
     @ObservationIgnored private let store: RecordingStore
     @ObservationIgnored private let summarizationService: SummarizationService
     @ObservationIgnored private let transcriptionService: TranscriptionService
-    @ObservationIgnored private var retryTask: Task<Void, Never>?
-    private(set) var summaryTask: Task<Void, Never>?
+    // Both stay @ObservationIgnored: no view observes them, and `deinit` is nonisolated —
+    // an @Observable-tracked property becomes a MainActor-isolated computed accessor,
+    // which a nonisolated deinit cannot legally read.
+    @ObservationIgnored private(set) var retryTask: Task<Void, Never>?
+    @ObservationIgnored private(set) var summaryTask: Task<Void, Never>?
+
+    /// Captured at init so the lifecycle guards never have to read a property off a
+    /// possibly-freed @Model just to learn which row to look up.
+    @ObservationIgnored private let recordingID: UUID
 
     init(recording: Recording, store: RecordingStore, services: AppServices) {
         self.recording = recording
+        self.recordingID = recording.id
         self.store = store
         self.summarizationService = services.summarizationService
         self.transcriptionService = services.transcriptionService
@@ -21,6 +29,7 @@ final class RecordingDetailViewModel {
 
     deinit {
         retryTask?.cancel()
+        summaryTask?.cancel()
     }
 
     func toggleFavorite() {
@@ -28,11 +37,17 @@ final class RecordingDetailViewModel {
     }
 
     func delete() {
+        // Stop in-flight retry/summarization first: both write to `recording` across
+        // long awaits, and mutating a deleted @Model traps in SwiftData. The
+        // `store.exists` guards below are the backstop for work already past its
+        // own cancellation check when this fires.
+        retryTask?.cancel()
+        summaryTask?.cancel()
         store.deleteRecording(recording)
     }
 
     func generateSummary() async {
-        guard !recording.fullTranscriptText.isEmpty else {
+        guard store.exists(recordingID), !recording.fullTranscriptText.isEmpty else {
             return
         }
 
@@ -40,6 +55,7 @@ final class RecordingDetailViewModel {
     }
 
     func regenerateSummary() async {
+        guard store.exists(recordingID) else { return }
         recording.summary = nil
         recording.topicTagsJSON = nil
         recording.summaryStatus = SummaryStatus.notGenerated.rawValue
@@ -81,10 +97,17 @@ final class RecordingDetailViewModel {
         store.save()
 
         retryTask?.cancel()
-        retryTask = Task { @MainActor in
+        // Read the URL while the model is provably alive; the task must not have to
+        // touch `recording` before its own existence guard runs.
+        let audioURL = recording.audioURL
+        // `[weak self]` breaks the self→task→self cycle that made `deinit`'s cancel
+        // unreachable for the whole 90 s the stream was running.
+        retryTask = Task { @MainActor [weak self] in
+            guard let self else { return }
             do {
-                let stream = try await transcriptionService.transcribe(audioURL: recording.audioURL)
+                let stream = try await transcriptionService.transcribe(audioURL: audioURL)
                 try await consumeTranscription(stream, timeoutSeconds: 90)
+                guard store.exists(recordingID) else { return }
                 recording.status = .completed
                 store.save()
                 await regenerateSummary()
@@ -100,6 +123,7 @@ final class RecordingDetailViewModel {
     }
 
     private func finishFailed(_ message: String) {
+        guard store.exists(recordingID) else { return }
         recording.status = .failed
         recording.fullTranscriptText = message
         store.save()
@@ -112,6 +136,9 @@ final class RecordingDetailViewModel {
         try await withThrowingTaskGroup(of: Void.self) { group in
             group.addTask { @MainActor in
                 for await segment in stream {
+                    // The user can delete this recording mid-stream (confirm → dismiss →
+                    // onDisappear → delete()); never write into a freed @Model.
+                    guard self.store.exists(self.recordingID) else { return }
                     if segment.isError {
                         throw AudioConverterError.conversionFailed(segment.text)
                     }
@@ -132,6 +159,7 @@ final class RecordingDetailViewModel {
     // MARK: - Private
 
     private func performSummarization() async {
+        guard store.exists(recordingID) else { return }
         recording.summaryStatus = SummaryStatus.generating.rawValue
 
         do {
@@ -139,10 +167,12 @@ final class RecordingDetailViewModel {
             // so Regenerate refreshes the Journal the user actually sees (not stale fields).
             let result = try await summarizationService.summarize(rawTranscription: recording.fullTranscriptText)
 
+            guard store.exists(recordingID) else { return }
             recording.applySummary(result)
-            AppLogger.log("Summary generated for \(recording.id)")
+            AppLogger.log("Summary generated for \(recordingID)")
             store.save()
         } catch {
+            guard store.exists(recordingID) else { return }
             recording.summaryStatus = SummaryStatus.failed.rawValue
             AppLogger.log("Summary failed: \(error.localizedDescription)")
             store.save()

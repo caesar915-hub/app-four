@@ -20,6 +20,8 @@ actor MockSummarizationService: SummarizationService {
     )
     var shouldThrow = false
     var hangs = false
+    /// Lets a test prove the deleted-@Model guards short-circuit *before* any work starts.
+    private(set) var summarizeCallCount = 0
 
     func setShouldThrow(_ value: Bool) {
         shouldThrow = value
@@ -28,6 +30,7 @@ actor MockSummarizationService: SummarizationService {
     func setHangs(_ v: Bool) { hangs = v }
 
     func summarize(rawTranscription: String) async throws -> SummaryResult {
+        summarizeCallCount += 1
         if hangs { while !Task.isCancelled { await Task.yield() } }
         if shouldThrow { throw SummarizationError.inferenceFailed("Mock error") }
         return stubResult
