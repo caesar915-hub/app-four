@@ -1,4 +1,4 @@
-<!-- Created: 2026-06-14 23:59 WEST · Updated: 2026-07-20 19:03 WEST -->
+<!-- Created: 2026-06-14 23:59 WEST · Updated: 2026-07-20 20:32 WEST -->
 # app-four DevLog
 
 Chronological narrative of the project — the *why* behind what happened. Newest day on top.
@@ -10,6 +10,8 @@ This complements, never duplicates: **[BACKLOG.md](BACKLOG.md)** holds current *
 ---
 
 ## 2026-07-20
+
+- **[2026-07-20 20:32 WEST] Shipped (Figma, no code) — Path A rollout COMPLETE on canvas: all 7 remaining screens refined (T001–T018, 18/24); owner batch review (T019) is the open gate.** _delivered beside their originals at y1150:_ **a08-a** (13→9 cards via Preferences merge + Accessibility fold, Dose Guard→radio rows, 13-chip h36 family, 6 toggles on `accent/selection`, identity-vs-selection split: purple fill + green ring) · **a03-a** (56 chips→h36/r18 family across 7 WRAPPED grids ⇒ zero sub-44pt targets, Taken de-purpled to state chip, value words green→ink, +/⌃ affordances de-purpled) · **a01-a** (status bar added, collapsed day-card avatar-disc removed — mood once per state, both states verified) · **a07-a** (bubbles→stacked mood-ramp bar w/ labels preserved, gauges→bars-on-tracks, 10 dashed strokes retired ⇒ one muted empty-state, ≤2 mark families) · **trio** (a06 dead-zone rebalanced, Cancel→44pt, rank-8 investigated: NO duplicate indicator exists on NewLook trio — ring kept per identity guard) · all: 20/32 tiers, single shadows, 44pt lavender med chrome where present, AA primary-button labels (white-on-green→ink SB). _verification:_ measured sweeps + full parity dumps per screen (54–94 strings, truncated footnotes now captured) in specs/040-path-a-refine/checklists/. _next:_ owner side-by-side batch (T019) → 4-lens re-audit + SC scans + sign-off (T020–T024).
 
 - **[2026-07-20 19:03 WEST] Decision — owner ACCEPTED the Path A pilot ("go path a"); `a02-a` (`638:1465`) is the reference standard; Path A becomes spec 040 and rolls out across a01–a08.** _why:_ side-by-side beat Path B decisively — same screen, identity kept, audit root-causes fixed in place. _recipe locked by the accepted pilot:_ card-per-fact merges · 20/32 spacing tiers · single soft shadow · ≥6pt data bars on visible tracks · glyph-weight unification · purple = medication-only · 44pt tinted inset med chrome · status bar on 8/8 · AA text baseline. _next:_ full Spec Kit pipeline for `specs/040-path-a-refine/`, then per-screen `a0N-a` builds beside originals, owner QA per screen.
 

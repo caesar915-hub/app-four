@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-20 19:19 (WEST) · Updated: 2026-07-20 19:19 (WEST) -->
+<!-- Created: 2026-07-20 19:19 (WEST) · Updated: 2026-07-20 20:30 (WEST) -->
 # Tasks: Path A — Refine the New Look In Place (Figma)
 
 **Input**: [plan.md](plan.md) · [spec.md](spec.md) · [research.md](research.md) (D1–D7) · [data-model.md](data-model.md) (delta matrix) · [contracts/refine-recipe.md](contracts/refine-recipe.md) · [quickstart.md](quickstart.md)
@@ -40,9 +40,9 @@
 
 **Goal**: every chip tappable, one selection language. **Independent test**: a03-a — zero sub-44pt effective targets, one selected treatment, parity 100%.
 
-- [ ] T007 [US2] Clone a03 (`578:1482`) → `a03-a`; chrome + tiers: status bar (keep), root gap 20/32 tiers, single shadow pass, in-card rhythm normalization (contract §1/§2)
-- [ ] T008 [US2] Chip-family pass on `a03-a`: all 6 grids (sleep quality, durations, meds, doses + Taken/Missed, emotions ×2 groups, side effects) → h36/r18/≥8-gap family with re-wrapped rows (frame grows); one selected treatment = context-green fill + AA label (green-vs-purple ambiguity killed: med identity purple stays on identity marks only) (contract §5, ranks 7/12/13)
-- [ ] T009 [US2] Verify `a03-a`: measured chip-slot scan (every chip ≥44 effective) + recipe walk + parity vs inventories/a03.md (capture full strings where truncated) + findings 1/2/3/5/7/9/12/13 + AA → specs/040-path-a-refine/checklists/a03-verify.md; screenshot
+- [X] T007 [US2] Clone a03 (`578:1482`) → `a03-a`; chrome + tiers: status bar (keep), root gap 20/32 tiers, single shadow pass, in-card rhythm normalization (contract §1/§2)
+- [X] T008 [US2] Chip-family pass on `a03-a`: all 6 grids (sleep quality, durations, meds, doses + Taken/Missed, emotions ×2 groups, side effects) → h36/r18/≥8-gap family with re-wrapped rows (frame grows); one selected treatment = context-green fill + AA label (green-vs-purple ambiguity killed: med identity purple stays on identity marks only) (contract §5, ranks 7/12/13)
+- [X] T009 [US2] Verify `a03-a`: measured chip-slot scan (every chip ≥44 effective) + recipe walk + parity vs inventories/a03.md (capture full strings where truncated) + findings 1/2/3/5/7/9/12/13 + AA → specs/040-path-a-refine/checklists/a03-verify.md; screenshot
 
 ---
 
@@ -50,9 +50,9 @@
 
 **Goal**: day card ranks its story, chrome consistent. **Independent test**: a01-a — one mood indicator in header (both states), tiers, chrome = a02-a.
 
-- [ ] T010 [US3] Clone a01 (`578:1163`) → `a01-a`; chrome + tiers: ADD status bar (a01 lacks it), med bar → accepted anatomy, gap 20/32, single shadow (contract §1/§2/§4)
-- [ ] T011 [US3] Day-card pass on `a01-a` per research D6: remove duplicate mood disc in expanded AND collapsed headers (word + tinted band stay); AA-fix header text on the band (darker wordColor step if needed); entry-row breathing (rank-11); one chip shape (rank-12)
-- [ ] T012 [US3] Verify `a01-a`: recipe walk + parity vs inventories/a01.md + findings 1/2/6/11/12/14 + AA (incl. band composite math) → specs/040-path-a-refine/checklists/a01-verify.md; screenshot
+- [X] T010 [US3] Clone a01 (`578:1163`) → `a01-a`; chrome + tiers: ADD status bar (a01 lacks it), med bar → accepted anatomy, gap 20/32, single shadow (contract §1/§2/§4)
+- [X] T011 [US3] Day-card pass on `a01-a` per research D6: remove duplicate mood disc in expanded AND collapsed headers (word + tinted band stay); AA-fix header text on the band (darker wordColor step if needed); entry-row breathing (rank-11); one chip shape (rank-12)
+- [X] T012 [US3] Verify `a01-a`: recipe walk + parity vs inventories/a01.md + findings 1/2/6/11/12/14 + AA (incl. band composite math) → specs/040-path-a-refine/checklists/a01-verify.md; screenshot
 
 ---
 
@@ -60,9 +60,9 @@
 
 **Goal**: one chart language. **Independent test**: a07-a — ≤2 mark families (2nd = part-to-whole only), no bubbles, one empty-state pattern.
 
-- [ ] T013 [US4] Clone a07 (`578:3669`) → `a07-a`; chrome + tiers: status bar (keep), med bar → accepted anatomy, gap 20/32, single shadow (contract §1/§2/§4)
-- [ ] T014 [US4] Chart pass on `a07-a` per research D3: breakdown bubbles → one horizontal stacked bar (legend + % strings verbatim); gauges → bars-on-tracks (≥6pt, ramp fills); weekday strips stay (primary family); rhythm matrix untouched (table); locked connections + untracked sleep → one muted empty-state pattern, dashed idiom retired (rank-18); glyph ink-weight unified (rank-5)
-- [ ] T015 [US4] Verify `a07-a`: mark-family count ≤2 + recipe walk + parity vs inventories/a07.md (capture full connection strings) + findings 1/2/4/5/11/18 + AA → specs/040-path-a-refine/checklists/a07-verify.md; screenshot
+- [X] T013 [US4] Clone a07 (`578:3669`) → `a07-a`; chrome + tiers: status bar (keep), med bar → accepted anatomy, gap 20/32, single shadow (contract §1/§2/§4)
+- [X] T014 [US4] Chart pass on `a07-a` per research D3: breakdown bubbles → one horizontal stacked bar (legend + % strings verbatim); gauges → bars-on-tracks (≥6pt, ramp fills); weekday strips stay (primary family); rhythm matrix untouched (table); locked connections + untracked sleep → one muted empty-state pattern, dashed idiom retired (rank-18); glyph ink-weight unified (rank-5)
+- [X] T015 [US4] Verify `a07-a`: mark-family count ≤2 + recipe walk + parity vs inventories/a07.md (capture full connection strings) + findings 1/2/4/5/11/18 + AA → specs/040-path-a-refine/checklists/a07-verify.md; screenshot
 
 ---
 
@@ -70,9 +70,9 @@
 
 **Goal**: light-touch pass, ring encodes progress once. **Independent test**: three frames — one progress encoding, a06 balanced, parity 100%.
 
-- [ ] T016 [US5] Clone a04 (`578:1760`) + a05 (`578:3638`) → `a04-a`/`a05-a`; ring recomposition: one progress encoding in `checkInGreen` (rank-8, remove duplicate indicator); tiers + single shadow; status bar kept (contract §1/§2/§5)
-- [ ] T017 [US5] Clone a06 (`578:3659`) → `a06-a`; rebalance composition via spacing/scale only, copy verbatim (rank-18); tiers; status bar kept
-- [ ] T018 [US5] Verify the trio: recipe walk + parity vs inventories/a04/a05/a06.md (capture a06's full subtitle) + findings 2/8/11/18 → specs/040-path-a-refine/checklists/trio-verify.md; screenshots
+- [X] T016 [US5] Clone a04 (`578:1760`) + a05 (`578:3638`) → `a04-a`/`a05-a`; ring recomposition: one progress encoding in `checkInGreen` (rank-8, remove duplicate indicator); tiers + single shadow; status bar kept (contract §1/§2/§5)
+- [X] T017 [US5] Clone a06 (`578:3659`) → `a06-a`; rebalance composition via spacing/scale only, copy verbatim (rank-18); tiers; status bar kept
+- [X] T018 [US5] Verify the trio: recipe walk + parity vs inventories/a04/a05/a06.md (capture a06's full subtitle) + findings 2/8/11/18 → specs/040-path-a-refine/checklists/trio-verify.md; screenshots
 
 ---
 
