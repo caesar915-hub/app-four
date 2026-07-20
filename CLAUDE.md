@@ -1,4 +1,4 @@
-<!-- Created: 2026-06-14 23:59 (WEST) · Updated: 2026-07-18 20:14 (WEST) -->
+<!-- Created: 2026-06-14 23:59 (WEST) · Updated: 2026-07-20 19:17 (WEST) -->
 # Claude Behavior for app-four
 
 ## Role
@@ -79,5 +79,5 @@ Solo dev; all code written by Claude. PRs exist to give a review surface and kee
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/039-path-b-grouped-table/plan.md
+at specs/040-path-a-refine/plan.md
 <!-- SPECKIT END -->
