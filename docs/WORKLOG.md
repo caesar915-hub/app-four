@@ -1,5 +1,44 @@
-## 2026-07-16 19:24 – 2026-07-20 19:20 · 040 a08-a built + verified (T001-T006) — first Path A rollou · main
+## 2026-07-17 23:22 – 2026-07-20 20:04 · 040 rollout complete on canvas — a03/a01/a07/trio refined (T · main
 
+**Code changes**
+- _Major (feat)_
+  - `4e6a8004` feat(036): unify check-in + Insights green to Theme.meadowGreen
+- _Fixes_
+  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
+- _docs_
+  - `e4097562` docs: 040 rollout complete on canvas — a03/a01/a07/trio refined (T007-T018)
+  - `6fac7461` docs: regen WORKLOG for a08-a commit
+  - `b66fcb40` docs: 040 a08-a built + verified (T001-T006) — first Path A rollout screen
+  - `7d852219` docs: regen WORKLOG for 040 pipeline commit
+  - `4acb2fee` docs: spec 040 Path A refine — full pipeline (spec/plan/research/contract/tasks)
+  - `6e7ffc73` docs: regen WORKLOG for Path-B kill + Path-A pilot commit
+  - `65c36d66` docs: Path B killed at pilot gate (owner); Path A refine pilot a02-a built
+  - `ede7d83b` docs: regen WORKLOG for 039 Gate-1 evidence commit
+  - `f3243c36` docs+design-db: 039 pilot a02-b built + verified — Gate 1 evidence pack
+  - `5e82884e` docs: regen WORKLOG for 039 pipeline commit
+  - `a0e1ac34` docs: spec 039 Path B grouped-table — full Spec Kit pipeline (specify→clarify→plan→tasks)
+  - `16888864` docs: regen WORKLOG for design-database + audits commit
+  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
+  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
+  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
+- _other_
+  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
+
+**Git actions**
+- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
+- tag `refs/tags/stable-ref/0.8.0`
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                                                 4822ee28 [feat/038-icloud-sync]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9f3d12a2-8e2f-4a10-bc36-20e06ebe5efc/scratchpad/main-wt e4097562 [main]
+/Users/caesargrey/Projects/app-four-spm                                                                             4e6a8004 [feat/036-newlook-checkin-insights]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                               9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                   965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                        5db316a6 [feat/healthkit-signals]
+```
+
+---
 **Code changes**
 - _Major (feat)_
   - `02f83b17` feat: single meadow green across check-in + Insights month pill
