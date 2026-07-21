@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 /// The single Paper & Pollen first-run welcome (Feature 015, US1). Warm paper,
-/// a breathing `CrescentRing` hero, a Fraunces headline, one calm privacy
+/// a breathing `CrescentRing` hero, an SF large-title headline, one calm privacy
 /// sentence, and one Meadow-gradient primary action that lands the user on the
 /// Check-in hub. No microphone step, no model-download gate — permission is
 /// just-in-time and the model downloads in the background.
@@ -48,6 +48,11 @@ struct WelcomeView: View {
                 Text("A calm place to speak your day. Everything stays on this device.")
                     .font(Typography.body)
                     .foregroundStyle(NewLook.inkSecondary)
+                    .multilineTextAlignment(.center)
+
+                Text("Squirl is a journal — it doesn't give medical advice.")
+                    .font(Typography.caption)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .multilineTextAlignment(.center)
             }
             .padding(.horizontal, Spacing.l)

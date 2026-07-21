@@ -14,9 +14,7 @@ actor DiagnosticsStore: Sendable {
         if let injected = fileURL {
             self.fileURL = injected
         } else {
-            let docs = URL.documentsDirectory
-                .appendingPathComponent("Diagnostics", isDirectory: true)
-            self.fileURL = docs.appendingPathComponent("sessionSnapshots.json")
+            self.fileURL = AppPaths.diagnostics.appendingPathComponent("sessionSnapshots.json")
         }
 
         // Ensure directory exists

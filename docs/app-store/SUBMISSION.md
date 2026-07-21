@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-16 18:54 (WEST) · Updated: 2026-07-16 18:54 (WEST) -->
+<!-- Created: 2026-07-16 18:54 (WEST) · Updated: 2026-07-21 13:46 (WEST) -->
 # App Store Connect submission playbook — B3 / B4 / B5 / H2 / H3
 
 Owner-executed paperwork. Everything here happens in App Store Connect (ASC) or on squirl.pt — none of it is code. Prepared answers are grounded in the shipping binary as audited 2026-07-16 (no data collection, on-device processing, 3 named ADHD stimulants with typical SmPC values, disclaimer UI added on `fix/app-store-readiness`).
@@ -16,12 +16,14 @@ Required since 2026-03-26 for any app whose primary/secondary category is Health
 | Question | Answer | Why |
 |---|---|---|
 | Is this app a regulated medical device (EEA/UK/US)? | **No** | Squirl logs what the user says; it does not diagnose, treat, prevent, or dose-advise. Journaling/wellness apps without clinical claims are outside MDR/FDA device scope. The in-app copy now consistently frames catalog values as "typical, may differ" — keep it that way; a dosing-recommendation feature would flip this answer. |
-| Contact details | support@squirl.pt | MX verified live 2026-07-16 (securemail.pro) — **create the mailbox before submitting.** |
+| Contact details | caesar915@icloud.com | Owner's chosen support address (2026-07-21); matches the in-app feedback recipient and the published privacy policy. |
 | Safety information | Point at the in-app disclaimer + privacy policy URL | The Settings ▸ "Medication info" section is the safety statement. |
 
 ---
 
-## B4 — EU DSA trader status (blocks EU distribution)
+## B4 — EU DSA trader status ✅ APPROVED (owner-confirmed 2026-07-21)
+
+Trader status approved in ASC per owner. Section kept for reference.
 
 Required + identity-verified since 2025-02-17; non-compliant apps are removed from all 27 EU storefronts. Source: [developer.apple.com/news/?id=x60uzbu9](https://developer.apple.com/news/?id=x60uzbu9), [ASC help](https://developer.apple.com/help/app-store-connect/manage-compliance-information/manage-european-union-digital-services-act-trader-requirements/).
 
@@ -54,15 +56,14 @@ PRODUCT.md already declares the audience 18+; a 16+/18+ rating is consistent wit
 
 ---
 
-## H2 — Privacy policy + support URL (required ASC fields)
+## H2 — Privacy policy + support URL ✅ MOSTLY DONE (2026-07-21)
 
-Domain status verified 2026-07-16: `squirl.pt` live (HTTP 200), MX present. `whisperhealth.app` dead (no A/MX) — the in-app support email was swapped to support@squirl.pt on `fix/app-store-readiness`.
+Support email decision: **caesar915@icloud.com** (owner, 2026-07-21) — in-app feedback recipient + policy contact both updated; the earlier support@squirl.pt plan is superseded.
 
-**Owner actions:**
-1. Create the **support@squirl.pt** mailbox (MX already routes).
-2. Publish [PRIVACY_POLICY.md](PRIVACY_POLICY.md) at `https://squirl.pt/privacy` (review the draft first — set the effective date).
-3. ASC fields: Privacy Policy URL = `https://squirl.pt/privacy`; Support URL = `https://squirl.pt` (page should mention the support email).
-4. ASC ▸ App Privacy nutrition label: **"Data Not Collected"** — accurate per the 2026-07-16 egress audit (no analytics, no accounts, no upload; the only network call is the model download).
+1. ~~Mailbox~~ — not needed; using caesar915@icloud.com.
+2. ✅ **Privacy policy LIVE at `https://squirl.pt/privacy`** (published 2026-07-21, Cloud Run rev `squirl-site-00010-kvd`, effective date 2026-07-21). Includes a website/waitlist disclosure section (consent basis, launch-notification-only purpose, **180-day retention — enforced by a Firestore TTL on `waitlist.expiresAt`, ACTIVE, all 3 pre-existing docs backfilled**, Google named as processor). Canonical source: [PRIVACY_POLICY.md](PRIVACY_POLICY.md) ↔ `privacy.html` ↔ `WEBSITE-me/public/privacy/index.html` — edit together.
+3. ⬜ ASC fields still to fill: Privacy Policy URL = `https://squirl.pt/privacy`; Support URL = `https://squirl.pt`.
+4. ⬜ ASC ▸ App Privacy nutrition label: **"Data Not Collected"** — accurate for the app binary per the 2026-07-16 egress audit (the website waitlist is out of the label's scope; it's disclosed in the policy instead).
 
 ---
 
@@ -82,8 +83,8 @@ Also attach: nothing. No special configuration is required.
 
 ## Order of operations
 
-1. Create support@squirl.pt mailbox → publish privacy page (H2).
-2. Start DSA trader verification (B4) — longest lead time.
-3. Complete age rating questionnaire (B5) — its answers trigger B3's form.
-4. Declare medical-device status = No (B3).
-5. Fill App Privacy ("Data Not Collected") + Review Notes (H3).
+1. ✅ Privacy page live (H2) — email = caesar915@icloud.com, no mailbox needed.
+2. ✅ DSA trader verification (B4) — approved in ASC.
+3. ⬜ Complete age rating questionnaire (B5) — its answers trigger B3's form.
+4. ⬜ Declare medical-device status = No (B3).
+5. ⬜ Fill ASC privacy-policy/support URLs + App Privacy ("Data Not Collected") + Review Notes (H3).

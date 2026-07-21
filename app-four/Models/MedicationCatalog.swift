@@ -13,6 +13,9 @@ struct MedicationCatalogEntry: Identifiable, Hashable, Sendable {
 
 /// The curated stimulant catalog. Beta subset: the three meds the first testers take.
 /// Extends to the fuller EU list by appending entries — no other code needs to change.
+/// Dose strengths, onset, and duration are typical values from each product's EU
+/// Summary of Product Characteristics (SmPC); the UI must always present them as
+/// typical ("≈", "may differ"), never as guidance (App Review 1.4.1).
 nonisolated enum MedicationCatalog {
     static let all: [MedicationCatalogEntry] = [
         MedicationCatalogEntry(

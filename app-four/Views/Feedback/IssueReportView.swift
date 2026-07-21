@@ -55,8 +55,8 @@ struct IssueReportView: View {
             }
             .sheet(isPresented: $isShowingMailComposer) {
                 MailComposeView(
-                    recipient: "support@whisperhealth.app",
-                    subject: "WhisperHealth Beta Feedback — Build \(appBuild)",
+                    recipient: "caesar915@icloud.com",
+                    subject: "Squirl Beta Feedback — Build \(appBuild)",
                     body: composedBody,
                     attachments: reportAttachments
                 ) { result in
