@@ -9,6 +9,9 @@ import SwiftData
 @Model
 final class MedicationEvent {
     var id: UUID = UUID()
+    // `name`/`dose` sync via the CloudKit private DB — E2E under the user's ADP,
+    // otherwise private to their iCloud (FR-016). No field-level `.allowsCloudEncryption`:
+    // it requires a CloudKit store, but this store also opens locally when sync is off.
     var name: String = ""
     var dose: String? = nil
     /// Resolved absolute time.  Set once at save time so there is no re-parsing on every read.

@@ -3,13 +3,14 @@ import SwiftData
 
 @Model
 final class TranscriptionSegment {
-    @Attribute(.unique) var id: UUID
-    var text: String
-    var startTime: TimeInterval
-    var endTime: TimeInterval
-    var isFinal: Bool
+    // CloudKit-compatible (spec 038): no `.unique`, inline defaults for the mirrored store.
+    var id: UUID = UUID()
+    var text: String = ""
+    var startTime: TimeInterval = 0
+    var endTime: TimeInterval = 0
+    var isFinal: Bool = true
     var confidence: Double?
-    var language: String
+    var language: String = "en"
     
     var recording: Recording?
     

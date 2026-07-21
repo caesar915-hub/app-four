@@ -15,10 +15,11 @@ struct ExportServiceTests {
     private static let plaintextMarker = "ZZQ_SECRET_MARKER_42_methylphenidate"
 
     private func makeContainer() throws -> ModelContainer {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
         return try ModelContainer(
-            for: Recording.self, TranscriptionSegment.self, RecordingTag.self, MedicationEvent.self,
-            configurations: config
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
         )
     }
 

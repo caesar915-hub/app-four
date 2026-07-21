@@ -45,7 +45,7 @@ struct WelcomeView: View {
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
 
-                Text("A calm place to speak your day. Everything stays on this device.")
+                Text("A calm place to speak your day. Private by default, on your device.")
                     .font(Typography.body)
                     .foregroundStyle(NewLook.inkSecondary)
                     .multilineTextAlignment(.center)

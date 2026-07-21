@@ -9,8 +9,12 @@ struct AIModelServiceImplTests {
     var container: ModelContainer
 
     init() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: ModelMetadata.self, configurations: config)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
+        container = try ModelContainer(
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
+        )
         service = AIModelServiceImpl(context: container.mainContext)
     }
 

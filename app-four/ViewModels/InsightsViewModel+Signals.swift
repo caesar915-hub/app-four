@@ -219,7 +219,7 @@ extension InsightsViewModel {
     }
 
     private var medFocusConnection: Connection {
-        let medRecs = monthRecordings.filter { !$0.medicationEvents.isEmpty }
+        let medRecs = monthRecordings.filter { $0.medicationEvents?.isEmpty == false }
         let medDayDates = Set(medRecs.map { calendar.startOfDay(for: $0.createdAt) })
         guard medDayDates.count >= 4 else {
             let need = 4 - medDayDates.count

@@ -7,7 +7,7 @@ import SwiftUI
 struct YourDataSection: View {
     var body: some View {
         Section("Your data") {
-            Text("Your recordings, check-ins, and signals stay on this device. Nothing is uploaded.")
+            Text("Your recordings, check-ins, and signals live on this device. Even with iCloud Sync on, Squirl can’t read them.")
                 .font(Typography.body)
                 .foregroundStyle(NewLook.inkSecondary)
 

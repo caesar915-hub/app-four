@@ -1,0 +1,62 @@
+category,value,count_on_page,note
+layout_mode,HORIZONTAL,286,auto-layout frames
+layout_mode,VERTICAL,122,auto-layout frames
+item_spacing,0,154,mostly wrapper frames
+item_spacing,1,5,
+item_spacing,2,7,
+item_spacing,2.5,3,
+item_spacing,3,1,
+item_spacing,4,36,tight in-row gap
+item_spacing,5,6,
+item_spacing,6,51,dominant small gap
+item_spacing,7,22,
+item_spacing,8,54,dominant medium gap
+item_spacing,9,3,
+item_spacing,10,26,
+item_spacing,12,33,card-internal stack gap
+item_spacing,16,5,
+item_spacing,22,1,
+item_spacing,24,1,
+padding,0/0/0/0,258,wrappers without padding
+padding,5/10/5/10,78,chip padding (dominant)
+padding,14/14/14/14,21,card padding (dominant)
+padding,12/14/14/14,10,card padding variant
+padding,10/0/10/0,7,
+padding,14/24/6/28,6,
+padding,12/16/12/16,4,
+padding,8/0/0/0,4,
+padding,10/12/10/12,2,
+padding,12/20/12/20,2,
+padding,14/28/14/28,2,button padding
+padding,4/0/0/0,2,
+padding,60/16/24/16,1,screen-level top inset
+padding,116/16/16/16,1,screen-level top inset
+padding,14/12/14/12,1,
+padding,14/0/14/0,1,
+padding,9/16/9/16,1,
+padding,16/16/18/16,1,
+padding,14/16/14/16,1,
+padding,16/16/16/16,1,
+padding,10/18/10/18,1,
+padding,15/0/15/0,1,
+padding,5/8/5/8,1,
+padding,10/10/10/10,1,
+corner_radius,2,10,micro elements
+corner_radius,3,1,
+corner_radius,4,2,
+corner_radius,7,1,
+corner_radius,9.5,8,
+corner_radius,12,7,
+corner_radius,14,91,dominant card radius on this page
+corner_radius,15,3,
+corner_radius,16,7,
+corner_radius,18,17,
+corner_radius,20,40,Tiimo radius/card token (bound on all 40 nodes)
+corner_radius,22,19,
+corner_radius,37,1,
+corner_radius,39,1,
+corner_radius,41,1,
+corner_radius,44,1,
+corner_radius,51.5,1,
+corner_radius,54,1,
+corner_radius,999,14,pill (radius/pill token bound on 6 nodes)

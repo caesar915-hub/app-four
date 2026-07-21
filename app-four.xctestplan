@@ -13,6 +13,7 @@
   },
   "testTargets" : [
     {
+      "parallelizable" : false,
       "target" : {
         "containerPath" : "container:app-four.xcodeproj",
         "identifier" : "3724CF852FC9292700427F48",

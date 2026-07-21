@@ -13,7 +13,7 @@ struct ADHDSummarySection: View {
     }
 
     private var transcriptMeds: [MedicationEvent] {
-        recording.medicationEvents
+        (recording.medicationEvents ?? [])
             .filter { $0.source == .transcript }
             .sorted { $0.takenAt < $1.takenAt }
     }

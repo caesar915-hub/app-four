@@ -3,16 +3,24 @@ import SwiftData
 
 @Model
 final class Recording {
-    @Attribute(.unique) var id: UUID
-    var createdAt: Date
-    var updatedAt: Date
-    var audioFileName: String
-    var duration: TimeInterval
-    var fileSize: Int64
-    var status: RecordingStatus
-    var fullTranscriptText: String
-    var title: String
-    var isFavorite: Bool
+    // CloudKit-compatible (spec 038): no `.unique`; every non-optional attribute
+    // carries an inline default (CloudKit reads the schema default from the property
+    // initializer, not the init parameter). `id` stays the app-level merge key.
+    var id: UUID = UUID()
+    var createdAt: Date = Date()
+    var updatedAt: Date = Date()
+    var audioFileName: String = ""
+    var duration: TimeInterval = 0
+    var fileSize: Int64 = 0
+    var status: RecordingStatus = RecordingStatus.placeholder
+    // Journal fields sync via the CloudKit private database — end-to-end encrypted
+    // under the user's Advanced Data Protection, otherwise private to their iCloud
+    // account and never readable by the developer (FR-016). Field-level
+    // `.allowsCloudEncryption` is intentionally NOT used: it requires a CloudKit-backed
+    // store, but this store must also open locally when sync is off (Constitution VI).
+    var fullTranscriptText: String = ""
+    var title: String = "Untitled"
+    var isFavorite: Bool = false
     var cloudSyncStatus: String?
 
     // MARK: - Summarization
@@ -55,8 +63,10 @@ final class Recording {
     @Relationship(deleteRule: .cascade, inverse: \RecordingTag.recording)
     var correctionTags: [RecordingTag]?
 
+    // CloudKit requires all relationships optional (Apple: "CloudKit requires all
+    // relationships to be optional"). Read via `medicationEvents ?? []`.
     @Relationship(deleteRule: .cascade, inverse: \MedicationEvent.recording)
-    var medicationEvents: [MedicationEvent] = []
+    var medicationEvents: [MedicationEvent]?
 
     init(
         id: UUID = UUID(),
@@ -308,11 +318,12 @@ extension Recording {
     ) {
         // A manually logged dose on this check-in beats the extractor finding the
         // same name in the note — skip those to avoid duplicates.
+        let events = medicationEvents ?? []
         let manualNames = Set(
-            medicationEvents.filter { $0.source == .manual }.map { $0.name.lowercased() }
+            events.filter { $0.source == .manual }.map { $0.name.lowercased() }
         )
 
-        medicationEvents
+        events
             .filter { $0.source == .transcript }
             .forEach { context.delete($0) }
 

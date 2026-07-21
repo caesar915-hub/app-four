@@ -199,7 +199,7 @@ struct ExportServiceImpl: ExportService {
                     confidence: t.confidence, createdAt: t.createdAt
                 )
             },
-            medicationEvents: r.medicationEvents.map { m in
+            medicationEvents: (r.medicationEvents ?? []).map { m in
                 MedicationEventDTO(
                     id: m.id, name: m.name, dose: m.dose, takenAt: m.takenAt, taken: m.taken,
                     quantity: m.quantity, durationHours: m.durationHours, change: m.change?.rawValue,

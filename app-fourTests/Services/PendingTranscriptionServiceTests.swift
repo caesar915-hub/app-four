@@ -15,8 +15,12 @@ struct PendingTranscriptionServiceTests {
     let summarization = MockSummarizationService()
 
     init() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: Recording.self, configurations: config)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
+        container = try ModelContainer(
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
+        )
         store = RecordingStore(context: container.mainContext)
     }
 

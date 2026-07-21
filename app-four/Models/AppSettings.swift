@@ -3,10 +3,13 @@ import SwiftData
 
 @Model
 final class AppSettings {
-    @Attribute(.unique) var id: UUID
-    var hasCompletedOnboarding: Bool
-    var defaultLanguage: String
-    var downloadOverCellular: Bool
+    // Inline defaults mirror `init` exactly. Required by Constitution IX
+    // (optional-or-defaulted): a non-optional stored property with no default is NULL-able
+    // in the store, and materializing such a row on `fetch` traps (research §R2).
+    @Attribute(.unique) var id: UUID = UUID()
+    var hasCompletedOnboarding: Bool = false
+    var defaultLanguage: String = "en"
+    var downloadOverCellular: Bool = false
     var transcriptionCount: Int = 0
     var promptPaceSeconds: Int = PromptPace.relaxed.rawValue
 

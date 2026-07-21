@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>038 · iCloud Sync · Settings mockup</title>
+<style>
+/*
+  Spec 038 · T026 mockup gate (Constitution I).
+  Native iOS insetGrouped Settings chrome (DESIGN.md · Settings is SF/List-exempt),
+  Paper & Pollen tokens, base-8 spacing. Section lives in Settings ▸ "Your data".
+  States: OFF (default, FR-001) · ON (status + remove, FR-009/010/011) ·
+  Consent sheet (FR-003/012) · No-account (account gating).
+  Meadow green toggle = Theme.meadowGreen; destructive = Theme.danger.
+*/
+:root{
+  --bg:#F6F1E7; --surface:#FCF8EF; --surface2:#EFE8D8;
+  --ink:#221E16; --muted:#7A7361; --hair:#E3DAC7;
+  --green:#5F8A4C; --amber:#E0A33A; --med:#7E5CA8; --danger:#D54037;
+  --sp1:4px; --sp2:8px; --sp3:12px; --sp4:16px; --sp6:24px; --sp8:32px;
+  --r-group:14px; --r-chip:999px;
+  --shadow:0 1px 2px rgba(34,30,22,.05), 0 6px 18px rgba(34,30,22,.05);
+}
+:root[data-theme="dark"]{
+  --bg:#14130F; --surface:#1E1C16; --surface2:#272419;
+  --ink:#F3EEE0; --muted:#9A917C; --hair:#322E22;
+  --green:#6E9A58; --amber:#E8B255; --med:#9277BE; --danger:#E08267;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#14130F; --surface:#1E1C16; --surface2:#272419;
+    --ink:#F3EEE0; --muted:#9A917C; --hair:#322E22;
+    --green:#6E9A58; --amber:#E8B255; --med:#9277BE; --danger:#E08267;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font:400 16px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",system-ui,sans-serif;
+  padding:var(--sp6) var(--sp3) 64px; -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.legend{font-size:12.5px; color:var(--muted); margin:0 auto var(--sp6); max-width:960px; display:flex; gap:var(--sp3); align-items:baseline; justify-content:space-between}
+.legend b{color:var(--ink); font-weight:600}
+.themebtn{border:1px solid var(--hair); background:var(--surface); color:var(--ink); border-radius:var(--r-chip); padding:6px 12px; font-size:12.5px; cursor:pointer; font-weight:600}
+.board{display:flex; flex-wrap:wrap; gap:var(--sp8); justify-content:center; align-items:flex-start; max-width:960px; margin:0 auto}
+.state{width:390px; max-width:100%}
+.state>.label{font-size:12.5px; font-weight:600; color:var(--muted); margin:0 var(--sp1) var(--sp3); display:flex; gap:var(--sp2); align-items:baseline}
+.state>.label b{color:var(--ink)}
+
+/* grouped list */
+.group{margin:0 0 var(--sp4)}
+.group>.hdr{text-transform:uppercase; font-size:12.5px; letter-spacing:.04em; color:var(--muted); font-weight:600; padding:0 var(--sp4) var(--sp2)}
+.card{background:var(--surface); border:1px solid var(--hair); border-radius:var(--r-group); box-shadow:var(--shadow); overflow:hidden}
+.ftr{font-size:12.5px; line-height:1.45; color:var(--muted); padding:var(--sp2) var(--sp4) 0}
+
+/* rows */
+.row{display:flex; align-items:center; gap:var(--sp3); min-height:48px; padding:11px var(--sp4); background:var(--surface); width:100%; color:var(--ink); font-size:17px; text-align:left; position:relative}
+.row+.row::before{content:""; position:absolute; top:0; left:52px; right:0; height:1px; background:var(--hair)}
+.row .ic{width:28px; height:28px; border-radius:7px; flex:0 0 28px; display:grid; place-items:center; color:#fff; font-size:15px}
+.ic.sync{background:var(--green)} .ic.acct{background:var(--amber)}
+.row .body{flex:1; min-width:0}
+.row .body .sub{font-size:13px; color:var(--muted); margin-top:2px}
+.row.center{justify-content:center; color:var(--danger); font-weight:500; cursor:pointer}
+.row .val{color:var(--muted); font-size:15px; margin-left:auto}
+
+/* iOS toggle */
+.sw{width:51px; height:31px; border-radius:999px; background:var(--surface2); border:1px solid var(--hair); position:relative; flex:0 0 51px; margin-left:auto; transition:background .2s}
+.sw::after{content:""; position:absolute; top:2px; left:2px; width:25px; height:25px; border-radius:999px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.3); transition:left .2s}
+.sw.on{background:var(--green); border-color:var(--green)}
+.sw.on::after{left:22px}
+.sw.dis{opacity:.45}
+
+/* consent sheet */
+.sheet{background:var(--surface); border:1px solid var(--hair); border-radius:20px; box-shadow:var(--shadow); padding:var(--sp6) var(--sp4) var(--sp4)}
+.sheet h2{font-size:22px; font-weight:700; letter-spacing:-.01em; margin:0 0 var(--sp1)}
+.sheet .lede{font-size:14px; color:var(--muted); margin:0 0 var(--sp4)}
+.sheet ul{list-style:none; padding:0; margin:0 0 var(--sp4)}
+.sheet li{display:flex; gap:var(--sp3); align-items:flex-start; padding:var(--sp2) 0; font-size:14.5px}
+.sheet li .g{color:var(--green); flex:0 0 20px; text-align:center; font-size:15px; margin-top:1px}
+.sheet li b{font-weight:600}
+.note{font-size:12.5px; line-height:1.5; color:var(--muted); background:var(--surface2); border-radius:12px; padding:var(--sp3); margin:0 0 var(--sp4)}
+.note b{color:var(--ink)}
+.cta{display:block; width:100%; text-align:center; padding:14px; border-radius:14px; background:var(--green); color:#fff; font-size:16px; font-weight:600; border:0; cursor:pointer; margin-bottom:var(--sp2)}
+.cta.ghost{background:transparent; color:var(--muted); font-weight:500}
+</style>
+</head>
+<body>
+<div class="legend">
+  <span><b>038 · iCloud Sync</b> · Settings ▸ Your data · native insetGrouped chrome · Paper &amp; Pollen tokens · off by default (FR-001)</span>
+  <button class="themebtn" onclick="var r=document.documentElement;r.dataset.theme=r.dataset.theme==='dark'?'light':'dark'">Toggle theme</button>
+</div>
+
+<div class="board">
+
+  <!-- STATE 1 · OFF (default) -->
+  <div class="state">
+    <div class="label"><b>1 · Off (default)</b> · fresh install, nothing transmitted</div>
+    <div class="group">
+      <div class="hdr">iCloud Sync</div>
+      <div class="card">
+        <div class="row">
+          <span class="ic sync">☁</span>
+          <div class="body">Sync with iCloud</div>
+          <span class="sw"></span>
+        </div>
+      </div>
+      <div class="ftr">Off. Your journal stays on this device. Turn it on to keep your journal on all your Apple devices, in your own iCloud.</div>
+    </div>
+  </div>
+
+  <!-- STATE 2 · ON -->
+  <div class="state">
+    <div class="label"><b>2 · On</b> · status + remove (FR-009/010/011)</div>
+    <div class="group">
+      <div class="hdr">iCloud Sync</div>
+      <div class="card">
+        <div class="row">
+          <span class="ic sync">☁</span>
+          <div class="body">Sync with iCloud</div>
+          <span class="sw on"></span>
+        </div>
+        <div class="row">
+          <div class="body">Status</div>
+          <span class="val">Synced · 2m ago</span>
+        </div>
+        <div class="row">
+          <div class="body">Account</div>
+          <span class="val">caesar@icloud.com</span>
+        </div>
+        <div class="row center">Remove My Data from iCloud</div>
+      </div>
+      <div class="ftr">End-to-end encrypted when Advanced Data Protection is on. Squirl can’t read your journal. Audio stays on the device it was recorded on.</div>
+    </div>
+  </div>
+
+  <!-- STATE 3 · Consent sheet -->
+  <div class="state">
+    <div class="label"><b>3 · Consent sheet</b> · before first upload (FR-003/012)</div>
+    <div class="sheet">
+      <h2>Sync with iCloud?</h2>
+      <p class="lede">Your journal syncs across your Apple devices, automatically in the background.</p>
+      <ul>
+        <li><span class="g">✓</span><span>Your check-ins, transcripts, moods and medication log sync. <b>Audio stays on its device.</b></span></li>
+        <li><span class="g">✓</span><span>It goes only to <b>your own iCloud account</b>. No account, no Squirl server.</span></li>
+        <li><span class="g">✓</span><span><b>Squirl can’t read it.</b> The developer has no access to your data.</span></li>
+      </ul>
+      <div class="note"><b>End-to-end encryption</b> is on when you’ve enabled <b>Advanced Data Protection</b> in your Apple Account. Otherwise your data is private to your iCloud account and still unreadable by Squirl.</div>
+      <button class="cta">Turn On Sync</button>
+      <button class="cta ghost">Not Now</button>
+    </div>
+  </div>
+
+  <!-- STATE 4 · No iCloud account -->
+  <div class="state">
+    <div class="label"><b>4 · No iCloud account</b> · gating (CKAccountStatus)</div>
+    <div class="group">
+      <div class="hdr">iCloud Sync</div>
+      <div class="card">
+        <div class="row">
+          <span class="ic sync" style="opacity:.55">☁</span>
+          <div class="body" style="color:var(--muted)">Sync with iCloud</div>
+          <span class="sw dis"></span>
+        </div>
+      </div>
+      <div class="ftr">Sign in to iCloud in Settings to turn on Sync.</div>
+    </div>
+
+    <div class="label" style="margin-top:var(--sp6)"><b>Stalled variants</b> (honest status, FR-013)</div>
+    <div class="group">
+      <div class="card">
+        <div class="row"><span class="ic sync">☁</span><div class="body">Sync with iCloud<div class="sub">iCloud storage full · sync paused</div></div><span class="sw on"></span></div>
+        <div class="row"><span class="ic sync">☁</span><div class="body">Sync with iCloud<div class="sub">Waiting for network…</div></div><span class="sw on"></span></div>
+      </div>
+      <div class="ftr">Never shows a false “Synced.” Quota / network / sign-in states are surfaced plainly.</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

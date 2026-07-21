@@ -9,8 +9,12 @@ struct CheckInNoteStoreTests {
     var container: ModelContainer
 
     init() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: Recording.self, configurations: config)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
+        container = try ModelContainer(
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
+        )
         store = RecordingStore(context: container.mainContext)
     }
 
@@ -34,9 +38,9 @@ struct CheckInNoteStoreTests {
         draft.meds = [CheckInDraft.DraftMedication(name: "Concerta", dose: "50mg")]
 
         let r = store.createCheckInNote(draft)
-        #expect(r.medicationEvents.count == 1)
-        #expect(r.medicationEvents.first?.source == .manual)
-        #expect(r.medicationEvents.first?.recording?.id == r.id)
+        #expect(r.medicationEvents?.count == 1)
+        #expect(r.medicationEvents?.first?.source == .manual)
+        #expect(r.medicationEvents?.first?.recording?.id == r.id)
         #expect(r.hasMedication == true)
     }
 

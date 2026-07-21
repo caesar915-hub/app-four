@@ -1,0 +1,79 @@
+paint_type,hex,opacity,total_uses,text_uses,fill_uses,stroke_uses,example_nodes
+SOLID,#1C1B1F,1,214,163,37,14,09:15 · Concerta 36mg; Monday; JUN 2026
+SOLID,#FFFFFF,1,212,19,178,15,med-bar-one-bevel; DayCard-unfolded; Stats
+SOLID,#8A8A8E,1,155,125,26,4,M; 29; ·
+SOLID,#DBDDDE,1,118,0,5,113,field Date; field Time; Frame
+SOLID,#7E5CA8,1,53,5,31,17,Vector; ACTIVE; Concerta
+SOLID,#54B492,1,45,14,26,5,+; ⌃; chip
+SOLID,#000000,1,36,0,36,0,Vector
+SOLID,#2E8B57,1,23,0,14,9,Vector; Rectangle 2; Rectangle
+SOLID,#5FB36E,1,19,0,9,10,Vector; bubble/Good; Ellipse
+SOLID,#ECEAE6,1,16,0,16,0,DoseTrack; Week Day; track
+SOLID,#B9B6B1,1,14,0,13,1,Progress; Vector
+SOLID,#63A4E0,0.78,10,0,0,10,Vector
+SOLID,#63A4E0,0.84,10,0,0,10,Vector
+SOLID,#63A4E0,0.92,10,0,0,10,Vector
+SOLID,#63A4E0,0.9,10,0,10,0,Vector
+SOLID,#9FCB79,1,10,0,3,7,Vector; bubble/Okay; Ellipse
+SOLID,#5566A6,1,9,3,0,6,7h sleep; Vector
+SOLID,#5FB36E,0.5,9,0,2,7,avatar; Vector
+SOLID,#EFF2EB,1,8,0,8,0,Screen a01; Screen a02; Screen a03 (screen backgrounds)
+SOLID,#D2BB40,0.8,8,0,8,0,Vector
+SOLID,#D2BB40,1,8,0,0,8,Vector
+SOLID,#5FB36E,0.6,7,0,0,7,Vector
+SOLID,#9FCB79,0.5,6,0,2,4,avatar; Vector
+SOLID,#5889BA,0.66,6,0,0,6,Vector
+SOLID,#5889BA,0.73,6,0,0,6,Vector
+SOLID,#5889BA,0.8,6,0,6,0,Vector
+SOLID,#A89236,1,6,0,1,5,Vector; fill
+SOLID,#A89236,0.65,5,0,5,0,Vector
+SOLID,#D54037,1,5,3,0,2,Vector; Delete recording; Clear Medication
+GRADIENT_LINEAR,#7E5CA8 > #AF99C3,1,4,0,4,0,Rectangle (medication gradient)
+SOLID,#9FCB79,0.6,4,0,0,4,Vector
+SOLID,#9FCB79,0.86,4,0,4,0,Vector
+SOLID,#1E5C38,1,3,3,0,0,GREAT; Great
+SOLID,#8A8A8E,0.2,3,0,0,3,more (⋯ affordance)
+SOLID,#FCEE64,1,3,0,2,1,Vector; Rectangle
+SOLID,#2E8B57,0.5,3,0,0,3,Vector
+SOLID,#DA7A2A,1,3,0,2,1,Vector; bubble/Low; Ellipse
+SOLID,#EDA94A,1,3,0,2,1,Vector; bubble/Flat; Ellipse
+SOLID,#EEDA4C,0.95,3,0,3,0,Vector
+SOLID,#EEDA4C,1,3,0,0,3,Vector
+SOLID,#8E8E93,0.3,3,0,0,3,Vector
+SOLID,#2E8B57,0.24,2,0,2,0,band; DayCard-folded
+SOLID,#2E8B57,0,2,0,2,0,avatar (invisible fill)
+SOLID,#FFE803,1,2,0,1,1,Vector
+SOLID,#222325,1,2,0,1,1,Vector
+SOLID,#7C6CDF,1,2,0,2,0,Tile; Fill
+SOLID,#2E8B57,0.6,2,0,0,2,Vector
+SOLID,#4E6F94,0.54,2,0,0,2,Vector
+SOLID,#4E6F94,0.62,2,0,0,2,Vector
+GRADIENT_ANGULAR,#54B492 > #96C19F > #54B492,1,2,0,0,2,Ellipse (crescent ring stroke)
+SOLID,#5FB36E,0.18,2,0,2,0,badge
+SOLID,#63A4E0,0.18,2,0,2,0,badge
+SOLID,#FCE519,1,1,0,1,0,Vector
+SOLID,#FCE719,1,1,0,0,1,Vector
+SOLID,#41691F,1,1,1,0,0,Okay
+SOLID,#2C6B3B,1,1,1,0,0,Good
+SOLID,#63A4E0,1,1,0,1,0,Rectangle
+SOLID,#7E5CA8,0.8,1,0,0,1,Vector
+SOLID,#0A31C2,1,1,0,0,1,Vector
+SOLID,#CD1515,1,1,0,1,0,Vector
+SOLID,#DA7A2A,0.6,1,0,0,1,Vector
+SOLID,#DA7A2A,0.56,1,0,1,0,Vector
+SOLID,#EDA94A,0.6,1,0,0,1,Vector
+SOLID,#EDA94A,0.71,1,0,1,0,Vector
+SOLID,#7C6E2E,0.5,1,0,1,0,Vector
+SOLID,#7C6E2E,1,1,0,0,1,Vector
+SOLID,#44546E,0.42,1,0,0,1,Vector
+SOLID,#79C4FF,0.9,1,0,0,1,Vector
+SOLID,#79C4FF,0.95,1,0,0,1,Vector
+SOLID,#79C4FF,0.92,1,0,0,1,Vector
+SOLID,#79C4FF,1,1,0,1,0,Vector
+SOLID,#5889BA,1,1,0,1,0,fill
+SOLID,#9FCB79,0.18,1,0,1,0,badge
+SOLID,#D2BB40,0.18,1,0,1,0,badge
+SOLID,#EEDA4C,0.18,1,0,1,0,badge
+SOLID,#A89236,0.18,1,0,1,0,badge
+SOLID,#5889BA,0.18,1,0,1,0,badge
+SOLID,#6B4E8F,1,5,5,0,0,ACTIVE; Concerta (accent/medicationText)

@@ -57,6 +57,7 @@ struct SettingsView: View {
                     medicationBarSection
                     accessibilitySection
                     YourDataSection()
+                    ICloudSyncSection()
                     journalExportSection
                     dangerSection
                     versionSection

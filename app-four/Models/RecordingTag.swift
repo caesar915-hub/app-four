@@ -16,12 +16,13 @@ enum TagCategory: String, Codable {
 }
 
 @Model final class RecordingTag {
-    var id: UUID
-    var name: String
-    var category: String
-    var source: String
+    // CloudKit-compatible (spec 038): inline defaults for the mirrored store.
+    var id: UUID = UUID()
+    var name: String = ""
+    var category: String = ""
+    var source: String = ""
     var confidence: Double?
-    var createdAt: Date
+    var createdAt: Date = Date()
 
     var recording: Recording?
 

@@ -9,8 +9,12 @@ struct RecordingApplySummaryTests {
     let context: ModelContext
 
     init() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: Recording.self, configurations: config)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
+        container = try ModelContainer(
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
+        )
         context = container.mainContext
     }
 
@@ -77,9 +81,9 @@ struct RecordingApplySummaryTests {
             from: [MedEvent(name: "concerta"), MedEvent(name: "Magnesium")],
             durationHours: nil, context: context
         )
-        let names = r.medicationEvents.map(\.name).sorted()
+        let names = (r.medicationEvents ?? []).map(\.name).sorted()
         #expect(names == ["Concerta", "Magnesium"])
-        #expect(r.medicationEvents.filter { $0.name == "Concerta" }.count == 1)
+        #expect((r.medicationEvents ?? []).filter { $0.name == "Concerta" }.count == 1)
     }
 
     @Test func hasMedicationTrueWithManualOnly() {

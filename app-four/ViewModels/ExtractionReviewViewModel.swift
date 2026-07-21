@@ -65,7 +65,7 @@ final class ExtractionReviewViewModel: Identifiable {
     ) {
         // Map persisted MedicationEvent rows back to the transient MedEvent DTO
         // so the review UI works with the same value type the extractor emits.
-        let existingMeds: [MedEvent] = recording.medicationEvents
+        let existingMeds: [MedEvent] = (recording.medicationEvents ?? [])
             .filter { $0.source == .transcript }
             .sorted { $0.takenAt < $1.takenAt }
             .map { event in

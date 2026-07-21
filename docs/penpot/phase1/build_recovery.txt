@@ -1,0 +1,17 @@
+// Board: storage.P1.recovery (BX=2300). Split on ---SNIP--- and fire in order.
+const b=penpotUtils.findShapeById(storage.P1.recovery); (b.children||[]).slice().forEach(c=>{try{c.remove&&c.remove()}catch(e){}}); return 'cleared, now '+b.children.length;
+---SNIP---
+const C=storage.C, BX=2300, b=penpotUtils.findShapeById(storage.P1.recovery);
+storage.U.rect(b, {x:BX, y:0, w:393, h:852, fill:C.ink, fillOp:0.22});
+storage.U.rect(b, {x:BX, y:38, w:393, h:814, rtl:16,rtr:16,rbr:0,rbl:0, fill:C.bg});
+storage.U.rect(b, {x:BX+(393-40)/2, y:48, w:40, h:5, r:3, fill:C.ink, fillOp:0.2});
+storage.U.text(b, 'Done', {x:BX+393-24-36, y:62, size:16, weight:600, color:C.green});
+storage.U.text(b, 'Keep this key safe', {x:BX+24, y:104, size:22, weight:600, color:C.ink});
+storage.U.text(b, "This file can only be opened by a future version of Squirl, using this exact key. If you lose the key, the backup can't be recovered — not even by us. Save it somewhere only you can reach.", {x:BX+24, y:142, size:16, color:C.muted, width:345});
+storage.U.rect(b, {x:BX+24, y:256, w:345, h:110, r:16, fill:C.surface2});
+storage.U.text(b, 'k7Qz2N9pX4mL8vR1tY6wB3cF5hJ0sD2aE8nG4uK9oP=', {x:BX+40, y:276, size:12, color:C.ink, mono:true, width:313});
+var btn=storage.U.rect(b, {x:BX+24, y:402, w:345, h:52, r:16, grad:storage.U.meadow(345,52)});
+storage.G.svg(b, storage.I.docOnDoc(19,'#FFFFFF'), BX+154, 419);
+storage.U.text(b, 'Copy key', {x:BX+184, y:419, size:16, weight:600, color:'#FFFFFF'});
+storage.U.rect(b, {x:BX+(393-134)/2, y:826, w:134, h:5, r:3, fill:C.ink, fillOp:0.28});
+return 'recovery done';

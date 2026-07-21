@@ -76,7 +76,7 @@ extension Recording {
         }
 
         var seenMedNames = Set<String>()
-        for event in medicationEvents {
+        for event in medicationEvents ?? [] {
             guard seenMedNames.insert(event.name).inserted else { continue }
             let qty = event.quantity ?? 1.0
             let changeSuffix = event.change == .started ? " ↑" : event.change == .stopped ? " ↓" : ""

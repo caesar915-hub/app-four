@@ -1,0 +1,11 @@
+source,name,definition,count_on_page
+observed on page,card shadow layer 1,DROP_SHADOW #000000@0.05 x0 y2 blur8 spread0,37
+observed on page,card shadow layer 2,DROP_SHADOW #000000@0.03 x0 y1 blur2 spread0,37
+observed on page,elevated shadow,DROP_SHADOW #000000@0.08 x0 y4 blur8 spread0,2
+observed on page,small crisp shadow,DROP_SHADOW #000000@0.15 x0 y2 blur4 spread0,8
+effect style,Tiimo/Shadow/Card,DROP_SHADOW #000000@0.05 x0 y2 blur8 spread0 + DROP_SHADOW #000000@0.03 x0 y1 blur2 spread0,37
+effect style,Tiimo/Shadow/Sheet,DROP_SHADOW #000000@0.15 x0 y8 blur40 spread0,0
+effect style,shadow/card,DROP_SHADOW #221E16@0.06 x0 y3 blur10 spread0,0
+effect style,shadow/button,DROP_SHADOW #E0A33A@0.34 x0 y5 blur12 spread0,0
+effect style,Structured/Shadow/FAB,DROP_SHADOW #F28C7D@0.35 x0 y6 blur18 spread0,0
+effect style,Structured/Shadow/Card,DROP_SHADOW #000000@0.25 x0 y8 blur24 spread-4,0

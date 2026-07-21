@@ -1,0 +1,25 @@
+area,canvas_value,designmd_value,code_value,verdict,action
+screen bg,#EFF2EB (surface/screen ×8),NewLook.screen #EFF2EB,NewLook.swift #EFF2EB,MATCH,none
+card surface,#FFFFFF (surface/card ×156),NewLook.card #FFFFFF,NewLook.swift #FFFFFF,MATCH,none
+ink primary,#1C1B1F ×201,NewLook.inkPrimary #1C1B1F,#1C1B1F,MATCH,none
+ink secondary,#8A8A8E ×154,NewLook.inkSecondary #8A8A8E,#8A8A8E,MATCH,"contrast limitation documented + accepted"
+hairline,#DBDDDE ×118,NewLook.hairline #DBDDDE,#DBDDDE,MATCH,none
+tint neutral,#ECEAE6 ×16,NewLook.tintNeutral #ECEAE6,#ECEAE6,MATCH,none
+selection,#54B492 ×45,NewLook.selection #54B492,#54B492,MATCH,"contrast limitation documented + accepted"
+check-in green,#5FB36E (a04-a06),NewLook.checkInGreen #5FB36E,#5FB36E,MATCH,none
+medication,#7E5CA8 ×58 + gradient →#AF99C3,Palette.medication #7E5CA8 + medicationFillEnd #AF99C3,same,MATCH,none
+sleep indigo,#5566A6 ×9,Palette.sleepIndigo #5566A6,#5566A6,MATCH,none
+mood ramp,#DA7A2A #EDA94A #9FCB79 #5FB36E #2E8B57,same (§Signal ramps),Palette+Signals.swift same,MATCH,none
+energy ramp,#7C6E2E #A89236 #D2BB40 #EEDA4C #FCEE64,"'Lemon' #A9A079 #C2B25A #D8C53E #EAD22A #F5D70E — DIFFERENT",Palette+Signals.swift:11-15 = CANVAS values,DESIGNMD-STALE,"canvas+code agree; DESIGN.md §Signal ramps documents a ramp that ships nowhere — update DESIGN.md (owner sign-off)"
+focus ramp,#44546E #4E6F94 #5889BA #63A4E0 #79C4FF,"'Voltage blue' #7E8B96 #6E8DAE #5683B8 #3E73B0 #2C5E9E — DIFFERENT",Palette+Signals.swift:28-32 = CANVAS values,DESIGNMD-STALE,"same — canvas+code agree against DESIGN.md"
+crescent soft green,#97C2A0 (angular gradient mid),NewLook.checkInGreenSoft #96C19F,NewLook.swift:44 #96C19F,CANVAS-DRIFT,"canvas gradient mid-stop off by ~2 RGB from the code token — rebind canvas to #96C19F (trivial, non-visual)"
+card border,38/40 borderless; 2 stroked (a07 'Connection gated' ×2 1px #DBDDDE),.newLookCard() = no border,borderless,VERIFY,"the 2 outlined cards are the gated/locked state — likely intentional differentiation; confirm or normalize"
+card radius,20 (radius/card all 40 bound),New Look radius 20,Radius.newLookCard 20,MATCH,none
+card shadow,two-layer (Tiimo/Shadow/Card ×37),"0.05@(0,2)r8 + 0.03@(0,1)r2",same,MATCH,none
+screen gutter,16px (padding x/16),16px,16px,MATCH,none
+typography,Inter (stand-in) → production_font SF,native SF app-wide,Typography.swift SF,MATCH,"Inter is documented Figma-only stand-in; production target aligned"
+nav title,Inter Bold 24 (Insights/Settings),"24pt bold via Typography.text(24,.bold)",same,MATCH,none
+glyph language,sprout/bolt/aperture/bed/capsule instances (41 of 61),unchanged shapes per §New Look,SF Symbols interim (§Iconography build gap),MATCH-WITH-GAP,"canvas draws custom glyph components; code still renders SF Symbols — the documented open Shape-port feature"
+spacing scale,gaps 4/6/8/10/12 dominant (+off-grid 7×22),§Spacing scale 4·8·12·16·24·32·48 (P&P-scoped),NewLook spec silent on spacing,AMBIGUOUS,"canvas leans on 6/10 which the documented base-8 scale excludes; New Look §DESIGN.md never defines its own spacing scale — needs a decision before spacing/* tokens can be created"
+radius naming,14 fields · 18 chips · 20 cards · 22 badges,§Spacing 'card 18' (P&P) vs New Look card 20,Radius.newLookCard 20,MATCH-WITH-NOTE,"P&P §Spacing radius line predates New Look; card=20 governs the a-screens; DESIGN.md §Spacing worth a New Look footnote"
+dark mode,Tiimo Colors 0/26 dark values,every New Look token has a dark value,NewLook.swift dual light/dark,FIGMA-GAP,"Figma cannot represent the documented dark theme; add dark mode to Tiimo Colors (26 values from DESIGN.md table) to enable dark previews"

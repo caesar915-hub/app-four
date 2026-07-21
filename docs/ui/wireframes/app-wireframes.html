@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<!-- Created: 2026-07-02 16:45 (WEST) · Updated: 2026-07-02 16:45 (WEST) -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>app-four · Squirl · All-Views Low-fi Wireframes</title>
+<style>
+  :root{
+    --ink:#141414; --line:#3f3f3f; --line2:#767676; --sec:#8c8c8c; --ter:#c4c4c4;
+    --paper:#ffffff; --card:#f5f5f5; --tint:#e8e8e8; --med:#efefef; --page:#e9e9e9;
+    --mono:ui-monospace,Menlo,"SF Mono",monospace; --sans:-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--ink);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1360px;margin:0 auto;padding:38px 24px 90px}
+  .eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:#6f6f6f;font-weight:700}
+  h1{font-size:29px;font-weight:800;margin:5px 0 4px}
+  h2{font-size:20px;font-weight:700;margin:52px 0 6px;border-bottom:2px solid #cfcfcf;padding-bottom:8px;scroll-margin-top:16px}
+  h2 .num{font:700 13px/1 var(--mono);background:var(--ink);color:#fff;border-radius:6px;padding:4px 7px;margin-right:9px;vertical-align:middle}
+  h3{font-size:14px;font-weight:800;margin:24px 0 2px;color:#333}
+  .sub{color:#5f5f5f;max-width:82ch;font-size:14.5px}
+  .prov{background:#f7f7f7;border:1px solid #d3d3d3;border-radius:10px;padding:11px 14px;font-size:12.5px;color:#555;margin:10px 0 4px}
+  code{font-family:var(--mono);font-size:.85em;background:#e4e4e4;padding:1px 5px;border-radius:5px;color:#111}
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:8px 20px;margin:14px 0 4px;font-size:13px}
+  .lg{display:flex;align-items:center;gap:8px}
+  .k{width:30px;height:20px;flex:none;border-radius:3px}
+  .k.solid{border:1.5px solid var(--line);background:#fff}
+  .k.tap{border:1.5px dashed #555;background:#fff}
+  .k.icon{border:1px solid var(--line2);background:repeating-linear-gradient(45deg,#d6d6d6,#d6d6d6 1.5px,#f0f0f0 1.5px,#f0f0f0 4px)}
+  .k.tint{border:1px solid #cfcfcf;background:var(--tint)}
+  .k.sel{border-radius:50%;background:var(--ink)}
+  /* TOC */
+  .toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:9px;margin-top:10px}
+  .toc a{display:block;background:#f7f7f7;border:1px solid #d3d3d3;border-radius:9px;padding:9px 12px;text-decoration:none;color:#222;font-size:13px}
+  .toc a:hover{background:#efefef}
+  .toc a b{display:block;font-size:13.5px}
+  .toc a span{color:#6f6f6f;font-size:12px}
+  /* frames */
+  .frames{display:flex;flex-wrap:wrap;gap:38px;align-items:flex-start;margin-top:10px}
+  .frame{width:393px}
+  .frame.narrow{width:320px}
+  .frame .cap{font-weight:800;font-size:15px;margin:0}
+  .frame .capsub{color:#5f5f5f;font-size:12.5px;margin:2px 0 8px}
+  .frame .tags{margin:0 0 10px}
+  /* phone */
+  .phone{border:9px solid var(--ink);border-radius:46px;background:var(--paper);overflow:hidden}
+  .notch{height:30px;background:var(--paper);position:relative;flex:none}
+  .notch::after{content:"";position:absolute;top:9px;left:50%;transform:translateX(-50%);width:128px;height:22px;background:var(--ink);border-radius:0 0 16px 16px}
+  .screen{background:var(--paper);display:flex;flex-direction:column;min-height:150px;position:relative}
+  .screen.tall{min-height:720px}
+  .screen.xtall{min-height:1180px}
+  /* tab bar */
+  .tabbar{display:flex;border-top:1px solid #e2e2e2;background:#fafafa;flex:none}
+  .tabbar .tb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 0 10px;font-size:10px;color:var(--sec)}
+  .tabbar .tb .ti{width:22px;height:22px;border:1.5px solid var(--line2);border-radius:5px;background:repeating-linear-gradient(45deg,#d6d6d6,#d6d6d6 1.5px,#f0f0f0 1.5px,#f0f0f0 4px)}
+  .tabbar .tb.on{color:#222;font-weight:700}
+  .tabbar .tb.on .ti{border-color:#222;background:#cfcfcf}
+  /* calendar header + grid */
+  .hdr{padding:8px 16px 0}
+  .monthrow{display:flex;align-items:center;min-height:44px;gap:5px}
+  .monthrow .ml{font-size:17px;font-weight:700}
+  .chev{font:700 12px/1 var(--sans);color:var(--sec)}
+  .weekcaps{display:flex;margin-top:2px}
+  .weekcaps span{flex:1;text-align:center;font-size:12px;color:var(--sec)}
+  .grid{margin-top:4px}
+  .week{display:flex;gap:0}
+  .daycell{flex:1;min-height:44px;display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:3px}
+  .daycell .num{width:30px;height:30px;line-height:30px;text-align:center;font-size:15px;font-variant-numeric:tabular-nums;border-radius:50%}
+  .daycell.sel .num{background:var(--ink);color:#fff;font-weight:700}
+  .daycell.future .num,.daycell.oom .num{color:var(--ter)}
+  .dot{width:6px;height:6px;border-radius:50%}
+  .dot.mday{background:#6a6a6a} .dot.neu{background:#b3b3b3} .dot.none{background:transparent}
+  .divider{height:1px;background:#d8d8d8;margin:8px 0 0}
+  /* timeline scroll region + day card */
+  .tl{padding:12px 16px 20px;display:flex;flex-direction:column;gap:12px;flex:1}
+  .card{border:1px solid #dcdcdc;border-radius:16px;overflow:hidden;background:var(--card)}
+  .cardhdr{display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:44px;background:var(--tint);border:1.5px dashed #9a9a9a;border-radius:16px}
+  .mood{width:40px;height:40px;flex:none;border-radius:50%;border:1.5px solid var(--line);background:#e2e2e2;position:relative}
+  .mood::before{content:"";position:absolute;left:50%;top:9px;bottom:8px;width:2px;background:#8a8a8a;transform:translateX(-50%)}
+  .mood::after{content:"";position:absolute;left:50%;top:7px;width:15px;height:16px;background:#cbcbcb;border:1.5px solid #7d7d7d;border-radius:60% 60% 55% 55%;transform:translateX(-50%)}
+  .ttl{flex:1;min-width:0}
+  .ttl .t1{font-size:16px;font-weight:600}
+  .ttl .t1 .mw{font-weight:700}
+  .ttl .t1 .wd{color:#333}
+  .sumline{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;align-items:center;font-size:12px;color:#555}
+  .sumline .it{display:flex;align-items:center;gap:4px}
+  .sep{color:#aaa}
+  .g{display:inline-block;border:1px solid var(--line2);background:repeating-linear-gradient(45deg,#d6d6d6,#d6d6d6 1.5px,#f0f0f0 1.5px,#f0f0f0 4px);flex:none}
+  .g12{width:12px;height:12px} .g14{width:14px;height:14px} .g15{width:15px;height:15px} .g18{width:18px;height:18px}
+  .chevd{color:var(--sec);font-weight:700;font-size:13px;flex:none}
+  /* empty state */
+  .empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding-top:56px;gap:12px;color:#777}
+  .empty .ic{width:52px;height:46px;border:1.5px solid var(--line2);border-radius:8px;background:repeating-linear-gradient(45deg,#d6d6d6,#d6d6d6 2px,#f0f0f0 2px,#f0f0f0 5px);position:relative}
+  .empty .et{font-size:16px;font-weight:700;color:#444} .empty .ed{font-size:13px;max-width:30ch}
+  /* callout pins + notes */
+  .pin{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--ink);color:#fff;font:700 10px/1 var(--mono);vertical-align:top;margin-left:3px}
+  .notes{margin:12px 0 0;padding:12px 14px;background:#f7f7f7;border:1px solid #d3d3d3;border-radius:10px;font-size:12.5px;color:#4a4a4a}
+  .notes ol{margin:0;padding-left:26px} .notes li{margin:3px 0}
+  .notes .pin{margin:0 4px 0 -22px}
+  .flag{margin:10px 0 0;padding:10px 13px;background:#f2f2f2;border:1.5px dashed #9a9a9a;border-radius:10px;font-size:12.5px;color:#3a3a3a}
+  footer{margin-top:60px;padding-top:16px;border-top:1px solid #cfcfcf;font-size:12.5px;color:#6f6f6f}
+
+  /* ============ EXTENDED KIT ============ */
+  .navbar{display:flex;align-items:center;gap:10px;padding:9px 12px;min-height:44px;border-bottom:1px solid #ececec}
+  .navbar .nt{font-size:17px;font-weight:700;flex:1;min-width:0;text-align:center}
+  .navbar .nt.lead{text-align:left}
+  .navbar .bb{font-size:15px;color:#555;font-weight:600;flex:none}
+  .navbar .bb.acc{color:#1f1f1f;font-weight:700}
+  .iconbtn{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;flex:none;background:#fff;font-size:14px;color:#444}
+  .eyb{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sec);font-weight:700}
+  .pad{padding:16px;flex:1;display:flex;flex-direction:column}
+  /* iOS inset-grouped list */
+  .list{background:#ededed;flex:1;padding:14px 14px 18px;display:flex;flex-direction:column;gap:18px;overflow:hidden}
+  .lsec{display:flex;flex-direction:column}
+  .lsh{font-size:11.5px;letter-spacing:.04em;color:var(--sec);font-weight:700;margin:0 8px 6px;text-transform:uppercase}
+  .lbody{background:#fff;border:1px solid #e0e0e0;border-radius:12px;overflow:hidden}
+  .lrow{display:flex;align-items:center;gap:12px;padding:11px 14px;min-height:44px;border-top:1px solid #ededed}
+  .lrow:first-child{border-top:none}
+  .lrow .lic{width:22px;height:22px;flex:none;border:1.5px solid var(--line2);border-radius:5px;background:repeating-linear-gradient(45deg,#d6d6d6,#d6d6d6 1.5px,#f0f0f0 1.5px,#f0f0f0 4px)}
+  .lrow .ll{flex:1;min-width:0;font-size:15px}
+  .lrow .ll small{display:block;color:var(--sec);font-size:12px;font-weight:400;margin-top:1px}
+  .lrow .rv{color:var(--sec);font-size:13.5px;text-align:right}
+  .lrow .chevn{color:var(--ter);font-weight:800;font-size:15px;flex:none}
+  .lrow.btn .ll{color:#1f1f1f;font-weight:600}
+  .lrow.danger .ll{color:#1f1f1f;font-weight:700}
+  .lrow.danger .lic{border-color:#000;background:#e0e0e0}
+  .lrow.center{justify-content:center;color:var(--sec);font-size:12px}
+  .lfoot{font-size:11.5px;color:var(--sec);margin:6px 8px 0;line-height:1.4}
+  .lnote{font-size:12px;color:#666;padding:11px 14px;line-height:1.45}
+  .sw{width:40px;height:24px;border-radius:12px;flex:none;border:1.5px solid #bdbdbd;background:#e6e6e6;position:relative}
+  .sw::after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;border:1px solid #cfcfcf}
+  .sw.on{background:#cfcfcf;border-color:#9a9a9a}
+  .sw.on::after{left:auto;right:2px;background:#444;border-color:#444}
+  .mdl{display:flex;align-items:center;gap:6px;font-size:13px;color:#555}
+  .mdl .sd{width:8px;height:8px;border-radius:50%}
+  .mdl .sd.a{background:#b0b0b0} .mdl .sd.g{background:#555} .mdl .sd.r{background:#111}
+  .mdl .pb{width:80px;height:6px;border-radius:4px;background:#dcdcdc;overflow:hidden}
+  .mdl .pb i{display:block;height:100%;background:#8a8a8a}
+  .mdl .cx{color:#1f1f1f;font-weight:700}
+  .ghpill{display:inline-block;border:1.5px solid var(--line);border-radius:14px;padding:3px 10px;font-size:12px;color:#333;background:#fff}
+  /* buttons */
+  .pbtn{border:1.5px solid var(--line);border-radius:16px;background:#dcdcdc;padding:13px;text-align:center;font-size:16px;font-weight:700;color:#1f1f1f;display:flex;align-items:center;justify-content:center;gap:8px}
+  .sbtn{border:1.5px solid var(--line);border-radius:16px;background:#fff;padding:11px;text-align:center;font-size:15px;font-weight:600;color:#333;display:flex;align-items:center;justify-content:center;gap:7px}
+  .dbtn{border:1.5px solid #000;border-radius:16px;background:#fff;padding:11px;text-align:center;font-size:15px;font-weight:700;color:#111}
+  .txtbtn{color:#555;font-weight:600;font-size:14px;text-align:center}
+  .plainbtn{display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:600;color:#222;padding:10px}
+  /* crescent ring */
+  .ring{width:230px;height:230px;border-radius:50%;border:11px solid #d0d0d0;position:relative;margin:0 auto;display:flex;align-items:center;justify-content:center}
+  .ring::before{content:"";position:absolute;inset:-11px;border-radius:50%;border:11px solid transparent;border-top-color:#8a8a8a;border-right-color:#9a9a9a;transform:rotate(15deg)}
+  .ring.sm{width:150px;height:150px;border-width:9px}
+  .ring.sm::before{inset:-9px;border-width:9px}
+  .ring .rc2{text-align:center;z-index:1}
+  .ring .rc2 .big{font-size:30px;font-weight:800;font-family:var(--mono)}
+  .discbig{width:78px;height:78px;border-radius:50%;background:#d4d4d4;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:30px;font-weight:800;color:#333}
+  .cih{text-align:center}
+  .cih .d{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--sec);font-weight:700}
+  .cih .q{font-size:22px;font-weight:700;margin-top:3px}
+  .cih .hint{font-size:14px;color:#888;margin-top:5px}
+  .prompt{text-align:center;font-size:22px;font-weight:700;color:#222;padding:0 20px}
+  .promptbar{height:3px;background:#e0e0e0;border-radius:2px;margin:0 0 4px}
+  .promptbar i{display:block;height:100%;width:40%;background:#9a9a9a;border-radius:2px}
+  .dots{display:flex;gap:7px;justify-content:center;margin-top:6px}
+  .dots i{width:6px;height:6px;border-radius:50%;background:#d0d0d0}
+  .dots i.on{background:#555}
+  .stopcap{display:inline-flex;align-items:center;gap:8px;background:#2a2a2a;color:#fff;border-radius:24px;padding:11px 22px;font-size:15px;font-weight:700}
+  .stopcap .sq{width:11px;height:11px;border-radius:3px;background:#fff}
+  /* segmented / chips / dose pills */
+  .segrow{display:flex;flex-wrap:wrap;gap:6px}
+  .seg{border:1.5px solid var(--line2);border-radius:10px;padding:6px 11px;font-size:13px;color:#444;background:#fff}
+  .seg.on{background:#333;color:#fff;border-color:#333}
+  .chip{border:1.5px solid var(--line2);border-radius:10px;padding:5px 11px;font-size:12.5px;color:#444;background:#fff;display:inline-block}
+  .chip.on{background:#333;color:#fff;border-color:#333}
+  .chip.rn{border-radius:15px}
+  .tag{display:inline-flex;align-items:center;gap:5px;border:1px solid #cfcfcf;background:#f0f0f0;border-radius:15px;padding:4px 9px;font-size:12px;color:#3a3a3a}
+  .dpill{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:16px;padding:5px 11px;font-size:13px;background:#fff}
+  /* form fields */
+  .field{padding:15px 0;border-bottom:1px solid #ececec}
+  .field .fh{display:flex;align-items:center;gap:7px;margin-bottom:9px}
+  .field .fn{font:700 12px/1 var(--mono);color:#666}
+  .field .fl{font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--sec);font-weight:700}
+  .field .fhint{margin-left:auto;font-size:12px;color:var(--sec)}
+  .field .fval{font-size:13px;color:#555;margin-bottom:9px}
+  .field .fval b{color:#222}
+  .datebox{border:1.5px solid var(--line2);border-radius:10px;padding:8px 12px;font-size:13px;display:inline-block;background:#fff}
+  .databox2{display:flex;gap:10px}
+  .databox2 .db{flex:1}
+  .databox2 .db .dbl{font-size:11px;color:var(--sec);margin-bottom:4px}
+  .ramp{display:flex;gap:12px;align-items:flex-start}
+  .ramp .rstep{display:flex;flex-direction:column;align-items:center;gap:5px}
+  .ramp .rg{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--line2);background:#ececec;position:relative}
+  .ramp .rstep.sel .rg{background:#d4d4d4}
+  .ramp .rstep.sel{position:relative}
+  .ramp .rstep.sel .rg::after{content:"";position:absolute;inset:-5px;border:1.5px solid #333;border-radius:10px}
+  .ramp .rw{font-size:10px;color:var(--sec);text-align:center}
+  .ramp .rstep.sel .rw{color:#111;font-weight:700}
+  .fieldcard{border:1px solid #e0e0e0;border-radius:16px;background:#fff;overflow:hidden}
+  .fieldcard .fr{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;border-top:1px solid #ececec;font-size:14px}
+  .fieldcard .fr:first-child{border-top:none}
+  /* recording detail */
+  .dcard{border:1px solid #e0e0e0;border-radius:16px;background:#fff;padding:14px;margin-bottom:0}
+  .dcard .dh{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .dcard .dh .di{width:20px;height:20px;flex:none;border:1.5px solid var(--line2);border-radius:5px;background:repeating-linear-gradient(45deg,#d6d6d6,#d6d6d6 1.5px,#f0f0f0 1.5px,#f0f0f0 4px)}
+  .dcard .dh .dt{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#555}
+  .dcard .dh .sp{flex:1}
+  .tagflow{display:flex;flex-wrap:wrap;gap:7px}
+  .detailbody{padding:16px;display:flex;flex-direction:column;gap:16px;flex:1}
+  .dmeta{font-family:var(--mono);font-size:12px;color:var(--sec)}
+  .dtitle{font-size:22px;font-weight:800}
+  .sigrow{display:flex;gap:20px;padding:2px 0}
+  .sigrow .si{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;color:#555}
+  .sigrow .si .sg{width:30px;height:30px;border:1px solid var(--line2);border-radius:50%;background:repeating-linear-gradient(45deg,#d6d6d6,#d6d6d6 1.5px,#f0f0f0 1.5px,#f0f0f0 4px)}
+  .statuspill{display:inline-block;border-radius:10px;padding:2px 9px;font-size:11px;font-weight:700;border:1.5px solid var(--line2);color:#555;background:#f0f0f0}
+  .player{display:flex;align-items:center;gap:12px}
+  .player .pp{width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:14px;flex:none;background:#dcdcdc}
+  .wave{flex:1;height:30px;display:flex;align-items:center;gap:2px}
+  .wave i{flex:1;background:#c4c4c4;border-radius:1px}
+  .wave i.pl{background:#8a8a8a}
+  /* insights */
+  .isec{padding:16px 0 8px}
+  .ident{padding:2px 16px 0}
+  .ident .big{font-size:30px;font-weight:800}
+  .ident .subl{font-size:13px;color:var(--sec);margin-top:2px}
+  .monthsel{display:flex;gap:20px;padding:8px 16px;overflow:hidden;align-items:flex-end}
+  .monthsel .mo{font-size:15px;color:var(--sec);font-weight:600;flex:none;padding-bottom:4px}
+  .monthsel .mo.on{color:#111;font-weight:700;border-bottom:2px solid #111}
+  .isechdr{padding:14px 16px 6px}
+  .isechdr .it2{font-size:22px;font-weight:700}
+  .isechdr .is2{font-size:13px;color:var(--sec);margin-top:2px}
+  .bubbles{position:relative;height:170px;margin:6px 16px}
+  .bub{position:absolute;border-radius:50%;background:#dcdcdc;border:1.5px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#333;flex-direction:column;text-align:center;line-height:1.1}
+  .leg{display:flex;flex-wrap:wrap;gap:7px 12px;padding:2px 16px;font-size:11.5px;color:#666}
+  .leg span{display:flex;align-items:center;gap:5px}
+  .leg i{width:10px;height:10px;border-radius:50%;background:#cfcfcf;border:1px solid #b0b0b0}
+  .strip{padding:2px 16px 4px}
+  .strip .stl{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;margin-bottom:4px}
+  .strip .stl .sm{margin-left:auto;font-size:11.5px;color:var(--sec);font-weight:400}
+  .strip .stc{display:flex;gap:0}
+  .strip .stc .sc2{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+  .strip .stc .sc2 .gg{width:26px;height:26px;border:1px solid var(--line2);border-radius:50%;background:repeating-linear-gradient(45deg,#d6d6d6,#d6d6d6 1.5px,#f0f0f0 1.5px,#f0f0f0 4px)}
+  .strip .stc .sc2 .gg.no{background:#f2f2f2;border-style:dashed;border-color:#cfcfcf}
+  .strip .stc .sc2 small{font-size:9px;color:var(--sec)}
+  .sleepchip{margin:8px 16px 0;display:inline-flex;align-items:center;gap:5px;border:1px dashed #9a9a9a;border-radius:15px;padding:5px 11px;font-size:12px;color:var(--sec)}
+  .gauges{display:flex;justify-content:space-around;padding:8px 16px;align-items:flex-end}
+  .gau{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .gau .gt{width:60px;height:180px;border:1px solid #d8d8d8;border-radius:10px;background:#f0f0f0;position:relative;overflow:hidden;display:flex;align-items:flex-end}
+  .gau .gt i{display:block;width:100%;background:#cfcfcf;border-top:1.5px solid #9a9a9a;position:relative}
+  .gau .gt i b{position:absolute;top:3px;left:0;right:0;text-align:center;font-size:10px;font-weight:700;color:#333}
+  .gau .gc{font-size:11px;color:var(--sec);text-align:center;max-width:70px}
+  /* rhythm matrix */
+  .matrix{padding:6px 16px}
+  .matrix .mtop{display:flex;padding-left:56px;margin-bottom:4px}
+  .matrix .mtop span{flex:1;text-align:center;font-size:11px;color:var(--sec)}
+  .matrix .mr{display:flex;align-items:center;gap:0;margin-bottom:6px}
+  .matrix .mrl{width:56px;font-size:12px;color:var(--sec);flex:none}
+  .matrix .mc{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px}
+  .matrix .mc .blob{width:44px;height:44px;border-radius:50%;background:#c9c9c9}
+  .matrix .mc .blob.no{background:transparent;border:1.5px dashed #cfcfcf}
+  .matrix .mc small{font-size:10px;color:var(--sec)}
+  /* connection cards */
+  .concard{border:1px solid #e0e0e0;border-radius:16px;background:#fff;padding:16px;margin-bottom:12px}
+  .concard .ceyb{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--sec);font-weight:700;margin-bottom:8px}
+  .concard .csent{font-size:20px;font-weight:700;line-height:1.25}
+  .concard .cbar{height:8px;border-radius:5px;background:#e2e2e2;margin:12px 0 6px;overflow:hidden}
+  .concard .cbar i{display:block;height:100%;background:#8a8a8a}
+  .concard .cbl{display:flex;justify-content:space-between;font-size:11px;color:var(--sec)}
+  .concard .cbl b{color:#222}
+  .concard.gated{border-style:dashed;border-color:#9a9a9a;background:#fafafa}
+  .concard.gated .clock{float:right;color:var(--sec)}
+  .concard.gated .cd{font-size:14px;color:#666;line-height:1.4}
+  /* dialogs */
+  .dialog{border:1px solid #cfcfcf;border-radius:14px;background:#fff;overflow:hidden;width:290px;box-shadow:0 8px 30px rgba(0,0,0,.14)}
+  .dialog .dtt{padding:12px 14px;font-size:12.5px;color:var(--sec);text-align:center;border-bottom:1px solid #ececec}
+  .dialog .dopt{padding:12px 14px;text-align:center;font-size:15px;border-top:1px solid #ececec;color:#333}
+  .dialog .dopt.dstroy{color:#111;font-weight:700}
+  .dialog .dopt.cancel{font-weight:700;color:#111}
+  .dialogwrap{background:#eee;padding:18px;display:flex;justify-content:center;border-radius:12px}
+  /* med bar */
+  .medbar{margin:8px 16px;border:1.5px solid #cfcfcf;border-radius:16px;background:var(--med);padding:11px 13px;display:flex;flex-direction:column;gap:8px}
+  .medbar .drow{display:flex;gap:9px;align-items:flex-start}
+  .medbar .cap2{width:28px;height:20px;border-radius:9px;border:1.5px solid var(--line);background:linear-gradient(90deg,#cfcfcf 50%,#efefef 50%);flex:none;margin-top:2px}
+  .medbar .mid{flex:1;min-width:0}
+  .medbar .m1{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:600}
+  .medbar .m1 .st{font-size:11px;color:#555;letter-spacing:.03em;font-weight:600}
+  .track{height:8px;border-radius:5px;background:#dcdcdc;margin:6px 0 4px;overflow:hidden}
+  .track i{display:block;height:100%;background:#8a8a8a}
+  .medbar .m2{font-family:var(--mono);font-size:11px;color:#777}
+  .medbar .mdiv{height:1px;background:#d5d5d5}
+  .stategrid{display:flex;flex-wrap:wrap;gap:14px}
+  .stategrid .sc3{width:300px}
+  .stategrid .sc3 .lbl{font-size:12px;font-weight:700;color:#444;margin-bottom:5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">app-four · Squirl · Low-fi Wireframes</div>
+    <h1>Every view of the app</h1>
+    <p class="sub">Black-and-white, low-fidelity wireframes of the complete app: the tab shell, onboarding, and all four tabs (Calendar, Check-in, Insights, Settings) plus the shared Recording Detail, the Edit sheet, every sheet/alert/dialog, and the global medication bar. Structure, element order, copy, and metrics are taken 1:1 from the SwiftUI source. Frames are drawn at 393&nbsp;pt device width. Colour is intentionally omitted: a tint that carries meaning in-app is shown as grey with a note.</p>
+    <div class="prov"><b>Grounded in the codebase (read this session by 4 extraction passes).</b> Tokens: Spacing xs 4 · s 8 · m 12 · l 16 · xl 20 · xxl 24 · section 32 · hero 40 · Radius card 16 / control 10 / button 16 / chip 15 · minTapTarget 44 · crescentDiameter 300. Signal glyphs are hand-drawn SwiftUI <code>Shape</code>s (Sprout = mood, Bolt = energy, Aperture = focus, Bed = sleep, Capsule = medication), not SF Symbols. They are drawn here as icon placeholders. Sample content uses the real level vocab and lexicon, never invented data.</div>
+  </header>
+
+  <h2>How to read these</h2>
+  <div class="legend">
+    <span class="lg"><span class="k solid"></span>Static element</span>
+    <span class="lg"><span class="k tap"></span>Tappable region</span>
+    <span class="lg"><span class="k icon"></span>Glyph / icon placeholder</span>
+    <span class="lg"><span class="k tint"></span>Semantic tint (colour in-app; grey here)</span>
+    <span class="lg"><span class="k sel"></span>Selected / filled</span>
+  </div>
+  <div class="toc">
+    <a href="#shell"><b>0 · App shell &amp; launch</b><span>TabView · 4 tabs · onboarding gate</span></a>
+    <a href="#onboarding"><b>1 · Onboarding</b><span>WelcomeView · single screen</span></a>
+    <a href="#calendar"><b>2 · Calendar tab</b><span>week · month · empty</span></a>
+    <a href="#checkin"><b>3 · Check-in tab</b><span>idle · recording · saving · fail · done</span></a>
+    <a href="#checkin-sheets"><b>3b · Check-in sheets</b><span>Log Dose · Type note · alerts</span></a>
+    <a href="#insights"><b>4 · Insights tab</b><span>5 paging sections · empty · day sheet</span></a>
+    <a href="#settings"><b>5 · Settings tab</b><span>list · model row · export · debug</span></a>
+    <a href="#detail"><b>6 · Recording Detail</b><span>shared push · 4 cards · audio</span></a>
+    <a href="#edit"><b>7 · Edit (Extraction Review)</b><span>8 fields</span></a>
+    <a href="#medbar"><b>8 · Medication bar</b><span>global overlay · 4 states</span></a>
+  </div>
+
+  <!-- ================= 0 · SHELL ================= -->
+  <h2 id="shell"><span class="num">0</span>App shell &amp; launch</h2>
+  <p class="sub">The root is a <code>TabView</code> with 4 tabs, each owning its own <code>NavigationStack</code>. The app opens on <b>Calendar</b>, not Check-in. A first run is intercepted by a full-screen onboarding cover; the deep link <code>whispernotes://checkin</code> jumps to Check-in and auto-starts recording.</p>
+  <div class="prov"><b>Grounded in:</b> <code>Views/RootTabView.swift:5-36</code>, <code>App/SquirlApp.swift:6,38-88</code>, <code>DesignSystem/Icons.swift:7-10</code>.</div>
+  <div class="frames">
+    <div class="frame">
+      <p class="cap">Tab bar (present on all 4 tabs)</p>
+      <p class="capsub">Tint = meadow green in-app. Default selection = Calendar.</p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <div class="pad" style="align-items:center;justify-content:center;color:#9a9a9a;gap:6px">
+          <div style="font-size:13px">↑ active tab’s NavigationStack</div>
+          <div style="font-size:12px;color:#bbb">(Calendar / Check-in / Insights / Settings)</div>
+        </div>
+        <div class="tabbar">
+          <div class="tb on"><div class="ti"></div>Calendar</div>
+          <div class="tb"><div class="ti"></div>Check in</div>
+          <div class="tb"><div class="ti"></div>Insights</div>
+          <div class="tb"><div class="ti"></div>Settings</div>
+        </div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span><b>Calendar</b>: icon <code>calendar</code>, label “Calendar”. Default tab. <code>RootTabView.swift:19</code></li>
+        <li><span class="pin">2</span><b>Check in</b>: <code>checkmark.circle</code>, “Check in”. Deep-link target. <code>:24</code></li>
+        <li><span class="pin">3</span><b>Insights</b>: <code>chart.bar.fill</code>, “Insights”. <code>:29</code></li>
+        <li><span class="pin">4</span><b>Settings</b>: <code>gear</code>, “Settings”. <code>:33</code></li>
+      </ol></div>
+    </div>
+    <div class="frame">
+      <p class="cap">Launch gate</p>
+      <p class="capsub">Cold launch → onboarding decision.</p>
+      <div class="phone"><div class="notch"></div><div class="screen" style="min-height:300px">
+        <div class="pad" style="gap:12px">
+          <div class="errbanner" style="border:1.5px solid var(--line);border-radius:12px;background:#f3f3f3;padding:12px;font-size:13px;text-align:center;color:#222">Cold launch</div>
+          <div style="text-align:center;color:#9a9a9a">↓ <code>hasCompletedOnboarding?</code></div>
+          <div style="display:flex;gap:10px">
+            <div class="sbtn" style="flex:1;flex-direction:column;gap:2px"><b>false</b><small style="color:#888;font-weight:400">first run →<br>Welcome cover</small></div>
+            <div class="sbtn" style="flex:1;flex-direction:column;gap:2px"><b>true</b><small style="color:#888;font-weight:400">→ TabView<br>on Calendar</small></div>
+          </div>
+          <div class="tag" style="align-self:center">deep link <code>whispernotes://checkin</code> → Check-in + auto-start</div>
+        </div>
+      </div></div>
+      <div class="flag"><b>Note:</b> the model download runs in the background and is never a visible gate. No feedback button is mounted (spec 024). <code>SquirlApp.swift:37,82-88</code></div>
+    </div>
+  </div>
+
+  <!-- ================= 1 · ONBOARDING ================= -->
+  <h2 id="onboarding"><span class="num">1</span>Onboarding · WelcomeView</h2>
+  <p class="sub">One screen, no carousel, no page dots, no mic/download step. Presented as a <code>fullScreenCover</code> on first run only.</p>
+  <div class="prov"><b>Grounded in:</b> <code>Views/Onboarding/WelcomeView.swift:9-72</code>, <code>WelcomeViewModel.swift:21-30</code>.</div>
+  <div class="frames">
+    <div class="frame">
+      <p class="cap">Welcome (first run)</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="pad" style="justify-content:center;align-items:center;gap:32px;text-align:center">
+          <div class="ring"><div class="rc2" style="color:#c0c0c0;font-size:11px">breathing<br>ring</div></div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:30px;font-weight:800">Welcome to Squirl</div>
+            <div style="font-size:16px;color:#777;max-width:30ch">A calm place to speak your day. Everything stays on this device.</div>
+          </div>
+          <div class="pbtn" style="width:100%">Start</div>
+        </div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span><b>CrescentRing</b> 232pt, breathing, decorative (a11y-hidden). <code>WelcomeView.swift:40</code></li>
+        <li><span class="pin">2</span>Title “Welcome to Squirl” (largeTitle 34 bold) + body (16 reg). <code>:44-52</code></li>
+        <li><span class="pin">3</span><b>Start</b> = primary meadow pill, full-width. Persists <code>hasCompletedOnboarding=true</code>, dismisses to the hub. <code>:65-71</code></li>
+      </ol></div>
+    </div>
+  </div>
+
+  <!-- ================= 2 · CALENDAR ================= -->
+  <h2 id="calendar"><span class="num">2</span>Calendar tab</h2>
+  <p class="sub">Condensed here (full depth lives in <code>calendar-library.html</code>). Pinned header (month + chevron, weekday caps) over a scroll of folded DayCards; each grid day carries only a 6&nbsp;pt marker dot, never a glyph.</p>
+  <div class="prov"><b>Grounded in:</b> <code>Views/Library/CalendarLibraryView.swift</code>, <code>Components/CalendarHeaderView.swift</code>, <code>CalendarDayCell.swift:31,50-56</code>, <code>DayCard.swift</code>, <code>FoldedDayCardHeader.swift</code>. Grid is real June 2026 (June 1 = Monday).</div>
+  <div class="frames">
+    <div class="frame">
+      <p class="cap">2.1 · Week + folded timeline</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="hdr">
+          <div class="monthrow"><span class="ml">June 2026</span><span class="chev">›</span></div>
+          <div class="weekcaps"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          <div class="grid"><div class="week">
+            <div class="daycell"><span class="num">8</span><span class="dot mday"></span></div>
+            <div class="daycell"><span class="num">9</span><span class="dot none"></span></div>
+            <div class="daycell sel"><span class="num">10</span><span class="dot mday"></span></div>
+            <div class="daycell"><span class="num">11</span><span class="dot mday"></span></div>
+            <div class="daycell"><span class="num">12</span><span class="dot neu"></span></div>
+            <div class="daycell future"><span class="num">13</span><span class="dot none"></span></div>
+            <div class="daycell future"><span class="num">14</span><span class="dot none"></span></div>
+          </div></div>
+          <div class="divider"></div>
+        </div>
+        <div class="tl">
+          <div class="cardhdr"><div class="mood"></div><div class="ttl"><div class="t1"><span class="mw">Great</span> · <span class="wd">Wed 10</span></div><div class="sumline"><span class="it"><span class="g g12"></span>Charged</span><span class="sep">·</span><span class="it"><span class="g g12"></span>Sharp</span><span class="sep">·</span><span class="it"><span class="g g12"></span>Concerta</span></div></div><div class="chevd">⌄</div></div>
+          <div class="cardhdr"><div class="mood"></div><div class="ttl"><div class="t1"><span class="mw">Okay</span> · <span class="wd">Tue 9</span></div><div class="sumline"><span class="it"><span class="g g12"></span>Steady</span><span class="sep">·</span><span class="it"><span class="g g12"></span>Present</span></div></div><div class="chevd">⌄</div></div>
+          <div class="cardhdr"><div class="mood"></div><div class="ttl"><div class="t1"><span class="mw">Good</span> · <span class="wd">Mon 8</span></div><div class="sumline"><span class="it"><span class="g g12"></span>Alert</span><span class="sep">·</span><span class="it"><span class="g g12"></span>Sharp</span><span class="sep">·</span><span class="it"><span class="g g12"></span>Ritalin</span></div></div><div class="chevd">⌄</div></div>
+        </div>
+      </div></div>
+    </div>
+    <div class="frame">
+      <p class="cap">2.2 · Month expanded</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="hdr">
+          <div class="monthrow"><span class="ml">June 2026</span><span class="chev">⌄</span></div>
+          <div class="weekcaps"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          <div class="grid">
+            <div class="week"><div class="daycell"><span class="num">1</span><span class="dot neu"></span></div><div class="daycell"><span class="num">2</span><span class="dot mday"></span></div><div class="daycell"><span class="num">3</span><span class="dot none"></span></div><div class="daycell"><span class="num">4</span><span class="dot mday"></span></div><div class="daycell"><span class="num">5</span><span class="dot mday"></span></div><div class="daycell"><span class="num">6</span><span class="dot none"></span></div><div class="daycell"><span class="num">7</span><span class="dot mday"></span></div></div>
+            <div class="week"><div class="daycell"><span class="num">8</span><span class="dot mday"></span></div><div class="daycell"><span class="num">9</span><span class="dot none"></span></div><div class="daycell sel"><span class="num">10</span><span class="dot mday"></span></div><div class="daycell"><span class="num">11</span><span class="dot mday"></span></div><div class="daycell"><span class="num">12</span><span class="dot neu"></span></div><div class="daycell future"><span class="num">13</span><span class="dot none"></span></div><div class="daycell future"><span class="num">14</span><span class="dot none"></span></div></div>
+            <div class="week"><div class="daycell future"><span class="num">15</span></div><div class="daycell future"><span class="num">16</span></div><div class="daycell future"><span class="num">17</span></div><div class="daycell future"><span class="num">18</span></div><div class="daycell future"><span class="num">19</span></div><div class="daycell future"><span class="num">20</span></div><div class="daycell future"><span class="num">21</span></div></div>
+            <div class="week"><div class="daycell future"><span class="num">22</span></div><div class="daycell future"><span class="num">23</span></div><div class="daycell future"><span class="num">24</span></div><div class="daycell future"><span class="num">25</span></div><div class="daycell future"><span class="num">26</span></div><div class="daycell future"><span class="num">27</span></div><div class="daycell future"><span class="num">28</span></div></div>
+            <div class="week"><div class="daycell future"><span class="num">29</span></div><div class="daycell future"><span class="num">30</span></div><div class="daycell oom"><span class="num">1</span></div><div class="daycell oom"><span class="num">2</span></div><div class="daycell oom"><span class="num">3</span></div><div class="daycell oom"><span class="num">4</span></div><div class="daycell oom"><span class="num">5</span></div></div>
+          </div>
+          <div class="divider"></div>
+        </div>
+        <div class="tl">
+          <div class="cardhdr"><div class="mood"></div><div class="ttl"><div class="t1"><span class="mw">Great</span> · <span class="wd">Wed 10</span></div></div><div class="chevd">⌄</div></div>
+        </div>
+      </div></div>
+      <div class="flag">Chevron rotates 90° (▸→⌄) when expanded. At AX text sizes the grid force-collapses to one week. <code>CalendarHeaderView.swift:64,116</code></div>
+    </div>
+    <div class="frame narrow">
+      <p class="cap">2.3 · Empty</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="empty">
+          <div class="ic"></div>
+          <div class="et">No entries yet</div>
+          <div class="ed">Record a voice note to see it here.</div>
+        </div>
+      </div></div>
+      <div class="flag">No medication bar here: the overlay only renders with an active dose. <code>MedicationBarView.swift:14</code></div>
+    </div>
+  </div>
+
+  <!-- ================= 3 · CHECK-IN ================= -->
+  <h2 id="checkin"><span class="num">3</span>Check-in tab · the hub &amp; capture states</h2>
+  <p class="sub">One anchored stage renders every capture state via <code>switch state</code>. The 300&nbsp;pt CrescentRing sits behind the centre content in all states (spins while recording, breathes otherwise). The medication bar overlay floats on this screen.</p>
+  <div class="prov"><b>Grounded in:</b> <code>Views/CheckIn/CheckInView.swift</code>, <code>CheckInViewModel.swift</code> (<code>RecordingState = idle·recording·paused·processing·done</code>), <code>CrescentRing.swift</code>. Prompt copy quoted from <code>CheckInViewModel.swift:369-375</code>.</div>
+  <div class="frames">
+    <div class="frame">
+      <p class="cap">3.1 · Idle (the hub)</p>
+      <p class="capsub">state == .idle</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="pad" style="padding:20px 16px 16px">
+          <div class="cih"><div class="d">Mon, June 30</div><div class="q">How do you feel?</div><div class="hint">Say whatever’s on your mind — a few words is plenty.</div></div>
+          <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative">
+            <div class="ring"></div>
+            <div style="position:absolute;display:flex;flex-direction:column;gap:8px;width:220px">
+              <div class="plainbtn"><span class="g g15"></span>Log meds</div>
+              <div class="pbtn"><span class="g g15"></span>Speak check-in</div>
+              <div class="plainbtn"><span class="g g15"></span>Type note</div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span>Header: date (label, UPPER) + “How do you feel?” (title) + first-launch hint. <code>CheckInView.swift:169-191</code></li>
+        <li><span class="pin">2</span>Centre stack, 220pt wide: <b>Log meds</b> (opens Log Dose) · <b>Speak check-in</b> (primary, starts voice) · <b>Type note</b> (opens composer). <code>:193-233</code></li>
+      </ol></div>
+    </div>
+    <div class="frame">
+      <p class="cap">3.2 · Recording</p>
+      <p class="capsub">state == .recording · ring spinning</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="pad" style="padding:20px 16px 16px">
+          <div class="promptbar"><i></i></div>
+          <div style="text-align:center"><div class="prompt">How’s your mood?</div><div class="hint" style="margin-top:6px">Heavy, light, flat, bright — whatever fits.</div><div class="dots"><i class="on"></i><i></i><i></i><i></i><i></i></div></div>
+          <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative">
+            <div class="ring"></div>
+            <div style="position:absolute;display:flex;flex-direction:column;gap:12px;align-items:center">
+              <div style="font-family:var(--mono);font-size:22px">0:07</div>
+              <div class="stopcap"><span class="sq"></span>Stop &amp; save</div>
+              <div class="txtbtn">Cancel</div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span>Prompt progress bar (per-prompt) + hero prompt + hint + 5 prompt dots. Prompts rotate mood→energy→focus→sleep→emotions. <code>CheckInView.swift:237-346</code></li>
+        <li><span class="pin">2</span>Centre: timer <code>M:SS</code>, ink <b>Stop &amp; save</b> capsule, <b>Cancel</b>. 8:00 cap auto-stops. <code>:249-288</code></li>
+      </ol></div>
+    </div>
+    <div class="frame">
+      <p class="cap">3.3 · Processing (“Saving…”)</p>
+      <p class="capsub">state == .processing · ring breathes</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="pad" style="padding:20px 16px 16px">
+          <div class="promptbar"><i style="width:100%"></i></div>
+          <div style="text-align:center"><div class="prompt" style="color:#bbb">Any strong emotions?</div></div>
+          <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative">
+            <div class="ring"></div>
+            <div style="position:absolute;display:flex;flex-direction:column;gap:12px;align-items:center">
+              <div style="font-family:var(--mono);font-size:22px">0:42</div>
+              <div class="stopcap" style="background:#bdbdbd"><span style="width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;display:inline-block"></span>&nbsp;</div>
+              <div class="txtbtn">Cancel</div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+      <div class="flag">Stop button swaps its content to a spinner and disables; VoiceOver announces “Saving…”. <code>CheckInView.swift:353-355,369</code></div>
+    </div>
+    <div class="frame">
+      <p class="cap">3.4 · Save failed (recovery)</p>
+      <p class="capsub">saveFailed == true (during .processing)</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="pad" style="padding:20px 16px 16px">
+          <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative">
+            <div class="ring"></div>
+            <div style="position:absolute;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center;max-width:230px">
+              <div style="font-size:16px;font-weight:700">Couldn’t save that one.</div>
+              <div style="font-size:14px;color:#777">Your check-in is safe — tap to try again.</div>
+              <div class="stopcap" style="background:#2a2a2a;margin-top:4px">Try again</div>
+              <div class="txtbtn">Discard</div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+      <div class="flag">Try again → retry save → done. Discard → idle. <code>CheckInView.swift:375-406</code></div>
+    </div>
+    <div class="frame">
+      <p class="cap">3.5 · Done / Captured</p>
+      <p class="capsub">state == .done · CheckInSavedView</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="pad" style="align-items:center;justify-content:center;gap:16px;text-align:center">
+          <div class="discbig">✓</div>
+          <div style="font-size:22px;font-weight:700">Captured.</div>
+          <div style="font-size:14px;color:#777;max-width:24ch">That’s today’s check-in. Talk to you next time.</div>
+          <div style="flex:0"></div>
+          <div class="pbtn" style="width:100%;position:absolute;left:16px;right:16px;bottom:40px">Done</div>
+        </div>
+      </div></div>
+      <div class="flag">78pt check disc pops in (spring). Also reached after a saved <b>text</b> check-in. <code>CheckInView.swift:413-455</code></div>
+    </div>
+    <div class="frame narrow">
+      <p class="cap">3.6 · Paused ⚠ unreachable</p>
+      <p class="capsub">rendered but never set (no resume engineering)</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="pad" style="padding:20px 16px 16px">
+          <div style="flex:1;display:flex;align-items:center;justify-content:center;position:relative">
+            <div class="ring" style="opacity:.34"></div>
+            <div style="position:absolute;display:flex;flex-direction:column;gap:10px;align-items:center">
+              <div style="font-family:var(--mono);font-size:22px">1:15</div>
+              <div class="d" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#888;font-weight:700">Paused</div>
+              <div class="stopcap"><span class="sq"></span>Stop &amp; save</div>
+              <div class="txtbtn">Cancel</div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+      <div class="flag"><b>Dead render path:</b> full paused chrome exists (dimmed ring, “Paused” label) but nothing ever sets <code>state = .paused</code>. Shown for completeness only. <code>CheckInView.swift:266-271</code></div>
+    </div>
+  </div>
+
+  <!-- ================= 3b · CHECK-IN SHEETS ================= -->
+  <h2 id="checkin-sheets"><span class="num">3b</span>Check-in sheets &amp; alerts</h2>
+  <div class="prov"><b>Grounded in:</b> <code>Components/MedicationLogSheet.swift</code>, <code>CheckIn/TextCheckInComposer.swift</code>, <code>Components/GlyphRampPicker.swift</code>, alerts at <code>CheckInView.swift:46-58</code>. Catalog: Concerta/Ritalin/Elvanse (<code>MedicationCatalog.swift:17-36</code>).</div>
+  <div class="frames">
+    <div class="frame">
+      <p class="cap">Log Dose sheet</p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <div class="navbar"><span class="iconbtn">✕</span><span class="nt">Log Dose</span><span class="bb">Save</span></div>
+        <div class="pad" style="gap:16px">
+          <div>
+            <div class="fl" style="margin-bottom:7px">Medication</div>
+            <div class="fieldcard">
+              <div style="padding:10px 13px;display:flex;gap:6px;flex-wrap:wrap"><span class="chip on rn">Concerta</span><span class="chip rn">Ritalin</span><span class="chip rn">Elvanse</span></div>
+              <div class="fr"><span style="color:#999">Name</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="fl" style="margin-bottom:7px">Dose</div>
+            <div class="fieldcard">
+              <div class="fr"><span>Dose</span><span class="dpill">36 mg ⌄</span></div>
+              <div class="fr"><span>Onset</span><span style="color:#777;font-family:var(--mono);font-size:12px">≈ 60 min</span></div>
+            </div>
+          </div>
+          <div>
+            <div class="fl" style="margin-bottom:7px">Effect Duration</div>
+            <div class="fieldcard"><div class="fr"><span>Hours</span><span class="datebox" style="width:60px;text-align:right">10</span></div></div>
+          </div>
+          <div>
+            <div class="fl" style="margin-bottom:7px">Taken At</div>
+            <div class="fieldcard"><div class="fr"><span style="color:#999">Time picker (hour &amp; minute · past only)</span><span class="datebox">09:15</span></div></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="flag">Save disabled (grey) until a name is entered. Dose picker + onset only appear for a catalog med; free-text meds show a Dose text field instead. <code>MedicationLogSheet.swift:54-121</code></div>
+    </div>
+    <div class="frame">
+      <p class="cap">Type a check-in (composer)</p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <div class="navbar"><span class="iconbtn">✕</span><span class="nt">Type a check-in</span><span class="bb" style="width:30px">&nbsp;</span></div>
+        <div class="pad" style="gap:16px">
+          <div class="fieldcard" style="padding:2px 13px">
+            <div style="padding:12px 0;border-bottom:1px solid #ececec">
+              <div style="display:flex"><b style="font-size:14px">Mood</b><span style="margin-left:auto;font-family:var(--mono);font-size:12px;color:#888">4 · Good</span></div>
+              <div class="ramp" style="margin-top:8px"><div class="rstep"><div class="rg"></div></div><div class="rstep"><div class="rg"></div></div><div class="rstep"><div class="rg"></div></div><div class="rstep sel"><div class="rg"></div></div><div class="rstep"><div class="rg"></div></div></div>
+            </div>
+            <div style="padding:12px 0;border-bottom:1px solid #ececec">
+              <div style="display:flex"><b style="font-size:14px">Energy</b><span style="margin-left:auto;font-family:var(--mono);font-size:12px;color:#888">— </span></div>
+              <div class="ramp" style="margin-top:8px"><div class="rstep"><div class="rg"></div></div><div class="rstep"><div class="rg"></div></div><div class="rstep"><div class="rg"></div></div><div class="rstep"><div class="rg"></div></div><div class="rstep"><div class="rg"></div></div></div>
+            </div>
+            <div style="padding:12px 0">
+              <div style="display:flex"><b style="font-size:14px">Focus</b><span style="margin-left:auto;font-family:var(--mono);font-size:12px;color:#888">3 · Present</span></div>
+              <div class="ramp" style="margin-top:8px"><div class="rstep"><div class="rg"></div></div><div class="rstep"><div class="rg"></div></div><div class="rstep sel"><div class="rg"></div></div><div class="rstep"><div class="rg"></div></div><div class="rstep"><div class="rg"></div></div></div>
+            </div>
+          </div>
+          <div class="fieldcard" style="padding:12px 13px;min-height:90px;color:#999;font-size:14px">Anything you want to remember about today?</div>
+          <div class="pbtn" style="width:100%">Save check-in</div>
+        </div>
+      </div></div>
+      <div class="flag">Mood/Energy/Focus only (no sleep, no meds). Save disabled while the draft is empty; on failure an inline “Couldn’t save — tap to try again.” appears and the draft is kept. <code>TextCheckInComposer.swift:61-121</code></div>
+    </div>
+    <div class="frame narrow">
+      <p class="cap">Alerts (from any state)</p>
+      <div class="dialogwrap" style="flex-direction:column;gap:16px;background:#efefef">
+        <div class="dialog">
+          <div class="dtt"><b style="display:block;color:#222;font-size:14px;margin-bottom:3px">Microphone Access Required</b>Squirl needs microphone access to record voice notes. Enable it in Settings.</div>
+          <div class="dopt">Open Settings</div>
+          <div class="dopt cancel">Cancel</div>
+        </div>
+        <div class="dialog">
+          <div class="dtt"><b style="display:block;color:#222;font-size:14px;margin-bottom:3px">Not Enough Storage</b>Squirl needs at least 50 MB of free space to record. Free up some space and try again.</div>
+          <div class="dopt cancel">OK</div>
+        </div>
+      </div>
+      <div class="flag">Mic gate (denied → Open Settings) and disk gate (&lt;50 MB) both keep the state at idle. <code>CheckInView.swift:46-58</code></div>
+    </div>
+  </div>
+
+  <!-- ================= 4 · INSIGHTS ================= -->
+  <h2 id="insights"><span class="num">4</span>Insights tab · 5 paging sections</h2>
+  <p class="sub">A vertical snap-paging scroll: each section fills one viewport. Only the first page carries the “Insights” identity block + month selector. The whole screen is read-only except the month selector (no bubble/bead/gauge/cell is tappable).</p>
+  <div class="prov"><b>Grounded in:</b> <code>Views/InsightsView.swift</code>, <code>Insights/*</code>, <code>InsightsViewModel(+Signals).swift</code>. Section order: breakdown → signals → averages → rhythm → connections. Titles quoted from <code>InsightsView.swift:142-206</code>.</div>
+  <div class="frames">
+    <div class="frame">
+      <p class="cap">4.1 · Breakdown (page 1)</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="ident"><div class="big">Insights</div><div class="subl">June · today vs your usual</div></div>
+        <div class="monthsel"><span class="mo">APR 2026</span><span class="mo">MAY 2026</span><span class="mo on">JUN 2026</span></div>
+        <div class="isechdr"><div class="it2">Your overall check-in breakdown</div><div class="is2">12 check-ins</div></div>
+        <div class="bubbles">
+          <div class="bub" style="width:44px;height:44px;left:6%;top:60px">8%</div>
+          <div class="bub" style="width:70px;height:70px;left:24%;top:40px">17%<small style="font-weight:400">Flat</small></div>
+          <div class="bub" style="width:104px;height:104px;left:42%;top:22px">33%<small style="font-weight:400">Okay</small></div>
+          <div class="bub" style="width:104px;height:104px;left:66%;top:10px">33%<small style="font-weight:400">Good</small></div>
+          <div class="bub" style="width:44px;height:44px;left:88%;top:6px">8%</div>
+        </div>
+        <div class="leg"><span><i></i>Low (1)</span><span><i></i>Flat (2)</span><span><i></i>Okay (4)</span><span><i></i>Good (4)</span><span><i></i>Great (1)</span></div>
+      </div></div>
+      <div class="flag">Bubbles = area-proportional per mood level (low→great, left→right), 44–118pt; % centred, level label only if ≥68pt. <code>MoodBubbleChart.swift</code></div>
+    </div>
+    <div class="frame">
+      <p class="cap">4.2 · Signals (page 2)</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="isechdr"><div class="it2">Your month in three signals</div><div class="is2">Average by weekday — this month</div></div>
+        <div class="strip">
+          <div class="stl"><span class="g g18"></span>Mood<span class="sm">mostly Okay</span></div>
+          <div class="stc"><div class="sc2"><div class="gg"></div><small>Mo</small></div><div class="sc2"><div class="gg"></div><small>Tu</small></div><div class="sc2"><div class="gg"></div><small>We</small></div><div class="sc2"><div class="gg no"></div><small>Th</small></div><div class="sc2"><div class="gg"></div><small>Fr</small></div><div class="sc2"><div class="gg"></div><small>Sa</small></div><div class="sc2"><div class="gg no"></div><small>Su</small></div></div>
+        </div>
+        <div class="strip">
+          <div class="stl"><span class="g g18"></span>Energy<span class="sm">mostly Steady</span></div>
+          <div class="stc"><div class="sc2"><div class="gg"></div><small>Mo</small></div><div class="sc2"><div class="gg"></div><small>Tu</small></div><div class="sc2"><div class="gg"></div><small>We</small></div><div class="sc2"><div class="gg no"></div><small>Th</small></div><div class="sc2"><div class="gg"></div><small>Fr</small></div><div class="sc2"><div class="gg"></div><small>Sa</small></div><div class="sc2"><div class="gg no"></div><small>Su</small></div></div>
+        </div>
+        <div class="strip">
+          <div class="stl"><span class="g g18"></span>Focus<span class="sm">mostly Sharp</span></div>
+          <div class="stc"><div class="sc2"><div class="gg"></div><small>Mo</small></div><div class="sc2"><div class="gg"></div><small>Tu</small></div><div class="sc2"><div class="gg"></div><small>We</small></div><div class="sc2"><div class="gg no"></div><small>Th</small></div><div class="sc2"><div class="gg"></div><small>Fr</small></div><div class="sc2"><div class="gg"></div><small>Sa</small></div><div class="sc2"><div class="gg no"></div><small>Su</small></div></div>
+        </div>
+        <div class="sleepchip"><span class="g g12"></span>Sleep · not tracked yet</div>
+      </div></div>
+      <div class="flag">3 strips × 7 weekday slots (Mo→Su); empty slot = dimmed dashed glyph. Sleep is a deferred dashed chip. <code>SignalStripsView.swift</code></div>
+    </div>
+    <div class="frame">
+      <p class="cap">4.3 · Averages (page 3)</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="isechdr"><div class="it2">Where you averaged</div></div>
+        <div class="gauges">
+          <div class="gau"><span class="g g18"></span><div class="gt"><i style="height:64%"><b>Okay+</b></i></div><div class="gc">between Okay &amp; Good</div></div>
+          <div class="gau"><span class="g g18"></span><div class="gt"><i style="height:60%"><b>Steady</b></i></div><div class="gc">Steady on average</div></div>
+          <div class="gau"><span class="g g18"></span><div class="gt"><i style="height:0"></i><b style="position:absolute;bottom:6px;left:0;right:0;text-align:center;font-size:13px;color:#999">—</b></div><div class="gc">—</div></div>
+        </div>
+      </div></div>
+      <div class="flag">3 vertical gauges (Mood/Energy/Focus), fill = avg/5, fillLabel floats at top of fill; no data → “—”. <code>SignalAverageGauges.swift</code></div>
+    </div>
+    <div class="frame">
+      <p class="cap">4.4 · Rhythm (page 4)</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="isechdr"><div class="it2">Your daily rhythm</div><div class="is2">Dominant level per signal by time of day</div></div>
+        <div class="matrix">
+          <div class="mtop"><span>Morning</span><span>Afternoon</span><span>Evening</span><span>Late</span></div>
+          <div class="mr"><div class="mrl">Mood</div><div class="mc"><div class="blob"></div><small>Okay</small></div><div class="mc"><div class="blob"></div><small>Good</small></div><div class="mc"><div class="blob"></div><small>Great</small></div><div class="mc"><div class="blob no"></div><small>—</small></div></div>
+          <div class="mr"><div class="mrl">Energy</div><div class="mc"><div class="blob"></div><small>Steady</small></div><div class="mc"><div class="blob"></div><small>Alert</small></div><div class="mc"><div class="blob"></div><small>Charged</small></div><div class="mc"><div class="blob no"></div><small>—</small></div></div>
+          <div class="mr"><div class="mrl">Focus</div><div class="mc"><div class="blob"></div><small>Present</small></div><div class="mc"><div class="blob"></div><small>Sharp</small></div><div class="mc"><div class="blob no"></div><small>—</small></div><div class="mc"><div class="blob no"></div><small>—</small></div></div>
+        </div>
+      </div></div>
+      <div class="flag">3 signals × 4 buckets (06–11 / 12–17 / 18–21 / 22–05). Cell = dominant level blob + label, or dashed circle + “—”. <code>DailyRhythmMatrix.swift</code></div>
+    </div>
+    <div class="frame">
+      <p class="cap">4.5 · Connections (page 5)</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="isechdr"><div class="it2">Connections</div><div class="is2">Patterns across signals — 3 or more days to unlock</div></div>
+        <div class="pad" style="padding:8px 16px 40px">
+          <div class="concard">
+            <div class="ceyb">Medication × focus</div>
+            <div class="csent">On medication days, sharp focus appeared 72% of the time.</div>
+            <div class="cbar"><i style="width:72%"></i></div>
+            <div class="cbl"><span>Med days</span><b>72%</b><span>Sharp+ focus</span></div>
+          </div>
+          <div class="concard gated"><span class="clock">🔒</span><div class="ceyb">Energy × mood</div><div class="cd">Log high energy on 2 more days to unlock this connection.</div></div>
+          <div class="concard gated"><span class="clock">🔒</span><div class="ceyb">Sleep × mood</div><div class="cd">Note 3 more good-sleep days and 3 more poor-sleep days to unlock this connection.</div></div>
+        </div>
+      </div></div>
+      <div class="flag">3 fixed cards (med×focus, energy×mood, sleep×mood). Each is independently unlocked (sentence + mini-bar) or gated (dashed + lock + unlock copy). <code>ConnectionCardsView.swift</code></div>
+    </div>
+    <div class="frame narrow">
+      <p class="cap">4.6 · Empty + Day Detail sheet</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="monthsel"><span class="mo on">JUN 2026</span></div>
+        <div class="empty" style="padding-top:80px"><div class="ic" style="border-radius:4px;background:#e6e6e6;border-style:solid"></div><div class="et" style="color:#888;font-weight:600">Check in to see your month</div></div>
+      </div></div>
+      <div style="height:12px"></div>
+      <div class="phone"><div class="notch"></div><div class="screen" style="min-height:260px">
+        <div class="navbar"><span class="bb" style="width:40px">&nbsp;</span><span class="nt">Monday, 30 Jun</span><span class="bb acc">Done</span></div>
+        <div class="pad" style="gap:8px">
+          <div class="card" style="padding:12px;display:flex;gap:12px;align-items:flex-start"><span class="dot mday" style="width:10px;height:10px;margin-top:5px"></span><div style="flex:1"><div style="display:flex"><b>Morning check-in</b><span style="margin-left:auto" class="statuspill">✓</span></div><div class="dmeta" style="margin-top:2px">Jun 30, 09:15 AM · 1:23</div><div class="tagflow" style="margin-top:7px"><span class="tag"><span class="g g12"></span>Good</span><span class="tag"><span class="g g12"></span>Concerta</span></div></div></div>
+          <div class="card" style="padding:12px;display:flex;gap:12px;align-items:flex-start"><span class="dot neu" style="width:10px;height:10px;margin-top:5px"></span><div style="flex:1"><div style="display:flex"><b>Evening note</b><span style="margin-left:auto;color:#999;font-size:11px">Processing…</span></div><div class="dmeta" style="margin-top:2px">Jun 30, 21:40 PM · 0:48</div></div></div>
+        </div>
+      </div></div>
+      <div class="flag">The Day Detail sheet (rows → push Recording Detail) is wired but currently <b>unreachable</b> from Insights: no section sets <code>selectedDay</code>. Shown for completeness. <code>InsightsView.swift:47-49</code>, <code>DayDetailSheet.swift</code></div>
+    </div>
+  </div>
+
+  <!-- ================= 5 · SETTINGS ================= -->
+  <h2 id="settings"><span class="num">5</span>Settings tab</h2>
+  <p class="sub">A non-scrolling inset-grouped <code>List</code>; the medication bar overlays the top. There is no visible large “Settings” title (empty nav title). 10 sections in fixed order.</p>
+  <div class="prov"><b>Grounded in:</b> <code>Views/SettingsView.swift:46-243</code> + <code>Settings/*Section.swift</code>, <code>Components/ModelDownloadRow.swift</code>, <code>TestServicesView.swift</code>, <code>Feedback/IssueReportView.swift</code>.</div>
+  <div class="frames">
+    <div class="frame">
+      <p class="cap">5.1 · Settings list</p>
+      <div class="phone"><div class="notch"></div><div class="screen xtall">
+        <div class="list">
+          <div class="lsec"><div class="lsh">AI Models</div><div class="lbody">
+            <div class="lrow"><span class="lic"></span><span class="ll">Voice Transcription<small>~150 MB · Wi-Fi recommended</small></span><span class="mdl"><span class="sd g"></span>Installed</span></div>
+          </div></div>
+          <div class="lsec"><div class="lsh">System</div><div class="lbody">
+            <div class="lrow"><span class="ll">Storage</span><span class="rv">12 recordings · 8.4 MB</span></div>
+            <div class="lrow"><span class="lic"></span><span class="ll">Download over Cellular</span><span class="sw"></span></div>
+          </div></div>
+          <div class="lsec"><div class="lsh">Check-in</div><div class="lbody">
+            <div class="lrow"><span class="ll">Prompt Pace</span><span class="rv">Relaxed · 10 s ⌄</span></div>
+          </div><div class="lfoot">How long each prompt stays on screen during a voice check-in.</div></div>
+          <div class="lsec"><div class="lsh">Calendar</div><div class="lbody">
+            <div class="lrow"><span class="lic"></span><span class="ll">Always expand cards</span><span class="sw"></span></div>
+            <div class="lrow"><span class="lic"></span><span class="ll">Auto-expand selected day</span><span class="sw on"></span></div>
+          </div></div>
+          <div class="lsec"><div class="lsh">Medication Bar</div><div class="lbody">
+            <div class="lrow"><span class="lic"></span><span class="ll">Show Medication Bar</span><span class="sw on"></span></div>
+            <div class="lrow"><span class="lic"></span><span class="ll">Show Medication Name</span><span class="sw on"></span></div>
+            <div class="lrow"><span class="lic"></span><span class="ll">Show Taken Time</span><span class="sw on"></span></div>
+            <div class="lrow"><span class="lic"></span><span class="ll">Show End Time</span><span class="sw"></span></div>
+          </div></div>
+          <div class="lsec"><div class="lsh">Accessibility</div><div class="lbody">
+            <div class="lnote">Squirl follows the iOS motion setting. Turn on Reduce Motion in Settings › Accessibility to still animations.</div>
+          </div></div>
+          <div class="lsec"><div class="lsh">Your data</div><div class="lbody">
+            <div class="lnote">Your recordings, check-ins, and signals stay on this device. Nothing is uploaded.</div>
+            <div class="lrow"><span class="lic"></span><span class="ll">Acknowledgements</span><span class="chevn">›</span></div>
+          </div></div>
+          <div class="lsec"><div class="lbody">
+            <div class="lrow btn"><span class="lic"></span><span class="ll">Save a copy of my journal — yours to keep</span></div>
+          </div><div class="lfoot">Saves one encrypted file you can keep or share. We’ll show you a key to open it — keep it safe. If you lose the key, the backup can’t be recovered — not even by us.</div></div>
+          <div class="lsec"><div class="lbody">
+            <div class="lrow danger"><span class="lic"></span><span class="ll">Clear All Data</span></div>
+          </div></div>
+          <div class="lsec"><div class="lbody" style="background:transparent;border:none">
+            <div class="lrow center" style="border:none">Squirl v1.0</div>
+          </div></div>
+        </div>
+      </div></div>
+      <div class="flag">Toggles: Cellular, both Calendar rows, all 4 Medication Bar rows (last 3 only show when the bar is on). Version text = 5-tap → Service Debug (DEBUG/TestFlight only). <code>SettingsView.swift:229-240</code></div>
+    </div>
+    <div class="frame">
+      <p class="cap">5.2 · ModelDownloadRow states</p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <div class="list" style="gap:12px">
+          <div class="lbody"><div class="lrow"><span class="lic"></span><span class="ll">Voice Transcription<small>~150 MB · Wi-Fi recommended</small></span><span class="mdl"><span class="sd a"></span>Not installed</span></div></div>
+          <div class="lbody"><div class="lrow"><span class="lic"></span><span class="ll">Voice Transcription</span><span class="mdl"><span class="pb"><i style="width:42%"></i></span><span class="cx">42%</span><span style="color:#555;font-weight:700">Cancel</span></span></div></div>
+          <div class="lbody"><div class="lrow"><span class="lic"></span><span class="ll">Voice Transcription</span><span class="mdl"><span class="sd g"></span>Installed</span></div></div>
+          <div class="lbody"><div class="lrow" style="align-items:flex-start"><span class="lic"></span><span class="ll">Voice Transcription<small style="color:#333">No connection. Reconnect to the internet, then try again.</small><span style="display:inline-block;margin-top:7px"><span class="ghpill">Try again</span></span></span><span class="mdl"><span class="sd r"></span></span></div></div>
+        </div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span>Not installed: amber dot + “~150 MB · Wi-Fi recommended”.</li>
+        <li><span class="pin">2</span>Downloading: 80pt bar + “NN%” + green Cancel.</li>
+        <li><span class="pin">3</span>Installed: green dot; tap → delete dialog (“Delete Model” / “Cancel”).</li>
+        <li><span class="pin">4</span>Error: red dot + message + ghost-pills (Try again [+ Allow on cellular / Open Settings]). <code>ModelDownloadRow.swift:68-122</code></li>
+      </ol></div>
+    </div>
+    <div class="frame">
+      <p class="cap">5.3 · Recovery Key sheet</p>
+      <p class="capsub">after a successful journal export</p>
+      <div class="phone"><div class="notch"></div><div class="screen">
+        <div class="navbar"><span class="bb" style="width:30px">&nbsp;</span><span class="nt">&nbsp;</span><span class="bb acc">Done</span></div>
+        <div class="pad" style="gap:14px">
+          <div style="font-size:26px;font-weight:800">Keep this key safe</div>
+          <div style="font-size:14px;color:#666;line-height:1.45">This file can only be opened by a future version of Squirl, using this exact key. If you lose the key, the backup can’t be recovered — not even by us. Save it somewhere only you can reach.</div>
+          <div style="background:#eee;border-radius:12px;padding:13px;font-family:var(--mono);font-size:12px;color:#333;word-break:break-all">k7Qm·9fXa·2Ldp·Rs4T·Vb8N·wY0e·Zc3H·uJ6g</div>
+          <div class="pbtn" style="width:100%">⧉ Copy key</div>
+        </div>
+      </div></div>
+      <div class="flag">Sequence: “Save a copy…” → system file exporter → this sheet. Failure → alert “Couldn’t save a copy”. <code>JournalExportSection.swift:30-86</code></div>
+    </div>
+    <div class="frame narrow">
+      <p class="cap">5.4 · Danger dialogs</p>
+      <div class="dialogwrap" style="flex-direction:column;gap:16px;background:#efefef">
+        <div class="dialog">
+          <div class="dtt"><b style="display:block;color:#222;font-size:14px;margin-bottom:3px">Clear All Data?</b>This permanently deletes all your recordings and check-ins. Your downloaded transcription model and preferences are kept. This can’t be undone.</div>
+          <div class="dopt dstroy">Clear All Data</div>
+          <div class="dopt cancel">Cancel</div>
+        </div>
+        <div class="dialog">
+          <div class="dtt"><b style="display:block;color:#222;font-size:14px">Voice Transcription Options</b></div>
+          <div class="dopt dstroy">Delete Model</div>
+          <div class="dopt cancel">Cancel</div>
+        </div>
+      </div>
+    </div>
+    <div class="frame">
+      <p class="cap">5.5 · Service Debug (5-tap)</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="navbar"><span class="nt lead" style="text-align:left">Service Debug</span><span class="bb acc">Done</span></div>
+        <div class="list" style="gap:14px">
+          <div class="lsec"><div class="lsh">Filesystem &amp; Storage</div><div class="lbody"><div class="lrow btn"><span class="ll">Test Disk Check</span></div><div class="lrow btn"><span class="ll">Create Fake Recording</span></div><div class="lrow btn"><span class="ll">Calculate Total Storage</span></div></div></div>
+          <div class="lsec"><div class="lsh">Mock Data</div><div class="lbody"><div class="lrow"><span class="ll">Mock Mode</span><span class="sw"></span></div><div class="lrow btn"><span class="ll">Seed Mock Data</span></div><div class="lrow danger"><span class="ll">Wipe &amp; Reseed</span></div></div></div>
+          <div class="lsec"><div class="lsh">Audio &amp; AI Models</div><div class="lbody"><div class="lrow btn"><span class="ll">Test Whisper Status</span></div><div class="lrow btn"><span class="ll">Start Real Recording</span></div></div></div>
+        </div>
+      </div></div>
+      <div class="flag">Also has “Metadata &amp; List”, “Exports &amp; Actions”, and a conditional red “Error” section. <code>TestServicesView.swift:20-150</code></div>
+    </div>
+    <div class="frame">
+      <p class="cap">5.6 · Report Issue (feedback)</p>
+      <div class="phone"><div class="notch"></div><div class="screen tall">
+        <div class="navbar"><span class="bb">Cancel</span><span class="nt">Report Issue</span><span class="bb acc">Send</span></div>
+        <div class="list" style="gap:14px">
+          <div class="lsec"><div class="lsh">What went wrong?</div><div class="lbody"><div class="lnote" style="min-height:70px;color:#aaa">Describe the issue…</div></div></div>
+          <div class="lsec"><div class="lsh">Auto-captured context</div><div class="lbody"><div class="lrow"><span class="ll">Screen</span><span class="rv">Insights</span></div><div class="lrow"><span class="ll">App Build</span><span class="rv">1.0 (42)</span></div><div class="lrow"><span class="ll">Device</span><span class="rv">iPhone 12</span></div><div class="lrow"><span class="ll">iOS</span><span class="rv">18.5</span></div></div></div>
+          <div class="lsec"><div class="lsh">Include Sensitive Data?</div><div class="lbody"><div class="lrow"><span class="ll">Include Transcription Text</span><span class="sw"></span></div><div class="lrow"><span class="ll">Include Summary Text</span><span class="sw"></span></div><div class="lrow"><span class="ll">Include Audio File</span><span class="sw"></span></div></div></div>
+          <div class="lsec"><div class="lsh">Diagnostics</div><div class="lbody"><div class="lrow"><span class="ll">Include Recent Logs</span><span class="sw on"></span></div></div></div>
+        </div>
+      </div></div>
+      <div class="flag">Opened by a floating 48pt feedback button (DEBUG/TestFlight), not a Settings row. Send disabled until the description is non-empty. <code>IssueReportView.swift:46-130</code></div>
+    </div>
+  </div>
+
+  <!-- ================= 6 · RECORDING DETAIL ================= -->
+  <h2 id="detail"><span class="num">6</span>Recording Detail (shared push · Calendar + Insights)</h2>
+  <p class="sub">A pushed screen: title + meta, a signal-glyph row, the 4 ADHD summary cards (each hidden when empty), an expandable transcript card with a status pill, an audio card, and a red Delete. The pencil (top-right) opens the Edit sheet.</p>
+  <div class="prov"><b>Grounded in:</b> <code>Views/RecordingDetailView.swift</code>, <code>Components/ADHDSummarySection.swift</code>, <code>AudioPlayerView.swift</code>, <code>PlaybackWaveformBars.swift</code>, <code>TagFlowView.swift</code>. Sample tags from <code>Lexicon.defaultEmotions</code> / <code>defaultSideEffectCues</code>.</div>
+  <div class="frames">
+    <div class="frame">
+      <p class="cap">6.1 · Recording Detail (completed)</p>
+      <div class="phone"><div class="notch"></div><div class="screen xtall">
+        <div class="navbar"><span class="bb">‹</span><span class="nt"><span class="eyb">Wed · 25 June</span></span><span class="iconbtn">✎</span></div>
+        <div class="detailbody">
+          <div><div class="dtitle">Morning check-in</div><div class="dmeta" style="margin-top:4px">9:15 AM · 1:23</div></div>
+          <div class="sigrow"><div class="si"><div class="sg"></div>Anxious</div><div class="si"><div class="sg"></div>Charged</div><div class="si"><div class="sg"></div>Locked In</div></div>
+          <div class="dcard"><div class="dh"><span class="di"></span><span class="dt">Medications</span></div><div style="font-size:15px">Concerta 36mg · Ritalin 10mg ×½ (missed)</div></div>
+          <div class="dcard"><div class="dh"><span class="dt">Sleep</span></div><div class="tagflow"><span class="tag"><span class="g g12"></span>Deep</span><span class="tag">8h sleep</span></div></div>
+          <div class="dcard"><div class="dh"><span class="dt">Emotions</span></div><div class="tagflow"><span class="tag">♥ Excited</span><span class="tag">♥ Anxious</span><span class="tag">♥ Grateful</span><span class="tag">♥ Content</span></div></div>
+          <div class="dcard"><div class="dh"><span class="dt">Side Effects</span></div><div class="tagflow"><span class="tag">▮ Dry Mouth</span><span class="tag">▮ Jittery</span><span class="tag">▮ Crash</span></div></div>
+          <div class="dcard"><div class="dh"><span class="dt">Transcript</span><span class="sp"></span><span class="statuspill">Completed</span><span class="chevd">⌄</span></div><div style="font-size:14px;color:#555;line-height:1.5">Woke up wired again, took the Concerta a bit late. Focus locked in by mid-morning but pretty anxious about the review…</div></div>
+          <div class="dcard"><div class="dh"><span class="dt">Audio</span></div><div class="player"><span class="pp">▶</span><div class="wave"><i class="pl" style="height:40%"></i><i class="pl" style="height:70%"></i><i class="pl" style="height:55%"></i><i style="height:80%"></i><i style="height:35%"></i><i style="height:60%"></i><i style="height:45%"></i><i style="height:75%"></i><i style="height:50%"></i><i style="height:30%"></i><i style="height:65%"></i><i style="height:40%"></i></div><span class="dmeta" style="min-width:42px">0:37</span></div></div>
+          <div style="text-align:center;color:#111;font-weight:700;font-size:15px;padding-top:4px">Delete check-in</div>
+        </div>
+      </div></div>
+    </div>
+    <div class="frame narrow">
+      <p class="cap">6.2 · Transcript status variants</p>
+      <div class="phone"><div class="notch"></div><div class="screen" style="min-height:360px">
+        <div class="pad" style="gap:14px">
+          <div class="dcard"><div class="dh"><span class="dt">Transcript</span><span class="sp"></span><span class="statuspill">Recorded</span><span class="chevd">⌄</span></div></div>
+          <div class="dcard"><div class="dh"><span class="dt">Transcript</span><span class="sp"></span><span class="statuspill">Transcribing</span><span class="chevd">⌄</span></div><div style="display:flex;align-items:center;gap:8px;color:#888;font-size:13px"><span style="width:13px;height:13px;border:2px solid #bbb;border-top-color:transparent;border-radius:50%;display:inline-block"></span>Transcribing…</div></div>
+          <div class="dcard"><div class="dh"><span class="dt">Transcript</span><span class="sp"></span><span class="statuspill">Failed</span><span class="chevd">⌄</span></div><div class="sbtn" style="margin-top:2px">Retry transcription</div></div>
+        </div>
+      </div></div>
+      <div class="flag">StatusPill = one of Recorded / Transcribing / Completed / Failed (amber / accent / green / red in-app). Retry row only on Failed. <code>RecordingDetailView.swift:201-224</code></div>
+    </div>
+    <div class="frame narrow">
+      <p class="cap">6.3 · Delete dialog</p>
+      <div class="dialogwrap" style="background:#efefef">
+        <div class="dialog">
+          <div class="dtt"><b style="display:block;color:#222;font-size:14px">Delete this check-in?</b></div>
+          <div class="dopt dstroy">Delete</div>
+          <div class="dopt cancel">Cancel</div>
+        </div>
+      </div>
+      <div class="flag">Delete sets <code>pendingDelete</code> + dismisses; the actual delete runs in <code>onDisappear</code> (never delete a @Model while its view is mounted). <code>RecordingDetailView.swift:74-80</code></div>
+    </div>
+  </div>
+
+  <!-- ================= 7 · EDIT ================= -->
+  <h2 id="edit"><span class="num">7</span>Edit · Extraction Review (8 fields)</h2>
+  <p class="sub">A <code>.large</code> sheet opened by the detail pencil: 8 hairline-separated fields (each with a numbered eyebrow) + a bottom “Save corrections”. Cancel / Save also live in the toolbar.</p>
+  <div class="prov"><b>Grounded in:</b> <code>Views/ExtractionReviewView.swift</code>, <code>Components/GlyphRampPicker.swift</code>, <code>Chip.swift</code>. Field order + copy from <code>ExtractionReviewView.swift:105-457</code>.</div>
+  <div class="frames">
+    <div class="frame">
+      <p class="cap">7.1 · Edit check-in</p>
+      <div class="phone"><div class="notch"></div><div class="screen xtall">
+        <div class="navbar"><span class="bb">Cancel</span><span class="nt">Edit check-in</span><span class="bb acc">Save</span></div>
+        <div class="pad" style="gap:0">
+          <div class="field"><div class="fh"><span class="fn">01</span><span class="fl">When</span></div><div class="databox2"><div class="db"><div class="dbl">Date</div><span class="datebox" style="width:100%">25 Jun 2026 ⌄</span></div><div class="db"><div class="dbl">Time</div><span class="datebox" style="width:100%">09:15 ⌄</span></div></div></div>
+          <div class="field"><div class="fh"><span class="fn">02</span><span class="fl">Mood</span><span class="fhint"><b style="color:#222">Good</b> · warm, lifted</span></div><div class="ramp"><div class="rstep"><div class="rg"></div><div class="rw">Low</div></div><div class="rstep"><div class="rg"></div><div class="rw">Flat</div></div><div class="rstep"><div class="rg"></div><div class="rw">Okay</div></div><div class="rstep sel"><div class="rg"></div><div class="rw">Good</div></div><div class="rstep"><div class="rg"></div><div class="rw">Great</div></div></div></div>
+          <div class="field"><div class="fh"><span class="fn">03</span><span class="fl">Energy</span><span class="fhint"><b style="color:#222">Alert</b> · awake, ready</span></div><div class="ramp"><div class="rstep"><div class="rg"></div><div class="rw">Sluggish</div></div><div class="rstep"><div class="rg"></div><div class="rw">Tired</div></div><div class="rstep"><div class="rg"></div><div class="rw">Steady</div></div><div class="rstep sel"><div class="rg"></div><div class="rw">Alert</div></div><div class="rstep"><div class="rg"></div><div class="rw">Charged</div></div></div></div>
+          <div class="field"><div class="fh"><span class="fn">04</span><span class="fl">Focus</span><span class="fhint"><b style="color:#222">Sharp</b> · clear, on track</span></div><div class="ramp"><div class="rstep"><div class="rg"></div><div class="rw">Foggy</div></div><div class="rstep"><div class="rg"></div><div class="rw">Distr…</div></div><div class="rstep"><div class="rg"></div><div class="rw">Present</div></div><div class="rstep sel"><div class="rg"></div><div class="rw">Sharp</div></div><div class="rstep"><div class="rg"></div><div class="rw">Locked</div></div></div></div>
+          <div class="field"><div class="fh"><span class="g g15"></span><span class="fn">05</span><span class="fl">Sleep</span><span class="fhint">no synonyms</span></div><div class="segrow" style="margin-bottom:8px"><span class="seg">Restless</span><span class="seg">Light</span><span class="seg">Okay</span><span class="seg on">Good</span><span class="seg">Deep</span></div><div class="segrow"><span class="seg">2h</span><span class="seg">4h</span><span class="seg">6h</span><span class="seg on">8h</span><span class="seg">10h</span><span class="datebox">7.5 h</span></div></div>
+          <div class="field"><div class="fh"><span class="fn">06</span><span class="fl">Medications</span><span class="fhint">Stimulants · no limit</span></div>
+            <div class="fieldcard" style="margin-bottom:8px"><div style="padding:11px 13px;display:flex;align-items:center;gap:8px"><span class="g g18"></span><b style="flex:1">Concerta</b><span class="dpill" style="border-color:#999">Taken</span><span style="color:#999">✕</span></div><div class="fr"><span>Dose</span><span class="dpill">36mg</span></div><div class="fr"><span>Time</span><span>08:00</span></div><div class="fr"><span>Dur</span><span>10 h</span></div></div>
+            <div class="segrow"><span class="chip on rn">Concerta</span><span class="chip rn">Ritalin</span><span class="chip rn">Elvanse</span></div>
+          </div>
+          <div class="field"><div class="fh"><span class="fn">07</span><span class="fl">Emotions</span></div>
+            <div class="dbl" style="margin:0 0 6px">Pleasant</div><div class="segrow" style="margin-bottom:9px"><span class="chip rn">Excited</span><span class="chip rn">Joyful</span><span class="chip rn">Proud</span><span class="chip on rn">Content</span><span class="chip rn">Grateful</span><span class="chip rn">Serene</span></div>
+            <div class="dbl" style="margin:0 0 6px">Unpleasant</div><div class="segrow"><span class="chip rn">Angry</span><span class="chip on rn">Anxious</span><span class="chip rn">Frustrated</span><span class="chip rn">Sad</span><span class="chip rn">Lonely</span></div>
+          </div>
+          <div class="field" style="border-bottom:none"><div class="fh"><span class="fn">08</span><span class="fl">Side effects</span></div><div class="segrow"><span class="chip rn">Dry mouth</span><span class="chip rn">Headache</span><span class="chip on rn">Insomnia</span><span class="chip rn">Jittery</span><span class="chip on rn">Crash</span><span class="chip rn">Dizzy</span><span class="chip rn">Rebound</span></div></div>
+          <div class="pbtn" style="width:100%;margin-top:16px">Save corrections</div>
+        </div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">2</span>Fields 02–04 use the <b>GlyphRampPicker</b> (5 glyphs, selected wrapped in an accent ring; tap-again clears).</li>
+        <li><span class="pin">5</span>Sleep = 2 pill rows (quality + hour presets) + custom hours box.</li>
+        <li><span class="pin">6</span>Medications = inline-expand selected-med cards (Taken/Missed toggle, dose/time/dur) + catalog chip grid.</li>
+        <li><span class="pin">7</span>Emotions split Pleasant / Unpleasant (10 each); Side effects = 15 filter chips.</li>
+      </ol></div>
+    </div>
+  </div>
+
+  <!-- ================= 8 · MED BAR ================= -->
+  <h2 id="medbar"><span class="num">8</span>Medication bar (global overlay)</h2>
+  <p class="sub">Pinned below the nav bar on all 4 tabs + Recording Detail (hidden only on Acknowledgements), and only when there is at least one active dose. It is a <code>.card()</code> (Paper), <b>not</b> Liquid Glass. The <code>.glassEffect</code> mention is a stale doc comment.</p>
+  <div class="prov"><b>Grounded in:</b> <code>DesignSystem/MedicationBarOverlay.swift:18-25</code>, <code>Components/MedicationBarView.swift:14-189</code>. Render condition: <code>showBar &amp;&amp; !activeDoses.isEmpty</code> (<code>:14</code>). State words verbatim from <code>:86-95</code>.</div>
+  <div class="stategrid">
+    <div class="sc3"><div class="lbl">kicking in ( &lt; 20% )</div><div class="medbar" style="margin:0"><div class="drow"><span class="cap2"></span><div class="mid"><div class="m1"><span>1st dose · Concerta 36mg</span><span class="st">kicking in</span></div><div class="track"><i style="width:12%"></i></div><div class="m2">taken 09:15 · onset · ends 19:15</div></div></div></div></div>
+    <div class="sc3"><div class="lbl">active ( 20–80% )</div><div class="medbar" style="margin:0"><div class="drow"><span class="cap2"></span><div class="mid"><div class="m1"><span>1st dose · Concerta 36mg</span><span class="st">active</span></div><div class="track"><i style="width:52%"></i></div><div class="m2">taken 09:15 · ends 19:15</div></div></div></div></div>
+    <div class="sc3"><div class="lbl">wearing off ( 80–100% )</div><div class="medbar" style="margin:0"><div class="drow"><span class="cap2"></span><div class="mid"><div class="m1"><span>Concerta 36mg</span><span class="st">wearing off</span></div><div class="track"><i style="width:90%"></i></div><div class="m2">taken 09:15 · ends 19:15</div></div></div></div></div>
+    <div class="sc3"><div class="lbl">worn off ( ≥ 100% )</div><div class="medbar" style="margin:0"><div class="drow"><span class="cap2"></span><div class="mid"><div class="m1"><span>Concerta 36mg</span><span class="st">worn off</span></div><div class="track"><i style="width:100%;background:#b0b0b0"></i></div><div class="m2">taken 09:15 · ends 19:15</div></div></div></div></div>
+    <div class="sc3"><div class="lbl">Two doses (divider + ordinals)</div><div class="medbar" style="margin:0"><div class="drow"><span class="cap2"></span><div class="mid"><div class="m1"><span>1st dose · Concerta 36mg</span><span class="st">worn off</span></div><div class="track"><i style="width:100%;background:#b0b0b0"></i></div></div></div><div class="mdiv"></div><div class="drow"><span class="cap2"></span><div class="mid"><div class="m1"><span>2nd dose · Ritalin 10mg</span><span class="st">active</span></div><div class="track"><i style="width:48%"></i></div><div class="m2">taken 14:00 · ends 18:00</div></div></div></div></div>
+    <div class="sc3"><div class="lbl">Tap a dose → dialog</div><div class="dialog" style="width:100%"><div class="dtt"><b style="color:#222;font-size:14px">Concerta 36mg</b></div><div class="dopt">Log new dose</div><div class="dopt dstroy">Delete this dose</div><div class="dopt cancel">Cancel</div></div></div>
+  </div>
+
+  <footer>
+    app-four · Squirl · every-view low-fi wireframes. Black-and-white by intent; a grey tint marks a colour that carries meaning in the app. All structure, copy, and metrics traced 1:1 to the SwiftUI source this session. Companion: <code>calendar-library.html</code> (full Calendar depth).
+  </footer>
+</div>
+</body>
+</html>

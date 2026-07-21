@@ -11,8 +11,12 @@ import Foundation
 struct WelcomeViewModelTests {
 
     private func makeContainer() throws -> ModelContainer {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        return try ModelContainer(for: AppSettings.self, configurations: config)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
+        return try ModelContainer(
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
+        )
     }
 
     @Test func completePersistsHasCompletedOnboarding() throws {

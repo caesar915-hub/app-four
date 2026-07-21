@@ -16,10 +16,12 @@ struct DoseLogServiceTests {
         dose: String? = "30 mg"
     ) throws -> ModelContext {
         TestSupport.useRealData()
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let schema = Schema(versionedSchema: SquirlSchemaV1.self)
+        let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         let container = try ModelContainer(
-            for: Recording.self, MedicationEvent.self, AppSettings.self,
-            configurations: config
+            for: schema,
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
         )
         let context = container.mainContext
         let settings = AppSettings()

@@ -33,6 +33,9 @@ enum AppDependencies {
         aiModelService: aiModelService
     )
     static let exportService: ExportService = ExportServiceImpl()
+    /// Opt-in iCloud sync seam (spec 038). Off by default; consumed by the Settings
+    /// sync view-model (US1). `MockCloudSyncService` substitutes at the seam in tests.
+    static let cloudSyncService: any CloudSyncService = CloudSyncServiceImpl()
 
     /// Observable bundle for environment injection into ViewModels.
     static let services = AppServices(

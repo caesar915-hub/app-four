@@ -1,0 +1,120 @@
+%%{init: {"theme":"base","themeVariables":{"fontFamily":"-apple-system, Helvetica, Arial","fontSize":"15px","lineColor":"#8A8266","clusterBkg":"#FBF7EE","clusterBorder":"#D9CFB8"},"flowchart":{"curve":"basis","nodeSpacing":40,"rankSpacing":58,"padding":10}}}%%
+flowchart TB
+
+  subgraph CALTAB["Calendar tab"]
+    CAL["Calendar Library<br/>week / month · DayCard timeline"]:::tab
+    CALEMPTY(["Empty · No entries yet"]):::empty
+    DAYCARD["DayCard · expand / collapse"]:::stateb
+    CAL -.->|"no entries"| CALEMPTY
+    CAL -->|"tap DayCard header"| DAYCARD
+  end
+
+  subgraph DETAILGRP["Shared detail"]
+    DETAIL[["Recording Detail<br/>push · shared: Calendar + Insights"]]:::push
+    EDIT[/"Extraction Review · Edit<br/>8 fields · sheet"/]:::sheet
+    DELDIALOG{{"Delete check-in?"}}:::alert
+    DETAIL -.->|"pencil"| EDIT
+    EDIT -.->|"Save / Cancel"| DETAIL
+    DETAIL -.->|"Delete check-in"| DELDIALOG
+    DETAIL -->|"status = failed · Retry transcription"| DETAIL
+  end
+
+  subgraph CHKTAB["Check in tab · in-view state machine"]
+    CHK["Check-in hub · CrescentRing"]:::tab
+    IDLE(("idle<br/>Log meds · Speak · Type")):::stateb
+    REC(("recording<br/>timer · prompts · 8-min cap")):::stateb
+    PROC(("processing<br/>Saving…")):::stateb
+    DONE(("done<br/>Captured.")):::stateb
+    PAUSED(("paused<br/>rendered · never set")):::dead
+    SAVEFAIL["saveFailed overlay<br/>Try again · Discard"]:::alert
+    MEDLOG[/"Log Dose sheet"/]:::sheet
+    TEXTCOMP[/"Text Composer sheet"/]:::sheet
+    MICALERT{{"Mic permission"}}:::alert
+    STORALERT{{"Not Enough Storage"}}:::alert
+    CHK --- IDLE
+    IDLE -->|"Speak check-in · disk+mic ok"| REC
+    REC -->|"Stop & save / cap"| PROC
+    REC -->|"Cancel"| IDLE
+    PROC -->|"success"| DONE
+    PROC -.->|"throws"| SAVEFAIL
+    SAVEFAIL -->|"Try again · buffered"| PROC
+    SAVEFAIL -->|"Discard"| IDLE
+    DONE -->|"Done → reset"| IDLE
+    IDLE -.->|"Log meds"| MEDLOG
+    IDLE -.->|"Type note"| TEXTCOMP
+    TEXTCOMP -.->|"Save success"| DONE
+    CHK -.->|"mic denied"| MICALERT
+    CHK -.->|"disk &lt; 50MB"| STORALERT
+  end
+
+  subgraph INSTAB["Insights tab"]
+    INS["Insights · 5 paging sections<br/>breakdown / signals / averages / rhythm / connections"]:::tab
+    INSEMPTY(["Empty · check in to see your month"]):::empty
+    DAYSHEET[/"Day Detail sheet<br/>declared · unreachable"/]:::dead
+    INS -.->|"no data"| INSEMPTY
+    INS -.->|"selectedDay · never set, no tap affordance"| DAYSHEET
+    DAYSHEET -.->|"Done / swipe"| INS
+  end
+
+  subgraph SETTAB["Settings tab"]
+    SET["Settings · grouped List"]:::tab
+    MODELROW["Model download row<br/>not-installed / downloading / installed / error"]:::stateb
+    MODELDEL{{"Delete model"}}:::alert
+    EXPORT[/"File exporter"/]:::sheet
+    RECKEY[/"Recovery key sheet"/]:::sheet
+    EXPFAIL{{"Export failed"}}:::alert
+    CLEAR{{"Clear all data?"}}:::alert
+    ACK[["Acknowledgements · push"]]:::push
+    DEBUG[/"Test Services · 5-tap<br/>DEBUG / TESTFLIGHT"/]:::sheet
+    SET --- MODELROW
+    MODELROW -.->|"installed · tap"| MODELDEL
+    SET -.->|"Save a copy"| EXPORT
+    EXPORT -.->|"write success"| RECKEY
+    RECKEY -.->|"Done"| SET
+    SET -.->|"prepare fails"| EXPFAIL
+    SET -.->|"Clear All Data"| CLEAR
+    SET ==>|"Acknowledgements"| ACK
+    SET -.->|"5-tap version"| DEBUG
+  end
+
+  subgraph GLOBAL["Global overlay · all 4 tabs + Recording Detail (hidden only on Acknowledgements)"]
+    MEDBAR["Medication bar<br/>.card() Paper · not Liquid Glass"]:::global
+    MEDDIALOG{{"Dose actions"}}:::alert
+    MEDBAR -.->|"tap dose"| MEDDIALOG
+    MEDDIALOG -.->|"Delete this dose"| MEDBAR
+  end
+
+  LAUNCH([" Cold launch"]):::entry
+  GATE{"hasCompletedOnboarding?"}:::entry
+  WELCOME[/"Welcome · onboarding<br/>fullScreenCover"/]:::cover
+  DEEPLINK([" whispernotes://checkin"]):::entry
+  TABS{{"TabView · selectedTab<br/>default = Calendar · 4 own NavigationStacks"}}:::shell
+  IOSSET([" iOS Settings app"]):::entry
+
+  LAUNCH --> GATE
+  GATE -->|"false · first run"| WELCOME
+  GATE -->|"true · or DEBUG skip"| TABS
+  WELCOME -->|"Start → persist · dismiss"| TABS
+  DEEPLINK -.->|"auto-start capture"| CHK
+  TABS === CAL
+  TABS === CHK
+  TABS === INS
+  TABS === SET
+  DAYCARD ==>|"tap TimelineRow · path.append(UUID)"| DETAIL
+  DELDIALOG -->|"Delete → dismiss · delete onDisappear"| CAL
+  DAYSHEET ==>|"tap row → dismiss · path.append(UUID) · dead"| DETAIL
+  MICALERT -.->|"Open Settings"| IOSSET
+  MODELROW -.->|"cellular blocked · Open Settings"| IOSSET
+  MEDDIALOG -.->|"Log new dose"| MEDLOG
+
+  classDef entry fill:#DCE6D6,stroke:#3E4C24,stroke-width:1.5px,color:#221E16
+  classDef shell fill:#EFE8D8,stroke:#7A7361,stroke-width:2px,color:#221E16
+  classDef tab fill:#E5EFE0,stroke:#5F8A4C,stroke-width:3px,color:#221E16
+  classDef push fill:#F3E7CE,stroke:#B8842A,stroke-width:3px,color:#221E16
+  classDef sheet fill:#EDE6F4,stroke:#7E5CA8,stroke-width:1.5px,color:#221E16
+  classDef cover fill:#F7E7D5,stroke:#C2772E,stroke-width:2px,color:#221E16
+  classDef alert fill:#F6E1DC,stroke:#B5503A,stroke-width:1.5px,color:#221E16
+  classDef stateb fill:#FBEFD6,stroke:#E0A33A,stroke-width:1.5px,color:#221E16
+  classDef dead fill:#EAE7DF,stroke:#9A917C,stroke-width:1.5px,color:#7A7361,stroke-dasharray:5 3
+  classDef global fill:#E3E7F2,stroke:#5566A6,stroke-width:2px,color:#221E16
+  classDef empty fill:#F1ECE0,stroke:#C9BFA8,color:#7A7361

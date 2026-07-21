@@ -1,7 +1,7 @@
+<!-- Created: 2026-06-18 12:13 (WEST) · Updated: 2026-07-18 15:57 (WEST) -->
 # Design System — Squirl · "Paper & Pollen"
 
 > Source of truth for all visual and UI decisions. Read this before writing or changing any SwiftUI.
-> Visual companion (open in a browser): [docs/superpowers/plans/2026-06-15-paper-pollen-design-system.html](docs/superpowers/plans/2026-06-15-paper-pollen-design-system.html)
 > Created 2026-06-15 via `/design-consultation`. Living document — revise with explicit approval and log changes in the Decisions Log.
 
 ## Product Context
@@ -42,8 +42,9 @@ The Meadow green→amber gradient is reserved for the recording crescent, primar
 ### Signal ramps (5-level, ordinal 1→5)
 These are **data encoding**, not brand color. Each dimension is a distinct hue family (categorical separation between signals), climbing by lightness+chroma within (sequential). Kept as shipped on `feat/insights-palette`:
 - **Mood — "Meadow·Burnt":** `#DA7A2A · #EDA94A · #9FCB79 · #5FB36E · #2E8B57` (burnt-low → green-high; green = flourishing).
-- **Energy — "Lemon":** `#A9A079 · #C2B25A · #D8C53E · #EAD22A · #F5D70E`.
-- **Focus — "Voltage blue":** `#7E8B96 · #6E8DAE · #5683B8 · #3E73B0 · #2C5E9E`.
+- **Energy — "Lemon" (olive→citrus):** `#7C6E2E · #A89236 · #D2BB40 · #EEDA4C · #FCEE64`.
+- **Focus — "Voltage blue" (slate→sky):** `#44546E · #4E6F94 · #5889BA · #63A4E0 · #79C4FF`.
+- *(Energy + Focus hexes corrected 2026-07-18 — the doc had drifted from the actually-shipped `Palette+Signals.swift` values; canvas and code were already aligned with each other.)*
 - **Sleep — deferred.** No ramp yet. If/when added, push it **bluer/cooler** so it never collides with medication purple.
 
 Rule: **color is never the only cue.** Every signal level is also encoded by glyph shape + fill (below), so it survives colorblindness and grayscale.
@@ -124,6 +125,8 @@ in `SquirlDesignSystem/NewLook.swift`, additive to that retained `Theme` subset;
   | `NewLook.checkInGreen` | `#5FB36E` | `#6FC47E` | capture-flow accent — check-in · onboarding · recording-detail **edit** (the day-card "Good"-mood green; **scoped, not app-wide**, 2026-07-16) |
   | `NewLook.checkInGreenSoft` | `#96C19F` | `#86BC9D` | soft partner at the check-in ring gradient's bottom (was `selectionSoft`) |
   | (medication) | `#7E5CA8` | `#957BC1` | reuses `Palette.medication`; dark nudged from `#9277BE` for AA text on the dark card (2026-07-16) |
+  | `accent/medicationText` | `#6B4E8F` | `#6B4E8F` *(dark TBD — light-copy)* | medication **text on tinted surfaces** (wells, day-card bands) where `#7E5CA8` misses AA (3.53–4.39); extends the darker-word-color precedent; Figma-first (2026-07-18), code role pending |
+  | (destructive) | `#D54037` | `#D54037` *(dark TBD — light-copy)* | `ink/destructive`, retinted from `#E0443A` for AA 4.55:1 on card (2026-07-18); code `Theme.danger` follow-up pending |
   | `Palette.medicationFillEnd` | `#AF99C3` | `#B3A1D6` | light end of the med-bar dose-track gradient |
   | `Palette.sleepIndigo` | `#5566A6` | `#8E9BD4` | sleep chip/text; dark variant lightened for AA on the dark card (2026-07-15) |
 
@@ -159,6 +162,7 @@ in `SquirlDesignSystem/NewLook.swift`, additive to that retained `Theme` subset;
 ## Decisions Log
 | Date | Decision | Rationale |
 |------|----------|-----------|
+| 2026-07-18 | §Signal ramps energy/focus hexes corrected to the shipped `Palette+Signals.swift` values; design-audit remediations approved: `ink/destructive` light `#E0443A`→`#D54037` (5% darker, clears AA 4.55:1 on card), new `accent/medicationText` `#6B4E8F` for medication text on tinted surfaces (extends the R09 darker-word-color precedent), crescent gradient mid `#97C2A0`→`#96C19F` (code parity), Tiimo Colors gains a Dark mode (documented values only). Accepted-as-is: inkSecondary on tint bands/wells (extends the 2026-07-12 ruling), white-on-mood-5 bubble labels (ramp is three-way consistent; legend is redundant) | Full three-dimension design audit of the v3 catalog (`design-database/` audits №1–3, R22–R28); owner accepted the audit's judgment 2026-07-18. Code follow-ups (Theme.danger retint, medication text role) flagged, not yet implemented |
 | 2026-07-16 | Capture-flow surfaces (check-in · onboarding · recording-detail **edit**) adopt one green — `NewLook.checkInGreen` `#5FB36E`, the day-card "Good"-mood green — replacing the mint `selection` + meadow-gradient mix | Owner wanted these three to match the day check-in card, which has no fixed green (mood ramp), so its "Good" green was chosen. **Scoped, not app-wide** (owner call): new token + `.checkIn` chip role + `CheckInPrimaryButtonStyle` (green-only gradient); Insights chips and other primary buttons keep `selection`/meadow. `selectionSoft` → `checkInGreenSoft`. Landed straight to `main` per owner. |
 | 2026-07-16 | Contrast ruling on the spec-033 review's 8 WCAG findings: **fix derived dark-mode values, keep Figma-locked light values 1:1 and log them** | Figma specs light only; dark is derived, so fixing it isn't a deviation. Fixed: `onSelection` label token (dark ink on selection/medication fills in dark), medication dark `#9277BE`→`#957BC1`, Taken/Missed toggle re-grammar (`tintNeutral`+ink). Kept+logged: selection-green light family (chip label 2.52:1, green-on-white text, ramp ring, gradient/groove 2.14:1) — see palette note. |
 | 2026-07-12 | Keep `NewLook.inkSecondary` at Figma value `#8A8A8E` despite light-mode WCAG AA failure (3.0:1 sage / 3.4:1 white, need 4.5:1) | Owner chose Figma fidelity over the contrast fix when the spec-033 accessibility audit surfaced it app-wide. Documented as a known limitation (see palette note above); dark mode unaffected (~7:1). A compliant alternative (~`#6C6C70`) is on record if revisited. |

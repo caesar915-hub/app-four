@@ -1,0 +1,110 @@
+collection,variable,type,scopes,value_light_or_default,value_dark,bound_uses_on_a_screens
+Squirl Tokens,color/bg/primary,COLOR,FRAME_FILL SHAPE_FILL,#F6F1E7,#14130F,0
+Squirl Tokens,color/bg/card,COLOR,FRAME_FILL SHAPE_FILL,#FCF8EF,#1E1C16,0
+Squirl Tokens,color/bg/surface2,COLOR,FRAME_FILL SHAPE_FILL,#EFE8D8,#272419,0
+Squirl Tokens,color/text/primary,COLOR,TEXT_FILL,#221E16,#F3EEE0,0
+Squirl Tokens,color/text/secondary,COLOR,TEXT_FILL,#7A7361,#9A917C,0
+Squirl Tokens,color/text/tertiary,COLOR,ALL_SCOPES,#8A8A8E,#8F887A,0
+Squirl Tokens,color/border/separator,COLOR,FRAME_FILL STROKE_COLOR,#E3DAC7,#322E22,0
+Squirl Tokens,color/accent,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL STROKE_COLOR,#B8842A,#D4A24A,0
+Squirl Tokens,color/meadow/green,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL STROKE_COLOR,#5F8A4C,#6E9A58,0
+Squirl Tokens,color/meadow/amber,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL STROKE_COLOR,#E0A33A,#E8B255,0
+Squirl Tokens,color/status/danger,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL STROKE_COLOR,#B5503A,#CF6A52,0
+Squirl Tokens,color/palette/medication,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL STROKE_COLOR,#7E5CA8,#9277BE,0
+Squirl Tokens,color/palette/sleepIndigo,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL STROKE_COLOR,#5566A6,#5566A6,9
+Squirl Tokens,color/palette/warning,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL STROKE_COLOR,#C2772E,#D98A3E,0
+Squirl Tokens,color/mood/base-1,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#DA7A2A,#DA7A2A,5
+Squirl Tokens,color/mood/base-2,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#EDA94A,#EDA94A,5
+Squirl Tokens,color/mood/base-3,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#9FCB79,#9FCB79,25
+Squirl Tokens,color/mood/base-4,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#5FB36E,#5FB36E,37
+Squirl Tokens,color/mood/base-5,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#2E8B57,#2E8B57,32
+Squirl Tokens,color/mood/wordColor-1,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#8E470F,#E89A5A,0
+Squirl Tokens,color/mood/wordColor-2,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#8A5600,#EDA94A,0
+Squirl Tokens,color/mood/wordColor-3,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#41691F,#B7D897,1
+Squirl Tokens,color/mood/wordColor-4,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#2C6B3B,#79C98E,1
+Squirl Tokens,color/mood/wordColor-5,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#1E5C38,#57C98A,3
+Squirl Tokens,color/mood/band-1,COLOR,FRAME_FILL SHAPE_FILL,#F6DFCC,#4A3222,0
+Squirl Tokens,color/mood/disc-1,COLOR,FRAME_FILL SHAPE_FILL,#ECBC94,#8A5327,0
+Squirl Tokens,color/mood/band-2,COLOR,FRAME_FILL SHAPE_FILL,#FBEAD4,#4D3D26,0
+Squirl Tokens,color/mood/disc-2,COLOR,FRAME_FILL SHAPE_FILL,#F6D4A4,#946C34,0
+Squirl Tokens,color/mood/band-3,COLOR,FRAME_FILL SHAPE_FILL,#E8F3DF,#3A4A30,0
+Squirl Tokens,color/mood/disc-3,COLOR,FRAME_FILL SHAPE_FILL,#CFE5BC,#5F784C,0
+Squirl Tokens,color/mood/band-4,COLOR,FRAME_FILL SHAPE_FILL,#D9EDDC,#2B4735,0
+Squirl Tokens,color/mood/disc-4,COLOR,FRAME_FILL SHAPE_FILL,#AFD9B6,#3F7150,0
+Squirl Tokens,color/mood/band-5,COLOR,FRAME_FILL SHAPE_FILL,#CDE3D7,#213F30,0
+Squirl Tokens,color/mood/disc-5,COLOR,FRAME_FILL SHAPE_FILL,#96C5AB,#2C6246,0
+Squirl Tokens,color/energy/base-1,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#7C6E2E,#7C6E2E,2
+Squirl Tokens,color/energy/base-2,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#A89236,#A89236,12
+Squirl Tokens,color/energy/base-3,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#D2BB40,#D2BB40,17
+Squirl Tokens,color/energy/base-4,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#EEDA4C,#EEDA4C,7
+Squirl Tokens,color/energy/base-5,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#FCEE64,#FCEE64,3
+Squirl Tokens,color/focus/base-1,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#44546E,#44546E,1
+Squirl Tokens,color/focus/base-2,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#4E6F94,#4E6F94,4
+Squirl Tokens,color/focus/base-3,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#5889BA,#5889BA,20
+Squirl Tokens,color/focus/base-4,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#63A4E0,#63A4E0,43
+Squirl Tokens,color/focus/base-5,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#79C4FF,#79C4FF,4
+Squirl Tokens,spacing/xs,FLOAT,WIDTH_HEIGHT GAP,4,4,0
+Squirl Tokens,spacing/s,FLOAT,WIDTH_HEIGHT GAP,8,8,0
+Squirl Tokens,spacing/m,FLOAT,WIDTH_HEIGHT GAP,12,12,0
+Squirl Tokens,spacing/l,FLOAT,WIDTH_HEIGHT GAP,16,16,4
+Squirl Tokens,spacing/xl,FLOAT,WIDTH_HEIGHT GAP,20,20,0
+Squirl Tokens,spacing/xxl,FLOAT,WIDTH_HEIGHT GAP,24,24,0
+Squirl Tokens,spacing/section,FLOAT,WIDTH_HEIGHT GAP,32,32,0
+Squirl Tokens,spacing/hero,FLOAT,WIDTH_HEIGHT GAP,40,40,0
+Squirl Tokens,radius/control,FLOAT,CORNER_RADIUS,10,10,0
+Squirl Tokens,radius/chip,FLOAT,CORNER_RADIUS,15,15,0
+Squirl Tokens,radius/card,FLOAT,CORNER_RADIUS,16,16,0
+Squirl Tokens,radius/button,FLOAT,CORNER_RADIUS,16,16,0
+Squirl Tokens,opacity/moodBlock,FLOAT,OPACITY,0.24,0.24,0
+Squirl Tokens,opacity/deEmphasis,FLOAT,OPACITY,0.34,0.34,0
+Squirl Tokens,opacity/moodBadge,FLOAT,OPACITY,0.5,0.5,0
+Tiimo Colors,surface/paper,COLOR,FRAME_FILL SHAPE_FILL,#F5F3F0,#F5F3F0,0
+Tiimo Colors,surface/card,COLOR,FRAME_FILL SHAPE_FILL,#FFFFFF,#1C1E19,156
+Tiimo Colors,surface/screen,COLOR,FRAME_FILL SHAPE_FILL,#EFF2EB,#12140F,8
+Tiimo Colors,surface/home-grad-top,COLOR,FRAME_FILL SHAPE_FILL,#C9C2F0,#C9C2F0,0
+Tiimo Colors,surface/home-grad-bottom,COLOR,FRAME_FILL SHAPE_FILL,#F4F2F8,#F4F2F8,0
+Tiimo Colors,surface/scrim,COLOR,FRAME_FILL SHAPE_FILL,#000000,#000000,0
+Tiimo Colors,ink/primary,COLOR,SHAPE_FILL TEXT_FILL STROKE_COLOR,#1C1B1F,#F2F3EE,201
+Tiimo Colors,ink/secondary,COLOR,SHAPE_FILL TEXT_FILL STROKE_COLOR,#8A8A8E,#9BA09A,154
+Tiimo Colors,ink/tertiary,COLOR,TEXT_FILL STROKE_COLOR,#B9B6B1,#B9B6B1,14
+Tiimo Colors,ink/destructive,COLOR,SHAPE_FILL TEXT_FILL,#D54037,#D54037,5
+Tiimo Colors,accent/selection,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL STROKE_COLOR,#54B492,#5FC49F,40
+Tiimo Colors,accent/medication,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL STROKE_COLOR,#7E5CA8,#957BC1,50
+Tiimo Colors,accent/purple,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL,#7C6CDF,#7C6CDF,2
+Tiimo Colors,accent/indigo,COLOR,FRAME_FILL SHAPE_FILL,#3F3AD9,#3F3AD9,0
+Tiimo Colors,accent/lavender,COLOR,FRAME_FILL SHAPE_FILL,#DCD3F7,#DCD3F7,0
+Tiimo Colors,accent/star,COLOR,FRAME_FILL SHAPE_FILL,#F7D44C,#F7D44C,0
+Tiimo Colors,border/hairline,COLOR,STROKE_COLOR,#DBDDDE,#33362F,118
+Tiimo Colors,tint/neutral,COLOR,FRAME_FILL SHAPE_FILL,#ECEAE6,#272A22,16
+Tiimo Colors,tint/morning,COLOR,FRAME_FILL SHAPE_FILL,#FBE7DC,#FBE7DC,0
+Tiimo Colors,tint/afternoon,COLOR,FRAME_FILL SHAPE_FILL,#E4E3F9,#E4E3F9,0
+Tiimo Colors,tint/high,COLOR,FRAME_FILL SHAPE_FILL,#F9E0E0,#F9E0E0,0
+Tiimo Colors,tint/medium,COLOR,FRAME_FILL SHAPE_FILL,#F8ECD9,#F8ECD9,0
+Tiimo Colors,tint/low,COLOR,FRAME_FILL SHAPE_FILL,#E3E3F7,#E3E3F7,0
+Tiimo Colors,bar/rose,COLOR,FRAME_FILL SHAPE_FILL,#D06A75,#D06A75,0
+Tiimo Colors,bar/blue,COLOR,FRAME_FILL SHAPE_FILL,#6D9DC0,#6D9DC0,0
+Tiimo Colors,bar/green,COLOR,FRAME_FILL SHAPE_FILL,#97C2A0,#97C2A0,0
+Tiimo Colors,radius/card,FLOAT,CORNER_RADIUS,20,,160
+Tiimo Colors,radius/pill,FLOAT,CORNER_RADIUS,999,,24
+Structured Colors,bg/base,COLOR,FRAME_FILL SHAPE_FILL,#FFFFFF,#000000,0
+Structured Colors,bg/timeline,COLOR,FRAME_FILL SHAPE_FILL,#F4F3F8,#121214,0
+Structured Colors,bg/card,COLOR,FRAME_FILL SHAPE_FILL,#F1F0F5,#1C1C1E,0
+Structured Colors,bg/iconWell,COLOR,FRAME_FILL SHAPE_FILL,#E5E4EA,#2E2E30,0
+Structured Colors,accent/coral,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL STROKE_COLOR,#EE7C6B,#F28C7D,0
+Structured Colors,accent/blue,COLOR,FRAME_FILL SHAPE_FILL STROKE_COLOR,#4A8FD6,#5B9BDE,0
+Structured Colors,text/primary,COLOR,TEXT_FILL,#1A1A1C,#FFFFFF,0
+Structured Colors,text/secondary,COLOR,TEXT_FILL,#8A8A8E,#8E8E93,0
+Structured Colors,text/tertiary,COLOR,TEXT_FILL,#C6C6CA,#48484A,0
+Structured Colors,text/onAccent,COLOR,TEXT_FILL,#FFFFFF,#FFFFFF,0
+Structured Colors,line/timeline,COLOR,FRAME_FILL SHAPE_FILL STROKE_COLOR,#D8D7DC,#38383A,0
+Structured Colors,line/track,COLOR,FRAME_FILL SHAPE_FILL,#E4E3E8,#2C2C2E,0
+Structured Colors,line/hairline,COLOR,FRAME_FILL SHAPE_FILL STROKE_COLOR,#D1D0D6,#3A3A3C,0
+Tiimo Colors,accent/medicationText,COLOR,TEXT_FILL,#6B4E8F,#6B4E8F,5
+iOS Semantic,role/action,COLOR,FRAME_FILL SHAPE_FILL TEXT_FILL STROKE_COLOR,#34C759,#30D158,0
+iOS Semantic,role/selectionTint,COLOR,FRAME_FILL SHAPE_FILL,#3C3C43@8%,#EBEBF5@12%,0
+iOS Semantic,role/caption,COLOR,TEXT_FILL STROKE_COLOR SHAPE_FILL,#6C6C70,#AEAEB2,0
+iOS Semantic,role/destructive,COLOR,TEXT_FILL FRAME_FILL SHAPE_FILL,#D54037,#FF453A,0
+iOS Semantic,role/status,COLOR,FRAME_FILL SHAPE_FILL,#34C759,#30D158,0
+iOS Semantic,surface/groupedBg,COLOR,FRAME_FILL,#EFF2EB,#12140F,0
+iOS Semantic,surface/groupContainer,COLOR,FRAME_FILL SHAPE_FILL,#FFFFFF,#1C1E19,0
+iOS Semantic,separator/hairline,COLOR,STROKE_COLOR FRAME_FILL SHAPE_FILL,#3C3C43@29%,#545458@65%,0

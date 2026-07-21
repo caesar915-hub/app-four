@@ -1,0 +1,65 @@
+// Each section below is one execute_code body. Split on the line ---SNIP--- and fire in order.
+// Board: storage.P1.settings (BX=1380). Helpers: medBar, secHead, card, setRow, sep, toggle, icons.
+const b=penpotUtils.findShapeById(storage.P1.settings); (b.children||[]).slice().forEach(c=>{try{c.remove&&c.remove()}catch(e){}}); return 'cleared, now '+b.children.length;
+---SNIP---
+const C=storage.C, BX=1380, X=BX+16, W=361, b=penpotUtils.findShapeById(storage.P1.settings);
+storage.U.text(b,'9:41',{x:BX+24,y:15,size:15,weight:600,color:C.ink});
+storage.U.rect(b,{x:BX+349,y:18,w:22,h:11,r:3,fill:null,stroke:C.ink,sw:1}); storage.U.rect(b,{x:BX+351,y:20,w:16,h:7,r:1,fill:C.ink});
+storage.B.medBar(b, X, 52, W);
+storage.B.secHead(b, BX, 156, 'AI Models');
+storage.U.card(b, {x:X, y:178, w:W, h:64});
+storage.G.svg(b, storage.I.waveform(20, C.ink), X+14, 192);
+storage.U.text(b, 'Voice Transcription', {x:X+46, y:191, size:16, color:C.ink});
+var niw=storage.B.aw('Not installed',12);
+storage.U.ellipse(b, {x:X+W-14-niw-14, y:197, d:8, fill:C.amber});
+storage.U.text(b, 'Not installed', {x:X+W-14-niw, y:194, size:12, color:C.muted});
+storage.U.text(b, '~150 MB · Wi-Fi recommended', {x:X+14, y:218, size:12, color:C.muted});
+storage.B.secHead(b, BX, 258, 'System');
+storage.U.card(b, {x:X, y:280, w:W, h:100});
+storage.B.setRow(b, X, 280, W, {label:'Storage', value:'3 recordings · 127.5 MB'});
+storage.B.sep(b, X, 330, W);
+storage.B.setRow(b, X, 330, W, {icon:storage.I.antenna(20,C.ink), label:'Download over Cellular', toggle:false});
+return 'A done';
+---SNIP---
+const C=storage.C, BX=1380, X=BX+16, W=361, b=penpotUtils.findShapeById(storage.P1.settings);
+storage.B.secHead(b, BX, 396, 'Check-in');
+storage.U.card(b, {x:X, y:418, w:W, h:50});
+storage.B.setRow(b, X, 418, W, {label:'Prompt Pace', value:'Relaxed', chevron:true});
+storage.U.text(b, 'How long each prompt stays on screen during a voice check-in.', {x:X+16, y:474, size:12, color:C.muted, width:W-20});
+storage.B.secHead(b, BX, 506, 'Medication Bar');
+storage.U.card(b, {x:X, y:528, w:W, h:200});
+storage.B.setRow(b, X, 528, W, {icon:storage.I.pillsCircle(20,C.ink), label:'Show Medication Bar', toggle:true});
+storage.B.sep(b, X, 578, W);
+storage.B.setRow(b, X, 578, W, {icon:storage.I.pill(20,C.ink), label:'Show Medication Name', toggle:true});
+storage.B.sep(b, X, 628, W);
+storage.B.setRow(b, X, 628, W, {icon:storage.I.clock(20,C.ink), label:'Show Taken Time', toggle:true});
+storage.B.sep(b, X, 678, W);
+storage.B.setRow(b, X, 678, W, {icon:storage.I.clockArrow(20,C.ink), label:'Show End Time', toggle:false});
+return 'B done';
+---SNIP---
+const C=storage.C, BX=1380, X=BX+16, W=361, b=penpotUtils.findShapeById(storage.P1.settings);
+storage.B.secHead(b, BX, 744, 'Calendar');
+storage.U.card(b, {x:X, y:766, w:W, h:100});
+storage.B.setRow(b, X, 766, W, {icon:storage.I.rectStack(20,C.ink), label:'Always expand cards', toggle:false});
+storage.B.sep(b, X, 816, W);
+storage.B.setRow(b, X, 816, W, {icon:storage.I.rectExpand(20,C.ink), label:'Auto-expand selected day', toggle:true});
+storage.B.secHead(b, BX, 882, 'Accessibility');
+storage.U.card(b, {x:X, y:904, w:W, h:60});
+storage.U.text(b, 'Squirl follows the iOS motion setting. Turn on Reduce Motion in Settings › Accessibility to still animations.', {x:X+16, y:916, size:13, color:C.muted, width:W-32});
+storage.B.secHead(b, BX, 980, 'Your data');
+storage.U.card(b, {x:X, y:1002, w:W, h:98});
+storage.U.text(b, 'Your recordings, check-ins, and signals stay on this device. Nothing is uploaded.', {x:X+16, y:1014, size:15, color:C.muted, width:W-32});
+storage.B.sep(b, X, 1052, W);
+storage.B.setRow(b, X, 1050, W, {icon:storage.I.heart(20,C.ink), label:'Acknowledgements', chevron:true});
+return 'C done';
+---SNIP---
+const C=storage.C, BX=1380, X=BX+16, W=361, b=penpotUtils.findShapeById(storage.P1.settings);
+storage.U.card(b, {x:X, y:1118, w:W, h:52});
+storage.G.svg(b, storage.I.lockDoc(20, C.green), X+14, 1134);
+storage.U.text(b, 'Save a copy of my journal — yours to keep', {x:X+46, y:1135, size:15, color:C.green});
+storage.U.text(b, "Saves one encrypted file you can keep or share. We'll show you a key to open it — keep it safe. If you lose the key, the backup can't be recovered — not even by us.", {x:X+16, y:1178, size:12, color:C.muted, width:W-20});
+storage.U.card(b, {x:X, y:1262, w:W, h:50});
+storage.G.svg(b, storage.I.trash(20, C.danger), X+14, 1277);
+storage.U.text(b, 'Clear All Data', {x:X+46, y:1277, size:16, color:C.danger});
+storage.U.text(b, 'Squirl v1.0.2', {x:BX, y:1344, size:12, color:C.muted, width:393, align:'center'});
+return 'D done';

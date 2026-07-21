@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl — Architecture Diagrams (local)</title>
+<style>
+  :root {
+    --paper: #F7F4EC; --surface: #FBF8F1;
+    --ink: #23261F; --ink-soft: #55584B; --ink-faint: #8C876F;
+    --accent: #5B7A4B; --accent-soft: #E9EFE0; --purple: #6E5AA6;
+    --border: #E4DDCC; --rule: #DDD5C1;
+    --fig-paper: #F5F1E6; --fig-border: #E0D8C3;
+    --shadow: 0 1px 2px rgba(35,38,31,.05), 0 8px 24px rgba(35,38,31,.06);
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    line-height: 1.6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: clamp(28px,5vw,72px) clamp(18px,4vw,40px) 96px; }
+  header { border-bottom: 1px solid var(--rule); padding-bottom: 28px; }
+  .eyebrow { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  h1 { font-size: clamp(30px,5.2vw,50px); line-height: 1.04; letter-spacing: -.022em; font-weight: 700; margin: 14px 0 10px; text-wrap: balance; }
+  .lede { font-size: clamp(16px,2.2vw,19px); color: var(--ink-soft); max-width: 62ch; margin: 0 0 20px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: 12.5px; }
+  .chip { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--ink-soft); }
+  .chip strong { color: var(--ink); font-weight: 600; }
+  .chip.warn { border-color: color-mix(in srgb, var(--purple) 40%, var(--border)); color: var(--purple); }
+
+  #render-warn { display: none; margin: 24px 0 0; padding: 14px 16px; border: 1px solid #C99; background: #FBECEC; color: #7A2E2E; border-radius: 10px; font-size: 14px; }
+
+  .figure { margin-top: clamp(40px,6vw,68px); }
+  .fig-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .fig-num { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: 13px; font-weight: 600; letter-spacing: .1em; color: var(--paper); background: var(--accent); padding: 3px 9px; border-radius: 6px; white-space: nowrap; }
+  .fig-head h2 { font-size: clamp(21px,3vw,27px); letter-spacing: -.015em; margin: 0; font-weight: 650; }
+  .caption { color: var(--ink-soft); max-width: 74ch; margin: 12px 0 20px; font-size: 15.5px; }
+  .caption code, .notes code, .lede code { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: .88em; background: var(--accent-soft); color: var(--accent); padding: 1px 6px; border-radius: 5px; font-weight: 600; }
+  .diagram { background: var(--fig-paper); border: 1px solid var(--fig-border); border-radius: 14px; padding: 26px 22px; overflow-x: auto; box-shadow: var(--shadow); }
+  .diagram .mermaid { display: flex; justify-content: center; min-width: min-content; }
+  .diagram .mermaid svg { max-width: 100%; height: auto; }
+  .source { margin: 14px 0 0; font-size: 13px; color: var(--ink-faint); font-family: ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .source::before { content: "source · "; color: var(--accent); font-weight: 600; }
+
+  .notes { margin-top: clamp(48px,7vw,80px); border-top: 1px solid var(--rule); padding-top: 26px; }
+  .notes h2 { font-size: 18px; margin: 0 0 14px; }
+  .notes ul { margin: 0; padding-left: 0; list-style: none; display: grid; gap: 12px; }
+  .notes li { position: relative; padding-left: 20px; color: var(--ink-soft); max-width: 80ch; font-size: 15px; }
+  .notes li::before { content: ""; position: absolute; left: 2px; top: 10px; width: 7px; height: 7px; border-radius: 2px; background: var(--accent); transform: rotate(45deg); }
+  .notes strong { color: var(--ink); font-weight: 650; }
+  .notes code { color: var(--purple); background: none; }
+  footer { margin-top: 40px; color: var(--ink-faint); font-size: 12.5px; font-family: ui-monospace,SFMono-Regular,Menlo,monospace; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Squirl · Engineering Docs · Local Preview</div>
+    <h1>Architecture Diagrams</h1>
+    <p class="lede">Component and data-flow views of the MVVM layers — how the <strong>View</strong>, <strong>Model</strong>, and <strong>ViewModel</strong> fit together, and how a voice note travels from mic to screen. Renders fully offline from the sibling <code>mermaid.min.js</code>.</p>
+    <div class="meta">
+      <span class="chip">branch <strong>feat/038-icloud-sync</strong></span>
+      <span class="chip"><strong>v0.8.0</strong> · build 2</span>
+      <span class="chip">SwiftUI · SwiftData · Swift Concurrency</span>
+      <span class="chip warn">iCloud sync · in progress</span>
+    </div>
+    <div id="render-warn">Diagrams did not render. Ensure <code>mermaid.min.js</code> sits next to this file, and open it in a browser (double-click / <code>file://</code>).</div>
+  </header>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 01</span><h2>Layer overview</h2></div>
+    <p class="caption">The MVVM spine. SwiftUI <code>Views</code> observe <code>@Observable</code> ViewModels, which read and write the centralized <code>RecordingStore</code> and call domain services. <code>AppServices</code> bundles exactly <strong>8</strong> services; <code>CloudSyncService</code> and <code>DoseLogService</code> live <strong>outside</strong> the bundle — sync is read directly by <code>SyncSettingsViewModel</code>, dose logging is resolved only by App Intents. CloudKit mirroring is opt-in and off by default.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart TD
+    subgraph V["View layer — SwiftUI"]
+        RootTabView
+        Views["Feature views + shared components"]
+    end
+    subgraph VM["ViewModel layer — @Observable @MainActor"]
+        VMs["12 ViewModels"]
+    end
+    subgraph STATE["State &amp; dependency injection"]
+        Store["RecordingStore&lt;br/&gt;@Environment"]
+        Services["AppServices&lt;br/&gt;8-service bundle"]
+    end
+    subgraph SVC["Domain services — protocol-oriented"]
+        Whisper["TranscriptionService&lt;br/&gt;WhisperKit"]
+        NL["SummarizationService&lt;br/&gt;NLNoteExtractor"]
+        Audio["AudioRecording /&lt;br/&gt;AudioFileStorage"]
+        Other["AIModel · Export ·&lt;br/&gt;PendingTranscription · Connectivity"]
+        Sync["CloudSyncService&lt;br/&gt;outside bundle · opt-in"]
+        Dose["DoseLogService&lt;br/&gt;outside bundle"]
+    end
+    subgraph P["Persistence"]
+        SD[("SwiftData&lt;br/&gt;Synced + Local")]
+        CK[("CloudKit&lt;br/&gt;private DB")]
+    end
+    Intents["App Intents (030)&lt;br/&gt;LogDefaultDose · StartCheckIn"]
+    RootTabView --&gt; Views
+    Views -- "observe / act" --&gt; VMs
+    Views -. "@Environment" .-&gt; Store
+    VMs --&gt; Store
+    VMs --&gt; Services
+    Services --&gt; Whisper &amp; NL &amp; Audio &amp; Other
+    VMs -. "SyncSettingsViewModel&lt;br/&gt;reads directly" .-&gt; Sync
+    Intents -. "AppDependencyManager" .-&gt; Dose
+    Store --&gt; SD
+    Sync -. "opt-in" .-&gt; CK
+    SD -. "opt-in" .-&gt; CK
+    </pre></div>
+    <p class="source">Store/AppServices.swift (8 members) · Store/AppDependencies.swift L26/L38 · ViewModels/SyncSettingsViewModel.swift L18 · App/SquirlApp.swift L28 · App/AppModelContainer.swift</p>
+  </section>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 02</span><h2>View components</h2></div>
+    <p class="caption">Four tabs under <code>RootTabView</code>, plus a pre-tab onboarding gate and shared chrome. The medication bar is <strong>not</strong> owned by any one screen: <code>ScreenContainer</code> (DesignSystem) mounts it app-wide via <code>.medicationBarOverlay()</code>, and <code>RecordingDetailView</code> applies the same modifier; the bar presents <code>MedicationLogSheet</code> itself.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart TD
+    Root["RootTabView&lt;br/&gt;calendar · checkIn · insights · settings"]
+    Root --&gt; Cal["CalendarLibraryView"]
+    Root --&gt; Chk["CheckInView&lt;br/&gt;record capture surface"]
+    Root --&gt; Ins["InsightsView"]
+    Root --&gt; Set["SettingsView"]
+    Cal --&gt; Day["DayCard rows"]
+    Day -- "push (navigationDestination UUID)" --&gt; Detail["RecordingDetailView"]
+    Detail --&gt; Editor["ExtractionReviewView&lt;br/&gt;edit extracted signals"]
+    Detail --&gt; Player["AudioPlayerView"]
+    SC["ScreenContainer (DesignSystem)&lt;br/&gt;shared chrome"] -- ".medicationBarOverlay()" --&gt; MedBar["MedicationBarView"]
+    Detail -. ".medicationBarOverlay()" .-&gt; MedBar
+    MedBar --&gt; MedSheet["MedicationLogSheet"]
+    Set --&gt; SetSecs["MyMedication · DoseGuard ·&lt;br/&gt;YourData · ICloudSync ·&lt;br/&gt;MedicationBarSettings · DayCardSettings"]
+    Welcome["WelcomeView&lt;br/&gt;onboarding gate: hasCompletedOnboarding"] --&gt; Root
+    </pre></div>
+    <p class="source">Views/RootTabView.swift · CalendarLibraryView.swift L47/L129 · DesignSystem/ScreenContainer.swift L79 · MedicationBarView.swift L41 · RecordingDetailView.swift L41 · SettingsView.swift L54-60 + L184/L188 · App/SquirlApp.swift L83-105</p>
+  </section>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 03</span><h2>Model components — SwiftData schema</h2></div>
+    <p class="caption">Six <code>@Model</code> types under <code>SquirlSchemaV1</code>. <code>Recording</code> is the aggregate root with three optional to-many relationships (arrays are optional per CloudKit's requirements). The container partitions models into a Synced store and a Local store; only Local models keep <code>@Attribute(.unique)</code>.</p>
+    <div class="diagram"><pre class="mermaid">
+classDiagram
+    class Recording {
+        +UUID id
+        +Date createdAt
+        +String title
+        +RecordingStatus status
+        +String? cloudSyncStatus
+        +String? summary
+        +Bool isMockData
+    }
+    class TranscriptionSegment {
+        +UUID id
+        +String text
+        +Bool isFinal
+        +Double? confidence
+        +String? language
+    }
+    class RecordingTag {
+        +UUID id
+        +String name
+        +String category
+        +String source
+        +Double? confidence
+    }
+    class MedicationEvent {
+        +UUID id
+        +String name
+        +String dose
+        +Date createdAt
+    }
+    class AppSettings {
+        +UUID id  unique
+        +String defaultLanguage
+        +Int promptPaceSeconds
+        +String? defaultMedicationName
+        +Int doseGuardWindowHours
+    }
+    class ModelMetadata {
+        +UUID id  unique
+        +String modelName
+        +Int64 modelSize
+        +Bool isDownloaded
+        +String? checksum
+    }
+    Recording "1" --&gt; "0..*" TranscriptionSegment : segments
+    Recording "1" --&gt; "0..*" RecordingTag : correctionTags
+    Recording "1" --&gt; "0..*" MedicationEvent : medicationEvents
+    note for Recording "Synced store — CloudKit-eligible"
+    note for AppSettings "Local store — never synced, keeps .unique"
+    </pre></div>
+    <p class="source">Models/Recording.swift L9-69 (status: RecordingStatus L15) · TranscriptionSegment · RecordingTag · MedicationEvent · AppSettings · ModelMetadata · App/SquirlSchema.swift</p>
+  </section>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 04</span><h2>ViewModel components &amp; dependencies</h2></div>
+    <p class="caption">All 12 ViewModels are <code>@Observable @MainActor final class</code>. Solid edges = the whole dependency; <strong>dotted edges = a single service extracted from the bundle</strong>, not the bundle itself. <code>ProcessingViewModel</code> is composed by <code>CheckInViewModel</code> (no view owns it); <code>SyncSettingsViewModel</code> reads <code>CloudSyncService</code> directly and is driven by Settings' <code>ICloudSyncSection</code>.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart LR
+    subgraph DEPS["Injected dependencies"]
+        store(["RecordingStore"])
+        services(["AppServices"])
+        context(["ModelContext"])
+        syncsvc(["CloudSyncService"])
+    end
+    MLV["MoodLibraryViewModel"] --&gt; store
+    IVM["InsightsViewModel +Signals"] --&gt; store
+    CVM["CheckInViewModel"] --&gt; store &amp; services
+    RDV["RecordingDetailViewModel"] --&gt; store &amp; services
+    ERV["ExtractionReviewViewModel"] --&gt; store
+    SVM["SettingsViewModel"] --&gt; store &amp; services &amp; context
+    MBV["MedicationBarViewModel"] --&gt; context
+    MPV["MedicationPickerViewModel"] --&gt; context
+    SSV["SyncSettingsViewModel"] --&gt; syncsvc
+    CVM -. "composes" .-&gt; PVM["ProcessingViewModel"]
+    PVM --&gt; store
+    PVM -. "summarizationService only" .-&gt; services
+    APV["AudioPlaybackViewModel"] -. "storageService only" .-&gt; services
+    MLV -. "produces TimelineDay" .-&gt; CMM["CalendarMonthModel"] &amp; DT["DayTimeline"]
+    </pre></div>
+    <p class="source">ViewModels/ — CheckInViewModel composes ProcessingViewModel (L94) · ProcessingViewModel(store:summarizationService:) · AudioPlaybackViewModel(recording:storageService:) · SyncSettingsViewModel(service:) L18 ← ICloudSyncSection.swift L7 · WelcomeViewModel() takes no deps</p>
+  </section>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 05</span><h2>Data flow — write path</h2></div>
+    <p class="caption">The live pipeline runs <strong>inside <code>CheckInViewModel</code></strong>: it saves the note, streams transcription itself, then hands the raw text to its composed <code>ProcessingViewModel</code>, which extracts and applies results to the <code>Recording</code> model. <code>PendingTranscriptionService</code> is the <strong>recovery lane</strong> — a serialized, oldest-first backlog drain triggered at launch, on foregrounding, and when the Whisper model finishes downloading.</p>
+    <div class="diagram"><pre class="mermaid">
+sequenceDiagram
+    actor User
+    participant CV as CheckInView
+    participant CVM as CheckInViewModel
+    participant AR as AudioRecordingService
+    participant Store as RecordingStore
+    participant PVM as ProcessingViewModel
+    participant TS as TranscriptionService
+    participant NL as NLSummarization
+    participant Rec as Recording (model)
+    participant SD as SwiftData
+    User-&gt;&gt;CV: tap record
+    CV-&gt;&gt;CVM: startRecording()
+    CVM-&gt;&gt;AR: startRecording() + audio-level stream
+    User-&gt;&gt;CV: tap stop
+    CV-&gt;&gt;CVM: stopRecording()
+    CVM-&gt;&gt;Store: addRecording(...)
+    Store-&gt;&gt;SD: insert + save
+    Note over CVM: status .pendingTranscription → transcribeInBackground()
+    CVM-&gt;&gt;TS: transcribe(audioURL) segment stream
+    TS--&gt;&gt;CVM: text segments
+    CVM-&gt;&gt;Store: save() (streamed text)
+    CVM-&gt;&gt;PVM: processRawTranscription(...)
+    PVM-&gt;&gt;NL: summarize(rawTranscription)
+    NL--&gt;&gt;PVM: SummaryResult — summary, tags, med events
+    PVM-&gt;&gt;Rec: applySummary + setMedicationEvents
+    PVM-&gt;&gt;Store: save() → status .completed
+    SD--&gt;&gt;CV: @Observable change → UI refresh
+    Note over Store,SD: Recovery lane — PendingTranscriptionService.drainIfModelReady()&lt;br/&gt;(launch · foreground · model-ready) drains pending notes oldest-first,&lt;br/&gt;serialized; writes fullTranscriptText, then the same applySummary path
+    </pre></div>
+    <p class="source">CheckInViewModel.swift L192/L204/L213/L261/L429 · ProcessingViewModel.swift · Recording.swift L215/L314 · PendingTranscriptionServiceImpl.swift L107 · App/SquirlApp.swift L115/L118/L151</p>
+  </section>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 06</span><h2>Data flow — read &amp; observation path</h2></div>
+    <p class="caption">The reactive loop. SwiftData is the source of truth; <code>RecordingStore.recordings</code> is the observed collection; ViewModels derive view state from it; Views observe and re-render. User actions call back into the store, which mutates the context and saves — closing the loop. Opt-in CloudKit sync mirrors the Synced store across the user's devices.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart LR
+    SD[("SwiftData&lt;br/&gt;ModelContext")] -- "loadRecordings()" --&gt; Store["RecordingStore.recordings&lt;br/&gt;@Observable"]
+    Store -- "derive" --&gt; VM["ViewModels&lt;br/&gt;view state"]
+    VM -- "observe" --&gt; View["SwiftUI Views"]
+    View -- "user action&lt;br/&gt;save · delete · tag · favorite" --&gt; Store
+    Store -- "mutate + save()" --&gt; SD
+    SD -. "opt-in mirror" .-&gt; CK[("CloudKit&lt;br/&gt;private DB")]
+    CK -. "remote change" .-&gt; SD
+    </pre></div>
+    <p class="source">Store/RecordingStore.swift · App/AppModelContainer.swift</p>
+  </section>
+
+  <div class="notes">
+    <h2>Notes &amp; caveats</h2>
+    <ul>
+      <li><strong>iCloud sync (spec 038)</strong> is scaffolded and now has a working-tree UI consumer (<code>SyncSettingsViewModel</code> + <code>ICloudSyncSection</code>), but everything is <strong>uncommitted</strong> and the iCloud entitlement is not in the build target. CloudKit edges are drawn dashed and labelled opt-in.</li>
+      <li><strong><code>JournalExportSection.swift</code></strong> exists on disk but the symbol is mounted nowhere (grep-verified); export UI lives in <code>YourDataSection</code>. It is omitted from Figure 02.</li>
+      <li>Field lists in Figure 03 are representative (the most load-bearing columns), not exhaustive — see <code>DATA_MODEL.md</code> for the full schema.</li>
+    </ul>
+    <footer>Local preview · updated 2026-07-20 after line-by-line code review · grounded in source on branch feat/038-icloud-sync · canonical source: docs/engineering/DIAGRAMS.md</footer>
+  </div>
+</div>
+
+<script src="mermaid.min.js"></script>
+<script>
+  (function () {
+    function findMermaid() {
+      if (window.mermaid && typeof window.mermaid.initialize === "function") return window.mermaid;
+      var ns = window.__esbuild_esm_mermaid_nm && window.__esbuild_esm_mermaid_nm.mermaid;
+      if (ns) return (ns.default && ns.default.initialize) ? ns.default : ns;
+      return null;
+    }
+    var m = findMermaid();
+    var warn = document.getElementById("render-warn");
+    if (!m) { if (warn) warn.style.display = "block"; return; }
+    try {
+      m.initialize({
+        startOnLoad: false,
+        securityLevel: "loose",
+        theme: "base",
+        themeVariables: {
+          background: "#F5F1E6",
+          primaryColor: "#E9EFE0",
+          primaryBorderColor: "#5B7A4B",
+          primaryTextColor: "#23261F",
+          lineColor: "#8A8570",
+          secondaryColor: "#E8E1F1",
+          tertiaryColor: "#F1ECDE",
+          clusterBkg: "#F1ECDE",
+          clusterBorder: "#CFC7AD",
+          titleColor: "#23261F",
+          noteBkgColor: "#EFE7D0",
+          noteTextColor: "#4A4636",
+          noteBorderColor: "#C9BE9E",
+          actorBkg: "#E7EFDD",
+          actorBorder: "#5B7A4B",
+          actorTextColor: "#23261F",
+          signalColor: "#55584B",
+          signalTextColor: "#33362C",
+          labelBoxBkgColor: "#F1ECDE",
+          labelTextColor: "#23261F",
+          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+          fontSize: "14px"
+        }
+      });
+      var run = m.run ? m.run({ querySelector: ".mermaid" }) : m.init(undefined, ".mermaid");
+      if (run && run.catch) run.catch(function (e) { if (warn) { warn.style.display = "block"; warn.textContent = "Render error: " + e.message; } });
+    } catch (e) {
+      if (warn) { warn.style.display = "block"; warn.textContent = "Render error: " + e.message; }
+    }
+  })();
+</script>
+</body>
+</html>

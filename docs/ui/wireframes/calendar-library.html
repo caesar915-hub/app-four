@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<!-- Created: 2026-07-02 15:50 (WEST) · Updated: 2026-07-02 15:50 (WEST) -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendar Library · Low-fi Wireframes · app-four</title>
+<style>
+  :root{
+    --ink:#141414; --line:#3f3f3f; --line2:#767676; --sec:#8c8c8c; --ter:#c4c4c4;
+    --paper:#ffffff; --card:#f5f5f5; --tint:#e8e8e8; --med:#efefef; --page:#e9e9e9;
+    --mono:ui-monospace,Menlo,"SF Mono",monospace; --sans:-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--ink);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1360px;margin:0 auto;padding:38px 24px 90px}
+  .eyebrow{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:#6f6f6f;font-weight:700}
+  h1{font-size:28px;font-weight:800;margin:5px 0 4px}
+  h2{font-size:19px;font-weight:700;margin:46px 0 6px;border-bottom:2px solid #cfcfcf;padding-bottom:8px}
+  h2 .num{font:700 13px/1 var(--mono);background:var(--ink);color:#fff;border-radius:6px;padding:4px 7px;margin-right:9px;vertical-align:middle}
+  .sub{color:#5f5f5f;max-width:80ch;font-size:14.5px}
+  .prov{background:#f7f7f7;border:1px solid #d3d3d3;border-radius:10px;padding:12px 15px;font-size:13px;color:#555;margin-top:14px}
+  code{font-family:var(--mono);font-size:.85em;background:#e4e4e4;padding:1px 5px;border-radius:5px;color:#111}
+  /* conventions legend */
+  .legend{display:flex;flex-wrap:wrap;gap:8px 20px;margin:14px 0 4px;font-size:13px}
+  .lg{display:flex;align-items:center;gap:8px}
+  .k{width:30px;height:20px;flex:none;border-radius:3px}
+  .k.solid{border:1.5px solid var(--line);background:#fff}
+  .k.tap{border:1.5px dashed #555;background:#fff}
+  .k.icon{border:1px solid var(--line2);background:repeating-linear-gradient(45deg,#d6d6d6,#d6d6d6 1.5px,#f0f0f0 1.5px,#f0f0f0 4px)}
+  .k.tint{border:1px solid #cfcfcf;background:var(--tint)}
+  .k.sel{border-radius:50%;background:var(--ink)}
+  /* story index */
+  .stories{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:11px;margin-top:6px}
+  .story{background:#f7f7f7;border:1px solid #d3d3d3;border-radius:10px;padding:11px 13px}
+  .story b{font-size:13.5px}
+  .story p{margin:3px 0 0;color:#5f5f5f;font-size:12.5px}
+  .sc{display:inline-block;font:700 11px/1 var(--mono);background:var(--ink);color:#fff;border-radius:5px;padding:3px 7px;margin-right:7px}
+  /* frames */
+  .frames{display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start;margin-top:8px}
+  .frame{width:393px}
+  .frame.wide{width:520px}
+  .frame .cap{font-weight:800;font-size:15px;margin:0}
+  .frame .capsub{color:#5f5f5f;font-size:12.5px;margin:2px 0 8px}
+  .frame .tags{margin:0 0 12px}
+  .frame .tags .sc{font-size:10.5px;padding:3px 6px}
+  /* phone */
+  .phone{border:9px solid var(--ink);border-radius:46px;background:var(--paper);overflow:hidden}
+  .notch{height:30px;background:var(--paper);position:relative;flex:none}
+  .notch::after{content:"";position:absolute;top:9px;left:50%;transform:translateX(-50%);width:128px;height:22px;background:var(--ink);border-radius:0 0 16px 16px}
+  .screen{background:var(--paper);display:flex;flex-direction:column}
+  .screen.tall{min-height:720px}
+  /* calendar header */
+  .hdr{padding:8px 16px 0}
+  .monthrow{display:flex;align-items:center;min-height:44px;gap:5px}
+  .monthrow .ml{font-size:17px;font-weight:700}
+  .chev{font:700 12px/1 var(--sans);color:var(--sec)}
+  .weekcaps{display:flex;margin-top:2px}
+  .weekcaps span{flex:1;text-align:center;font-size:12px;color:var(--sec)}
+  .grid{margin-top:4px}
+  .week{display:flex;gap:0}
+  .daycell{flex:1;min-height:44px;display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:3px}
+  .daycell .num{width:30px;height:30px;line-height:30px;text-align:center;font-size:15px;font-variant-numeric:tabular-nums;border-radius:50%}
+  .daycell.sel .num{background:var(--ink);color:#fff;font-weight:700}
+  .daycell.future .num,.daycell.oom .num{color:var(--ter)}
+  .dot{width:6px;height:6px;border-radius:50%}
+  .dot.mday{background:#6a6a6a} .dot.neu{background:#b3b3b3} .dot.none{background:transparent}
+  .divider{height:1px;background:#d8d8d8;margin:8px 0 0}
+  /* timeline scroll region */
+  .tl{padding:12px 16px 20px;display:flex;flex-direction:column;gap:12px;flex:1}
+  /* day card */
+  .card{border:1px solid #dcdcdc;border-radius:16px;overflow:hidden;background:var(--card)}
+  .cardhdr{display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:44px;background:var(--tint);border:1.5px dashed #9a9a9a;border-radius:16px}
+  .card.exp .cardhdr{border-radius:16px 16px 0 0;border-bottom:none}
+  .mood{width:40px;height:40px;flex:none;border-radius:50%;border:1.5px solid var(--line);background:#e2e2e2;position:relative}
+  .mood::before{content:"";position:absolute;left:50%;top:9px;bottom:8px;width:2px;background:#8a8a8a;transform:translateX(-50%)}
+  .mood::after{content:"";position:absolute;left:50%;top:7px;width:15px;height:16px;background:#cbcbcb;border:1.5px solid #7d7d7d;border-radius:60% 60% 55% 55%;transform:translateX(-50%)}
+  .mood.sm{width:36px;height:36px}
+  .mood.sm::after{top:6px;width:13px;height:14px} .mood.sm::before{top:8px;bottom:7px}
+  .ttl{flex:1;min-width:0}
+  .ttl .t1{font-size:16px;font-weight:600}
+  .ttl .t1 .mw{font-weight:700}
+  .ttl .t1 .wd{color:#333}
+  .sumline{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;align-items:center;font-size:12px;color:#555}
+  .sumline .it{display:flex;align-items:center;gap:4px}
+  .sep{color:#aaa}
+  .g{display:inline-block;border:1px solid var(--line2);background:repeating-linear-gradient(45deg,#d6d6d6,#d6d6d6 1.5px,#f0f0f0 1.5px,#f0f0f0 4px);flex:none}
+  .g12{width:12px;height:12px} .g14{width:14px;height:14px} .g15{width:15px;height:15px}
+  .chevd{color:var(--sec);font-weight:700;font-size:13px;flex:none}
+  /* expanded rows */
+  .rows{padding:12px 16px 16px;background:var(--paper);display:flex;flex-direction:column;gap:0}
+  .row{display:flex;gap:12px;align-items:stretch}
+  .beadcol{display:flex;flex-direction:column;align-items:center;flex:none}
+  .bead{width:36px;height:36px;flex:none;border-radius:50%;border:1.5px solid var(--line);background:#eaeaea;display:flex;align-items:center;justify-content:center}
+  .bead .mg{width:20px;height:22px;position:relative}
+  .bead .mg::before{content:"";position:absolute;left:50%;top:4px;bottom:1px;width:1.5px;background:#8a8a8a;transform:translateX(-50%)}
+  .bead .mg::after{content:"";position:absolute;left:50%;top:2px;width:11px;height:12px;background:#cfcfcf;border:1.5px solid #7d7d7d;border-radius:60% 60% 55% 55%;transform:translateX(-50%)}
+  .conn{width:1px;background:#cfcfcf;flex:1;margin:2px 0}
+  .rc{position:relative;flex:1;min-width:0;border:1.5px dashed #9a9a9a;border-radius:8px;padding:7px 9px 10px;display:flex;flex-direction:column;gap:8px}
+  .rline{display:flex;align-items:center;gap:8px}
+  .rl1 .mw{font-size:17px;font-weight:700}
+  .rl1 .tm{font-family:var(--mono);font-size:13px;color:var(--sec)}
+  .rl1 .sp{flex:1}
+  .rl1 .cv{color:var(--sec);font-weight:700}
+  .rl .it{display:flex;align-items:center;gap:4px;font-size:12px;color:#444}
+  .rl.ctx .it{color:#7a7a7a}
+  .gap{height:20px}
+  /* med bar */
+  .medbar{margin:0 12px 12px;border:1.5px solid #cfcfcf;border-radius:16px;background:var(--med);padding:9px 12px;display:flex;gap:10px;align-items:center}
+  .medbar .cap2{width:26px;height:16px;border-radius:8px;border:1.5px solid var(--line);background:linear-gradient(90deg,#cfcfcf 50%,#efefef 50%);flex:none}
+  .medbar .mid{flex:1;min-width:0}
+  .medbar .m1{display:flex;justify-content:space-between;font-size:13px;font-weight:600}
+  .medbar .m1 .st{font-size:11px;color:#555;letter-spacing:.04em}
+  .track{height:7px;border-radius:4px;background:#dcdcdc;margin:5px 0;overflow:hidden}
+  .track i{display:block;height:100%;width:52%;background:#8a8a8a}
+  .medbar .m2{font-family:var(--mono);font-size:11px;color:#777}
+  /* empty */
+  .empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding-top:40px;gap:10px;color:#777}
+  .empty .ic{width:52px;height:46px;border:1.5px solid var(--line2);border-radius:8px;background:repeating-linear-gradient(45deg,#d6d6d6,#d6d6d6 2px,#f0f0f0 2px,#f0f0f0 5px);position:relative}
+  .empty .ic::after{content:"!";position:absolute;right:-6px;bottom:-6px;width:18px;height:18px;line-height:16px;border-radius:50%;background:#fff;border:1.5px solid var(--line);font-weight:800;font-size:12px}
+  .empty .et{font-size:16px;font-weight:700;color:#444} .empty .ed{font-size:13px}
+  /* callout pins */
+  .pin{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;background:var(--ink);color:#fff;font:700 10px/1 var(--mono);vertical-align:top;margin-left:3px}
+  .notes{margin:12px 0 0;padding:12px 14px;background:#f7f7f7;border:1px solid #d3d3d3;border-radius:10px;font-size:12.5px;color:#4a4a4a}
+  .notes ol{margin:0;padding-left:26px} .notes li{margin:3px 0}
+  .notes .pin{margin:0 4px 0 -22px}
+  /* nav strip */
+  .nav{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .navmini{width:150px;border:6px solid var(--ink);border-radius:22px;overflow:hidden;background:#fff}
+  .arrow{font-size:26px;color:#555}
+  .navlbl{font-size:12px;color:#5f5f5f;width:150px;text-align:center;margin-top:5px}
+  footer{margin-top:52px;padding-top:16px;border-top:1px solid #cfcfcf;font-size:12.5px;color:#6f6f6f}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">app-four · Squirl · Low-fi Wireframes</div>
+    <h1>Calendar Library</h1>
+    <p class="sub">Black-and-white, low-fidelity wireframes of the Calendar tab (<code>CalendarLibraryView</code>), one frame per state and user story. Layout, element order, and metrics are taken 1:1 from the SwiftUI source (frames are drawn at 393&nbsp;pt device width). This maps the flow's Calendar branch onto concrete screens.</p>
+    <div class="prov"><b>Grounded in:</b> <code>Views/Library/CalendarLibraryView.swift</code>, <code>Components/CalendarHeaderView.swift</code>, <code>CalendarDayCell.swift</code>, <code>DayCard.swift</code>, <code>FoldedDayCardHeader.swift</code>, <code>TimelineRow.swift</code>, <code>TimelineBead.swift</code>, <code>MedicationBarView.swift</code>. Spacing tokens: xs 4 · s 8 · m 12 · l 16 · xl 20 · xxl 24 · section 32 · hero 40. Radius card 16. Metrics: dayHeaderGlyph 40 · timeBead 36 · rowMoodText 17 · rowTime 13 · rowSignal 12 · minTapTarget 44.</div>
+  </header>
+
+  <h2>How to read these</h2>
+  <div class="legend">
+    <span class="lg"><span class="k solid"></span>Static element</span>
+    <span class="lg"><span class="k tap"></span>Tappable region</span>
+    <span class="lg"><span class="k icon"></span>Glyph / icon placeholder</span>
+    <span class="lg"><span class="k tint"></span>Mood tint (a colour in-app; grey here)</span>
+    <span class="lg"><span class="k sel"></span>Selected day</span>
+    <span class="lg"><span style="display:inline-flex;gap:3px;align-items:center"><span style="width:7px;height:7px;border-radius:50%;background:#6a6a6a"></span><span style="width:7px;height:7px;border-radius:50%;background:#b3b3b3"></span></span>Day marker: dark = mood check-in · light = entry only · none = no entry</span>
+    <span class="lg"><span style="width:2px;height:18px;background:#cfcfcf;display:inline-block"></span>Timeline connector (same day)</span>
+    <span class="lg"><span class="pin">1</span>&nbsp;See notes under the frame</span>
+  </div>
+  <p class="sub" style="margin-top:8px">Colour is intentionally removed: mood tint, the medication purple, and the sleep blue are all rendered as neutral greys and called out in the notes. Everything else is greyscale by nature. Card outlines here are a wireframe boundary; in-app the DayCard is a cream surface with no border (DayCard.swift:39).</p>
+
+  <h2>User stories on this view</h2>
+  <div class="stories">
+    <div class="story"><b><span class="sc">C1</span>Browse by week</b><p>Scan days in a compact week strip; each day shows a mood-marker dot.</p></div>
+    <div class="story"><b><span class="sc">C2</span>Expand to month</b><p>Tap the month label / chevron to open the full month; swipe left/right pages months.</p></div>
+    <div class="story"><b><span class="sc">C3</span>Glance a day</b><p>Each day is a folded DayCard: mood glyph + “Mood · Weekday” + a one-line energy/focus/med summary.</p></div>
+    <div class="story"><b><span class="sc">C4</span>Open a day</b><p>Tap a card header to expand into the day's individual check-ins as a timeline.</p></div>
+    <div class="story"><b><span class="sc">C5</span>Open a check-in</b><p>Tap a timeline row (or its chevron) to push the Recording Detail.</p></div>
+    <div class="story"><b><span class="sc">C6</span>Jump to a day</b><p>Tap a day cell: it fills, the list scrolls to it, others collapse, the selected day auto-expands.</p></div>
+    <div class="story"><b><span class="sc">C7</span>No data yet</b><p>Empty state below the header: “No entries yet · Record a voice note to see it here.”</p></div>
+    <div class="story"><b><span class="sc">C8</span>Active medication</b><p>A persistent medication bar pins the active dose + its remaining-time track at the bottom.</p></div>
+  </div>
+
+  <h2>Full-screen states</h2>
+  <div class="frames">
+
+    <!-- FRAME 1: HOME / WEEK + FOLDED TIMELINE -->
+    <div class="frame">
+      <p class="cap">1 · Home: week + folded timeline</p>
+      <p class="capsub">Default when data exists. <code>hasAnyEntries</code> true → <code>timelineList</code>.</p>
+      <div class="tags"><span class="sc">C1</span><span class="sc">C3</span><span class="sc">C8</span></div>
+      <div class="phone"><div class="screen tall">
+        <div class="notch"></div>
+        <div class="hdr">
+          <div class="monthrow"><span class="ml">June 2026</span><span class="chev">›</span><span class="pin">1</span></div>
+          <div class="weekcaps"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          <div class="grid"><div class="week">
+            <div class="daycell"><span class="num">8</span><span class="dot mday"></span></div>
+            <div class="daycell"><span class="num">9</span><span class="dot none"></span></div>
+            <div class="daycell sel"><span class="num">10</span><span class="dot mday"></span></div>
+            <div class="daycell"><span class="num">11</span><span class="dot mday"></span></div>
+            <div class="daycell"><span class="num">12</span><span class="dot neu"></span></div>
+            <div class="daycell future"><span class="num">13</span><span class="dot none"></span></div>
+            <div class="daycell future"><span class="num">14</span><span class="dot none"></span></div>
+          </div></div><span class="pin">2</span>
+          <div class="divider"></div>
+        </div>
+        <div class="tl">
+          <div class="card"><div class="cardhdr">
+            <div class="mood"></div>
+            <div class="ttl"><div class="t1"><span class="mw">Great</span> · <span class="wd">Wed 10</span></div>
+              <div class="sumline"><span class="it"><span class="g g15"></span>Charged</span><span class="sep">·</span><span class="it"><span class="g g15"></span>Sharp</span><span class="sep">·</span><span class="it"><span class="g g15"></span>Concerta 36mg</span></div></div>
+            <span class="chevd">⌄</span>
+          </div></div>
+          <div class="card"><div class="cardhdr">
+            <div class="mood"></div>
+            <div class="ttl"><div class="t1"><span class="mw">Okay</span> · <span class="wd">Tue 9</span></div>
+              <div class="sumline"><span class="it"><span class="g g15"></span>Steady</span><span class="sep">·</span><span class="it"><span class="g g15"></span>Present</span></div></div>
+            <span class="chevd">⌄</span>
+          </div></div>
+          <div class="card"><div class="cardhdr">
+            <div class="mood"></div>
+            <div class="ttl"><div class="t1"><span class="mw">Good</span> · <span class="wd">Mon 8</span></div>
+              <div class="sumline"><span class="it"><span class="g g15"></span>Charged</span><span class="sep">·</span><span class="it"><span class="g g15"></span>Sharp</span><span class="sep">·</span><span class="it"><span class="g g15"></span>Ritalin</span></div></div>
+            <span class="chevd">⌄</span>
+          </div><span class="pin">3</span></div>
+        </div>
+        <div class="medbar">
+          <span class="cap2"></span>
+          <div class="mid"><div class="m1"><span>1st dose · Concerta 36mg</span><span class="st">active</span></div>
+            <div class="track"><i></i></div>
+            <div class="m2">taken 09:15 · ends 19:15</div></div>
+          <span class="pin">4</span>
+        </div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span><b>Header</b>: month label (<code>Typography.headline</code>) + chevron.right, ≥44pt tap target. Collapsed = the selected day's week only. <code>CalendarHeaderView.swift:64</code></li>
+        <li><span class="pin">2</span><b>Week strip</b>: 7 <code>CalendarDayCell</code>s: number (callout, tabular) + a 6px mood-marker dot; future days tertiary + disabled. <code>CalendarDayCell.swift:16</code></li>
+        <li><span class="pin">3</span><b>Folded DayCards</b>: <code>LazyVStack</code> spacing 12, newest-first, filtered by the selected date (timelineDaysFilteredToSelectedDate). Header block carries the day's representative mood tint. <code>CalendarLibraryView.swift:84</code></li>
+        <li><span class="pin">4</span><b>Medication bar</b>: global overlay, <code>.card()</code> Paper (not glass); dose name + state word (active, medication purple in-app) + DoseTrack + taken/ends subline. <code>MedicationBarView.swift</code></li>
+      </ol></div>
+    </div>
+
+    <!-- FRAME 2: MONTH EXPANDED -->
+    <div class="frame">
+      <p class="cap">2 · Month expanded</p>
+      <p class="capsub">Tap month/chevron → full month grid; chevron rotates 90°. Swipe pages months.</p>
+      <div class="tags"><span class="sc">C2</span><span class="sc">C8</span></div>
+      <div class="phone"><div class="screen tall">
+        <div class="notch"></div>
+        <div class="hdr">
+          <div class="monthrow"><span class="ml">June 2026</span><span class="chev" style="transform:rotate(90deg);display:inline-block">›</span><span class="pin">1</span></div>
+          <div class="weekcaps"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          <div class="grid">
+            <div class="week"><div class="daycell"><span class="num">1</span><span class="dot neu"></span></div><div class="daycell"><span class="num">2</span><span class="dot mday"></span></div><div class="daycell"><span class="num">3</span><span class="dot none"></span></div><div class="daycell"><span class="num">4</span><span class="dot mday"></span></div><div class="daycell"><span class="num">5</span><span class="dot mday"></span></div><div class="daycell"><span class="num">6</span><span class="dot none"></span></div><div class="daycell"><span class="num">7</span><span class="dot mday"></span></div></div>
+            <div class="week"><div class="daycell"><span class="num">8</span><span class="dot mday"></span></div><div class="daycell"><span class="num">9</span><span class="dot none"></span></div><div class="daycell sel"><span class="num">10</span><span class="dot mday"></span></div><div class="daycell"><span class="num">11</span><span class="dot mday"></span></div><div class="daycell"><span class="num">12</span><span class="dot neu"></span></div><div class="daycell future"><span class="num">13</span><span class="dot none"></span></div><div class="daycell future"><span class="num">14</span><span class="dot none"></span></div></div>
+            <div class="week"><div class="daycell future"><span class="num">15</span><span class="dot none"></span></div><div class="daycell future"><span class="num">16</span><span class="dot none"></span></div><div class="daycell future"><span class="num">17</span><span class="dot none"></span></div><div class="daycell future"><span class="num">18</span><span class="dot none"></span></div><div class="daycell future"><span class="num">19</span><span class="dot none"></span></div><div class="daycell future"><span class="num">20</span><span class="dot none"></span></div><div class="daycell future"><span class="num">21</span><span class="dot none"></span></div></div>
+            <div class="week"><div class="daycell future"><span class="num">22</span><span class="dot none"></span></div><div class="daycell future"><span class="num">23</span><span class="dot none"></span></div><div class="daycell future"><span class="num">24</span><span class="dot none"></span></div><div class="daycell future"><span class="num">25</span><span class="dot none"></span></div><div class="daycell future"><span class="num">26</span><span class="dot none"></span></div><div class="daycell future"><span class="num">27</span><span class="dot none"></span></div><div class="daycell future"><span class="num">28</span><span class="dot none"></span></div></div>
+            <div class="week"><div class="daycell future"><span class="num">29</span><span class="dot none"></span></div><div class="daycell future"><span class="num">30</span><span class="dot none"></span></div><div class="daycell oom"><span class="num">1</span><span class="dot none"></span></div><div class="daycell oom"><span class="num">2</span><span class="dot none"></span></div><div class="daycell oom"><span class="num">3</span><span class="dot none"></span></div><div class="daycell oom"><span class="num">4</span><span class="dot none"></span></div><div class="daycell oom"><span class="num">5</span><span class="dot none"></span></div></div>
+          </div><span class="pin">2</span>
+          <div class="divider"></div>
+        </div>
+        <div class="tl">
+          <div class="card"><div class="cardhdr">
+            <div class="mood"></div>
+            <div class="ttl"><div class="t1"><span class="mw">Great</span> · <span class="wd">Wed 10</span></div>
+              <div class="sumline"><span class="it"><span class="g g15"></span>Charged</span><span class="sep">·</span><span class="it"><span class="g g15"></span>Sharp</span></div></div>
+            <span class="chevd">⌄</span>
+          </div></div>
+          <div class="card"><div class="cardhdr">
+            <div class="mood"></div>
+            <div class="ttl"><div class="t1"><span class="mw">Good</span> · <span class="wd">Mon 8</span></div>
+              <div class="sumline"><span class="it"><span class="g g15"></span>Steady</span></div></div>
+            <span class="chevd">⌄</span>
+          </div></div>
+        </div>
+        <div class="medbar"><span class="cap2"></span><div class="mid"><div class="m1"><span>1st dose · Concerta 36mg</span><span class="st">active</span></div><div class="track"><i></i></div><div class="m2">taken 09:15 · ends 19:15</div></div></div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span><b>Expanded header</b>: chevron rotated 90°. At accessibility text sizes the grid force-collapses to one week and the button becomes plain text. <code>CalendarHeaderView.swift:20,49</code></li>
+        <li><span class="pin">2</span><b>Month grid</b>: all weeks of the month; out-of-month + future days tertiary. A horizontal swipe pages months (bounded: earliest month with data → current month). <code>CalendarHeaderView.swift:116</code>, <code>CalendarLibraryView.swift:138</code></li>
+      </ol></div>
+    </div>
+
+    <!-- FRAME 3: DAY SELECTED + AUTO-EXPANDED -->
+    <div class="frame">
+      <p class="cap">3 · Day selected → auto-expanded</p>
+      <p class="capsub">Tap a day: fills, list scrolls to it, others collapse, selected auto-expands.</p>
+      <div class="tags"><span class="sc">C6</span><span class="sc">C4</span><span class="sc">C5</span><span class="sc">C8</span></div>
+      <div class="phone"><div class="screen tall">
+        <div class="notch"></div>
+        <div class="hdr">
+          <div class="monthrow"><span class="ml">June 2026</span><span class="chev">›</span></div>
+          <div class="weekcaps"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          <div class="grid"><div class="week">
+            <div class="daycell"><span class="num">8</span><span class="dot mday"></span></div>
+            <div class="daycell"><span class="num">9</span><span class="dot none"></span></div>
+            <div class="daycell sel"><span class="num">10</span><span class="dot mday"></span></div>
+            <div class="daycell"><span class="num">11</span><span class="dot mday"></span></div>
+            <div class="daycell"><span class="num">12</span><span class="dot neu"></span></div>
+            <div class="daycell future"><span class="num">13</span><span class="dot none"></span></div>
+            <div class="daycell future"><span class="num">14</span><span class="dot none"></span></div>
+          </div></div><span class="pin">1</span>
+          <div class="divider"></div>
+        </div>
+        <div class="tl">
+          <div class="card exp"><div class="cardhdr">
+            <div class="mood"></div>
+            <div class="ttl"><div class="t1"><span class="mw">Great</span> · <span class="wd">Wed 10</span></div></div>
+            <span class="chevd" style="transform:rotate(180deg);display:inline-block">⌄</span><span class="pin">2</span>
+          </div>
+          <div class="rows">
+            <div class="row">
+              <div class="beadcol"><div class="bead"><span class="mg"></span></div><div class="conn"></div></div>
+              <div class="rc"><span class="pin" style="position:absolute;margin-left:-30px">3</span>
+                <div class="rline rl1 rl"><span class="mw">Great</span><span class="tm">09:15</span><span class="sp"></span><span class="cv">›</span></div>
+                <div class="rline rl"><span class="it"><span class="g g12"></span>Charged</span><span class="it"><span class="g g12"></span>Sharp</span></div>
+                <div class="rline rl"><span class="it"><span class="g g12"></span>Taken Concerta 36mg</span><span class="it"><span class="g g12"></span>7h</span></div>
+                <div class="rline rl ctx"><span class="it"><span class="g g12"></span>Grateful · Content</span><span class="it"><span class="g g12"></span>Dry mouth</span></div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="beadcol"><div class="bead"><span class="mg"></span></div></div>
+              <div class="rc">
+                <div class="rline rl1 rl"><span class="mw">Okay</span><span class="tm">13:40</span><span class="sp"></span><span class="cv">›</span></div>
+                <div class="rline rl"><span class="it"><span class="g g12"></span>Steady</span><span class="it"><span class="g g12"></span>Present</span></div>
+                <div class="rline rl ctx"><span class="it"><span class="g g12"></span>Anxious</span></div>
+              </div>
+            </div>
+          </div></div>
+          <div class="card"><div class="cardhdr">
+            <div class="mood"></div>
+            <div class="ttl"><div class="t1"><span class="mw">Okay</span> · <span class="wd">Tue 9</span></div>
+              <div class="sumline"><span class="it"><span class="g g15"></span>Steady</span></div></div>
+            <span class="chevd">⌄</span>
+          </div></div>
+        </div>
+        <div class="medbar"><span class="cap2"></span><div class="mid"><div class="m1"><span>1st dose · Concerta 36mg</span><span class="st">active</span></div><div class="track"><i></i></div><div class="m2">taken 09:15 · ends 19:15</div></div></div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span><b>Selected cell</b>: filled <code>Color.primary</code> circle, white number, bold; neutral so it never competes with the mood dot. <code>CalendarDayCell.swift:27</code></li>
+        <li><span class="pin">2</span><b>Auto-expand</b>: <code>scrollList(to:)</code> collapses all cards then opens the selected day (<code>autoExpandOnSelection</code>); chevron rotates 180°. <code>CalendarLibraryView.swift:121</code></li>
+        <li><span class="pin">3</span><b>Timeline row</b>: 4 bare lines: (1) mood word + time + push chevron, (2) energy + focus, (3) medication + sleep, (4) feelings + side-effects (≤4 each, <code>+N</code>). Whole row is the tap target → push. <code>TimelineRow.swift:51</code></li>
+      </ol></div>
+    </div>
+
+    <!-- FRAME 4: EMPTY -->
+    <div class="frame">
+      <p class="cap">4 · Empty state (no data)</p>
+      <p class="capsub"><code>hasAnyEntries</code> false → header + <code>ContentUnavailableView</code>.</p>
+      <div class="tags"><span class="sc">C7</span></div>
+      <div class="phone"><div class="screen tall">
+        <div class="notch"></div>
+        <div class="hdr">
+          <div class="monthrow"><span class="ml">June 2026</span><span class="chev">›</span></div>
+          <div class="weekcaps"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+          <div class="grid"><div class="week">
+            <div class="daycell"><span class="num">8</span><span class="dot none"></span></div>
+            <div class="daycell"><span class="num">9</span><span class="dot none"></span></div>
+            <div class="daycell sel"><span class="num">10</span><span class="dot none"></span></div>
+            <div class="daycell"><span class="num">11</span><span class="dot none"></span></div>
+            <div class="daycell"><span class="num">12</span><span class="dot none"></span></div>
+            <div class="daycell future"><span class="num">13</span><span class="dot none"></span></div>
+            <div class="daycell future"><span class="num">14</span><span class="dot none"></span></div>
+          </div></div>
+          <div class="divider"></div>
+        </div>
+        <div class="empty"><span class="pin" style="align-self:center">1</span>
+          <div class="ic"></div>
+          <div class="et">No entries yet</div>
+          <div class="ed">Record a voice note to see it here.</div>
+        </div>
+        <div style="margin:0 12px 12px;padding:9px 12px;border:1.5px dashed #cfcfcf;border-radius:16px;color:#9a9a9a;font-size:12px;text-align:center">no medication bar <span class="pin">2</span></div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span><b>Empty state</b>: <code>ContentUnavailableView("No entries yet", systemImage:"calendar.badge.exclamationmark", description: Text("Record a voice note to see it here."))</code>, offset below the header by <code>Spacing.hero</code> (40). Header still shows. <code>CalendarLibraryView.swift:155</code></li>
+        <li><span class="pin">2</span><b>No medication bar</b>: the overlay only renders when <code>showBar &amp;&amp; !activeDoses.isEmpty</code>, so with no active dose it is absent entirely (not a ghost). <code>MedicationBarView.swift:14</code></li>
+      </ol></div>
+    </div>
+
+  </div>
+
+  <h2>Component anatomy</h2>
+  <div class="frames">
+
+    <!-- FRAME 5: FOLDED CARD ANATOMY -->
+    <div class="frame wide">
+      <p class="cap">5 · DayCard, folded</p>
+      <p class="capsub">The at-a-glance unit. Header block only; carries the day's mood tint.</p>
+      <div class="tags"><span class="sc">C3</span></div>
+      <div class="phone" style="border-radius:26px"><div class="screen" style="padding:16px;background:#f0f0f0">
+        <div class="card"><div class="cardhdr" style="min-height:64px">
+          <div class="mood"></div><span class="pin">1</span>
+          <div class="ttl"><div class="t1"><span class="mw">Great</span> · <span class="wd">Wednesday 10</span></div><span class="pin">2</span>
+            <div class="sumline"><span class="it"><span class="g g15"></span>Charged</span><span class="sep">·</span><span class="it"><span class="g g15"></span>Sharp</span><span class="sep">·</span><span class="it"><span class="g g15"></span>Concerta 36mg</span></div><span class="pin">3</span></div>
+          <span class="chevd">⌄</span><span class="pin">4</span>
+        </div></div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span><b>Mood glyph</b>: <code>SignalGlyph(.mood, level:)</code> at <code>dayHeaderGlyph</code> 40pt, bare (no disc). Represents the day's representative mood.</li>
+        <li><span class="pin">2</span><b>Title</b>: “Mood word · Weekday”, one concatenated <code>Text</code> so it wraps and never truncates; mood word in <code>wordColor</code>. <code>FoldedDayCardHeader.swift:49</code></li>
+        <li><span class="pin">3</span><b>Summary line</b>: folded only: FlowLayout of energy glyph+word · focus glyph+word · med capsule+name (caption). <code>FoldedDayCardHeader.swift:57</code></li>
+        <li><span class="pin">4</span><b>Chevron.down</b>: rotates 180° on expand. Whole header is one <code>Button</code> toggling expansion. Padding 16h / 12v, tint = <code>blockTint</code> (base@0.24). Card radius 16, cream surface.</li>
+      </ol></div>
+    </div>
+
+    <!-- FRAME 6: EXPANDED CARD / ROW ANATOMY -->
+    <div class="frame wide">
+      <p class="cap">6 · DayCard, expanded (timeline)</p>
+      <p class="capsub">Tint becomes a strip header; rows drop onto the cream surface below.</p>
+      <div class="tags"><span class="sc">C4</span><span class="sc">C5</span></div>
+      <div class="phone" style="border-radius:26px"><div class="screen" style="padding:16px;background:#f0f0f0">
+        <div class="card exp"><div class="cardhdr">
+          <div class="mood"></div>
+          <div class="ttl"><div class="t1"><span class="mw">Great</span> · <span class="wd">Wednesday 10</span></div></div>
+          <span class="chevd" style="transform:rotate(180deg);display:inline-block">⌄</span>
+        </div>
+        <div class="rows">
+          <div class="row">
+            <div class="beadcol"><div class="bead"><span class="mg"></span></div><span class="pin">1</span><div class="conn"></div><span class="pin">2</span></div>
+            <div class="rc">
+              <div class="rline rl1 rl"><span class="mw">Great</span><span class="tm">09:15</span><span class="sp"></span><span class="cv">›</span><span class="pin">3</span></div>
+              <div class="rline rl"><span class="it"><span class="g g12"></span>Charged</span><span class="it"><span class="g g12"></span>Sharp</span><span class="pin">4</span></div>
+              <div class="rline rl"><span class="it"><span class="g g12"></span>Taken Concerta 36mg</span><span class="it"><span class="g g12"></span>7h</span><span class="pin">5</span></div>
+              <div class="rline rl ctx"><span class="it"><span class="g g12"></span>Grateful · Content</span><span class="it"><span class="g g12"></span>Dry mouth · Jittery</span><span class="pin">6</span></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="beadcol"><div class="bead"><span class="mg"></span></div></div>
+            <div class="rc">
+              <div class="rline rl1 rl"><span class="mw">Okay</span><span class="tm">19:05</span><span class="sp"></span><span class="cv">›</span></div>
+              <div class="rline rl"><span class="it"><span class="g g12"></span>Steady</span><span class="it"><span class="g g12"></span>Present</span></div>
+              <div class="rline rl ctx"><span class="it"><span class="g g12"></span>Serene</span></div>
+            </div>
+          </div>
+        </div></div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span><b>Mood bead</b>: <code>TimelineBead</code>: 36pt inner disc / 38pt frame (mood <code>badgeTint</code>) with the mood sprout inside at 60%; carries the medication-phase ring when a dose is active. <code>TimelineBead.swift:40</code></li>
+        <li><span class="pin">2</span><b>Connector</b>: 1px separator line down to the next bead; omitted on the last row. <code>TimelineRow.swift:28</code></li>
+        <li><span class="pin">3</span><b>Line 1</b>: mood word (17pt semibold, <code>wordColor</code>) + time (mono 13pt, secondary) + a push chevron. Tapping the row content pushes detail. <code>TimelineRow.swift:67</code></li>
+        <li><span class="pin">4</span><b>Line 2</b>: energy glyph+word, focus glyph+word (caption). <code>TimelineRow.swift:87</code></li>
+        <li><span class="pin">5</span><b>Line 3</b>: “Taken {med} {dose}” (medication purple, semibold) + sleep (“7h”, sleep blue). The single accent line. <code>TimelineRow.swift:124</code></li>
+        <li><span class="pin">6</span><b>Line 4</b>: feelings (♥) · side-effects (⚕), muted, capped at 4 each with <code>+N</code>. <code>TimelineRow.swift:142</code></li>
+      </ol></div>
+    </div>
+
+  </div>
+
+  <h2>Navigation out of this view</h2>
+  <p class="sub">The Calendar Library's only push. Tapping a timeline row appends the recording's <code>UUID</code> to the tab's <code>NavigationPath</code>; the <code>.navigationDestination(for: UUID.self)</code> resolves it to Recording Detail. Leaving the Calendar tab clears this path; re-entering jumps to today.</p>
+  <div class="nav" style="margin-top:14px">
+    <div>
+      <div class="navmini"><div class="screen" style="padding:8px">
+        <div style="border:1.5px dashed #9a9a9a;border-radius:6px;padding:6px;font-size:9px">
+          <div style="display:flex;gap:5px;align-items:center"><span class="bead" style="width:18px;height:18px;border-width:1px"><span class="mg" style="width:10px;height:11px"></span></span><b>Great</b> <span style="font-family:var(--mono);color:#888">09:15</span><span style="margin-left:auto">›</span></div>
+        </div>
+      </div></div>
+      <div class="navlbl">Timeline row (Calendar)</div>
+    </div>
+    <div><span class="arrow">→</span><div class="navlbl" style="width:auto"><code>path.append(UUID)</code></div></div>
+    <div>
+      <div class="navmini"><div class="screen" style="padding:8px">
+        <div style="font-size:9px;color:#333">
+          <div style="display:flex;justify-content:space-between"><span>‹ Back</span><span>✎</span></div>
+          <div style="font-weight:800;margin:6px 0 3px">Morning check-in</div>
+          <div style="height:10px;background:#eee;border-radius:3px;margin:4px 0"></div>
+          <div style="height:26px;border:1px solid #ddd;border-radius:5px;margin:4px 0"></div>
+          <div style="height:26px;border:1px solid #ddd;border-radius:5px"></div>
+        </div>
+      </div></div>
+      <div class="navlbl">Recording Detail (push)</div>
+    </div>
+  </div>
+
+  <h2>Variants &amp; edge cases</h2>
+  <p class="sub">States the four full-screen frames don't show but the code supports. Grouped so none of them silently ships wrong.</p>
+  <div class="frames">
+
+    <!-- Folded empty-day card -->
+    <div class="frame">
+      <p class="cap">Folded DayCard: no-mood day</p>
+      <p class="capsub">A day with entries but no extracted mood: no glyph, no tint, calm copy.</p>
+      <div class="tags"><span class="sc">C3</span></div>
+      <div class="phone" style="border-radius:26px"><div class="screen" style="padding:16px;background:#f0f0f0">
+        <div class="card"><div class="cardhdr" style="background:#f5f5f5;border-color:#cfcfcf">
+          <div class="ttl"><div class="t1"><span class="wd">Thursday 5</span></div>
+            <div class="sumline" style="color:#9a9a9a">No check-ins yet</div></div>
+          <span class="chevd">⌄</span><span class="pin">1</span>
+        </div></div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span>When <code>MoodLevel(name:)</code> is nil the header drops both the glyph and the tint (<code>FoldedDayCardHeader.swift:19,39</code>); the summary shows <code>DayCardSummary.emptyCopy</code> (<code>:58</code>).</li>
+      </ol></div>
+    </div>
+
+    <!-- Med-only timeline node -->
+    <div class="frame">
+      <p class="cap">Timeline: medication-only node</p>
+      <p class="capsub">A logged dose with no recording: hollow bead, not tappable, only the med line.</p>
+      <div class="tags"><span class="sc">C4</span></div>
+      <div class="phone" style="border-radius:26px"><div class="screen" style="padding:16px;background:#fff">
+        <div class="row">
+          <div class="beadcol"><div class="bead" style="background:#fff;border-style:solid"></div></div>
+          <div class="rc" style="border-style:solid;border-color:#cfcfcf">
+            <div class="rline rl"><span class="it"><span class="g g12"></span>Taken Ritalin 10mg · 14:00</span><span class="pin">1</span></div>
+          </div>
+        </div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span>When <code>node.recording == nil</code> the bead is a hollow circle (<code>TimelineBead.swift:47</code>), the content is NOT wrapped in a Button (not tappable), and only <code>medicationSleepLine</code> renders (lines 1/2/4 absent). <code>TimelineRow.swift:41-48</code></li>
+      </ol></div>
+    </div>
+
+    <!-- Med bar states -->
+    <div class="frame wide">
+      <p class="cap">Medication bar: states &amp; actions</p>
+      <p class="capsub">Global overlay. Renders only with an active dose; a dose tap opens a dialog.</p>
+      <div class="tags"><span class="sc">C8</span></div>
+      <div class="phone" style="border-radius:26px"><div class="screen" style="padding:14px;background:#f0f0f0;gap:9px">
+        <div class="medbar" style="margin:0"><span class="cap2"></span><div class="mid"><div class="m1"><span>Concerta 36mg</span><span class="st">kicking in · onset</span></div><div class="track"><i style="width:12%"></i></div></div></div>
+        <div class="medbar" style="margin:0"><span class="cap2"></span><div class="mid"><div class="m1"><span>Concerta 36mg</span><span class="st">active</span></div><div class="track"><i style="width:52%"></i></div></div></div>
+        <div class="medbar" style="margin:0"><span class="cap2"></span><div class="mid"><div class="m1"><span>Concerta 36mg</span><span class="st">wearing off</span></div><div class="track"><i style="width:90%"></i></div></div></div>
+        <div class="medbar" style="margin:0"><span class="cap2"></span><div class="mid"><div class="m1"><span>Concerta 36mg</span><span class="st">worn off</span></div><div class="track"><i style="width:100%"></i></div></div></div>
+        <div class="medbar" style="margin:0;flex-direction:column;align-items:stretch;gap:6px"><div style="display:flex;gap:10px;align-items:center"><span class="cap2"></span><div class="mid"><div class="m1"><span>1st · Concerta 36mg</span><span class="st">active</span></div><div class="track"><i style="width:52%"></i></div></div></div><div class="divider" style="margin:0"></div><div style="display:flex;gap:10px;align-items:center"><span class="cap2"></span><div class="mid"><div class="m1"><span>2nd · Ritalin 10mg</span><span class="st">kicking in</span></div><div class="track"><i style="width:14%"></i></div></div></div><span class="pin">2</span></div>
+        <div style="border:1.5px solid #cfcfcf;border-radius:14px;overflow:hidden;background:#fff;font-size:13px"><div style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e2e2">Log new dose</div><div style="padding:9px 12px;text-align:center;border-bottom:1px solid #e2e2e2;font-weight:600">Delete this dose</div><div style="padding:9px 12px;text-align:center;color:#777">Cancel</div><span class="pin">3</span></div>
+      </div></div>
+      <div class="notes"><ol>
+        <li><span class="pin">1</span>Four progress states: <b>kicking in</b> (&lt;20%, pulsing, “onset”), <b>active</b> (20–80%), <b>wearing off</b> (80–100%), <b>worn off</b> (≥100%). The bar renders only when <code>showBar &amp;&amp; !activeDoses.isEmpty</code>. <code>MedicationBarView.swift:14,88-95,123</code></li>
+        <li><span class="pin">2</span>Multiple active doses stack with a <code>Divider</code> between rows. <code>MedicationBarView.swift:16</code></li>
+        <li><span class="pin">3</span>Tapping a dose row opens a <code>confirmationDialog</code>: “Log new dose” (→ Log Dose sheet) / “Delete this dose” (destructive) / “Cancel”. <code>MedicationBarView.swift:21-40</code></li>
+        <li>A dose still active from an earlier check-in also draws a purple carryover ring + <code>%</code> badge on that row's bead. <code>TimelineBead.swift:67-85</code></li>
+      </ol></div>
+    </div>
+
+  </div>
+
+  <div class="notes" style="max-width:960px;margin-top:16px">
+    <b>Behavioural variants — same layout, different rule (no separate frame needed):</b>
+    <ol>
+      <li><b>alwaysExpandCards</b> (Settings): every DayCard renders expanded regardless of per-card state. <code>CalendarLibraryView.swift:14,88</code></li>
+      <li><b>autoExpandOnSelection = false</b> (Settings): tapping a day collapses all cards but does NOT open the selected one. <code>CalendarLibraryView.swift:13,126</code></li>
+      <li><b>Multiple cards open at once</b>: expansion is per-day (<code>ExpandedDayCards.toggling</code>), so more than one card can be expanded simultaneously. <code>ExpandedDayCards.swift:22</code></li>
+      <li><b>Accessibility text size</b> (≥ AX1): the month grid force-collapses to one week and the month label becomes plain text (expand disabled). <code>CalendarHeaderView.swift:20,49</code></li>
+      <li><b>Out-of-month tap</b>: tapping a greyed adjacent-month day pages to that month first, then selects it. <code>CalendarLibraryView.swift:111</code></li>
+      <li><b>Bounded paging</b>: back stops at the earliest month with data; forward stops at the current month. <code>CalendarLibraryView.swift:138</code></li>
+      <li><b>Tab housekeeping</b>: leaving Calendar clears its NavigationPath; entering jumps to today and collapses the calendar. <code>CalendarLibraryView.swift:47-52</code></li>
+      <li><b>Deleted underneath</b>: if the open recording is deleted, the detail push auto-pops back to the list. <code>CalendarLibraryView.swift:41-43</code></li>
+      <li><b>Edge fade</b>: the timeline scroll fades at its bottom edge (<code>edgeFadeMask</code>). <code>CalendarLibraryView.swift:104</code></li>
+    </ol>
+  </div>
+
+  <footer>
+    Low-fi wireframes · Calendar Library · built locally from the app-four SwiftUI source (no Figma/MCP). Black-and-white by design; mood tint / medication purple / sleep blue are shown as greys and called out. One frame per state; every element annotated to <code>file:line</code>. Sibling views (Check-in, Insights, Settings, Recording Detail) can follow the same kit.
+  </footer>
+</div>
+</body>
+</html>

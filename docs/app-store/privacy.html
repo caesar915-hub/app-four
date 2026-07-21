@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — Squirl</title>
+<meta name="description" content="Squirl's privacy policy. Squirl is a fully on-device voice journal: no account, no servers, no analytics.">
+<style>
+  :root {
+    --paper:    #F6F1E7;
+    --surface:  #FCF8EF;
+    --inset:    #EFE8D8;
+    --ink:      #221E16;
+    --muted:    #7A7361;
+    --hairline: #E3DAC7;
+    --meadow:   #5FB36E;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:    #14130F;
+      --surface:  #1E1C16;
+      --inset:    #272419;
+      --ink:      #F3EEE0;
+      --muted:    #9A917C;
+      --hairline: #322E22;
+      --meadow:   #96C19F;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    padding: 0 24px 96px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  main { max-width: 680px; margin: 0 auto; }
+  header { padding: 64px 0 8px; }
+  h1 { font-size: 34px; line-height: 1.2; font-weight: 700; letter-spacing: -0.02em; margin: 0 0 8px; }
+  h2 {
+    font-size: 22px; font-weight: 600; letter-spacing: -0.01em;
+    margin: 48px 0 12px; padding-top: 24px;
+    border-top: 1px solid var(--hairline);
+  }
+  h2:first-of-type { border-top: none; padding-top: 0; }
+  p, li { margin: 0 0 14px; }
+  ul { padding-left: 22px; margin: 0 0 18px; }
+  li::marker { color: var(--meadow); }
+  strong { font-weight: 600; }
+  a { color: var(--ink); text-decoration-color: var(--meadow); text-underline-offset: 3px; }
+  a:hover { text-decoration-thickness: 2px; }
+  .effective { color: var(--muted); font-size: 15px; margin: 0 0 40px; }
+  .lede {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin: 0 0 8px;
+    font-size: 18px;
+  }
+  .lede p:last-child { margin-bottom: 0; }
+  footer {
+    margin-top: 56px; padding-top: 24px;
+    border-top: 1px solid var(--hairline);
+    color: var(--muted); font-size: 15px;
+  }
+  @media (max-width: 520px) {
+    body { font-size: 16px; padding: 0 18px 64px; }
+    header { padding-top: 40px; }
+    h1 { font-size: 28px; }
+    h2 { font-size: 20px; margin-top: 36px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Privacy Policy</h1>
+    <p class="effective">Squirl · Effective 21 July 2026</p>
+  </header>
+
+  <div class="lede">
+    <p>The Squirl app doesn't collect your data. Everything you record — your voice, transcripts, moods, medication logs — stays on your device. There are no accounts and no analytics, and the app has no backend to send anything to.</p>
+    <p>The one exception is this website: if you join the waitlist, we store the email address you give us. That's covered in <a href="#website">The Squirl website</a> below.</p>
+  </div>
+
+  <h2>What Squirl stores, and where</h2>
+  <p>Squirl is a voice-first check-in journal. When you record a check-in, the app:</p>
+  <ul>
+    <li>Saves the <strong>audio recording</strong>, its <strong>transcript</strong>, and any <strong>signals</strong> extracted from it (mood, energy, focus, sleep, medications, side effects, emotions) in the app's storage on your device.</li>
+    <li>Transcribes your voice <strong>on your device</strong>, using an open-source speech model (WhisperKit). Your audio is never sent anywhere for processing.</li>
+  </ul>
+  <p>This data never leaves your device unless you export it.</p>
+  <!-- RE-ADD AFTER fix/app-store-readiness MERGES: "It is stored in app-private storage and excluded
+       from iCloud Backup by design." This is NOT true of builds cut from main today (recordings live in
+       .documentDirectory with UIFileSharingEnabled=YES and no backup exclusion). Do not publish that
+       sentence until AppPaths/StorageMigration ship. -->
+
+  <h2>What Squirl does not do</h2>
+  <ul>
+    <li><strong>No account.</strong> There is nothing to sign up for.</li>
+    <li><strong>No servers.</strong> We operate no backend; the app has nothing to upload to.</li>
+    <li><strong>No analytics or tracking.</strong> No analytics SDKs, no advertising identifiers, no crash-reporting services.</li>
+    <li><strong>No third-party data sharing.</strong> There is no data to share.</li>
+  </ul>
+
+  <h2>Network access</h2>
+  <p>Squirl connects to the internet for exactly one purpose: a <strong>one-time download of the speech-recognition model</strong> (from Hugging Face's content delivery network) after you install the app. This is a download only — no personal data, identifiers, or telemetry are transmitted. You can restrict it to Wi-Fi in Settings.</p>
+
+  <h2 id="website">The Squirl website</h2>
+  <p>Everything above describes the Squirl app. This website works differently, because it has a waitlist form.</p>
+  <ul>
+    <li><strong>What we store when you join the waitlist:</strong> the email address you enter, the date and time you submitted it, and your browser's user-agent string (the standard identifier your browser sends with every request).</li>
+    <li><strong>Why:</strong> to email you once, when Squirl launches. That is the only purpose. We don't send newsletters, we don't profile you, and we never sell or rent the list.</li>
+    <li><strong>Lawful basis:</strong> your consent, given when you submit the form. You can withdraw it at any time by emailing us, and we'll delete your entry.</li>
+    <li><strong>How long we keep it:</strong> 180 days from signup, after which it is deleted automatically.</li>
+    <li><strong>Where it lives:</strong> in Google Firestore, on Google Cloud infrastructure in the United States, where Google acts as our data processor. If you are in the EU or UK, this means your email is transferred outside your home region; Google Cloud's standard data-protection terms cover that transfer.</li>
+    <li><strong>Your rights:</strong> you can ask us for a copy of what we hold, have it corrected, or have it deleted. Email us at the address below and we'll action it. You also have the right to complain to your local data-protection supervisory authority.</li>
+  </ul>
+  <p>The website has no advertising, no tracking pixels, and no third-party analytics.</p>
+
+  <h2>Export</h2>
+  <p>You can export your journal from Settings at any time. Exports are encrypted (AES-256-GCM) with a recovery key that is shown to you once and never stored. Where you send an export — and whether you keep the key — is entirely up to you.</p>
+
+  <h2>Diagnostics</h2>
+  <p>Squirl keeps a small, local log of technical session data (device thermal state, memory, screen names — never transcript text or audio) to help diagnose problems. It stays on your device. If you contact support, you choose whether to attach it.</p>
+
+  <h2>Health data</h2>
+  <p>Your check-ins may describe your mood and medications. Squirl treats all of it as sensitive: stored only on your device and never transmitted. Squirl is a journal, not a medical device, and does not provide medical advice.</p>
+
+  <h2>Children</h2>
+  <p>Squirl is intended for adults (18+).</p>
+
+  <h2>Changes</h2>
+  <p>If a future version of Squirl changes any of the above — for example, adding optional iCloud sync — this policy will be updated first, and the app will ask before anything leaves your device.</p>
+
+  <h2>Contact</h2>
+  <p>Squirl is an independent app. For any privacy question, or to exercise the rights described above, email <a href="mailto:caesar915@icloud.com">caesar915@icloud.com</a> and we'll respond.</p>
+
+  <footer>
+    <p>Squirl · <a href="https://squirl.pt">squirl.pt</a></p>
+  </footer>
+</main>
+</body>
+</html>

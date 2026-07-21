@@ -10,10 +10,11 @@ struct PersonalLexiconTests {
     var context: ModelContext { container.mainContext }
 
     init() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
         container = try ModelContainer(
-            for: Recording.self, MedicationEvent.self, RecordingTag.self, AppSettings.self,
-            configurations: config
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
         )
     }
 

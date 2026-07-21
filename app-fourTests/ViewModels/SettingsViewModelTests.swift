@@ -11,8 +11,12 @@ struct SettingsViewModelTests {
     var container: ModelContainer
 
     init() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
+        container = try ModelContainer(
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
+        )
         store = RecordingStore(context: container.mainContext)
         mocks = MockAppServices()
 
@@ -59,8 +63,12 @@ struct SettingsViewModelTests {
         }
         defaults.removeObject(forKey: key)
 
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
+        let container = try ModelContainer(
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
+        )
         let store = RecordingStore(context: container.mainContext)
         _ = SettingsViewModel(store: store, services: MockAppServices().services)
 
@@ -81,8 +89,12 @@ struct SettingsViewModelTests {
 
         // Default is `true` with no value written (matches existing-user opt-out semantics).
         defaults.removeObject(forKey: key)
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
+        let container = try ModelContainer(
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
+        )
         let store = RecordingStore(context: container.mainContext)
         let vm = SettingsViewModel(store: store, services: MockAppServices().services)
         #expect(vm.medicalPromptEnabled == true, "Medical prompt defaults to true")
@@ -205,8 +217,12 @@ struct SettingsViewModelTests {
     /// Isolated in-memory VM so sync round-trips don't race on the shared app store
     /// (Swift Testing runs suites in parallel).
     private func makeSettingsVM() throws -> (SettingsViewModel, ModelContainer) {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try ModelContainer(for: Recording.self, AppSettings.self, configurations: config)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
+        let container = try ModelContainer(
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
+        )
         // Autosave off so the round-trips prove the sync methods' EXPLICIT save();
         // a stray autosave firing mid-test would mask a dropped save() call.
         container.mainContext.autosaveEnabled = false

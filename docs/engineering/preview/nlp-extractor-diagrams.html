@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Squirl — NLP Extractor Diagrams (local)</title>
+<style>
+  :root {
+    --paper: #F7F4EC; --surface: #FBF8F1;
+    --ink: #23261F; --ink-soft: #55584B; --ink-faint: #8C876F;
+    --accent: #5B7A4B; --accent-soft: #E9EFE0; --purple: #6E5AA6; --warn: #A6522F;
+    --border: #E4DDCC; --rule: #DDD5C1;
+    --fig-paper: #F5F1E6; --fig-border: #E0D8C3;
+    --shadow: 0 1px 2px rgba(35,38,31,.05), 0 8px 24px rgba(35,38,31,.06);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+    line-height: 1.6; -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: clamp(28px,5vw,72px) clamp(18px,4vw,40px) 96px; }
+  header { border-bottom: 1px solid var(--rule); padding-bottom: 28px; }
+  .eyebrow { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); font-weight: 600; }
+  h1 { font-size: clamp(30px,5.2vw,50px); line-height: 1.04; letter-spacing: -.022em; font-weight: 700; margin: 14px 0 10px; text-wrap: balance; }
+  .lede { font-size: clamp(16px,2.2vw,19px); color: var(--ink-soft); max-width: 64ch; margin: 0 0 20px; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: 12.5px; }
+  .chip { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); color: var(--ink-soft); }
+  .chip strong { color: var(--ink); font-weight: 600; }
+  #render-warn { display: none; margin: 24px 0 0; padding: 14px 16px; border: 1px solid #C99; background: #FBECEC; color: #7A2E2E; border-radius: 10px; font-size: 14px; }
+  .figure { margin-top: clamp(40px,6vw,68px); }
+  .fig-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .fig-num { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: 13px; font-weight: 600; letter-spacing: .1em; color: var(--paper); background: var(--accent); padding: 3px 9px; border-radius: 6px; white-space: nowrap; }
+  .fig-head h2 { font-size: clamp(21px,3vw,27px); letter-spacing: -.015em; margin: 0; font-weight: 650; }
+  .caption { color: var(--ink-soft); max-width: 74ch; margin: 12px 0 20px; font-size: 15.5px; }
+  code { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: .88em; background: var(--accent-soft); color: var(--accent); padding: 1px 6px; border-radius: 5px; font-weight: 600; }
+  .diagram { background: var(--fig-paper); border: 1px solid var(--fig-border); border-radius: 14px; padding: 26px 22px; overflow-x: auto; box-shadow: var(--shadow); }
+  .diagram .mermaid { display: flex; justify-content: center; min-width: min-content; }
+  .diagram .mermaid svg { max-width: 100%; height: auto; }
+  .source { margin: 14px 0 0; font-size: 13px; color: var(--ink-faint); font-family: ui-monospace,SFMono-Regular,Menlo,monospace; }
+  .source::before { content: "source · "; color: var(--accent); font-weight: 600; }
+  .bug { margin: 16px 0 0; padding: 12px 15px; border: 1px solid #E3CBB6; background: #FBF1E9; border-radius: 10px; font-size: 14.5px; color: #6B3A1E; }
+  .bug strong { color: var(--warn); font-weight: 650; }
+  footer { margin-top: 56px; border-top: 1px solid var(--rule); padding-top: 22px; color: var(--ink-faint); font-size: 12.5px; font-family: ui-monospace,SFMono-Regular,Menlo,monospace; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Squirl · Engineering Docs · Local Preview</div>
+    <h1>NLP Extractor — Transcription to Signals</h1>
+    <p class="lede">The seven diagrams from <code>NLP_EXTRACTOR.md</code>, rendered offline. No ML, no network: a curated lexicon of ~700 phrases plus six regexes turn a voice transcript into structured ADHD signals.</p>
+    <div class="meta">
+      <span class="chip">branch <strong>feat/038-icloud-sync</strong></span>
+      <span class="chip"><strong>7</strong> files · ~2,110 lines</span>
+      <span class="chip">lexicon <strong>32 keys</strong> · 718 entries</span>
+      <span class="chip">NaturalLanguage only</span>
+    </div>
+    <div id="render-warn">Diagrams did not render. Ensure <code>mermaid.min.js</code> sits next to this file, and open it in a browser (double-click / <code>file://</code>).</div>
+  </header>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 01</span><h2>The basic flow</h2></div>
+    <p class="caption">End to end. Note that the six whole-text regexes run <em>in parallel with</em> the sentence loop conceptually, but in code they execute <strong>before</strong> it, and each takes only the first match in the transcript.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart TD
+    A["Voice recording"] --&gt; B["WhisperKit transcription&lt;br/&gt;raw text"]
+    B --&gt; C["NLSummarizationService.summarize&lt;br/&gt;runs extractor off the main actor"]
+    C --&gt; D["NLNoteExtractor.extract(from:)"]
+    D --&gt; E["Split into sentences"]
+    E --&gt; F["Match each sentence against&lt;br/&gt;the lexicon (~700 phrases)"]
+    F --&gt; G["Flip anything negated"]
+    G --&gt; H["Pick one winner per signal"]
+    D --&gt; I["6 regexes over whole text&lt;br/&gt;dose · hours · onset · duration"]
+    H --&gt; J["NoteExtraction&lt;br/&gt;27 fields"]
+    I --&gt; J
+    J --&gt; K["SummaryResult"]
+    K --&gt; L["Recording.applySummary&lt;br/&gt;+ setMedicationEvents"]
+    L --&gt; M[("SwiftData")]
+    </pre></div>
+    <p class="source">NLSummarizationService.swift:24-29 · NLNoteExtractor.swift:101</p>
+  </section>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 02</span><h2>extract() control flow</h2></div>
+    <p class="caption">The loop only <strong>accumulates candidates</strong>; nothing is resolved inside it. Every winner is chosen after the loop ends. Focus is the one signal with no weak fallback tier.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart TD
+    S["extract(from: transcript)"] --&gt; T["trim whitespace"]
+    T --&gt; U{"empty?"}
+    U --&gt;|yes| V["return NoteExtraction&lt;br/&gt;title 'Empty Note'"]
+    U --&gt;|no| W["splitSentences()&lt;br/&gt;keep count &gt; 3 · fallback [text]"]
+    W --&gt; X["6 whole-text regexes RUN FIRST"]
+    X --&gt; Y["per-sentence loop"]
+    Y --&gt; Y1["lowercased + tokenizeWithLemmas"]
+    Y1 --&gt; Y2["mood: strong ELSE weak"]
+    Y2 --&gt; Y3["energy: strong ELSE weak"]
+    Y3 --&gt; Y4["focus: strong ONLY"]
+    Y4 --&gt; Y5["extractMedications()"]
+    Y5 --&gt; Y6["12 categories via nonNegatedCueMatch"]
+    Y6 --&gt; Y7["sleep (if mentionsSleep)"]
+    Y7 --&gt; Y8["emotions + activities"]
+    Y8 --&gt;|next sentence| Y
+    Y --&gt; Z["POST-LOOP RESOLUTION"]
+    Z --&gt; Z1["mood = present-tense-wins"]
+    Z1 --&gt; Z2["energy/focus = longest-phrase-wins"]
+    Z2 --&gt; Z3["lists = Array(Set(x)).sorted()"]
+    Z3 --&gt; Z4["extractHighlights()"]
+    Z4 --&gt; Z5["makeTitle()"]
+    Z5 --&gt; ZZ["NoteExtraction"]
+    </pre></div>
+    <p class="source">NLNoteExtractor.swift:101-327</p>
+  </section>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 03</span><h2>The matching primitive</h2></div>
+    <p class="caption">Every category routes through <code>CueMatcher.contains</code>. Multi-word cues need a contiguous surface run; single-word cues get two extra escape hatches.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart TD
+    A["cue vs sentence tokens"] --&gt; B{"cue token count"}
+    B --&gt;|multi-word| C["contiguous run of surfaces&lt;br/&gt;must match exactly"]
+    B --&gt;|single word| D{"surface == cue?"}
+    D --&gt;|yes| E["MATCH"]
+    D --&gt;|no| F{"surface in cue.altForms?"}
+    F --&gt;|yes| E
+    F --&gt;|no| G{"cue.lemma != nil AND&lt;br/&gt;token.verbLemma == cue.lemma?"}
+    G --&gt;|yes| E
+    G --&gt;|no| H["NO MATCH"]
+    C --&gt;|found| E
+    C --&gt;|not found| H
+    </pre></div>
+    <p class="source">CueMatcher.swift:175-199</p>
+    <div class="bug"><strong>Dead path:</strong> <code>canonicalInflections</code> is an empty dictionary (CueMatcher.swift:124), so <code>altForms</code> is always <code>[]</code>. That table was the simulator-safe route — the verb-lemma bridge rides NLTagger's lemma model, which the code comments say is absent on the iOS simulator.</div>
+  </section>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 04</span><h2>Signal resolution policies</h2></div>
+    <p class="caption">Two different policies, and only one of them specifies its tie-break. "Nearest" is a misnomer — there is no distance metric anywhere; ranking is the <strong>character length</strong> of the matched cue.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart LR
+    subgraph MOOD["mood — present-tense-wins"]
+        M1["candidates:&lt;br/&gt;label, temporalWeight, sentenceIndex"] --&gt; M2["max by temporalWeight&lt;br/&gt;present 1.0 · neutral 0.5 · past 0.2"]
+        M2 --&gt; M3["tie: LATER sentence&lt;br/&gt;explicit comparator"]
+    end
+    subgraph EF["energy / focus — longest-phrase-wins"]
+        E1["candidates:&lt;br/&gt;level, phraseLength"] --&gt; E2["max by phraseLength&lt;br/&gt;character count"]
+        E2 --&gt; E3["tie: earliest&lt;br/&gt;stdlib behaviour, unspecified"]
+    end
+    </pre></div>
+    <p class="source">NLNoteExtractor.swift:265-283 · TenseClassifier.swift:15-21</p>
+    <div class="bug"><strong>Bug:</strong> <code>verbTense</code> ends <code>return sawVerb ? .neutral : .neutral</code> (TenseClassifier.swift:90) — both branches identical. Verb morphology can therefore <em>never</em> produce <code>.present</code>; weight 1.0 requires an explicit present marker.</div>
+  </section>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 05</span><h2>Medication extraction</h2></div>
+    <p class="caption">Name matching is <strong>unanchored substring search</strong> over 89 lexicon names, with an edit-distance-1 typo fallback that exists because the input is speech-transcribed. Note the scope split: attributes come from the clause, but taken/not-taken comes from the whole sentence.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart TD
+    A["sentence"] --&gt; B["exact substring scan&lt;br/&gt;89 lexicon med names"]
+    B --&gt; C{"any hits?"}
+    C --&gt;|no| D{"context gate:&lt;br/&gt;dose regex OR medContextTokens?"}
+    D --&gt;|no| E["return [] — no MedEvent"]
+    D --&gt;|yes| F["fuzzy: editDistanceIsOne&lt;br/&gt;token &gt;= 6 chars · minus stoplist"]
+    F --&gt; G["overlap dedup:&lt;br/&gt;longer canonical name wins"]
+    C --&gt;|yes| G
+    G --&gt; H["clauseRanges()&lt;br/&gt;split on and · but · then · so · comma"]
+    H --&gt; I["per survivor, in text order"]
+    I --&gt; J["WHOLE-SENTENCE scope:&lt;br/&gt;isNegatedBefore + medNotTaken"]
+    I --&gt; K["CLAUSE scope:&lt;br/&gt;dose · time · quantity · change"]
+    J --&gt; L["MedEvent"]
+    K --&gt; L
+    </pre></div>
+    <p class="source">NLNoteExtractor.swift:547-615 · CueMatcher.swift:141</p>
+  </section>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 06</span><h2>Lexicon loading — the silent fallback</h2></div>
+    <p class="caption">All 32 <code>LexiconData</code> properties are non-optional with no defaults, so <strong>one missing key aborts the whole decode</strong> and silently drops the app to the smaller compiled defaults (medications 89 → 56). No throw, no log, no flag.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart LR
+    A["Bundle.main.url&lt;br/&gt;forResource 'lexicon'"] --&gt; B{"found?"}
+    B --&gt;|no| F["Lexicon()&lt;br/&gt;CODE DEFAULTS"]
+    B --&gt;|yes| C["try? Data(contentsOf:)"]
+    C --&gt; D{"decode LexiconData?"}
+    D --&gt;|no| F
+    D --&gt;|yes| E["toLexicon(personalOverlay:)"]
+    F -.-&gt;|overlay DISCARDED| G["extractor"]
+    E --&gt; G
+    </pre></div>
+    <p class="source">LexiconData.swift:122-127</p>
+    <div class="bug"><strong>Unwired feedback loop:</strong> <code>PersonalLexiconBuilder</code> has exactly two call sites, both in tests. Production passes <code>personalOverlay: nil</code>, so user corrections never improve extraction.</div>
+  </section>
+
+  <section class="figure">
+    <div class="fig-head"><span class="fig-num">FIG 07</span><h2>Output contract and downstream landing</h2></div>
+    <p class="caption">Where free text becomes persisted state. Note that <code>sideEffects</code> holds <strong>whole sentences</strong> in the extraction, then gets inverted into canonical lexicon cues by the service — and the raw sentences are blanked from the persisted JSON.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart TD
+    A["NoteExtraction — 27 fields"] --&gt; B["NLSummarizationService"]
+    B --&gt; B1["deriveTopics&lt;br/&gt;Medications · Symptoms · Appointments"]
+    B --&gt; B2["SleepEvent + SleepLevel&lt;br/&gt;quality beats hours"]
+    B --&gt; B3["sideEffects projected to LEXICON CUES&lt;br/&gt;not the extracted sentences"]
+    B1 --&gt; C["SummaryResult"]
+    B2 --&gt; C
+    B3 --&gt; C
+    C --&gt; D["Recording.applySummary(fillOnly:)"]
+    D --&gt; D1["scalars: mood · energy · focus · sleep"]
+    D --&gt; D2["title = Mood · Energy · Focus"]
+    D --&gt; D3["strip 6 fields, then persist JSON"]
+    C --&gt; E["Recording.setMedicationEvents"]
+    E --&gt; E1["delete prior transcript rows&lt;br/&gt;manual rows win by name"]
+    E1 --&gt; E2["insert MedicationEvent&lt;br/&gt;takenAt via resolvedTakenAt"]
+    </pre></div>
+    <p class="source">NLSummarizationService.swift:44-103 · Recording.swift:215-357</p>
+    <div class="bug"><strong>Stale-data risk:</strong> <code>sideEffectsJSON</code>, <code>sleepEventJSON</code>, <code>emotionsJSON</code> and <code>topicTagsJSON</code> are written only when non-empty, so a re-run finding nothing leaves the <em>old</em> values in place — while <code>summaryStatus</code> is still forced to <code>.completed</code>.</div>
+  </section>
+
+  <footer>
+    Local preview · generated 2026-07-20 · every claim code-verified · full prose: docs/engineering/NLP_EXTRACTOR.md<br/>
+    Produced from 10 parallel deep-readers each paired with an adversarial verifier; 631 claims checked, 66 corrected before writing.
+  </footer>
+</div>
+
+<script src="mermaid.min.js"></script>
+<script>
+  (function () {
+    function findMermaid() {
+      if (window.mermaid && typeof window.mermaid.initialize === "function") return window.mermaid;
+      var ns = window.__esbuild_esm_mermaid_nm && window.__esbuild_esm_mermaid_nm.mermaid;
+      if (ns) return (ns.default && ns.default.initialize) ? ns.default : ns;
+      return null;
+    }
+    var m = findMermaid();
+    var warn = document.getElementById("render-warn");
+    if (!m) { if (warn) warn.style.display = "block"; return; }
+    try {
+      m.initialize({
+        startOnLoad: false,
+        securityLevel: "loose",
+        theme: "base",
+        themeVariables: {
+          background: "#F5F1E6", primaryColor: "#E9EFE0", primaryBorderColor: "#5B7A4B",
+          primaryTextColor: "#23261F", lineColor: "#8A8570", secondaryColor: "#E8E1F1",
+          tertiaryColor: "#F1ECDE", clusterBkg: "#F1ECDE", clusterBorder: "#CFC7AD",
+          titleColor: "#23261F", noteBkgColor: "#EFE7D0", noteTextColor: "#4A4636",
+          noteBorderColor: "#C9BE9E",
+          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: "14px"
+        }
+      });
+      var run = m.run ? m.run({ querySelector: ".mermaid" }) : m.init(undefined, ".mermaid");
+      if (run && run.catch) run.catch(function (e) { if (warn) { warn.style.display = "block"; warn.textContent = "Render error: " + e.message; } });
+    } catch (e) {
+      if (warn) { warn.style.display = "block"; warn.textContent = "Render error: " + e.message; }
+    }
+  })();
+</script>
+</body>
+</html>

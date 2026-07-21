@@ -9,10 +9,11 @@ struct ExtractionReviewViewModelTests {
     let store: RecordingStore
 
     init() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
         container = try ModelContainer(
-            for: Recording.self, MedicationEvent.self, AppSettings.self,
-            configurations: config
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
         )
         store = RecordingStore(context: container.mainContext)
     }
@@ -72,7 +73,7 @@ struct ExtractionReviewViewModelTests {
         vm.date = newDate
         vm.confirm()
 
-        let event = rec.medicationEvents.first { $0.name == "Concerta" }
+        let event = (rec.medicationEvents ?? []).first { $0.name == "Concerta" }
         #expect(event != nil)
         let cal = Calendar.current
         #expect(cal.isDate(event!.takenAt, inSameDayAs: newDate))

@@ -10,10 +10,11 @@ struct MedicationBarViewModelTests {
     var viewModel: MedicationBarViewModel
 
     init() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let config = ModelConfiguration(schema: Schema(versionedSchema: SquirlSchemaV1.self), isStoredInMemoryOnly: true)
         container = try ModelContainer(
-            for: Recording.self, MedicationEvent.self, AppSettings.self,
-            configurations: config
+            for: Schema(versionedSchema: SquirlSchemaV1.self),
+            migrationPlan: SquirlMigrationPlan.self,
+            configurations: [config]
         )
         context = container.mainContext
         viewModel = MedicationBarViewModel(context: context)

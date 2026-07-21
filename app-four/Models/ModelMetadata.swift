@@ -3,13 +3,14 @@ import SwiftData
 
 @Model
 final class ModelMetadata {
-    @Attribute(.unique) var id: UUID
-    var modelName: String
-    var modelType: String
-    var modelSize: Int64
-    var isDownloaded: Bool
-    var isCorrupted: Bool
-    var version: String
+    // Inline defaults mirror `init` exactly (Constitution IX: optional-or-defaulted).
+    @Attribute(.unique) var id: UUID = UUID()
+    var modelName: String = "base"
+    var modelType: String = AIModelType.whisper.rawValue
+    var modelSize: Int64 = 74_000_000
+    var isDownloaded: Bool = false
+    var isCorrupted: Bool = false
+    var version: String = "openai-whisper-base-v1"
     var checksum: String?
 
     init(

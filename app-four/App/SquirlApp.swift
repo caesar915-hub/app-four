@@ -4,20 +4,33 @@ import SwiftData
 
 @main
 struct SquirlApp: App {
+    /// Unit tests are hosted by this app. Rendering the real scene would build the whole
+    /// dependency graph — `RecordingStore` (eager synchronous fetch), `MedicationBarViewModel`,
+    /// the `@Query` in `RootContainerView`, and the background model download — on the same
+    /// `MainActor` the suite needs, which hangs the run until the watchdog kills it.
+    private static let isRunningTests =
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+
     @State private var selectedTab: Tab = .calendar
     @State private var shouldAutoStartRecording = false
     @State private var router = AppDependencies.appIntentRouter
 
     init() {
+        let isRunningTests = ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
         #if DEBUG
         // UI/UX dev: default the mock-data toggle ON so a cold launch lands on a
         // populated timeline. Guarded out under XCTest so the suite keeps the
         // real default (false). Registered before AppDependencies.store, which
         // reads the key eagerly via RecordingStore.loadRecordings().
-        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+        if !isRunningTests {
             UserDefaults.standard.register(defaults: ["debugMockMode": true])
         }
         #endif
+        // Unit tests host this app but build their own containers and never reference
+        // AppDependencies. Skipping the warm-up keeps the app's eager `loadRecordings()`
+        // fetch + orphan-recovery save, and the global `.medicationEventsDidChange`
+        // observers, out of a process running 400+ parallel @MainActor tests.
+        guard !isRunningTests else { return }
         // Touch global dependencies at startup so stores begin observing the DB.
         _ = AppDependencies.store
         MetricManager.shared.start()
@@ -33,6 +46,10 @@ struct SquirlApp: App {
 
     var body: some Scene {
         WindowGroup {
+            if Self.isRunningTests {
+                // Inert host under XCTest — suites build their own containers.
+                Color.clear
+            } else {
             RootContainerView(
                 selectedTab: $selectedTab,
                 shouldAutoStartRecording: $shouldAutoStartRecording
@@ -66,6 +83,7 @@ struct SquirlApp: App {
             .onChange(of: router.shouldFocusMyMedication, initial: true) { _, armed in
                 guard armed else { return }
                 selectedTab = .settings
+            }
             }
         }
     }

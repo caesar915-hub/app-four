@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spec 029 · T033 · Settings › Calendar</title>
+<style>
+  :root {
+    --paper: #F6F1E7;
+    --card: #FCF8EF;
+    --inset: #EFE8D8;
+    --ink: #221E16;
+    --muted: #7A7361;
+    --hair: #E3DAC7;
+    --green: #5F8A4C;
+    --amber: #E0A33A;
+    --accent: #B8842A;
+    --purple: #7E5CA8;
+    --focus: #3E73B0;
+    --destructive: #C0392B;
+    --destructive-bg: #FDF0EE;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: -apple-system, "SF Pro Text", "Helvetica Neue", sans-serif;
+    padding: 40px 24px 80px;
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  /* Page header */
+  .page-header { margin-bottom: 36px; }
+  .page-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .page-header .subtitle {
+    font-size: 13px; color: var(--muted); line-height: 1.55; max-width: 680px;
+  }
+  .page-header .subtitle code {
+    font-size: 12px; background: var(--inset); border-radius: 4px;
+    padding: 1px 5px; font-family: "SF Mono", "Menlo", monospace;
+  }
+  .pill-tag {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    letter-spacing: .06em; text-transform: uppercase;
+    background: var(--inset); color: var(--muted);
+    border-radius: 999px; padding: 3px 10px; margin-right: 6px; margin-bottom: 10px;
+  }
+
+  /* Grid of frames */
+  .frames-grid {
+    display: flex; flex-wrap: wrap; gap: 40px 36px; align-items: flex-start;
+  }
+
+  /* Single iPhone frame */
+  .frame-wrap { flex: 0 0 auto; }
+  .frame-label {
+    font-size: 11px; font-weight: 700; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .frame-desc {
+    font-size: 12px; color: var(--muted); line-height: 1.45;
+    margin-bottom: 10px; max-width: 330px;
+  }
+
+  /* iOS iPhone shell */
+  .iphone {
+    width: 335px;
+    background: #F2F2F7;
+    border-radius: 48px;
+    border: 3px solid #C7C7CC;
+    box-shadow: 0 12px 48px rgba(34,30,22,.14), 0 2px 8px rgba(34,30,22,.08);
+    overflow: hidden;
+    position: relative;
+  }
+  .iphone-notch {
+    background: #1C1C1E; height: 34px; display: flex;
+    align-items: center; justify-content: center;
+  }
+  .iphone-notch .pill {
+    width: 90px; height: 14px; background: #000;
+    border-radius: 7px;
+  }
+  .iphone-status {
+    background: #F2F2F7; display: flex; justify-content: space-between;
+    align-items: center; padding: 4px 20px; font-size: 12px; font-weight: 600;
+    color: var(--ink);
+  }
+  .status-right { display: flex; gap: 6px; align-items: center; font-size: 11px; }
+
+  /* iOS nav bar */
+  .ios-navbar {
+    background: rgba(242,242,247,.94);
+    border-bottom: .5px solid #C6C6C8;
+    padding: 4px 16px 8px;
+    display: flex; align-items: center; justify-content: space-between;
+    backdrop-filter: blur(20px);
+  }
+  .nav-back { font-size: 15px; color: #007AFF; font-weight: 400; display: flex; align-items: center; gap: 2px; }
+  .nav-chevron { font-size: 18px; font-weight: 300; margin-right: 1px; }
+  .nav-title { font-size: 16px; font-weight: 600; color: var(--ink); }
+  .nav-spacer { width: 60px; }
+
+  /* Grouped list body */
+  .list-body { padding: 20px 0 24px; background: #F2F2F7; min-height: 300px; }
+
+  /* Section header + footer */
+  .section-header {
+    font-size: 12.5px; font-weight: 400; text-transform: uppercase;
+    letter-spacing: .04em; color: #6C6C70;
+    padding: 0 16px 6px 16px; margin-top: 8px;
+  }
+  .section-footer {
+    font-size: 12.5px; color: #6C6C70; line-height: 1.45;
+    padding: 6px 16px 0 16px;
+  }
+
+  /* Row */
+  .section-group {
+    background: #fff; border-radius: 12px; margin: 0 16px 4px 16px;
+    overflow: hidden;
+  }
+  .row {
+    display: flex; align-items: center;
+    padding: 11px 14px 11px 16px;
+    border-bottom: .5px solid #C6C6C8;
+    min-height: 44px; gap: 10px;
+  }
+  .row:last-child { border-bottom: none; }
+  .row-icon {
+    width: 28px; height: 28px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+  .row-icon svg { width: 16px; height: 16px; }
+  .row-label { font-size: 16px; color: var(--ink); flex: 1; line-height: 1.2; }
+  .row-sublabel { font-size: 13px; color: #6C6C70; margin-top: 1px; }
+  .row-value { font-size: 15px; color: #6C6C70; }
+  .row-chevron { color: #C7C7CC; font-size: 16px; }
+  .row-detail { flex: 1; }
+
+  /* Toggle (iOS switch) */
+  .toggle {
+    width: 50px; height: 30px; border-radius: 15px;
+    flex: none; position: relative; cursor: pointer;
+  }
+  .toggle.on { background: #34C759; }
+  .toggle.off { background: #E5E5EA; }
+  .toggle::after {
+    content: ''; position: absolute;
+    width: 26px; height: 26px; border-radius: 13px;
+    background: white;
+    top: 2px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.22);
+    transition: left .18s ease;
+  }
+  .toggle.on::after { left: 22px; }
+  .toggle.off::after { left: 2px; }
+
+  /* Access badge */
+  .access-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 13px; font-weight: 500;
+    padding: 3px 10px; border-radius: 999px;
+  }
+  .access-badge.granted { background: #E8F5E2; color: #2A7A18; }
+  .access-badge.denied { background: #FDEEED; color: #C0392B; }
+  .access-badge.not-determined { background: var(--inset); color: var(--muted); }
+  .access-dot {
+    width: 7px; height: 7px; border-radius: 50%; flex: none;
+  }
+  .access-badge.granted .access-dot { background: #34C759; }
+  .access-badge.denied .access-dot { background: #C0392B; }
+  .access-badge.not-determined .access-dot { background: var(--muted); }
+
+  /* Calendar color dot */
+  .cal-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex: none;
+  }
+
+  /* Class badge */
+  .class-badge {
+    font-size: 11px; font-weight: 500;
+    background: #F2F2F7; color: #6C6C70;
+    border-radius: 4px; padding: 1px 6px;
+    border: .5px solid #C6C6C8;
+    white-space: nowrap;
+  }
+  .class-badge.override { background: #FFF3E2; color: #B8842A; border-color: #E0A33A40; }
+
+  /* Destructive row */
+  .row-label.destructive { color: var(--destructive); }
+
+  /* Open Settings link */
+  .open-settings-link {
+    font-size: 14px; color: #007AFF; font-weight: 400;
+  }
+
+  /* Inline explanatory text in denied row */
+  .access-explain {
+    font-size: 13px; color: #6C6C70; line-height: 1.45; margin-top: 2px;
+  }
+
+  /* Confirmation dialog overlay (mocked inline below a frame) */
+  .dialog-backdrop {
+    position: relative; background: rgba(0,0,0,.28);
+    border-radius: 0 0 46px 46px; /* bottom only, doesn't cover status bar */
+    display: flex; align-items: flex-end; justify-content: center;
+    padding: 16px;
+  }
+  /* We'll fake it as a floating card inside the screen area */
+  .dialog-overlay-wrapper {
+    position: relative;
+  }
+  .dialog-sheet {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(0,0,0,.3);
+    border-radius: 0 0 46px 46px;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: 24px;
+    z-index: 10;
+  }
+  .dialog-card {
+    background: rgba(248,248,248,.97);
+    border-radius: 14px;
+    width: calc(100% - 32px);
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  }
+  .dialog-body { padding: 18px 16px 0; text-align: center; }
+  .dialog-title { font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  .dialog-msg { font-size: 13px; color: #6C6C70; line-height: 1.5; }
+  .dialog-actions { margin-top: 14px; border-top: .5px solid #C6C6C8; }
+  .dialog-action {
+    padding: 13px 16px; text-align: center; font-size: 16px;
+    border-bottom: .5px solid #C6C6C8; cursor: pointer;
+  }
+  .dialog-action:last-child { border-bottom: none; }
+  .dialog-action.primary { color: var(--destructive); font-weight: 600; }
+  .dialog-action.cancel { color: #007AFF; }
+
+  /* Section spacer */
+  .section-space { height: 24px; }
+
+  /* Divider rule between frame groups */
+  hr.divider { border: none; border-top: 1px solid var(--hair); margin: 44px 0 36px; }
+
+  /* Annotation callouts */
+  .annotation {
+    font-size: 12px; color: var(--muted); background: var(--inset);
+    border-top: 1px solid var(--hair); border-radius: 8px;
+    padding: 8px 12px; margin-top: 8px; line-height: 1.5; max-width: 330px;
+  }
+  .annotation strong { color: var(--ink); }
+
+  .fr-refs {
+    font-size: 11px; font-weight: 600; letter-spacing: .04em;
+    color: var(--accent); text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── PAGE HEADER ─────────────────────────────────────────────── -->
+<div class="page-header">
+  <span class="pill-tag">Spec 029</span><span class="pill-tag">T033</span><span class="pill-tag">Design artifact</span>
+  <h1>Settings › Calendar: mockup</h1>
+  <p class="subtitle">
+    Full Settings › Calendar section for <strong>calendar day context (Phase 1)</strong>.
+    Copy and states derive from <code>FR-007</code> (title toggle), <code>FR-009</code> (non-retroactive),
+    <code>FR-010</code> (denied path to system settings), <code>FR-013</code> (re-capture + remove actions).
+    Data-model: two-ID-set inclusion (<code>calendarExcludedIDs</code> + <code>calendarIncludedOverrideIDs</code>);
+    birthday-class and subscribed-class calendars excluded by default.
+    Context contracts: <code>calendar-context-service.md §4</code>.
+    Gate: owner approves this mockup before SwiftUI.
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     ROW 1: ACCESS GRANTED (normal operating state)
+════════════════════════════════════════════════════════════════ -->
+<div class="frames-grid">
+
+  <!-- STATE A: Granted -->
+  <div class="frame-wrap">
+    <div class="frame-label">State A · Access granted</div>
+    <div class="frame-desc">Normal operating state. All controls live. Existing "Day card" section renamed below "Calendar" for clarity.</div>
+    <div class="iphone">
+      <div class="iphone-notch"><div class="pill"></div></div>
+      <div class="iphone-status">
+        <span>9:41</span>
+        <div class="status-right">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4.5" y="2" width="3" height="10" rx="1"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13.5" y="1" width="3" height="11" rx="1"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.5C10.5 2.5 12.7 3.6 14.2 5.3L15.5 4C13.7 2 11 .9 8 .9 5 .9 2.3 2 .5 4L1.8 5.3C3.3 3.6 5.5 2.5 8 2.5z"/><path d="M8 5.5C9.7 5.5 11.2 6.2 12.3 7.4L13.6 6.1C12.2 4.6 10.2 3.7 8 3.7c-2.2 0-4.2.9-5.6 2.4L3.7 7.4C4.8 6.2 6.3 5.5 8 5.5z"/><circle cx="8" cy="10.5" r="1.5"/></svg>
+          <span>100%</span>
+        </div>
+      </div>
+      <div class="ios-navbar">
+        <span class="nav-back"><span class="nav-chevron">‹</span> Settings</span>
+        <span class="nav-title">Calendar</span>
+        <span class="nav-spacer"></span>
+      </div>
+      <div class="list-body">
+
+        <!-- Access state -->
+        <div class="section-header">Calendar access</div>
+        <div class="section-group">
+          <div class="row">
+            <div class="row-icon" style="background:#E8F5E2;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2A7A18" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            </div>
+            <div class="row-detail">
+              <div class="row-label">Calendar</div>
+            </div>
+            <span class="access-badge granted"><span class="access-dot"></span>Granted</span>
+          </div>
+        </div>
+        <div class="section-footer">Squirl reads your calendar events on this device only. Nothing leaves the device.</div>
+
+        <!-- Per-calendar picker -->
+        <div class="section-space"></div>
+        <div class="section-header">Calendars</div>
+        <div class="section-group">
+          <!-- Normal calendar, included (default) -->
+          <div class="row">
+            <span class="cal-dot" style="background:#007AFF;"></span>
+            <div class="row-detail">
+              <div class="row-label">Work</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <!-- Normal calendar, included (default) -->
+          <div class="row">
+            <span class="cal-dot" style="background:#34C759;"></span>
+            <div class="row-detail">
+              <div class="row-label">Personal</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <!-- Normal calendar, user-excluded -->
+          <div class="row">
+            <span class="cal-dot" style="background:#FF9500;"></span>
+            <div class="row-detail">
+              <div class="row-label">Family</div>
+            </div>
+            <div class="toggle off"></div>
+          </div>
+          <!-- Birthdays — default excluded, still off -->
+          <div class="row">
+            <span class="cal-dot" style="background:#FF2D55;"></span>
+            <div class="row-detail">
+              <div class="row-label">Birthdays</div>
+              <span class="class-badge">Off by default</span>
+            </div>
+            <div class="toggle off"></div>
+          </div>
+          <!-- Subscribed calendar — default excluded, user overridden ON -->
+          <div class="row">
+            <span class="cal-dot" style="background:#AF52DE;"></span>
+            <div class="row-detail">
+              <div class="row-label">UK Holidays</div>
+              <span class="class-badge override">On (overridden)</span>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+          <!-- Subscribed calendar — default excluded, still off -->
+          <div class="row">
+            <span class="cal-dot" style="background:#5AC8FA;"></span>
+            <div class="row-detail">
+              <div class="row-label">Team Calendar</div>
+              <span class="class-badge">Off by default</span>
+            </div>
+            <div class="toggle off"></div>
+          </div>
+        </div>
+        <div class="section-footer">Birthday and subscribed calendars are off by default. Events you declined are never included.</div>
+
+        <!-- Title capture toggle -->
+        <div class="section-space"></div>
+        <div class="section-header">Privacy</div>
+        <div class="section-group">
+          <div class="row">
+            <div class="row-detail">
+              <div class="row-label">Capture event titles</div>
+              <div class="row-sublabel">Off: records counts and times only</div>
+            </div>
+            <div class="toggle on"></div>
+          </div>
+        </div>
+        <div class="section-footer">Applies to future captures only. Use "Re-capture history" to apply to past days.</div>
+
+        <!-- Data actions -->
+        <div class="section-space"></div>
+        <div class="section-header">Data</div>
+        <div class="section-group">
+          <div class="row">
+            <div class="row-label">Re-capture history with current settings</div>
+            <span class="row-chevron">›</span>
+          </div>
+          <div class="row">
+            <div class="row-label destructive">Remove captured calendar context</div>
+            <span class="row-chevron" style="color:#C7C7CC;">›</span>
+          </div>
+        </div>
+        <div class="section-footer">Re-capture re-reads your calendar for every past check-in day under the settings above. Remove deletes all captured context from your journal.</div>
+
+        <!-- Day cards section (renamed) -->
+        <div class="section-space"></div>
+        <div class="section-header">Day cards</div>
+        <div class="section-group">
+          <div class="row">
+            <div class="row-label">Show signal summary</div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="row">
+            <div class="row-label">Compact layout</div>
+            <div class="toggle off"></div>
+          </div>
+        </div>
+
+      </div><!-- list-body -->
+    </div><!-- iphone -->
+    <div class="annotation">
+      <span class="fr-refs">FR-007 · FR-008 · FR-009 · FR-013</span><br>
+      <strong>Day cards</strong> section renamed from "Day card" settings group (frees "Calendar" as the new section name). UK Holidays toggled ON despite subscribed-class default = override ID written to <code>calendarIncludedOverrideIDs</code>.
+    </div>
+  </div>
+
+  <!-- STATE B: Denied / Revoked -->
+  <div class="frame-wrap">
+    <div class="frame-label">State B · Access denied or revoked</div>
+    <div class="frame-desc">System prompt was denied, or access was granted then revoked in iOS Settings. Calm explanation; direct path out. No calendar controls shown; there is nothing to configure until access is granted. Previously captured context remains visible in the journal (FR-004, FR-010).</div>
+    <div class="iphone">
+      <div class="iphone-notch"><div class="pill"></div></div>
+      <div class="iphone-status">
+        <span>9:41</span>
+        <div class="status-right">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4.5" y="2" width="3" height="10" rx="1"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13.5" y="1" width="3" height="11" rx="1"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.5C10.5 2.5 12.7 3.6 14.2 5.3L15.5 4C13.7 2 11 .9 8 .9 5 .9 2.3 2 .5 4L1.8 5.3C3.3 3.6 5.5 2.5 8 2.5z"/><path d="M8 5.5C9.7 5.5 11.2 6.2 12.3 7.4L13.6 6.1C12.2 4.6 10.2 3.7 8 3.7c-2.2 0-4.2.9-5.6 2.4L3.7 7.4C4.8 6.2 6.3 5.5 8 5.5z"/><circle cx="8" cy="10.5" r="1.5"/></svg>
+          <span>100%</span>
+        </div>
+      </div>
+      <div class="ios-navbar">
+        <span class="nav-back"><span class="nav-chevron">‹</span> Settings</span>
+        <span class="nav-title">Calendar</span>
+        <span class="nav-spacer"></span>
+      </div>
+      <div class="list-body">
+
+        <div class="section-header">Calendar access</div>
+        <div class="section-group">
+          <div class="row" style="flex-direction:column; align-items:flex-start; gap:6px; padding-top:14px; padding-bottom:14px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div class="row-icon" style="background:#FDEEED; width:28px; height:28px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><path d="M9 15l6-6M15 15L9 9" stroke-width="1.8"/></svg>
+              </div>
+              <span class="access-badge denied"><span class="access-dot"></span>Access not allowed</span>
+            </div>
+            <div class="access-explain">
+              Squirl can't read your calendar. Previously captured context is still shown.<br>To allow access, open iOS Settings.
+            </div>
+            <span class="open-settings-link">Open Settings →</span>
+          </div>
+        </div>
+        <div class="section-footer">To allow calendar access, go to iOS Settings › Privacy &amp; Security › Calendars › Squirl.</div>
+
+        <!-- Day cards section still visible -->
+        <div class="section-space"></div>
+        <div class="section-header">Day cards</div>
+        <div class="section-group">
+          <div class="row">
+            <div class="row-label">Show signal summary</div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="row">
+            <div class="row-label">Compact layout</div>
+            <div class="toggle off"></div>
+          </div>
+        </div>
+
+      </div><!-- list-body -->
+    </div><!-- iphone -->
+    <div class="annotation">
+      <span class="fr-refs">FR-010</span><br>
+      No calendar pickers or data actions shown. Nothing to configure without access. "Open Settings" deep-links to <code>UIApplication.openSettingsURLString</code>. Copy is calm and matter-of-fact; no error styling, no apology. Day cards section still visible and functional.
+    </div>
+  </div>
+
+  <!-- STATE C: Not determined -->
+  <div class="frame-wrap">
+    <div class="frame-label">State C · Not yet connected</div>
+    <div class="frame-desc">Calendar access never requested (or explainer declined but invitation not yet dismissed). Single entry point into the explainer flow. No system prompt from this row: the explainer sheet precedes it (FR-001).</div>
+    <div class="iphone">
+      <div class="iphone-notch"><div class="pill"></div></div>
+      <div class="iphone-status">
+        <span>9:41</span>
+        <div class="status-right">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4.5" y="2" width="3" height="10" rx="1"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13.5" y="1" width="3" height="11" rx="1"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.5C10.5 2.5 12.7 3.6 14.2 5.3L15.5 4C13.7 2 11 .9 8 .9 5 .9 2.3 2 .5 4L1.8 5.3C3.3 3.6 5.5 2.5 8 2.5z"/><path d="M8 5.5C9.7 5.5 11.2 6.2 12.3 7.4L13.6 6.1C12.2 4.6 10.2 3.7 8 3.7c-2.2 0-4.2.9-5.6 2.4L3.7 7.4C4.8 6.2 6.3 5.5 8 5.5z"/><circle cx="8" cy="10.5" r="1.5"/></svg>
+          <span>100%</span>
+        </div>
+      </div>
+      <div class="ios-navbar">
+        <span class="nav-back"><span class="nav-chevron">‹</span> Settings</span>
+        <span class="nav-title">Calendar</span>
+        <span class="nav-spacer"></span>
+      </div>
+      <div class="list-body">
+
+        <div class="section-header">Calendar access</div>
+        <div class="section-group">
+          <div class="row">
+            <div class="row-icon" style="background:#EFE8D8;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#7A7361" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            </div>
+            <div class="row-detail">
+              <div class="row-label">Connect calendar</div>
+              <div class="row-sublabel">See what each day held</div>
+            </div>
+            <span class="row-chevron">›</span>
+          </div>
+        </div>
+        <div class="section-footer">Squirl can show a one-line summary of what was on your calendar alongside each check-in. Events stay on this device.</div>
+
+        <!-- Day cards section -->
+        <div class="section-space"></div>
+        <div class="section-header">Day cards</div>
+        <div class="section-group">
+          <div class="row">
+            <div class="row-label">Show signal summary</div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="row">
+            <div class="row-label">Compact layout</div>
+            <div class="toggle off"></div>
+          </div>
+        </div>
+
+      </div><!-- list-body -->
+    </div><!-- iphone -->
+    <div class="annotation">
+      <span class="fr-refs">FR-001</span><br>
+      Tapping "Connect calendar" opens the explainer sheet (title-capture choice + on-device promise) <em>before</em> any system permission prompt. Declining at the explainer sets <code>calendarExplainerDeclined</code>; the Settings row stays as the re-entry path. The system prompt never fires until the user proceeds past the explainer.
+    </div>
+  </div>
+
+</div><!-- frames-grid -->
+
+<hr class="divider">
+
+<!-- ══════════════════════════════════════════════════════════════
+     ROW 2: CONFIRMATION DIALOGS (FR-013)
+════════════════════════════════════════════════════════════════ -->
+<div style="margin-bottom:20px;">
+  <div class="frame-label" style="font-size:13px;">FR-013 Confirmation dialogs: both actions shown; one dialog open</div>
+  <p class="frame-desc">Both "Re-capture history" and "Remove captured calendar context" require confirmation. Shown below: the remove-context dialog open (the more destructive path). Re-capture dialog shown separately without overlay for copy reference.</p>
+</div>
+
+<div class="frames-grid">
+
+  <!-- Dialog: Remove captured context (open) -->
+  <div class="frame-wrap">
+    <div class="frame-label">Remove dialog · open</div>
+    <div class="frame-desc">"Remove captured calendar context" tapped. Action sheet style (bottom sheet on iPhone). Destructive action in red. Framed on the full Settings › Calendar screen with the Data section visible.</div>
+    <div class="iphone dialog-overlay-wrapper">
+      <div class="iphone-notch"><div class="pill"></div></div>
+      <div class="iphone-status">
+        <span>9:41</span>
+        <div class="status-right">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4.5" y="2" width="3" height="10" rx="1"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13.5" y="1" width="3" height="11" rx="1"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.5C10.5 2.5 12.7 3.6 14.2 5.3L15.5 4C13.7 2 11 .9 8 .9 5 .9 2.3 2 .5 4L1.8 5.3C3.3 3.6 5.5 2.5 8 2.5z"/><path d="M8 5.5C9.7 5.5 11.2 6.2 12.3 7.4L13.6 6.1C12.2 4.6 10.2 3.7 8 3.7c-2.2 0-4.2.9-5.6 2.4L3.7 7.4C4.8 6.2 6.3 5.5 8 5.5z"/><circle cx="8" cy="10.5" r="1.5"/></svg>
+          <span>100%</span>
+        </div>
+      </div>
+      <div class="ios-navbar">
+        <span class="nav-back"><span class="nav-chevron">‹</span> Settings</span>
+        <span class="nav-title">Calendar</span>
+        <span class="nav-spacer"></span>
+      </div>
+      <!-- Dimmed list body (background behind dialog) -->
+      <div class="list-body" style="opacity:.35; pointer-events:none; min-height:340px;">
+        <div class="section-header">Data</div>
+        <div class="section-group">
+          <div class="row">
+            <div class="row-label">Re-capture history with current settings</div>
+            <span class="row-chevron">›</span>
+          </div>
+          <div class="row">
+            <div class="row-label destructive">Remove captured calendar context</div>
+            <span class="row-chevron" style="color:#C7C7CC;">›</span>
+          </div>
+        </div>
+        <div class="section-space"></div>
+        <div class="section-header">Day cards</div>
+        <div class="section-group">
+          <div class="row">
+            <div class="row-label">Show signal summary</div>
+            <div class="toggle on" style="pointer-events:none;"></div>
+          </div>
+        </div>
+      </div>
+      <!-- Dialog sheet overlay -->
+      <div class="dialog-sheet">
+        <div style="width:calc(100% - 24px); padding-bottom:8px;">
+          <!-- Main action card -->
+          <div class="dialog-card" style="margin-bottom:8px;">
+            <div class="dialog-body">
+              <div class="dialog-title">Remove Calendar Context?</div>
+              <div class="dialog-msg">This removes the calendar summary from every day in your journal. Your check-ins and their signals are unaffected. This can't be undone.</div>
+            </div>
+            <div class="dialog-actions">
+              <div class="dialog-action primary">Remove Calendar Context</div>
+            </div>
+          </div>
+          <!-- Separate cancel card -->
+          <div class="dialog-card">
+            <div class="dialog-action cancel">Cancel</div>
+          </div>
+        </div>
+      </div>
+    </div><!-- iphone -->
+    <div class="annotation">
+      <span class="fr-refs">FR-013</span><br>
+      iOS action sheet pattern: two cards, destructive action separated from Cancel. Check-ins and signal data are explicitly called out as unaffected, reducing anxiety about tapping the wrong thing.
+    </div>
+  </div>
+
+  <!-- Dialog: Re-capture (copy reference, no overlay) -->
+  <div class="frame-wrap">
+    <div class="frame-label">Re-capture dialog · copy reference</div>
+    <div class="frame-desc">Shown without overlay so the copy is readable. Re-capture is non-destructive (it overwrites context, not check-ins): no red, primary blue action.</div>
+    <div class="iphone">
+      <div class="iphone-notch"><div class="pill"></div></div>
+      <div class="iphone-status">
+        <span>9:41</span>
+        <div class="status-right">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4.5" y="2" width="3" height="10" rx="1"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13.5" y="1" width="3" height="11" rx="1"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.5C10.5 2.5 12.7 3.6 14.2 5.3L15.5 4C13.7 2 11 .9 8 .9 5 .9 2.3 2 .5 4L1.8 5.3C3.3 3.6 5.5 2.5 8 2.5z"/><path d="M8 5.5C9.7 5.5 11.2 6.2 12.3 7.4L13.6 6.1C12.2 4.6 10.2 3.7 8 3.7c-2.2 0-4.2.9-5.6 2.4L3.7 7.4C4.8 6.2 6.3 5.5 8 5.5z"/><circle cx="8" cy="10.5" r="1.5"/></svg>
+          <span>100%</span>
+        </div>
+      </div>
+      <div class="ios-navbar">
+        <span class="nav-back"><span class="nav-chevron">‹</span> Settings</span>
+        <span class="nav-title">Calendar</span>
+        <span class="nav-spacer"></span>
+      </div>
+      <div class="list-body" style="display:flex; align-items:flex-end; min-height:380px; padding:0;">
+        <div style="width:100%; padding:16px 12px 24px;">
+          <div class="dialog-card" style="margin-bottom:8px;">
+            <div class="dialog-body">
+              <div class="dialog-title">Re-capture History?</div>
+              <div class="dialog-msg">Squirl will re-read your calendar for every past check-in day using your current calendar and title settings. Existing context is replaced. This may take a minute.</div>
+            </div>
+            <div class="dialog-actions">
+              <div class="dialog-action" style="color:#007AFF; font-weight:600;">Re-capture History</div>
+            </div>
+          </div>
+          <div class="dialog-card">
+            <div class="dialog-action cancel">Cancel</div>
+          </div>
+        </div>
+      </div>
+    </div><!-- iphone -->
+    <div class="annotation">
+      <span class="fr-refs">FR-013 · FR-009</span><br>
+      Non-destructive: primary action in blue (not red). "Current calendar and title settings" surfaces FR-009: user understands this overwrites old context with the new settings. No check-ins are deleted.
+    </div>
+  </div>
+
+  <!-- Title toggle detail — titles OFF state -->
+  <div class="frame-wrap">
+    <div class="frame-label">Title toggle · Off state (privacy mode)</div>
+    <div class="frame-desc">Same Settings screen with "Capture event titles" toggled off. The section footer copy changes to reinforce non-retroactive semantics (FR-009). All other controls unchanged.</div>
+    <div class="iphone">
+      <div class="iphone-notch"><div class="pill"></div></div>
+      <div class="iphone-status">
+        <span>9:41</span>
+        <div class="status-right">
+          <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4.5" y="2" width="3" height="10" rx="1"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13.5" y="1" width="3" height="11" rx="1"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.5C10.5 2.5 12.7 3.6 14.2 5.3L15.5 4C13.7 2 11 .9 8 .9 5 .9 2.3 2 .5 4L1.8 5.3C3.3 3.6 5.5 2.5 8 2.5z"/><path d="M8 5.5C9.7 5.5 11.2 6.2 12.3 7.4L13.6 6.1C12.2 4.6 10.2 3.7 8 3.7c-2.2 0-4.2.9-5.6 2.4L3.7 7.4C4.8 6.2 6.3 5.5 8 5.5z"/><circle cx="8" cy="10.5" r="1.5"/></svg>
+          <span>100%</span>
+        </div>
+      </div>
+      <div class="ios-navbar">
+        <span class="nav-back"><span class="nav-chevron">‹</span> Settings</span>
+        <span class="nav-title">Calendar</span>
+        <span class="nav-spacer"></span>
+      </div>
+      <div class="list-body">
+
+        <div class="section-header">Calendar access</div>
+        <div class="section-group">
+          <div class="row">
+            <div class="row-icon" style="background:#E8F5E2;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#2A7A18" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+            </div>
+            <div class="row-detail"><div class="row-label">Calendar</div></div>
+            <span class="access-badge granted"><span class="access-dot"></span>Granted</span>
+          </div>
+        </div>
+
+        <div class="section-space"></div>
+        <div class="section-header">Calendars</div>
+        <div class="section-group">
+          <div class="row">
+            <span class="cal-dot" style="background:#007AFF;"></span>
+            <div class="row-detail"><div class="row-label">Work</div></div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="row">
+            <span class="cal-dot" style="background:#34C759;"></span>
+            <div class="row-detail"><div class="row-label">Personal</div></div>
+            <div class="toggle on"></div>
+          </div>
+          <div class="row">
+            <span class="cal-dot" style="background:#FF2D55;"></span>
+            <div class="row-detail">
+              <div class="row-label">Birthdays</div>
+              <span class="class-badge">Off by default</span>
+            </div>
+            <div class="toggle off"></div>
+          </div>
+        </div>
+
+        <div class="section-space"></div>
+        <div class="section-header">Privacy</div>
+        <div class="section-group">
+          <div class="row">
+            <div class="row-detail">
+              <div class="row-label">Capture event titles</div>
+              <!-- show what the result looks like in the day card -->
+              <div class="row-sublabel">Day cards show: "3 meetings · 2 events"</div>
+            </div>
+            <div class="toggle off"></div>
+          </div>
+        </div>
+        <div class="section-footer" style="color:#B8842A;">Applies to new captures only. Previously captured titles remain. Use "Re-capture history" to remove them from past days too.</div>
+
+        <div class="section-space"></div>
+        <div class="section-header">Data</div>
+        <div class="section-group">
+          <div class="row">
+            <div class="row-label">Re-capture history with current settings</div>
+            <span class="row-chevron">›</span>
+          </div>
+          <div class="row">
+            <div class="row-label destructive">Remove captured calendar context</div>
+            <span class="row-chevron" style="color:#C7C7CC;">›</span>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- iphone -->
+    <div class="annotation">
+      <span class="fr-refs">FR-007 · FR-009</span><br>
+      Footer copy changes color to amber (not red: this isn't an error, it's a clarifying note) when titles are turned off, calling out that past titles persist until re-capture. The preview copy "3 meetings · 2 events" in the sublabel gives the owner a concrete sense of the titles-off rendering without leaving this screen.
+    </div>
+  </div>
+
+</div><!-- frames-grid -->
+
+</body>
+</html>
