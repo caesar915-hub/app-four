@@ -145,10 +145,13 @@ enum AppModelContainer {
     }
 
     /// Moves the store trio into `Quarantine/<stamp>/` (names intact, so a
-    /// snapshot stays restorable as a unit). Ordering is load-bearing: the
-    /// snapshot directory and pending marker are committed BEFORE anything
-    /// moves, so a crash leaves either the live store untouched (pre-move) or
-    /// a marked snapshot `recoverInterruptedQuarantine` restores (mid-move).
+    /// snapshot stays restorable as a unit). Two orderings are load-bearing:
+    /// the marker is committed before the snapshot directory and both before
+    /// anything moves (a crash between marker and directory is healed by
+    /// recovery's clear-marker guard, leaving no unmarked cruft); and the
+    /// sidecars move before the database itself, so a snapshot that contains
+    /// `default.store` is provably complete — recovery can treat any files
+    /// still live as a dead retry's, never the original `-wal`.
     /// Returns nil when the setup writes fail (disk full, root occupied) — in
     /// that case nothing has moved and the caller must not undo or retry.
     private static func quarantine(storeURL: URL) -> URL? {
@@ -156,14 +159,16 @@ enum AppModelContainer {
         let dest = quarantineRoot(for: storeURL).appendingPathComponent(stamp, isDirectory: true)
         let fm = FileManager.default
         do {
-            try fm.createDirectory(at: dest, withIntermediateDirectories: true)
+            try fm.createDirectory(at: quarantineRoot(for: storeURL), withIntermediateDirectories: true)
             try Data(stamp.utf8).write(to: pendingMarkerURL(for: storeURL))
+            try fm.createDirectory(at: dest, withIntermediateDirectories: true)
         } catch {
             AppLogger.log("AppModelContainer: quarantine setup failed, store left in place — \(error)")
             try? fm.removeItem(at: dest)
+            clearPendingMarker(storeURL: storeURL)
             return nil
         }
-        for url in storeFileURLs(for: storeURL) where fm.fileExists(atPath: url.path) {
+        for url in storeFileURLs(for: storeURL).reversed() where fm.fileExists(atPath: url.path) {
             try? fm.moveItem(at: url, to: dest.appendingPathComponent(url.lastPathComponent))
         }
         AppLogger.log("AppModelContainer: store quarantined to \(stamp)")
@@ -171,26 +176,41 @@ enum AppModelContainer {
     }
 
     /// Reverses a quarantine. Which side holds the real database decides what
-    /// may be deleted: if the snapshot contains `default.store`, the live trio
-    /// can only be a dead retry's partial files — sweep all three (so a
-    /// retry-created `-wal` is never replayed into the restored store) and
-    /// move the snapshot back. If it doesn't, the live store never moved —
-    /// delete nothing, and return any stray sidecars the interrupted move
-    /// captured without clobbering a live file. The snapshot directory is
-    /// removed only once it has been fully emptied.
+    /// happens to live files: if the snapshot contains `default.store`, the
+    /// sidecars-before-store move order proves the capture was complete, so
+    /// anything still live is a dead retry's — set it ASIDE (rename, never
+    /// delete) so a retry-created `-wal` can't be replayed into the restored
+    /// store, then restore the database FIRST: once `default.store` leaves the
+    /// snapshot, a crash mid-restore drops the next launch into the no-delete
+    /// branch, which reunites the remaining sidecars instead of sweeping them.
+    /// If the snapshot lacks the store, the live one never moved — delete
+    /// nothing, and return stray sidecars only where no live file would be
+    /// clobbered. The marker survives until the database itself is out of the
+    /// snapshot, so an interrupted restore is retried, not stranded.
     private static func undoQuarantine(snapshot: URL, storeURL: URL) {
         let fm = FileManager.default
         let dir = storeURL.deletingLastPathComponent()
         let snapshotStore = snapshot.appendingPathComponent(storeURL.lastPathComponent)
-        let contents = (try? fm.contentsOfDirectory(at: snapshot, includingPropertiesForKeys: nil)) ?? []
         if fm.fileExists(atPath: snapshotStore.path) {
-            for url in storeFileURLs(for: storeURL) {
-                try? fm.removeItem(at: url)
+            let deadDir = snapshot.deletingLastPathComponent()
+                .appendingPathComponent("dead-" + snapshot.lastPathComponent, isDirectory: true)
+            for url in storeFileURLs(for: storeURL) where fm.fileExists(atPath: url.path) {
+                try? fm.createDirectory(at: deadDir, withIntermediateDirectories: true)
+                if (try? fm.moveItem(at: url, to: deadDir.appendingPathComponent(url.lastPathComponent))) == nil {
+                    // A same-named file from an earlier interrupted recovery
+                    // already sits aside; this one is equally dead, and removing
+                    // it is the only way to keep a foreign -wal from being
+                    // replayed into the restored store.
+                    try? fm.removeItem(at: url)
+                }
             }
-            for file in contents {
-                try? fm.moveItem(at: file, to: dir.appendingPathComponent(file.lastPathComponent))
+            for url in storeFileURLs(for: storeURL) {
+                let src = snapshot.appendingPathComponent(url.lastPathComponent)
+                guard fm.fileExists(atPath: src.path) else { continue }
+                try? fm.moveItem(at: src, to: dir.appendingPathComponent(url.lastPathComponent))
             }
         } else {
+            let contents = (try? fm.contentsOfDirectory(at: snapshot, includingPropertiesForKeys: nil)) ?? []
             for file in contents
             where !fm.fileExists(atPath: dir.appendingPathComponent(file.lastPathComponent).path) {
                 try? fm.moveItem(at: file, to: dir.appendingPathComponent(file.lastPathComponent))
@@ -200,7 +220,9 @@ enum AppModelContainer {
            remaining.isEmpty {
             try? fm.removeItem(at: snapshot)
         }
-        clearPendingMarker(storeURL: storeURL)
+        if !fm.fileExists(atPath: snapshotStore.path) {
+            clearPendingMarker(storeURL: storeURL)
+        }
         AppLogger.log("AppModelContainer: quarantine undone, store restored")
     }
 

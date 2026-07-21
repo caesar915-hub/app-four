@@ -82,6 +82,35 @@ struct StorageMigrationTests {
         #expect(!fm.fileExists(atPath: legacy.path))
     }
 
+    @Test func mergesNestedDirectoriesFileByFile() throws {
+        // Same-named subdirectory on both sides (user-created via Files app
+        // pre-1.0) — must merge per file, never win/lose a tree by dir mtime.
+        let source = try makeTempDir()
+        let dest = try makeTempDir()
+        try write("legacy-a", to: source.appendingPathComponent("Exports/batch/a.json"))
+        try write("dest-b", to: dest.appendingPathComponent("Exports/batch/b.json"))
+
+        StorageMigration.run(from: source, to: dest, fileManager: fm)
+
+        #expect(try String(contentsOf: dest.appendingPathComponent("Exports/batch/a.json"), encoding: .utf8) == "legacy-a")
+        #expect(try String(contentsOf: dest.appendingPathComponent("Exports/batch/b.json"), encoding: .utf8) == "dest-b")
+        #expect(!fm.fileExists(atPath: source.appendingPathComponent("Exports").path))
+    }
+
+    @Test func mixedTypeCollisionPreservesBothSides() throws {
+        // A legacy DIRECTORY collides with a migrated FILE of the same name —
+        // neither may be deleted by mtime; the legacy tree moves aside.
+        let source = try makeTempDir()
+        let dest = try makeTempDir()
+        try write("inside-dir", to: source.appendingPathComponent("Exports/report.json/inner.txt"))
+        try write("migrated-file", to: dest.appendingPathComponent("Exports/report.json"))
+
+        StorageMigration.run(from: source, to: dest, fileManager: fm)
+
+        #expect(try String(contentsOf: dest.appendingPathComponent("Exports/report.json"), encoding: .utf8) == "migrated-file")
+        #expect(try String(contentsOf: dest.appendingPathComponent("Exports/report.json.legacy/inner.txt"), encoding: .utf8) == "inside-dir")
+    }
+
     @Test func noOpWhenNothingToMigrate() throws {
         let source = try makeTempDir()
         let dest = try makeTempDir()
