@@ -1,5 +1,80 @@
-## 2026-07-17 23:22 – 2026-07-21 15:01 · Merge fix/app-store-readiness into main: App Store readiness · main
+## 2026-07-16 19:24 – 2026-07-21 18:14 · Merge pull request #35 from caesar915-hub/feat/hide-handsfre · main
 
+**Code changes**
+- _Major (feat)_
+  - `94a51181` feat: hide hands-free logging surface for 1.0 (revert this commit to restore)
+  - `02f83b17` feat: single meadow green across check-in + Insights month pill
+  - `81ce578c` feat: unify capture-flow green (#5FB36E) + whisper install toggle
+- _Fixes_
+  - `d3beab80` fix: reset persisted debugMockMode on Release launch
+  - `7955d965` fix: close both archive-gate blockers from the final submission audit
+  - `70b46d46` fix: harden quarantine + migration per review round 2 (4 issues) and final refute pass (1)
+  - `50d9d843` fix: address all 6 adversarial-review findings on PR #34
+  - `28f4fe3d` fix: App Store readiness — private storage, crash-safe container, medical disclaimers
+  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
+- _docs_
+  - `c73e4586` docs: regen WORKLOG for the App Store readiness merge (PR #34)
+  - `b277f01d` docs(app-store): privacy policy live at squirl.pt/privacy; B4/H2 done
+  - `c72bbaee` docs: regen WORKLOG for Path-A shelving commit
+  - `1af71f1b` docs: Path A SHELVED by owner — current design retained; work archived
+  - `58cd8d0f` docs: regen WORKLOG for 040 rollout commit
+  - `e4097562` docs: 040 rollout complete on canvas — a03/a01/a07/trio refined (T007-T018)
+  - `6fac7461` docs: regen WORKLOG for a08-a commit
+  - `b66fcb40` docs: 040 a08-a built + verified (T001-T006) — first Path A rollout screen
+  - `7d852219` docs: regen WORKLOG for 040 pipeline commit
+  - `4acb2fee` docs: spec 040 Path A refine — full pipeline (spec/plan/research/contract/tasks)
+  - `6e7ffc73` docs: regen WORKLOG for Path-B kill + Path-A pilot commit
+  - `65c36d66` docs: Path B killed at pilot gate (owner); Path A refine pilot a02-a built
+  - `ede7d83b` docs: regen WORKLOG for 039 Gate-1 evidence commit
+  - `f3243c36` docs+design-db: 039 pilot a02-b built + verified — Gate 1 evidence pack
+  - `5e82884e` docs: regen WORKLOG for 039 pipeline commit
+  - `a0e1ac34` docs: spec 039 Path B grouped-table — full Spec Kit pipeline (specify→clarify→plan→tasks)
+  - `16888864` docs: regen WORKLOG for design-database + audits commit
+  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
+  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
+  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
+  - `5edb6732` docs: regen WORKLOG for capture-green + whisper toggle
+  - `c2322336` docs: DEVLOG/BACKLOG for capture-green + whisper toggle (81ce578c)
+  - `48823834` docs: regen WORKLOG + BACKLOG/DEVLOG for the 033-036 tower landing on main
+  - `ed126440` docs: regen WORKLOG after App Store readiness round (derived from git/gh)
+  - `7e4c9ed3` docs: App Store readiness — audit findings, submission playbook, privacy-policy draft
+- _chore_
+  - `f63e159b` chore(1.0): submission prep — MARKETING_VERSION 1.0, iPhone-only, support email
+- _other_
+  - `5cd7b22d` Merge pull request #35 from caesar915-hub/feat/hide-handsfree-1.0
+  - `04277df5` Merge fix/release-mockmode-reset: Release never honors persisted mock mode
+  - `b240d735` Merge fix/archive-gate: strip TESTFLIGHT from Release + in-app privacy link
+  - `e1a5b733` Merge fix/app-store-readiness into main: App Store readiness + 1.0 submission prep (PR #34)
+  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
+  - `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
+
+**Git actions**
+- `5cd7b22d` Merge pull request #35 from caesar915-hub/feat/hide-handsfree-1.0
+- `04277df5` Merge fix/release-mockmode-reset: Release never honors persisted mock mode
+- `b240d735` Merge fix/archive-gate: strip TESTFLIGHT from Release + in-app privacy link
+- `e1a5b733` Merge fix/app-store-readiness into main: App Store readiness + 1.0 submission prep (PR #34)
+- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
+- `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
+- tag `refs/tags/stable-ref/0.8.0`
+- tag `refs/tags/v1.0`
+
+**gh actions**
+- PR #35 merged `feat/hide-handsfree-1.0` — "feat: hide hands-free (Siri/Shortcuts) surface for 1.0"
+- PR #34 merged `fix/app-store-readiness` — "fix: App Store readiness + 1.0 submission prep"
+- PR #35 opened `feat/hide-handsfree-1.0` — "feat: hide hands-free (Siri/Shortcuts) surface for 1.0" — MERGED/UNKNOWN
+- PR #34 opened `fix/app-store-readiness` — "fix: App Store readiness + 1.0 submission prep" — MERGED/UNKNOWN
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                          4822ee28 [feat/038-icloud-sync]
+/Users/caesargrey/Projects/app-four-spm                                      4e6a8004 [feat/036-newlook-checkin-insights]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents        9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4            965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/app-store-readiness    5cd7b22d [main]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals 5db316a6 [feat/healthkit-signals]
+```
+
+---
 **Code changes**
 - _Major (feat)_
   - `4e6a8004` feat(036): unify check-in + Insights green to Theme.meadowGreen
