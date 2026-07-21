@@ -51,9 +51,6 @@ struct SettingsView: View {
                     systemSection
                     checkInSection
                     dayCardSection
-                    MyMedicationSection(viewModel: viewModel, isPickerExpanded: $medicationPickerExpanded)
-                        .id(Self.myMedicationID)
-                    DoseGuardSection(viewModel: viewModel)
                     medicationBarSection
                     MedicalInfoSection()
                     accessibilitySection
