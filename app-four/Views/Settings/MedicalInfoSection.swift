@@ -8,7 +8,7 @@ struct MedicalInfoSection: View {
         Section {
             Text("Squirl is a personal journal, not medical advice. Dose lists and effect times are typical values from the manufacturer's product information — your prescription and response may differ.")
                 .font(Typography.body)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
         } header: {
             Text("Medication info")
         } footer: {

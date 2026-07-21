@@ -26,8 +26,17 @@ enum StorageMigration {
             for file in contents {
                 let target = newDir.appendingPathComponent(file.lastPathComponent)
                 if fileManager.fileExists(atPath: target.path) {
-                    // Already migrated in a prior run — drop the stale legacy copy.
-                    try? fileManager.removeItem(at: file)
+                    // Collision with an already-migrated file. Usually the legacy
+                    // copy is a stale leftover — but after a TestFlight downgrade,
+                    // a pre-1.0 build writes FRESH files to Documents under fixed
+                    // names (e.g. sessionSnapshots.json), so keep whichever copy
+                    // is newer instead of blindly trusting the destination.
+                    if modificationDate(of: file, fileManager) > modificationDate(of: target, fileManager) {
+                        try? fileManager.removeItem(at: target)
+                        try? fileManager.moveItem(at: file, to: target)
+                    } else {
+                        try? fileManager.removeItem(at: file)
+                    }
                 } else {
                     try? fileManager.moveItem(at: file, to: target)
                 }
@@ -40,5 +49,9 @@ enum StorageMigration {
                 try? fileManager.removeItem(at: oldDir)
             }
         }
+    }
+
+    private static func modificationDate(of url: URL, _ fileManager: FileManager) -> Date {
+        ((try? fileManager.attributesOfItem(atPath: url.path))?[.modificationDate] as? Date) ?? .distantPast
     }
 }

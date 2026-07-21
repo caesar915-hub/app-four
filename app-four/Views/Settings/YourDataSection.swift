@@ -11,7 +11,7 @@ struct YourDataSection: View {
                 Label {
                     Text("Storage couldn't be opened this session, so new check-ins won't be saved. Restarting the app usually fixes this.")
                         .font(Typography.body)
-                        .foregroundStyle(Theme.textPrimary)
+                        .foregroundStyle(NewLook.inkPrimary)
                 } icon: {
                     Image(systemName: "exclamationmark.triangle")
                         .foregroundStyle(Theme.danger)
@@ -21,7 +21,7 @@ struct YourDataSection: View {
 
             Text("Your recordings, check-ins, and signals stay on this device. Nothing is uploaded.")
                 .font(Typography.body)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
 
             NavigationLink {
                 AcknowledgementsView()

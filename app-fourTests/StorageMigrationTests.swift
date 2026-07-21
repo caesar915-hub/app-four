@@ -43,18 +43,43 @@ struct StorageMigrationTests {
         #expect(try String(contentsOf: moved, encoding: .utf8) == "x")
     }
 
-    @Test func doesNotClobberAlreadyMigratedFile() throws {
+    private func setModificationDate(_ date: Date, on url: URL) throws {
+        try fm.setAttributes([.modificationDate: date], ofItemAtPath: url.path)
+    }
+
+    @Test func doesNotClobberAlreadyMigratedFileWithStaleLegacyCopy() throws {
         let source = try makeTempDir()
         let dest = try makeTempDir()
-        try write("legacy", to: source.appendingPathComponent("Exports/e.json"))
-        try write("current", to: dest.appendingPathComponent("Exports/e.json"))
+        let legacy = source.appendingPathComponent("Exports/e.json")
+        let target = dest.appendingPathComponent("Exports/e.json")
+        try write("legacy", to: legacy)
+        try write("current", to: target)
+        try setModificationDate(Date(timeIntervalSinceNow: -3600), on: legacy)
+        try setModificationDate(Date(), on: target)
 
         StorageMigration.run(from: source, to: dest, fileManager: fm)
 
-        // The already-present destination copy wins; the stale legacy copy is dropped.
-        let target = dest.appendingPathComponent("Exports/e.json")
+        // The newer destination copy wins; the stale legacy copy is dropped.
         #expect(try String(contentsOf: target, encoding: .utf8) == "current")
-        #expect(!fm.fileExists(atPath: source.appendingPathComponent("Exports/e.json").path))
+        #expect(!fm.fileExists(atPath: legacy.path))
+    }
+
+    @Test func newerLegacyCopyFromDowngradeCycleWins() throws {
+        // TestFlight downgrade: a pre-1.0 build wrote a FRESH file to Documents
+        // after an earlier migration had already populated the destination.
+        let source = try makeTempDir()
+        let dest = try makeTempDir()
+        let legacy = source.appendingPathComponent("Diagnostics/sessionSnapshots.json")
+        let target = dest.appendingPathComponent("Diagnostics/sessionSnapshots.json")
+        try write("fresh-from-downgrade", to: legacy)
+        try write("stale-migrated", to: target)
+        try setModificationDate(Date(), on: legacy)
+        try setModificationDate(Date(timeIntervalSinceNow: -3600), on: target)
+
+        StorageMigration.run(from: source, to: dest, fileManager: fm)
+
+        #expect(try String(contentsOf: target, encoding: .utf8) == "fresh-from-downgrade")
+        #expect(!fm.fileExists(atPath: legacy.path))
     }
 
     @Test func noOpWhenNothingToMigrate() throws {

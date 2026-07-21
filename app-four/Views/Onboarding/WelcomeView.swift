@@ -52,7 +52,7 @@ struct WelcomeView: View {
 
                 Text("Squirl is a journal — it doesn't give medical advice.")
                     .font(Typography.caption)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .multilineTextAlignment(.center)
             }
             .padding(.horizontal, Spacing.l)
