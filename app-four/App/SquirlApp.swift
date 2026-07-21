@@ -20,6 +20,13 @@ struct SquirlApp: App {
         if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
             UserDefaults.standard.register(defaults: ["debugMockMode": true])
         }
+        #else
+        // A container that ever ran a Debug build (or the old TestFlight debug
+        // console) can carry a persisted debugMockMode=true — and the data
+        // paths honor the key, which would hide every real recording behind
+        // the mock filter after a store upgrade. Release never offers the
+        // toggle, so clear it before the store reads the key eagerly below.
+        UserDefaults.standard.removeObject(forKey: "debugMockMode")
         #endif
         // Touch global dependencies at startup so stores begin observing the DB.
         _ = AppDependencies.store
