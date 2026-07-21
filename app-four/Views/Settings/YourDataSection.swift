@@ -23,6 +23,10 @@ struct YourDataSection: View {
                 .font(Typography.body)
                 .foregroundStyle(NewLook.inkPrimary)
 
+            Link(destination: URL(string: "https://squirl.pt/privacy")!) {
+                Label("Privacy Policy", systemImage: "hand.raised")
+            }
+
             NavigationLink {
                 AcknowledgementsView()
             } label: {
