@@ -17,6 +17,10 @@ struct LogDefaultDoseIntent: AppIntent {
     /// The platform default, declared as documented intent: locked Siri works;
     /// worst case is journal pollution, nothing is read back (D8).
     static let authenticationPolicy = IntentAuthenticationPolicy.alwaysAllowed
+    /// 1.0 ships hands-free logging hidden (no AppShortcutsProvider, not
+    /// discoverable in Shortcuts/Spotlight) pending its S1–S10 device QA.
+    /// Revert the hide-handsfree commit to restore the full surface.
+    static let isDiscoverable = false
 
     @AppDependency private var service: any DoseLogService
     @AppDependency private var router: AppIntentRouter
