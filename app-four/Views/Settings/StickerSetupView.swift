@@ -52,7 +52,7 @@ struct StickerSetupView: View {
             VStack(alignment: .leading, spacing: Spacing.xxl) {
                 Text("Turn any blank NFC sticker into a one-tap Squirl action. About a minute, once per sticker. Squirl walks you through the Shortcuts app.")
                     .font(Typography.callout)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
 
                 Picker("Sticker type", selection: $path) {
                     ForEach(StickerPath.allCases) { Text($0.label).tag($0) }
@@ -75,10 +75,10 @@ struct StickerSetupView: View {
 
     private var needSection: some View {
         card(header: "What you'll need") {
-            row(symbol: "tag", tint: Theme.textSecondary,
+            row(symbol: "tag", tint: NewLook.inkSecondary,
                 title: "A blank NFC sticker", subtitle: "Any cheap NDEF tag, nothing pre-written")
             if path.needsMedication {
-                Divider().overlay(Theme.separator).padding(.leading, badge + Spacing.m)
+                Divider().overlay(NewLook.hairline).padding(.leading, badge + Spacing.m)
                 row(symbol: "pills.fill", tint: Palette.medication,
                     title: "A default medication set", subtitle: "Settings › My Medication")
             }
@@ -107,10 +107,10 @@ struct StickerSetupView: View {
             // Keyed by position (offset), not a per-render UUID, so switching paths
             // updates step 4 in place instead of remove-inserting all five rows.
             ForEach(Array(items.enumerated()), id: \.offset) { index, step in
-                if index > 0 { Divider().overlay(Theme.separator).padding(.leading, badge + Spacing.m) }
+                if index > 0 { Divider().overlay(NewLook.hairline).padding(.leading, badge + Spacing.m) }
                 stepRow(number: "\(index + 1)", step: step)
             }
-            Divider().overlay(Theme.separator).padding(.leading, badge + Spacing.m)
+            Divider().overlay(NewLook.hairline).padding(.leading, badge + Spacing.m)
             doneRow
         }
     }
@@ -122,7 +122,7 @@ struct StickerSetupView: View {
                 HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
                     Text(.init(step.text))
                         .font(Typography.body)
-                        .foregroundStyle(Theme.textPrimary)
+                        .foregroundStyle(NewLook.inkPrimary)
                     if step.recommended {
                         Text("Recommended")
                             .font(Typography.label)
@@ -135,7 +135,7 @@ struct StickerSetupView: View {
                 if let detail = step.detail {
                     Text(detail)
                         .font(Typography.caption)
-                        .foregroundStyle(Theme.textSecondary)
+                        .foregroundStyle(NewLook.inkSecondary)
                 }
                 if step.handoff {
                     Button {
@@ -159,7 +159,7 @@ struct StickerSetupView: View {
                 .frame(width: badge, height: badge)
             Text(.init("**Done.** Tap the sticker to \(path.doneLine). \(path.doneTail)"))
                 .font(Typography.body)
-                .foregroundStyle(Theme.textPrimary)
+                .foregroundStyle(NewLook.inkPrimary)
         }
     }
 
@@ -173,7 +173,7 @@ struct StickerSetupView: View {
                 lockLine("Locked", "iPhone shows a notification instead. Tap it and the action runs.")
                 Text("The tap is never lost, and a locked phone showing a notification is just how iOS handles it, not something you did wrong.")
                     .font(Typography.callout)
-                    .foregroundStyle(Theme.textPrimary)
+                    .foregroundStyle(NewLook.inkPrimary)
                     .padding(.top, Spacing.xs)
             }
             .padding(.leading, badge + Spacing.m)
@@ -185,7 +185,7 @@ struct StickerSetupView: View {
             calloutHeader(symbol: "sensor.tag.radiowaves.forward", tint: Theme.meadowAmber, title: "Can't get it to read?")
             Text(.init("Hold the **top-back of your phone**, up by the cameras, flat against the sticker for a second. That's where the NFC reader is. A thick case or a metal surface behind the sticker can block it."))
                 .font(Typography.callout)
-                .foregroundStyle(Theme.textSecondary)
+                .foregroundStyle(NewLook.inkSecondary)
                 .padding(.leading, badge + Spacing.m)
         }
     }
@@ -207,8 +207,8 @@ struct StickerSetupView: View {
                 .foregroundStyle(tint)
                 .frame(width: badge, height: badge)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(Typography.body).foregroundStyle(Theme.textPrimary)
-                Text(subtitle).font(Typography.caption).foregroundStyle(Theme.textSecondary)
+                Text(title).font(Typography.body).foregroundStyle(NewLook.inkPrimary)
+                Text(subtitle).font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
             }
         }
     }
@@ -219,14 +219,14 @@ struct StickerSetupView: View {
                 .font(.body)
                 .foregroundStyle(tint)
                 .frame(width: badge, height: badge)
-            Text(title).font(Typography.headline).foregroundStyle(Theme.textPrimary)
+            Text(title).font(Typography.headline).foregroundStyle(NewLook.inkPrimary)
         }
     }
 
     private func lockLine(_ state: String, _ detail: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(state).font(Typography.subheadline).foregroundStyle(Theme.textPrimary)
-            Text(detail).font(Typography.callout).foregroundStyle(Theme.textSecondary)
+            Text(state).font(Typography.subheadline).foregroundStyle(NewLook.inkPrimary)
+            Text(detail).font(Typography.callout).foregroundStyle(NewLook.inkSecondary)
         }
     }
 
@@ -244,11 +244,11 @@ struct StickerSetupView: View {
                 content()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .card()
+            .newLookCard()
             if let footnote {
                 Text(footnote)
                     .font(Typography.caption)
-                    .foregroundStyle(Theme.textSecondary)
+                    .foregroundStyle(NewLook.inkSecondary)
                     .padding(.horizontal, Spacing.xs)
             }
         }
