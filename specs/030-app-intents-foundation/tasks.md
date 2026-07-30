@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-03 19:08 (WEST) · Updated: 2026-07-11 03:38 (WEST) -->
+<!-- Created: 2026-07-03 19:08 (WEST) · Updated: 2026-07-14 00:45 (WEST) -->
 # Tasks: App Intents Foundation + NFC Sticker Actions
 
 **Input**: Design documents from `/specs/030-app-intents-foundation/`
@@ -15,7 +15,7 @@
 
 ## Phase 1: Setup
 
-- [ ] T001 Create branch `feat/030-app-intents` off `main`; verify baseline build + full serial suite green before any change (Constitution II baseline)
+- [X] T001 Create branch `feat/030-app-intents` off `main`; verify baseline build + full serial suite green before any change (Constitution II baseline)
 - [X] T002 **Verify** the iOS 26 baseline is already on `main` (the raise was executed 2026-07-03 on branch `feat/ios26-target` ahead of this feature — pbxproj all four configs + both SPM packages at 26.0, `ScrollPosition` restored in ScreenContainer, dead iOS-16 guard removed): `grep -c "IPHONEOS_DEPLOYMENT_TARGET = 26.0" app-four.xcodeproj/project.pbxproj` == 8. If that branch has NOT merged yet, rebase this feature onto it or land it first — do not re-apply the raise here (D15)
 
 ---
@@ -31,14 +31,14 @@
 - [X] T003 [P] Extend `app-fourTests/Models/AppSettingsTests.swift`: fresh-defaults assertions for the 5 new fields (`defaultMedicationName == nil`, `defaultMedicationDose == nil`, `doseGuardModeRaw == "off"`, `doseGuardWindowHours == 2`, `nameMedicationInConfirmations == false`) using the existing Mirror no-member pattern — RED (fields don't exist)
 - [X] T004 [P] Create `app-fourTests/Models/DoseGuardModeTests.swift`: raw-value decode (`"off"`/`"total"`/`"window"`, unknown raw → `.off` forward-safe), boundary semantics helpers (window end exactly reached → guard closed; matches `effectProgress < 1` convention) — RED (type doesn't exist)
 - [X] T005 [P] Create `app-fourTests/Intents/AppIntentRouterTests.swift`: trigger-state plumbing only — `requestCheckIn()` sets the check-in trigger, consumption is one-shot (second consume is a no-op), `focusMyMedication()` sets Settings tab + one-shot focus flag. (Onboarding-gate cases belong to US2 — T024.) — RED (type doesn't exist)
-- [ ] T006 **RED checkpoint**: run the suite; confirm T003–T005 tests FAIL for the right reason (missing members/types, not compile noise elsewhere)
+- [X] T006 **RED checkpoint**: run the suite; confirm T003–T005 tests FAIL for the right reason (missing members/types, not compile noise elsewhere)
 
 ### Implementation (GREEN)
 
 - [X] T007 [P] Add the 5 defaulted fields to `app-four/Models/AppSettings.swift` per [data-model.md](data-model.md) (all defaulted/optional, no `.unique` — Constitution IX) → T003 GREEN
 - [X] T008 [P] Create `app-four/Models/DoseGuardMode.swift`: non-persisted enum + raw decode + boundary rule per [data-model.md](data-model.md) → T004 GREEN
 - [X] T009 Create `app-four/Intents/AppIntentRouter.swift`: `@MainActor @Observable` router — check-in trigger flag, one-shot consumption, `focusMyMedication()`; NO gate logic yet (US2) → T005 GREEN
-- [ ] T010 Wire the router through the app in `app-four/App/SquirlApp.swift` + `app-four/Store/AppDependencies.swift`: compose router in AppDependencies; register it with `AppDependencyManager.shared` in `SquirlApp.init` (D11); drive `selectedTab`/`shouldAutoStartRecording` from router state; **rewire the `whispernotes://checkin` `onOpenURL` handler through `router.requestCheckIn()`** (D3/D4 — gate lands in US2, plumbing now). Build + full serial suite green. **Checkpoint: foundation ready**
+- [X] T010 Wire the router through the app in `app-four/App/SquirlApp.swift` + `app-four/Store/AppDependencies.swift`: compose router in AppDependencies; register it with `AppDependencyManager.shared` in `SquirlApp.init` (D11); drive `selectedTab`/`shouldAutoStartRecording` from router state; **rewire the `whispernotes://checkin` `onOpenURL` handler through `router.requestCheckIn()`** (D3/D4 — gate lands in US2, plumbing now). Build + full serial suite green. **Checkpoint: foundation ready**
 
 ---
 
@@ -54,7 +54,7 @@
 - [X] T012 [P] [US1] Create `app-fourTests/Services/DoseLogServiceTests.swift` (in-memory container + `TestSupport.useRealData()`): **full outcome + guard-evaluation matrix** — notConfigured (no default; dangling name not in catalog); logged event field contract (`source == .manual`, `recording == nil`, `isMockData == false`, catalog `durationHours`, `takenAt == now`); guard OFF double-log allowed; **total guard** blocks while `isActive` (respecting a per-event edited duration) and allows at exact effect end; **window guard** blocks `< X h`, allows at exactly `X h` (boundary closed, FR-012); **any-surface reference** — an event created the in-app way blocks a guarded expedited log (clarify Q3=A); `guarded.activeSince` carries the earlier `takenAt`; `.medicationEventsDidChange` posted on logged only — RED (service doesn't exist). *(Guard eval is tested HERE because the service owns it from day one with mode written directly to AppSettings in tests; US3 adds only the UI.)*
 - [X] T013 [P] [US1] Create `app-fourTests/Views/ConfirmationCopyTests.swift` *(created at `app-fourTests/Intents/ConfirmationCopyTests.swift` — grouped next to the helper)*: pure copy-matrix helper tests per [data-model.md](data-model.md) — named/discreet × logged/guarded/notConfigured, system-short time formatting, guarded copy names time never drug — RED
 - [X] T014 [P] [US1] Extend `app-fourTests/ViewModels/SettingsViewModelTests.swift`: my-medication + naming-toggle sync round-trips (VM props ↔ AppSettings persistence, clear-default path) — RED
-- [ ] T015 [US1] **RED checkpoint**: run suite; confirm T012–T014 FAIL for the right reasons
+- [X] T015 [US1] **RED checkpoint**: run suite; confirm T012–T014 FAIL for the right reasons
 
 ### Implementation for User Story 1
 
@@ -65,7 +65,7 @@
 - [X] T020 [US1] Create `app-four/Intents/SquirlAppShortcuts.swift`: `AppShortcutsProvider` with the dose shortcut (iOS 17+ initializer with `shortTitle`/`systemImageName`, `.applicationName` phrases per contract; check-in entry added in US2)
 - [X] T021 [US1] Register `DoseLogService` in `app-four/Store/AppDependencies.swift` + `AppDependencyManager` (extends T010 wiring)
 - [X] T022 [US1] From the approved T011 mockup: create `app-four/Views/Settings/MyMedicationSection.swift` (+ naming toggle — same section or `ConfirmationStyleSection.swift` per mockup decision), add SettingsViewModel sync props → T014 GREEN, mount in `app-four/Views/SettingsView.swift`
-- [ ] T023 [US1] **Story checkpoint**: build + full serial suite green; owner device QA quickstart **S1–S10** (iOS 26 device, mock mode OFF). US1 is the shippable MVP
+- [X] T023 [US1] **Story checkpoint**: build + full serial suite green; owner device QA quickstart **S1–S10** (iOS 26 device, mock mode OFF). US1 is the shippable MVP
 
 ---
 
@@ -77,15 +77,15 @@
 
 ### Tests for User Story 2 (test-first · RED — MANDATORY) ⚠️
 
-- [ ] T024 [US2] Extend `app-fourTests/Intents/AppIntentRouterTests.swift` with gate cases: onboarding incomplete → `requestCheckIn()` sets NO auto-start trigger and reports the gated outcome (drives the "finish setting up" dialog + app opens to onboarding); onboarding complete → trigger set; gate consults `AppSettings.hasCompletedOnboarding` via ModelContext — RED (gate not implemented)
-- [ ] T025 [US2] **RED checkpoint**: run suite; confirm T024 FAILS
+- [X] T024 [US2] Extend `app-fourTests/Intents/AppIntentRouterTests.swift` with gate cases: onboarding incomplete → `requestCheckIn()` sets NO auto-start trigger and reports the gated outcome (drives the "finish setting up" dialog + app opens to onboarding); onboarding complete → trigger set; gate consults `AppSettings.hasCompletedOnboarding` via ModelContext — RED (gate not implemented)
+- [X] T025 [US2] **RED checkpoint**: run suite; confirm T024 FAILS
 
 ### Implementation for User Story 2
 
-- [ ] T026 [US2] Implement the onboarding gate inside `app-four/Intents/AppIntentRouter.swift` (FR-022; single choke point — the T010-rewired URL path is now gated too, closing the shipped hole D4) → T024 GREEN
-- [ ] T027 [US2] Create `app-four/Intents/StartCheckInIntent.swift`: `static let supportedModes: IntentModes = .foreground` (D2 rev. — system foregrounds before `perform()`; deprecated `openAppWhenRun` banned); `@MainActor perform()` → `router.requestCheckIn()`; gated outcome → calm dialog; verify the existing `CheckInView.consumeAutoStart()` path fires through the spec-016 re-entry guard with no view changes (adjust `app-four/Views/CheckIn/CheckInView.swift` only if consumption needs the router hook)
-- [ ] T028 [US2] Add the check-in `AppShortcut` (phrases per contract) to `app-four/Intents/SquirlAppShortcuts.swift`
-- [ ] T029 [US2] **Story checkpoint**: build + full serial suite green; owner device QA quickstart **S15–S20** — S16 MUST verify both surfaces (verb AND `whispernotes://checkin` from Safari) against the gate on a fresh install, mock mode OFF
+- [X] T026 [US2] Implement the onboarding gate inside `app-four/Intents/AppIntentRouter.swift` (FR-022; single choke point — the T010-rewired URL path is now gated too, closing the shipped hole D4) → T024 GREEN
+- [X] T027 [US2] Create `app-four/Intents/StartCheckInIntent.swift`: `static let supportedModes: IntentModes = .foreground` (D2 rev. — system foregrounds before `perform()`; deprecated `openAppWhenRun` banned); `@MainActor perform()` → `router.requestCheckIn()`; gated outcome → calm dialog; verify the existing `CheckInView.consumeAutoStart()` path fires through the spec-016 re-entry guard with no view changes (adjust `app-four/Views/CheckIn/CheckInView.swift` only if consumption needs the router hook)
+- [X] T028 [US2] Add the check-in `AppShortcut` (phrases per contract) to `app-four/Intents/SquirlAppShortcuts.swift`
+- [X] T029 [US2] **Story checkpoint**: build + full serial suite green; owner device QA quickstart **S15–S20** — S16 MUST verify both surfaces (verb AND `whispernotes://checkin` from Safari) against the gate on a fresh install, mock mode OFF
 
 ---
 
@@ -98,7 +98,7 @@
 ### Tests for User Story 3 (test-first · RED — MANDATORY) ⚠️
 
 - [X] T030 [US3] Extend `app-fourTests/ViewModels/SettingsViewModelTests.swift`: dose-guard mode + window-hours sync round-trips (off/total/window×1–4 h ↔ `doseGuardModeRaw`/`doseGuardWindowHours`), invalid persisted raw surfaces as `.off` — RED
-- [ ] T031 [US3] **RED checkpoint**: run suite; confirm T030 FAILS
+- [X] T031 [US3] **RED checkpoint**: run suite; confirm T030 FAILS
 
 ### Implementation for User Story 3
 
@@ -117,15 +117,15 @@
 
 *View-only story — SwiftUI exempt per Constitution X (verified by build + device QA S21–S24); no logic, no RED wave.*
 
-- [ ] T034 [US4] HTML mockup gate (Constitution I): create `html-mockups/030-sticker-guide.html` — walkthrough steps per sticker type, hand-off button, lock-behavior expectation copy (no-shame framing per FR-020); **owner approval before SwiftUI**
-- [ ] T035 [US4] From the approved mockup: create `app-four/Views/Settings/StickerSetupView.swift` (guided walkthrough; plain `shortcuts://` hand-off — D12, never promise automation creation) + entry row in `app-four/Views/SettingsView.swift`
+- [X] T034 [US4] HTML mockup gate (Constitution I): create `html-mockups/030-sticker-guide.html` — walkthrough steps per sticker type, hand-off button, lock-behavior expectation copy (no-shame framing per FR-020); **owner approval before SwiftUI**
+- [X] T035 [US4] From the approved mockup: create `app-four/Views/Settings/StickerSetupView.swift` (guided walkthrough; plain `shortcuts://` hand-off — D12, never promise automation creation) + entry row in `app-four/Views/SettingsView.swift`
 - [ ] T036 [US4] **Story checkpoint**: build + full serial suite green; owner device QA quickstart **S21–S24** with a real blank NFC tag
 
 ---
 
 ## Phase 7: Polish & Cross-Cutting
 
-- [ ] T037 Owner sign-off: FR-005 haptic-clause amendment in `specs/030-app-intents-foundation/spec.md` per D9 (haptic = foreground only; background ack = system banner/spoken dialog) — spec edit lands in this PR so spec and build don't drift
+- [X] T037 Owner sign-off: FR-005 haptic-clause amendment in `specs/030-app-intents-foundation/spec.md` per D9 (haptic = foreground only; background ack = system banner/spoken dialog) — spec edit lands in this PR so spec and build don't drift
 - [ ] T038 [P] Device-verify S23 (locked-NFC degradation — the one community-verified-only claim): reconcile `StickerSetupView` copy AND the spec assumption with observed behavior in the same PR
 - [ ] T039 Full quickstart regression pass **S1–S26** on device (iOS 26, mock mode OFF), including S25 med-bar/insights parity and S26 full serial suite
 - [ ] T040 Open PR `feat/030-app-intents` → run `/code-review`, address findings; after commits, regenerate `docs/WORKLOG.md` via `scripts/worklog.sh`; owner merges only after device QA (project rule: review + device QA both mandatory)

@@ -51,6 +51,10 @@ struct SettingsView: View {
                     systemSection
                     checkInSection
                     dayCardSection
+                    MyMedicationSection(viewModel: viewModel, isPickerExpanded: $medicationPickerExpanded)
+                        .id(Self.myMedicationID)
+                    DoseGuardSection(viewModel: viewModel)
+                    stickerSetupSection
                     medicationBarSection
                     MedicalInfoSection()
                     accessibilitySection
@@ -179,6 +183,20 @@ struct SettingsView: View {
     @ViewBuilder
     private var medicationBarSection: some View {
         MedicationBarSettingsSection()
+    }
+
+    // 030 / US4 — guided NFC-sticker setup (FR-019). A calm entry into the
+    // walkthrough; the verbs already work from install, this makes stickers reachable.
+    private var stickerSetupSection: some View {
+        Section {
+            NavigationLink {
+                StickerSetupView()
+            } label: {
+                Label("Set up your sticker", systemImage: "sensor.tag.radiowaves.forward")
+            }
+        } footer: {
+            Text("Turn a blank NFC sticker into a one-tap dose log or check-in. About a minute, once per sticker.")
+        }
     }
 
     private var dayCardSection: some View {

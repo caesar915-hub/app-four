@@ -176,7 +176,7 @@ final class AudioRecordingServiceImpl: NSObject, AudioRecordingService, AVAudioR
     
     /// Pure decision policy for an audio-session interruption, separated from the
     /// AVFoundation side effects so it can be unit-tested.
-    enum InterruptionResponse: Equatable {
+    nonisolated enum InterruptionResponse: Equatable {
         case pause          // .began while recording — the system already paused us
         case resume         // .ended with .shouldResume after we paused
         case stayPaused     // .ended without .shouldResume — keep what we captured

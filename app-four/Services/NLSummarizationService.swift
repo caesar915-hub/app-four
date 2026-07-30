@@ -2,7 +2,7 @@ import Foundation
 
 /// Summarization adapter backed by the on-device NaturalLanguage-based
 /// `NLNoteExtractor`. Instant; no model load or download required.
-struct NLSummarizationService: SummarizationService {
+nonisolated struct NLSummarizationService: SummarizationService {
 
     private let extractor: NLNoteExtractor
 

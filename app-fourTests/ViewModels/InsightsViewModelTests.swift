@@ -3,9 +3,14 @@ import Testing
 import SwiftData
 @testable import app_four
 
+@Suite(.serialized)
 @MainActor
 struct InsightsViewModelTests {
-    let container: ModelContainer
+    private static let container: ModelContainer = {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try! ModelContainer(for: Recording.self, MedicationEvent.self, AppSettings.self, configurations: config)
+    }()
+
     let context: ModelContext
     let store: RecordingStore
     /// Fixed month (June 2025) so tests are deterministic.
@@ -13,9 +18,10 @@ struct InsightsViewModelTests {
 
     init() throws {
         TestSupport.useRealData()
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: Recording.self, MedicationEvent.self, AppSettings.self, configurations: config)
-        context = container.mainContext
+        context = Self.container.mainContext
+        try context.delete(model: Recording.self)
+        try context.delete(model: MedicationEvent.self)
+        try context.delete(model: AppSettings.self)
         store = RecordingStore(context: context)
     }
 

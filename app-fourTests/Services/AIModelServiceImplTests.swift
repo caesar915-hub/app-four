@@ -3,15 +3,20 @@ import SwiftData
 import Foundation
 @testable import app_four
 
+@Suite(.serialized)
 @MainActor
 struct AIModelServiceImplTests {
+    private static let container: ModelContainer = {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try! ModelContainer(for: ModelMetadata.self, configurations: config)
+    }()
+
     var service: AIModelServiceImpl
-    var container: ModelContainer
+    var container: ModelContainer { Self.container }
 
     init() throws {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(for: ModelMetadata.self, configurations: config)
-        service = AIModelServiceImpl(context: container.mainContext)
+        try Self.container.mainContext.delete(model: ModelMetadata.self)
+        service = AIModelServiceImpl(context: Self.container.mainContext)
     }
 
     // MARK: - status(for:)

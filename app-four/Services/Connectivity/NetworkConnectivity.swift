@@ -35,7 +35,7 @@ actor NetworkConnectivity: Connectivity {
     /// The pure download decision — the only place that reads the cellular
     /// policy against the live interface. Kept static so it is trivially
     /// testable without spinning up `NWPathMonitor`.
-    static func shouldStartDownload(overCellular: Bool, interface: NetworkInterface) -> Bool {
+    nonisolated static func shouldStartDownload(overCellular: Bool, interface: NetworkInterface) -> Bool {
         switch interface {
         case .unsatisfied: false           // no usable path — nothing to download over
         case .cellular: overCellular       // gated by the user's preference

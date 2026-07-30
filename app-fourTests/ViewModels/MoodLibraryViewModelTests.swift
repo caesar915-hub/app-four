@@ -3,20 +3,26 @@ import Testing
 import SwiftData
 @testable import app_four
 
+@Suite(.serialized)
 @MainActor
 struct MoodLibraryViewModelTests {
-    var container: ModelContainer
+    private static let container: ModelContainer = {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try! ModelContainer(
+            for: Recording.self, MedicationEvent.self, AppSettings.self,
+            configurations: config
+        )
+    }()
+
     var context: ModelContext
     var store: RecordingStore
 
     init() throws {
         TestSupport.useRealData()
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        container = try ModelContainer(
-            for: Recording.self, MedicationEvent.self, AppSettings.self,
-            configurations: config
-        )
-        context = container.mainContext
+        context = Self.container.mainContext
+        try context.delete(model: Recording.self)
+        try context.delete(model: MedicationEvent.self)
+        try context.delete(model: AppSettings.self)
         store = RecordingStore(context: context)
     }
 
@@ -39,10 +45,12 @@ struct MoodLibraryViewModelTests {
         let vm = MoodLibraryViewModel(store: store)
         vm.currentMonth = when
 
-        #expect(vm.timelineDays.count == 31)
-        let populated = vm.timelineDays.first { !$0.nodes.isEmpty }
-        #expect(populated?.nodes.first?.recording == nil)
-        #expect(populated?.nodes.first?.intakeDoses.map(\.id) == [dose.id])
+        // feat/024: the timeline emits only days with content (empty days skipped), so a
+        // lone manual dose produces exactly its own day.
+        #expect(vm.timelineDays.count == 1)
+        let populated = try #require(vm.timelineDays.first)
+        #expect(populated.nodes.first?.recording == nil)
+        #expect(populated.nodes.first?.intakeDoses.map(\.id) == [dose.id])
     }
 
     @Test func recordingAndLiveDoseMergeIntoOneNode() throws {
@@ -75,22 +83,26 @@ struct MoodLibraryViewModelTests {
         #expect(vm.timelineDays.isEmpty)
     }
 
-    @Test func pastMonthEmitsEveryDayWithEmptiesBetween() throws {
-        let rec = Recording(audioFileName: "r.m4a", duration: 0, title: "Good", mood: "good")
-        rec.createdAt = date(2020, 1, 10)
-        context.insert(rec)
+    @Test func monthEmitsOnlyContentDaysNewestFirst() throws {
+        // feat/024: empty days are skipped — only days with a recording or dose emit,
+        // newest first. (Was `pastMonthEmitsEveryDayWithEmptiesBetween`, which predated
+        // that QA change.)
+        for day in [10, 20] {
+            let rec = Recording(audioFileName: "r\(day).m4a", duration: 0, title: "Good", mood: "good")
+            rec.createdAt = date(2020, 1, day)
+            context.insert(rec)
+        }
         try context.save()
         store.loadRecordings()
 
         let vm = MoodLibraryViewModel(store: store)
         vm.currentMonth = date(2020, 1, 15)
 
-        #expect(vm.timelineDays.count == 31)                       // all of Jan 2020
-        #expect(vm.timelineDays.first?.date == Calendar.current.startOfDay(for: date(2020, 1, 31))) // newest first
-        let jan10 = vm.timelineDays.first { Calendar.current.isDate($0.date, inSameDayAs: date(2020,1,10)) }
-        let jan9  = vm.timelineDays.first { Calendar.current.isDate($0.date, inSameDayAs: date(2020,1,9)) }
-        #expect(jan10?.nodes.isEmpty == false)
-        #expect(jan9?.nodes.isEmpty == true)                       // empty day still present
+        #expect(vm.timelineDays.count == 2)                        // only Jan 10 + Jan 20
+        #expect(vm.timelineDays.map(\.date) == [
+            Calendar.current.startOfDay(for: date(2020, 1, 20)),   // newest first
+            Calendar.current.startOfDay(for: date(2020, 1, 10))
+        ])
     }
 
     @Test func currentMonthDoesNotEmitFutureDays() throws {
