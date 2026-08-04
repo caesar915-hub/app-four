@@ -4,7 +4,6 @@ import UniformTypeIdentifiers
 struct SettingsView: View {
     @Binding var selectedTab: Tab
     @State private var viewModel: SettingsViewModel
-    @State private var showingDebug = false
     @State private var showingClearConfirmation = false
     @State private var medicationPickerExpanded = false
     @Environment(AppIntentRouter.self) private var router
@@ -54,7 +53,10 @@ struct SettingsView: View {
                     MyMedicationSection(viewModel: viewModel, isPickerExpanded: $medicationPickerExpanded)
                         .id(Self.myMedicationID)
                     DoseGuardSection(viewModel: viewModel)
-                    stickerSetupSection
+                    // stickerSetupSection stays unmounted for 1.1: the NFC-sticker
+                    // walkthrough is held back for a later (paid-tier) release.
+                    // Section + StickerSetupView remain compiled; restore = re-add
+                    // this one line.
                     medicationBarSection
                     MedicalInfoSection()
                     accessibilitySection
@@ -78,20 +80,19 @@ struct SettingsView: View {
                 // Consumes the intent's one-shot focus (FR-007/D13): scrolls the
                 // My Medication section into view AND opens its picker. `task(id:)`
                 // runs on appear and on re-arm, so it covers a cold headless launch,
-                // a tab switch, and the already-on-Settings case alike.
+                // a tab switch, and the already-on-Settings case alike. The anchor
+                // parks the section just below the top edge (not flush against it)
+                // so the header keeps its breathing room (device QA, S5).
                 .task(id: router.shouldFocusMyMedication) {
                     guard router.shouldFocusMyMedication, router.consumeMyMedicationFocus() else { return }
                     medicationPickerExpanded = true
                     withAnimation(reduceMotion ? nil : Motion.smooth) {
-                        proxy.scrollTo(Self.myMedicationID, anchor: .top)
+                        proxy.scrollTo(Self.myMedicationID, anchor: UnitPoint(x: 0, y: 0.12))
                     }
                 }
             }
         }
         .trackScreen("SettingsView")
-        .sheet(isPresented: $showingDebug) {
-            TestServicesView()
-        }
         .alert("Clear All Data?", isPresented: $showingClearConfirmation) {
             Button("Clear All Data", role: .destructive) {
                 viewModel.clearAllData()
@@ -187,6 +188,9 @@ struct SettingsView: View {
 
     // 030 / US4 — guided NFC-sticker setup (FR-019). A calm entry into the
     // walkthrough; the verbs already work from install, this makes stickers reachable.
+    // Currently UNMOUNTED from the section list above (1.1 paid-tier holdback) —
+    // kept compiled so the restore is a one-line change, mirroring the 1.0
+    // hands-free hide's unreferenced-sections pattern.
     private var stickerSetupSection: some View {
         Section {
             NavigationLink {
@@ -267,9 +271,6 @@ struct SettingsView: View {
                 Text(versionLabel)
                     .font(Typography.caption)
                     .foregroundStyle(NewLook.inkSecondary)
-                    #if DEBUG || TESTFLIGHT
-                    .onTapGesture(count: 5) { showingDebug = true }
-                    #endif
                 Spacer()
             }
         }

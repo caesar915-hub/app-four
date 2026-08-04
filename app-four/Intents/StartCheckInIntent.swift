@@ -15,10 +15,6 @@ struct StartCheckInIntent: AppIntent {
     /// iOS 26 target). Default auth policy — foregrounding requires unlock (D8), which
     /// the guide copy sets as expected behavior.
     static let supportedModes: IntentModes = .foreground
-    /// 1.0 ships hands-free check-in hidden (no AppShortcutsProvider, not
-    /// discoverable in Shortcuts/Spotlight) pending its S1–S10 device QA.
-    /// Revert the hide-handsfree commit to restore the full surface.
-    static let isDiscoverable = false
 
     @AppDependency private var router: AppIntentRouter
 
