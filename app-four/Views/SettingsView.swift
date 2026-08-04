@@ -80,12 +80,14 @@ struct SettingsView: View {
                 // Consumes the intent's one-shot focus (FR-007/D13): scrolls the
                 // My Medication section into view AND opens its picker. `task(id:)`
                 // runs on appear and on re-arm, so it covers a cold headless launch,
-                // a tab switch, and the already-on-Settings case alike.
+                // a tab switch, and the already-on-Settings case alike. The anchor
+                // parks the section just below the top edge (not flush against it)
+                // so the header keeps its breathing room (device QA, S5).
                 .task(id: router.shouldFocusMyMedication) {
                     guard router.shouldFocusMyMedication, router.consumeMyMedicationFocus() else { return }
                     medicationPickerExpanded = true
                     withAnimation(reduceMotion ? nil : Motion.smooth) {
-                        proxy.scrollTo(Self.myMedicationID, anchor: .top)
+                        proxy.scrollTo(Self.myMedicationID, anchor: UnitPoint(x: 0, y: 0.12))
                     }
                 }
             }
