@@ -100,7 +100,7 @@ private struct RootContainerView: View {
             shouldAutoStartRecording: $shouldAutoStartRecording
         )
         .fullScreenCover(isPresented: $showOnboarding) {
-            WelcomeView(onComplete: { showOnboarding = false })
+            WelcomeView(services: services, onComplete: { showOnboarding = false })
         }
         .task {
             #if DEBUG
@@ -117,6 +117,9 @@ private struct RootContainerView: View {
         // Background model download — kept off the first-run path (FR-007): it
         // never gates UI; the welcome dismisses immediately while the model
         // arrives on its own schedule. Drains the pending queue on completion.
+        // It also stays out of the onboarding flow entirely: first-run users get
+        // the model only via the permission screen's explicit "Download Now",
+        // and a "Skip for Now" decline disables this task for good.
         .task { await startBackgroundModelDownloadIfNeeded() }
         // Drain any recordings captured before the model was ready (US3): on launch
         // (a download that finished in a prior session) and on every foreground (one
@@ -137,6 +140,15 @@ private struct RootContainerView: View {
     /// If the model is already installed, do nothing (FR-008). When the active
     /// interface forbids the download (cellular + preference off, or no usable
     /// path), wait for a permitted interface and resume automatically (FR-009).
+    ///
+    /// Two opt-in gates ride on top: the task only serves installs whose
+    /// onboarding predates the two-screen flow (or a model that went missing
+    /// afterwards). A first-run user still on the permission screen hasn't
+    /// consented yet — starting here would both ignore that choice and race
+    /// the screen's own "Download Now" (`AIModelService.download` has no
+    /// in-flight dedup). An explicit "Skip for Now" decline is remembered in
+    /// `AppSettings.declinedOnboardingModelDownload` and honored permanently;
+    /// Settings remains the way back.
     private func startBackgroundModelDownloadIfNeeded() async {
         guard !downloadKicked else { return }
         downloadKicked = true
@@ -144,6 +156,9 @@ private struct RootContainerView: View {
         let aiModelService = services.aiModelService
         let connectivity = services.connectivity
         guard aiModelService.localPath(for: .whisper) == nil else { return }
+        guard hasCompletedOnboarding,
+              settingsQuery.first?.declinedOnboardingModelDownload != true
+        else { return }
 
         if !shouldStartDownload(interface: await connectivity.currentInterface) {
             for await interface in connectivity.interfaceChanges where shouldStartDownload(interface: interface) {

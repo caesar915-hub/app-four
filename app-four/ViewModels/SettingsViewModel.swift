@@ -170,19 +170,10 @@ final class SettingsViewModel {
         Task { await checkModels() }
     }
 
-    /// Plain-language, non-alarming copy for each failure cause. Names the
-    /// condition and points at the real remedy; never leaks a raw error string.
+    /// Plain-language, non-alarming copy for each failure cause — shared with
+    /// every download surface via `ModelDownloadFailure.userMessage`.
     func message(for failure: ModelDownloadFailure) -> String {
-        switch failure {
-        case .noNetwork:
-            return "No connection. Reconnect to the internet, then try again."
-        case .insufficientSpace:
-            return "Not enough space on this device. Free up some room, then try again."
-        case .cellularDisabled:
-            return "You're on cellular and downloads over cellular are off. Switch to Wi-Fi, or allow cellular below."
-        case .other:
-            return "The download didn't finish. Try again in a moment."
-        }
+        failure.userMessage
     }
 
     private func setDownloading(_ type: AIModelType, to value: Bool) {

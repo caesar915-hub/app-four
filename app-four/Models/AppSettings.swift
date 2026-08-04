@@ -18,6 +18,13 @@ final class AppSettings {
     var doseGuardWindowHours: Int = 2
     var nameMedicationInConfirmations: Bool = false
 
+    // MARK: - Two-screen onboarding (explicit model-download opt-in)
+    // True only when the user tapped "Skip for Now" on the download-permission
+    // screen: the launch-time background download stays off and the model
+    // remains an explicit action (Settings). Defaulted, no `.unique` — same
+    // lightweight-migration pattern as the 030 block above.
+    var declinedOnboardingModelDownload: Bool = false
+
     init(
         id: UUID = UUID(),
         hasCompletedOnboarding: Bool = false,

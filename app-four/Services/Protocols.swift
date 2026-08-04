@@ -146,6 +146,24 @@ enum ModelDownloadFailure: Error, Sendable, Equatable {
     case other(String)
 }
 
+extension ModelDownloadFailure {
+    /// Plain-language, non-alarming copy for each failure cause, shared by every
+    /// download surface (Settings row, onboarding permission screen). Names the
+    /// condition and points at the real remedy; never leaks a raw error string.
+    var userMessage: String {
+        switch self {
+        case .noNetwork:
+            return "No connection. Reconnect to the internet, then try again."
+        case .insufficientSpace:
+            return "Not enough space on this device. Free up some room, then try again."
+        case .cellularDisabled:
+            return "You're on cellular and downloads over cellular are off. Switch to Wi-Fi, or allow cellular downloads in Settings."
+        case .other:
+            return "The download didn't finish. Try again in a moment."
+        }
+    }
+}
+
 protocol AIModelService: Sendable {
     /// Checks the current metadata for a given model type.
     func status(for type: AIModelType) async -> ModelMetadata?

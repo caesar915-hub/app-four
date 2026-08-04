@@ -1,0 +1,108 @@
+import SwiftUI
+import SwiftData
+
+/// Screen 2 of the two-screen first-run flow: the explicit model-download
+/// opt-in. Explains *why* the Whisper model exists (voice stays on-device),
+/// then branches: "Download Now" downloads and completes onboarding; "Skip for
+/// Now" completes without the model and records the decline so the background
+/// download stays off. A mid-flight failure shows the typed cause in calm copy
+/// and returns both actions (retry or skip); the back button hides only while
+/// a download is in flight.
+struct DownloadPermissionView: View {
+    @Environment(\.modelContext) private var modelContext
+    var viewModel: OnboardingViewModel
+
+    var body: some View {
+        GeometryReader { geo in
+            ScrollView {
+                content
+                    .frame(maxWidth: Metrics.maxContentWidth)
+                    .frame(maxWidth: .infinity, minHeight: geo.size.height)
+            }
+        }
+        .background(NewLook.screen.ignoresSafeArea())
+        .navigationBarBackButtonHidden(viewModel.isDownloading)
+    }
+
+    private var content: some View {
+        VStack(spacing: Spacing.section) {
+            Spacer(minLength: Spacing.section)
+
+            Image(systemName: "lock.shield")
+                .font(.system(size: 64))
+                .foregroundStyle(NewLook.checkInGreen)
+                .accessibilityHidden(true)
+
+            VStack(spacing: Spacing.m) {
+                Text("On-Device Privacy")
+                    .font(Typography.largeTitle)
+                    .foregroundStyle(NewLook.inkPrimary)
+                    .multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
+
+                Text("To keep your journal completely private, Squirl processes your voice directly on this device.")
+                    .font(Typography.body)
+                    .foregroundStyle(NewLook.inkSecondary)
+                    .multilineTextAlignment(.center)
+
+                if let error = viewModel.downloadError {
+                    Text(error.userMessage)
+                        .font(Typography.caption)
+                        .foregroundStyle(Theme.danger)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, Spacing.s)
+                }
+            }
+            .padding(.horizontal, Spacing.l)
+
+            Spacer(minLength: Spacing.section)
+
+            VStack(spacing: Spacing.m) {
+                if viewModel.isDownloading {
+                    VStack(spacing: Spacing.s) {
+                        ProgressView(value: viewModel.downloadProgress)
+                            .progressViewStyle(.linear)
+                            .tint(NewLook.checkInGreen)
+                        Text("Downloading model... \(Int(viewModel.downloadProgress * 100))%")
+                            .font(Typography.caption)
+                            .foregroundStyle(NewLook.inkSecondary)
+                    }
+                    .padding(.horizontal, Spacing.xl)
+                } else {
+                    Button(action: downloadModel) {
+                        Text("Download Now (~150 MB)")
+                    }
+                    .buttonStyle(.checkInPrimary)
+
+                    Button(action: skip) {
+                        Text("Skip for Now")
+                    }
+                    .buttonStyle(.secondary)
+                }
+            }
+        }
+        .padding(.horizontal, Spacing.xxl)
+        .padding(.vertical, Spacing.hero)
+    }
+
+    private func downloadModel() {
+        Haptics.selection()
+        Task {
+            await viewModel.downloadModel(modelContext: modelContext)
+        }
+    }
+
+    private func skip() {
+        Haptics.selection()
+        withAnimation(Motion.smooth) {
+            viewModel.skipModelDownload(modelContext: modelContext)
+        }
+    }
+}
+
+#Preview("Download Permission") {
+    NavigationStack {
+        DownloadPermissionView(viewModel: OnboardingViewModel(aiModelService: AppServices.preview.aiModelService))
+    }
+    .modelContainer(AppModelContainer.previewContainer)
+}

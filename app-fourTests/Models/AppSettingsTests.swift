@@ -14,6 +14,7 @@ struct AppSettingsTests {
         #expect(settings.downloadOverCellular == false)
         #expect(settings.transcriptionCount == 0)
         #expect(settings.promptPaceSeconds == PromptPace.relaxed.rawValue)
+        #expect(settings.declinedOnboardingModelDownload == false)
     }
 
     @Test func exposesNoReduceMotionMember() {
