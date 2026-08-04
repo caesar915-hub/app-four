@@ -8,24 +8,28 @@ import Foundation
 /// backup. This is what backs the app's "nothing leaves the device" guarantee.
 enum AppPaths {
     /// App-private root, excluded from iCloud backup.
-    static let privateRoot: URL = {
+    /// `nonisolated` (like the rest of these paths): pure file-system values —
+    /// one-time static init + thread-safe FileManager — so actors like
+    /// `DiagnosticsStore` can read them without hopping to the MainActor
+    /// (approachable concurrency makes unannotated members MainActor-isolated).
+    nonisolated static let privateRoot: URL = {
         let base = URL.applicationSupportDirectory.appendingPathComponent("SquirlData", isDirectory: true)
         try? FileManager.default.createDirectory(at: base, withIntermediateDirectories: true)
         excludeFromBackup(base)
         return base
     }()
 
-    static let recordings = subdirectory("Recordings")
-    static let exports = subdirectory("Exports")
-    static let diagnostics = subdirectory("Diagnostics")
+    nonisolated static let recordings = subdirectory("Recordings")
+    nonisolated static let exports = subdirectory("Exports")
+    nonisolated static let diagnostics = subdirectory("Diagnostics")
 
-    private static func subdirectory(_ name: String) -> URL {
+    nonisolated private static func subdirectory(_ name: String) -> URL {
         let url = privateRoot.appendingPathComponent(name, isDirectory: true)
         try? FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
         return url
     }
 
-    private static func excludeFromBackup(_ url: URL) {
+    nonisolated private static func excludeFromBackup(_ url: URL) {
         var url = url
         var values = URLResourceValues()
         values.isExcludedFromBackup = true

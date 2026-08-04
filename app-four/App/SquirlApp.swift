@@ -13,12 +13,16 @@ struct SquirlApp: App {
         // directory before any store or service reads from disk. Idempotent.
         StorageMigration.run()
         #if DEBUG
-        // UI/UX dev: default the mock-data toggle ON so a cold launch lands on a
-        // populated timeline. Guarded out under XCTest so the suite keeps the
-        // real default (false). Registered before AppDependencies.store, which
-        // reads the key eagerly via RecordingStore.loadRecordings().
-        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
-            UserDefaults.standard.register(defaults: ["debugMockMode": true])
+        // Mock mode is opt-in via the `-mockData` launch argument (scheme → Run
+        // → Arguments) — the debug console that toggled it is unmounted for
+        // submission. Any persisted value from that era is cleared, so a plain
+        // dev run is production-like: real data and the real onboarding gate.
+        // Read before AppDependencies.store, which reads the key eagerly via
+        // RecordingStore.loadRecordings().
+        if CommandLine.arguments.contains("-mockData") {
+            UserDefaults.standard.set(true, forKey: "debugMockMode")
+        } else {
+            UserDefaults.standard.removeObject(forKey: "debugMockMode")
         }
         #else
         // A container that ever ran a Debug build (or the old TestFlight debug
@@ -104,9 +108,9 @@ private struct RootContainerView: View {
         }
         .task {
             #if DEBUG
-            // Mock-dev mode (the DEBUG default) implies a returning user: skip the
-            // first-run ceremony so dev lands straight on the populated app. Flip
-            // Mock Mode off in TestServices to restore the real onboarding gate.
+            // Mock-dev mode (`-mockData` launch arg) implies a returning user:
+            // skip the first-run ceremony so dev lands straight on the populated
+            // app. A plain dev run keeps the real onboarding gate.
             if CommandLine.arguments.contains("-skipOnboarding")
                 || UserDefaults.standard.bool(forKey: "debugMockMode") {
                 showOnboarding = false; return

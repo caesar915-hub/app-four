@@ -4,7 +4,6 @@ import UniformTypeIdentifiers
 struct SettingsView: View {
     @Binding var selectedTab: Tab
     @State private var viewModel: SettingsViewModel
-    @State private var showingDebug = false
     @State private var showingClearConfirmation = false
     @State private var medicationPickerExpanded = false
     @Environment(AppIntentRouter.self) private var router
@@ -54,7 +53,10 @@ struct SettingsView: View {
                     MyMedicationSection(viewModel: viewModel, isPickerExpanded: $medicationPickerExpanded)
                         .id(Self.myMedicationID)
                     DoseGuardSection(viewModel: viewModel)
-                    stickerSetupSection
+                    // stickerSetupSection stays unmounted for 1.1: the NFC-sticker
+                    // walkthrough is held back for a later (paid-tier) release.
+                    // Section + StickerSetupView remain compiled; restore = re-add
+                    // this one line.
                     medicationBarSection
                     MedicalInfoSection()
                     accessibilitySection
@@ -89,9 +91,6 @@ struct SettingsView: View {
             }
         }
         .trackScreen("SettingsView")
-        .sheet(isPresented: $showingDebug) {
-            TestServicesView()
-        }
         .alert("Clear All Data?", isPresented: $showingClearConfirmation) {
             Button("Clear All Data", role: .destructive) {
                 viewModel.clearAllData()
@@ -187,6 +186,9 @@ struct SettingsView: View {
 
     // 030 / US4 — guided NFC-sticker setup (FR-019). A calm entry into the
     // walkthrough; the verbs already work from install, this makes stickers reachable.
+    // Currently UNMOUNTED from the section list above (1.1 paid-tier holdback) —
+    // kept compiled so the restore is a one-line change, mirroring the 1.0
+    // hands-free hide's unreferenced-sections pattern.
     private var stickerSetupSection: some View {
         Section {
             NavigationLink {
@@ -267,9 +269,6 @@ struct SettingsView: View {
                 Text(versionLabel)
                     .font(Typography.caption)
                     .foregroundStyle(NewLook.inkSecondary)
-                    #if DEBUG || TESTFLIGHT
-                    .onTapGesture(count: 5) { showingDebug = true }
-                    #endif
                 Spacer()
             }
         }

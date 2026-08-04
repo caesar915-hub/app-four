@@ -58,7 +58,7 @@ struct MyMedicationSection: View {
         } header: {
             Text("My Medication")
         } footer: {
-            Text("Logged by the Log My Meds action — sticker, Siri, or Shortcuts. Only this medication and dose are recorded; changing it never alters past logs.")
+            Text("Logged by the Log My Meds action — Siri or Shortcuts. Only this medication and dose are recorded; changing it never alters past logs.")
         }
 
         Section {

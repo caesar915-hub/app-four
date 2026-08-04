@@ -91,7 +91,7 @@ struct DoseGuardSection: View {
         let scope = " The in-app Log Dose sheet is never blocked."
         switch viewModel.doseGuardMode {
         case .off:
-            return "Every trigger logs. Guards expedited logs only — sticker, Siri, or Shortcuts." + scope
+            return "Every trigger logs. Guards expedited logs only — Siri or Shortcuts." + scope
         case .total:
             return "A second log is blocked while your last dose is still active." + scope
         case .window:

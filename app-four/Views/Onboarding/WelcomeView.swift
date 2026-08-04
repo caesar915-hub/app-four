@@ -1,11 +1,12 @@
 import SwiftUI
 import SwiftData
 
-/// Screen 1 of the two-screen first-run flow: the Paper & Pollen welcome
-/// (Feature 015, US1) — warm paper, a breathing `CrescentRing` hero, one calm
-/// privacy sentence — with a single primary action that pushes the
-/// model-download permission screen (`DownloadPermissionView`) onto the
-/// `NavigationStack`. Linear and guided by design; no swipe carousel.
+/// Screen 1 of the three-screen first-run flow: the Paper & Pollen welcome
+/// (Feature 015, US1) — warm paper, a static `CrescentRing` hero, one calm
+/// privacy sentence — with a single primary action that pushes the hands-free
+/// Siri screen (`SiriOnboardingView`) onto the `NavigationStack`, which leads
+/// to the model-download permission screen. Linear and guided by design; no
+/// swipe carousel.
 ///
 /// The `ScrollView` keeps the fixed-size crescent and the Start button
 /// reachable when Dynamic Type scales the text past the viewport (AX5). At
@@ -48,7 +49,7 @@ struct WelcomeView: View {
         VStack(spacing: Spacing.section) {
             Spacer(minLength: Spacing.section)
 
-            CrescentRing()
+            CrescentRing(breathing: false)
                 .frame(width: crescentSize, height: crescentSize)
                 .accessibilityHidden(true)
 
@@ -74,12 +75,12 @@ struct WelcomeView: View {
             Spacer(minLength: Spacing.section)
 
             NavigationLink {
-                DownloadPermissionView(viewModel: viewModel)
+                SiriOnboardingView(viewModel: viewModel)
             } label: {
                 Text("Start")
             }
             .buttonStyle(.checkInPrimary)
-            .accessibilityHint("Proceed to model download permissions")
+            .accessibilityHint("Shows the hands-free Siri voice commands")
             .simultaneousGesture(TapGesture().onEnded {
                 Haptics.success()
             })
