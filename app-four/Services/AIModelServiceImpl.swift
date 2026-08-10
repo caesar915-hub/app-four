@@ -1,11 +1,19 @@
-import Foundation
 import SwiftData
+import UIKit
 import WhisperKit
 
 @MainActor
 final class AIModelServiceImpl: AIModelService {
     private let context: ModelContext
     private let fileManager = FileManager.default
+    
+    // For testing storage limits
+    var freeSpaceProvider: () -> Int64? = {
+        let attrs = try? FileManager.default.attributesOfFileSystem(forPath: NSHomeDirectory())
+        return attrs?[.systemFreeSize] as? Int64
+    }
+    
+    private(set) var isDownloading: Bool = false
 
     init(context: ModelContext) {
         self.context = context
@@ -21,13 +29,30 @@ final class AIModelServiceImpl: AIModelService {
 
     func download(_ type: AIModelType) async throws -> AsyncThrowingStream<Double, Error> {
         AppLogger.log("Starting download for \(type.rawValue)")
+        isDownloading = true
         let metadata = try await ensureMetadata(for: type)
         metadata.isDownloaded = false
         try? context.save()
 
         return AsyncThrowingStream { continuation in
+            var bgTask: UIBackgroundTaskIdentifier = .invalid
+            bgTask = UIApplication.shared.beginBackgroundTask(withName: "WhisperDownload") {
+                UIApplication.shared.endBackgroundTask(bgTask)
+                bgTask = .invalid
+            }
+            
             let task = Task {
+                defer {
+                    if bgTask != .invalid {
+                        UIApplication.shared.endBackgroundTask(bgTask)
+                    }
+                }
                 do {
+                    // Pre-flight check
+                    if let freeSpace = self.freeSpaceProvider(), freeSpace < 150_000_000 {
+                        throw ModelDownloadFailure.insufficientSpace
+                    }
+                    
                     switch type {
                     case .whisper:
                         try await self.downloadWhisperModel { continuation.yield($0) }
@@ -45,6 +70,8 @@ final class AIModelServiceImpl: AIModelService {
                 } catch {
                     // A cancellation is the caller tearing the stream down, not a failure to
                     // report: finish quietly so the row settles to filesystem truth.
+                    defer { self.isDownloading = false }
+                    
                     guard !Task.isCancelled else { continuation.finish(); return }
                     metadata.isCorrupted = true
                     try? context.save()
@@ -63,6 +90,7 @@ final class AIModelServiceImpl: AIModelService {
     /// the *condition* is derived (connectivity / disk / metered policy); no
     /// payload from the error is forwarded except a short type tag for `.other`.
     nonisolated static func classify(_ error: Error) -> ModelDownloadFailure {
+        if let failure = error as? ModelDownloadFailure { return failure }
         if let urlError = error as? URLError {
             switch urlError.code {
             case .dataNotAllowed:

@@ -56,6 +56,26 @@ struct CheckInView: View {
         } message: {
             Text("Squirl needs at least 50 MB of free space to record. Free up some space and try again.")
         }
+        .alert("Voice Processing Model", isPresented: $viewModel.showModelDownloadPrompt) {
+            Button("Download") {
+                viewModel.startRecordingWithDownload()
+            }
+            Button("Not Now", role: .cancel) {
+                viewModel.startRecordingWithoutDownload()
+            }
+        } message: {
+            Text("To transcribe your voice accurately and securely on-device, Squirl needs to download a small language model (approx. 40MB). It will take a minute on Wi-Fi.")
+        }
+        .alert("Not Enough Storage for Model", isPresented: $viewModel.showStorageError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Squirl needs at least 150 MB of free space to install the language model. Free up some space and try again.")
+        }
+        .alert("Model Download Failed", isPresented: $viewModel.showDownloadFailedError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Something went wrong while downloading the language model. Please check your connection and try again.")
+        }
     }
 
     /// Posts a VoiceOver announcement (FR-010/012). A no-op when VoiceOver is off, so it

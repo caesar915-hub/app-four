@@ -165,6 +165,8 @@ extension ModelDownloadFailure {
 }
 
 protocol AIModelService: Sendable {
+    var isDownloading: Bool { get }
+    
     /// Checks the current metadata for a given model type.
     func status(for type: AIModelType) async -> ModelMetadata?
 
