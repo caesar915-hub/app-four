@@ -12,6 +12,11 @@ final class CheckInViewModel {
 
     var permissionDenied: Bool = false
     var lowDiskSpace: Bool = false
+    
+    // MARK: - Model Download UI State (US1)
+    var showModelDownloadPrompt: Bool = false
+    var showStorageError: Bool = false
+    var showDownloadFailedError: Bool = false
 
     // MARK: 8-minute soft landing (US4 / FR-014, R5)
 
@@ -98,7 +103,7 @@ final class CheckInViewModel {
     }
 
     @discardableResult
-    func startRecording() -> Task<Void, Never> {
+    func startRecording(skipModelCheck: Bool = false) -> Task<Void, Never> {
         // Re-entry guard (FR-016): a capture is already live or finishing. Bail
         // before any disk/permission/audio-session work so a rapid double-tap or a
         // re-firing auto-start can't zero a running timer or open a second session.
@@ -110,9 +115,18 @@ final class CheckInViewModel {
         // announcement or a stale speaking state into this one.
         permissionDenied = false
         lowDiskSpace = false
+        showModelDownloadPrompt = false
+        showStorageError = false
+        showDownloadFailedError = false
         isSpeaking = false
         promptAnnouncementIsPending = false
         hasShownCapApproach = false
+        
+        // Model Download Intercept (US1)
+        if !skipModelCheck && !aiModelService.isDownloading && aiModelService.localPath(for: .whisper) == nil {
+            showModelDownloadPrompt = true
+            return Task {}
+        }
 
         return Task {
             let available = await storageService.availableStorage()
@@ -152,6 +166,38 @@ final class CheckInViewModel {
                 AppLogger.log("Failed to start recording: \(error)")
             }
         }
+    }
+    
+    @discardableResult
+    func startRecordingWithDownload() -> Task<Void, Never> {
+        showModelDownloadPrompt = false
+        
+        // Detached task allows download to outlive ViewModel if dismissed
+        Task.detached(priority: .userInitiated) { [weak self] in
+            guard let self else { return }
+            do {
+                let stream = try await aiModelService.download(.whisper)
+                for try await _ in stream { } // Consume progress
+            } catch let error as ModelDownloadFailure {
+                await MainActor.run {
+                    if error == .insufficientSpace {
+                        self.showStorageError = true
+                    } else {
+                        self.showDownloadFailedError = true
+                    }
+                }
+            } catch {
+                await MainActor.run { self.showDownloadFailedError = true }
+            }
+        }
+        
+        return startRecording(skipModelCheck: true)
+    }
+    
+    @discardableResult
+    func startRecordingWithoutDownload() -> Task<Void, Never> {
+        showModelDownloadPrompt = false
+        return startRecording(skipModelCheck: true)
     }
 
     @discardableResult

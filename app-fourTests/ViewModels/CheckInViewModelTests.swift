@@ -159,6 +159,45 @@ struct CheckInViewModelTests {
 
     // MARK: Re-entry guard (FND / T002–T003)
 
+    // MARK: Model Download Interception (T004-T006)
+
+    @Test func startRecordingSetsDownloadPromptWhenModelMissing() async {
+        await mocks.audio.setPermissionGranted(true)
+        await mocks.aiModel.setStubIsDownloaded(false) // Model missing
+        
+        await viewModel.startRecording().value
+        
+        #expect(viewModel.showModelDownloadPrompt == true)
+        #expect(viewModel.state == .idle)
+        #expect(await mocks.audio.startRecordingCalled == false)
+    }
+
+    @Test func startRecordingWithDownloadTransitionsToRecordingAndStartsDownload() async {
+        await mocks.audio.setPermissionGranted(true)
+        await mocks.aiModel.setStubIsDownloaded(false)
+        viewModel.showModelDownloadPrompt = true
+        
+        await viewModel.startRecordingWithDownload().value
+        
+        #expect(viewModel.showModelDownloadPrompt == false)
+        #expect(viewModel.state == .recording)
+        #expect(await mocks.aiModel.downloadCalled == true)
+        #expect(await mocks.audio.startRecordingCalled == true)
+    }
+    
+    @Test func startRecordingWithoutDownloadTransitionsToRecordingAndSkipsDownload() async {
+        await mocks.audio.setPermissionGranted(true)
+        await mocks.aiModel.setStubIsDownloaded(false)
+        viewModel.showModelDownloadPrompt = true
+        
+        await viewModel.startRecordingWithoutDownload().value
+        
+        #expect(viewModel.showModelDownloadPrompt == false)
+        #expect(viewModel.state == .recording)
+        #expect(await mocks.aiModel.downloadCalled == false)
+        #expect(await mocks.audio.startRecordingCalled == true)
+    }
+
     /// Starting a recording while one is already `.recording` MUST be a no-op:
     /// it must not zero a live `elapsedTime` and must not open a second audio
     /// session (FR-016, SC-005). Without the guard, the second call runs the full

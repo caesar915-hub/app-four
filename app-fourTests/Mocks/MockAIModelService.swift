@@ -2,6 +2,8 @@ import Foundation
 @testable import app_four
 
 actor MockAIModelService: AIModelService {
+    var isDownloading: Bool = false
+    var downloadCalled: Bool = false
     var stubIsDownloaded = true
     /// Mirrors `stubIsDownloaded` for the nonisolated `localPath` accessor.
     nonisolated(unsafe) var stubLocalPathEnabled = true
@@ -42,6 +44,8 @@ actor MockAIModelService: AIModelService {
     }
 
     func download(_ type: AIModelType) async throws -> AsyncThrowingStream<Double, Error> {
+        downloadCalled = true
+        isDownloading = true
         if shouldThrowOnDownload { throw SummarizationError.inferenceFailed("Mock download error") }
         let progress = downloadProgress
         let failure = downloadFailure
@@ -66,8 +70,15 @@ actor MockAIModelService: AIModelService {
                 }
                 continuation.finish()
             }
-            continuation.onTermination = { _ in task.cancel() }
+            continuation.onTermination = { _ in 
+                task.cancel()
+                Task { [weak self] in await self?.setIsDownloading(false) }
+            }
         }
+    }
+    
+    private func setIsDownloading(_ value: Bool) {
+        isDownloading = value
     }
 
     func delete(_ type: AIModelType) async throws {

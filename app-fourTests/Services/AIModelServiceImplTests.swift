@@ -97,4 +97,16 @@ struct AIModelServiceImplTests {
         let meta = await service.status(for: .whisper)
         #expect(meta != nil, "Metadata should be created when download begins")
     }
+
+    // MARK: - Pre-flight storage check
+
+    @Test func downloadThrowsStorageErrorIfInsufficientSpace() async throws {
+        // We will simulate insufficient space by injecting a mock closure
+        service.freeSpaceProvider = { 100_000_000 } // 100MB (less than 150MB buffer)
+        
+        await #expect(throws: ModelDownloadFailure.insufficientSpace) {
+            let stream = try await service.download(.whisper)
+            for try await _ in stream {}
+        }
+    }
 }
