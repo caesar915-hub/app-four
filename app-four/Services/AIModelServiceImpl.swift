@@ -38,10 +38,9 @@ final class AIModelServiceImpl: AIModelService {
             var bgTask: UIBackgroundTaskIdentifier = .invalid
             bgTask = UIApplication.shared.beginBackgroundTask(withName: "WhisperDownload") {
                 UIApplication.shared.endBackgroundTask(bgTask)
-                bgTask = .invalid
             }
             
-            let task = Task {
+            let task = Task { @MainActor in
                 defer {
                     if bgTask != .invalid {
                         UIApplication.shared.endBackgroundTask(bgTask)

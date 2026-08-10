@@ -172,22 +172,22 @@ final class CheckInViewModel {
     func startRecordingWithDownload() -> Task<Void, Never> {
         showModelDownloadPrompt = false
         
+        let aiModelService = self.aiModelService
         // Detached task allows download to outlive ViewModel if dismissed
-        Task.detached(priority: .userInitiated) { [weak self] in
-            guard let self else { return }
+        Task.detached(priority: .utility) { [weak self] in
             do {
                 let stream = try await aiModelService.download(.whisper)
                 for try await _ in stream { } // Consume progress
             } catch let error as ModelDownloadFailure {
                 await MainActor.run {
                     if error == .insufficientSpace {
-                        self.showStorageError = true
+                        self?.showStorageError = true
                     } else {
-                        self.showDownloadFailedError = true
+                        self?.showDownloadFailedError = true
                     }
                 }
             } catch {
-                await MainActor.run { self.showDownloadFailedError = true }
+                await MainActor.run { self?.showDownloadFailedError = true }
             }
         }
         
