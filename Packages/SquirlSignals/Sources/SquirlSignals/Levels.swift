@@ -33,6 +33,11 @@ public enum EnergyLevel: String, Sendable, Codable, Equatable, CaseIterable {
     case alert     // 4 — awake, ready
     case charged   // 5 — electric, on
 
+    public init?(name: String?) {
+        guard let name else { return nil }
+        self.init(rawValue: name.lowercased())
+    }
+
     public var numericValue: Int {
         switch self { case .sluggish: 1; case .tired: 2; case .steady: 3; case .alert: 4; case .charged: 5 }
     }
@@ -45,6 +50,25 @@ public enum EnergyLevel: String, Sendable, Codable, Equatable, CaseIterable {
         case .charged:  return "electric, on"
         }
     }
+
+    private init?(numericValue: Int) {
+        switch numericValue {
+        case 1: self = .sluggish
+        case 2: self = .tired
+        case 3: self = .steady
+        case 4: self = .alert
+        case 5: self = .charged
+        default: return nil
+        }
+    }
+
+    /// Rounded-up average of several energy levels, ignoring unresolvable values.
+    public static func average(of levels: [String?]) -> EnergyLevel? {
+        let values = levels.compactMap { EnergyLevel(name: $0)?.numericValue }
+        guard !values.isEmpty else { return nil }
+        let mean = (Double(values.reduce(0, +)) / Double(values.count)).rounded(.up)
+        return EnergyLevel(numericValue: Int(mean))
+    }
 }
 
 public enum FocusLevel: String, Sendable, Codable, Equatable, CaseIterable {
@@ -53,6 +77,11 @@ public enum FocusLevel: String, Sendable, Codable, Equatable, CaseIterable {
     case present    // 3 — grounded, there
     case sharp      // 4 — clear, on track
     case lockedIn   // 5 — deep, flowing
+
+    public init?(name: String?) {
+        guard let name else { return nil }
+        self.init(rawValue: name.lowercased())
+    }
 
     public var numericValue: Int {
         switch self { case .foggy: 1; case .distracted: 2; case .present: 3; case .sharp: 4; case .lockedIn: 5 }
@@ -74,6 +103,25 @@ public enum FocusLevel: String, Sendable, Codable, Equatable, CaseIterable {
         case .sharp:      return "clear, on track"
         case .lockedIn:   return "deep, flowing"
         }
+    }
+
+    private init?(numericValue: Int) {
+        switch numericValue {
+        case 1: self = .foggy
+        case 2: self = .distracted
+        case 3: self = .present
+        case 4: self = .sharp
+        case 5: self = .lockedIn
+        default: return nil
+        }
+    }
+
+    /// Rounded-up average of several focus levels, ignoring unresolvable values.
+    public static func average(of levels: [String?]) -> FocusLevel? {
+        let values = levels.compactMap { FocusLevel(name: $0)?.numericValue }
+        guard !values.isEmpty else { return nil }
+        let mean = (Double(values.reduce(0, +)) / Double(values.count)).rounded(.up)
+        return FocusLevel(numericValue: Int(mean))
     }
 }
 

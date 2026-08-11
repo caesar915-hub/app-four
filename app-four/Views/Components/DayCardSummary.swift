@@ -1,20 +1,28 @@
 import Foundation
+import SquirlDesignSystem
 
 /// Pure derivation of a day-card's folded summary from its timeline (Constitution
-/// Principle X). Keeps the most-recent-signal and most-recent-medication rules in one
-/// testable place; `FoldedDayCardHeader` renders what this produces. Nodes are newest-first
-/// by construction (`DayTimelineBuilder`), so "first matching" means "most recent".
+/// Principle X). Mood, energy and focus are rounded-up averages of all check-ins that
+/// day; medication and sleep keep the most-recent rules. `FoldedDayCardHeader` renders
+/// what this produces. Nodes are newest-first by construction (`DayTimelineBuilder`), so
+/// "first matching" means "most recent" for medication/sleep.
 struct DayCardSummary {
     let day: MoodLibraryViewModel.TimelineDay
 
-    /// The newest check-in that carries a recording.
-    var latestRecording: Recording? {
-        day.nodes.first { $0.recording != nil }?.recording
+    /// Rounded-up average mood across all check-ins that carry a mood.
+    var mood: String? {
+        MoodLevel.average(of: day.nodes.compactMap { $0.recording?.mood })?.displayLabel
     }
 
-    var mood: String? { nonEmpty(latestRecording?.mood) }
-    var energy: String? { nonEmpty(latestRecording?.energyLevel) }
-    var focus: String? { nonEmpty(latestRecording?.focusLevel) }
+    /// Rounded-up average energy across all check-ins that carry an energy level.
+    var energy: String? {
+        EnergyLevel.average(of: day.nodes.compactMap { $0.recording?.energyLevel })?.displayLabel
+    }
+
+    /// Rounded-up average focus across all check-ins that carry a focus level.
+    var focus: String? {
+        FocusLevel.average(of: day.nodes.compactMap { $0.recording?.focusLevel })?.displayLabel
+    }
 
     /// Most-recent check-in's medication name only — no dose, no time (FR-003). On a
     /// multi-medication day this is the newest intake's name.
@@ -37,9 +45,4 @@ struct DayCardSummary {
 
     /// Calm empty-state copy (FR-004) — never red, never "missed"/"overdue".
     static let emptyCopy = "No check-ins this day. That's alright."
-
-    private func nonEmpty(_ s: String?) -> String? {
-        guard let s, !s.isEmpty else { return nil }
-        return s
-    }
 }

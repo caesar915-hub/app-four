@@ -4,6 +4,7 @@ import Foundation
 
 /// Test-first (Constitution Principle X) for the folded day-card summary derivation
 /// (FR-002, FR-003, FR-004). Exercises the pure `DayCardSummary` type, not the SwiftUI view.
+/// Mood, energy and focus are rounded-up averages across the day's check-ins.
 @MainActor
 @Suite struct FoldedDayCardHeaderTests {
 
@@ -51,15 +52,72 @@ import Foundation
         #expect(summary(nodes).mostRecentMedicationName == "Vyvanse")
     }
 
-    @Test func signalsComeFromLatestRecording() {
+    // Mood, energy and focus are now rounded-up averages across the day.
+    @Test func signalsAreAveragedAcrossRecordings() {
         let nodes = [
-            node(at(16), rec: rec("Good", "Charged", "Present")),   // newest → wins
-            node(at(9),  rec: rec("Low", "Tired", "Foggy")),
+            node(at(16), rec: rec("Good", "Charged", "Present")),
+            node(at(9),  rec: rec("Okay", "Tired", "Foggy")),
         ]
         let s = summary(nodes)
+        // mood:  (4 + 3) / 2 = 3.5 → 4 = Good
+        // energy: (5 + 2) / 2 = 3.5 → 4 = Alert
+        // focus:  (3 + 1) / 2 = 2.0 → 2 = Distracted
         #expect(s.mood == "Good")
-        #expect(s.energy == "Charged")
-        #expect(s.focus == "Present")
+        #expect(s.energy == "Alert")
+        #expect(s.focus == "Distracted")
+    }
+
+    @Test func moodAveragesRoundUp() {
+        let great = summary([
+            node(at(16), rec: rec("Good")),
+            node(at(9),  rec: rec("Great")),
+        ])
+        #expect(great.mood == "Great") // 4.5 → 5
+
+        let good = summary([
+            node(at(16), rec: rec("Okay")),
+            node(at(9),  rec: rec("Great")),
+        ])
+        #expect(good.mood == "Good") // 4.0 → 4
+    }
+
+    @Test func energyAveragesRoundUp() {
+        let charged = summary([
+            node(at(16), rec: rec(nil, "Alert")),
+            node(at(9),  rec: rec(nil, "Charged")),
+        ])
+        #expect(charged.energy == "Charged") // 4.5 → 5
+
+        let alert = summary([
+            node(at(16), rec: rec(nil, "Steady")),
+            node(at(9),  rec: rec(nil, "Alert")),
+        ])
+        #expect(alert.energy == "Alert") // 3.5 → 4
+    }
+
+    @Test func focusAveragesRoundUp() {
+        let sharp = summary([
+            node(at(16), rec: rec(nil, nil, "Present")),
+            node(at(9),  rec: rec(nil, nil, "Sharp")),
+        ])
+        #expect(sharp.focus == "Sharp") // 3.5 → 4
+
+        let distracted = summary([
+            node(at(16), rec: rec(nil, nil, "Foggy")),
+            node(at(9),  rec: rec(nil, nil, "Distracted")),
+        ])
+        #expect(distracted.focus == "Distracted") // 1.5 → 2
+    }
+
+    @Test func signalMissingFromSomeRecordingsIsAveragedOnlyFromThoseThatHaveIt() {
+        let nodes = [
+            node(at(16), rec: rec("Great", nil, "Sharp")),       // energy missing
+            node(at(9),  rec: rec("Good", "Charged", "Foggy")),
+        ]
+        let s = summary(nodes)
+        #expect(s.mood == "Great")     // (5 + 4) / 2 = 4.5 → 5
+        #expect(s.energy == "Charged") // only one value
+        #expect(s.focus == "Present")  // (4 + 1) / 2 = 2.5 → 3
     }
 
     @Test func noMedicationDayYieldsNil() {
