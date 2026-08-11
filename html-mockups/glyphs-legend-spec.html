@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Squirl Signal Glyphs — Visual Legend & Reference</title>
+  <style>
+    :root {
+      /* NewLook Light Tokens */
+      --nl-screen: #EFF2EB;
+      --nl-card: #FFFFFF;
+      --nl-ink-primary: #1C1B1F;
+      --nl-ink-secondary: #8A8A8E;
+      --nl-hairline: #DBDDDE;
+      --nl-tint-neutral: #ECEAE6;
+      
+      --nl-medication: #7E5CA8;
+      --nl-sleep-indigo: #5566A6;
+      --card-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+
+      --font-sf: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", sans-serif;
+      --font-mono: "SF Mono", SFMono-Regular, ui-monospace, monospace;
+    }
+
+    [data-theme="dark"] {
+      /* NewLook Dark Tokens */
+      --nl-screen: #12140F;
+      --nl-card: #1C1E19;
+      --nl-ink-primary: #F2F3EE;
+      --nl-ink-secondary: #9BA09A;
+      --nl-hairline: #33362F;
+      --nl-tint-neutral: #272A22;
+
+      --nl-medication: #957BC1;
+      --nl-sleep-indigo: #8E9BD4;
+      --card-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sf);
+      background-color: var(--nl-screen);
+      color: var(--nl-ink-primary);
+      padding: 40px 20px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+    }
+
+    header.legend-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--nl-hairline);
+    }
+
+    .header-title h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.6px;
+      color: var(--nl-ink-primary);
+    }
+    .header-title p {
+      font-size: 14px;
+      color: var(--nl-ink-secondary);
+      margin-top: 4px;
+    }
+
+    .theme-toggle-btn {
+      background: var(--nl-card);
+      border: 1px solid var(--nl-hairline);
+      color: var(--nl-ink-primary);
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--card-shadow);
+      transition: all 0.2s ease;
+    }
+    .theme-toggle-btn:hover { background: var(--nl-tint-neutral); }
+
+    /* Legend Grid */
+    .legend-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .legend-card {
+      background: var(--nl-card);
+      border-radius: 20px;
+      padding: 24px 28px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--nl-hairline);
+    }
+
+    .card-head-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .kind-badge {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 4px 10px;
+      border-radius: 10px;
+      background: var(--nl-tint-neutral);
+      color: var(--nl-ink-secondary);
+    }
+
+    .card-head h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--nl-ink-primary);
+    }
+
+    /* Level Columns Grid */
+    .level-cols-5 {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .level-cols-5 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .glyph-item {
+      background: var(--nl-screen);
+      border: 1px solid var(--nl-hairline);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 8px;
+    }
+
+    .glyph-box {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lvl-tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--nl-ink-secondary);
+    }
+
+    .lvl-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--nl-ink-primary);
+    }
+
+    .lvl-subtitle {
+      font-size: 12px;
+      color: var(--nl-ink-secondary);
+      font-style: italic;
+    }
+
+    .hex-code {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: var(--nl-card);
+      border: 1px solid var(--nl-hairline);
+      color: var(--nl-ink-primary);
+      margin-top: 4px;
+    }
+
+    .a11y-label {
+      font-size: 10px;
+      color: var(--nl-ink-secondary);
+      margin-top: 2px;
+    }
+
+    /* Fixed Glyphs Grid */
+    .fixed-glyphs-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 768px) {
+      .fixed-glyphs-row { grid-template-columns: 1fr; }
+    }
+
+    .single-glyph-body {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      background: var(--nl-screen);
+      border: 1px solid var(--nl-hairline);
+      border-radius: 16px;
+      padding: 20px;
+    }
+
+    .single-box {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .single-info h3 {
+      font-size: 16px;
+      font-weight: 700;
+    }
+    .single-info p {
+      font-size: 13px;
+      color: var(--nl-ink-secondary);
+      margin-top: 4px;
+    }
+    .subtitles-list {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--nl-ink-secondary);
+      line-height: 1.5;
+    }
+
+    /* Master Summary Legend Table */
+    .table-card {
+      margin-top: 12px;
+      overflow-x: auto;
+    }
+
+    table.legend-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    table.legend-table th {
+      background: var(--nl-tint-neutral);
+      color: var(--nl-ink-primary);
+      padding: 10px 14px;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--nl-hairline);
+    }
+
+    table.legend-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--nl-hairline);
+      color: var(--nl-ink-primary);
+    }
+
+    .mono-cell {
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="legend-header">
+      <div class="header-title">
+        <h1>Squirl Signal Glyphs Legend</h1>
+        <p>Official Visual & Technical Reference · Source of Truth: Swift (<code>GlyphSignal.swift</code> / <code>SignalGlyph.swift</code>)</p>
+      </div>
+      <button class="theme-toggle-btn" id="themeToggle">🌓 Switch Dark Mode</button>
+    </header>
+
+    <div class="legend-stack">
+
+      <!-- 1. MOOD (SPROUT) -->
+      <div class="legend-card">
+        <div class="card-head">
+          <div class="card-head-title">
+            <h2>🌱 Mood (SproutGlyph)</h2>
+            <span class="kind-badge">1 → 5 Ramped</span>
+          </div>
+          <span class="lvl-tag">Meadow-Burnt Valence Ramp</span>
+        </div>
+        <div class="level-cols-5">
+          <!-- Low -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 1</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <path d="M12 25 C12 18, 12 14, 12 11" stroke="#DA7A2A" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                <path d="M12 11 C6 14, 6 5, 12 1 C18 5, 18 14, 12 11 Z" fill="#DA7A2A" fill-opacity="0.56" stroke="#DA7A2A" stroke-width="1.3"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Low</div>
+            <div class="lvl-subtitle">heavy, muted</div>
+            <div class="hex-code">#DA7A2A</div>
+            <div class="a11y-label">"Mood: Low, 1 of 5"</div>
+          </div>
+          <!-- Flat -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 2</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <path d="M12 25 C12 18, 12 14, 12 11" stroke="#EDA94A" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                <path d="M12 11 C6 14, 6 5, 12 1 C18 5, 18 14, 12 11 Z" fill="#EDA94A" fill-opacity="0.71" stroke="#EDA94A" stroke-width="1.3"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Flat</div>
+            <div class="lvl-subtitle">neutral, still</div>
+            <div class="hex-code">#EDA94A</div>
+            <div class="a11y-label">"Mood: Flat, 2 of 5"</div>
+          </div>
+          <!-- Okay -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 3</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <path d="M12 25 C12 18, 12 14, 12 11" stroke="#9FCB79" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                <path d="M12 11 C6 14, 6 5, 12 1 C18 5, 18 14, 12 11 Z" fill="#9FCB79" fill-opacity="0.855" stroke="#9FCB79" stroke-width="1.3"/>
+                <line x1="12" y1="11" x2="12" y2="4" stroke="#9FCB79" stroke-opacity="0.5" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Okay</div>
+            <div class="lvl-subtitle">steady, fine</div>
+            <div class="hex-code">#9FCB79</div>
+            <div class="a11y-label">"Mood: Okay, 3 of 5"</div>
+          </div>
+          <!-- Good -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 4</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <path d="M12 25 C12 18, 12 14, 12 9" stroke="#5FB36E" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                <path d="M12 9 C4 13, 5 2, 12 1 C19 2, 20 13, 12 9 Z" fill="#5FB36E" fill-opacity="1.0" stroke="#5FB36E" stroke-width="1.3"/>
+                <line x1="12" y1="9" x2="12" y2="4" stroke="#5FB36E" stroke-opacity="0.5" stroke-width="1"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Good</div>
+            <div class="lvl-subtitle">warm, lifted</div>
+            <div class="hex-code">#5FB36E</div>
+            <div class="a11y-label">"Mood: Good, 4 of 5"</div>
+          </div>
+          <!-- Great -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 5</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <path d="M12 25 C12 18, 12 14, 12 9" stroke="#2E8B57" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                <path d="M12 9 C4 13, 5 2, 12 1 C19 2, 20 13, 12 9 Z" fill="#2E8B57" fill-opacity="1.0" stroke="#2E8B57" stroke-width="1.3"/>
+                <line x1="12" y1="9" x2="12" y2="4" stroke="#2E8B57" stroke-opacity="0.5" stroke-width="1"/>
+                <circle cx="12" cy="6" r="2" fill="#2E8B57"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Great</div>
+            <div class="lvl-subtitle">bright, thriving</div>
+            <div class="hex-code">#2E8B57</div>
+            <div class="a11y-label">"Mood: Great, 5 of 5"</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. ENERGY (BOLT) -->
+      <div class="legend-card">
+        <div class="card-head">
+          <div class="card-head-title">
+            <h2>⚡️ Energy (BoltGlyph)</h2>
+            <span class="kind-badge">1 → 5 Ramped</span>
+          </div>
+          <span class="lvl-tag">Lemon Ramp</span>
+        </div>
+        <div class="level-cols-5">
+          <!-- Sluggish -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 1</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#7C6E2E" fill-opacity="0.5" stroke="#7C6E2E" stroke-width="1.06" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Sluggish</div>
+            <div class="lvl-subtitle">slow, heavy</div>
+            <div class="hex-code">#7C6E2E</div>
+            <div class="a11y-label">"Energy: Sluggish, 1 of 5"</div>
+          </div>
+          <!-- Tired -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 2</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#A89236" fill-opacity="0.65" stroke="#A89236" stroke-width="1.22" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Tired</div>
+            <div class="lvl-subtitle">low, dim</div>
+            <div class="hex-code">#A89236</div>
+            <div class="a11y-label">"Energy: Tired, 2 of 5"</div>
+          </div>
+          <!-- Steady -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 3</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#D2BB40" fill-opacity="0.8" stroke="#D2BB40" stroke-width="1.38" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Steady</div>
+            <div class="lvl-subtitle">moderate, stable</div>
+            <div class="hex-code">#D2BB40</div>
+            <div class="a11y-label">"Energy: Steady, 3 of 5"</div>
+          </div>
+          <!-- Alert -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 4</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#EEDA4C" fill-opacity="0.95" stroke="#EEDA4C" stroke-width="1.54" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Alert</div>
+            <div class="lvl-subtitle">awake, ready</div>
+            <div class="hex-code">#EEDA4C</div>
+            <div class="a11y-label">"Energy: Alert, 4 of 5"</div>
+          </div>
+          <!-- Charged -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 5</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#FCEE64" fill-opacity="1.0" stroke="#FCEE64" stroke-width="1.7" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Charged</div>
+            <div class="lvl-subtitle">electric, on</div>
+            <div class="hex-code">#FCEE64</div>
+            <div class="a11y-label">"Energy: Charged, 5 of 5"</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. FOCUS (APERTURE) -->
+      <div class="legend-card">
+        <div class="card-head">
+          <div class="card-head-title">
+            <h2>🎯 Focus (ApertureGlyph)</h2>
+            <span class="kind-badge">1 → 5 Ramped</span>
+          </div>
+          <span class="lvl-tag">Voltage Blue Ramp</span>
+        </div>
+        <div class="level-cols-5">
+          <!-- Foggy -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 1</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <circle cx="12" cy="13" r="9" stroke="#44546E" stroke-opacity="0.42" stroke-width="1.2" stroke-dasharray="3 3" fill="none"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Foggy</div>
+            <div class="lvl-subtitle">hazy, drifting</div>
+            <div class="hex-code">#44546E</div>
+            <div class="a11y-label">"Focus: Foggy, 1 of 5"</div>
+          </div>
+          <!-- Distracted -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 2</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <circle cx="12" cy="13" r="9" stroke="#4E6F94" stroke-opacity="0.54" stroke-width="1.2" stroke-dasharray="3 3" fill="none"/>
+                <circle cx="12" cy="13" r="6" stroke="#4E6F94" stroke-opacity="0.62" stroke-width="1.3" fill="none"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Distracted</div>
+            <div class="lvl-subtitle">pulled, unsteady</div>
+            <div class="hex-code">#4E6F94</div>
+            <div class="a11y-label">"Focus: Distracted, 2 of 5"</div>
+          </div>
+          <!-- Present -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 3</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <circle cx="12" cy="13" r="9" stroke="#5889BA" stroke-opacity="0.66" stroke-width="1.2" fill="none"/>
+                <circle cx="12" cy="13" r="6" stroke="#5889BA" stroke-opacity="0.73" stroke-width="1.3" fill="none"/>
+                <circle cx="12" cy="13" r="1.7" fill="#5889BA" fill-opacity="0.8"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Present</div>
+            <div class="lvl-subtitle">grounded, there</div>
+            <div class="hex-code">#5889BA</div>
+            <div class="a11y-label">"Focus: Present, 3 of 5"</div>
+          </div>
+          <!-- Sharp -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 4</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <circle cx="12" cy="13" r="9" stroke="#63A4E0" stroke-opacity="0.78" stroke-width="1.2" fill="none"/>
+                <circle cx="12" cy="13" r="6" stroke="#63A4E0" stroke-opacity="0.84" stroke-width="1.3" fill="none"/>
+                <circle cx="12" cy="13" r="3.3" stroke="#63A4E0" stroke-opacity="0.92" stroke-width="1.4" fill="none"/>
+                <circle cx="12" cy="13" r="2.55" fill="#63A4E0" fill-opacity="0.9"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Sharp</div>
+            <div class="lvl-subtitle">clear, on track</div>
+            <div class="hex-code">#63A4E0</div>
+            <div class="a11y-label">"Focus: Sharp, 4 of 5"</div>
+          </div>
+          <!-- Locked In -->
+          <div class="glyph-item">
+            <span class="lvl-tag">Level 5</span>
+            <div class="glyph-box">
+              <svg width="44" height="44" viewBox="0 0 24 26">
+                <circle cx="12" cy="13" r="9" stroke="#79C4FF" stroke-opacity="0.9" stroke-width="1.2" fill="none"/>
+                <circle cx="12" cy="13" r="6" stroke="#79C4FF" stroke-opacity="0.95" stroke-width="1.3" fill="none"/>
+                <circle cx="12" cy="13" r="3.3" stroke="#79C4FF" stroke-opacity="0.92" stroke-width="1.4" fill="none"/>
+                <circle cx="12" cy="13" r="3.4" fill="#79C4FF" fill-opacity="1.0"/>
+              </svg>
+            </div>
+            <div class="lvl-name">Locked In</div>
+            <div class="lvl-subtitle">deep, flowing</div>
+            <div class="hex-code">#79C4FF</div>
+            <div class="a11y-label">"Focus: Locked In, 5 of 5"</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. SLEEP & 5. MEDICATION (FIXED SINGLE ICONS) -->
+      <div class="fixed-glyphs-row">
+        <!-- SLEEP -->
+        <div class="legend-card">
+          <div class="card-head">
+            <div class="card-head-title">
+              <h2>🛏 Sleep (BedIcon)</h2>
+              <span class="kind-badge">Fixed Icon</span>
+            </div>
+            <span class="hex-code">#5566A6 (Light) / #8E9BD4 (Dark)</span>
+          </div>
+          <div class="single-glyph-body">
+            <div class="single-box">
+              <svg width="48" height="48" viewBox="0 0 24 24">
+                <path d="M 3 18 L 3 12 Q 3 10 5 10 L 14 10 Q 18 10 18 14 L 18 18" stroke="var(--nl-sleep-indigo)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                <line x1="3" y1="14" x2="20" y2="14" stroke="var(--nl-sleep-indigo)" stroke-width="1.7" stroke-linecap="round"/>
+                <rect x="6.2" y="8.4" width="4.6" height="1.6" rx="0.8" stroke="var(--nl-sleep-indigo)" stroke-width="1.4" fill="none"/>
+              </svg>
+            </div>
+            <div class="single-info">
+              <h3>Sleep Indigo</h3>
+              <p>Does not vary by level (1→5 ramp is deferred). VoiceOver reads <code>"Sleep"</code>.</p>
+              <div class="subtitles-list">
+                • 1: Restless (broken, tossing)<br>
+                • 2: Light (thin, barely resting)<br>
+                • 3: Okay (decent, adequate)<br>
+                • 4: Good (solid, rested)<br>
+                • 5: Deep (restorative, refreshed)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEDICATION -->
+        <div class="legend-card">
+          <div class="card-head">
+            <div class="card-head-title">
+              <h2>💊 Medication (CapsuleGlyph)</h2>
+              <span class="kind-badge">Fixed Icon</span>
+            </div>
+            <span class="hex-code">#7E5CA8 (Light) / #957BC1 (Dark)</span>
+          </div>
+          <div class="single-glyph-body">
+            <div class="single-box">
+              <svg width="56" height="28" viewBox="0 0 32 16">
+                <rect x="2" y="2" width="28" height="12" rx="6" fill="var(--nl-medication)" fill-opacity="0.22" stroke="var(--nl-medication)" stroke-width="2"/>
+                <path d="M 2 8 L 16 8 A 6 6 0 0 0 2 8" fill="var(--nl-medication)" fill-opacity="0.5"/>
+                <line x1="16" y1="4" x2="16" y2="12" stroke="var(--nl-medication)" stroke-width="1.6" stroke-opacity="0.8"/>
+              </svg>
+            </div>
+            <div class="single-info">
+              <h3>Medication Purple</h3>
+              <p>Single non-varying two-tone capsule icon. VoiceOver reads <code>"Medication"</code>.</p>
+              <div class="subtitles-list">
+                • Left half fill: <code>0.50</code> opacity<br>
+                • Right half fill: <code>0.22</code> opacity<br>
+                • Stroke border: <code>2.0pt</code><br>
+                • Center seam: <code>1.6pt</code> at <code>0.80</code> opacity
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MASTER REFERENCE TABLE -->
+      <div class="legend-card table-card">
+        <div class="card-head">
+          <div class="card-head-title">
+            <h2>📋 Master Signal Glyphs Reference Table</h2>
+          </div>
+        </div>
+        <table class="legend-table">
+          <thead>
+            <tr>
+              <th>Signal Kind</th>
+              <th>Swift View</th>
+              <th>Levels</th>
+              <th>Ramp Palette</th>
+              <th>Design Space</th>
+              <th>VoiceOver Accessibility Label</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Mood</strong></td>
+              <td class="mono-cell">SproutGlyph</td>
+              <td>1 … 5</td>
+              <td>Burnt Orange → Amber → Meadow → Good → Forest</td>
+              <td class="mono-cell">24 × 26</td>
+              <td><code>"Mood: {Name}, {Level} of 5"</code></td>
+            </tr>
+            <tr>
+              <td><strong>Energy</strong></td>
+              <td class="mono-cell">BoltGlyph</td>
+              <td>1 … 5</td>
+              <td>Lemon Ramp (#7C6E2E → #FCEE64)</td>
+              <td class="mono-cell">24 × 26</td>
+              <td><code>"Energy: {Name}, {Level} of 5"</code></td>
+            </tr>
+            <tr>
+              <td><strong>Focus</strong></td>
+              <td class="mono-cell">ApertureGlyph</td>
+              <td>1 … 5</td>
+              <td>Voltage Blue Ramp (#44546E → #79C4FF)</td>
+              <td class="mono-cell">24 × 26</td>
+              <td><code>"Focus: {Name}, {Level} of 5"</code></td>
+            </tr>
+            <tr>
+              <td><strong>Sleep</strong></td>
+              <td class="mono-cell">BedIcon</td>
+              <td>Fixed</td>
+              <td>Sleep Indigo (#5566A6 Light / #8E9BD4 Dark)</td>
+              <td class="mono-cell">24 × 24</td>
+              <td><code>"Sleep"</code></td>
+            </tr>
+            <tr>
+              <td><strong>Medication</strong></td>
+              <td class="mono-cell">CapsuleGlyph</td>
+              <td>Fixed</td>
+              <td>Medication Purple (#7E5CA8 Light / #957BC1 Dark)</td>
+              <td class="mono-cell">32 × 16</td>
+              <td><code>"Medication"</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      if (current === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+        themeBtn.textContent = '🌓 Switch Dark Mode';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeBtn.textContent = '☀️ Switch Light Mode';
+      }
+    });
+  </script>
+</body>
+</html>

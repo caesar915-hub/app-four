@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Squirl Design System — Calendar Day Card & Glyphs Spec</title>
+  <style>
+    :root {
+      /* NewLook Light Tokens (SSOT) */
+      --nl-screen: #EFF2EB;
+      --nl-card: #FFFFFF;
+      --nl-ink-primary: #1C1B1F;
+      --nl-ink-secondary: #8A8A8E;
+      --nl-hairline: #DBDDDE;
+      --nl-tint-neutral: #ECEAE6;
+      --nl-selection: #54B492;
+      --nl-medication: #7E5CA8;
+      --nl-medication-fill-end: #AF99C3;
+      --nl-sleep-indigo: #5566A6;
+      --nl-warning: #C2772E;
+
+      /* Mood Base Colors */
+      --mood-low-base: #DA7A2A;
+      --mood-low-word: #8E470F;
+      --mood-low-block: rgba(218, 122, 42, 0.24);
+      --mood-low-badge: rgba(218, 122, 42, 0.50);
+
+      --mood-flat-base: #EDA94A;
+      --mood-flat-word: #8A5600;
+      --mood-flat-block: rgba(237, 169, 74, 0.24);
+      --mood-flat-badge: rgba(237, 169, 74, 0.50);
+
+      --mood-okay-base: #9FCB79;
+      --mood-okay-word: #41691F;
+      --mood-okay-block: rgba(159, 203, 121, 0.24);
+      --mood-okay-badge: rgba(159, 203, 121, 0.50);
+
+      --mood-good-base: #5FB36E;
+      --mood-good-word: #2C6B3B;
+      --mood-good-block: rgba(95, 179, 110, 0.24);
+      --mood-good-badge: rgba(95, 179, 110, 0.50);
+
+      --mood-great-base: #2E8B57;
+      --mood-great-word: #1E5C38;
+      --mood-great-block: rgba(46, 139, 87, 0.24);
+      --mood-great-badge: rgba(46, 139, 87, 0.50);
+
+      --card-shadow: 0 2px 8px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.03);
+      --font-sf: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", sans-serif;
+      --font-mono: "SF Mono", SFMono-Regular, ui-monospace, monospace;
+    }
+
+    [data-theme="dark"] {
+      /* NewLook Dark Tokens (SSOT) */
+      --nl-screen: #12140F;
+      --nl-card: #1C1E19;
+      --nl-ink-primary: #F2F3EE;
+      --nl-ink-secondary: #9BA09A;
+      --nl-hairline: #33362F;
+      --nl-tint-neutral: #272A22;
+      --nl-selection: #5FC49F;
+      --nl-medication: #957BC1;
+      --nl-medication-fill-end: #B3A1D6;
+      --nl-sleep-indigo: #8E9BD4;
+      --nl-warning: #D98A3E;
+
+      --mood-low-word: #E89A5A;
+      --mood-flat-word: #EDA94A;
+      --mood-okay-word: #B7D897;
+      --mood-good-word: #79C4FF;
+      --mood-good-word: #79C98E;
+      --mood-great-word: #57C98A;
+
+      --card-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sf);
+      background-color: var(--nl-screen);
+      color: var(--nl-ink-primary);
+      padding: 32px 16px;
+      line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    header.doc-header {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--nl-hairline);
+    }
+
+    .doc-title h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--nl-ink-primary);
+    }
+    .doc-title p {
+      font-size: 14px;
+      color: var(--nl-ink-secondary);
+      margin-top: 4px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-toggle-btn {
+      background: var(--nl-card);
+      border: 1px solid var(--nl-hairline);
+      color: var(--nl-ink-primary);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--card-shadow);
+      transition: all 0.2s ease;
+    }
+    .theme-toggle-btn:hover {
+      background: var(--nl-tint-neutral);
+    }
+
+    /* Tabs */
+    .tab-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid var(--nl-hairline);
+      padding-bottom: 12px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--nl-ink-secondary);
+      font-size: 15px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: var(--nl-card);
+      color: var(--nl-ink-primary);
+      box-shadow: var(--card-shadow);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* Day Card Mockups Grid */
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--nl-ink-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-desc {
+      font-size: 13px;
+      color: var(--nl-ink-secondary);
+      margin-bottom: 20px;
+    }
+
+    .mood-cards-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin-bottom: 48px;
+    }
+
+    .mood-pair-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 820px) {
+      .mood-pair-row { grid-template-columns: 1fr; }
+    }
+
+    .card-version-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--nl-ink-secondary);
+      margin-bottom: 8px;
+    }
+
+    /* DayCard Component CSS matching Swift DayCard.swift */
+    .day-card {
+      background: var(--nl-card);
+      border-radius: 20px;
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+    }
+
+    /* Folded Header */
+    .folded-header {
+      min-height: 44px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+
+    .header-glyph-container {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .header-text-col {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+    }
+
+    .folded-title {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .mood-word {
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    .title-sep {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--nl-ink-secondary);
+    }
+    .weekday-code {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.3px;
+      color: var(--nl-ink-primary);
+      text-transform: uppercase;
+    }
+
+    .summary-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .chip-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 400;
+    }
+    .chip-sep {
+      color: var(--nl-ink-secondary);
+      font-size: 12px;
+    }
+    .chip-text-primary { color: var(--nl-ink-primary); }
+    .chip-text-med { color: var(--nl-medication); font-weight: 500; }
+
+    .chevron-icon {
+      color: var(--nl-ink-secondary);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Collapsed Band (Expanded State Header) */
+    .collapsed-band {
+      min-height: 44px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+    .band-label {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Expanded Body Rows */
+    .expanded-rows {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .timeline-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .row-disc {
+      width: 43px;
+      height: 43px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .row-content {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .row-headline {
+      display: flex;
+      align-items: first baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .headline-left {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .row-time {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--nl-ink-secondary);
+    }
+
+    .more-affordance {
+      width: 21px;
+      height: 21px;
+      border-radius: 50%;
+      border: 1.5px solid var(--nl-ink-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: var(--nl-ink-secondary);
+      letter-spacing: -1px;
+      flex-shrink: 0;
+    }
+
+    .row-chip-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sleep-chip-indigo {
+      color: var(--nl-sleep-indigo);
+      font-weight: 500;
+    }
+    .secondary-tag {
+      color: var(--nl-ink-secondary);
+    }
+
+    /* Mood specific color classes */
+    /* Low (1) */
+    .mood-low .folded-header, .mood-low .collapsed-band { background: var(--mood-low-block); }
+    .mood-low .mood-word, .mood-low .band-mood { color: var(--mood-low-word); }
+    .mood-low .row-disc { background: var(--mood-low-badge); }
+
+    /* Flat (2) */
+    .mood-flat .folded-header, .mood-flat .collapsed-band { background: var(--mood-flat-block); }
+    .mood-flat .mood-word, .mood-flat .band-mood { color: var(--mood-flat-word); }
+    .mood-flat .row-disc { background: var(--mood-flat-badge); }
+
+    /* Okay (3) */
+    .mood-okay .folded-header, .mood-okay .collapsed-band { background: var(--mood-okay-block); }
+    .mood-okay .mood-word, .mood-okay .band-mood { color: var(--mood-okay-word); }
+    .mood-okay .row-disc { background: var(--mood-okay-badge); }
+
+    /* Good (4) */
+    .mood-good .folded-header, .mood-good .collapsed-band { background: var(--mood-good-block); }
+    .mood-good .mood-word, .mood-good .band-mood { color: var(--mood-good-word); }
+    .mood-good .row-disc { background: var(--mood-good-badge); }
+
+    /* Great (5) */
+    .mood-great .folded-header, .mood-great .collapsed-band { background: var(--mood-great-block); }
+    .mood-great .mood-word, .mood-great .band-mood { color: var(--mood-great-word); }
+    .mood-great .row-disc { background: var(--mood-great-badge); }
+
+
+    /* Glyphs Showcase Spec Grid */
+    .glyph-grid-container {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .glyph-section-card {
+      background: var(--nl-card);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .glyph-section-header {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--nl-hairline);
+      padding-bottom: 12px;
+    }
+
+    .glyph-section-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .glyph-section-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 12px;
+      background: var(--nl-tint-neutral);
+      color: var(--nl-ink-secondary);
+    }
+
+    .levels-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+    }
+    @media (max-width: 700px) {
+      .levels-row { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .glyph-card {
+      background: var(--nl-screen);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      border: 1px solid var(--nl-hairline);
+    }
+
+    .glyph-preview-box {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .glyph-level-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--nl-ink-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .glyph-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--nl-ink-primary);
+    }
+
+    .glyph-sub {
+      font-size: 11px;
+      color: var(--nl-ink-secondary);
+    }
+
+    .color-swatch-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      background: var(--nl-card);
+      border: 1px solid var(--nl-hairline);
+      color: var(--nl-ink-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="doc-header">
+      <div class="doc-title">
+        <h1>Squirl Calendar Day Card & Glyphs Spec</h1>
+        <p>Exact SSOT reproduction from Swift codebase (<code>SquirlDesignSystem</code> &amp; <code>SquirlSignals</code>)</p>
+      </div>
+      <div class="controls">
+        <button class="theme-toggle-btn" id="themeToggle">🌓 Switch Dark Mode</button>
+      </div>
+    </header>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="switchTab('tab-daycards', this)">📅 5 Mood Day Cards</button>
+      <button class="tab-btn" onclick="switchTab('tab-glyphs', this)">🌱 All 5 Glyphs Spec (Mood, Energy, Focus, Sleep, Meds)</button>
+    </div>
+
+    <!-- TAB 1: 5 MOOD DAY CARDS -->
+    <div id="tab-daycards" class="tab-content active">
+      <div class="section-desc">
+        Showing both <strong>Folded Header</strong> (Figma node <code>308:2122</code>) and <strong>Expanded Timeline</strong> (Figma node <code>308:1957</code>) for all 5 mood levels. Card radius: 20pt, 0.24 mood block tint, 0.50 badge tint, 43pt mood disc.
+      </div>
+
+      <div class="mood-cards-stack">
+
+        <!-- 1. LOW (BURNT ORANGE) -->
+        <div class="mood-block-group">
+          <div class="section-title">
+            <span>Level 1: Low</span>
+            <span class="color-swatch-tag" style="border-left: 10px solid #DA7A2A;">Base #DA7A2A</span>
+          </div>
+          <div class="mood-pair-row">
+            <!-- Folded Card -->
+            <div>
+              <div class="card-version-label">Folded State</div>
+              <div class="day-card mood-low">
+                <div class="folded-header">
+                  <div class="header-glyph-container">
+                    <!-- Sprout Level 1 SVG -->
+                    <svg width="40" height="40" viewBox="0 0 24 26">
+                      <!-- stem -->
+                      <path d="M12 25 C12 18, 12 14, 12 11" stroke="#DA7A2A" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                      <!-- crown bud -->
+                      <path d="M12 11 C6 14, 6 5, 12 1 C18 5, 18 14, 12 11 Z" fill="#DA7A2A" fill-opacity="0.56" stroke="#DA7A2A" stroke-width="1.3"/>
+                    </svg>
+                  </div>
+                  <div class="header-text-col">
+                    <div class="folded-title">
+                      <span class="mood-word">Low</span>
+                      <span class="title-sep">·</span>
+                      <span class="weekday-code">MON 04</span>
+                    </div>
+                    <div class="summary-flow">
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 26">
+                          <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#7C6E2E" fill-opacity="0.5" stroke="#7C6E2E" stroke-width="1.06" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="chip-text-primary">Sluggish</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 26">
+                          <circle cx="12" cy="13" r="9" stroke="#44546E" stroke-opacity="0.42" stroke-width="1.2" stroke-dasharray="3 3" fill="none"/>
+                        </svg>
+                        <span class="chip-text-primary">Foggy</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 32 16">
+                          <rect x="2" y="2" width="28" height="12" rx="6" fill="#7E5CA8" fill-opacity="0.22" stroke="#7E5CA8" stroke-width="2"/>
+                          <path d="M 2 8 L 16 8 A 6 6 0 0 0 2 8" fill="#7E5CA8" fill-opacity="0.5"/>
+                          <line x1="16" y1="4" x2="16" y2="12" stroke="#7E5CA8" stroke-width="1.6" stroke-opacity="0.8"/>
+                        </svg>
+                        <span class="chip-text-med">Adderall 10mg</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="chevron-icon">▼</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Expanded Card -->
+            <div>
+              <div class="card-version-label">Expanded State</div>
+              <div class="day-card mood-low">
+                <div class="collapsed-band">
+                  <div class="band-label">
+                    <span class="band-mood">LOW</span>
+                    <span class="title-sep">·</span>
+                    <span class="weekday-code">MON 04</span>
+                  </div>
+                  <div class="chevron-icon">▲</div>
+                </div>
+                <div class="expanded-rows">
+                  <div class="timeline-row">
+                    <div class="row-disc">
+                      <svg width="28" height="28" viewBox="0 0 24 26">
+                        <path d="M12 25 C12 18, 12 14, 12 11" stroke="#DA7A2A" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                        <path d="M12 11 C6 14, 6 5, 12 1 C18 5, 18 14, 12 11 Z" fill="#DA7A2A" fill-opacity="0.56" stroke="#DA7A2A" stroke-width="1.3"/>
+                      </svg>
+                    </div>
+                    <div class="row-content">
+                      <div class="row-headline">
+                        <div class="headline-left">
+                          <span class="mood-word">Low</span>
+                          <span class="row-time">09:15</span>
+                        </div>
+                        <div class="more-affordance">•••</div>
+                      </div>
+                      <div class="row-chip-line">
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 24 26">
+                            <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#7C6E2E" fill-opacity="0.5" stroke="#7C6E2E" stroke-width="1.06" stroke-linejoin="round"/>
+                          </svg>
+                          <span class="chip-text-primary">Sluggish</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 24 26">
+                            <circle cx="12" cy="13" r="9" stroke="#44546E" stroke-opacity="0.42" stroke-width="1.2" stroke-dasharray="3 3" fill="none"/>
+                          </svg>
+                          <span class="chip-text-primary">Foggy</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 32 16">
+                            <rect x="2" y="2" width="28" height="12" rx="6" fill="#7E5CA8" fill-opacity="0.22" stroke="#7E5CA8" stroke-width="2"/>
+                            <path d="M 2 8 L 16 8 A 6 6 0 0 0 2 8" fill="#7E5CA8" fill-opacity="0.5"/>
+                            <line x1="16" y1="4" x2="16" y2="12" stroke="#7E5CA8" stroke-width="1.6" stroke-opacity="0.8"/>
+                          </svg>
+                          <span class="chip-text-med">Adderall</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <span class="secondary-tag">♥ Heavy, Muted</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- 2. FLAT (AMBER) -->
+        <div class="mood-block-group">
+          <div class="section-title">
+            <span>Level 2: Flat</span>
+            <span class="color-swatch-tag" style="border-left: 10px solid #EDA94A;">Base #EDA94A</span>
+          </div>
+          <div class="mood-pair-row">
+            <!-- Folded Card -->
+            <div>
+              <div class="card-version-label">Folded State</div>
+              <div class="day-card mood-flat">
+                <div class="folded-header">
+                  <div class="header-glyph-container">
+                    <svg width="40" height="40" viewBox="0 0 24 26">
+                      <path d="M12 25 C12 18, 12 14, 12 11" stroke="#EDA94A" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                      <path d="M12 11 C6 14, 6 5, 12 1 C18 5, 18 14, 12 11 Z" fill="#EDA94A" fill-opacity="0.71" stroke="#EDA94A" stroke-width="1.3"/>
+                    </svg>
+                  </div>
+                  <div class="header-text-col">
+                    <div class="folded-title">
+                      <span class="mood-word">Flat</span>
+                      <span class="title-sep">·</span>
+                      <span class="weekday-code">TUE 05</span>
+                    </div>
+                    <div class="summary-flow">
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 26">
+                          <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#A89236" fill-opacity="0.65" stroke="#A89236" stroke-width="1.22" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="chip-text-primary">Tired</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 26">
+                          <circle cx="12" cy="13" r="9" stroke="#4E6F94" stroke-opacity="0.54" stroke-width="1.2" stroke-dasharray="3 3" fill="none"/>
+                          <circle cx="12" cy="13" r="6" stroke="#4E6F94" stroke-opacity="0.62" stroke-width="1.3" fill="none"/>
+                        </svg>
+                        <span class="chip-text-primary">Distracted</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 32 16">
+                          <rect x="2" y="2" width="28" height="12" rx="6" fill="#7E5CA8" fill-opacity="0.22" stroke="#7E5CA8" stroke-width="2"/>
+                          <path d="M 2 8 L 16 8 A 6 6 0 0 0 2 8" fill="#7E5CA8" fill-opacity="0.5"/>
+                          <line x1="16" y1="4" x2="16" y2="12" stroke="#7E5CA8" stroke-width="1.6" stroke-opacity="0.8"/>
+                        </svg>
+                        <span class="chip-text-med">Vyvanse 30mg</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="chevron-icon">▼</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Expanded Card -->
+            <div>
+              <div class="card-version-label">Expanded State</div>
+              <div class="day-card mood-flat">
+                <div class="collapsed-band">
+                  <div class="band-label">
+                    <span class="band-mood">FLAT</span>
+                    <span class="title-sep">·</span>
+                    <span class="weekday-code">TUE 05</span>
+                  </div>
+                  <div class="chevron-icon">▲</div>
+                </div>
+                <div class="expanded-rows">
+                  <div class="timeline-row">
+                    <div class="row-disc">
+                      <svg width="28" height="28" viewBox="0 0 24 26">
+                        <path d="M12 25 C12 18, 12 14, 12 11" stroke="#EDA94A" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                        <path d="M12 11 C6 14, 6 5, 12 1 C18 5, 18 14, 12 11 Z" fill="#EDA94A" fill-opacity="0.71" stroke="#EDA94A" stroke-width="1.3"/>
+                      </svg>
+                    </div>
+                    <div class="row-content">
+                      <div class="row-headline">
+                        <div class="headline-left">
+                          <span class="mood-word">Flat</span>
+                          <span class="row-time">10:00</span>
+                        </div>
+                        <div class="more-affordance">•••</div>
+                      </div>
+                      <div class="row-chip-line">
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 24 26">
+                            <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#A89236" fill-opacity="0.65" stroke="#A89236" stroke-width="1.22" stroke-linejoin="round"/>
+                          </svg>
+                          <span class="chip-text-primary">Tired</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 24 26">
+                            <circle cx="12" cy="13" r="9" stroke="#4E6F94" stroke-opacity="0.54" stroke-width="1.2" stroke-dasharray="3 3" fill="none"/>
+                            <circle cx="12" cy="13" r="6" stroke="#4E6F94" stroke-opacity="0.62" stroke-width="1.3" fill="none"/>
+                          </svg>
+                          <span class="chip-text-primary">Distracted</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 32 16">
+                            <rect x="2" y="2" width="28" height="12" rx="6" fill="#7E5CA8" fill-opacity="0.22" stroke="#7E5CA8" stroke-width="2"/>
+                            <path d="M 2 8 L 16 8 A 6 6 0 0 0 2 8" fill="#7E5CA8" fill-opacity="0.5"/>
+                            <line x1="16" y1="4" x2="16" y2="12" stroke="#7E5CA8" stroke-width="1.6" stroke-opacity="0.8"/>
+                          </svg>
+                          <span class="chip-text-med">Vyvanse</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <span class="secondary-tag">♥ Neutral, Still</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- 3. OKAY (MEADOW GREEN) -->
+        <div class="mood-block-group">
+          <div class="section-title">
+            <span>Level 3: Okay</span>
+            <span class="color-swatch-tag" style="border-left: 10px solid #9FCB79;">Base #9FCB79</span>
+          </div>
+          <div class="mood-pair-row">
+            <!-- Folded Card -->
+            <div>
+              <div class="card-version-label">Folded State</div>
+              <div class="day-card mood-okay">
+                <div class="folded-header">
+                  <div class="header-glyph-container">
+                    <svg width="40" height="40" viewBox="0 0 24 26">
+                      <path d="M12 25 C12 18, 12 14, 12 11" stroke="#9FCB79" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                      <path d="M12 11 C6 14, 6 5, 12 1 C18 5, 18 14, 12 11 Z" fill="#9FCB79" fill-opacity="0.855" stroke="#9FCB79" stroke-width="1.3"/>
+                      <line x1="12" y1="11" x2="12" y2="4" stroke="#9FCB79" stroke-opacity="0.5" stroke-width="1"/>
+                    </svg>
+                  </div>
+                  <div class="header-text-col">
+                    <div class="folded-title">
+                      <span class="mood-word">Okay</span>
+                      <span class="title-sep">·</span>
+                      <span class="weekday-code">WED 06</span>
+                    </div>
+                    <div class="summary-flow">
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 26">
+                          <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#D2BB40" fill-opacity="0.8" stroke="#D2BB40" stroke-width="1.38" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="chip-text-primary">Steady</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 26">
+                          <circle cx="12" cy="13" r="9" stroke="#5889BA" stroke-opacity="0.66" stroke-width="1.2" fill="none"/>
+                          <circle cx="12" cy="13" r="6" stroke="#5889BA" stroke-opacity="0.73" stroke-width="1.3" fill="none"/>
+                          <circle cx="12" cy="13" r="1.7" fill="#5889BA" fill-opacity="0.8"/>
+                        </svg>
+                        <span class="chip-text-primary">Present</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 32 16">
+                          <rect x="2" y="2" width="28" height="12" rx="6" fill="#7E5CA8" fill-opacity="0.22" stroke="#7E5CA8" stroke-width="2"/>
+                          <path d="M 2 8 L 16 8 A 6 6 0 0 0 2 8" fill="#7E5CA8" fill-opacity="0.5"/>
+                          <line x1="16" y1="4" x2="16" y2="12" stroke="#7E5CA8" stroke-width="1.6" stroke-opacity="0.8"/>
+                        </svg>
+                        <span class="chip-text-med">Ritalin 20mg</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 24">
+                          <path d="M 3 18 L 3 12 Q 3 10 5 10 L 14 10 Q 18 10 18 14 L 18 18" stroke="#5566A6" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+                          <line x1="3" y1="14" x2="20" y2="14" stroke="#5566A6" stroke-width="1.7" stroke-linecap="round"/>
+                          <rect x="6.2" y="8.4" width="4.6" height="1.6" rx="0.8" stroke="#5566A6" stroke-width="1.4" fill="none"/>
+                        </svg>
+                        <span class="chip-text-primary">7h 30m · Okay</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="chevron-icon">▼</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Expanded Card -->
+            <div>
+              <div class="card-version-label">Expanded State</div>
+              <div class="day-card mood-okay">
+                <div class="collapsed-band">
+                  <div class="band-label">
+                    <span class="band-mood">OKAY</span>
+                    <span class="title-sep">·</span>
+                    <span class="weekday-code">WED 06</span>
+                  </div>
+                  <div class="chevron-icon">▲</div>
+                </div>
+                <div class="expanded-rows">
+                  <div class="timeline-row">
+                    <div class="row-disc">
+                      <svg width="28" height="28" viewBox="0 0 24 26">
+                        <path d="M12 25 C12 18, 12 14, 12 11" stroke="#9FCB79" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                        <path d="M12 11 C6 14, 6 5, 12 1 C18 5, 18 14, 12 11 Z" fill="#9FCB79" fill-opacity="0.855" stroke="#9FCB79" stroke-width="1.3"/>
+                        <line x1="12" y1="11" x2="12" y2="4" stroke="#9FCB79" stroke-opacity="0.5" stroke-width="1"/>
+                      </svg>
+                    </div>
+                    <div class="row-content">
+                      <div class="row-headline">
+                        <div class="headline-left">
+                          <span class="mood-word">Okay</span>
+                          <span class="row-time">08:30</span>
+                        </div>
+                        <div class="more-affordance">•••</div>
+                      </div>
+                      <div class="row-chip-line">
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 24 26">
+                            <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#D2BB40" fill-opacity="0.8" stroke="#D2BB40" stroke-width="1.38" stroke-linejoin="round"/>
+                          </svg>
+                          <span class="chip-text-primary">Steady</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 24 26">
+                            <circle cx="12" cy="13" r="9" stroke="#5889BA" stroke-opacity="0.66" stroke-width="1.2" fill="none"/>
+                            <circle cx="12" cy="13" r="6" stroke="#5889BA" stroke-opacity="0.73" stroke-width="1.3" fill="none"/>
+                            <circle cx="12" cy="13" r="1.7" fill="#5889BA" fill-opacity="0.8"/>
+                          </svg>
+                          <span class="chip-text-primary">Present</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 32 16">
+                            <rect x="2" y="2" width="28" height="12" rx="6" fill="#7E5CA8" fill-opacity="0.22" stroke="#7E5CA8" stroke-width="2"/>
+                            <path d="M 2 8 L 16 8 A 6 6 0 0 0 2 8" fill="#7E5CA8" fill-opacity="0.5"/>
+                            <line x1="16" y1="4" x2="16" y2="12" stroke="#7E5CA8" stroke-width="1.6" stroke-opacity="0.8"/>
+                          </svg>
+                          <span class="chip-text-med">Ritalin</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <span class="sleep-chip-indigo">7h 30m · Okay</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- 4. GOOD (WARM GREEN) -->
+        <div class="mood-block-group">
+          <div class="section-title">
+            <span>Level 4: Good</span>
+            <span class="color-swatch-tag" style="border-left: 10px solid #5FB36E;">Base #5FB36E</span>
+          </div>
+          <div class="mood-pair-row">
+            <!-- Folded Card -->
+            <div>
+              <div class="card-version-label">Folded State</div>
+              <div class="day-card mood-good">
+                <div class="folded-header">
+                  <div class="header-glyph-container">
+                    <svg width="40" height="40" viewBox="0 0 24 26">
+                      <path d="M12 25 C12 18, 12 14, 12 9" stroke="#5FB36E" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                      <path d="M12 9 C4 13, 5 2, 12 1 C19 2, 20 13, 12 9 Z" fill="#5FB36E" fill-opacity="1.0" stroke="#5FB36E" stroke-width="1.3"/>
+                      <line x1="12" y1="9" x2="12" y2="4" stroke="#5FB36E" stroke-opacity="0.5" stroke-width="1"/>
+                    </svg>
+                  </div>
+                  <div class="header-text-col">
+                    <div class="folded-title">
+                      <span class="mood-word">Good</span>
+                      <span class="title-sep">·</span>
+                      <span class="weekday-code">THU 07</span>
+                    </div>
+                    <div class="summary-flow">
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 26">
+                          <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#EEDA4C" fill-opacity="0.95" stroke="#EEDA4C" stroke-width="1.54" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="chip-text-primary">Alert</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 26">
+                          <circle cx="12" cy="13" r="9" stroke="#63A4E0" stroke-opacity="0.78" stroke-width="1.2" fill="none"/>
+                          <circle cx="12" cy="13" r="6" stroke="#63A4E0" stroke-opacity="0.84" stroke-width="1.3" fill="none"/>
+                          <circle cx="12" cy="13" r="3.3" stroke="#63A4E0" stroke-opacity="0.92" stroke-width="1.4" fill="none"/>
+                          <circle cx="12" cy="13" r="2.55" fill="#63A4E0" fill-opacity="0.9"/>
+                        </svg>
+                        <span class="chip-text-primary">Sharp</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 32 16">
+                          <rect x="2" y="2" width="28" height="12" rx="6" fill="#7E5CA8" fill-opacity="0.22" stroke="#7E5CA8" stroke-width="2"/>
+                          <path d="M 2 8 L 16 8 A 6 6 0 0 0 2 8" fill="#7E5CA8" fill-opacity="0.5"/>
+                          <line x1="16" y1="4" x2="16" y2="12" stroke="#7E5CA8" stroke-width="1.6" stroke-opacity="0.8"/>
+                        </svg>
+                        <span class="chip-text-med">Concerta 18mg</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 24">
+                          <path d="M 3 18 L 3 12 Q 3 10 5 10 L 14 10 Q 18 10 18 14 L 18 18" stroke="#5566A6" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+                          <line x1="3" y1="14" x2="20" y2="14" stroke="#5566A6" stroke-width="1.7" stroke-linecap="round"/>
+                          <rect x="6.2" y="8.4" width="4.6" height="1.6" rx="0.8" stroke="#5566A6" stroke-width="1.4" fill="none"/>
+                        </svg>
+                        <span class="chip-text-primary">8h · Good</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="chevron-icon">▼</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Expanded Card -->
+            <div>
+              <div class="card-version-label">Expanded State</div>
+              <div class="day-card mood-good">
+                <div class="collapsed-band">
+                  <div class="band-label">
+                    <span class="band-mood">GOOD</span>
+                    <span class="title-sep">·</span>
+                    <span class="weekday-code">THU 07</span>
+                  </div>
+                  <div class="chevron-icon">▲</div>
+                </div>
+                <div class="expanded-rows">
+                  <div class="timeline-row">
+                    <div class="row-disc">
+                      <svg width="28" height="28" viewBox="0 0 24 26">
+                        <path d="M12 25 C12 18, 12 14, 12 9" stroke="#5FB36E" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                        <path d="M12 9 C4 13, 5 2, 12 1 C19 2, 20 13, 12 9 Z" fill="#5FB36E" fill-opacity="1.0" stroke="#5FB36E" stroke-width="1.3"/>
+                        <line x1="12" y1="9" x2="12" y2="4" stroke="#5FB36E" stroke-opacity="0.5" stroke-width="1"/>
+                      </svg>
+                    </div>
+                    <div class="row-content">
+                      <div class="row-headline">
+                        <div class="headline-left">
+                          <span class="mood-word">Good</span>
+                          <span class="row-time">09:00</span>
+                        </div>
+                        <div class="more-affordance">•••</div>
+                      </div>
+                      <div class="row-chip-line">
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 24 26">
+                            <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#EEDA4C" fill-opacity="0.95" stroke="#EEDA4C" stroke-width="1.54" stroke-linejoin="round"/>
+                          </svg>
+                          <span class="chip-text-primary">Alert</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 24 26">
+                            <circle cx="12" cy="13" r="9" stroke="#63A4E0" stroke-opacity="0.78" stroke-width="1.2" fill="none"/>
+                            <circle cx="12" cy="13" r="6" stroke="#63A4E0" stroke-opacity="0.84" stroke-width="1.3" fill="none"/>
+                            <circle cx="12" cy="13" r="3.3" stroke="#63A4E0" stroke-opacity="0.92" stroke-width="1.4" fill="none"/>
+                            <circle cx="12" cy="13" r="2.55" fill="#63A4E0" fill-opacity="0.9"/>
+                          </svg>
+                          <span class="chip-text-primary">Sharp</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 32 16">
+                            <rect x="2" y="2" width="28" height="12" rx="6" fill="#7E5CA8" fill-opacity="0.22" stroke="#7E5CA8" stroke-width="2"/>
+                            <path d="M 2 8 L 16 8 A 6 6 0 0 0 2 8" fill="#7E5CA8" fill-opacity="0.5"/>
+                            <line x1="16" y1="4" x2="16" y2="12" stroke="#7E5CA8" stroke-width="1.6" stroke-opacity="0.8"/>
+                          </svg>
+                          <span class="chip-text-med">Concerta</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <span class="sleep-chip-indigo">8h · Good</span>
+                        <span class="chip-sep">·</span>
+                        <span class="secondary-tag">♥ Warm, Lifted</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- 5. GREAT (FOREST GREEN) -->
+        <div class="mood-block-group">
+          <div class="section-title">
+            <span>Level 5: Great</span>
+            <span class="color-swatch-tag" style="border-left: 10px solid #2E8B57;">Base #2E8B57</span>
+          </div>
+          <div class="mood-pair-row">
+            <!-- Folded Card -->
+            <div>
+              <div class="card-version-label">Folded State</div>
+              <div class="day-card mood-great">
+                <div class="folded-header">
+                  <div class="header-glyph-container">
+                    <svg width="40" height="40" viewBox="0 0 24 26">
+                      <path d="M12 25 C12 18, 12 14, 12 9" stroke="#2E8B57" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                      <path d="M12 9 C4 13, 5 2, 12 1 C19 2, 20 13, 12 9 Z" fill="#2E8B57" fill-opacity="1.0" stroke="#2E8B57" stroke-width="1.3"/>
+                      <line x1="12" y1="9" x2="12" y2="4" stroke="#2E8B57" stroke-opacity="0.5" stroke-width="1"/>
+                      <circle cx="12" cy="6" r="2" fill="#2E8B57"/>
+                    </svg>
+                  </div>
+                  <div class="header-text-col">
+                    <div class="folded-title">
+                      <span class="mood-word">Great</span>
+                      <span class="title-sep">·</span>
+                      <span class="weekday-code">FRI 08</span>
+                    </div>
+                    <div class="summary-flow">
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 26">
+                          <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#FCEE64" fill-opacity="1.0" stroke="#FCEE64" stroke-width="1.7" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="chip-text-primary">Charged</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 26">
+                          <circle cx="12" cy="13" r="9" stroke="#79C4FF" stroke-opacity="0.9" stroke-width="1.2" fill="none"/>
+                          <circle cx="12" cy="13" r="6" stroke="#79C4FF" stroke-opacity="0.95" stroke-width="1.3" fill="none"/>
+                          <circle cx="12" cy="13" r="3.3" stroke="#79C4FF" stroke-opacity="0.92" stroke-width="1.4" fill="none"/>
+                          <circle cx="12" cy="13" r="3.4" fill="#79C4FF" fill-opacity="1.0"/>
+                        </svg>
+                        <span class="chip-text-primary">Locked In</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 32 16">
+                          <rect x="2" y="2" width="28" height="12" rx="6" fill="#7E5CA8" fill-opacity="0.22" stroke="#7E5CA8" stroke-width="2"/>
+                          <path d="M 2 8 L 16 8 A 6 6 0 0 0 2 8" fill="#7E5CA8" fill-opacity="0.5"/>
+                          <line x1="16" y1="4" x2="16" y2="12" stroke="#7E5CA8" stroke-width="1.6" stroke-opacity="0.8"/>
+                        </svg>
+                        <span class="chip-text-med">Dexedrine 5mg</span>
+                      </div>
+                      <span class="chip-sep">·</span>
+                      <div class="chip-item">
+                        <svg width="15" height="15" viewBox="0 0 24 24">
+                          <path d="M 3 18 L 3 12 Q 3 10 5 10 L 14 10 Q 18 10 18 14 L 18 18" stroke="#5566A6" stroke-width="1.7" stroke-linecap="round" fill="none"/>
+                          <line x1="3" y1="14" x2="20" y2="14" stroke="#5566A6" stroke-width="1.7" stroke-linecap="round"/>
+                          <rect x="6.2" y="8.4" width="4.6" height="1.6" rx="0.8" stroke="#5566A6" stroke-width="1.4" fill="none"/>
+                        </svg>
+                        <span class="chip-text-primary">8h 30m · Deep</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="chevron-icon">▼</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Expanded Card -->
+            <div>
+              <div class="card-version-label">Expanded State</div>
+              <div class="day-card mood-great">
+                <div class="collapsed-band">
+                  <div class="band-label">
+                    <span class="band-mood">GREAT</span>
+                    <span class="title-sep">·</span>
+                    <span class="weekday-code">FRI 08</span>
+                  </div>
+                  <div class="chevron-icon">▲</div>
+                </div>
+                <div class="expanded-rows">
+                  <div class="timeline-row">
+                    <div class="row-disc">
+                      <svg width="28" height="28" viewBox="0 0 24 26">
+                        <path d="M12 25 C12 18, 12 14, 12 9" stroke="#2E8B57" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                        <path d="M12 9 C4 13, 5 2, 12 1 C19 2, 20 13, 12 9 Z" fill="#2E8B57" fill-opacity="1.0" stroke="#2E8B57" stroke-width="1.3"/>
+                        <line x1="12" y1="9" x2="12" y2="4" stroke="#2E8B57" stroke-opacity="0.5" stroke-width="1"/>
+                        <circle cx="12" cy="6" r="2" fill="#2E8B57"/>
+                      </svg>
+                    </div>
+                    <div class="row-content">
+                      <div class="row-headline">
+                        <div class="headline-left">
+                          <span class="mood-word">Great</span>
+                          <span class="row-time">08:45</span>
+                        </div>
+                        <div class="more-affordance">•••</div>
+                      </div>
+                      <div class="row-chip-line">
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 24 26">
+                            <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#FCEE64" fill-opacity="1.0" stroke="#FCEE64" stroke-width="1.7" stroke-linejoin="round"/>
+                          </svg>
+                          <span class="chip-text-primary">Charged</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 24 26">
+                            <circle cx="12" cy="13" r="9" stroke="#79C4FF" stroke-opacity="0.9" stroke-width="1.2" fill="none"/>
+                            <circle cx="12" cy="13" r="6" stroke="#79C4FF" stroke-opacity="0.95" stroke-width="1.3" fill="none"/>
+                            <circle cx="12" cy="13" r="3.3" stroke="#79C4FF" stroke-opacity="0.92" stroke-width="1.4" fill="none"/>
+                            <circle cx="12" cy="13" r="3.4" fill="#79C4FF" fill-opacity="1.0"/>
+                          </svg>
+                          <span class="chip-text-primary">Locked In</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <div class="chip-item">
+                          <svg width="12" height="12" viewBox="0 0 32 16">
+                            <rect x="2" y="2" width="28" height="12" rx="6" fill="#7E5CA8" fill-opacity="0.22" stroke="#7E5CA8" stroke-width="2"/>
+                            <path d="M 2 8 L 16 8 A 6 6 0 0 0 2 8" fill="#7E5CA8" fill-opacity="0.5"/>
+                            <line x1="16" y1="4" x2="16" y2="12" stroke="#7E5CA8" stroke-width="1.6" stroke-opacity="0.8"/>
+                          </svg>
+                          <span class="chip-text-med">Dexedrine</span>
+                        </div>
+                        <span class="chip-sep">·</span>
+                        <span class="sleep-chip-indigo">8h 30m · Deep</span>
+                        <span class="chip-sep">·</span>
+                        <span class="secondary-tag">♥ Bright, Thriving</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- TAB 2: ALL GLYPHS SPEC SHOWCASE -->
+    <div id="tab-glyphs" class="tab-content">
+      <div class="section-desc">
+        Complete vector specification for all 5 signal glyphs rendered directly from Swift <code>Canvas</code> draw instructions in <code>SproutGlyph.swift</code>, <code>BoltGlyph.swift</code>, <code>ApertureGlyph.swift</code>, <code>BedIcon.swift</code>, and <code>CapsuleGlyph.swift</code>.
+      </div>
+
+      <div class="glyph-grid-container">
+
+        <!-- 1. MOOD (SPROUT) -->
+        <div class="glyph-section-card">
+          <div class="glyph-section-header">
+            <div class="glyph-section-title">1. Mood — SproutGlyph (Ramped 1…5)</div>
+            <div class="glyph-section-badge">Meadow-Burnt Valence Ramp</div>
+          </div>
+          <div class="levels-row">
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 1</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <path d="M12 25 C12 18, 12 14, 12 11" stroke="#DA7A2A" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                  <path d="M12 11 C6 14, 6 5, 12 1 C18 5, 18 14, 12 11 Z" fill="#DA7A2A" fill-opacity="0.56" stroke="#DA7A2A" stroke-width="1.3"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Low</div>
+              <div class="glyph-sub">heavy, muted</div>
+              <div class="color-swatch-tag">#DA7A2A</div>
+            </div>
+
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 2</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <path d="M12 25 C12 18, 12 14, 12 11" stroke="#EDA94A" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                  <path d="M12 11 C6 14, 6 5, 12 1 C18 5, 18 14, 12 11 Z" fill="#EDA94A" fill-opacity="0.71" stroke="#EDA94A" stroke-width="1.3"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Flat</div>
+              <div class="glyph-sub">neutral, still</div>
+              <div class="color-swatch-tag">#EDA94A</div>
+            </div>
+
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 3</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <path d="M12 25 C12 18, 12 14, 12 11" stroke="#9FCB79" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                  <path d="M12 11 C6 14, 6 5, 12 1 C18 5, 18 14, 12 11 Z" fill="#9FCB79" fill-opacity="0.855" stroke="#9FCB79" stroke-width="1.3"/>
+                  <line x1="12" y1="11" x2="12" y2="4" stroke="#9FCB79" stroke-opacity="0.5" stroke-width="1"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Okay</div>
+              <div class="glyph-sub">steady, fine</div>
+              <div class="color-swatch-tag">#9FCB79</div>
+            </div>
+
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 4</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <path d="M12 25 C12 18, 12 14, 12 9" stroke="#5FB36E" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                  <path d="M12 9 C4 13, 5 2, 12 1 C19 2, 20 13, 12 9 Z" fill="#5FB36E" fill-opacity="1.0" stroke="#5FB36E" stroke-width="1.3"/>
+                  <line x1="12" y1="9" x2="12" y2="4" stroke="#5FB36E" stroke-opacity="0.5" stroke-width="1"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Good</div>
+              <div class="glyph-sub">warm, lifted</div>
+              <div class="color-swatch-tag">#5FB36E</div>
+            </div>
+
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 5</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <path d="M12 25 C12 18, 12 14, 12 9" stroke="#2E8B57" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>
+                  <path d="M12 9 C4 13, 5 2, 12 1 C19 2, 20 13, 12 9 Z" fill="#2E8B57" fill-opacity="1.0" stroke="#2E8B57" stroke-width="1.3"/>
+                  <line x1="12" y1="9" x2="12" y2="4" stroke="#2E8B57" stroke-opacity="0.5" stroke-width="1"/>
+                  <circle cx="12" cy="6" r="2" fill="#2E8B57"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Great</div>
+              <div class="glyph-sub">bright, thriving</div>
+              <div class="color-swatch-tag">#2E8B57</div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- 2. ENERGY (BOLT) -->
+        <div class="glyph-section-card">
+          <div class="glyph-section-header">
+            <div class="glyph-section-title">2. Energy — BoltGlyph (Ramped 1…5)</div>
+            <div class="glyph-section-badge">Lemon Ramp</div>
+          </div>
+          <div class="levels-row">
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 1</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#7C6E2E" fill-opacity="0.5" stroke="#7C6E2E" stroke-width="1.06" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Sluggish</div>
+              <div class="glyph-sub">slow, heavy</div>
+              <div class="color-swatch-tag">#7C6E2E</div>
+            </div>
+
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 2</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#A89236" fill-opacity="0.65" stroke="#A89236" stroke-width="1.22" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Tired</div>
+              <div class="glyph-sub">low, dim</div>
+              <div class="color-swatch-tag">#A89236</div>
+            </div>
+
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 3</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#D2BB40" fill-opacity="0.8" stroke="#D2BB40" stroke-width="1.38" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Steady</div>
+              <div class="glyph-sub">moderate, stable</div>
+              <div class="color-swatch-tag">#D2BB40</div>
+            </div>
+
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 4</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#EEDA4C" fill-opacity="0.95" stroke="#EEDA4C" stroke-width="1.54" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Alert</div>
+              <div class="glyph-sub">awake, ready</div>
+              <div class="color-swatch-tag">#EEDA4C</div>
+            </div>
+
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 5</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <polygon points="14,2 6,15 11,15 9.5,24 19,11 13,11" fill="#FCEE64" fill-opacity="1.0" stroke="#FCEE64" stroke-width="1.7" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Charged</div>
+              <div class="glyph-sub">electric, on</div>
+              <div class="color-swatch-tag">#FCEE64</div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- 3. FOCUS (APERTURE) -->
+        <div class="glyph-section-card">
+          <div class="glyph-section-header">
+            <div class="glyph-section-title">3. Focus — ApertureGlyph (Ramped 1…5)</div>
+            <div class="glyph-section-badge">Voltage Blue Ramp</div>
+          </div>
+          <div class="levels-row">
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 1</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <circle cx="12" cy="13" r="9" stroke="#44546E" stroke-opacity="0.42" stroke-width="1.2" stroke-dasharray="3 3" fill="none"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Foggy</div>
+              <div class="glyph-sub">hazy, drifting</div>
+              <div class="color-swatch-tag">#44546E</div>
+            </div>
+
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 2</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <circle cx="12" cy="13" r="9" stroke="#4E6F94" stroke-opacity="0.54" stroke-width="1.2" stroke-dasharray="3 3" fill="none"/>
+                  <circle cx="12" cy="13" r="6" stroke="#4E6F94" stroke-opacity="0.62" stroke-width="1.3" fill="none"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Distracted</div>
+              <div class="glyph-sub">pulled, unsteady</div>
+              <div class="color-swatch-tag">#4E6F94</div>
+            </div>
+
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 3</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <circle cx="12" cy="13" r="9" stroke="#5889BA" stroke-opacity="0.66" stroke-width="1.2" fill="none"/>
+                  <circle cx="12" cy="13" r="6" stroke="#5889BA" stroke-opacity="0.73" stroke-width="1.3" fill="none"/>
+                  <circle cx="12" cy="13" r="1.7" fill="#5889BA" fill-opacity="0.8"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Present</div>
+              <div class="glyph-sub">grounded, there</div>
+              <div class="color-swatch-tag">#5889BA</div>
+            </div>
+
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 4</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <circle cx="12" cy="13" r="9" stroke="#63A4E0" stroke-opacity="0.78" stroke-width="1.2" fill="none"/>
+                  <circle cx="12" cy="13" r="6" stroke="#63A4E0" stroke-opacity="0.84" stroke-width="1.3" fill="none"/>
+                  <circle cx="12" cy="13" r="3.3" stroke="#63A4E0" stroke-opacity="0.92" stroke-width="1.4" fill="none"/>
+                  <circle cx="12" cy="13" r="2.55" fill="#63A4E0" fill-opacity="0.9"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Sharp</div>
+              <div class="glyph-sub">clear, on track</div>
+              <div class="color-swatch-tag">#63A4E0</div>
+            </div>
+
+            <div class="glyph-card">
+              <div class="glyph-level-num">Level 5</div>
+              <div class="glyph-preview-box">
+                <svg width="40" height="40" viewBox="0 0 24 26">
+                  <circle cx="12" cy="13" r="9" stroke="#79C4FF" stroke-opacity="0.9" stroke-width="1.2" fill="none"/>
+                  <circle cx="12" cy="13" r="6" stroke="#79C4FF" stroke-opacity="0.95" stroke-width="1.3" fill="none"/>
+                  <circle cx="12" cy="13" r="3.3" stroke="#79C4FF" stroke-opacity="0.92" stroke-width="1.4" fill="none"/>
+                  <circle cx="12" cy="13" r="3.4" fill="#79C4FF" fill-opacity="1.0"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Locked In</div>
+              <div class="glyph-sub">deep, flowing</div>
+              <div class="color-swatch-tag">#79C4FF</div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- 4. SLEEP & 5. MEDICATION -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <!-- SLEEP -->
+          <div class="glyph-section-card">
+            <div class="glyph-section-header">
+              <div class="glyph-section-title">4. Sleep — BedIcon</div>
+              <div class="glyph-section-badge">Fixed Indigo Icon</div>
+            </div>
+            <div class="glyph-card" style="width: 100%;">
+              <div class="glyph-preview-box" style="width: 64px; height: 64px;">
+                <svg width="44" height="44" viewBox="0 0 24 24">
+                  <path d="M 3 18 L 3 12 Q 3 10 5 10 L 14 10 Q 18 10 18 14 L 18 18" stroke="var(--nl-sleep-indigo)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                  <line x1="3" y1="14" x2="20" y2="14" stroke="var(--nl-sleep-indigo)" stroke-width="1.7" stroke-linecap="round"/>
+                  <rect x="6.2" y="8.4" width="4.6" height="1.6" rx="0.8" stroke="var(--nl-sleep-indigo)" stroke-width="1.4" fill="none"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Sleep Indigo</div>
+              <div class="glyph-sub">Subtitles across 1…5 levels:</div>
+              <div style="font-size: 11px; color: var(--nl-ink-secondary); text-align: left; margin-top: 4px;">
+                1: Restless (broken, tossing)<br>
+                2: Light (thin, barely resting)<br>
+                3: Okay (decent, adequate)<br>
+                4: Good (solid, rested)<br>
+                5: Deep (restorative, refreshed)
+              </div>
+              <div class="color-swatch-tag" style="margin-top: 8px;">Light #5566A6 / Dark #8E9BD4</div>
+            </div>
+          </div>
+
+          <!-- MEDICATION -->
+          <div class="glyph-section-card">
+            <div class="glyph-section-header">
+              <div class="glyph-section-title">5. Medication — CapsuleGlyph</div>
+              <div class="glyph-section-badge">Two-Tone Capsule</div>
+            </div>
+            <div class="glyph-card" style="width: 100%;">
+              <div class="glyph-preview-box" style="width: 64px; height: 64px;">
+                <svg width="48" height="24" viewBox="0 0 32 16">
+                  <rect x="2" y="2" width="28" height="12" rx="6" fill="var(--nl-medication)" fill-opacity="0.22" stroke="var(--nl-medication)" stroke-width="2"/>
+                  <path d="M 2 8 L 16 8 A 6 6 0 0 0 2 8" fill="var(--nl-medication)" fill-opacity="0.5"/>
+                  <line x1="16" y1="4" x2="16" y2="12" stroke="var(--nl-medication)" stroke-width="1.6" stroke-opacity="0.8"/>
+                </svg>
+              </div>
+              <div class="glyph-name">Medication Purple</div>
+              <div class="glyph-sub">Fixed dose icon &amp; tag accent</div>
+              <div style="font-size: 11px; color: var(--nl-ink-secondary); margin-top: 8px;">
+                Single non-varying icon. Uses two-tone capsule opacity (0.22 right / 0.5 left) with center seam line (0.8 opacity).
+              </div>
+              <div class="color-swatch-tag" style="margin-top: 8px;">Light #7E5CA8 / Dark #957BC1</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      if (current === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+        themeBtn.textContent = '🌓 Switch Dark Mode';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        themeBtn.textContent = '☀️ Switch Light Mode';
+      }
+    });
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+  </script>
+</body>
+</html>

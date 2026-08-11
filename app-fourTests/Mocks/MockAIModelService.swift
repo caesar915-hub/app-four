@@ -2,7 +2,7 @@ import Foundation
 @testable import app_four
 
 actor MockAIModelService: AIModelService {
-    var isDownloading: Bool = false
+    nonisolated(unsafe) var isDownloading: Bool = false
     var downloadCalled: Bool = false
     var stubIsDownloaded = true
     /// Mirrors `stubIsDownloaded` for the nonisolated `localPath` accessor.

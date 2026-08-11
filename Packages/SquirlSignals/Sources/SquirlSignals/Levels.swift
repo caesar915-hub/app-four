@@ -12,6 +12,11 @@ public enum MoodLevel: String, Sendable, Codable, Equatable, CaseIterable {
     case good   // 4 — warm, lifted
     case great  // 5 — bright, thriving
 
+    public init?(name: String?) {
+        guard let name else { return nil }
+        self.init(rawValue: name.lowercased())
+    }
+
     public var numericValue: Int {
         switch self { case .low: 1; case .flat: 2; case .okay: 3; case .good: 4; case .great: 5 }
     }
@@ -23,6 +28,25 @@ public enum MoodLevel: String, Sendable, Codable, Equatable, CaseIterable {
         case .good:  return "warm, lifted"
         case .great: return "bright, thriving"
         }
+    }
+
+    private init?(numericValue: Int) {
+        switch numericValue {
+        case 1: self = .low
+        case 2: self = .flat
+        case 3: self = .okay
+        case 4: self = .good
+        case 5: self = .great
+        default: return nil
+        }
+    }
+
+    /// Rounded half-up average of several mood levels, ignoring unresolvable values.
+    public static func average(of levels: [String?]) -> MoodLevel? {
+        let values = levels.compactMap { MoodLevel(name: $0)?.numericValue }
+        guard !values.isEmpty else { return nil }
+        let mean = (Double(values.reduce(0, +)) / Double(values.count)).rounded(.toNearestOrAwayFromZero)
+        return MoodLevel(numericValue: Int(mean))
     }
 }
 
@@ -62,11 +86,11 @@ public enum EnergyLevel: String, Sendable, Codable, Equatable, CaseIterable {
         }
     }
 
-    /// Rounded-up average of several energy levels, ignoring unresolvable values.
+    /// Rounded half-up average of several energy levels, ignoring unresolvable values.
     public static func average(of levels: [String?]) -> EnergyLevel? {
         let values = levels.compactMap { EnergyLevel(name: $0)?.numericValue }
         guard !values.isEmpty else { return nil }
-        let mean = (Double(values.reduce(0, +)) / Double(values.count)).rounded(.up)
+        let mean = (Double(values.reduce(0, +)) / Double(values.count)).rounded(.toNearestOrAwayFromZero)
         return EnergyLevel(numericValue: Int(mean))
     }
 }
@@ -116,11 +140,11 @@ public enum FocusLevel: String, Sendable, Codable, Equatable, CaseIterable {
         }
     }
 
-    /// Rounded-up average of several focus levels, ignoring unresolvable values.
+    /// Rounded half-up average of several focus levels, ignoring unresolvable values.
     public static func average(of levels: [String?]) -> FocusLevel? {
         let values = levels.compactMap { FocusLevel(name: $0)?.numericValue }
         guard !values.isEmpty else { return nil }
-        let mean = (Double(values.reduce(0, +)) / Double(values.count)).rounded(.up)
+        let mean = (Double(values.reduce(0, +)) / Double(values.count)).rounded(.toNearestOrAwayFromZero)
         return FocusLevel(numericValue: Int(mean))
     }
 }
