@@ -80,7 +80,9 @@ struct RecordingDetailView: View {
         .confirmationDialog("Delete this check-in?", isPresented: $showDeleteConfirm, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
                 pendingDelete = true
-                dismiss()
+                // Defer the dismissal to ensure it executes after the dialog's own pop animation
+                // completes; otherwise SwiftUI swallows it and the user stays trapped on the screen.
+                Task { @MainActor in dismiss() }
             }
         }
     }

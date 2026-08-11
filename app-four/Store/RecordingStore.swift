@@ -64,7 +64,10 @@ class RecordingStore {
     
     func save() {
         try? modelContext.save()
-        // No re-fetch needed: SwiftData reflects mutations to in-memory objects automatically.
+        // We MUST re-fetch because changing dates affects the array's sort order
+        // and grouping logic in the ViewModels. If we don't, the array stays identical
+        // and SwiftUI fails to re-render the grouped timeline.
+        loadRecordings()
         // Notify the shared MedicationBarViewModel so the bar updates across all screens.
         NotificationCenter.default.post(name: .medicationEventsDidChange, object: nil)
     }
