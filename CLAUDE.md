@@ -79,5 +79,5 @@ Solo dev; all code written by Claude. PRs exist to give a review surface and kee
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/043-mlx-journal-service/plan.md
+at specs/043-mlx-journal-service/tasks-part2.md
 <!-- SPECKIT END -->

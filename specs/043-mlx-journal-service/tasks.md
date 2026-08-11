@@ -291,6 +291,19 @@
 
 ---
 
+## Phase 8: Convergence
+
+- [x] `T029` `[US1]` **Implement actual MLX-Swift LLM generation per FR-EXT-01 (missing)**
+  - **File:** `app-four/Services/MLXJournalService.swift`
+  - **Action:** Replace mocked `rawJSON` with actual MLX-Swift `generate()` call.
+  - **Dependencies:** T017
+- [x] `T030` `[US4]` **Implement actual MLX-Swift LLMModel lazy loading per FR-EXT-06 and FR-EXT-07 (missing)**
+  - **File:** `app-four/Services/MLXJournalService.swift`
+  - **Action:** Replace mocked model loading in `ModelHolder` with actual `LLMModelFactory.shared.loadContainer(configuration:)`.
+  - **Dependencies:** T021
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies

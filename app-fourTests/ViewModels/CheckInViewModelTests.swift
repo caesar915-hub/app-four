@@ -172,12 +172,15 @@ struct CheckInViewModelTests {
         #expect(await mocks.audio.startRecordingCalled == false)
     }
 
-    @Test func startRecordingWithDownloadTransitionsToRecordingAndStartsDownload() async {
+    @Test func startRecordingWithDownloadTransitionsToRecordingAndStartsDownload() async throws {
         await mocks.audio.setPermissionGranted(true)
         await mocks.aiModel.setStubIsDownloaded(false)
         viewModel.showModelDownloadPrompt = true
         
         await viewModel.startRecordingWithDownload().value
+        
+        // Wait for detached download task to start
+        try await Task.sleep(nanoseconds: 50_000_000)
         
         #expect(viewModel.showModelDownloadPrompt == false)
         #expect(viewModel.state == .recording)

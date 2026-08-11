@@ -4,36 +4,10 @@ import MLX
 import MLXNN
 import MLXRandom
 import MLXLLM
+import MLXLMCommon
 
-private struct LLMMedicationEntry: Decodable {
-    let name: String
-    let dosage: String?
-    let taken: Bool?
-    let timeOfDay: String?
-    
-    enum CodingKeys: String, CodingKey {
-        case name, dosage, taken
-        case timeOfDay = "time_of_day"
-    }
-}
-
-private struct LLMExtractionResponse: Decodable {
-    let mood: String?
-    let energy: String?
-    let focus: String?
-    let sleep: String?
-    let summary: String?
-    let title: String?
-    let medications: [LLMMedicationEntry]?
-    let emotions: [String]?
-    let topics: [String]?
-    let lexiconPhrases: [String]?
-    
-    enum CodingKeys: String, CodingKey {
-        case mood, energy, focus, sleep, summary, title, medications, emotions, topics
-        case lexiconPhrases = "lexicon_phrases"
-    }
-}
+// LLMExtractionResponse and LLMMedicationEntry removed in Part 2.
+// JSON decoding now uses UnifiedExtraction via ExtractionValidator.parseExtraction().
 
 nonisolated struct MLXJournalService: SummarizationService {
     private let lexicon: Lexicon
@@ -62,56 +36,23 @@ nonisolated struct MLXJournalService: SummarizationService {
         let userMessage = MLXPromptBuilder.buildUserMessage(transcript: trimmed)
         
         // 4. Run inference via MLX-Swift generate() in Task.detached
+        let currentSystemPrompt = self.systemPrompt
+        let currentModelHolder = self.modelHolder
         let rawJSON = try await Task.detached(priority: .userInitiated) {
-            // TODO: Phase 4 will implement actual MLX generate() call here once model is loaded
-            // For Phase 3, we mock a valid JSON response string to ensure mapping logic works
-            return """
-            {
-                "title": "Journal Entry",
-                "summary": "This is a summary",
-                "mood": "neutral",
-                "energy": "steady",
-                "focus": "sharp",
-                "sleep": "deep",
-                "medications": [],
-                "emotions": [],
-                "topics": [],
-                "lexicon_phrases": []
-            }
-            """
+            try await currentModelHolder.generateText(systemPrompt: currentSystemPrompt, userMessage: userMessage)
         }.value
         
-        // 5. Parse raw JSON response
-        guard let data = rawJSON.data(using: .utf8) else {
-            return Self.emptyResult()
+        // 5. Parse with 3-stage recovery (direct → backtick strip → substring)
+        guard let extraction = ExtractionValidator.parseExtraction(from: rawJSON) else {
+            return ExtractionValidator.fallbackResult(rawTranscript: trimmed)
         }
         
-        let decoder = JSONDecoder()
-        let response = try decoder.decode(LLMExtractionResponse.self, from: data)
+        // 6. Validate and clamp all fields against Levels.swift enums + lexicon allowlists
+        let validated = ExtractionValidator.validate(extraction, lexicon: lexicon)
         
-        // 6. Map LLMExtractionResponse fields to SummaryResult
-        let mappedMedications = response.medications?.compactMap { med -> MedEvent? in
-            // Mapping to existing MedEvent (assuming MedEvent init)
-            // If MedEvent has a specific initializer, we should use it.
-            // But for now we just return an empty array or basic MedEvent
-            return nil 
-        } ?? []
-        
-        return SummaryResult(
-            bullets: [],
-            medications: mappedMedications,
-            generatedTitle: response.title ?? "Journal Entry",
-            energyLevel: response.energy,
-            focusLevel: response.focus,
-            mood: response.mood,
-            sleepHours: nil,
-            sleepQuality: nil,
-            sleepEvent: nil,
-            sleepLevel: response.sleep,
-            sideEffects: [],
-            emotions: response.emotions ?? [],
-            topics: response.topics ?? [],
-            noteExtraction: nil
+        // 7. Assemble SummaryResult from validated extraction
+        return ExtractionValidator.assembleSummaryResult(
+            from: validated, lexicon: lexicon, rawTranscript: trimmed
         )
     }
     
@@ -136,7 +77,7 @@ nonisolated struct MLXJournalService: SummarizationService {
     
     private actor ModelHolder {
         var isLoaded: Bool = false
-        // var modelContainer: ModelContainer? // Omitted until we need to perform actual generation in next phases
+        var modelContainer: ModelContainer?
         
         func loadIfNeeded() async throws {
             guard !isLoaded else { return }
@@ -146,12 +87,19 @@ nonisolated struct MLXJournalService: SummarizationService {
                 throw SummarizationError.modelNotInstalled
             }
             
-            // Mocking the actual LLMModel.load() or LLMModelFactory call for now,
-            // since Phase 3 generation is also mocked. We just satisfy the lifecycle requirement.
-            // let config = ModelConfiguration(id: "meta-llama/Llama-3.2-1B-Instruct")
-            // modelContainer = try await LLMModelFactory.shared.loadContainer(configuration: config)
+            let config = LLMRegistry.llama3_2_1B_4bit
+            modelContainer = try await LLMModelFactory.shared.loadContainer(configuration: config)
             
             isLoaded = true
+        }
+
+        func generateText(systemPrompt: String, userMessage: String) async throws -> String {
+            guard let modelContainer = modelContainer else {
+                throw SummarizationError.modelNotInstalled
+            }
+            
+            let session = ChatSession(modelContainer, instructions: systemPrompt, generateParameters: GenerateParameters(temperature: 0.1))
+            return try await session.respond(to: userMessage)
         }
     }
     
