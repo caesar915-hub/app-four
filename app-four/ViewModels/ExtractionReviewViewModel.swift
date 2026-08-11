@@ -232,23 +232,23 @@ final class ExtractionReviewViewModel: Identifiable {
         var tags: [RecordingTag] = []
         if !mood.isEmpty {
             tags.append(RecordingTag(name: mood, category: .mood,
-                                     source: editedFields.contains(.mood) ? .userCorrected : .nlp))
+                                     source: editedFields.contains(.mood) ? .userCorrected : .llm))
         }
         if let e = energy {
             tags.append(RecordingTag(name: e.rawValue, category: .energy,
-                                     source: editedFields.contains(.energy) ? .userCorrected : .nlp))
+                                     source: editedFields.contains(.energy) ? .userCorrected : .llm))
         }
         if let f = focus {
             tags.append(RecordingTag(name: f.rawValue, category: .focus,
-                                     source: editedFields.contains(.focus) ? .userCorrected : .nlp))
+                                     source: editedFields.contains(.focus) ? .userCorrected : .llm))
         }
         for med in medications {
             tags.append(RecordingTag(name: med.name, category: .medication,
-                                     source: editedFields.contains(.medication) ? .userCorrected : .nlp))
+                                     source: editedFields.contains(.medication) ? .userCorrected : .llm))
         }
         for emotion in emotions {
             tags.append(RecordingTag(name: emotion, category: .emotions,
-                                     source: editedFields.contains(.emotions) ? .userCorrected : .nlp))
+                                     source: editedFields.contains(.emotions) ? .userCorrected : .llm))
         }
         store.addCorrectionTags(tags, for: recording)
         store.save()

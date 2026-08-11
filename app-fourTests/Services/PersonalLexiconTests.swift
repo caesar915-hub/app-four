@@ -28,7 +28,7 @@ struct PersonalLexiconTests {
         // A user-corrected med + emotion, plus an NLP tag that must be ignored.
         context.insert(RecordingTag(name: "Wellbutrin XL", category: .medication, source: .userCorrected))
         context.insert(RecordingTag(name: "Hopeful", category: .emotions, source: .userCorrected))
-        context.insert(RecordingTag(name: "Adderall", category: .medication, source: .nlp))
+        context.insert(RecordingTag(name: "Adderall", category: .medication, source: .llm))
         try context.save()
 
         let overlay = PersonalLexiconBuilder.build(from: context)
@@ -40,7 +40,7 @@ struct PersonalLexiconTests {
     }
 
     @Test func noCorrectionsYieldsNilOverlay() throws {
-        context.insert(RecordingTag(name: "Adderall", category: .medication, source: .nlp))
+        context.insert(RecordingTag(name: "Adderall", category: .medication, source: .llm))
         try context.save()
         #expect(PersonalLexiconBuilder.build(from: context) == nil)
     }
