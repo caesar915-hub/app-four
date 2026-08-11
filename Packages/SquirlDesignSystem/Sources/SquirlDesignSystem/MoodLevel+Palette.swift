@@ -97,13 +97,13 @@ public extension MoodLevel {
     private static func average(_ moods: [String?]) -> MoodLevel? {
         let values = moods.compactMap { MoodLevel(name: $0)?.numericValue }
         guard !values.isEmpty else { return nil }
-        let mean = (Double(values.reduce(0, +)) / Double(values.count)).rounded(.up)
+        let mean = (Double(values.reduce(0, +)) / Double(values.count)).rounded(.toNearestOrAwayFromZero)
         return MoodLevel(numericValue: Int(mean))
     }
 
-    /// Rounded-up average mood level, or nil when no resolvable moods are provided.
+    /// Rounded half-up average mood level, or nil when no resolvable moods are provided.
     public static func average(of moods: [String?]) -> MoodLevel? { average(moods) }
 
-    /// Rounded-up average deep shade of several moods, for the day header.
+    /// Rounded half-up average deep shade of several moods, for the day header.
     public static func averageDeep(of moods: [String?]) -> Color? { average(moods)?.deepFill }
 }

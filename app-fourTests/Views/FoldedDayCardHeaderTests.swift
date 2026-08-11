@@ -67,7 +67,7 @@ import Foundation
         #expect(s.focus == "Distracted")
     }
 
-    @Test func moodAveragesRoundUp() {
+    @Test func moodAveragesRoundHalfUp() {
         let great = summary([
             node(at(16), rec: rec("Good")),
             node(at(9),  rec: rec("Great")),
@@ -79,9 +79,16 @@ import Foundation
             node(at(9),  rec: rec("Great")),
         ])
         #expect(good.mood == "Good") // 4.0 → 4
+
+        let okay = summary([
+            node(at(16), rec: rec("Okay")),
+            node(at(12), rec: rec("Okay")),
+            node(at(9),  rec: rec("Good")),
+        ])
+        #expect(okay.mood == "Okay") // 3.33 → 3
     }
 
-    @Test func energyAveragesRoundUp() {
+    @Test func energyAveragesRoundHalfUp() {
         let charged = summary([
             node(at(16), rec: rec(nil, "Alert")),
             node(at(9),  rec: rec(nil, "Charged")),
@@ -93,9 +100,16 @@ import Foundation
             node(at(9),  rec: rec(nil, "Alert")),
         ])
         #expect(alert.energy == "Alert") // 3.5 → 4
+
+        let steady = summary([
+            node(at(16), rec: rec(nil, "Steady")),
+            node(at(12), rec: rec(nil, "Steady")),
+            node(at(9),  rec: rec(nil, "Alert")),
+        ])
+        #expect(steady.energy == "Steady") // 3.33 → 3
     }
 
-    @Test func focusAveragesRoundUp() {
+    @Test func focusAveragesRoundHalfUp() {
         let sharp = summary([
             node(at(16), rec: rec(nil, nil, "Present")),
             node(at(9),  rec: rec(nil, nil, "Sharp")),
@@ -107,6 +121,13 @@ import Foundation
             node(at(9),  rec: rec(nil, nil, "Distracted")),
         ])
         #expect(distracted.focus == "Distracted") // 1.5 → 2
+
+        let present = summary([
+            node(at(16), rec: rec(nil, nil, "Present")),
+            node(at(12), rec: rec(nil, nil, "Present")),
+            node(at(9),  rec: rec(nil, nil, "Sharp")),
+        ])
+        #expect(present.focus == "Present") // 3.33 → 3
     }
 
     @Test func signalMissingFromSomeRecordingsIsAveragedOnlyFromThoseThatHaveIt() {
