@@ -12,12 +12,6 @@ import SwiftUI
 ///   with the fixed dark ``onColor`` ink, and the light end of Insights gradients.
 public extension MoodLevel {
 
-    /// Build from a recording's raw mood string (case-insensitive), or nil.
-    public init?(name: String?) {
-        guard let name else { return nil }
-        self.init(rawValue: name.lowercased())
-    }
-
     /// Meadow·Burnt base — saturated valence colour (burnt-orange→amber→green). The dark end of every fill.
     public var color: Color {
         switch self {
@@ -83,27 +77,6 @@ public extension MoodLevel {
     /// rule, the mood palette itself being custom.
     public static let onColor = Color(hex: "#1C1C1E")
 
-    private init?(numericValue: Int) {
-        switch numericValue {
-        case 1: self = .low
-        case 2: self = .flat
-        case 3: self = .okay
-        case 4: self = .good
-        case 5: self = .great
-        default: return nil
-        }
-    }
-
-    private static func average(_ moods: [String?]) -> MoodLevel? {
-        let values = moods.compactMap { MoodLevel(name: $0)?.numericValue }
-        guard !values.isEmpty else { return nil }
-        let mean = (Double(values.reduce(0, +)) / Double(values.count)).rounded(.toNearestOrAwayFromZero)
-        return MoodLevel(numericValue: Int(mean))
-    }
-
-    /// Rounded half-up average mood level, or nil when no resolvable moods are provided.
-    public static func average(of moods: [String?]) -> MoodLevel? { average(moods) }
-
     /// Rounded half-up average deep shade of several moods, for the day header.
-    public static func averageDeep(of moods: [String?]) -> Color? { average(moods)?.deepFill }
+    public static func averageDeep(of moods: [String?]) -> Color? { average(of: moods)?.deepFill }
 }
