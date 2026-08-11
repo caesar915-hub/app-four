@@ -181,6 +181,12 @@ struct CheckInViewModelTests {
         
         #expect(viewModel.showModelDownloadPrompt == false)
         #expect(viewModel.state == .recording)
+        
+        // Wait for detached download task to invoke the mock
+        while await mocks.aiModel.downloadCalled == false {
+            await Task.yield()
+        }
+        
         #expect(await mocks.aiModel.downloadCalled == true)
         #expect(await mocks.audio.startRecordingCalled == true)
     }

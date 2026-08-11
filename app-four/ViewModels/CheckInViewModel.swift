@@ -179,15 +179,19 @@ final class CheckInViewModel {
                 let stream = try await aiModelService.download(.whisper)
                 for try await _ in stream { } // Consume progress
             } catch let error as ModelDownloadFailure {
-                await MainActor.run {
-                    if error == .insufficientSpace {
-                        self?.showStorageError = true
-                    } else {
-                        self?.showDownloadFailedError = true
+                if let self = self {
+                    await MainActor.run {
+                        if error == .insufficientSpace {
+                            self.showStorageError = true
+                        } else {
+                            self.showDownloadFailedError = true
+                        }
                     }
                 }
             } catch {
-                await MainActor.run { self?.showDownloadFailedError = true }
+                if let self = self {
+                    await MainActor.run { self.showDownloadFailedError = true }
+                }
             }
         }
         
