@@ -29,10 +29,12 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:app-four.xctestplan"
-            default = "YES">
+            default = "YES"
+            reference = "container:app-four.xctestplan">
          </TestPlanReference>
       </TestPlans>
+      <Testables>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"

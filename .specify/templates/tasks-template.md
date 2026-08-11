@@ -13,11 +13,21 @@ description: "Task list template for feature implementation"
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
-## Format: `[ID] [P?] [Story] Description`
+## Format for Each Task
+
+<!--
+  ACTION REQUIRED: Do not write single-line tasks. Every task MUST use the multi-line 
+  format below to explicitly define the exact actions, dependencies, and validation.
+-->
+
+- [ ] `[ID]` `[P?]` `[Story]` **[Brief Title]**
+  - **File:** `[Exact file path to be created or modified]`
+  - **Action:** `[Deeply explain exactly what logic, function, or struct is being modified/created. Detail the API surface and variables.]`
+  - **Dependencies:** `[List task IDs that must be completed before this one]`
+  - **Validation:** `[Explain how this specific task will be verified (e.g., specific #expect assertions)]`
 
 - **[P]**: Can run in parallel (different files, no dependencies)
 - **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
-- Include exact file paths in descriptions
 
 ## Path Conventions
 
@@ -89,12 +99,23 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Implementation for User Story 1
 
-- [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
-- [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
-- [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- [ ] T012 [P] [US1] Create Entity1 model
+  - **File:** `src/models/[entity1].py`
+  - **Action:** Create `Entity1` class with required properties.
+  - **Validation:** Unit test verifying default instantiation.
+- [ ] T013 [P] [US1] Create Entity2 model
+  - **File:** `src/models/[entity2].py`
+  - **Action:** Create `Entity2` class with required properties.
+  - **Validation:** Unit test verifying default instantiation.
+- [ ] T014 [US1] Implement Service
+  - **File:** `src/services/[service].py`
+  - **Action:** Implement core business logic depending on Entity1 and Entity2.
+  - **Dependencies:** T012, T013
+  - **Validation:** Integration tests covering core paths.
+- [ ] T015 [US1] Implement endpoint
+  - **File:** `src/[location]/[file].py`
+  - **Action:** Wire up routing and dependency injection for Service.
+  - **Dependencies:** T014
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 

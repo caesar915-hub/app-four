@@ -68,15 +68,32 @@
 
 [Add more user stories as needed, each with an assigned priority]
 
-### Edge Cases
+### Edge Cases & Error Handling
 
 <!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right edge cases.
+  ACTION REQUIRED: You MUST define the system's behavior for EVERY edge case listed below. 
+  Do not summarize. Provide the exact UX/UI fallback state for each error.
 -->
 
-- What happens when [boundary condition]?
-- How does system handle [error scenario]?
+#### 1. Network & Connectivity Failures
+- **Scenario:** [e.g., Device loses connection during API request]
+- **System Behavior:** [Detail exactly what the system does]
+- **User Experience (UX):** [Detail exactly what the user sees]
+
+#### 2. Data Validation & Bad Input
+- **Scenario:** [e.g., User inputs malformed data or empty fields]
+- **System Behavior:** [...]
+- **User Experience (UX):** [...]
+
+#### 3. State Restoration & Interruptions
+- **Scenario:** [e.g., App is backgrounded or crashes mid-task]
+- **System Behavior:** [...]
+- **User Experience (UX):** [...]
+
+#### 4. Hardware/Permission Denials
+- **Scenario:** [e.g., User denies camera/microphone permission]
+- **System Behavior:** [...]
+- **User Experience (UX):** [...]
 
 ## Requirements *(mandatory)*
 

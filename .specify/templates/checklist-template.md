@@ -22,9 +22,18 @@
 
 ## [Category 1]
 
-- [ ] CHK001 First checklist item with clear action
-- [ ] CHK002 Second checklist item
-- [ ] CHK003 Third checklist item
+<!--
+  ACTION REQUIRED: Each checklist item MUST NOT be generic. It must provide a 
+  specific, measurable verification step. Use the format below.
+-->
+
+- [ ] **CHK001** [Specific component/feature to check]
+  - **Verification:** [Exact steps to verify this, e.g., "Tap the X button and confirm Y appears"]
+  - **Expected Result:** [What the system state should be after the action]
+
+- [ ] **CHK002** [Second specific check]
+  - **Verification:** [...]
+  - **Expected Result:** [...]
 
 ## [Category 2]
 

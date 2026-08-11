@@ -1,13 +1,40 @@
 {
-  "originHash" : "eff0abff25a2f53461aaf03aefa8fc8ab8d54a0c27544845ea8ca1bbc9e2a066",
+  "originHash" : "199505dbb33d7f0f8bc122af20b3e01e596f6a6cc4c9444a87507d7de7471adc",
   "pins" : [
     {
       "identity" : "eventsource",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mattt/EventSource.git",
       "state" : {
-        "revision" : "a3a85a85214caf642abaa96ae664e4c772a59f6e",
-        "version" : "1.4.1"
+        "revision" : "e146002f57ea2abbf4803cb58c22a7b5d20395c6",
+        "version" : "1.4.2"
+      }
+    },
+    {
+      "identity" : "gzipswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/1024jp/GzipSwift",
+      "state" : {
+        "revision" : "731037f6cc2be2ec01562f6597c1d0aa3fe6fd05",
+        "version" : "6.0.1"
+      }
+    },
+    {
+      "identity" : "mlx-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ml-explore/mlx-swift",
+      "state" : {
+        "revision" : "072b684acaae80b6a463abab3a103732f33774bf",
+        "version" : "0.29.1"
+      }
+    },
+    {
+      "identity" : "mlx-swift-examples",
+      "kind" : "localSourceControl",
+      "location" : "/Users/caesargrey/Projects/app-four-llama/Packages/mlx-swift-examples",
+      "state" : {
+        "revision" : "b8251c9dfb199f1123ca73cacf1cfd845cf98b08",
+        "version" : "2.29.2"
       }
     },
     {
@@ -24,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-asn1.git",
       "state" : {
-        "revision" : "eb50cbd14606a9161cbc5d452f18797c90ef0bab",
-        "version" : "1.7.0"
+        "revision" : "a9a5efd40eaf558a2bcd48d64b1d1646be686008",
+        "version" : "1.7.1"
       }
     },
     {
@@ -51,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "1b6b2e274e85105bfa155183145a1dcfd63331f1",
-        "version" : "4.5.0"
+        "revision" : "47d3869a7291f085c1fb9fb1e6d3b97a793f45c6",
+        "version" : "4.5.1"
       }
     },
     {
@@ -69,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/huggingface/swift-jinja.git",
       "state" : {
-        "revision" : "0b67ecb79139f6addef8699eff3622808aa6c7dc",
-        "version" : "2.3.6"
+        "revision" : "7d0b8880ef8e567dd4e0089f8b99fb354129017c",
+        "version" : "2.4.2"
       }
     },
     {
@@ -78,8 +105,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "57c0a08a331aaea9f5d7a932ad94ef43be942a95",
-        "version" : "2.100.0"
+        "revision" : "0b18836bd8b0162e7e17a995a3fbee20ed8f3b2b",
+        "version" : "2.101.3"
+      }
+    },
+    {
+      "identity" : "swift-numerics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-numerics",
+      "state" : {
+        "revision" : "0c0290ff6b24942dadb83a929ffaaa1481df04a2",
+        "version" : "1.1.1"
       }
     },
     {
@@ -87,8 +123,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-system.git",
       "state" : {
-        "revision" : "7502b711c92a17741fa625d722b0ccbd595d8ed1",
-        "version" : "1.7.2"
+        "revision" : "704705c5c51156ede21172a38654d522ce487074",
+        "version" : "1.8.0"
       }
     },
     {

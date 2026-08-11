@@ -8,11 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		03B9F8A9D4C01418AF2D2089 /* SquirlSignals in Frameworks */ = {isa = PBXBuildFile; productRef = 7A34C43D19993F90A188D010 /* SquirlSignals */; };
+		12F6E2AFB0B1C71A87B7DB2E /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = 80B9330881E008D27B87336D /* MLXLLM */; };
 		370F53EA2FC3975500504F1C /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = 370F529D2FC2046C00504F1C /* WhisperKit */; };
 		3724CFB42FC9D79A00427F48 /* Tokenizers in Frameworks */ = {isa = PBXBuildFile; productRef = 3724CFB32FC9D79A00427F48 /* Tokenizers */; };
+		3724CFB42FC9D79A00427F49 /* Hub in Frameworks */ = {isa = PBXBuildFile; productRef = 3724CFB32FC9D79A00427F49 /* Hub */; };
+		652DDCF4BCD7DAFF8AA8E314 /* MLXNN in Frameworks */ = {isa = PBXBuildFile; productRef = BA25EA184963B62F8EC3C136 /* MLXNN */; };
+		770F1DF603B78E0B919C9BD8 /* OrderedCollections in Frameworks */ = {isa = PBXBuildFile; productRef = D7BBF6E30C328D9067BB5096 /* OrderedCollections */; };
+		7F5E1A2879DF197F7C3B3D09 /* MLX in Frameworks */ = {isa = PBXBuildFile; productRef = 509DE3E423539E63296E355E /* MLX */; };
+		89F3B632E312A6FC0EA8D895 /* MLXRandom in Frameworks */ = {isa = PBXBuildFile; productRef = 7FAB8E7F5609EB652B23C655 /* MLXRandom */; };
 		91528C3C914425C0946CF89F /* SquirlDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8C35CE4B4793A1A8BAC706 /* SquirlDesignSystem */; };
 		99A8DD6F712ED882A9CCCFFA /* SquirlSignals in Frameworks */ = {isa = PBXBuildFile; productRef = AC13466A421DCDB2A4BCB3C5 /* SquirlSignals */; };
 		9CFF548080164D58F7E0D35A /* SquirlDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 90059C596F1B493FEBD81C9B /* SquirlDesignSystem */; };
+		F3839BD74FA7AFBB55B2A810 /* HuggingFace in Frameworks */ = {isa = PBXBuildFile; productRef = EC864C841CD6FADFBDCB6ECA /* HuggingFace */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +52,8 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3724CF872FC9292700427F48 /* app-fourTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = "app-fourTests";
 			sourceTree = "<group>";
 		};
@@ -73,9 +82,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				3724CFB42FC9D79A00427F48 /* Tokenizers in Frameworks */,
+				3724CFB42FC9D79A00427F49 /* Hub in Frameworks */,
 				370F53EA2FC3975500504F1C /* WhisperKit in Frameworks */,
 				03B9F8A9D4C01418AF2D2089 /* SquirlSignals in Frameworks */,
 				91528C3C914425C0946CF89F /* SquirlDesignSystem in Frameworks */,
+				7F5E1A2879DF197F7C3B3D09 /* MLX in Frameworks */,
+				652DDCF4BCD7DAFF8AA8E314 /* MLXNN in Frameworks */,
+				89F3B632E312A6FC0EA8D895 /* MLXRandom in Frameworks */,
+				12F6E2AFB0B1C71A87B7DB2E /* MLXLLM in Frameworks */,
+				770F1DF603B78E0B919C9BD8 /* OrderedCollections in Frameworks */,
+				F3839BD74FA7AFBB55B2A810 /* HuggingFace in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,8 +181,15 @@
 			packageProductDependencies = (
 				370F529D2FC2046C00504F1C /* WhisperKit */,
 				3724CFB32FC9D79A00427F48 /* Tokenizers */,
+				3724CFB32FC9D79A00427F49 /* Hub */,
 				7A34C43D19993F90A188D010 /* SquirlSignals */,
 				3F8C35CE4B4793A1A8BAC706 /* SquirlDesignSystem */,
+				509DE3E423539E63296E355E /* MLX */,
+				BA25EA184963B62F8EC3C136 /* MLXNN */,
+				7FAB8E7F5609EB652B23C655 /* MLXRandom */,
+				80B9330881E008D27B87336D /* MLXLLM */,
+				D7BBF6E30C328D9067BB5096 /* OrderedCollections */,
+				EC864C841CD6FADFBDCB6ECA /* HuggingFace */,
 			);
 			productName = "app-four";
 			productReference = 37F17B2A2FC0CE4F00CAC42E /* app-four.app */;
@@ -203,8 +226,12 @@
 			packageReferences = (
 				370F529C2FC2046C00504F1C /* XCRemoteSwiftPackageReference "WhisperKit" */,
 				3724CFB22FC9D3EC00427F48 /* XCRemoteSwiftPackageReference "swift-transformers" */,
-				EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */,
-				4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */,
+				5638591163E5BF5AC46DD98E /* XCRemoteSwiftPackageReference "mlx-swift" */,
+				97FE35B9200A6C415121059D /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
+				7010BCE5AEABE02169EAF6BA /* XCRemoteSwiftPackageReference "swift-collections" */,
+				EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "SquirlSignals" */,
+				4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "SquirlDesignSystem" */,
+				383BE6B7D2C1580D95E2904D /* XCRemoteSwiftPackageReference "swift-huggingface" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 37F17B2B2FC0CE4F00CAC42E /* Products */;
@@ -787,11 +814,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */ = {
+		4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "SquirlDesignSystem" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/SquirlDesignSystem;
 		};
-		EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */ = {
+		EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "SquirlSignals" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/SquirlSignals;
 		};
@@ -814,6 +841,38 @@
 				minimumVersion = 1.3.3;
 			};
 		};
+		383BE6B7D2C1580D95E2904D /* XCRemoteSwiftPackageReference "swift-huggingface" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/huggingface/swift-huggingface.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.0;
+			};
+		};
+		5638591163E5BF5AC46DD98E /* XCRemoteSwiftPackageReference "mlx-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ml-explore/mlx-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.29.1;
+			};
+		};
+		7010BCE5AEABE02169EAF6BA /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.1;
+			};
+		};
+		97FE35B9200A6C415121059D /* XCRemoteSwiftPackageReference "mlx-swift-examples" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "file:///Users/caesargrey/Projects/app-four-llama/Packages/mlx-swift-examples";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.29.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -827,25 +886,61 @@
 			package = 3724CFB22FC9D3EC00427F48 /* XCRemoteSwiftPackageReference "swift-transformers" */;
 			productName = Tokenizers;
 		};
+		3724CFB32FC9D79A00427F49 /* Hub */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3724CFB22FC9D3EC00427F48 /* XCRemoteSwiftPackageReference "swift-transformers" */;
+			productName = Hub;
+		};
 		3F8C35CE4B4793A1A8BAC706 /* SquirlDesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */;
 			productName = SquirlDesignSystem;
+		};
+		509DE3E423539E63296E355E /* MLX */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5638591163E5BF5AC46DD98E /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLX;
+		};
+		58829153FB83437D634C36A1 /* HuggingFace */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 383BE6B7D2C1580D95E2904D /* XCRemoteSwiftPackageReference "swift-huggingface" */;
+			productName = HuggingFace;
 		};
 		7A34C43D19993F90A188D010 /* SquirlSignals */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */;
 			productName = SquirlSignals;
+		};
+		7FAB8E7F5609EB652B23C655 /* MLXRandom */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5638591163E5BF5AC46DD98E /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXRandom;
+		};
+		80B9330881E008D27B87336D /* MLXLLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 97FE35B9200A6C415121059D /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
+			productName = MLXLLM;
 		};
 		90059C596F1B493FEBD81C9B /* SquirlDesignSystem */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */;
 			productName = SquirlDesignSystem;
 		};
 		AC13466A421DCDB2A4BCB3C5 /* SquirlSignals */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */;
 			productName = SquirlSignals;
+		};
+		BA25EA184963B62F8EC3C136 /* MLXNN */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5638591163E5BF5AC46DD98E /* XCRemoteSwiftPackageReference "mlx-swift" */;
+			productName = MLXNN;
+		};
+		D7BBF6E30C328D9067BB5096 /* OrderedCollections */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7010BCE5AEABE02169EAF6BA /* XCRemoteSwiftPackageReference "swift-collections" */;
+			productName = OrderedCollections;
+		};
+		EC864C841CD6FADFBDCB6ECA /* HuggingFace */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 383BE6B7D2C1580D95E2904D /* XCRemoteSwiftPackageReference "swift-huggingface" */;
+			productName = HuggingFace;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

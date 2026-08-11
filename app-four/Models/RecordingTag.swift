@@ -5,6 +5,7 @@ enum TagSource: String, Codable {
     case nlp
     case user
     case userCorrected
+    case llm
 }
 
 enum TagCategory: String, Codable {

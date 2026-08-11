@@ -24,7 +24,7 @@ enum AppDependencies {
     /// Owns the expedited dose write (030); consumed only by `LogDefaultDoseIntent`,
     /// never by the in-app Log Dose sheet (clarification Option A).
     static let doseLogService: any DoseLogService = DoseLogServiceImpl()
-    static let summarizationService: SummarizationService = NLSummarizationService()
+    static let summarizationService: SummarizationService = MLXJournalService()
     static let connectivity: Connectivity = NetworkConnectivity()
     static let pendingTranscriptionService: PendingTranscriptionService = PendingTranscriptionServiceImpl(
         store: store,
