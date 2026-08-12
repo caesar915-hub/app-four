@@ -119,7 +119,7 @@ When JSON parsing fails entirely (all 3 recovery stages exhausted), the pipeline
 **Acceptance Scenarios**:
 
 1. **Given** Llama output is completely unparseable garbage, **When** `summarize()` completes, **Then** `SummaryResult` contains `rawTranscript` as a single bullet, all signal fields nil, and `summaryStatus = .completed`.
-2. **Given** `os_proc_available_memory()` reports < 200 MB, **When** `summarize()` is called, **Then** extraction aborts before loading weights, raw transcript is preserved, and the app does not crash.
+2. **Given** `os_proc_available_memory()` reports < 200 MB, **When** `summarize()` is called, **Then** extraction aborts before loading weights, the UI shows a "Not enough memory" alert, the raw transcript is preserved, and the app does not crash.
 
 ---
 
@@ -210,7 +210,7 @@ When JSON parsing fails entirely (all 3 recovery stages exhausted), the pipeline
 
 - **FR-EXT-16**: If JSON parsing entirely fails, `summarize()` MUST return a `SummaryResult` with only the raw transcript as a single bullet, all signals nil. **The app MUST never crash.**
 
-- **FR-EXT-17**: If `os_proc_available_memory()` reports < 200 MB before or during inference, generation MUST abort. Raw transcript is preserved. Equivalent to parse failure from the UI's perspective.
+- **FR-EXT-17**: If `os_proc_available_memory()` reports < 200 MB before or during inference, generation MUST abort and the UI MUST show a "Not enough memory" alert. Raw transcript is preserved. Equivalent to parse failure from the persistence perspective.
 
 ### Key Entities
 

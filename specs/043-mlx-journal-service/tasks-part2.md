@@ -570,3 +570,26 @@ T103 (UnifiedExtraction) → T109 (parseExtraction) → T123 (validate) → T127
 - `validate()` is a pure function: input → output, no side effects, no state mutation
 - All validation uses `Set` for O(1) lookups (mood/energy/focus/sleep/emotions sets)
 - `MedicationExtraction` → `MedEvent` mapping uses only the fields present in both types; `time`, `timeLabel`, `quantity`, `change`, `durationHours` default to nil (resolved later by `Recording.setMedicationEvents()`)
+
+---
+
+## Phase 9: User Story 7 — Memory Headroom Alert (Priority: P0)
+
+**Goal**: Handle insufficient memory (< 200 MB) by aborting generation, preserving the transcript (fallback result), and alerting the UI.
+
+### Tests for User Story 7 (test-first · RED — MANDATORY) ⚠️
+
+- [x] `T143` `[P]` `[US7]` **RED — Test: ProcessingViewModel handles insufficientMemory**
+  - **File:** `app-fourTests/ViewModels/ProcessingViewModelTests.swift` (create or update)
+  - **Action:** Add a test verifying that when `SummarizationService` throws `SummarizationError.insufficientMemory`, the `ProcessingViewModel` catches it, sets `showMemoryError = true`, and successfully applies a fallback summary (transcript only) so `recording.summaryStatus == .completed`.
+  - **Validation:** Test compiles but **FAILS**.
+
+### Implementation for User Story 7
+
+- [x] `T144` `[US7]` **GREEN — Implement insufficientMemory error and UI state**
+  - **File:** `app-four/Services/Protocols.swift`, `app-four/ViewModels/ProcessingViewModel.swift`, `app-four/Services/MLXJournalService.swift`
+  - **Action:** 
+    1. Add `case insufficientMemory` to `SummarizationError`.
+    2. In `MLXJournalService`, throw `.insufficientMemory` instead of `.modelNotInstalled` when `checkMemoryHeadroom` fails.
+    3. In `ProcessingViewModel`, add `var showMemoryError: Bool = false`. Catch `SummarizationError.insufficientMemory`, set `showMemoryError = true`, generate a fallback `SummaryResult` using the raw transcript, and apply it to the recording (setting `summaryStatus = .completed`).
+  - **Validation:** T143 turns **GREEN**.

@@ -59,7 +59,7 @@ The review sheet presents six structured signal cards: When (date/time pickers),
 
 1. **Given** the review sheet is open, **When** the user views the **When** card, **Then** Date and Time `DatePicker`s are shown, bounded by `in: ...Date()` — future dates/times cannot be set.
 2. **Given** the review sheet is open, **When** the user views the **Signals** card, **Then** three `GlyphRampPicker` rows (Mood, Energy, Focus) are shown, each with 5 levels and a current-value line.
-3. **Given** the review sheet is open, **When** the user views the **Sleep** card, **Then** 5 `SleepLevel` chips (toggle) and duration presets (2, 4, 6, 8, 10 h) plus a custom field are shown. Entering `"7,5"` in the custom field normalises to `7.5`.
+3. **Given** the review sheet is open, **When** the user views the **Sleep** card, **Then** 5 `SleepLevel` chips (toggle) and duration presets (2, 4, 6, 8, 10 h) plus a custom field are shown. Entering `"7,5"` in the custom field normalises to `7.5` upon save submission.
 4. **Given** the review sheet is open with a detected medication "Vyvanse", **When** the user views the **Medications** card, **Then** a section for "Vyvanse" appears with Taken/Missed toggle, catalog dose chips, read-only time, and editable duration.
 5. **Given** the review sheet is open, **When** the user views the **Emotions** card, **Then** exactly 20 chips appear in "Pleasant" and "Unpleasant" groups (5 per quadrant × 4 quadrants).
 6. **Given** the review sheet is open, **When** the user views the **Side effects** card, **Then** exactly 15 chips appear: dry mouth, headache, nausea, appetite gone, insomnia, jittery, heart racing, stomach ache, dizzy, irritable, rebound, crash, sweating, grinding teeth, flat affect.
@@ -122,7 +122,7 @@ On Save, the `noteExtraction` JSON is rebuilt from the edited scalar values. Thi
 
 #### 2. Data Validation & Bad Input
 - **Scenario:** User enters `"7,5"` in the custom sleep duration field (comma decimal separator).
-- **System Behavior:** Comma→dot normalisation converts the input to `7.5`.
+- **System Behavior:** Comma→dot normalisation converts the input to `7.5` upon save submission.
 - **User Experience (UX):** The normalised value is displayed and persisted correctly.
 
 #### 3. State Restoration & Interruptions
@@ -152,7 +152,7 @@ On Save, the `noteExtraction` JSON is rebuilt from the edited scalar values. Thi
   |---|---|---|
   | **When** | Date + Time `DatePicker`s | Bounded `in: ...Date()` — future dates/times cannot be set |
   | **Signals** | Three `GlyphRampPicker` rows: Mood, Energy, Focus | Each shows 5 levels with current-value line |
-  | **Sleep** | 5 `SleepLevel` chips (toggle) + duration presets 2/4/6/8/10 h + custom field | Custom field: comma→dot normalisation |
+  | **Sleep** | 5 `SleepLevel` chips (toggle) + duration presets 2/4/6/8/10 h + custom field | Custom field: comma→dot normalisation on save |
   | **Medications** | Taken/Missed toggle, catalog dose chips, read-only time, editable duration | One section per detected medication |
   | **Emotions** | 20 chips in "Pleasant" / "Unpleasant" groups | Exactly the 20 curated emotions |
   | **Side effects** | 15 hard-coded chips | dry mouth, headache, nausea, appetite gone, insomnia, jittery, heart racing, stomach ache, dizzy, irritable, rebound, crash, sweating, grinding teeth, flat affect |
@@ -236,7 +236,7 @@ On Save, the `noteExtraction` JSON is rebuilt from the edited scalar values. Thi
 - **SC-004**: Cancel with incomplete extraction sets `summaryStatus = .failed` — verified by unit test asserting status change on cancel.
 - **SC-005**: The sheet is reachable only from the pencil button on `RecordingDetailView` — there is no automatic review prompt — verified by UI audit confirming no other entry points.
 - **SC-006**: `noteExtraction` JSON is rebuilt from edited scalars on save — JSON never disagrees with scalar columns — verified by comparing JSON and column values post-save.
-- **SC-007**: Comma→dot normalisation works for custom sleep duration input — verified by entering `"7,5"` and asserting persistence of `7.5`.
+- **SC-007**: Comma→dot normalisation works for custom sleep duration input — verified by entering `"7,5"`, tapping Save, and asserting persistence of `7.5`.
 - **SC-008**: User-set non-empty trimmed title always wins over the generated title — verified by unit test.
 
 ## Assumptions

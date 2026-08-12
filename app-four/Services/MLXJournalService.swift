@@ -84,7 +84,7 @@ nonisolated struct MLXJournalService: SummarizationService {
             
             guard MLXJournalService.checkMemoryHeadroom() else {
                 os_log(.error, "Insufficient memory to load MLX model")
-                throw SummarizationError.modelNotInstalled
+                throw SummarizationError.insufficientMemory
             }
             
             let config = LLMRegistry.llama3_2_1B_4bit

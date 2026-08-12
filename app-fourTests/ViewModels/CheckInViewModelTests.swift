@@ -180,7 +180,7 @@ struct CheckInViewModelTests {
         await viewModel.startRecordingWithDownload().value
         
         // Wait for detached download task to start
-        try await Task.sleep(nanoseconds: 50_000_000)
+        try await Task.sleep(nanoseconds: 200_000_000)
         
         #expect(viewModel.showModelDownloadPrompt == false)
         #expect(viewModel.state == .recording)

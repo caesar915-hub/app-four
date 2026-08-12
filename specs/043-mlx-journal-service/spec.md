@@ -61,7 +61,7 @@ The system prompt is constructed at runtime by injecting representative ADHD voc
 
 ### User Story 4 — Memory lifecycle and peak shaving (Priority: P2)
 
-Llama 3.2 1B weights (~0.74 GB unified memory) are loaded **only after Whisper has been unloaded** (peak shaving). Memory headroom is checked via `os_proc_available_memory()` before loading. If headroom < 200 MB, extraction aborts gracefully.
+Llama 3.2 1B weights (~0.74 GB unified memory) are loaded **only after Whisper has been unloaded** (peak shaving). Memory headroom is checked via `os_proc_available_memory()` before loading. If headroom < 200 MB, extraction aborts gracefully and the UI displays a "Not enough memory" alert/toast.
 
 **Why this priority**: Without memory management, the app will crash on lower-RAM devices (6 GB iPhone 12 Pro). This is critical for stability but sits below core extraction in priority because it's a guardrail around the main flow.
 
@@ -70,14 +70,14 @@ Llama 3.2 1B weights (~0.74 GB unified memory) are loaded **only after Whisper h
 **Acceptance Scenarios**:
 
 1. **Given** Whisper has been unloaded and `os_proc_available_memory()` returns ≥ 200 MB, **When** `summarize()` is called, **Then** Llama weights are loaded and inference proceeds.
-2. **Given** `os_proc_available_memory()` returns < 200 MB, **When** `summarize()` is called, **Then** extraction aborts gracefully (returns raw transcript with no structured signals), and the app does not crash.
+2. **Given** `os_proc_available_memory()` returns < 200 MB, **When** `summarize()` is called, **Then** extraction aborts gracefully, the UI shows a "Not enough memory" alert, the raw transcript is preserved, and the app does not crash.
 3. **Given** the model was loaded for a previous extraction, **When** `summarize()` is called again, **Then** the model is reused (no reload), unless memory pressure has forced unloading.
 
 ---
 
 ### User Story 5 — Cold start lazy loading (Priority: P2)
 
-Llama weights are loaded on first extraction, not at app launch. This avoids blocking launch time and unnecessary memory consumption for users who haven't started a check-in.
+Llama weights are downloaded from HuggingFace Hub (if not already cached) and loaded into memory on first extraction, not at app launch. This avoids blocking launch time and unnecessary memory consumption for users who haven't started a check-in.
 
 **Why this priority**: Important for app launch performance but not a prerequisite for extraction correctness.
 
@@ -86,16 +86,17 @@ Llama weights are loaded on first extraction, not at app launch. This avoids blo
 **Acceptance Scenarios**:
 
 1. **Given** the app has just launched, **When** no check-in has been triggered, **Then** Llama weights are not in memory.
-2. **Given** this is the user's first check-in this session, **When** extraction begins, **Then** weights are loaded on-demand before inference.
+2. **Given** this is the user's first check-in ever, **When** extraction begins, **Then** weights are downloaded from HuggingFace Hub with a visible progress indicator, and then loaded before inference.
+3. **Given** this is the user's first check-in this session (but weights are cached), **When** extraction begins, **Then** weights are loaded from disk into memory before inference.
 
 ---
 
 ### Edge Cases & Error Handling
 
 #### 1. Network & Connectivity Failures
-- **Scenario:** Not applicable — extraction is 100% on-device with zero network calls (FR-EXT-01).
+- **Scenario:** Not applicable for inference — inference is 100% on-device. However, the initial model weights download requires a network connection.
 - **System Behavior:** No network dependency exists.
-- **User Experience (UX):** No change; works in airplane mode.
+- **User Experience (UX):** Model download fails gracefully and user can retry. Once downloaded, inference works in airplane mode.
 
 #### 2. Data Validation & Bad Input
 - **Scenario:** Empty transcript is passed to the service.
@@ -104,13 +105,13 @@ Llama weights are loaded on first extraction, not at app launch. This avoids blo
 
 #### 3. State Restoration & Interruptions
 - **Scenario:** App is backgrounded or terminated mid-inference.
-- **System Behavior:** The inference task is cancelled. `PendingTranscriptionServiceImpl` picks up the transcript on next launch and retries extraction.
+- **System Behavior:** The inference task is cancelled via a background task expiration handler. `PendingTranscriptionServiceImpl` picks up the transcript on next launch and retries extraction.
 - **User Experience (UX):** User sees "Processing…" on the recording entry; extraction completes on next app launch.
 
 #### 4. Memory Pressure During Inference
 - **Scenario:** System memory pressure rises while the model is loaded.
 - **System Behavior:** If memory drops below threshold before loading, extraction aborts. If pressure rises during inference, the system relies on iOS memory management; the worst case is the OS terminating the extension, after which `PendingTranscriptionServiceImpl` retries.
-- **User Experience (UX):** User sees the recording preserved with raw transcript but no structured signals.
+- **User Experience (UX):** User sees a "Not enough memory" alert/toast, and the recording is preserved with raw transcript but no structured signals.
 
 #### 5. Semantic Ambiguity
 - **Scenario:** Transcript contains "energy drink" (not an energy level signal) or negation ("I'm not feeling great").
@@ -121,17 +122,18 @@ Llama weights are loaded on first extraction, not at app launch. This avoids blo
 
 ### Functional Requirements
 
-- **FR-EXT-01**: System MUST perform 100% on-device LLM extraction using Llama 3.2 1B (4-bit quantized) via MLX-Swift. Zero network calls. Inference runs on a background actor/queue.
+- **FR-EXT-01**: System MUST perform 100% on-device LLM extraction using Llama 3.2 1B (4-bit quantized) via MLX-Swift. The model weights MUST be downloaded on demand from HuggingFace Hub. Inference itself requires zero network calls and runs on a background actor/queue.
 - **FR-EXT-02**: `MLXJournalService` MUST conform to `SummarizationService` protocol, implementing `func summarize(rawTranscription: String) async throws -> SummaryResult`. Callers are unaware of the extraction backend.
 - **FR-EXT-03**: System MUST load `lexicon.json` (718 entries, 27 categories) via `LexiconLoader.loadBundled()` at initialisation for (a) building the system prompt and (b) populating validation allowlists.
 - **FR-EXT-04**: System MUST use a single unified prompt schema — the entire raw transcript (up to ~1,600 tokens) is passed to one system prompt. No word-count routing or prompt switching.
 - **FR-EXT-05**: The system prompt MUST (1) instruct ONLY JSON output with no surrounding text or markdown, (2) enumerate exact `Levels.swift` signal labels, (3) include representative ADHD vocabulary from each lexicon tier, (4) include the full medication list with slang and misspellings, (5) include 3 few-shot examples (Short, Journal, Hybrid).
-- **FR-EXT-06**: Llama weights (~0.74 GB) MUST load **only after Whisper unload**. `os_proc_available_memory()` MUST be checked before loading; if headroom < 200 MB, extraction aborts gracefully (raw transcript preserved, no crash).
-- **FR-EXT-07**: Llama weights MUST be loaded lazily on first extraction, not at app launch. Subsequent extractions reuse the loaded model.
+- **FR-EXT-06**: Llama weights (~0.74 GB) MUST load **only after Whisper unload**. `os_proc_available_memory()` MUST be checked before loading; if headroom < 200 MB, extraction aborts gracefully (UI shows "Not enough memory", raw transcript preserved, no crash).
+- **FR-EXT-07**: Llama weights MUST be downloaded from HuggingFace (if not cached) and loaded lazily on first extraction, not at app launch. A background task expiration handler MUST be used to cancel inference if the app is backgrounded.
 - **FR-EXT-08**: Expected output latency is 5–15 seconds on A14 Bionic (15–30 tokens/sec). The UI MUST show "Synthesizing your journal…" with a shimmer overlay during inference (managed by `ProcessingViewModel`).
 
 ### Key Entities
 
+- **`SquirlLLM`** (Swift Package): A new local Swift package that encapsulates the MLX-Swift dependency and C++ bridging overhead, isolating it from the main `app-four` target.
 - **`MLXJournalService`**: New service class replacing `NLSummarizationService` / `NLNoteExtractor` / `CueMatcher`. Conforms to `SummarizationService`. Loads the lexicon, builds the prompt, invokes MLX-Swift inference, and returns raw JSON to the validation layer (Part 2).
 - **`SummarizationService`** (protocol): Existing integration boundary. Defines `summarize(rawTranscription:) async throws -> SummaryResult`. Unchanged.
 - **`SummaryResult`**: Existing return type containing structured signals (mood, energy, focus, sleep, medications, topics, summary, emotions). Unchanged.

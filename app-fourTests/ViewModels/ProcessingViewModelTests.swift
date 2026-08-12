@@ -99,4 +99,26 @@ struct ProcessingViewModelTests {
 
         #expect(store.recordings.isEmpty)
     }
+
+    // MARK: US7 — Memory Headroom Alert
+
+    @Test func pipelineHandlesInsufficientMemory() async throws {
+        await mockSummarizationService.setShouldThrowInsufficientMemory(true)
+        let recording = Recording(audioFileName: "mem.m4a", title: "Memory Test")
+        store.addRecording(recording)
+
+        let task = viewModel.processRawTranscription(
+            "Some transcript",
+            duration: 10,
+            language: nil,
+            audioFileName: "mem.m4a"
+        )
+        await task.value
+
+        let r = try #require(store.recordings.first { $0.audioFileName == "mem.m4a" })
+        #expect(viewModel.showMemoryError == true)
+        #expect(r.summaryStatus == SummaryStatus.completed.rawValue)
+        // Fallback result has no signals, just transcript as bullet.
+        #expect(r.decodedNoteExtraction == nil || (r.mood == nil && r.energyLevel == nil))
+    }
 }
