@@ -5,13 +5,11 @@ struct RecordingDetailView: View {
     @State private var viewModel: RecordingDetailViewModel
 
     @State private var editViewModel: ExtractionReviewViewModel?
-    @State private var isTranscriptExpanded = false
     @State private var pendingDelete = false
     @State private var showDeleteConfirm = false
     @Environment(\.dismiss) private var dismiss
     @Environment(RecordingStore.self) private var store
     @Environment(AppServices.self) private var services
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     init(recording: Recording, store: RecordingStore, services: AppServices) {
         self.recording = recording
@@ -28,6 +26,7 @@ struct RecordingDetailView: View {
                 titleBlock
                 if hasSignals { signalHeroStrip }
                 ADHDSummarySection(recording: viewModel.recording)
+                if hasSummary { summaryCard }
                 transcriptSection
                 audioCard
                 deleteButton
@@ -184,30 +183,44 @@ struct RecordingDetailView: View {
             .foregroundStyle(NewLook.inkPrimary)
     }
 
+    // MARK: - Summary (Llama bullets — surfaced per the 043 detail redesign)
+
+    private var hasSummary: Bool {
+        !viewModel.recording.summaryBullets.isEmpty
+    }
+
+    /// The on-device model's second-person read-back of the check-in. Sits in
+    /// the transcript's old slot; the full transcript follows, always expanded.
+    private var summaryCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            cardHeader("Summary")
+            VStack(alignment: .leading, spacing: Spacing.s) {
+                ForEach(viewModel.recording.summaryBullets, id: \.self) { bullet in
+                    Text(bullet)
+                        .font(Typography.body)
+                        .foregroundStyle(NewLook.inkPrimary)
+                        .lineSpacing(4)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Label("Written by on-device AI from your voice — tap Edit to correct", systemImage: "sparkles")
+                .font(Typography.caption)
+                .foregroundStyle(NewLook.inkSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .newLookCard()
+    }
+
     // MARK: - Transcript
 
     @ViewBuilder
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: Spacing.m) {
-            Button {
-                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
-                    isTranscriptExpanded.toggle()
-                }
-            } label: {
-                HStack {
-                    cardHeader("Transcript")
-                    Spacer()
-                    transcriptionStatusPill
-                    Image(systemName: "chevron.down")
-                        .font(Typography.caption)
-                        .foregroundStyle(NewLook.inkSecondary)
-                        .rotationEffect(.degrees(isTranscriptExpanded ? 180 : 0))
-                        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: isTranscriptExpanded)
-                        .accessibilityHidden(true)
-                }
+            HStack {
+                cardHeader("Transcript")
+                Spacer()
+                transcriptionStatusPill
             }
-            .buttonStyle(.plain)
-            .accessibilityHint(isTranscriptExpanded ? "Collapse transcript" : "Expand transcript")
 
             if viewModel.recording.status == .failed {
                 Button("Retry transcription") {
@@ -216,25 +229,23 @@ struct RecordingDetailView: View {
                 .buttonStyle(.secondary)
             }
 
-            if isTranscriptExpanded {
-                if viewModel.recording.status == .transcribing {
-                    HStack(spacing: Spacing.s) {
-                        ProgressView().scaleEffect(0.8)
-                        Text("Transcribing…")
-                            .font(Typography.body)
-                            .foregroundStyle(NewLook.inkSecondary)
-                    }
-                    .padding(.vertical, Spacing.s)
-                } else if viewModel.recording.fullTranscriptText.isEmpty {
-                    Text("No transcript available yet.")
+            if viewModel.recording.status == .transcribing {
+                HStack(spacing: Spacing.s) {
+                    ProgressView().scaleEffect(0.8)
+                    Text("Transcribing…")
                         .font(Typography.body)
                         .foregroundStyle(NewLook.inkSecondary)
-                } else {
-                    Text(viewModel.recording.transcriptText)
-                        .font(Typography.body)
-                        .foregroundStyle(NewLook.inkPrimary)
-                        .lineSpacing(4)
                 }
+                .padding(.vertical, Spacing.s)
+            } else if viewModel.recording.fullTranscriptText.isEmpty {
+                Text("No transcript available yet.")
+                    .font(Typography.body)
+                    .foregroundStyle(NewLook.inkSecondary)
+            } else {
+                Text(viewModel.recording.transcriptText)
+                    .font(Typography.body)
+                    .foregroundStyle(NewLook.inkPrimary)
+                    .lineSpacing(4)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
