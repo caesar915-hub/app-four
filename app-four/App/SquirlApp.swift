@@ -157,12 +157,17 @@ private struct RootContainerView: View {
         guard !downloadKicked else { return }
         downloadKicked = true
 
+        // Whisper first (transcription unblocks the pending queue), then the
+        // ~740 MB Llama insights model — each with its own decline flag.
+        await downloadModelInBackgroundIfNeeded(.whisper)
+        await downloadModelInBackgroundIfNeeded(.llama)
+    }
+
+    private func downloadModelInBackgroundIfNeeded(_ type: AIModelType) async {
         let aiModelService = services.aiModelService
         let connectivity = services.connectivity
-        guard aiModelService.localPath(for: .whisper) == nil else { return }
-        guard hasCompletedOnboarding,
-              settingsQuery.first?.declinedOnboardingModelDownload != true
-        else { return }
+        guard aiModelService.localPath(for: type) == nil else { return }
+        guard hasCompletedOnboarding, !declinedDownload(type) else { return }
 
         if !shouldStartDownload(interface: await connectivity.currentInterface) {
             for await interface in connectivity.interfaceChanges where shouldStartDownload(interface: interface) {
@@ -171,17 +176,26 @@ private struct RootContainerView: View {
         }
 
         // The model may have landed (or been installed elsewhere) while we waited.
-        guard aiModelService.localPath(for: .whisper) == nil else { return }
+        guard aiModelService.localPath(for: type) == nil else { return }
 
         do {
-            let progress = try await aiModelService.download(.whisper)
+            let progress = try await aiModelService.download(type)
             for try await _ in progress {}
-            // Model just landed — drain anything captured while it was downloading (US3).
-            await services.pendingTranscriptionService.drainIfModelReady()
+            if type == .whisper {
+                // Model just landed — drain anything captured while it was downloading (US3).
+                await services.pendingTranscriptionService.drainIfModelReady()
+            }
         } catch {
             // A background download failure must not surface as a first-run error
             // (FR-010); the model stays retryable from its Settings home.
-            AppLogger.log("Background model download failed: \(error)")
+            AppLogger.log("Background model download failed (\(type.rawValue)): \(error)")
+        }
+    }
+
+    private func declinedDownload(_ type: AIModelType) -> Bool {
+        switch type {
+        case .whisper: return settingsQuery.first?.declinedOnboardingModelDownload == true
+        case .llama: return settingsQuery.first?.declinedOnboardingLlamaDownload == true
         }
     }
 

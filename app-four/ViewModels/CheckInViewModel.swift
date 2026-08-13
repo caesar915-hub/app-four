@@ -84,6 +84,12 @@ final class CheckInViewModel {
         set { processingViewModel.showMemoryError = newValue }
     }
 
+    /// Same forwarding for the "insights model not installed" notice.
+    var showModelMissing: Bool {
+        get { processingViewModel.showModelMissing }
+        set { processingViewModel.showModelMissing = newValue }
+    }
+
     private var timerTask: Task<Void, Never>?
     private var levelTask: Task<Void, Never>?
     private(set) var transcriptionTask: Task<Void, Never>?

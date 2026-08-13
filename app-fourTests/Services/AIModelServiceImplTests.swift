@@ -109,4 +109,42 @@ struct AIModelServiceImplTests {
             for try await _ in stream {}
         }
     }
+
+    // MARK: - Llama model lifecycle
+
+    @Test func llamaRequiresMoreFreeSpaceThanWhisper() {
+        #expect(AIModelServiceImpl.requiredFreeSpace(for: .llama)
+                > AIModelServiceImpl.requiredFreeSpace(for: .whisper))
+    }
+
+    @Test func downloadThrowsStorageErrorForLlamaWhenTight() async throws {
+        service.freeSpaceProvider = { 200_000_000 } // fine for Whisper, too small for Llama
+        await #expect(throws: ModelDownloadFailure.insufficientSpace) {
+            let stream = try await service.download(.llama)
+            for try await _ in stream {}
+        }
+    }
+
+    @Test func localPathReturnsNilWhenLlamaDirectoryAbsent() {
+        #expect(service.localPath(for: .llama) == nil)
+    }
+
+    @Test func findLlamaModelDirectoryRequiresAllCriticalFiles() throws {
+        let base = FileManager.default.temporaryDirectory
+            .appendingPathComponent("llama-test-\(UUID().uuidString)")
+        defer { try? FileManager.default.removeItem(at: base) }
+
+        // Partial download: config only → nil.
+        let partial = base.appendingPathComponent("snapshots/abc123")
+        try FileManager.default.createDirectory(at: partial, withIntermediateDirectories: true)
+        try "{}".write(to: partial.appendingPathComponent("config.json"), atomically: true, encoding: .utf8)
+        #expect(AIModelServiceImpl.findLlamaModelDirectory(in: base) == nil)
+
+        // Complete: config + tokenizer + weights → found.
+        try "{}".write(to: partial.appendingPathComponent("tokenizer.json"), atomically: true, encoding: .utf8)
+        try Data().write(to: partial.appendingPathComponent("model.safetensors"))
+        let found = try #require(AIModelServiceImpl.findLlamaModelDirectory(in: base))
+        #expect(found.lastPathComponent == "abc123")
+        #expect(found.deletingLastPathComponent().lastPathComponent == "snapshots")
+    }
 }

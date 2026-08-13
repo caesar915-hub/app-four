@@ -80,12 +80,22 @@ nonisolated struct MLXJournalService: SummarizationService {
         func loadIfNeeded() async throws {
             guard !isLoaded else { return }
             
+            // The model's lifecycle is managed by AIModelService (onboarding /
+            // Settings / background download). Never trigger an implicit ~740 MB
+            // hub download mid-check-in — if it isn't installed, say so.
+            guard let directory = AIModelServiceImpl.findLlamaModelDirectory(
+                in: ModelConstants.llamaDownloadBase
+            ) else {
+                os_log(.error, "Llama model not installed")
+                throw SummarizationError.modelNotInstalled
+            }
+            
             guard MLXJournalService.checkMemoryHeadroom() else {
                 os_log(.error, "Insufficient memory to load MLX model")
                 throw SummarizationError.insufficientMemory
             }
             
-            let config = LLMRegistry.llama3_2_1B_4bit
+            let config = ModelConfiguration(directory: directory)
             modelContainer = try await LLMModelFactory.shared.loadContainer(configuration: config)
             
             isLoaded = true

@@ -59,4 +59,21 @@ import Testing
         // Simulate checking the state without triggering the summarization
         #expect(service.isModelLoaded == false)
     }
+    
+    // MARK: - Managed model lifecycle (044)
+    
+    /// The service must never trigger an implicit ~740 MB hub download: with no
+    /// model in the managed directory (always true in the test sandbox), a real
+    /// transcript fails fast with `modelNotInstalled`.
+    @Test func summarizeThrowsModelNotInstalledWhenModelMissing() async {
+        let service = MLXJournalService()
+        do {
+            _ = try await service.summarize(rawTranscription: "Took my Vyvanse this morning, feeling good.")
+            Issue.record("Expected SummarizationError.modelNotInstalled, but summarize succeeded")
+        } catch SummarizationError.modelNotInstalled {
+            // Expected: fail fast, no implicit hub download.
+        } catch {
+            Issue.record("Expected modelNotInstalled, got \(error)")
+        }
+    }
 }

@@ -81,6 +81,11 @@ struct CheckInView: View {
         } message: {
             Text("Squirl couldn't generate insights because your device is low on memory. Your note is saved — close some apps, then open the check-in to try again.")
         }
+        .alert("Insights Model Not Downloaded", isPresented: $viewModel.showModelMissing) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Your note is saved, but mood, energy and focus weren't extracted because the insights model isn't on this device yet. Download it from Settings › AI Models.")
+        }
     }
 
     /// Posts a VoiceOver announcement (FR-010/012). A no-op when VoiceOver is off, so it

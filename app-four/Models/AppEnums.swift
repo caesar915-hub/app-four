@@ -98,6 +98,7 @@ enum SummaryStatus: String, Codable, Sendable {
 
 enum AIModelType: String, Codable, Sendable {
     case whisper
+    case llama
 }
 
 enum DownloadStatus: String, Codable, Sendable {

@@ -1,6 +1,7 @@
 import SwiftData
 import UIKit
 import WhisperKit
+import Hub
 
 @MainActor
 final class AIModelServiceImpl: AIModelService {
@@ -48,13 +49,15 @@ final class AIModelServiceImpl: AIModelService {
                 }
                 do {
                     // Pre-flight check
-                    if let freeSpace = self.freeSpaceProvider(), freeSpace < 150_000_000 {
+                    if let freeSpace = self.freeSpaceProvider(), freeSpace < Self.requiredFreeSpace(for: type) {
                         throw ModelDownloadFailure.insufficientSpace
                     }
-                    
+
                     switch type {
                     case .whisper:
                         try await self.downloadWhisperModel { continuation.yield($0) }
+                    case .llama:
+                        try await self.downloadLlamaModel { continuation.yield($0) }
                     }
                     // A cancelled download must not write back: `metadata` may belong to a
                     // ModelContext that has already been torn down (e.g. the owning screen
@@ -119,6 +122,10 @@ final class AIModelServiceImpl: AIModelService {
             if fileManager.fileExists(atPath: ModelConstants.whisperDownloadBase.path) {
                 try fileManager.removeItem(at: ModelConstants.whisperDownloadBase)
             }
+        case .llama:
+            if fileManager.fileExists(atPath: ModelConstants.llamaDownloadBase.path) {
+                try fileManager.removeItem(at: ModelConstants.llamaDownloadBase)
+            }
         }
         metadata.isDownloaded = false
         metadata.isCorrupted = false
@@ -132,6 +139,17 @@ final class AIModelServiceImpl: AIModelService {
         switch type {
         case .whisper:
             return Self.findWhisperModelFolder(in: ModelConstants.whisperDownloadBase)
+        case .llama:
+            return Self.findLlamaModelDirectory(in: ModelConstants.llamaDownloadBase)
+        }
+    }
+
+    /// Disk headroom required before starting a download: the model payload
+    /// plus working room for partial files and unpacking.
+    nonisolated static func requiredFreeSpace(for type: AIModelType) -> Int64 {
+        switch type {
+        case .whisper: return 150_000_000      // ~150 MB
+        case .llama:  return 1_500_000_000     // ~740 MB model + slack
         }
     }
 
@@ -139,11 +157,21 @@ final class AIModelServiceImpl: AIModelService {
 
     private func ensureMetadata(for type: AIModelType) async throws -> ModelMetadata {
         if let existing = await status(for: type) { return existing }
-        let metadata = ModelMetadata(
-            modelName: "openai_whisper-small",
-            modelType: type.rawValue,
-            modelSize: 74_000_000
-        )
+        let metadata: ModelMetadata
+        switch type {
+        case .whisper:
+            metadata = ModelMetadata(
+                modelName: "openai_whisper-small",
+                modelType: type.rawValue,
+                modelSize: 74_000_000
+            )
+        case .llama:
+            metadata = ModelMetadata(
+                modelName: ModelConstants.llamaHubRepoID,
+                modelType: type.rawValue,
+                modelSize: 740_000_000
+            )
+        }
         context.insert(metadata)
         try context.save()
         return metadata
@@ -155,6 +183,41 @@ final class AIModelServiceImpl: AIModelService {
             downloadBase: ModelConstants.whisperDownloadBase,
             progressCallback: { p in progress(min(p.fractionCompleted, 0.99)) }
         )
+    }
+
+    /// Downloads the Llama snapshot into the managed base directory (HubApi cache
+    /// layout) so the app owns the model's lifecycle: settings row, delete,
+    /// progress, and a stable local path for `MLXJournalService` to load from.
+    private func downloadLlamaModel(progress: @escaping @Sendable (Double) -> Void) async throws {
+        let hub = HubApi(downloadBase: ModelConstants.llamaDownloadBase)
+        _ = try await hub.snapshot(from: ModelConstants.llamaHubRepoID) { p in
+            progress(min(p.fractionCompleted, 0.99))
+        }
+    }
+
+    /// Locates the downloaded Llama snapshot directory (the one that actually
+    /// holds the model files) inside the HubApi cache layout. Returns nil for a
+    /// missing or partial download — an incomplete directory must never be
+    /// handed to the MLX loader.
+    nonisolated static func findLlamaModelDirectory(in base: URL) -> URL? {
+        let fm = FileManager.default
+        guard let enumerator = fm.enumerator(
+            at: base,
+            includingPropertiesForKeys: [.isDirectoryKey],
+            options: [.skipsHiddenFiles]
+        ) else { return nil }
+        for case let url as URL in enumerator {
+            guard (try? url.resourceValues(forKeys: [.isDirectoryKey]).isDirectory) == true
+            else { continue }
+            let config = url.appendingPathComponent("config.json")
+            let tokenizer = url.appendingPathComponent("tokenizer.json")
+            let hasConfig = fm.fileExists(atPath: config.path)
+            let hasTokenizer = fm.fileExists(atPath: tokenizer.path)
+            let hasWeights = ((try? fm.contentsOfDirectory(atPath: url.path)) ?? [])
+                .contains { $0.hasSuffix(".safetensors") }
+            if hasConfig && hasTokenizer && hasWeights { return url }
+        }
+        return nil
     }
 
     nonisolated static func findWhisperModelFolder(in base: URL) -> URL? {

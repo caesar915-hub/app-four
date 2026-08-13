@@ -16,6 +16,15 @@ enum ModelConstants {
         FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
             .appendingPathComponent("whisperkit")
     }()
+
+    /// Base directory for the managed Llama snapshot download (HubApi layout:
+    /// `models/mlx-community/Llama-3.2-1B-Instruct-4bit/snapshots/<hash>/`).
+    nonisolated static let llamaDownloadBase: URL = {
+        FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
+            .appendingPathComponent("llama")
+    }()
+
+    nonisolated static let llamaHubRepoID = "mlx-community/Llama-3.2-1B-Instruct-4bit"
 }
 
 enum SettingsKeys {

@@ -30,11 +30,17 @@ actor MockSummarizationService: SummarizationService {
         shouldThrowInsufficientMemory = value
     }
 
+    var shouldThrowModelNotInstalled = false
+    func setShouldThrowModelNotInstalled(_ value: Bool) {
+        shouldThrowModelNotInstalled = value
+    }
+
     func setHangs(_ v: Bool) { hangs = v }
 
     func summarize(rawTranscription: String) async throws -> SummaryResult {
         if hangs { while !Task.isCancelled { await Task.yield() } }
         if shouldThrowInsufficientMemory { throw SummarizationError.insufficientMemory }
+        if shouldThrowModelNotInstalled { throw SummarizationError.modelNotInstalled }
         if shouldThrow { throw SummarizationError.inferenceFailed("Mock error") }
         return stubResult
     }
