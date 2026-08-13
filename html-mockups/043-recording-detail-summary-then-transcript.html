@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Squirl · 043 Recording Detail — summary before transcript</title>
+<style>
+  :root{
+    --sf:-apple-system,"SF Pro Text","SF Pro Display",system-ui,"Segoe UI",sans-serif;
+    --sfmono:"SF Mono",ui-monospace,Menlo,monospace;
+    --bg:#F6F1E7; --card:#FCF8EF; --elevated:#FCF8EF;
+    --ink:#221E16; --muted:#7A7361; --muted2:#615A49; --hair:#E3DAC7; --med:#7E5CA8;
+    --m1:#DA7A2A; --m2:#EDA94A; --m3:#9FCB79; --m4:#5FB36E; --m5:#2E8B57;
+    --mw1:#8E470F; --mw2:#8A5600; --mw3:#41691F; --mw4:#2C6B3B; --mw5:#1E5C38;
+    --e1:#7C6E2E; --e2:#A89236; --e3:#D2BB40; --e4:#EEDA4C; --e5:#FCEE64;
+    --f1:#44546E; --f2:#4E6F94; --f3:#5889BA; --f4:#63A4E0; --f5:#79C4FF;
+    --green:#5F8A5A;
+  }
+  [data-theme="dark"]{
+    --bg:#14130F; --card:#1E1C16; --elevated:#272419; --ink:#F3EEE0; --muted:#9A917C; --muted2:#B6AD97; --hair:#322E22; --med:#9277BE;
+    --mw1:#E89A5A; --mw2:#EDA94A; --mw3:#B7D897; --mw4:#79C98E; --mw5:#57C98A;
+    --green:#8FBC84;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:#1d1c1a;color:#EDE9DC;font-family:var(--sf);-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:18px;padding:32px 24px 70px;}
+  .topctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;max-width:860px;}
+  .topctl .lab{font-size:12px;color:#9d988a;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+  .btn{font-size:13px;font-weight:600;cursor:pointer;background:#2a2823;color:#EDE9DC;border:1px solid #3a382f;border-radius:999px;padding:8px 15px;font-family:var(--sf);}
+  .btn.on{background:#3a4a2a;border-color:#5a6a3a;color:#dfeccf;}
+  .hint{font-size:12.5px;color:#9d988a;max-width:680px;text-align:center;line-height:1.55;}
+  .hint b{color:#cfc9b8;}
+
+  .phone{position:relative;width:393px;height:852px;background:var(--bg);border-radius:54px;overflow:hidden;box-shadow:0 0 0 12px #0c0b0a,0 30px 72px rgba(0,0,0,.55);flex:none;}
+  .island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:122px;height:35px;background:#0c0b0a;border-radius:20px;z-index:60;}
+  .screen{position:absolute;inset:0;display:flex;flex-direction:column;}
+  .statusbar{height:56px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 6px;font-size:15px;font-weight:600;color:var(--ink);}
+  .navbar{flex:none;display:flex;align-items:center;justify-content:space-between;padding:6px 16px 10px;}
+  .navbar .date{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+  .navbar .edit{width:34px;height:34px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--ink);}
+  .scroll{flex:1;overflow-y:auto;padding:4px 16px 40px;display:flex;flex-direction:column;gap:12px;}
+
+  .card{background:var(--card);border-radius:16px;padding:14px 16px;box-shadow:0 1px 3px rgba(40,48,24,.05);}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+
+  .title{font-size:24px;font-weight:700;letter-spacing:-.02em;color:var(--ink);line-height:1.15;}
+  .meta{font-family:var(--sfmono);font-size:12px;color:var(--muted);margin-top:3px;}
+
+  .heroes{display:flex;gap:8px;}
+  .hero{flex:1;background:var(--card);border-radius:14px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .hero .glyph{font-size:19px;line-height:1;}
+  .hero .word{font-size:13px;font-weight:600;color:var(--ink);}
+  .hero .lab{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);}
+  .hero .bar{width:34px;height:4px;border-radius:2px;margin-top:2px;}
+
+  .chip{display:inline-flex;align-items:center;gap:5px;background:var(--bg);border:0.5px solid var(--hair);border-radius:999px;padding:4px 10px;font-size:12.5px;color:var(--ink);}
+  .chipflow{display:flex;flex-wrap:wrap;gap:6px;}
+  .tag-med{color:var(--med);font-weight:600;}
+
+  .divider{height:1px;background:var(--hair);margin:2px 0;}
+  .quiet{font-size:11.5px;color:var(--muted);}
+
+  /* summary card — takes the transcript's old slot, right after details */
+  .summary-card{background:var(--card);border-radius:16px;padding:14px 16px;box-shadow:0 1px 3px rgba(40,48,24,.05);border-left:3px solid var(--m3);}
+  .summary-card .line{font-size:15px;line-height:1.55;color:var(--ink);}
+  .summary-card .line + .line{margin-top:8px;}
+  .ai-note{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin-top:10px;}
+
+  /* full transcript — expanded by default, sits after the summary */
+  .tx{font-size:13.5px;line-height:1.65;color:var(--muted2);}
+</style>
+</head>
+<body>
+<div class="topctl">
+  <span class="lab">043 · Recording Detail</span>
+  <button class="btn on">Summary → then full transcript</button>
+  <span style="width:10px"></span>
+  <button class="btn" onclick="toggleTheme()">◐ light / dark</button>
+</div>
+<p class="hint"><b>Minimal change on top of the current layout.</b> The Llama summary card takes the slot where the transcript preview used to sit (right after the details card), and the <b>entire transcript</b> follows, expanded — no "Show more". Everything else identical to today.</p>
+
+<div class="phone">
+  <div class="island"></div>
+  <div class="screen">
+    <div class="statusbar"><span>9:41</span><span style="font-size:13px">􀙇􀊫􀋦</span></div>
+    <div class="navbar">
+      <span style="width:34px;font-size:16px;color:var(--ink)">‹</span>
+      <span class="date">Wed · 13 Aug</span>
+      <span class="edit">􀈊</span>
+    </div>
+    <div class="scroll">
+
+      <!-- title + meta (unchanged) -->
+      <div>
+        <div class="title">Good · Steady · Sharp</div>
+        <div class="meta">9:41 AM · 1:12</div>
+      </div>
+
+      <!-- signal hero strip (unchanged) -->
+      <div class="heroes">
+        <div class="hero"><div class="glyph">􀙢</div><div class="word">Good</div><div class="bar" style="background:var(--m4)"></div><div class="lab">Mood</div></div>
+        <div class="hero"><div class="glyph">􀋦</div><div class="word">Steady</div><div class="bar" style="background:var(--e3)"></div><div class="lab">Energy</div></div>
+        <div class="hero"><div class="glyph">􀆿</div><div class="word">Sharp</div><div class="bar" style="background:var(--f4)"></div><div class="lab">Focus</div></div>
+      </div>
+
+      <!-- details card (unchanged) -->
+      <div class="card">
+        <div class="eyebrow">Medications</div>
+        <div class="chipflow"><span class="chip tag-med">Vyvanse 30mg · morning</span></div>
+        <div class="divider" style="margin:10px 0"></div>
+        <div class="eyebrow">Sleep</div>
+        <div class="chipflow"><span class="chip">7.5h · Good</span></div>
+        <div class="divider" style="margin:10px 0"></div>
+        <div class="eyebrow">Feelings</div>
+        <div class="chipflow"><span class="chip">grateful</span><span class="chip">focused</span><span class="chip">proud</span></div>
+        <div class="divider" style="margin:10px 0"></div>
+        <div class="eyebrow">Side Effects</div>
+        <div class="chipflow"><span class="chip">dry mouth</span></div>
+      </div>
+
+      <!-- NEW: summary card in the transcript's old position -->
+      <div class="summary-card">
+        <div class="eyebrow">Summary</div>
+        <div class="line">You took your Vyvanse this morning and felt it kick in smoothly.</div>
+        <div class="line">Focus was sharp through the design doc, with a short wobble around two.</div>
+        <div class="line">Sleep treated you well — seven and a half hours. Dry mouth again, but you closed the day grateful and a little proud.</div>
+        <div class="ai-note">✦ written by on-device AI from your voice — tap 􀈊 to correct</div>
+      </div>
+
+      <!-- full transcript, expanded, after the summary -->
+      <div class="card">
+        <div class="eyebrow">Transcript</div>
+        <div class="tx">Took my Vyvanse this morning, 30 milligrams with breakfast. Feeling pretty good honestly — energy is steady and focus is sharp. Got through the whole design doc before lunch. Did zone out a bit around two, not sure why. Slept well last night, seven and a half hours, which probably helped a lot. Dry mouth again though, need to drink more water. Overall feeling grateful and kind of proud of myself today.</div>
+      </div>
+
+      <div class="quiet" style="text-align:center">▶ audio · 1:12</div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  function toggleTheme(){
+    const h=document.documentElement;
+    h.dataset.theme = h.dataset.theme==='dark' ? '' : 'dark';
+  }
+</script>
+</body>
+</html>
