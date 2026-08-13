@@ -1,6 +1,6 @@
 import Foundation
 
-public struct UnifiedExtraction: Codable, Sendable, Equatable {
+public nonisolated struct UnifiedExtraction: Codable, Sendable, Equatable {
     public var mood: String?
     public var energy: String?
     public var focus: String?
@@ -60,7 +60,7 @@ public struct UnifiedExtraction: Codable, Sendable, Equatable {
     }
 }
 
-public struct MedicationExtraction: Codable, Sendable, Equatable {
+public nonisolated struct MedicationExtraction: Codable, Sendable, Equatable {
     public var name: String
     public var dose: String?
     public var taken: Bool

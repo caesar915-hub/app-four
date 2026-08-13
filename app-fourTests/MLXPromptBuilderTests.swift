@@ -5,8 +5,9 @@ import SquirlSignals
 @Suite struct MLXPromptBuilderTests {
     let lexicon: Lexicon
     
-    init() throws {
-        self.lexicon = try LexiconLoader.loadBundled()
+    init() {
+        // loadBundled() is non-throwing (falls back to code defaults).
+        self.lexicon = LexiconLoader.loadBundled()
     }
     
     @Test(arguments: MoodLevel.allCases)

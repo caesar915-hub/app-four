@@ -186,19 +186,19 @@ final class CheckInViewModel {
                 let stream = try await aiModelService.download(.whisper)
                 for try await _ in stream { } // Consume progress
             } catch let error as ModelDownloadFailure {
-                if let self = self {
-                    await MainActor.run {
-                        if error == .insufficientSpace {
-                            self.showStorageError = true
-                        } else {
-                            self.showDownloadFailedError = true
-                        }
+                // Strong-bind before the main-actor hop: capturing the weak (var)
+                // self in concurrently-executing code is an error in Swift 6 mode.
+                guard let self else { return }
+                await MainActor.run {
+                    if error == .insufficientSpace {
+                        self.showStorageError = true
+                    } else {
+                        self.showDownloadFailedError = true
                     }
                 }
             } catch {
-                if let self = self {
-                    await MainActor.run { self.showDownloadFailedError = true }
-                }
+                guard let self else { return }
+                await MainActor.run { self.showDownloadFailedError = true }
             }
         }
         

@@ -1,7 +1,7 @@
 import Foundation
 import SquirlSignals
 
-enum MLXPromptBuilder {
+nonisolated enum MLXPromptBuilder {
     static func buildSystemPrompt(lexicon: Lexicon) -> String {
         let moodLabels = MoodLevel.allCases.map { $0.rawValue }.joined(separator: ", ")
         let energyLabels = EnergyLevel.allCases.map { $0.rawValue }.joined(separator: ", ")
