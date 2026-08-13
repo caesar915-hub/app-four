@@ -14,14 +14,12 @@ import Foundation
 @MainActor
 struct OnboardingViewModelTests {
 
-    private static let container: ModelContainer = {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        return try! ModelContainer(for: AppSettings.self, configurations: config)
-    }()
-
     private func makeContainer() throws -> ModelContainer {
-        try Self.container.mainContext.delete(model: AppSettings.self)
-        return Self.container
+        // Fresh in-memory container per test: batch deletes on a shared
+        // container don't evict already-registered rows from the context,
+        // which leaked state between tests.
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try ModelContainer(for: AppSettings.self, configurations: config)
     }
 
     private func makeViewModel() -> OnboardingViewModel {
@@ -82,19 +80,21 @@ struct OnboardingViewModelTests {
         #expect(vm.didComplete == true, "User must still reach the hub when the persist write fails")
     }
 
-    /// "Download Now" path: a finished download completes onboarding and persists it.
-    @Test func downloadSuccessCompletesOnboarding() async throws {
+    /// "Download Now" path: a finished Whisper download resolves the voice step
+    /// and advances to the Llama step — onboarding is NOT complete yet.
+    @Test func downloadSuccessResolvesWhisperStepWithoutCompleting() async throws {
         let container = try makeContainer()
         let context = container.mainContext
         let vm = makeViewModel()
 
         await vm.downloadModel(modelContext: context)
 
-        #expect(vm.didComplete == true)
+        #expect(vm.didResolveWhisper == true)
+        #expect(vm.didComplete == false)
         #expect(vm.isDownloading == false)
         #expect(vm.downloadError == nil)
         let settings = try context.fetch(FetchDescriptor<AppSettings>())
-        #expect(settings.first?.hasCompletedOnboarding == true)
+        #expect(settings.first?.hasCompletedOnboarding != true)
     }
 
     /// Failure path: the typed cause is surfaced for retry, and onboarding is
@@ -109,15 +109,16 @@ struct OnboardingViewModelTests {
         await vm.downloadModel(modelContext: context)
 
         #expect(vm.didComplete == false)
+        #expect(vm.didResolveWhisper == false)
         #expect(vm.isDownloading == false)
         #expect(vm.downloadError == .noNetwork)
         let settings = try context.fetch(FetchDescriptor<AppSettings>())
         #expect(settings.isEmpty, "Failed download must not persist onboarding completion")
     }
 
-    /// "Skip for Now" path: completes onboarding AND records the explicit
-    /// decline so the launch-time background download honors the user's choice.
-    @Test func skipRecordsDeclineAndCompletes() throws {
+    /// Whisper "Skip for Now": records the explicit decline (so its background
+    /// download stays off) and advances to the Llama step — not a completion.
+    @Test func whisperSkipRecordsDeclineAndResolvesStep() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let vm = makeViewModel()
@@ -127,9 +128,10 @@ struct OnboardingViewModelTests {
         let settings = try context.fetch(FetchDescriptor<AppSettings>())
         let row = try #require(settings.first)
         #expect(settings.count == 1, "Skip must upsert the single settings row, not duplicate")
-        #expect(row.hasCompletedOnboarding == true)
         #expect(row.declinedOnboardingModelDownload == true)
-        #expect(vm.didComplete == true)
+        #expect(row.hasCompletedOnboarding == false)
+        #expect(vm.didResolveWhisper == true)
+        #expect(vm.didComplete == false)
     }
 
     /// A successful download completes onboarding without recording a decline,
@@ -142,7 +144,7 @@ struct OnboardingViewModelTests {
         await vm.downloadModel(modelContext: context)
 
         let settings = try context.fetch(FetchDescriptor<AppSettings>())
-        #expect(settings.first?.declinedOnboardingModelDownload == false)
+        #expect(settings.first?.declinedOnboardingModelDownload != true)
     }
 
     /// An unclassified engine error must surface as a content-free type tag —
@@ -161,5 +163,57 @@ struct OnboardingViewModelTests {
         }
         #expect(!tag.contains("Mock download error"), "Raw error message must never reach the UI")
         #expect(vm.didComplete == false)
+    }
+
+    // MARK: - Llama step (044)
+
+    /// Llama "Download Now" success completes onboarding and persists it.
+    @Test func llamaDownloadSuccessCompletesOnboarding() async throws {
+        let container = try makeContainer()
+        let context = container.mainContext
+        let vm = makeViewModel()
+
+        await vm.downloadLlamaModel(modelContext: context)
+
+        #expect(vm.didComplete == true)
+        #expect(vm.isDownloading == false)
+        #expect(vm.downloadError == nil)
+        let settings = try context.fetch(FetchDescriptor<AppSettings>())
+        let row = try #require(settings.first)
+        #expect(row.hasCompletedOnboarding == true)
+        #expect(row.declinedOnboardingLlamaDownload == false)
+    }
+
+    /// Llama "Skip for Now": records the insights decline AND completes.
+    @Test func llamaSkipRecordsDeclineAndCompletes() throws {
+        let container = try makeContainer()
+        let context = container.mainContext
+        let vm = makeViewModel()
+
+        vm.skipLlamaDownload(modelContext: context)
+
+        let settings = try context.fetch(FetchDescriptor<AppSettings>())
+        let row = try #require(settings.first)
+        #expect(settings.count == 1)
+        #expect(row.hasCompletedOnboarding == true)
+        #expect(row.declinedOnboardingLlamaDownload == true)
+        #expect(vm.didComplete == true)
+    }
+
+    /// Llama failure: typed cause surfaced, user stays on the step (retry/skip).
+    @Test func llamaDownloadFailureSurfacesErrorWithoutCompleting() async throws {
+        let container = try makeContainer()
+        let context = container.mainContext
+        let mock = MockAIModelService()
+        await mock.setDownloadFailure(.noNetwork)
+        let vm = OnboardingViewModel(aiModelService: mock)
+
+        await vm.downloadLlamaModel(modelContext: context)
+
+        #expect(vm.didComplete == false)
+        #expect(vm.isDownloading == false)
+        #expect(vm.downloadError == .noNetwork)
+        let settings = try context.fetch(FetchDescriptor<AppSettings>())
+        #expect(settings.first?.hasCompletedOnboarding != true)
     }
 }

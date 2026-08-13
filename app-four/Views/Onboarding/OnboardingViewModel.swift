@@ -2,16 +2,18 @@ import Foundation
 import Observation
 import SwiftData
 
-/// Drives the two-screen onboarding flow (welcome → model-download permission):
-/// persist that onboarding is done, then signal so the cover can dismiss to the
-/// Check-in hub. Idempotent, and — per FR-005 — it signals completion even when
-/// the persist write fails, so the user is never stranded on an undismissable
-/// cover.
+/// Drives the first-run flow (welcome → Siri → Whisper download → Llama
+/// download): persist that onboarding is done, then signal so the cover can
+/// dismiss to the Check-in hub. Idempotent, and — per FR-005 — it signals
+/// completion even when the persist write fails, so the user is never stranded
+/// on an undismissable cover.
 ///
-/// "Download Now" downloads the Whisper model and completes on success; a
-/// failure surfaces the typed cause and keeps the user on the permission screen
-/// (retry or skip). "Skip for Now" completes without the model and records the
-/// decline so the launch-time background download honors the user's choice.
+/// The two model screens run in sequence and are independently skippable.
+/// "Download Now" on the Whisper screen resolves that step and advances to the
+/// Llama screen; the Llama screen's download/skip completes onboarding. A
+/// failure surfaces the typed cause and keeps the user on the current screen
+/// (retry or skip). Each "Skip for Now" records its own decline flag so the
+/// launch-time background downloads honor the user's choice per model.
 @Observable
 @MainActor
 final class OnboardingViewModel {
@@ -20,7 +22,11 @@ final class OnboardingViewModel {
     /// True even if the persist write failed (FR-005).
     private(set) var didComplete = false
 
-    // Model download state
+    /// Set when the Whisper step resolves (downloaded or skipped); the
+    /// permission screen observes this to push the Llama step.
+    private(set) var didResolveWhisper = false
+
+    // Model download state (shared by both steps; each download resets it)
     private(set) var isDownloading = false
     private(set) var downloadProgress: Double = 0.0
     private(set) var downloadError: ModelDownloadFailure?
@@ -43,29 +49,58 @@ final class OnboardingViewModel {
         didComplete = true
     }
 
-    /// "Skip for Now" — completes onboarding without the model and remembers the
-    /// explicit decline (`declinedOnboardingModelDownload`) so the background
-    /// download stays off. Capture keeps working: recordings queue as
-    /// `.pendingTranscription` until the model arrives via Settings.
+    // MARK: - Whisper step
+
+    /// "Skip for Now" on the Whisper screen — records the explicit decline
+    /// (`declinedOnboardingModelDownload`) so its background download stays
+    /// off, then advances to the Llama step. The decline is persisted
+    /// immediately: quitting before the next step must not lose the choice.
+    /// Capture keeps working: recordings queue as `.pendingTranscription` until
+    /// the model arrives via Settings.
     func skipModelDownload(modelContext: ModelContext) {
         settingsRow(in: modelContext).declinedOnboardingModelDownload = true
-        complete(modelContext: modelContext)
+        try? persist(modelContext)
+        didResolveWhisper = true
     }
 
     func downloadModel(modelContext: ModelContext) async {
+        await runDownload(.whisper) { [self] in
+            didResolveWhisper = true
+        }
+    }
+
+    // MARK: - Llama step
+
+    /// "Skip for Now" on the Llama screen — records the insights-model decline
+    /// and completes onboarding. Check-ins still transcribe; they simply skip
+    /// signal extraction until the model arrives via Settings.
+    func skipLlamaDownload(modelContext: ModelContext) {
+        settingsRow(in: modelContext).declinedOnboardingLlamaDownload = true
+        complete(modelContext: modelContext)
+    }
+
+    func downloadLlamaModel(modelContext: ModelContext) async {
+        await runDownload(.llama) { [self] in
+            complete(modelContext: modelContext)
+        }
+    }
+
+    // MARK: - Shared download driver
+
+    private func runDownload(_ type: AIModelType, onSuccess: () -> Void) async {
         guard !isDownloading else { return }
         isDownloading = true
         downloadError = nil
         downloadProgress = 0.0
 
         do {
-            let stream = try await aiModelService.download(.whisper)
+            let stream = try await aiModelService.download(type)
             for try await progress in stream {
                 self.downloadProgress = progress
             }
             // Finished successfully
             isDownloading = false
-            complete(modelContext: modelContext)
+            onSuccess()
         } catch let error as ModelDownloadFailure {
             isDownloading = false
             downloadError = error

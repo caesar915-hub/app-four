@@ -1,17 +1,16 @@
 import SwiftUI
 import SwiftData
 
-/// Step 3 of the four-screen first-run flow (welcome → Siri → here → Llama):
-/// the explicit voice-model-download opt-in. Explains *why* the Whisper model exists
-/// (voice stays on-device), then branches: "Download Now" downloads and
-/// completes onboarding; "Skip for Now" completes without the model and records
-/// the decline so the background download stays off. A mid-flight failure shows
-/// the typed cause in calm copy and returns both actions (retry or skip); the
-/// back button hides only while a download is in flight.
-struct DownloadPermissionView: View {
+/// Step 4 of the first-run flow (welcome → Siri → Whisper → here): the
+/// journal-insights model opt-in. Explains *why* a second, larger model exists
+/// (it reads the transcript and pulls out mood, energy, focus, sleep and meds —
+/// still fully on-device), then branches: "Download Now" downloads and
+/// completes onboarding; "Skip for Now" records the insights-model decline and
+/// completes without it. A mid-flight failure shows the typed cause in calm
+/// copy and returns both actions (retry or skip).
+struct LlamaDownloadView: View {
     @Environment(\.modelContext) private var modelContext
     var viewModel: OnboardingViewModel
-    @State private var showLlamaStep = false
 
     var body: some View {
         GeometryReader { geo in
@@ -23,32 +22,25 @@ struct DownloadPermissionView: View {
         }
         .background(NewLook.screen.ignoresSafeArea())
         .navigationBarBackButtonHidden(viewModel.isDownloading)
-        // Whisper resolved (downloaded or skipped) → the insights-model step.
-        .navigationDestination(isPresented: $showLlamaStep) {
-            LlamaDownloadView(viewModel: viewModel)
-        }
-        .onChange(of: viewModel.didResolveWhisper) { _, resolved in
-            if resolved { showLlamaStep = true }
-        }
     }
 
     private var content: some View {
         VStack(spacing: Spacing.section) {
             Spacer(minLength: Spacing.section)
 
-            Image(systemName: "lock.shield")
+            Image(systemName: "brain.head.profile")
                 .font(.system(size: 64))
                 .foregroundStyle(NewLook.checkInGreen)
                 .accessibilityHidden(true)
 
             VStack(spacing: Spacing.m) {
-                Text("On-Device Privacy")
+                Text("Journal Insights")
                     .font(Typography.largeTitle)
                     .foregroundStyle(NewLook.inkPrimary)
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
 
-                Text("To keep your journal completely private, Squirl processes your voice directly on this device.")
+                Text("A second on-device model reads your check-ins and picks out mood, energy, focus, sleep and medications — still private, still on this iPhone.")
                     .font(Typography.body)
                     .foregroundStyle(NewLook.inkSecondary)
                     .multilineTextAlignment(.center)
@@ -71,16 +63,20 @@ struct DownloadPermissionView: View {
                         ProgressView(value: viewModel.downloadProgress)
                             .progressViewStyle(.linear)
                             .tint(NewLook.checkInGreen)
-                        Text("Downloading model... \(Int(viewModel.downloadProgress * 100))%")
+                        Text("Downloading insights model... \(Int(viewModel.downloadProgress * 100))%")
                             .font(Typography.caption)
                             .foregroundStyle(NewLook.inkSecondary)
                     }
                     .padding(.horizontal, Spacing.xl)
                 } else {
                     Button(action: downloadModel) {
-                        Text("Download Now (~150 MB)")
+                        Text("Download Now (~740 MB)")
                     }
                     .buttonStyle(.checkInPrimary)
+
+                    Text("Wi-Fi recommended")
+                        .font(Typography.caption)
+                        .foregroundStyle(NewLook.inkSecondary)
 
                     Button(action: skip) {
                         Text("Skip for Now")
@@ -96,21 +92,21 @@ struct DownloadPermissionView: View {
     private func downloadModel() {
         Haptics.selection()
         Task {
-            await viewModel.downloadModel(modelContext: modelContext)
+            await viewModel.downloadLlamaModel(modelContext: modelContext)
         }
     }
 
     private func skip() {
         Haptics.selection()
         withAnimation(Motion.smooth) {
-            viewModel.skipModelDownload(modelContext: modelContext)
+            viewModel.skipLlamaDownload(modelContext: modelContext)
         }
     }
 }
 
-#Preview("Download Permission") {
+#Preview("Llama Download") {
     NavigationStack {
-        DownloadPermissionView(viewModel: OnboardingViewModel(aiModelService: AppServices.preview.aiModelService))
+        LlamaDownloadView(viewModel: OnboardingViewModel(aiModelService: AppServices.preview.aiModelService))
     }
     .modelContainer(AppModelContainer.previewContainer)
 }
