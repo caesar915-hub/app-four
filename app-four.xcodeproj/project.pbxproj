@@ -52,8 +52,6 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3724CF872FC9292700427F48 /* app-fourTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-			);
 			path = "app-fourTests";
 			sourceTree = "<group>";
 		};
@@ -229,8 +227,8 @@
 				5638591163E5BF5AC46DD98E /* XCRemoteSwiftPackageReference "mlx-swift" */,
 				97FE35B9200A6C415121059D /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
 				7010BCE5AEABE02169EAF6BA /* XCRemoteSwiftPackageReference "swift-collections" */,
-				EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "SquirlSignals" */,
-				4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "SquirlDesignSystem" */,
+				EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */,
+				4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */,
 				383BE6B7D2C1580D95E2904D /* XCRemoteSwiftPackageReference "swift-huggingface" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -814,11 +812,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "SquirlDesignSystem" */ = {
+		4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/SquirlDesignSystem;
 		};
-		EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "SquirlSignals" */ = {
+		EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/SquirlSignals;
 		};
@@ -899,11 +897,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5638591163E5BF5AC46DD98E /* XCRemoteSwiftPackageReference "mlx-swift" */;
 			productName = MLX;
-		};
-		58829153FB83437D634C36A1 /* HuggingFace */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 383BE6B7D2C1580D95E2904D /* XCRemoteSwiftPackageReference "swift-huggingface" */;
-			productName = HuggingFace;
 		};
 		7A34C43D19993F90A188D010 /* SquirlSignals */ = {
 			isa = XCSwiftPackageProductDependency;
