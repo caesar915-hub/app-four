@@ -57,8 +57,6 @@ Mark each PASS / FAIL / N-A and justify any FAIL in Complexity Tracking. See
       `fix/…` branch, `/code-review` before merge, `main` stays releasable.
 - [ ] **VI. On-Device Privacy** — no audio/health/mood/med data leaves the device;
       no cloud by default; logs are counts/durations only.
-- [ ] **VII. Deterministic, Measured Extraction** — extraction stays deterministic,
-      off-main, whole-token, lexicon-as-data; eval harness run, floors not regressed.
 - [ ] **VIII. Service-Oriented Architecture** — new capabilities behind a `Services/`
       protocol via `AppDependencies`; `@MainActor @Observable` VMs; heavy work off-main.
 - [ ] **IX. Pre-Release Data Posture** — schema stays CloudKit-compatible (optional/
