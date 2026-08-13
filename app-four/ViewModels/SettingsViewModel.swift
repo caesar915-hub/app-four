@@ -14,6 +14,9 @@ final class SettingsViewModel {
     var whisperModelInstalled: Bool = false
     var isDownloadingWhisper: Bool = false
     var whisperDownloadProgress: Double = 0
+    var llamaModelInstalled: Bool = false
+    var isDownloadingLlama: Bool = false
+    var llamaDownloadProgress: Double = 0
     var storageUsedMB: Double = 0.0
 
     /// The cause of the most recent failed download, surfaced inline so the row
@@ -25,7 +28,7 @@ final class SettingsViewModel {
     /// offer a one-tap "allow on cellular" shortcut alongside "Try again".
     var canAllowCellular: Bool { downloadError == .cellularDisabled }
 
-    @ObservationIgnored private var downloadTask: Task<Void, Never>?
+    @ObservationIgnored private var downloadTasks: [AIModelType: Task<Void, Never>] = [:]
 
     var recordingCount: Int {
         store.recordings.count
@@ -127,6 +130,7 @@ final class SettingsViewModel {
         // Filesystem is the source of truth — a SwiftData flag can lie if files
         // were evicted, partially downloaded, or restored without metadata.
         self.whisperModelInstalled = aiModelService.localPath(for: .whisper) != nil
+        self.llamaModelInstalled = aiModelService.localPath(for: .llama) != nil
     }
 
     func downloadModel(_ type: AIModelType) async {
@@ -156,16 +160,16 @@ final class SettingsViewModel {
                 await checkModels()
             }
         }
-        downloadTask = task
+        downloadTasks[type] = task
         await task.value
-        downloadTask = nil
+        downloadTasks[type] = nil
     }
 
     /// Cancels an in-flight download and re-reads filesystem truth so the row
     /// returns to "not installed" with no partial/installed model left behind.
-    func cancelDownload() {
-        downloadTask?.cancel()
-        downloadTask = nil
+    func cancelDownload(_ type: AIModelType) {
+        downloadTasks[type]?.cancel()
+        downloadTasks[type] = nil
         downloadError = nil
         Task { await checkModels() }
     }
@@ -177,11 +181,17 @@ final class SettingsViewModel {
     }
 
     private func setDownloading(_ type: AIModelType, to value: Bool) {
-        if type == .whisper { isDownloadingWhisper = value }
+        switch type {
+        case .whisper: isDownloadingWhisper = value
+        case .llama: isDownloadingLlama = value
+        }
     }
 
     private func setProgress(_ type: AIModelType, to value: Double) {
-        if type == .whisper { whisperDownloadProgress = value }
+        switch type {
+        case .whisper: whisperDownloadProgress = value
+        case .llama: llamaDownloadProgress = value
+        }
     }
 
     func deleteModel(_ type: AIModelType) async {

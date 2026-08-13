@@ -176,7 +176,7 @@ struct SettingsViewModelTests {
         // Wait until the download is in-flight before cancelling.
         while !viewModel.isDownloadingWhisper { await Task.yield() }
 
-        viewModel.cancelDownload()
+        viewModel.cancelDownload(.whisper)
         await download.value
 
         #expect(viewModel.isDownloadingWhisper == false, "Cancel stops the in-flight download")

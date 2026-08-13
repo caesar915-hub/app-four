@@ -139,13 +139,31 @@ struct SettingsView: View {
                 canAllowCellular: viewModel.canAllowCellular,
                 onDownload: { Task { await viewModel.downloadModel(.whisper) } },
                 onRetry: { Task { await viewModel.downloadModel(.whisper) } },
-                onCancel: { viewModel.cancelDownload() },
+                onCancel: { viewModel.cancelDownload(.whisper) },
                 onAllowCellular: {
                     viewModel.downloadOverCellular = true
                     viewModel.syncDownloadOverCellular()
                     Task { await viewModel.downloadModel(.whisper) }
                 },
                 onDelete: { Task { await viewModel.deleteModel(.whisper) } }
+            )
+            ModelDownloadRow(
+                title: "Journal Insights",
+                icon: "brain.head.profile",
+                isInstalled: viewModel.llamaModelInstalled,
+                isDownloading: viewModel.isDownloadingLlama,
+                downloadProgress: viewModel.llamaDownloadProgress,
+                errorMessage: viewModel.downloadError.map { viewModel.message(for: $0) },
+                canAllowCellular: viewModel.canAllowCellular,
+                onDownload: { Task { await viewModel.downloadModel(.llama) } },
+                onRetry: { Task { await viewModel.downloadModel(.llama) } },
+                onCancel: { viewModel.cancelDownload(.llama) },
+                onAllowCellular: {
+                    viewModel.downloadOverCellular = true
+                    viewModel.syncDownloadOverCellular()
+                    Task { await viewModel.downloadModel(.llama) }
+                },
+                onDelete: { Task { await viewModel.deleteModel(.llama) } }
             )
         }
     }
