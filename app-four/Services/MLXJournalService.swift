@@ -14,13 +14,11 @@ nonisolated struct MLXJournalService: SummarizationService {
     private let systemPrompt: String
     
     init() {
-        do {
-            let lex = try LexiconLoader.loadBundled()
-            self.lexicon = lex
-            self.systemPrompt = MLXPromptBuilder.buildSystemPrompt(lexicon: lex)
-        } catch {
-            fatalError("Failed to load lexicon: \\(error)")
-        }
+        // loadBundled() is non-throwing: it falls back to code defaults if the
+        // bundled lexicon.json is missing or malformed.
+        let lex = LexiconLoader.loadBundled()
+        self.lexicon = lex
+        self.systemPrompt = MLXPromptBuilder.buildSystemPrompt(lexicon: lex)
     }
     
     func summarize(rawTranscription: String) async throws -> SummaryResult {

@@ -70,4 +70,10 @@ import SquirlSignals
         #expect(prompt.contains("ONLY JSON"))
         #expect(prompt.contains("no surrounding text"))
     }
+    
+    @Test func userMessageInterpolatesTranscript() {
+        let message = MLXPromptBuilder.buildUserMessage(transcript: "Took my Vyvanse this morning")
+        #expect(message.contains("Took my Vyvanse this morning"))
+        #expect(!message.contains("\\(transcript)"))
+    }
 }

@@ -31,7 +31,8 @@ enum ExtractionValidator {
         
         // Stage 3: Find first { to last } substring
         if let firstBrace = rawJSON.firstIndex(of: "{"),
-           let lastBrace = rawJSON.lastIndex(of: "}") {
+           let lastBrace = rawJSON.lastIndex(of: "}"),
+           firstBrace < lastBrace {
             let substring = String(rawJSON[firstBrace...lastBrace])
             if let data = substring.data(using: .utf8),
                let result = try? decoder.decode(UnifiedExtraction.self, from: data) {

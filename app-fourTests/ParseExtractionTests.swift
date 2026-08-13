@@ -36,4 +36,10 @@ import Foundation
         let result = ExtractionValidator.parseExtraction(from: "")
         #expect(result == nil)
     }
+    
+    @Test func reversedBracesReturnNilWithoutCrashing() {
+        // Stage 3 must not build a range with lowerBound > upperBound
+        let result = ExtractionValidator.parseExtraction(from: "}{")
+        #expect(result == nil)
+    }
 }

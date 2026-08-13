@@ -79,6 +79,6 @@ enum MLXPromptBuilder {
     }
     
     static func buildUserMessage(transcript: String) -> String {
-        return "Extract signals from this transcript:\n\\(transcript)"
+        return "Extract signals from this transcript:\n\(transcript)"
     }
 }
