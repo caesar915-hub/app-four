@@ -244,10 +244,8 @@ struct ExtractionReviewView: View {
                 .fixedSize()
                 .frame(minWidth: 24)
                 .onChange(of: customHoursText) { _, text in
-                    let norm = text.replacingOccurrences(of: ",", with: ".")
-                    if let h = Double(norm) {
-                        viewModel.setSleepHours(h)
-                    } else if text.isEmpty, !sleepDurations.contains(viewModel.sleepHours ?? -1) {
+                    viewModel.setSleepHours(fromString: text)
+                    if text.isEmpty, !sleepDurations.contains(viewModel.sleepHours ?? -1) {
                         // Field cleared (and not on a preset) → clear the stored custom value.
                         viewModel.setSleepHours(nil)
                     }

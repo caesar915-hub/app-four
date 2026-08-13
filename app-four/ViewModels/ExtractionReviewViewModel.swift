@@ -127,6 +127,14 @@ final class ExtractionReviewViewModel: Identifiable {
         sleepHours = hours
     }
 
+    func setSleepHours(fromString text: String) {
+        if text.isEmpty { return } // Will be handled by the view clearing it if needed
+        let norm = text.replacingOccurrences(of: ",", with: ".")
+        if let h = Double(norm) {
+            sleepHours = h
+        }
+    }
+
     func toggleEmotion(_ emotion: String) {
         if emotions.contains(emotion) { emotions.remove(emotion) } else { emotions.insert(emotion) }
         editedFields.insert(.emotions)
