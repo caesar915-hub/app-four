@@ -76,6 +76,11 @@ struct CheckInView: View {
         } message: {
             Text("Something went wrong while downloading the language model. Please check your connection and try again.")
         }
+        .alert("Not Enough Memory", isPresented: $viewModel.showMemoryError) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Squirl couldn't generate insights because your device is low on memory. Your note is saved — close some apps, then open the check-in to try again.")
+        }
     }
 
     /// Posts a VoiceOver announcement (FR-010/012). A no-op when VoiceOver is off, so it

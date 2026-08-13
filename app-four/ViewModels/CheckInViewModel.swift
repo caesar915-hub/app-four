@@ -77,6 +77,13 @@ final class CheckInViewModel {
     @ObservationIgnored private let store: RecordingStore
     private(set) var processingViewModel: ProcessingViewModel
 
+    /// Forwarded so views can bind to the memory-pressure alert without needing
+    /// write access to `processingViewModel` itself (FR-EXT-17).
+    var showMemoryError: Bool {
+        get { processingViewModel.showMemoryError }
+        set { processingViewModel.showMemoryError = newValue }
+    }
+
     private var timerTask: Task<Void, Never>?
     private var levelTask: Task<Void, Never>?
     private(set) var transcriptionTask: Task<Void, Never>?

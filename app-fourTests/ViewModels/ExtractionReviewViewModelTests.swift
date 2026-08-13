@@ -215,4 +215,38 @@ struct ExtractionReviewViewModelTests {
         #expect(tags.isEmpty)
         #expect(rec.mood == nil)
     }
+
+    // T003/SC-006 — the production path (convenience init, used by RecordingDetailView)
+    // must rebuild noteExtractionJSON on save: edited meds/title/sleep land in the JSON,
+    // and column-less fields from the prior extraction are carried over.
+    @Test func productionPathRebuildsNoteExtractionJSON() throws {
+        let rec = makeRecording(title: "Voice Note")
+        rec.mood = "good"
+        rec.energyLevel = "steady"
+        rec.focusLevel = "sharp"
+        let stale = NoteExtraction(activities: ["Fitness"], title: "Voice Note", durationHours: 8)
+        rec.noteExtractionJSON = String(data: try JSONEncoder().encode(stale), encoding: .utf8)
+
+        let vm = ExtractionReviewViewModel(recording: rec, store: store, onComplete: { _ in })
+        vm.setMood("great")
+        vm.setSleepHours(fromString: "7,5")
+        vm.setSleepLevel(.good)
+        vm.addMedication("Vyvanse")
+        vm.name = "My Day"
+        vm.confirm()
+
+        let json = try #require(rec.decodedNoteExtraction)
+        #expect(json.title == "My Day")                       // user title wins, JSON matches
+        #expect(rec.title == "My Day")
+        #expect(json.activities == ["Fitness"])               // carried over, not dropped
+        #expect(json.durationHours == 8)                      // carried over
+        #expect(json.medications.map(\.name) == ["Vyvanse"])  // med edit lands in JSON
+        #expect(json.sleep?.hours == 7.5)                     // sleep edit lands in JSON
+        #expect(json.sleep?.quality == SleepLevel.good.rawValue)
+        // Redundant-with-column fields are still stripped by applySummary.
+        #expect(json.mood == nil)
+        #expect(rec.mood == "great")
+        // The sleep event JSON tracks the edited sleep too.
+        #expect(rec.decodedSleepEvent?.hours == 7.5)
+    }
 }

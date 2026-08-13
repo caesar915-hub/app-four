@@ -97,7 +97,7 @@ final class ExtractionReviewViewModel: Identifiable {
             sideEffects: recording.decodedSideEffects,
             emotions: recording.decodedEmotions,
             topics: recording.topicCategories.map(\.rawValue),
-            noteExtraction: nil
+            noteExtraction: recording.decodedNoteExtraction
         )
         self.init(result: result, recording: recording, store: store, onComplete: onComplete)
     }
@@ -191,16 +191,47 @@ final class ExtractionReviewViewModel: Identifiable {
     func confirm() {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
 
-        // Rebuild the noteExtraction from the (possibly edited) scalars so the
-        // persisted JSON can never disagree with the columns (Bug 12). Carry over
-        // the fields the review UI doesn't expose (valence, triage arrays, …).
-        var correctedExtraction = originalResult.noteExtraction
-        correctedExtraction?.mood = mood.isEmpty ? nil : mood
-        correctedExtraction?.energy = energy
-        correctedExtraction?.focus = focus
-        correctedExtraction?.medications = medications
-        correctedExtraction?.emotions = Array(emotions)
-        correctedExtraction?.sideEffects = Array(sideEffects)
+        // Mirror applySummary's auto "Mood · Energy · Focus" title so the JSON
+        // title matches the title that will actually stand after the save.
+        var nameParts: [String] = []
+        if !mood.isEmpty { nameParts.append(mood.capitalized) }
+        if let energy { nameParts.append(energy.rawValue.capitalized) }
+        if let focus { nameParts.append(focus.displayLabel) }
+        let autoTitle = nameParts.isEmpty ? originalResult.generatedTitle : nameParts.joined(separator: " · ")
+        let finalTitle = (userDidSetTitle && !trimmedName.isEmpty) ? trimmedName : autoTitle
+
+        // Rebuild the noteExtraction from the (possibly edited) fields so the
+        // persisted JSON can never disagree with the columns (Bug 12). Start from
+        // the original extraction — or a blank one when the pipeline persisted none
+        // (fallback / legacy recordings) — and carry over the fields the review UI
+        // doesn't expose (activities, triage arrays, durationHours, …).
+        var correctedExtraction = originalResult.noteExtraction ?? NoteExtraction()
+        correctedExtraction.mood = mood.isEmpty ? nil : mood
+        correctedExtraction.energy = energy
+        correctedExtraction.focus = focus
+        correctedExtraction.medications = medications
+        correctedExtraction.emotions = Array(emotions)
+        correctedExtraction.sideEffects = Array(sideEffects)
+        correctedExtraction.sleepHours = sleepHours
+        correctedExtraction.title = finalTitle
+
+        // Keep the sleep JSON in step with edited sleep fields (hours and/or level).
+        let correctedSleepEvent: SleepEvent?
+        if sleepHours != nil || sleepLevel != nil {
+            var note = correctedExtraction.sleep ?? SleepNote()
+            note.mentioned = true
+            note.hours = sleepHours
+            note.quality = sleepLevel?.rawValue ?? note.quality
+            correctedExtraction.sleep = note
+
+            var event = originalResult.sleepEvent ?? SleepEvent()
+            event.mentioned = true
+            event.hours = sleepHours
+            if let sleepLevel { event.quality = sleepLevel.rawValue }
+            correctedSleepEvent = event
+        } else {
+            correctedSleepEvent = originalResult.sleepEvent
+        }
 
         let correctedResult = SummaryResult(
             bullets: originalResult.bullets,
@@ -211,7 +242,7 @@ final class ExtractionReviewViewModel: Identifiable {
             mood: mood.isEmpty ? nil : mood,
             sleepHours: sleepHours,
             sleepQuality: originalResult.sleepQuality,
-            sleepEvent: originalResult.sleepEvent,
+            sleepEvent: correctedSleepEvent,
             sleepLevel: sleepLevel?.rawValue,
             sideEffects: Array(sideEffects),
             emotions: Array(emotions),
@@ -225,7 +256,7 @@ final class ExtractionReviewViewModel: Identifiable {
         recording.applySummary(correctedResult)
         recording.setMedicationEvents(
             from: correctedResult.medications,
-            durationHours: correctedExtraction?.durationHours,
+            durationHours: correctedExtraction.durationHours,
             context: store.context
         )
 

@@ -34,8 +34,7 @@ xcrun devicectl device install app --device F0F4C38A-182C-581D-A3E0-B659C3C59E5A
 
 ### 4. Memory pressure (US7 / FR-EXT-06/07)
 - [ ] Open several memory-heavy apps, then run a check-in
-- [ ] Expect: graceful fallback (transcript-only result, no crash)
-- [ ] ⚠️ **Known gap**: "Not enough memory" alert UI is not wired (`showMemoryError` is set but no view reads it) — fallback happens silently
+- [ ] Expect: "Not Enough Memory" alert, graceful fallback (transcript-only result, no crash)
 - [ ] Optional: mock `MemoryMonitor` to return < 200 MB (see quickstart.md §3)
 
 ### 5. Backgrounding mid-extraction (spec edge case)
@@ -50,7 +49,6 @@ xcrun devicectl device install app --device F0F4C38A-182C-581D-A3E0-B659C3C59E5A
 - [ ] Change review date → medication events resolve against the new date
 - [ ] Cancel button → recording marked `.failed`
 - [ ] ⚠️ **Known gap**: swipe-to-dismiss bypasses `cancel()` — recording stays in its prior status
-- [ ] ⚠️ **Known gap**: `noteExtraction` JSON is not rebuilt on save in the production path (meds/title/sleep JSON can go stale vs. columns)
 
 ### 7. Total parse failure fallback (US5)
 - [ ] Force a garbage/nil extraction (e.g. airplane mode mid-download or mock) → review sheet still opens with safe empty defaults, fully editable, saves without crash
