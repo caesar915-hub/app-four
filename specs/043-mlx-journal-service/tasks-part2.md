@@ -24,19 +24,19 @@
 
 > **RED**: Write these tests FIRST and RUN them — they MUST FAIL before any implementation.
 
-- [ ] `T100` `[P]` `[Foundation]` **RED — Test: `UnifiedExtraction` decodes complete JSON**
+- [x] `T100` `[P]` `[Foundation]` **RED — Test: `UnifiedExtraction` decodes complete JSON**
   - **File:** [`app-fourTests/UnifiedExtractionTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/UnifiedExtractionTests.swift) [NEW]
   - **Action:** Create `@Suite struct UnifiedExtractionTests`. Add `@Test func decodesCompleteJSON() throws` — construct a JSON string with all 12 fields populated (mood: `"good"`, energy: `"steady"`, focus: `"sharp"`, sleepHours: `7.5`, sleepQuality: `"good"`, medications: `[{name: "Vyvanse", dose: "30mg", taken: true}]`, emotions: `["excited"]`, activities: `["Work"]`, topics: `["Medications"]`, lexicon: `["took my addy"]`, summary: `"You had a good day"`, sideEffects: `["appetite loss"]`). Decode via `JSONDecoder`. `#expect(extraction.mood == "good")`, `#expect(extraction.sleepHours == 7.5)`, `#expect(extraction.medications.count == 1)`, `#expect(extraction.medications[0].name == "Vyvanse")`, etc.
   - **Dependencies:** None
   - **Validation:** Test compiles but **FAILS** because `UnifiedExtraction` does not exist yet.
 
-- [ ] `T101` `[P]` `[Foundation]` **RED — Test: `UnifiedExtraction` decodes partial JSON with missing optional fields**
+- [x] `T101` `[P]` `[Foundation]` **RED — Test: `UnifiedExtraction` decodes partial JSON with missing optional fields**
   - **File:** [`app-fourTests/UnifiedExtractionTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/UnifiedExtractionTests.swift)
   - **Action:** Add `@Test func decodesPartialJSON() throws` — decode JSON with only `mood` and `energy` present. All other fields should default: `sleepHours == nil`, `sleepQuality == nil`, `medications` empty array, `emotions` empty array, `activities` empty array, `topics` empty array, `lexicon` empty array, `summary == nil`, `sideEffects` empty array.
   - **Dependencies:** T100 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T102` `[P]` `[Foundation]` **RED — Test: `MedicationExtraction` decodes correctly**
+- [x] `T102` `[P]` `[Foundation]` **RED — Test: `MedicationExtraction` decodes correctly**
   - **File:** [`app-fourTests/UnifiedExtractionTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/UnifiedExtractionTests.swift)
   - **Action:** Add `@Test func medicationExtractionDecodes() throws` — decode `MedicationExtraction` from `{name: "Concerta", dose: "36mg", taken: true}`. `#expect(med.name == "Concerta")`, `#expect(med.dose == "36mg")`, `#expect(med.taken == true)`. Also test missing `dose` defaults to `nil`, missing `taken` defaults to `true`.
   - **Dependencies:** T100 (same file)
@@ -44,7 +44,7 @@
 
 ### Implementation for `UnifiedExtraction`
 
-- [ ] `T103` `[Foundation]` **GREEN — Implement `UnifiedExtraction` and `MedicationExtraction`**
+- [x] `T103` `[Foundation]` **GREEN — Implement `UnifiedExtraction` and `MedicationExtraction`**
   - **File:** [`app-four/Services/NoteExtraction/UnifiedExtraction.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-four/Services/NoteExtraction/UnifiedExtraction.swift) [NEW]
   - **Action:** Create the file with two public structs:
     ```swift
@@ -87,31 +87,31 @@
 
 > **RED**: Write these tests FIRST and RUN them — they MUST FAIL before any implementation.
 
-- [ ] `T104` `[P]` `[US1]` **RED — Test: direct JSON decode succeeds**
+- [x] `T104` `[P]` `[US1]` **RED — Test: direct JSON decode succeeds**
   - **File:** [`app-fourTests/ParseExtractionTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ParseExtractionTests.swift) [NEW]
   - **Action:** Create `@Suite struct ParseExtractionTests`. Add `@Test func directDecodeSucceeds()` — pass clean JSON `{"mood":"good","energy":"steady","medications":[],"emotions":[],"activities":[],"topics":[],"lexicon":[],"sideEffects":[]}` to `ExtractionValidator.parseExtraction(from:)`. `#expect(result != nil)`, `#expect(result?.mood == "good")`.
   - **Dependencies:** T103 (`UnifiedExtraction` must exist)
   - **Validation:** Test compiles but **FAILS** because `ExtractionValidator.parseExtraction` does not exist yet.
 
-- [ ] `T105` `[P]` `[US1]` **RED — Test: backtick-wrapped JSON is recovered**
+- [x] `T105` `[P]` `[US1]` **RED — Test: backtick-wrapped JSON is recovered**
   - **File:** [`app-fourTests/ParseExtractionTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ParseExtractionTests.swift)
   - **Action:** Add `@Test func backtickWrappedJsonRecovered()` — pass `` ```json\n{"mood":"good","medications":[],"emotions":[],"activities":[],"topics":[],"lexicon":[],"sideEffects":[]}\n``` `` to `parseExtraction(from:)`. `#expect(result != nil)`, `#expect(result?.mood == "good")`.
   - **Dependencies:** T104 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T106` `[P]` `[US1]` **RED — Test: JSON surrounded by prose is recovered**
+- [x] `T106` `[P]` `[US1]` **RED — Test: JSON surrounded by prose is recovered**
   - **File:** [`app-fourTests/ParseExtractionTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ParseExtractionTests.swift)
   - **Action:** Add `@Test func proseWrappedJsonRecovered()` — pass `"Here is the extraction:\n{\"mood\":\"good\",\"medications\":[],\"emotions\":[],\"activities\":[],\"topics\":[],\"lexicon\":[],\"sideEffects\":[]}\nI hope this helps!"` to `parseExtraction(from:)`. `#expect(result != nil)`, `#expect(result?.mood == "good")`.
   - **Dependencies:** T104 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T107` `[P]` `[US1]` **RED — Test: totally unparseable returns nil**
+- [x] `T107` `[P]` `[US1]` **RED — Test: totally unparseable returns nil**
   - **File:** [`app-fourTests/ParseExtractionTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ParseExtractionTests.swift)
   - **Action:** Add `@Test func totallyUnparseableReturnsNil()` — pass `"This is just a random string with no JSON at all"` to `parseExtraction(from:)`. `#expect(result == nil)`.
   - **Dependencies:** T104 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T108` `[P]` `[US1]` **RED — Test: empty string returns nil**
+- [x] `T108` `[P]` `[US1]` **RED — Test: empty string returns nil**
   - **File:** [`app-fourTests/ParseExtractionTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ParseExtractionTests.swift)
   - **Action:** Add `@Test func emptyStringReturnsNil()` — pass `""` to `parseExtraction(from:)`. `#expect(result == nil)`.
   - **Dependencies:** T104 (same file)
@@ -119,7 +119,7 @@
 
 ### Implementation for User Story 1
 
-- [ ] `T109` `[US1]` **GREEN — Implement `parseExtraction(from:)`**
+- [x] `T109` `[US1]` **GREEN — Implement `parseExtraction(from:)`**
   - **File:** [`app-four/Services/NoteExtraction/ExtractionValidator.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-four/Services/NoteExtraction/ExtractionValidator.swift) [NEW — start of file]
   - **Action:** Create `enum ExtractionValidator` (caseless enum — no instances). Implement `static func parseExtraction(from rawJSON: String) -> UnifiedExtraction?`:
     1. **Stage 1 — Direct decode:** Convert `rawJSON` to `Data` (UTF-8). `try JSONDecoder().decode(UnifiedExtraction.self, from: data)`. If success → return.
@@ -143,19 +143,19 @@
 
 > **RED**: Write these tests FIRST and RUN them — they MUST FAIL before any implementation.
 
-- [ ] `T110` `[P]` `[US2]` **RED — Test: valid mood values pass clamping**
+- [x] `T110` `[P]` `[US2]` **RED — Test: valid mood values pass clamping**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift) [NEW]
   - **Action:** Create `@Suite struct ExtractionValidatorTests`. Add `@Test(arguments: ["low", "flat", "okay", "good", "great"]) func validMoodPassesClamping(_ mood: String)` — construct a `UnifiedExtraction` with `mood = mood`, call `ExtractionValidator.validate(extraction, lexicon: lexicon)`, `#expect(result.mood == mood)`.
   - **Dependencies:** T103, T109 (`ExtractionValidator` file must exist)
   - **Validation:** Test compiles but **FAILS** because `validate()` does not exist yet.
 
-- [ ] `T111` `[P]` `[US2]` **RED — Test: invalid mood values are clamped to nil**
+- [x] `T111` `[P]` `[US2]` **RED — Test: invalid mood values are clamped to nil**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test(arguments: ["Bad", "fantastic", "Awful", "happy", "GOOD", ""]) func invalidMoodClampedToNil(_ mood: String)` — construct extraction with `mood = mood`, validate, `#expect(result.mood == nil)`.
   - **Dependencies:** T110 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T112` `[P]` `[US2]` **RED — Test: valid energy values pass, invalid clamped**
+- [x] `T112` `[P]` `[US2]` **RED — Test: valid energy values pass, invalid clamped**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add two tests:
     - `@Test(arguments: ["sluggish", "tired", "steady", "alert", "charged"]) func validEnergyPasses(_ energy: String)` — `#expect(result.energy == energy)`.
@@ -163,7 +163,7 @@
   - **Dependencies:** T110 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T113` `[P]` `[US2]` **RED — Test: valid focus values pass, invalid clamped**
+- [x] `T113` `[P]` `[US2]` **RED — Test: valid focus values pass, invalid clamped**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add two tests:
     - `@Test(arguments: ["foggy", "distracted", "present", "sharp", "lockedIn"]) func validFocusPasses(_ focus: String)` — `#expect(result.focus == focus)`.
@@ -171,7 +171,7 @@
   - **Dependencies:** T110 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T114` `[P]` `[US2]` **RED — Test: sleepHours clamped to 0–24 range**
+- [x] `T114` `[P]` `[US2]` **RED — Test: sleepHours clamped to 0–24 range**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func sleepHoursRangeClamping()`:
     - `sleepHours = 7.5` → `#expect(result.sleepHours == 7.5)` (valid, pass through)
@@ -183,49 +183,49 @@
   - **Dependencies:** T110 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T115` `[P]` `[US2]` **RED — Test: valid sleepQuality passes, invalid clamped**
+- [x] `T115` `[P]` `[US2]` **RED — Test: valid sleepQuality passes, invalid clamped**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test(arguments: ["restless", "light", "okay", "good", "deep"]) func validSleepQualityPasses(_ quality: String)` and `@Test(arguments: ["poor", "insomnia", "bad", "excellent"]) func invalidSleepQualityClamped(_ quality: String)`.
   - **Dependencies:** T110 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T116` `[P]` `[US2]` **RED — Test: emotions filtered against 20 curated**
+- [x] `T116` `[P]` `[US2]` **RED — Test: emotions filtered against 20 curated**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func emotionFiltering()` — input emotions `["excited", "blissful", "grateful", "happy", "anxious"]`, validate, `#expect(result.emotions == ["excited", "grateful", "anxious"])` (blissful and happy dropped — not in the 20).
   - **Dependencies:** T110 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T117` `[P]` `[US2]` **RED — Test: activities filtered against 11 categories**
+- [x] `T117` `[P]` `[US2]` **RED — Test: activities filtered against 11 categories**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func activityFiltering()` — input activities `["Work", "Napping", "Fitness", "Meditating"]`, validate, `#expect(result.activities == ["Work", "Fitness"])` (Napping and Meditating not in 11 categories).
   - **Dependencies:** T110 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T118` `[P]` `[US2]` **RED — Test: sideEffects filtered against lexicon allowlists**
+- [x] `T118` `[P]` `[US2]` **RED — Test: sideEffects filtered against lexicon allowlists**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func sideEffectFiltering()` — input sideEffects with one valid entry from `lexicon.sideEffectCues` and one invalid. Verify only valid entries survive.
   - **Dependencies:** T110 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T119` `[P]` `[US2]` **RED — Test: topics truncated to max 4**
+- [x] `T119` `[P]` `[US2]` **RED — Test: topics truncated to max 4**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func topicsTruncated()` — input topics `["A", "B", "C", "D", "E"]` (5 items), validate, `#expect(result.topics.count == 4)`, `#expect(result.topics == ["A", "B", "C", "D"])`.
   - **Dependencies:** T110 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T120` `[P]` `[US2]` **RED — Test: lexicon phrases truncated to max 5**
+- [x] `T120` `[P]` `[US2]` **RED — Test: lexicon phrases truncated to max 5**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func lexiconTruncated()` — input lexicon `["a", "b", "c", "d", "e", "f"]` (6 items), validate, `#expect(result.lexicon.count == 5)`.
   - **Dependencies:** T110 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T121` `[P]` `[US2]` **RED — Test: empty summary string set to nil**
+- [x] `T121` `[P]` `[US2]` **RED — Test: empty summary string set to nil**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func emptySummarySetToNil()` — input summary `""`, validate, `#expect(result.summary == nil)`. Also test `"  "` (whitespace only) → nil.
   - **Dependencies:** T110 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T122` `[P]` `[US2]` **RED — Test: medication names are kept even if not in lexicon**
+- [x] `T122` `[P]` `[US2]` **RED — Test: medication names are kept even if not in lexicon**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func nonLexiconMedicationsKept()` — input medications `[{name: "Tylenol", taken: true}]` (not in ADHD lexicon), validate, `#expect(result.medications.count == 1)`, `#expect(result.medications[0].name == "Tylenol")`.
   - **Dependencies:** T110 (same file)
@@ -233,7 +233,7 @@
 
 ### Implementation for User Story 2
 
-- [ ] `T123` `[US2]` **GREEN — Implement `ExtractionValidator.validate()`**
+- [x] `T123` `[US2]` **GREEN — Implement `ExtractionValidator.validate()`**
   - **File:** [`app-four/Services/NoteExtraction/ExtractionValidator.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-four/Services/NoteExtraction/ExtractionValidator.swift)
   - **Action:** Add `static func validate(_ extraction: UnifiedExtraction, lexicon: Lexicon) -> UnifiedExtraction` to the `ExtractionValidator` enum. Implementation:
     1. **Mood clamping:** `let validMoods = Set(MoodLevel.allCases.map(\.rawValue))` → if `extraction.mood` not in set → nil.
@@ -264,7 +264,7 @@
 
 ### Tests for User Story 3 (test-first · RED — MANDATORY) ⚠️
 
-- [ ] `T124` `[P]` `[US3]` **RED — Test: SleepLevel derivation from hours**
+- [x] `T124` `[P]` `[US3]` **RED — Test: SleepLevel derivation from hours**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add parameterised test:
     ```swift
@@ -287,13 +287,13 @@
   - **Dependencies:** T109 (`ExtractionValidator` file exists)
   - **Validation:** Test compiles but **FAILS** because `deriveSleepLevel` does not exist yet.
 
-- [ ] `T125` `[P]` `[US3]` **RED — Test: nil sleepHours returns nil SleepLevel**
+- [x] `T125` `[P]` `[US3]` **RED — Test: nil sleepHours returns nil SleepLevel**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func nilSleepHoursReturnsNilLevel()` — `#expect(ExtractionValidator.deriveSleepLevel(hours: nil) == nil)`.
   - **Dependencies:** T124 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T126` `[P]` `[US3]` **RED — Test: explicit sleepQuality takes precedence over hours**
+- [x] `T126` `[P]` `[US3]` **RED — Test: explicit sleepQuality takes precedence over hours**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func explicitQualityTakesPrecedence()` — construct extraction with `sleepQuality = "good"` and `sleepHours = 4.0`. After full validation, `#expect(result.sleepQuality == "good")` (explicit value wins over hours-derived "restless").
   - **Dependencies:** T124 (same file)
@@ -301,7 +301,7 @@
 
 ### Implementation for User Story 3
 
-- [ ] `T127` `[US3]` **GREEN — Implement `deriveSleepLevel(hours:)`**
+- [x] `T127` `[US3]` **GREEN — Implement `deriveSleepLevel(hours:)`**
   - **File:** [`app-four/Services/NoteExtraction/ExtractionValidator.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-four/Services/NoteExtraction/ExtractionValidator.swift)
   - **Action:** Add `static func deriveSleepLevel(hours: Double?) -> String?` to `ExtractionValidator`:
     ```swift
@@ -332,25 +332,25 @@
 
 ### Tests for User Story 4 (test-first · RED — MANDATORY) ⚠️
 
-- [ ] `T128` `[P]` `[US4]` **RED — Test: Medications topic injected when meds present**
+- [x] `T128` `[P]` `[US4]` **RED — Test: Medications topic injected when meds present**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func medicationsTopicInjected()` — construct extraction with medications `[{name: "Vyvanse", taken: true}]` and topics `["Work"]`. After validation, `#expect(result.topics.contains("Medications"))`.
   - **Dependencies:** T123 (`validate()` exists)
   - **Validation:** Test compiles but **FAILS** because topic injection not yet implemented.
 
-- [ ] `T129` `[P]` `[US4]` **RED — Test: Symptoms topic injected when sideEffects present**
+- [x] `T129` `[P]` `[US4]` **RED — Test: Symptoms topic injected when sideEffects present**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func symptomsTopicInjected()` — construct extraction with sideEffects `["appetite loss"]` (valid, assumed to survive filtering), topics `["Sleep"]`. After validation, `#expect(result.topics.contains("Symptoms"))`.
   - **Dependencies:** T128 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T130` `[P]` `[US4]` **RED — Test: no duplicate topics injected**
+- [x] `T130` `[P]` `[US4]` **RED — Test: no duplicate topics injected**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func noDuplicateTopics()` — construct extraction with medications present and topics already containing `"Medications"`. After validation, verify `"Medications"` appears exactly once.
   - **Dependencies:** T128 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T131` `[P]` `[US4]` **RED — Test: no injection when content absent**
+- [x] `T131` `[P]` `[US4]` **RED — Test: no injection when content absent**
   - **File:** [`app-fourTests/ExtractionValidatorTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/ExtractionValidatorTests.swift)
   - **Action:** Add `@Test func noInjectionWhenContentAbsent()` — construct extraction with empty medications, empty sideEffects, topics `["Work"]`. After validation, `#expect(!result.topics.contains("Medications"))`, `#expect(!result.topics.contains("Symptoms"))`.
   - **Dependencies:** T128 (same file)
@@ -358,7 +358,7 @@
 
 ### Implementation for User Story 4
 
-- [ ] `T132` `[US4]` **GREEN — Implement topic derivation in `validate()`**
+- [x] `T132` `[US4]` **GREEN — Implement topic derivation in `validate()`**
   - **File:** [`app-four/Services/NoteExtraction/ExtractionValidator.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-four/Services/NoteExtraction/ExtractionValidator.swift)
   - **Action:** Add `static func deriveTopics(_ topics: [String], extraction: UnifiedExtraction, lexicon: Lexicon) -> [String]` to `ExtractionValidator`:
     1. Start with the existing topics (already truncated to 4).
@@ -382,7 +382,7 @@
 
 ### Tests for User Story 5 (test-first · RED — MANDATORY) ⚠️
 
-- [ ] `T133` `[P]` `[US5]` **RED — Test: `assembleSummaryResult` maps all fields correctly**
+- [x] `T133` `[P]` `[US5]` **RED — Test: `assembleSummaryResult` maps all fields correctly**
   - **File:** [`app-fourTests/SummaryResultAssemblyTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/SummaryResultAssemblyTests.swift) [NEW]
   - **Action:** Create `@Suite struct SummaryResultAssemblyTests`. Add `@Test func mapsAllFieldsCorrectly()` — construct a validated `UnifiedExtraction` with mood=`"good"`, energy=`"alert"`, focus=`"sharp"`, sleepHours=`8.0`, sleepQuality=`"good"`, summary=`"You had a productive day"`, emotions=`["excited"]`, topics=`["Work"]`, sideEffects=`["appetite loss"]`. Call `ExtractionValidator.assembleSummaryResult(from:lexicon:rawTranscript:)`. Verify:
     - `#expect(result.mood == "good")`
@@ -398,19 +398,19 @@
   - **Dependencies:** T109, T123 (`ExtractionValidator` with validate)
   - **Validation:** Test compiles but **FAILS** because `assembleSummaryResult` does not exist yet.
 
-- [ ] `T134` `[P]` `[US5]` **RED — Test: `MedicationExtraction` maps to `MedEvent`**
+- [x] `T134` `[P]` `[US5]` **RED — Test: `MedicationExtraction` maps to `MedEvent`**
   - **File:** [`app-fourTests/SummaryResultAssemblyTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/SummaryResultAssemblyTests.swift)
   - **Action:** Add `@Test func mapsMedicationToMedEvent()` — construct extraction with medications `[{name: "Vyvanse", dose: "30mg", taken: true}]`. Assemble `SummaryResult`. Verify `result.medications.count == 1`, `result.medications[0].name == "Vyvanse"`, `result.medications[0].dose == "30mg"`, `result.medications[0].taken == true`.
   - **Dependencies:** T133 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T135` `[P]` `[US5]` **RED — Test: title generated from signal parts**
+- [x] `T135` `[P]` `[US5]` **RED — Test: title generated from signal parts**
   - **File:** [`app-fourTests/SummaryResultAssemblyTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/SummaryResultAssemblyTests.swift)
   - **Action:** Add `@Test func titleFromSignalParts()` — construct extraction with mood=`"good"`, energy=`"alert"`, focus=`"sharp"`. Assemble `SummaryResult`. `#expect(result.generatedTitle == "Good · Alert · Sharp")`. Also test with only mood present → title is `"Good"`. Test with no signals → title is `"Journal Entry"`.
   - **Dependencies:** T133 (same file)
   - **Validation:** Test compiles but **FAILS**.
 
-- [ ] `T136` `[P]` `[US5]` **RED — Test: fallback SummaryResult on nil extraction**
+- [x] `T136` `[P]` `[US5]` **RED — Test: fallback SummaryResult on nil extraction**
   - **File:** [`app-fourTests/SummaryResultAssemblyTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/SummaryResultAssemblyTests.swift)
   - **Action:** Add `@Test func fallbackOnNilExtraction()` — call a fallback path with `rawTranscript = "I had a rough day"` and no parsed extraction. Verify `SummaryResult` has `bullets == ["I had a rough day"]`, all signal fields nil, `generatedTitle` is a sensible default.
   - **Dependencies:** T133 (same file)
@@ -418,7 +418,7 @@
 
 ### Implementation for User Story 5
 
-- [ ] `T137` `[US5]` **GREEN — Implement `assembleSummaryResult(from:lexicon:rawTranscript:)`**
+- [x] `T137` `[US5]` **GREEN — Implement `assembleSummaryResult(from:lexicon:rawTranscript:)`**
   - **File:** [`app-four/Services/NoteExtraction/ExtractionValidator.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-four/Services/NoteExtraction/ExtractionValidator.swift)
   - **Action:** Add `static func assembleSummaryResult(from extraction: UnifiedExtraction, lexicon: Lexicon, rawTranscript: String) -> SummaryResult` to `ExtractionValidator`:
     1. **Title generation:** Build from signal parts: capitalize mood/energy/focus display labels, join with ` · `. Fall back to `"Journal Entry"` if all nil.
@@ -433,7 +433,7 @@
   - **Dependencies:** T123, T127, T132 (validator complete), T133–T136 (tests must FAIL first)
   - **Validation:** T133, T134, T135, T136 turn **GREEN**.
 
-- [ ] `T138` `[US5]` **Refactor `MLXJournalService.summarize()` to use validation pipeline**
+- [x] `T138` `[US5]` **Refactor `MLXJournalService.summarize()` to use validation pipeline**
   - **File:** [`app-four/Services/MLXJournalService.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-four/Services/MLXJournalService.swift)
   - **Action:** Refactor `summarize()` (lines 52-116):
     1. **Remove** the private `LLMExtractionResponse` struct (lines 20-36) and `LLMMedicationEntry` struct (lines 8-18).
@@ -466,7 +466,7 @@
 
 > **Note**: Most of this is already covered by T107/T108 (parse returns nil) and T136/T137 (fallback result). This phase adds end-to-end verification.
 
-- [ ] `T139` `[US6]` **Integration test: garbage input returns transcript-only result**
+- [x] `T139` `[US6]` **Integration test: garbage input returns transcript-only result**
   - **File:** [`app-fourTests/SummaryResultAssemblyTests.swift`](file:///Users/caesargrey/Projects/app-four-llama/app-fourTests/SummaryResultAssemblyTests.swift)
   - **Action:** Add `@Test func endToEndFallback()` — construct a raw JSON string that fails all 3 parse stages. Call the full `ExtractionValidator.parseExtraction()` → nil → `fallbackResult(rawTranscript:)` path. Verify `result.mood == nil`, `result.energyLevel == nil`, `result.focusLevel == nil`, `result.bullets == [rawTranscript]`, `result.medications.isEmpty`.
   - **Dependencies:** T137, T138
@@ -480,7 +480,7 @@
 
 **Purpose**: Full test suite, build verification, and cleanup.
 
-- [ ] `T140` `[P]` `[Polish]` **Run full test suite and verify all GREEN**
+- [x] `T140` `[P]` `[Polish]` **Run full test suite and verify all GREEN**
   - **File:** N/A (test runner)
   - **Action:** Run `xcodebuild test` for the `app-four` scheme. Verify all existing tests pass (no regressions from Part 1) and all new Part 2 tests (T100–T139) pass.
   - **Dependencies:** All previous tasks
@@ -492,7 +492,7 @@
   - **Dependencies:** T138
   - **Validation:** Release build succeeds with no errors or warnings.
 
-- [ ] `T142` `[Polish]` **Commit Part 2 changes**
+- [x] `T142` `[Polish]` **Commit Part 2 changes**
   - **File:** N/A (git)
   - **Action:** Stage all new and modified files. Commit with message `feat(043): Part 2 — validation & persistence pipeline (parseExtraction, ExtractionValidator, UnifiedExtraction)`. Push `feat/043-mlx-journal-service` branch.
   - **Dependencies:** T140, T141
