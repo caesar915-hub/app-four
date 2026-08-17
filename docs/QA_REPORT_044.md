@@ -1,4 +1,4 @@
-<!-- Created: 2026-08-17 13:43 (WEST) · Updated: 2026-08-17 19:05 (WEST) -->
+<!-- Created: 2026-08-17 13:43 (WEST) · Updated: 2026-08-17 20:31 (WEST) -->
 # Spec 044 Device QA Report
 
 **Branch:** `feat/043-mlx-journal-service`  
@@ -93,8 +93,13 @@ Impact: Could not delete the production LLM through the app UI. Worked around by
 | T032 | Locked-screen LLM download, 3 consecutive runs | **DONE** |
 | T033 | Airplane-mode byte-range resume (≤5% redundant bytes) | **DONE** (2026-08-17 PM, see below) |
 | T034 | 6-minute thermal timeout fixtures | **DONE** (2026-08-17 PM, see below) |
-| T035 | Save-count spot-check on device | Unit tests green; on-device console check **not feasible** with current tooling (`log stream --device` unsupported on this macOS, no idevicesyslog/devicectl console) — recommend a one-time Console.app spot-check |
+| T035 | Save-count spot-check on device | **DONE** (2026-08-17 PM, see below) — counting-mock unit tests + call-site inspection; live console check dropped (no streaming channel on this Mac) |
 | T036 | MLX memory-gauge eviction matrix | **DONE** (2026-08-17 PM, see below) |
+
+## T035 Result — save-count verification (added 2026-08-17 PM)
+
+- Counting-mock tests green in the 544/544 suite: `RecordingDetailViewModelTests` asserts `saveCallCount == 3` for a full voice-note flow ("no per-segment writes"), `PendingTranscriptionServiceTests` asserts `saveCallCount == 2` per drained recording.
+- Call-site inspection confirms the design: transcription terminal paths (completed / failed / timeout / cancelled / pending) each save **exactly once**; zero saves during segment streaming; processing adds two deliberate lifecycle saves (`generating` → `complete`). Total 3 saves per voice note, all at lifecycle boundaries.
 
 ## T033 Result — airplane-mode byte-range resume (added 2026-08-17 PM)
 
