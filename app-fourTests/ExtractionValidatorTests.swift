@@ -23,11 +23,22 @@ import Foundation
         #expect(validated.mood == mood)
     }
     
-    @Test(arguments: ["Bad", "fantastic", "Awful", "happy", "GOOD", ""])
-    func invalidMoodClampedToNil(mood: String) {
+    @Test(arguments: ["", "ecstatic", "wonderful", "123"])
+    func unmappableMoodClampedToNil(mood: String) {
         let extraction = makeExtraction(mood: mood)
         let validated = ExtractionValidator.validate(extraction, lexicon: lexicon)
         #expect(validated.mood == nil)
+    }
+
+    // Mood synonym mapping
+    @Test(arguments: [
+        ("happy", "great"), ("very good", "great"), ("fantastic", "great"),
+        ("fine", "okay"), ("neutral", "flat"),
+        ("sad", "low"), ("Awful", "low"), ("GOOD", "good"),
+    ])
+    func moodSynonymsMapped(input: String, expected: String) {
+        let validated = ExtractionValidator.validate(makeExtraction(mood: input), lexicon: lexicon)
+        #expect(validated.mood == expected)
     }
 
     // Energy clamping
@@ -38,11 +49,24 @@ import Foundation
         #expect(validated.energy == energy)
     }
     
-    @Test(arguments: ["fantastic", "Low", "energized", "CHARGED"])
-    func invalidEnergyClamped(energy: String) {
+    @Test(arguments: ["fantastic", "peppy", "zzz"])
+    func unmappableEnergyClamped(energy: String) {
         let extraction = makeExtraction(energy: energy)
         let validated = ExtractionValidator.validate(extraction, lexicon: lexicon)
         #expect(validated.energy == nil)
+    }
+
+    // Energy synonym mapping
+    @Test(arguments: [
+        ("high", "charged"), ("very good", "charged"), ("wired", "charged"),
+        ("good", "alert"), ("energized", "alert"),
+        ("balanced", "steady"),
+        ("Low", "tired"),
+        ("exhausted", "sluggish"), ("CHARGED", "charged"),
+    ])
+    func energySynonymsMapped(input: String, expected: String) {
+        let validated = ExtractionValidator.validate(makeExtraction(energy: input), lexicon: lexicon)
+        #expect(validated.energy == expected)
     }
 
     // Focus clamping
@@ -53,11 +77,24 @@ import Foundation
         #expect(validated.focus == focus)
     }
     
-    @Test(arguments: ["lockedin", "locked_in", "LockedIn", "focused"])
-    func invalidFocusClamped(focus: String) {
+    @Test(arguments: ["locked_in", "xyz", "kaleidoscopic"])
+    func unmappableFocusClamped(focus: String) {
         let extraction = makeExtraction(focus: focus)
         let validated = ExtractionValidator.validate(extraction, lexicon: lexicon)
         #expect(validated.focus == nil)
+    }
+
+    // Focus synonym mapping ("lockedin"/"LockedIn" already match lockedIn case-insensitively)
+    @Test(arguments: [
+        ("good", "sharp"), ("very good", "sharp"), ("focused", "sharp"),
+        ("hyperfocus", "lockedIn"), ("locked in", "lockedIn"), ("lockedin", "lockedIn"),
+        ("fine", "present"),
+        ("scattered", "distracted"),
+        ("brain fog", "foggy"), ("can't focus", "foggy"), ("unfocused", "foggy"),
+    ])
+    func focusSynonymsMapped(input: String, expected: String) {
+        let validated = ExtractionValidator.validate(makeExtraction(focus: input), lexicon: lexicon)
+        #expect(validated.focus == expected)
     }
 
     // SleepHours range
@@ -78,11 +115,24 @@ import Foundation
         #expect(validated.sleepQuality == quality)
     }
     
-    @Test(arguments: ["poor", "insomnia", "bad", "excellent"])
-    func invalidSleepQualityClamped(quality: String) {
+    @Test(arguments: ["insomnia", "sleepless", "meh-sleep"])
+    func unmappableSleepQualityClamped(quality: String) {
         let extraction = makeExtraction(sleepQuality: quality)
         let validated = ExtractionValidator.validate(extraction, lexicon: lexicon)
         #expect(validated.sleepQuality == nil)
+    }
+
+    // SleepQuality synonym mapping
+    @Test(arguments: [
+        ("great", "good"), ("very good", "good"),
+        ("excellent", "deep"),
+        ("decent", "okay"),
+        ("poor", "light"),
+        ("bad", "restless"), ("awful", "restless"),
+    ])
+    func sleepSynonymsMapped(input: String, expected: String) {
+        let validated = ExtractionValidator.validate(makeExtraction(sleepQuality: input), lexicon: lexicon)
+        #expect(validated.sleepQuality == expected)
     }
 
     // Sleep level derivation

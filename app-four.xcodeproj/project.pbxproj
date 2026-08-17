@@ -19,6 +19,7 @@
 		91528C3C914425C0946CF89F /* SquirlDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 3F8C35CE4B4793A1A8BAC706 /* SquirlDesignSystem */; };
 		99A8DD6F712ED882A9CCCFFA /* SquirlSignals in Frameworks */ = {isa = PBXBuildFile; productRef = AC13466A421DCDB2A4BCB3C5 /* SquirlSignals */; };
 		9CFF548080164D58F7E0D35A /* SquirlDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 90059C596F1B493FEBD81C9B /* SquirlDesignSystem */; };
+		B7DF53EC6A4F154CC8919A08 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = FE88BBE66B5C854E024D2711 /* Yams */; };
 		F3839BD74FA7AFBB55B2A810 /* HuggingFace in Frameworks */ = {isa = PBXBuildFile; productRef = EC864C841CD6FADFBDCB6ECA /* HuggingFace */; };
 /* End PBXBuildFile section */
 
@@ -52,6 +53,8 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3724CF872FC9292700427F48 /* app-fourTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = "app-fourTests";
 			sourceTree = "<group>";
 		};
@@ -90,6 +93,7 @@
 				12F6E2AFB0B1C71A87B7DB2E /* MLXLLM in Frameworks */,
 				770F1DF603B78E0B919C9BD8 /* OrderedCollections in Frameworks */,
 				F3839BD74FA7AFBB55B2A810 /* HuggingFace in Frameworks */,
+				B7DF53EC6A4F154CC8919A08 /* Yams in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -188,6 +192,7 @@
 				80B9330881E008D27B87336D /* MLXLLM */,
 				D7BBF6E30C328D9067BB5096 /* OrderedCollections */,
 				EC864C841CD6FADFBDCB6ECA /* HuggingFace */,
+				FE88BBE66B5C854E024D2711 /* Yams */,
 			);
 			productName = "app-four";
 			productReference = 37F17B2A2FC0CE4F00CAC42E /* app-four.app */;
@@ -227,9 +232,10 @@
 				5638591163E5BF5AC46DD98E /* XCRemoteSwiftPackageReference "mlx-swift" */,
 				97FE35B9200A6C415121059D /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
 				7010BCE5AEABE02169EAF6BA /* XCRemoteSwiftPackageReference "swift-collections" */,
-				EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */,
-				4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */,
+				EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "SquirlSignals" */,
+				4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "SquirlDesignSystem" */,
 				383BE6B7D2C1580D95E2904D /* XCRemoteSwiftPackageReference "swift-huggingface" */,
+				2D750759AD8C1C25A031DBA3 /* XCRemoteSwiftPackageReference "Yams" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 37F17B2B2FC0CE4F00CAC42E /* Products */;
@@ -812,17 +818,25 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "Packages/SquirlDesignSystem" */ = {
+		4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "SquirlDesignSystem" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/SquirlDesignSystem;
 		};
-		EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "Packages/SquirlSignals" */ = {
+		EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "SquirlSignals" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/SquirlSignals;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		2D750759AD8C1C25A031DBA3 /* XCRemoteSwiftPackageReference "Yams" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jpsim/Yams.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.0;
+			};
+		};
 		370F529C2FC2046C00504F1C /* XCRemoteSwiftPackageReference "WhisperKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/argmaxinc/WhisperKit.git";
@@ -934,6 +948,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 383BE6B7D2C1580D95E2904D /* XCRemoteSwiftPackageReference "swift-huggingface" */;
 			productName = HuggingFace;
+		};
+		FE88BBE66B5C854E024D2711 /* Yams */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2D750759AD8C1C25A031DBA3 /* XCRemoteSwiftPackageReference "Yams" */;
+			productName = Yams;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

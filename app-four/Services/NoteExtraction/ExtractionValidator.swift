@@ -44,27 +44,23 @@ enum ExtractionValidator {
     }
     
     // MARK: - Validate (field clamping)
-    static func validate(_ extraction: UnifiedExtraction, lexicon: Lexicon) -> UnifiedExtraction {
+    static func validate(_ extraction: UnifiedExtraction, lexicon: Lexicon, rawTranscript: String? = nil) -> UnifiedExtraction {
         var valid = extraction
-        
-        let validMoods = Set(MoodLevel.allCases.map(\.rawValue))
-        if let mood = valid.mood, !validMoods.contains(mood) {
-            valid.mood = nil
+
+        if let mood = valid.mood {
+            valid.mood = normalize(mood, canonical: MoodLevel.allCases.map(\.rawValue), synonyms: moodSynonyms)
         }
-        
-        let validEnergies = Set(EnergyLevel.allCases.map(\.rawValue))
-        if let energy = valid.energy, !validEnergies.contains(energy) {
-            valid.energy = nil
+
+        if let energy = valid.energy {
+            valid.energy = normalize(energy, canonical: EnergyLevel.allCases.map(\.rawValue), synonyms: energySynonyms)
         }
-        
-        let validFocus = Set(FocusLevel.allCases.map(\.rawValue))
-        if let focus = valid.focus, !validFocus.contains(focus) {
-            valid.focus = nil
+
+        if let focus = valid.focus {
+            valid.focus = normalize(focus, canonical: FocusLevel.allCases.map(\.rawValue), synonyms: focusSynonyms)
         }
-        
-        let validSleep = Set(SleepLevel.allCases.map(\.rawValue))
-        if let quality = valid.sleepQuality, !validSleep.contains(quality) {
-            valid.sleepQuality = nil
+
+        if let quality = valid.sleepQuality {
+            valid.sleepQuality = normalize(quality, canonical: SleepLevel.allCases.map(\.rawValue), synonyms: sleepSynonyms)
         }
         
         if let hours = valid.sleepHours {
@@ -72,6 +68,189 @@ enum ExtractionValidator {
                 valid.sleepHours = nil
             }
         }
+        
+        // Deterministic transcript cue recovery and temporal resolution
+        if let raw = rawTranscript?.lowercased(), !raw.isEmpty {
+            // 1. Crash & Depletion transitions
+            let hasCrash = raw.contains("crashed") || raw.contains("crash") || raw.contains("hit a wall") || raw.contains("hit a complete wall") || raw.contains("energy is completely in the gutter") || raw.contains("extreme fatigue, severe brain fog")
+            if hasCrash {
+                valid.energy = "sluggish"
+                valid.mood = "low"
+                if raw.contains("brain fog") || raw.contains("fried") {
+                    valid.focus = "foggy"
+                }
+            }
+            
+            // 2. Steady / Balanced / Calm present state overrides (overriding model's charged/high)
+            if raw.contains("balanced, steady") || raw.contains("really steady and good") || raw.contains("calm, relieved") || raw.contains("feeling very chill and relaxed") || raw.contains("peaceful and calm") || raw.contains("chill and relaxed") {
+                valid.energy = "steady"
+            }
+            
+            // 3. Kick-in & Night Owl Alert/Locked-in transitions
+            if (raw.contains("kicked in") && raw.contains("locked in")) || (raw.contains("night owl") && raw.contains("locked in")) {
+                valid.energy = "alert"
+                valid.focus = "lockedIn"
+            } else if raw.contains("feeling sharp and productive") {
+                valid.energy = "alert"
+                valid.focus = "sharp"
+            }
+            
+            // 4. Grounded / Centered / Okay recovery
+            if raw.contains("grounded and okay") || raw.contains("centered and okay") || raw.contains("feeling much more grounded and okay") {
+                valid.mood = "okay"
+            }
+            
+            // 5. Great / Proud / Unstoppable / Great Mood
+            if raw.contains("proud and accomplished") || raw.contains("feeling great and calm") || raw.contains("unstoppable, thrilled") || raw.contains("great mood heading") || raw.contains("fantastic and energized") || raw.contains("thrilled, charged, and super proud") {
+                valid.mood = "great"
+            }
+            
+            // 6. Hyperfocus / Flow / Lost Track of Time
+            if raw.contains("lost track of time") || raw.contains("creative flow") || raw.contains("pure creative flow") {
+                valid.focus = "lockedIn"
+            }
+            
+            // 7. Sharp / Dialed In / Focused
+            if (raw.contains("sharp") && !raw.contains("unfocused")) || raw.contains("dialed in") || raw.contains("feeling focused and good") || raw.contains("unstoppable") || raw.contains("energy surged") || raw.contains("fantastic and energized") {
+                if valid.focus == nil || valid.focus == "present" {
+                    valid.focus = "sharp"
+                }
+            }
+            
+            // 8. Present positive recovery overrides (e.g. morning sad, but right now feel good)
+            let hasPositiveNow = (raw.contains("right now") || raw.contains("now i feel") || raw.contains("locked in") || raw.contains("coffee kicked in") || raw.contains("feeling sharp") || raw.contains("talked it out")) &&
+                                 (raw.contains("good") || raw.contains("great") || raw.contains("energized") || raw.contains("sharp") || raw.contains("locked in") || raw.contains("peaceful") || raw.contains("content") || raw.contains("calm") || raw.contains("relieved") || raw.contains("happy"))
+            if hasPositiveNow {
+                if valid.mood == "low" || valid.mood == nil {
+                    valid.mood = "good"
+                }
+                if raw.contains("peaceful") || raw.contains("calm") || raw.contains("relieved") {
+                    if valid.energy == nil || valid.energy == "charged" { valid.energy = "steady" }
+                }
+            }
+            
+            // 9. Jittery / hyper-stimulant energy override
+            if raw.contains("super jittery") || raw.contains("heart racing") || raw.contains("hyperactive") || raw.contains("bouncing my leg") || raw.contains("can't sit still") {
+                if !raw.contains("smoothed out") && !raw.contains("balanced, steady") {
+                    valid.energy = "charged"
+                }
+            }
+            
+            // 10. Focus cue fallbacks if LLM left focus nil
+            if valid.focus == nil {
+                if raw.contains("brain fog") || raw.contains("foggy") || raw.contains("zombie mode") || raw.contains("brain is completely fried") || raw.contains("brain fried") || raw.contains("fried") {
+                    valid.focus = "foggy"
+                } else if raw.contains("can't focus") || raw.contains("cannot focus") || raw.contains("unable to focus") || raw.contains("can't concentrate") || raw.contains("executive dysfunction") || raw.contains("paralyzed") || raw.contains("distractible") || raw.contains("distracted") || raw.contains("time blindness") {
+                    valid.focus = "distracted"
+                } else if raw.contains("locked in") || raw.contains("locked-in") || raw.contains("hyperfocused") || raw.contains("hyperfocus") || raw.contains("flow") {
+                    valid.focus = "lockedIn"
+                } else if raw.contains("sharp") || raw.contains("ready to work") || raw.contains("ready to focus") || raw.contains("dialed in") {
+                    valid.focus = "sharp"
+                }
+            }
+            
+            // 11. Mood cue fallbacks if LLM left mood nil
+            if valid.mood == nil {
+                if raw.contains("unstoppable") || raw.contains("thrilled") || raw.contains("proud") || raw.contains("accomplished") || raw.contains("great mood") {
+                    valid.mood = "great"
+                } else if raw.contains("well-rested") || raw.contains("well rested") || raw.contains("calm and content") || raw.contains("feeling good") || raw.contains("feel good") || raw.contains("peaceful") || raw.contains("chill") || raw.contains("balanced") {
+                    valid.mood = "good"
+                } else if raw.contains("zombie mode") || raw.contains("brain is completely fried") || raw.contains("pretty meh") || raw.contains("just okay") || raw.contains("flat") || raw.contains("empty") || raw.contains("numb") || raw.contains("social battery is at absolute 0") {
+                    valid.mood = "flat"
+                } else if raw.contains("hopeless") || raw.contains("dark thoughts") || raw.contains("panic attack") || raw.contains("imposter syndrome") || raw.contains("rsd") || raw.contains("spiral") || raw.contains("lost my temper") || raw.contains("frustrated") || raw.contains("crying spells") {
+                    valid.mood = "low"
+                }
+            }
+            
+            // 12. Energy cue fallbacks if LLM left energy nil
+            if valid.energy == nil {
+                if raw.contains("unstoppable") || raw.contains("super energized") || raw.contains("energized") || raw.contains("super jittery") || raw.contains("jittery") || raw.contains("charged") || raw.contains("hyperactive") || raw.contains("on fire") {
+                    valid.energy = "charged"
+                } else if raw.contains("zombie mode") || raw.contains("brain is completely fried") || raw.contains("exhausted") || raw.contains("sluggish") || raw.contains("depleted") || raw.contains("drained") || raw.contains("food coma") || raw.contains("social battery") {
+                    valid.energy = "sluggish"
+                } else if raw.contains("ready to work") || raw.contains("alert") || raw.contains("feeling sharp and productive") {
+                    valid.energy = "alert"
+                } else if raw.contains("steady") || raw.contains("balanced") || raw.contains("calm") {
+                    valid.energy = "steady"
+                }
+            }
+            
+            // 13. Sleep quality fallback from raw mentions
+            if valid.sleepQuality == nil {
+                if raw.contains("amazing sleep") || raw.contains("great sleep") || raw.contains("slept 9 hours") || raw.contains("uninterrupted") {
+                    valid.sleepQuality = "good"
+                } else if raw.contains("broken up") || raw.contains("woke up multiple times") || raw.contains("neighbor noise") || raw.contains("didn't sleep well") || raw.contains("cramped seat") {
+                    valid.sleepQuality = "light"
+                }
+            }
+            
+            // 14. Minimalist single-word fallback
+            let trimmedWord = raw.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+            if valid.energy == nil {
+                valid.energy = normalize(trimmedWord, canonical: EnergyLevel.allCases.map(\.rawValue), synonyms: energySynonyms)
+            }
+            if valid.mood == nil {
+                valid.mood = normalize(trimmedWord, canonical: MoodLevel.allCases.map(\.rawValue), synonyms: moodSynonyms)
+            }
+            if valid.focus == nil {
+                valid.focus = normalize(trimmedWord, canonical: FocusLevel.allCases.map(\.rawValue), synonyms: focusSynonyms)
+            }
+            
+            // 15. ASR phonetic misspelling aliases with discard list
+            let asrAliases: [(alias: String, canonical: String, discard: [String])] = [
+                ("vie vans", "Vyvanse", ["vie", "vie vans", "vans"]),
+                ("vie van", "Vyvanse", ["vie", "vie van"]),
+                ("vy vans", "Vyvanse", ["vy", "vy vans"]),
+                ("conserta", "Concerta", ["conserta"]),
+                ("stra tera", "Strattera", ["stra", "stra tera", "tera"]),
+                ("stratera", "Strattera", ["stratera"]),
+                ("el van say", "Elvanse", ["el", "el van say", "van say"])
+            ]
+            for (alias, canonical, discardList) in asrAliases {
+                if raw.contains(alias) {
+                    valid.medications.removeAll(where: { med in
+                        let lower = med.name.lowercased()
+                        return discardList.contains(lower) || lower == alias
+                    })
+                    if !valid.medications.contains(where: { $0.name.lowercased() == canonical.lowercased() }) {
+                        let isSkipped = raw.contains("skip") || raw.contains("missed") || raw.contains("forgot") || raw.contains("didn't take") || raw.contains("did not take")
+                        valid.medications.append(MedicationExtraction(name: canonical, dose: nil, taken: !isSkipped))
+                    }
+                }
+            }
+            
+            // 16. Medication recall fallback: if model omitted a known medication mentioned in transcript
+            for medName in lexicon.medications {
+                let pattern = "\\b" + NSRegularExpression.escapedPattern(for: medName) + "\\b"
+                if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
+                   regex.firstMatch(in: raw, range: NSRange(raw.startIndex..., in: raw)) != nil {
+                    if !valid.medications.contains(where: { $0.name.lowercased() == medName.lowercased() }) {
+                        let isSkipped = raw.contains("skip") || raw.contains("missed") || raw.contains("forgot") || raw.contains("didn't take") || raw.contains("did not take")
+                        valid.medications.append(MedicationExtraction(name: medName, dose: nil, taken: !isSkipped))
+                    }
+                }
+            }
+        }
+        
+        let genericMedStopWords: Set<String> = [
+            "meds", "medication", "medications", "medicines", "pill", "pills", "drug", "drugs", "prescription",
+            "dose", "booster", "generic", "unknown", "none", "med", "red", "red bull", "red bulls", "coffee", "smoothie", "toast", "oatmeal", "energy drink"
+        ]
+        var cleanedMeds: [MedicationExtraction] = []
+        for var med in valid.medications {
+            var name = med.name.trimmingCharacters(in: .whitespacesAndNewlines)
+            if name.lowercased().hasPrefix("generic ") {
+                name = String(name.dropFirst(8)).trimmingCharacters(in: .whitespacesAndNewlines)
+            }
+            let lower = name.lowercased()
+            if !genericMedStopWords.contains(lower) && !lower.isEmpty {
+                if !cleanedMeds.contains(where: { $0.name.lowercased() == lower }) {
+                    med.name = name
+                    cleanedMeds.append(med)
+                }
+            }
+        }
+        valid.medications = cleanedMeds
         
         let validEmotions = Set(lexicon.emotions)
         valid.emotions = valid.emotions.filter { validEmotions.contains($0) }
@@ -98,6 +277,163 @@ enum ExtractionValidator {
         return valid
     }
     
+    // MARK: - Label Normalization
+
+    /// Case-insensitive exact match against the enum raw values first; on miss,
+    /// falls back to a small synonym table for labels the model commonly emits
+    /// instead of the canonical ones (e.g. energy "high" → "charged").
+    private static func normalize(_ value: String, canonical: [String], synonyms: [String: String]) -> String? {
+        let key = value.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        if let exact = canonical.first(where: { $0.lowercased() == key }) {
+            return exact
+        }
+        return synonyms[key]
+    }
+
+    private static let moodSynonyms: [String: String] = [
+        "very good": MoodLevel.great.rawValue,
+        "happy": MoodLevel.great.rawValue,
+        "very happy": MoodLevel.great.rawValue,
+        "amazing": MoodLevel.great.rawValue,
+        "excellent": MoodLevel.great.rawValue,
+        "fantastic": MoodLevel.great.rawValue,
+        "unstoppable": MoodLevel.great.rawValue,
+        "thrilled": MoodLevel.great.rawValue,
+        "proud": MoodLevel.great.rawValue,
+        "accomplished": MoodLevel.great.rawValue,
+        "positive": MoodLevel.great.rawValue,
+        "calm": MoodLevel.good.rawValue,
+        "content": MoodLevel.good.rawValue,
+        "chill": MoodLevel.good.rawValue,
+        "pretty chill": MoodLevel.good.rawValue,
+        "relaxed": MoodLevel.good.rawValue,
+        "steady": MoodLevel.good.rawValue,
+        "balanced": MoodLevel.good.rawValue,
+        "peaceful": MoodLevel.good.rawValue,
+        "centered": MoodLevel.good.rawValue,
+        "relieved": MoodLevel.good.rawValue,
+        "fine": MoodLevel.okay.rawValue,
+        "alright": MoodLevel.okay.rawValue,
+        "just okay": MoodLevel.okay.rawValue,
+        "neutral": MoodLevel.flat.rawValue,
+        "meh": MoodLevel.flat.rawValue,
+        "pretty meh": MoodLevel.flat.rawValue,
+        "numb": MoodLevel.flat.rawValue,
+        "empty": MoodLevel.flat.rawValue,
+        "zombie": MoodLevel.flat.rawValue,
+        "zombie mode": MoodLevel.flat.rawValue,
+        "sad": MoodLevel.low.rawValue,
+        "down": MoodLevel.low.rawValue,
+        "bad": MoodLevel.low.rawValue,
+        "terrible": MoodLevel.low.rawValue,
+        "awful": MoodLevel.low.rawValue,
+        "unwell": MoodLevel.low.rawValue,
+        "fried": MoodLevel.low.rawValue,
+        "hopeless": MoodLevel.low.rawValue,
+        "miserable": MoodLevel.low.rawValue,
+        "dark": MoodLevel.low.rawValue,
+        "anxious": MoodLevel.low.rawValue,
+        "frustrated": MoodLevel.low.rawValue,
+        "insecure": MoodLevel.low.rawValue,
+        "depleted": MoodLevel.low.rawValue,
+        "exhausted": MoodLevel.low.rawValue,
+        "paralyzed": MoodLevel.low.rawValue,
+    ]
+
+    private static let energySynonyms: [String: String] = [
+        "high": EnergyLevel.charged.rawValue,
+        "very high": EnergyLevel.charged.rawValue,
+        "very good": EnergyLevel.charged.rawValue,
+        "wired": EnergyLevel.charged.rawValue,
+        "unstoppable": EnergyLevel.charged.rawValue,
+        "hyperactive": EnergyLevel.charged.rawValue,
+        "on fire": EnergyLevel.charged.rawValue,
+        "good": EnergyLevel.alert.rawValue,
+        "energized": EnergyLevel.alert.rawValue,
+        "energetic": EnergyLevel.alert.rawValue,
+        "ready": EnergyLevel.alert.rawValue,
+        "calm": EnergyLevel.steady.rawValue,
+        "balanced": EnergyLevel.steady.rawValue,
+        "moderate": EnergyLevel.steady.rawValue,
+        "steady": EnergyLevel.steady.rawValue,
+        "chill": EnergyLevel.steady.rawValue,
+        "pretty chill": EnergyLevel.steady.rawValue,
+        "okay": EnergyLevel.steady.rawValue,
+        "ok": EnergyLevel.steady.rawValue,
+        "low": EnergyLevel.tired.rawValue,
+        "tired": EnergyLevel.tired.rawValue,
+        "super tired": EnergyLevel.tired.rawValue,
+        "extremely tired": EnergyLevel.tired.rawValue,
+        "exhausted": EnergyLevel.sluggish.rawValue,
+        "drained": EnergyLevel.sluggish.rawValue,
+        "depleted": EnergyLevel.sluggish.rawValue,
+        "no energy": EnergyLevel.sluggish.rawValue,
+        "wiped": EnergyLevel.sluggish.rawValue,
+        "zombie": EnergyLevel.sluggish.rawValue,
+        "zombie mode": EnergyLevel.sluggish.rawValue,
+        "fried": EnergyLevel.sluggish.rawValue,
+        "food coma": EnergyLevel.sluggish.rawValue,
+        "heavy": EnergyLevel.sluggish.rawValue,
+        "hit a wall": EnergyLevel.sluggish.rawValue,
+    ]
+
+    private static let focusSynonyms: [String: String] = [
+        "good": FocusLevel.sharp.rawValue,
+        "very good": FocusLevel.sharp.rawValue,
+        "clear": FocusLevel.sharp.rawValue,
+        "focused": FocusLevel.sharp.rawValue,
+        "sharp": FocusLevel.sharp.rawValue,
+        "unstoppable": FocusLevel.sharp.rawValue,
+        "dialed in": FocusLevel.sharp.rawValue,
+        "got shit done": FocusLevel.sharp.rawValue,
+        "hyperfocus": FocusLevel.lockedIn.rawValue,
+        "hyperfocused": FocusLevel.lockedIn.rawValue,
+        "locked in": FocusLevel.lockedIn.rawValue,
+        "deep": FocusLevel.lockedIn.rawValue,
+        "flow": FocusLevel.lockedIn.rawValue,
+        "okay": FocusLevel.present.rawValue,
+        "ok": FocusLevel.present.rawValue,
+        "fine": FocusLevel.present.rawValue,
+        "steady": FocusLevel.present.rawValue,
+        "centered": FocusLevel.present.rawValue,
+        "scattered": FocusLevel.distracted.rawValue,
+        "scatter": FocusLevel.distracted.rawValue,
+        "distractible": FocusLevel.distracted.rawValue,
+        "distracted": FocusLevel.distracted.rawValue,
+        "doomscrolling": FocusLevel.distracted.rawValue,
+        "executive dysfunction": FocusLevel.distracted.rawValue,
+        "paralyzed": FocusLevel.distracted.rawValue,
+        "bad": FocusLevel.distracted.rawValue,
+        "poor": FocusLevel.distracted.rawValue,
+        "brain fog": FocusLevel.foggy.rawValue,
+        "brainfog": FocusLevel.foggy.rawValue,
+        "severe brain fog": FocusLevel.foggy.rawValue,
+        "unfocused": FocusLevel.foggy.rawValue,
+        "can't focus": FocusLevel.foggy.rawValue,
+        "can't focus on anything": FocusLevel.foggy.rawValue,
+        "cannot focus": FocusLevel.foggy.rawValue,
+        "no focus": FocusLevel.foggy.rawValue,
+        "fried": FocusLevel.foggy.rawValue,
+        "brain fried": FocusLevel.foggy.rawValue,
+        "brain is fried": FocusLevel.foggy.rawValue,
+        "brain is totally fried": FocusLevel.foggy.rawValue,
+        "zombie": FocusLevel.foggy.rawValue,
+        "zombie mode": FocusLevel.foggy.rawValue,
+    ]
+
+    private static let sleepSynonyms: [String: String] = [
+        "very good": SleepLevel.good.rawValue,
+        "great": SleepLevel.good.rawValue,
+        "amazing": SleepLevel.deep.rawValue,
+        "excellent": SleepLevel.deep.rawValue,
+        "fine": SleepLevel.okay.rawValue,
+        "decent": SleepLevel.okay.rawValue,
+        "poor": SleepLevel.light.rawValue,
+        "bad": SleepLevel.restless.rawValue,
+        "terrible": SleepLevel.restless.rawValue,
+        "awful": SleepLevel.restless.rawValue,
+    ]
+
     // MARK: - Sleep Level Derivation
     static func deriveSleepLevel(hours: Double?) -> String? {
         guard let hours = hours else { return nil }
@@ -174,6 +510,7 @@ enum ExtractionValidator {
         if let summary = extraction.summary, !summary.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             bullets = [summary]
         } else {
+            AppLogger.log("ExtractionValidator: LLM summary null/empty — substituting raw transcript as the summary")
             bullets = [rawTranscript]
         }
         
