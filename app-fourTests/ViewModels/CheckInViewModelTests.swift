@@ -179,18 +179,19 @@ struct CheckInViewModelTests {
         
         await viewModel.startRecordingWithDownload().value
         
-        // Wait for detached download task to start
-        try await Task.sleep(nanoseconds: 200_000_000)
-        
         #expect(viewModel.showModelDownloadPrompt == false)
         #expect(viewModel.state == .recording)
         
-        // Wait for detached download task to invoke the mock
-        while await mocks.aiModel.downloadCalled == false {
+        // Wait for the detached download task to invoke the mock — bounded at
+        // 10_000 yields so a regression fails fast instead of hanging.
+        var yields = 0
+        while await mocks.aiModel.downloadCalled == false, yields < 10_000 {
             await Task.yield()
+            yields += 1
         }
         
-        #expect(await mocks.aiModel.downloadCalled == true)
+        #expect(await mocks.aiModel.downloadCalled == true,
+                "download was not invoked within 10_000 yields")
         #expect(await mocks.audio.startRecordingCalled == true)
     }
     

@@ -19,7 +19,7 @@
 
 All deterministic, validator-backed behaviors of the macOS gold standard reproduce exactly on the iPhone 12 Pro: crash override, temporal recovery, rule ordering, skipped-med `taken:false`, jitter override, minimalist fallback, stop-word filtering, ASR-typo med normalization.
 
-**Harness:** `app-fourTests/Eval/MLXEvalSet.swift` (48 cases) + `MLXExtractionEvalTests.swift` + `MLXMemoryGateTests.swift`; test plans `app-four-mlx-eval(.xctestplan)` / `-smoke`. Env-gated (`MLX_EVAL=1` + model presence) so normal test runs are unaffected.
+**Harness:** `app-fourTests/Eval/MLXEvalSet.swift` (48 cases) + `MLXExtractionEvalTests.swift` (eval + T036 memory gate, one `.serialized` suite); test plans `app-four-mlx-eval(.xctestplan)` / `-smoke`. Env-gated (`MLX_EVAL=1` + model presence) so normal test runs are unaffected.
 
 ## Hard Gate — deterministic tuning behaviors: 8/8 PASS (final run)
 
@@ -97,7 +97,7 @@ xcodebuild test -project app-four.xcodeproj -scheme app-four \
   -only-testing:app-fourTests/MLXExtractionEvalTests
 
 # Quick 8-case smoke (tuned-* only):   -testPlan app-four-mlx-eval-smoke
-# Memory gate (T036):                  -only-testing:app-fourTests/MLXMemoryGateTests
+# Memory gate (T036):                  -only-testing:app-fourTests/MLXExtractionEvalTests (the gate now lives in that suite)
 ```
 
 Notes: suites are inert in normal test runs (env-gated `MLX_EVAL=1` + model-presence check). Device must be unlocked for the runner to launch. If the model is absent, seed it: `xcrun devicectl device copy to --device <id> --source ~/Library/llm/models/mlx-community/Qwen2.5-1.5B-Instruct-4bit --destination "Library/llm/models/mlx-community/Qwen2.5-1.5B-Instruct-4bit" --domain-type appDataContainer --domain-identifier squirl-app.app-four`.
@@ -105,5 +105,5 @@ Notes: suites are inert in normal test runs (env-gated `MLX_EVAL=1` + model-pres
 ## Artifacts
 
 - Final run xcresult: `~/Library/Developer/Xcode/DerivedData/app-four-fgtorzrcfyngybgexxulfkuebpxb/Logs/Test/Test-app-four-2026.08.17_17-50-30-+0100.xcresult` (raw pass-1/pass-2 output per case)
-- Harness: `app-fourTests/Eval/MLXEvalSet.swift`, `MLXExtractionEvalTests.swift`, `MLXMemoryGateTests.swift`
+- Harness: `app-fourTests/Eval/MLXEvalSet.swift`, `MLXExtractionEvalTests.swift` (eval + T036 memory gate)
 - Test plans: `app-four-mlx-eval.xctestplan`, `app-four-mlx-eval-smoke.xctestplan` (referenced in the `app-four` scheme)

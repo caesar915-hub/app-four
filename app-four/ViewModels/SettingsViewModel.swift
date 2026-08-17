@@ -20,14 +20,14 @@ final class SettingsViewModel {
     var llmDownloadProgress: Double = 0
     var storageUsedMB: Double = 0.0
 
-    /// The cause of the most recent failed download, surfaced inline so the row
-    /// can show plain-language recovery copy. `nil` when there is no active error
-    /// (never attempted, in progress, succeeded, or cancelled).
-    var downloadError: ModelDownloadFailure?
+    /// The cause of each model's most recent failed download, surfaced inline so
+    /// its row can show plain-language recovery copy. No entry when there is no
+    /// active error (never attempted, in progress, succeeded, or cancelled).
+    private(set) var downloadErrors: [AIModelType: ModelDownloadFailure] = [:]
 
-    /// True only when the active error is a cellular-metered block, so the row can
-    /// offer a one-tap "allow on cellular" shortcut alongside "Try again".
-    var canAllowCellular: Bool { downloadError == .cellularDisabled }
+    /// True only when the model's active error is a cellular-metered block, so its
+    /// row can offer a one-tap "allow on cellular" shortcut alongside "Try again".
+    func canAllowCellular(for type: AIModelType) -> Bool { downloadErrors[type] == .cellularDisabled }
 
     @ObservationIgnored private var downloadTasks: [AIModelType: Task<Void, Never>] = [:]
 
@@ -155,7 +155,7 @@ final class SettingsViewModel {
     }
 
     func downloadModel(_ type: AIModelType) async {
-        downloadError = nil
+        downloadErrors[type] = nil
         setDownloading(type, to: true)
         setProgress(type, to: 0)
 
@@ -166,7 +166,7 @@ final class SettingsViewModel {
             }
             // Blips and stalls retry via the shared driver (waiting for a
             // permitted network, resuming at file granularity); only the FINAL
-            // failure lands in `downloadError` for the row's recovery copy.
+            // failure lands in `downloadErrors[type]` for the row's recovery copy.
             let driver = ResilientModelDownload(
                 download: { [aiModelService] in try await aiModelService.download(type) },
                 connectivity: connectivity,
@@ -183,10 +183,10 @@ final class SettingsViewModel {
                 // User cancelled — not an error; the filesystem-truth recheck in
                 // cancelDownload() settles the row.
             } catch let cause as ModelDownloadFailure {
-                downloadError = cause
+                downloadErrors[type] = cause
                 await checkModels()
             } catch {
-                downloadError = .other(String(describing: Swift.type(of: error)))
+                downloadErrors[type] = .other(String(describing: Swift.type(of: error)))
                 await checkModels()
             }
         }
@@ -200,7 +200,7 @@ final class SettingsViewModel {
     func cancelDownload(_ type: AIModelType) {
         downloadTasks[type]?.cancel()
         downloadTasks[type] = nil
-        downloadError = nil
+        downloadErrors[type] = nil
         Task { await checkModels() }
     }
 

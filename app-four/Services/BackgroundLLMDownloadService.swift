@@ -25,6 +25,12 @@ public final class BackgroundLLMDownloadService: NSObject, Sendable {
     /// write is always visible to the later callback — an async hop through the
     /// actor would race it (found on-device after a suspend/resume flush).
     private let movedURLs = OSAllocatedUnfairLock(initialState: [Int: URL]())
+    /// OS background-completion handler handed over by `AppDelegate`. Stored
+    /// behind a lock (same pattern as `movedURLs`) instead of the actor:
+    /// `handleEventsForBackgroundURLSession` delivers it synchronously, and an
+    /// async store could lose the race against `urlSessionDidFinishEvents`'s
+    /// take, dropping the OS handler.
+    private let backgroundCompletionHandler = OSAllocatedUnfairLock<(@Sendable () -> Void)?>(initialState: nil)
     private let fileManager = FileManager.default
 
     private override init() {
@@ -75,6 +81,7 @@ public final class BackgroundLLMDownloadService: NSObject, Sendable {
         AppLogger.log("LLM snapshot tree: \(fileEntries.count) files, \(totalBytes) bytes total")
 
         for entry in fileEntries {
+            try Task.checkCancellation()
             let sourceURL = resolveURL(namespace: namespace, name: name, revision: revision, path: entry.path)
             let destinationURL = stagingRepoDir.appendingPathComponent(entry.path, isDirectory: false)
             let fileKey = "\(repoID)/\(entry.path)"
@@ -108,10 +115,10 @@ public final class BackgroundLLMDownloadService: NSObject, Sendable {
     }
 
     /// Reconnects the OS background completion handler passed from `AppDelegate`.
+    /// Synchronous by design: the store must be visible to
+    /// `urlSessionDidFinishEvents` no matter how soon it fires afterwards.
     public func setBackgroundCompletionHandler(_ handler: @escaping @Sendable () -> Void) {
-        Task {
-            await state.setBackgroundCompletionHandler(handler)
-        }
+        backgroundCompletionHandler.withLock { $0 = handler }
     }
 
     // MARK: - Private
@@ -169,6 +176,12 @@ public final class BackgroundLLMDownloadService: NSObject, Sendable {
         var hasRetriedStaleResume = false
         while true {
             let resumeState = await resumeStore.state(for: fileKey)
+            if let resumeState {
+                // The tracker starts at zero for each file: credit bytes already
+                // fetched before the interruption so the aggregate bar reflects
+                // the resumed offset instead of under-reporting.
+                progress(resumeState.downloadedBytes)
+            }
             do {
                 return try await runDownloadAttempt(
                     sourceURL: sourceURL,
@@ -217,14 +230,21 @@ public final class BackgroundLLMDownloadService: NSObject, Sendable {
                     // Register BEFORE resuming: delegate callbacks can only fire after
                     // `task.resume()`, so awaiting registration here closes the race
                     // where a fast completion could reach `state.complete` first.
-                    await state.register(
-                        task: task,
-                        continuation: continuation,
-                        progress: progress,
-                        resumeStore: resumeStore,
-                        fileKey: fileKey,
-                        usedResumeState: resumeState != nil
-                    )
+                    do {
+                        try await state.register(
+                            task: task,
+                            continuation: continuation,
+                            progress: progress,
+                            resumeStore: resumeStore,
+                            fileKey: fileKey,
+                            usedResumeState: resumeState != nil
+                        )
+                    } catch {
+                        // Cancellation beat registration: `register` already cancelled
+                        // the task and resumed the continuation with CancellationError,
+                        // so the transfer must not be started.
+                        return
+                    }
                     task.resume()
                 }
             }
@@ -339,7 +359,9 @@ private actor DownloadState {
     }
 
     private var entries: [Int: Entry] = [:]
-    private var backgroundCompletionHandler: (@Sendable () -> Void)?
+    /// Task identifiers cancelled before their registration reached the actor:
+    /// `register` must cancel such tasks instead of starting the transfer.
+    private var cancelledIDs = Set<String>()
 
     func register(
         task: URLSessionDownloadTask,
@@ -348,7 +370,18 @@ private actor DownloadState {
         resumeStore: ResumeStateStore,
         fileKey: String,
         usedResumeState: Bool
-    ) {
+    ) async throws {
+        if cancelledIDs.remove(String(task.taskIdentifier)) != nil {
+            // A cancel landed before registration: honour it now — cancel the
+            // task (keeping any resume data) and fail the awaiting caller rather
+            // than resuming a transfer nobody wants.
+            let data = await task.cancelByProducingResumeData()
+            if let data {
+                await persistResumeState(data, task: task, resumeStore: resumeStore, fileKey: fileKey)
+            }
+            continuation.resume(throwing: CancellationError())
+            throw CancellationError()
+        }
         entries[task.taskIdentifier] = Entry(
             task: task,
             continuation: continuation,
@@ -359,26 +392,38 @@ private actor DownloadState {
         )
     }
 
-    func setBackgroundCompletionHandler(_ handler: @escaping @Sendable () -> Void) {
-        backgroundCompletionHandler = handler
+    /// Persists byte-range resume data captured from a cancelled task so the
+    /// next attempt continues from the interruption point.
+    private func persistResumeState(
+        _ data: Data,
+        task: URLSessionDownloadTask,
+        resumeStore: ResumeStateStore,
+        fileKey: String
+    ) async {
+        let state = ResumeState(
+            fileKey: fileKey,
+            resumeData: data,
+            totalBytesExpected: task.countOfBytesExpectedToReceive,
+            downloadedBytes: task.countOfBytesReceived,
+            etag: nil,
+            lastModified: nil
+        )
+        await resumeStore.setState(state)
+        AppLogger.log("Captured \(data.count) bytes resumeData on cancel for \(fileKey)")
     }
 
     /// Cancels a task, capturing byte-range resume data so the next attempt
     /// continues from the interruption point, then resumes the awaiting caller.
     func cancel(taskIdentifier: Int) async {
-        guard let entry = entries.removeValue(forKey: taskIdentifier) else { return }
+        guard let entry = entries.removeValue(forKey: taskIdentifier) else {
+            // Registration hasn't reached the actor yet (its Task lost the race):
+            // leave a marker so `register` cancels the task instead of resuming it.
+            cancelledIDs.insert(String(taskIdentifier))
+            return
+        }
         let data = await entry.task.cancelByProducingResumeData()
         if let data {
-            let state = ResumeState(
-                fileKey: entry.fileKey,
-                resumeData: data,
-                totalBytesExpected: entry.task.countOfBytesExpectedToReceive,
-                downloadedBytes: entry.task.countOfBytesReceived,
-                etag: nil,
-                lastModified: nil
-            )
-            await entry.resumeStore.setState(state)
-            AppLogger.log("Captured \(data.count) bytes resumeData on cancel for \(entry.fileKey)")
+            await persistResumeState(data, task: entry.task, resumeStore: entry.resumeStore, fileKey: entry.fileKey)
         }
         entry.continuation.resume(throwing: CancellationError())
         // `didCompleteWithError` fires afterwards with NSURLErrorCancelled, but the
@@ -425,12 +470,6 @@ private actor DownloadState {
         } else {
             entry.continuation.resume(throwing: BackgroundLLMDownloadError.resumeDataMissing)
         }
-    }
-
-    func takeBackgroundCompletionHandler() -> (@Sendable () -> Void)? {
-        let handler = backgroundCompletionHandler
-        backgroundCompletionHandler = nil
-        return handler
     }
 }
 
@@ -536,8 +575,12 @@ extension BackgroundLLMDownloadService: URLSessionDownloadDelegate {
 
     public func urlSessionDidFinishEvents(forBackgroundURLSession session: URLSession) {
         AppLogger.log("Background session events finished — invoking OS completion handler")
+        let handler = backgroundCompletionHandler.withLock { value -> (@Sendable () -> Void)? in
+            let handler = value
+            value = nil
+            return handler
+        }
         Task { @MainActor in
-            let handler = await state.takeBackgroundCompletionHandler()
             handler?()
         }
     }

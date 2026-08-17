@@ -103,6 +103,7 @@ struct OnboardingViewModelTests {
         let container = try makeContainer()
         let context = container.mainContext
         let mock = MockAIModelService()
+        await mock.setStubIsDownloaded(false)   // not installed → the download actually runs
         await mock.setDownloadFailure(.noNetwork)
         let vm = OnboardingViewModel(aiModelService: mock)
 
@@ -152,6 +153,7 @@ struct OnboardingViewModelTests {
     @Test func unclassifiedDownloadErrorSurfacesTypeTagOnly() async throws {
         let container = try makeContainer()
         let mock = MockAIModelService()
+        await mock.setStubIsDownloaded(false)   // not installed → the download actually runs
         await mock.setShouldThrowOnDownload(true)
         let vm = OnboardingViewModel(aiModelService: mock)
 
@@ -205,6 +207,7 @@ struct OnboardingViewModelTests {
         let container = try makeContainer()
         let context = container.mainContext
         let mock = MockAIModelService()
+        await mock.setStubIsDownloaded(false)   // not installed → the download actually runs
         await mock.setDownloadFailure(.noNetwork)
         let vm = OnboardingViewModel(aiModelService: mock)
 

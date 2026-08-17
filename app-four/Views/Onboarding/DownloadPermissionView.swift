@@ -3,11 +3,12 @@ import SwiftData
 
 /// Step 3 of the four-screen first-run flow (welcome → Siri → here → LLM):
 /// the explicit voice-model-download opt-in. Explains *why* the Whisper model exists
-/// (voice stays on-device), then branches: "Download Now" downloads and
-/// completes onboarding; "Skip for Now" completes without the model and records
-/// the decline so the background download stays off. A mid-flight failure shows
-/// the typed cause in calm copy and returns both actions (retry or skip); the
-/// back button hides only while a download is in flight.
+/// (voice stays on-device), then branches: "Download Now" downloads and advances
+/// to the LLM step (whose download/skip completes onboarding); "Skip for Now"
+/// advances the same way and records the decline so the background download stays
+/// off. A mid-flight failure shows the typed cause in calm copy and returns both
+/// actions (retry or skip); the back button hides only while a download is in
+/// flight.
 struct DownloadPermissionView: View {
     @Environment(\.modelContext) private var modelContext
     var viewModel: OnboardingViewModel

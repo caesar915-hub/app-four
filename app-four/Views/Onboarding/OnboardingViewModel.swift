@@ -89,6 +89,12 @@ final class OnboardingViewModel {
 
     private func runDownload(_ type: AIModelType, onSuccess: () -> Void) async {
         guard !isDownloading else { return }
+        // Already installed (e.g. a force-quit between steps after the download
+        // landed) — skip straight to the resolved/advance state.
+        if aiModelService.localPath(for: type) != nil {
+            onSuccess()
+            return
+        }
         isDownloading = true
         downloadError = nil
         downloadProgress = 0.0

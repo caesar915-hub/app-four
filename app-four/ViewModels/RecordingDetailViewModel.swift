@@ -12,6 +12,10 @@ final class RecordingDetailViewModel {
     @ObservationIgnored private var retryTask: Task<Void, Never>?
     private(set) var summaryTask: Task<Void, Never>?
 
+    /// Set when summarization couldn't run because the insights model isn't on the
+    /// device; the view surfaces a calm notice (mirrors ProcessingViewModel).
+    var showModelMissing: Bool = false
+
     init(recording: Recording, store: RecordingStore, services: AppServices) {
         self.recording = recording
         self.store = store
@@ -141,6 +145,15 @@ final class RecordingDetailViewModel {
 
             recording.applySummary(result)
             AppLogger.log("Summary generated for \(recording.id)")
+            store.save()
+        } catch SummarizationError.modelNotInstalled {
+            // The managed-lifecycle model simply isn't on the device yet — not a
+            // failure. Keep the transcript via the fallback result and let the
+            // user fetch the model from Settings, then Regenerate (mirrors
+            // ProcessingViewModel).
+            showModelMissing = true
+            recording.applySummary(ExtractionValidator.fallbackResult(rawTranscript: recording.fullTranscriptText))
+            AppLogger.log("Summary skipped for \(recording.id): insights model not installed")
             store.save()
         } catch {
             recording.summaryStatus = SummaryStatus.failed.rawValue

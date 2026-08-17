@@ -84,6 +84,11 @@ struct RecordingDetailView: View {
                 Task { @MainActor in dismiss() }
             }
         }
+        .alert("Insights Model Not Downloaded", isPresented: $viewModel.showModelMissing) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Your note is saved, but mood, energy and focus weren't extracted because the insights model isn't on this device yet. Download it from Settings › AI Models.")
+        }
     }
 
     // MARK: - Title + meta
@@ -186,7 +191,11 @@ struct RecordingDetailView: View {
     // MARK: - Summary (LLM bullets — surfaced per the 043 detail redesign)
 
     private var hasSummary: Bool {
-        !viewModel.recording.summaryBullets.isEmpty
+        let bullets = viewModel.recording.summaryBullets
+        // The fallback "summary" is the raw transcript echoed back — suppress the
+        // card (and its AI-authorship caption); the transcript section below
+        // already shows the same text.
+        return !bullets.isEmpty && bullets != [viewModel.recording.fullTranscriptText]
     }
 
     /// The on-device model's second-person read-back of the check-in. Sits in

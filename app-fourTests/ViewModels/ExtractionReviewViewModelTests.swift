@@ -135,7 +135,7 @@ struct ExtractionReviewViewModelTests {
         #expect(energyTag?.source == TagSource.llm.rawValue)
     }
 
-    @Test func jsonRebuildsCorrectlyOnSave() {
+    @Test func confirmAppliesEditedColumns() {
         let rec = makeRecording()
         let vm = ExtractionReviewViewModel(result: result(mood: "good"), recording: rec, store: store, onComplete: { _ in })
         
@@ -143,11 +143,6 @@ struct ExtractionReviewViewModelTests {
         vm.setEnergy(.charged)
         vm.confirm()
         
-        // Extracted JSON should NOT contain redundant fields, so wait: 
-        // the spec says "rebuild noteExtraction JSON on save ... set this as noteExtraction".
-        // But previously we asserted jsonKeepsColumnlessFieldsDropsRedundant strips them out!
-        // The issue is whether the JSON that goes into `SummaryResult` is updated before `applySummary` strips them!
-        // Actually, let's just check the tags for now and that non-column fields are preserved.
         #expect(rec.mood == "great")
         #expect(rec.energyLevel == "charged")
     }

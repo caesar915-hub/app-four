@@ -164,10 +164,22 @@ nonisolated struct MLXJournalService: SummarizationService {
         var isLoaded: Bool = false
         var modelContainer: ModelContainer?
         private var isGenerating = false
+        private var inFlightLoad: Task<Void, Error>?
 
         func loadIfNeeded() async throws {
-            guard !isLoaded else { return }
+            if isLoaded { return }
+            if let inFlightLoad { return try await inFlightLoad.value }
+            let task = Task { try await self.performLoad() }
+            inFlightLoad = task
+            defer { inFlightLoad = nil }
+            do {
+                try await task.value
+            } catch {
+                throw error
+            }
+        }
 
+        private func performLoad() async throws {
             // The model's lifecycle is managed by AIModelService (onboarding /
             // Settings / background download). Never trigger an implicit ~740 MB
             // hub download mid-check-in — if it isn't installed, say so.
@@ -338,7 +350,9 @@ nonisolated struct MLXJournalService: SummarizationService {
         }
     }
 
-    static func checkMemoryHeadroom(minimumBytes: UInt64 = 200 * 1024 * 1024) -> Bool {
+    static func checkMemoryHeadroom(minimumBytes: UInt64 = 1_500_000_000) -> Bool {
+        // Floor = model ~1.2 GB resident + KV cache + headroom; below this the
+        // load throws insufficientMemory so callers take the graceful fallback path.
         return os_proc_available_memory() >= minimumBytes
     }
 

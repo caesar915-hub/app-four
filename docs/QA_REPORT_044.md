@@ -130,7 +130,7 @@ Note: thermal stayed **nominal**, so this pass covers the no-throttle path; the 
 
 ## T036 Result — real-model memory gate (added 2026-08-17 PM)
 
-Verified with the real 828 MB model on-device via `MLXMemoryGateTests` (env-gated suite in `app-fourTests/Eval/`, run under the `app-four-mlx-eval` test plan):
+Verified with the real 828 MB model on-device via the memory-gate test (env-gated, now merged into the `.serialized` `MLXExtractionEvalTests` suite in `app-fourTests/Eval/`, run under the `app-four-mlx-eval` test plan):
 
 | Measurement | Value |
 |---|---|

@@ -101,7 +101,7 @@ struct SettingsViewModelTests {
 
     // MARK: - US2 (017): model-download recovery — cause surfacing, copy mapping, cancel/retry
 
-    // T017: the engine reports a typed cause; the VM must capture it as `downloadError`
+    // T017: the engine reports a typed cause; the VM must capture it as per-type `downloadErrors[type]`
     // and expose the no-connection copy (not a swallowed log).
     @Test func downloadSurfacesNoNetworkCauseToViewModel() async {
         await mocks.aiModel.setStubIsDownloaded(false)
@@ -109,7 +109,7 @@ struct SettingsViewModelTests {
 
         await viewModel.downloadModel(.whisper)
 
-        #expect(viewModel.downloadError == .noNetwork, "VM must capture the engine's no-network cause")
+        #expect(viewModel.downloadErrors[.whisper] == .noNetwork, "VM must capture the engine's no-network cause")
         #expect(viewModel.isDownloadingWhisper == false)
         #expect(viewModel.whisperModelInstalled == false, "A failed download leaves nothing installed")
         let message = viewModel.message(for: .noNetwork)
@@ -150,12 +150,12 @@ struct SettingsViewModelTests {
 
         // The allow-cellular affordance is offered only while the active error is
         // the cellular-metered block — drive that state through the real path.
-        #expect(viewModel.canAllowCellular == false, "No affordance before any cellular failure")
+        #expect(viewModel.canAllowCellular(for: .whisper) == false, "No affordance before any cellular failure")
         await mocks.aiModel.setStubIsDownloaded(false)
         await mocks.aiModel.setDownloadFailure(.cellularDisabled)
         await viewModel.downloadModel(.whisper)
-        #expect(viewModel.downloadError == .cellularDisabled)
-        #expect(viewModel.canAllowCellular == true,
+        #expect(viewModel.downloadErrors[.whisper] == .cellularDisabled)
+        #expect(viewModel.canAllowCellular(for: .whisper) == true,
                 "Cellular-disabled cause must offer the allow-cellular affordance")
     }
 
@@ -183,7 +183,7 @@ struct SettingsViewModelTests {
         #expect(viewModel.whisperDownloadProgress == 0, "Cancel clears progress")
         #expect(viewModel.whisperModelInstalled == false,
                 "Cancel leaves no partial/installed model (filesystem truth)")
-        #expect(viewModel.downloadError == nil, "A user cancel is not an error state")
+        #expect(viewModel.downloadErrors[.whisper] == nil, "A user cancel is not an error state")
     }
 
     // T019: a successful retry after a failure installs the model and clears the error.
@@ -191,7 +191,7 @@ struct SettingsViewModelTests {
         await mocks.aiModel.setStubIsDownloaded(false)
         await mocks.aiModel.setDownloadFailure(.noNetwork)
         await viewModel.downloadModel(.whisper)
-        #expect(viewModel.downloadError == .noNetwork, "First attempt fails with the cause")
+        #expect(viewModel.downloadErrors[.whisper] == .noNetwork, "First attempt fails with the cause")
         #expect(viewModel.whisperModelInstalled == false)
 
         // Conditions recover: the model now installs cleanly.
@@ -200,7 +200,20 @@ struct SettingsViewModelTests {
         await viewModel.downloadModel(.whisper)
 
         #expect(viewModel.whisperModelInstalled == true, "Retry success installs the model")
-        #expect(viewModel.downloadError == nil, "A successful retry clears the prior error")
+        #expect(viewModel.downloadErrors[.whisper] == nil, "A successful retry clears the prior error")
+    }
+
+    // Per-type scoping: a Whisper failure must never surface on the Journal Insights row.
+    @Test func downloadErrorsAreScopedPerModelType() async {
+        await mocks.aiModel.setStubIsDownloaded(false)
+        await mocks.aiModel.setDownloadFailure(.noNetwork)
+
+        await viewModel.downloadModel(.whisper)
+
+        #expect(viewModel.downloadErrors[.whisper] == .noNetwork)
+        #expect(viewModel.downloadErrors[.llm] == nil,
+                "A Whisper failure must not surface on the Journal Insights row")
+        #expect(viewModel.canAllowCellular(for: .llm) == false)
     }
 
     // MARK: - 030 App Intents settings (T014 / T030): sync round-trips via injected context

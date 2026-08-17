@@ -15,6 +15,11 @@ final class AIModelServiceImpl: AIModelService {
     
     private(set) var isDownloading: Bool = false
 
+    /// Model types with a download currently running. A duplicate `download(_:)`
+    /// for a type already in flight is a no-op success — progress is driven by
+    /// the existing transfer.
+    private var inFlightDownloads: Set<AIModelType> = []
+
     /// Testing-only overrides for the model download bases. When set, `localPath(for:)`
     /// resolves against these URLs instead of `ModelConstants`. This keeps
     /// filesystem-truth assertions deterministic regardless of whether QA has
@@ -35,9 +40,20 @@ final class AIModelServiceImpl: AIModelService {
     }
 
     func download(_ type: AIModelType) async throws -> AsyncThrowingStream<Double, Error> {
+        guard inFlightDownloads.insert(type).inserted else {
+            AppLogger.log("Download already in flight for \(type.rawValue) — ignoring duplicate request")
+            return AsyncThrowingStream { $0.finish() }
+        }
         AppLogger.log("Starting download for \(type.rawValue)")
         isDownloading = true
-        let metadata = try await ensureMetadata(for: type)
+        let metadata: ModelMetadata
+        do {
+            metadata = try await ensureMetadata(for: type)
+        } catch {
+            inFlightDownloads.remove(type)
+            isDownloading = false
+            throw error
+        }
         metadata.isDownloaded = false
         try? context.save()
 
@@ -49,6 +65,8 @@ final class AIModelServiceImpl: AIModelService {
             
             let task = Task { @MainActor in
                 defer {
+                    self.isDownloading = false
+                    self.inFlightDownloads.remove(type)
                     if bgTask != .invalid {
                         UIApplication.shared.endBackgroundTask(bgTask)
                     }
@@ -79,8 +97,6 @@ final class AIModelServiceImpl: AIModelService {
                 } catch {
                     // A cancellation is the caller tearing the stream down, not a failure to
                     // report: finish quietly so the row settles to filesystem truth.
-                    defer { self.isDownloading = false }
-                    
                     guard !Task.isCancelled else { continuation.finish(); return }
                     metadata.isCorrupted = true
                     try? context.save()

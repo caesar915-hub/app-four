@@ -26,16 +26,13 @@ import UIKit
         let _ = try await service.summarize(rawTranscription: "")
     }
     
-    @Test func serviceLoadsLexicon() throws {
-        let _ = MLXJournalService()
-    }
-    
     // MARK: - Phase 4 Tests
-    
+
     @Test func memoryCheckReturnsValue() {
-        let hasHeadroom = MLXJournalService.checkMemoryHeadroom()
-        // On a dev machine this should be true. It verifies the function exists and works.
-        #expect(hasHeadroom == true || hasHeadroom == false) 
+        // os_proc_available_memory() reports 0 on the simulator, so use 0/.max
+        // bounds that hold on both simulator and device.
+        #expect(MLXJournalService.checkMemoryHeadroom(minimumBytes: 0) == true)
+        #expect(MLXJournalService.checkMemoryHeadroom(minimumBytes: .max) == false)
     }
     
     @Test func modelNotLoadedAtInit() async {
