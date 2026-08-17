@@ -1,84 +1,17 @@
-## 2026-07-13 15:55 – 2026-08-17 19:01 · on-device MLX eval harness + tuning & 044 QA reports · feat/043-mlx-journal-service
+## 2026-08-17 19:01–20:00 · sync tuning 2026-08-17-c + establish tuning sync system · feat/043-mlx-journal-service
 
 **Code changes**
 - _Major (feat)_
-  - `3cf453f3` feat(043): port tuned two-pass prompts + extraction validator from macOS tuning
-  - `6b3f544a` feat(043): surface Llama summary on Recording Detail; full transcript
-  - `ef06ffb4` feat(043): Journal Insights row in Settings › AI Models
-  - `14ba99cf` feat(043): sequential Llama download step in onboarding
-  - `8362b7bc` feat(043): managed lifecycle for the Llama insights model
-  - `60ec4d75` feat: extraction review ui logic and validation (Part 3)
-  - `6eca6cb2` feat(mlx): add memory headroom alert and fallback handling (US7)
-  - `b5612ba5` feat(043): Part 3 - Update provenance tags from .nlp to .llm in ExtractionReviewViewModel
-  - `4ec0b7da` feat(043): Part 2 — validation & persistence pipeline (parseExtraction, ExtractionValidator, UnifiedExtraction)
-  - `14b940e6` feat: implement MLXJournalService phase 1-7
-  - `48084532` feat(daycard): rewrite folded summary to use standard arithmetic half-up rounding (#38)
-  - `d3f01b24` feat(daycard): folded summary averages mood/energy/focus rounded up across the day
-  - `718b3678` feat(us1): model download interception before recording
-  - `f7e70048` feat(onboarding): 3-step flow + 1.1 release cleanup (NFC hide, debug menu, fixes)
-  - `9931edd3` feat(030): restore hands-free logging surface for 1.1
-  - `4b6c1285` feat(onboarding): two-screen flow with explicit model-download opt-in
-  - `3317355c` feat(030): US4 StickerSetupView guided walkthrough + Settings entry (T035)
-- _Fixes_
-  - `f48d1062` fix(043): resolve approachable-concurrency warnings
-  - `9c82b541` fix(043): rebuild noteExtraction JSON on review save; wire memory alert
-  - `448b64de` fix(043): interpolate transcript into LLM user message; guard stage-3 parse range
-  - `30076fe4` fix(store): trigger fetch on save to resolve TimelineDay state bugs
-  - `2a64984e` fix: resolve concurrency and performance issues from implementation review
-  - `f9d11c71` fix(settings): park My Medication focus scroll below the top edge (QA S5)
-  - `73660ced` fix(030): adapt StickerSetupView to main design-system API
-  - `15fdb0d9` fix(nlp): re-port missing side-effect phrasings from abandoned recall fix
-  - `81d8200b` fix(tests): eliminate remaining headless SwiftData crash across all suites
-  - `0ceb0c1b` fix(tests): eliminate headless SwiftData crash — one shared container per suite
-  - `6b3ebada` fix(030): US4 review findings — Palette.medication, stable identity, .card(), Dynamic Type, honest check-in copy
+  - `9219eb40` feat(043): sync tuning 2026-08-17-c + establish tuning sync system
 - _Tests_
   - `972afee3` test(043): on-device MLX eval harness + tuning & 044 QA reports
-  - `5e068a7e` test(030): harden US4 lock-copy assertion against the "unexpected" evasion
-  - `88af9d7e` test(030): copy-contract coverage for US4 StickerSetupView.StickerPath
-  - `4fab52b9` test(fix): update stale MoodLibrary timeline tests to feat/024 behavior
 - _docs_
-  - `fbc78ed3` docs(043): mockup — summary card in transcript slot, full transcript below
-  - `22e3eeba` docs(043): recording-detail redesign variants mockup
-  - `1abed0d2` docs(043): add device QA checklist
-  - `aac3ed34` docs(043): mark completed tasks across parts 1-3
-  - `8d6eaa9a` docs: rewrite processing and extraction fsd with 5-stage pipeline
-  - `e918d57b` docs: finalize spec 041 with phase 3 settings integration
-  - `72569bb8` docs: finalize spec 041 and log Phase 2 completion
-  - `43eb6515` docs: 1.0 SUBMITTED for App Review (21:22, submission 75e49a99)
-  - `23d93fd4` docs: DEVLOG/BACKLOG through the 1.0 upload + submission prep
-  - `bac2863e` docs: regen WORKLOG through the v1.0 upload (PR #35, tag v1.0)
-  - `00cca98a` docs(030): bump tasks.md Updated timestamp
-  - `66ca8845` docs(030): reconcile tasks.md checkboxes with real state (US1-US3 shipped, US4 built)
-  - `c855e7f3` docs(030): regenerate WORKLOG after US4 review fixes
-  - `7d8b5176` docs(030): regenerate WORKLOG after US4 build + FR-005 amendment
-  - `57f21f72` docs(030): FR-005 haptic amendment (T037) + BACKLOG/DEVLOG for US1-US4
-- _chore_
-  - `66dba5db` chore: accept Xcode project regeneration (local package refs, empty exceptions)
-  - `02866367` chore: drop deterministic-extraction gate from plan template
-  - `9843f17a` chore: clear Swift-6-language-mode test warnings + MyMedicationSection med token
-- _other_
-  - `726af0c2` spec(043): add implementation tasks — test-first phased breakdown
-  - `de06898d` spec(043): add implementation plan — MLXJournalService
-  - `99f6fcf0` spec(043): MLXJournalService — on-device LLM extraction specification
-  - `667d2027` Merge branch 'feat/1.1-release-prep'
-  - `b9e9a8a2` Merge pull request #37 from caesar915-hub/feat/1.1-release-prep
-  - `06cd741c` Merge feat/restore-handsfree-1.1: fold the hands-free restore into the 1.1 release PR
-  - `3ff74b5e` Merge branch 'feat/030-us3-us4'
-  - `5cd7b22d` Merge pull request #35 from caesar915-hub/feat/hide-handsfree-1.0
-  - `4b8d7573` mockup(030): US4 'Set up your sticker' guided walkthrough (T034 gate)
-
-**Git actions**
-- `667d2027` Merge branch 'feat/1.1-release-prep'
-- `b9e9a8a2` Merge pull request #37 from caesar915-hub/feat/1.1-release-prep
-- `06cd741c` Merge feat/restore-handsfree-1.1: fold the hands-free restore into the 1.1 release PR
-- `3ff74b5e` Merge branch 'feat/030-us3-us4'
-- `5cd7b22d` Merge pull request #35 from caesar915-hub/feat/hide-handsfree-1.0
-- tag `refs/tags/v1.0`
+  - `63d75728` docs: regenerate WORKLOG.md after 043 tuning-port + QA commits
 
 **Worktrees**
 ```
 /Users/caesargrey/Projects/app-four                                          da077d3d [feat/042-health-nutrition-signals]
-/Users/caesargrey/Projects/app-four-llama                                    972afee3 [feat/043-mlx-journal-service]
+/Users/caesargrey/Projects/app-four-llama                                    9219eb40 [feat/043-mlx-journal-service]
 /Users/caesargrey/Projects/app-four-phase0                                   43eb6515 [android-phase0-spikes] prunable
 /Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents        9e98adab [chore/swift6-tech-debt]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4            965dcf22 [feat/037-live-activity-controls]
