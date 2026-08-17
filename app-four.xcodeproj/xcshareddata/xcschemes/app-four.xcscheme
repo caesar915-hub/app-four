@@ -32,6 +32,12 @@
             default = "YES"
             reference = "container:app-four.xctestplan">
          </TestPlanReference>
+         <TestPlanReference
+            reference = "container:app-four-mlx-eval.xctestplan">
+         </TestPlanReference>
+         <TestPlanReference
+            reference = "container:app-four-mlx-eval-smoke.xctestplan">
+         </TestPlanReference>
       </TestPlans>
       <Testables>
       </Testables>

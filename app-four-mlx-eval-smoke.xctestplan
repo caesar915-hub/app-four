@@ -1,0 +1,33 @@
+{
+  "configurations" : [
+    {
+      "id" : "96A5837E-D8D7-4B6D-8E81-EE34C472A13D",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "environmentVariableEntries" : [
+      {
+        "key" : "MLX_EVAL",
+        "value" : "1"
+      },
+      {
+        "key" : "MLX_EVAL_FILTER",
+        "value" : "tuned"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:app-four.xcodeproj",
+        "identifier" : "3724CF852FC9292700427F48",
+        "name" : "app-fourTests"
+      }
+    }
+  ],
+  "version" : 1
+}
