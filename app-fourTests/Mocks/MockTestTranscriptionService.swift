@@ -5,10 +5,12 @@ actor MockTestTranscriptionService: TranscriptionService {
     var shouldThrowError = false
     var mockTranscriptText = "This is a mock transcript."
     var loadModelHangs = false
+    private(set) var loadModelCallCount = 0
 
     func setLoadModelHangs(_ v: Bool) { loadModelHangs = v }
 
     func loadModel() async throws {
+        loadModelCallCount += 1
         if loadModelHangs {
             while !Task.isCancelled { await Task.yield() }
         }

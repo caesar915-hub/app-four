@@ -4,6 +4,8 @@ import SwiftData
 
 @main
 struct SquirlApp: App {
+    // Reconnects nsurlsessiond-owned model downloads after a background relaunch.
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @State private var selectedTab: Tab = .calendar
     @State private var shouldAutoStartRecording = false
     @State private var router = AppDependencies.appIntentRouter
@@ -158,9 +160,9 @@ private struct RootContainerView: View {
         downloadKicked = true
 
         // Whisper first (transcription unblocks the pending queue), then the
-        // ~740 MB Llama insights model — each with its own decline flag.
+        // ~740 MB insights model (LLM) — each with its own decline flag.
         await downloadModelInBackgroundIfNeeded(.whisper)
-        await downloadModelInBackgroundIfNeeded(.llama)
+        await downloadModelInBackgroundIfNeeded(.llm)
     }
 
     private func downloadModelInBackgroundIfNeeded(_ type: AIModelType) async {
@@ -178,13 +180,25 @@ private struct RootContainerView: View {
         // The model may have landed (or been installed elsewhere) while we waited.
         guard aiModelService.localPath(for: type) == nil else { return }
 
+        // The shared driver owns resilience from here (FR-009 spirit): a network
+        // blip mid-download or a frozen transfer waits for a permitted interface
+        // and retries. The insights model downloads out-of-process via
+        // BackgroundLLMDownloadService, which skips already-completed staging
+        // files and resumes partial files from persisted byte-range resume data,
+        // so each retry picks up where the previous attempt stopped.
+        let driver = ResilientModelDownload(
+            download: { try await aiModelService.download(type) },
+            connectivity: connectivity,
+            allowsCellular: { settingsQuery.first?.downloadOverCellular ?? false }
+        )
         do {
-            let progress = try await aiModelService.download(type)
-            for try await _ in progress {}
+            try await driver.run()
             if type == .whisper {
                 // Model just landed — drain anything captured while it was downloading (US3).
                 await services.pendingTranscriptionService.drainIfModelReady()
             }
+        } catch is CancellationError {
+            // App tore the task down mid-download — quiet exit, no retry.
         } catch {
             // A background download failure must not surface as a first-run error
             // (FR-010); the model stays retryable from its Settings home.
@@ -195,7 +209,7 @@ private struct RootContainerView: View {
     private func declinedDownload(_ type: AIModelType) -> Bool {
         switch type {
         case .whisper: return settingsQuery.first?.declinedOnboardingModelDownload == true
-        case .llama: return settingsQuery.first?.declinedOnboardingLlamaDownload == true
+        case .llm: return settingsQuery.first?.declinedOnboardingLLMDownload == true
         }
     }
 

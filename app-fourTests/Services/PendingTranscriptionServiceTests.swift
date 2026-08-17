@@ -85,6 +85,20 @@ struct PendingTranscriptionServiceTests {
         #expect(older.hasMedication == true)
     }
 
+    @Test func drainSavesOnlyOncePerRecording() async throws {
+        await aiModel.setStubIsDownloaded(true)
+        let older = makePending("older.m4a", createdAt: Date(timeIntervalSince1970: 100))
+        let newer = makePending("newer.m4a", createdAt: Date(timeIntervalSince1970: 200))
+        store.resetSaveCallCount()
+
+        let service = makeService(transcription: MockTestTranscriptionService())
+        await service.drainIfModelReady()
+
+        #expect(older.status == .completed)
+        #expect(newer.status == .completed)
+        #expect(store.saveCallCount == 2, "Each completed recording must produce exactly one SwiftData save, not one per segment")
+    }
+
     @Test func drainTranscribesInCaptureOrderOldestFirst() async throws {
         await aiModel.setStubIsDownloaded(true)
         // Insert out of chronological order to prove the service sorts by createdAt.

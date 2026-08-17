@@ -76,6 +76,7 @@ struct AIModelServiceImplTests {
     // MARK: - localPath(for:) — filesystem truth
 
     @Test func localPathReturnsNilWhenWhisperDirectoryAbsent() {
+        service.whisperDownloadBaseForTests = temporaryDownloadBase()
         #expect(service.localPath(for: .whisper) == nil)
     }
 
@@ -102,7 +103,7 @@ struct AIModelServiceImplTests {
 
     @Test func downloadThrowsStorageErrorIfInsufficientSpace() async throws {
         // We will simulate insufficient space by injecting a mock closure
-        service.freeSpaceProvider = { 100_000_000 } // 100MB (less than 150MB buffer)
+        service.freeSpaceProvider = { 100_000_000 } // 100MB (less than the 600MB buffer)
         
         await #expect(throws: ModelDownloadFailure.insufficientSpace) {
             let stream = try await service.download(.whisper)
@@ -110,41 +111,63 @@ struct AIModelServiceImplTests {
         }
     }
 
-    // MARK: - Llama model lifecycle
+    // MARK: - LLM model lifecycle
 
-    @Test func llamaRequiresMoreFreeSpaceThanWhisper() {
-        #expect(AIModelServiceImpl.requiredFreeSpace(for: .llama)
+    @Test func llmRequiresMoreFreeSpaceThanWhisper() {
+        #expect(AIModelServiceImpl.requiredFreeSpace(for: .llm)
                 > AIModelServiceImpl.requiredFreeSpace(for: .whisper))
     }
 
-    @Test func downloadThrowsStorageErrorForLlamaWhenTight() async throws {
-        service.freeSpaceProvider = { 200_000_000 } // fine for Whisper, too small for Llama
+    @Test func downloadThrowsStorageErrorForLLMWhenTight() async throws {
+        service.freeSpaceProvider = { 200_000_000 } // too small for either model; exercises the LLM path
         await #expect(throws: ModelDownloadFailure.insufficientSpace) {
-            let stream = try await service.download(.llama)
+            let stream = try await service.download(.llm)
             for try await _ in stream {}
         }
     }
 
-    @Test func localPathReturnsNilWhenLlamaDirectoryAbsent() {
-        #expect(service.localPath(for: .llama) == nil)
+    @Test func localPathReturnsNilWhenLLMDirectoryAbsent() {
+        service.llmDownloadBaseForTests = temporaryDownloadBase()
+        #expect(service.localPath(for: .llm) == nil)
     }
 
-    @Test func findLlamaModelDirectoryRequiresAllCriticalFiles() throws {
+    private func temporaryDownloadBase() -> URL {
+        FileManager.default.temporaryDirectory
+            .appendingPathComponent("aimodel-test-\(UUID().uuidString)")
+    }
+
+    @Test func findLLMModelDirectoryRequiresAllCriticalFiles() throws {
         let base = FileManager.default.temporaryDirectory
-            .appendingPathComponent("llama-test-\(UUID().uuidString)")
+            .appendingPathComponent("llm-test-\(UUID().uuidString)")
         defer { try? FileManager.default.removeItem(at: base) }
 
+        // HubApi layout, scoped to the configured repo:
+        // models/<repo-id>/snapshots/<hash>/
+        let repoDir = base
+            .appendingPathComponent("models", isDirectory: true)
+            .appendingPathComponent(ModelConstants.llmHubRepoID, isDirectory: true)
+
         // Partial download: config only → nil.
-        let partial = base.appendingPathComponent("snapshots/abc123")
+        let partial = repoDir.appendingPathComponent("snapshots/abc123")
         try FileManager.default.createDirectory(at: partial, withIntermediateDirectories: true)
         try "{}".write(to: partial.appendingPathComponent("config.json"), atomically: true, encoding: .utf8)
-        #expect(AIModelServiceImpl.findLlamaModelDirectory(in: base) == nil)
+        #expect(AIModelServiceImpl.findLLMModelDirectory(in: base) == nil)
 
         // Complete: config + tokenizer + weights → found.
         try "{}".write(to: partial.appendingPathComponent("tokenizer.json"), atomically: true, encoding: .utf8)
         try Data().write(to: partial.appendingPathComponent("model.safetensors"))
-        let found = try #require(AIModelServiceImpl.findLlamaModelDirectory(in: base))
+        let found = try #require(AIModelServiceImpl.findLLMModelDirectory(in: base))
         #expect(found.lastPathComponent == "abc123")
         #expect(found.deletingLastPathComponent().lastPathComponent == "snapshots")
+
+        // A complete snapshot of a DIFFERENT repo must never be picked up.
+        try FileManager.default.removeItem(at: repoDir)
+        let stale = base
+            .appendingPathComponent("models/mlx-community/Llama-3.2-1B-Instruct-4bit/snapshots/old", isDirectory: true)
+        try FileManager.default.createDirectory(at: stale, withIntermediateDirectories: true)
+        try "{}".write(to: stale.appendingPathComponent("config.json"), atomically: true, encoding: .utf8)
+        try "{}".write(to: stale.appendingPathComponent("tokenizer.json"), atomically: true, encoding: .utf8)
+        try Data().write(to: stale.appendingPathComponent("model.safetensors"))
+        #expect(AIModelServiceImpl.findLLMModelDirectory(in: base) == nil)
     }
 }
