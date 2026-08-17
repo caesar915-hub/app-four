@@ -1,5 +1,5 @@
 {
-  "originHash" : "e48d095153c3c6e8355531f1f0aabe41e4737dc21e8721bc44c9dc5808ff609d",
+  "originHash" : "b500b681a9c2f69b08bb2a35ab9dac366ca688c1c0080530fdd3ee34944fd516",
   "pins" : [
     {
       "identity" : "eventsource",
@@ -30,11 +30,11 @@
     },
     {
       "identity" : "mlx-swift-examples",
-      "kind" : "localSourceControl",
-      "location" : "/Users/caesargrey/Projects/app-four-llama/Packages/mlx-swift-examples",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ml-explore/mlx-swift-examples",
       "state" : {
-        "revision" : "b8251c9dfb199f1123ca73cacf1cfd845cf98b08",
-        "version" : "2.29.2"
+        "revision" : "9bff95ca5f0b9e8c021acc4d71a2bbe4a7441631",
+        "version" : "2.29.1"
       }
     },
     {
@@ -132,8 +132,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/huggingface/swift-transformers",
       "state" : {
-        "revision" : "2fa33e1f5e7131a7fc64c28e6d161dcec0d24820",
-        "version" : "1.3.3"
+        "revision" : "a2e184dddb4757bc943e77fbe99ac6786c53f0b2",
+        "version" : "1.0.0"
       }
     },
     {
@@ -152,15 +152,6 @@
       "state" : {
         "revision" : "3d6871d5b4a5cd519adf233fbb576e0a2af71c17",
         "version" : "5.4.0"
-      }
-    },
-    {
-      "identity" : "yyjson",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/ibireme/yyjson.git",
-      "state" : {
-        "revision" : "8b4a38dc994a110abaec8a400615567bd996105f",
-        "version" : "0.12.0"
       }
     }
   ],

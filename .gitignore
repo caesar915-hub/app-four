@@ -75,3 +75,7 @@ html-mockups/unified-onboarding-flow.html
 test_output.log
 default.profraw
 
+
+# Local MLX checkouts (used by the app-four-macos harness; not part of the iOS repo)
+Packages/mlx-swift-examples/
+Packages/swift-transformers/
