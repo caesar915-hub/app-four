@@ -1,17 +1,22 @@
-## 2026-08-17 19:01–20:00 · sync tuning 2026-08-17-c + establish tuning sync system · feat/043-mlx-journal-service
+## 2026-08-17 20:00–21:12 · address pre-merge code-review findings · feat/043-mlx-journal-service
 
 **Code changes**
 - _Major (feat)_
-  - `9219eb40` feat(043): sync tuning 2026-08-17-c + establish tuning sync system
-- _Tests_
-  - `972afee3` test(043): on-device MLX eval harness + tuning & 044 QA reports
+  - `c78993af` feat(043): LLM model management UI + recording pipeline wiring
+  - `ae474b6d` feat(044): download & transcription reliability
+- _Fixes_
+  - `57bcf137` fix(043/044): address pre-merge code-review findings
 - _docs_
-  - `63d75728` docs: regenerate WORKLOG.md after 043 tuning-port + QA commits
+  - `74d00c20` docs(044): close T035 — save-count verification via counting mocks + call-site inspection
+  - `2e67073e` docs: regenerate WORKLOG.md after -c tuning sync commit
+
+**gh actions**
+- PR #39 opened `feat/043-mlx-journal-service` — "feat(043/044): on-device MLX journal pipeline + download reliability + tuned extraction" — OPEN/MERGEABLE
 
 **Worktrees**
 ```
 /Users/caesargrey/Projects/app-four                                          da077d3d [feat/042-health-nutrition-signals]
-/Users/caesargrey/Projects/app-four-llama                                    9219eb40 [feat/043-mlx-journal-service]
+/Users/caesargrey/Projects/app-four-llama                                    57bcf137 [feat/043-mlx-journal-service]
 /Users/caesargrey/Projects/app-four-phase0                                   43eb6515 [android-phase0-spikes] prunable
 /Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents        9e98adab [chore/swift6-tech-debt]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4            965dcf22 [feat/037-live-activity-controls]
