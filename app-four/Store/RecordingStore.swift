@@ -7,6 +7,15 @@ class RecordingStore {
     var recordings: [Recording] = []
     private let modelContext: ModelContext
     var context: ModelContext { modelContext }
+
+    #if DEBUG
+    /// Test instrumentation: counts how many times `save()` has been called.
+    private(set) var saveCallCount = 0
+
+    func resetSaveCallCount() {
+        saveCallCount = 0
+    }
+    #endif
     
     init(context: ModelContext) {
         self.modelContext = context
@@ -63,6 +72,9 @@ class RecordingStore {
     }
     
     func save() {
+        #if DEBUG
+        saveCallCount += 1
+        #endif
         try? modelContext.save()
         // We MUST re-fetch because changing dates affects the array's sort order
         // and grouping logic in the ViewModels. If we don't, the array stays identical

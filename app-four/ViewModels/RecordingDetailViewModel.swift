@@ -84,10 +84,11 @@ final class RecordingDetailViewModel {
         retryTask = Task { @MainActor in
             do {
                 let stream = try await transcriptionService.transcribe(audioURL: recording.audioURL)
-                try await consumeTranscription(stream, timeoutSeconds: 90)
+                let timeout = TranscriptionTimeoutCalculator.timeout(for: recording.duration)
+                try await consumeTranscription(stream, timeoutSeconds: timeout)
                 recording.status = .completed
                 store.save()
-                await regenerateSummary()
+                await performSummarization()
             } catch is CancellationError {
                 finishFailed("Transcription cancelled. Tap Retry to try again.")
             } catch RecordingError.timeout {
@@ -107,7 +108,7 @@ final class RecordingDetailViewModel {
 
     private func consumeTranscription(
         _ stream: AsyncStream<TranscriptionSegmentDTO>,
-        timeoutSeconds: UInt64
+        timeoutSeconds: TimeInterval
     ) async throws {
         try await withThrowingTaskGroup(of: Void.self) { group in
             group.addTask { @MainActor in
@@ -117,11 +118,10 @@ final class RecordingDetailViewModel {
                     }
                     self.recording.fullTranscriptText = segment.text
                     self.recording.status = .transcribing
-                    self.store.save()
                 }
             }
             group.addTask {
-                try await Task.sleep(nanoseconds: timeoutSeconds * 1_000_000_000)
+                try await Task.sleep(nanoseconds: UInt64(timeoutSeconds * 1_000_000_000))
                 throw RecordingError.timeout
             }
             try await group.next()

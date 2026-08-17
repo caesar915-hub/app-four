@@ -25,10 +25,10 @@ final class AppSettings {
     // lightweight-migration pattern as the 030 block above.
     var declinedOnboardingModelDownload: Bool = false
 
-    /// Same semantics as `declinedOnboardingModelDownload`, for the Llama
-    /// insights model (~740 MB): set only by an explicit "Skip for Now" on the
+    /// Same semantics as `declinedOnboardingModelDownload`, for the insights
+    /// model (LLM, ~740 MB): set only by an explicit "Skip for Now" on the
     /// onboarding insights screen; Settings remains the way back.
-    var declinedOnboardingLlamaDownload: Bool = false
+    var declinedOnboardingLLMDownload: Bool = false
 
     init(
         id: UUID = UUID(),

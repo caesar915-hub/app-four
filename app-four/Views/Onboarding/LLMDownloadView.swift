@@ -8,7 +8,7 @@ import SwiftData
 /// completes onboarding; "Skip for Now" records the insights-model decline and
 /// completes without it. A mid-flight failure shows the typed cause in calm
 /// copy and returns both actions (retry or skip).
-struct LlamaDownloadView: View {
+struct LLMDownloadView: View {
     @Environment(\.modelContext) private var modelContext
     var viewModel: OnboardingViewModel
 
@@ -92,21 +92,21 @@ struct LlamaDownloadView: View {
     private func downloadModel() {
         Haptics.selection()
         Task {
-            await viewModel.downloadLlamaModel(modelContext: modelContext)
+            await viewModel.downloadLLMModel(modelContext: modelContext)
         }
     }
 
     private func skip() {
         Haptics.selection()
         withAnimation(Motion.smooth) {
-            viewModel.skipLlamaDownload(modelContext: modelContext)
+            viewModel.skipLLMDownload(modelContext: modelContext)
         }
     }
 }
 
-#Preview("Llama Download") {
+#Preview("LLM Download") {
     NavigationStack {
-        LlamaDownloadView(viewModel: OnboardingViewModel(aiModelService: AppServices.preview.aiModelService))
+        LLMDownloadView(viewModel: OnboardingViewModel(aiModelService: AppServices.preview.aiModelService))
     }
     .modelContainer(AppModelContainer.previewContainer)
 }

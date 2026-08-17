@@ -150,20 +150,20 @@ struct SettingsView: View {
             ModelDownloadRow(
                 title: "Journal Insights",
                 icon: "brain.head.profile",
-                isInstalled: viewModel.llamaModelInstalled,
-                isDownloading: viewModel.isDownloadingLlama,
-                downloadProgress: viewModel.llamaDownloadProgress,
+                isInstalled: viewModel.llmModelInstalled,
+                isDownloading: viewModel.isDownloadingLLM,
+                downloadProgress: viewModel.llmDownloadProgress,
                 errorMessage: viewModel.downloadError.map { viewModel.message(for: $0) },
                 canAllowCellular: viewModel.canAllowCellular,
-                onDownload: { Task { await viewModel.downloadModel(.llama) } },
-                onRetry: { Task { await viewModel.downloadModel(.llama) } },
-                onCancel: { viewModel.cancelDownload(.llama) },
+                onDownload: { Task { await viewModel.downloadModel(.llm) } },
+                onRetry: { Task { await viewModel.downloadModel(.llm) } },
+                onCancel: { viewModel.cancelDownload(.llm) },
                 onAllowCellular: {
                     viewModel.downloadOverCellular = true
                     viewModel.syncDownloadOverCellular()
-                    Task { await viewModel.downloadModel(.llama) }
+                    Task { await viewModel.downloadModel(.llm) }
                 },
-                onDelete: { Task { await viewModel.deleteModel(.llama) } }
+                onDelete: { Task { await viewModel.deleteModel(.llm) } }
             )
         }
     }

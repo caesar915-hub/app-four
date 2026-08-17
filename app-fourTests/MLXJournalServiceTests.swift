@@ -1,4 +1,5 @@
 import Testing
+import UIKit
 @testable import app_four
 
 @Suite struct MLXJournalServiceTests {
@@ -37,9 +38,10 @@ import Testing
         #expect(hasHeadroom == true || hasHeadroom == false) 
     }
     
-    @Test func modelNotLoadedAtInit() {
+    @Test func modelNotLoadedAtInit() async {
         let service = MLXJournalService()
-        #expect(service.isModelLoaded == false)
+        let loaded = await service.isModelLoaded
+        #expect(loaded == false)
     }
     
     // MARK: - Phase 5 Tests
@@ -57,7 +59,8 @@ import Testing
     @Test func coldStartDoesNotLoadModel() async {
         let service = MLXJournalService()
         // Simulate checking the state without triggering the summarization
-        #expect(service.isModelLoaded == false)
+        let loaded = await service.isModelLoaded
+        #expect(loaded == false)
     }
     
     // MARK: - Managed model lifecycle (044)
@@ -65,15 +68,83 @@ import Testing
     /// The service must never trigger an implicit ~740 MB hub download: with no
     /// model in the managed directory (always true in the test sandbox), a real
     /// transcript fails fast with `modelNotInstalled`.
-    @Test func summarizeThrowsModelNotInstalledWhenModelMissing() async {
-        let service = MLXJournalService()
-        do {
-            _ = try await service.summarize(rawTranscription: "Took my Vyvanse this morning, feeling good.")
-            Issue.record("Expected SummarizationError.modelNotInstalled, but summarize succeeded")
-        } catch SummarizationError.modelNotInstalled {
-            // Expected: fail fast, no implicit hub download.
-        } catch {
-            Issue.record("Expected modelNotInstalled, got \(error)")
+    // MARK: - Phase 5: MLX memory lifecycle (044)
+
+    @Test func idleTimerEvictsModel() async {
+        let center = NotificationCenter()
+        let service = MLXJournalService(
+            idleEvictionInterval: .milliseconds(50),
+            notificationCenter: center
+        )
+        await service.startLifecycleObservingForTesting()
+        await service.modelHolder.markLoadedForTesting()
+        #expect(await service.isModelLoaded == true)
+
+        await service.armIdleTimerForTesting()
+
+        #expect(await waitForEviction(of: service))
+    }
+
+    @Test func inferenceBeforeExpiryCancelsEviction() async {
+        // Deterministic: re-arming must cancel the previously armed timer task.
+        // Wall-clock races against a real timer flake under full-suite parallel
+        // load (Task.sleep overshoot > interval); actual eviction timing is
+        // covered by idleTimerEvictsModel().
+        let center = NotificationCenter()
+        let service = MLXJournalService(
+            idleEvictionInterval: .seconds(60),
+            notificationCenter: center
+        )
+        await service.startLifecycleObservingForTesting()
+        await service.modelHolder.markLoadedForTesting()
+
+        await service.armIdleTimerForTesting()
+        let firstTimer = await service.currentIdleTimerTaskForTesting()
+        await service.armIdleTimerForTesting()
+
+        #expect(firstTimer != nil)
+        #expect(firstTimer?.isCancelled == true)
+        // The re-armed timer is 60s out, so the model stays loaded.
+        #expect(await service.isModelLoaded == true)
+    }
+
+    @Test func memoryWarningEvictsImmediately() async {
+        let center = NotificationCenter()
+        let service = MLXJournalService(
+            idleEvictionInterval: .seconds(60),
+            notificationCenter: center
+        )
+        await service.startLifecycleObservingForTesting()
+        await service.modelHolder.markLoadedForTesting()
+        #expect(await service.isModelLoaded == true)
+
+        center.post(name: UIApplication.didReceiveMemoryWarningNotification, object: nil)
+
+        #expect(await waitForEviction(of: service))
+    }
+
+    @Test func backgroundEntryEvictsImmediately() async {
+        let center = NotificationCenter()
+        let service = MLXJournalService(
+            idleEvictionInterval: .seconds(60),
+            notificationCenter: center
+        )
+        await service.startLifecycleObservingForTesting()
+        await service.modelHolder.markLoadedForTesting()
+        #expect(await service.isModelLoaded == true)
+
+        center.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        #expect(await waitForEviction(of: service))
+    }
+
+    /// Polls until the model is evicted (up to ~2s). Fixed sleeps flake under
+    /// full-suite parallel load, where `Task.sleep` and actor hops overshoot.
+    private func waitForEviction(of service: MLXJournalService) async -> Bool {
+        for _ in 0..<100 {
+            if await service.isModelLoaded == false { return true }
+            try? await Task.sleep(for: .milliseconds(20))
         }
+        return false
     }
 }

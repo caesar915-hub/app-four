@@ -1,7 +1,7 @@
 import SwiftUI
 import SwiftData
 
-/// Step 3 of the four-screen first-run flow (welcome → Siri → here → Llama):
+/// Step 3 of the four-screen first-run flow (welcome → Siri → here → LLM):
 /// the explicit voice-model-download opt-in. Explains *why* the Whisper model exists
 /// (voice stays on-device), then branches: "Download Now" downloads and
 /// completes onboarding; "Skip for Now" completes without the model and records
@@ -11,7 +11,7 @@ import SwiftData
 struct DownloadPermissionView: View {
     @Environment(\.modelContext) private var modelContext
     var viewModel: OnboardingViewModel
-    @State private var showLlamaStep = false
+    @State private var showLLMStep = false
 
     var body: some View {
         GeometryReader { geo in
@@ -24,11 +24,11 @@ struct DownloadPermissionView: View {
         .background(NewLook.screen.ignoresSafeArea())
         .navigationBarBackButtonHidden(viewModel.isDownloading)
         // Whisper resolved (downloaded or skipped) → the insights-model step.
-        .navigationDestination(isPresented: $showLlamaStep) {
-            LlamaDownloadView(viewModel: viewModel)
+        .navigationDestination(isPresented: $showLLMStep) {
+            LLMDownloadView(viewModel: viewModel)
         }
         .onChange(of: viewModel.didResolveWhisper) { _, resolved in
-            if resolved { showLlamaStep = true }
+            if resolved { showLLMStep = true }
         }
     }
 

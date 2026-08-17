@@ -456,6 +456,24 @@ struct CheckInViewModelTests {
 
     /// RED: `viewModel.modelPreloadTask` does not exist yet — compile failure confirms RED.
     /// GREEN: property added in T009; cancelRecording() cancels it before the async cleanup body.
+    @Test func preloadTaskIsCancelledOnStopWithinStaggerWindow() async {
+        await mocks.transcription.setLoadModelHangs(true)
+
+        let start = viewModel.startRecording()
+        await start.value
+
+        // Stop before the 1.5s stagger window elapses.
+        try? await Task.sleep(for: .milliseconds(100))
+        let stop = viewModel.stopRecording()
+        await stop.value
+
+        // Give the detached preload task time to observe cancellation.
+        try? await Task.sleep(for: .milliseconds(100))
+
+        let loadCount = await mocks.transcription.loadModelCallCount
+        #expect(loadCount == 0, "loadModel() should not be called when recording stops within the 1.5s preload stagger window")
+    }
+
     @Test func preloadTaskIsCancelledOnDiscard() async {
         await mocks.transcription.setLoadModelHangs(true)
 
@@ -464,8 +482,13 @@ struct CheckInViewModelTests {
 
         await viewModel.cancelRecording().value
 
-        #expect(viewModel.modelPreloadTask?.isCancelled == true)
+        // The preload task is cancelled and nilled by stopTasks; give the
+        // detached task a moment to observe cancellation before inspecting state.
+        try? await Task.sleep(for: .milliseconds(100))
+        let loadCount = await mocks.transcription.loadModelCallCount
+        #expect(loadCount == 0, "cancelRecording must stop the staggered preload before it reaches loadModel()")
     }
+
 
     // MARK: FR-017 Phantom-tick guard (026 RED→GREEN)
 

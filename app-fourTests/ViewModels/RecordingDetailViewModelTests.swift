@@ -46,6 +46,30 @@ struct RecordingDetailViewModelTests {
 
     // MARK: US3 Delete characterization
 
+    @Test func retryTranscriptionSavesOncePerCompletion() async throws {
+        recording.status = .failed
+        store.resetSaveCallCount()
+
+        viewModel.retryTranscription()
+
+        // Wait for the whole chain (transcribe → completion save → summary save)
+        // deterministically: `applySummary` sets summaryStatus synchronously
+        // before the summary save on the same actor turn, so observing a settled
+        // status guarantees every save has landed. A fixed sleep flakes under
+        // full-suite parallel load.
+        for _ in 0..<500 {
+            let status = recording.summaryStatus
+            if status == SummaryStatus.completed.rawValue || status == SummaryStatus.failed.rawValue { break }
+            try? await Task.sleep(for: .milliseconds(10))
+        }
+
+        #expect(recording.status == .completed)
+        #expect(recording.fullTranscriptText == "This is a mock transcript.")
+        // Start (.transcribing) save, completion save, and summary save = 3 total.
+        // If a per-segment save remained, this would be 4 (with one segment) or more.
+        #expect(store.saveCallCount == 3, "Transcription completion must produce exactly one save, with no per-segment writes")
+    }
+
     @Test func deleteRemovesRecordingFromStore() {
         store.addRecording(recording)
         viewModel.delete()

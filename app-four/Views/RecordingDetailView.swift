@@ -183,7 +183,7 @@ struct RecordingDetailView: View {
             .foregroundStyle(NewLook.inkPrimary)
     }
 
-    // MARK: - Summary (Llama bullets — surfaced per the 043 detail redesign)
+    // MARK: - Summary (LLM bullets — surfaced per the 043 detail redesign)
 
     private var hasSummary: Bool {
         !viewModel.recording.summaryBullets.isEmpty

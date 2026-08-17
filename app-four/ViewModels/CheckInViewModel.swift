@@ -168,9 +168,15 @@ final class CheckInViewModel {
 
                 // Preload model off the main actor while the user records
                 // so post-recording transcription doesn't need to reload.
+                // Stagger by 1.5s to let the audio HAL settle before CoreML/ANE
+                // weight compilation competes for the memory bus (US6).
                 self.modelPreloadTask = Task.detached(priority: .utility) { [transcriptionService] in
                     do {
+                        try await Task.sleep(for: .milliseconds(1500))
+                        try Task.checkCancellation()
                         try await transcriptionService.loadModel()
+                    } catch is CancellationError {
+                        AppLogger.log("Model preload cancelled before initialization (recording stopped within 1.5s window)")
                     } catch {
                         AppLogger.log("Model preload failed (will retry on stop): \(error)")
                     }
@@ -310,7 +316,8 @@ final class CheckInViewModel {
     private func transcribeInBackground(_ recording: Recording) async {
         do {
             let stream = try await transcriptionService.transcribe(audioURL: recording.audioURL)
-            try await consumeStreamWithTimeout(stream, for: recording, timeoutSeconds: 90)
+            let timeout = TranscriptionTimeoutCalculator.timeout(for: recording.duration)
+            try await consumeStreamWithTimeout(stream, for: recording, timeoutSeconds: timeout)
 
             // The user may have deleted this recording (library multi-select) while it
             // transcribed in the background; never touch a freed @Model.
@@ -362,7 +369,7 @@ final class CheckInViewModel {
     private func consumeStreamWithTimeout(
         _ stream: AsyncStream<TranscriptionSegmentDTO>,
         for recording: Recording,
-        timeoutSeconds: UInt64
+        timeoutSeconds: TimeInterval
     ) async throws {
         try await withThrowingTaskGroup(of: Void.self) { group in
             // Stream consumer — must run on MainActor because Recording is @Model.
@@ -376,13 +383,12 @@ final class CheckInViewModel {
                     }
                     recording.fullTranscriptText = segment.text
                     recording.status = .transcribing
-                    self.store.save()
                 }
             }
 
             // Timeout guard
             group.addTask {
-                try await Task.sleep(nanoseconds: timeoutSeconds * 1_000_000_000)
+                try await Task.sleep(nanoseconds: UInt64(timeoutSeconds * 1_000_000_000))
                 throw RecordingError.timeout
             }
 
@@ -541,6 +547,10 @@ final class CheckInViewModel {
         timerTask = nil
         levelTask?.cancel()
         levelTask = nil
+        // Cancel any pending staggered preload; if the recording ends before the
+        // 1.5s window, the transcription path will load on demand instead.
+        modelPreloadTask?.cancel()
+        modelPreloadTask = nil
         // Monitoring stopped: no live level means no active voice. Releases the gate so a
         // pending prompt announcement isn't wedged "deferred" on the last loud sample.
         isSpeaking = false

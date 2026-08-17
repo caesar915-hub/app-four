@@ -6,6 +6,7 @@ import SwiftData
 @MainActor
 final class SettingsViewModel {
     @ObservationIgnored private let aiModelService: AIModelService
+    @ObservationIgnored private let connectivity: any Connectivity
     @ObservationIgnored private let store: RecordingStore
     @ObservationIgnored private let storageService: AudioFileStorageService
     @ObservationIgnored private let exportService: ExportService
@@ -14,9 +15,9 @@ final class SettingsViewModel {
     var whisperModelInstalled: Bool = false
     var isDownloadingWhisper: Bool = false
     var whisperDownloadProgress: Double = 0
-    var llamaModelInstalled: Bool = false
-    var isDownloadingLlama: Bool = false
-    var llamaDownloadProgress: Double = 0
+    var llmModelInstalled: Bool = false
+    var isDownloadingLLM: Bool = false
+    var llmDownloadProgress: Double = 0
     var storageUsedMB: Double = 0.0
 
     /// The cause of the most recent failed download, surfaced inline so the row
@@ -29,6 +30,11 @@ final class SettingsViewModel {
     var canAllowCellular: Bool { downloadError == .cellularDisabled }
 
     @ObservationIgnored private var downloadTasks: [AIModelType: Task<Void, Never>] = [:]
+
+    /// Re-reads filesystem truth when any download path (Settings toggle,
+    /// app-launch background fetch) completes or deletes a model — otherwise a
+    /// background completion leaves the toggle showing OFF while open.
+    @ObservationIgnored private var modelAvailabilityObserver: (any NSObjectProtocol)?
 
     var recordingCount: Int {
         store.recordings.count
@@ -68,6 +74,7 @@ final class SettingsViewModel {
     init(store: RecordingStore, services: AppServices, context: ModelContext? = nil) {
         self.store = store
         self.aiModelService = services.aiModelService
+        self.connectivity = services.connectivity
         self.storageService = services.storageService
         self.exportService = services.exportService
         self.context = context ?? AppModelContainer.container.mainContext
@@ -80,8 +87,22 @@ final class SettingsViewModel {
         self.doseGuardMode = DoseGuardMode(raw: settings.doseGuardModeRaw)
         self.doseGuardWindowHours = settings.doseGuardWindowHours
 
+        modelAvailabilityObserver = NotificationCenter.default.addObserver(
+            forName: .aiModelAvailabilityDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in await self?.checkModels() }
+        }
+
         Task { await updateStorage() }
         Task { await checkModels() }
+    }
+
+    deinit {
+        if let modelAvailabilityObserver {
+            NotificationCenter.default.removeObserver(modelAvailabilityObserver)
+        }
     }
 
     func syncDownloadOverCellular() {
@@ -130,7 +151,7 @@ final class SettingsViewModel {
         // Filesystem is the source of truth — a SwiftData flag can lie if files
         // were evicted, partially downloaded, or restored without metadata.
         self.whisperModelInstalled = aiModelService.localPath(for: .whisper) != nil
-        self.llamaModelInstalled = aiModelService.localPath(for: .llama) != nil
+        self.llmModelInstalled = aiModelService.localPath(for: .llm) != nil
     }
 
     func downloadModel(_ type: AIModelType) async {
@@ -143,10 +164,19 @@ final class SettingsViewModel {
                 setDownloading(type, to: false)
                 setProgress(type, to: 0)
             }
+            // Blips and stalls retry via the shared driver (waiting for a
+            // permitted network, resuming at file granularity); only the FINAL
+            // failure lands in `downloadError` for the row's recovery copy.
+            let driver = ResilientModelDownload(
+                download: { [aiModelService] in try await aiModelService.download(type) },
+                connectivity: connectivity,
+                allowsCellular: { [weak self] in
+                    self?.downloadOverCellular ?? false
+                }
+            )
             do {
-                let stream = try await aiModelService.download(type)
-                for try await progress in stream {
-                    setProgress(type, to: progress)
+                try await driver.run { [weak self] progress in
+                    self?.setProgress(type, to: progress)
                 }
                 await checkModels()
             } catch is CancellationError {
@@ -183,14 +213,14 @@ final class SettingsViewModel {
     private func setDownloading(_ type: AIModelType, to value: Bool) {
         switch type {
         case .whisper: isDownloadingWhisper = value
-        case .llama: isDownloadingLlama = value
+        case .llm: isDownloadingLLM = value
         }
     }
 
     private func setProgress(_ type: AIModelType, to value: Double) {
         switch type {
         case .whisper: whisperDownloadProgress = value
-        case .llama: llamaDownloadProgress = value
+        case .llm: llmDownloadProgress = value
         }
     }
 

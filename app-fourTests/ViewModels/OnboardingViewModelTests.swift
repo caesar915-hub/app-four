@@ -81,7 +81,7 @@ struct OnboardingViewModelTests {
     }
 
     /// "Download Now" path: a finished Whisper download resolves the voice step
-    /// and advances to the Llama step — onboarding is NOT complete yet.
+    /// and advances to the LLM step — onboarding is NOT complete yet.
     @Test func downloadSuccessResolvesWhisperStepWithoutCompleting() async throws {
         let container = try makeContainer()
         let context = container.mainContext
@@ -117,7 +117,7 @@ struct OnboardingViewModelTests {
     }
 
     /// Whisper "Skip for Now": records the explicit decline (so its background
-    /// download stays off) and advances to the Llama step — not a completion.
+    /// download stays off) and advances to the LLM step — not a completion.
     @Test func whisperSkipRecordsDeclineAndResolvesStep() throws {
         let container = try makeContainer()
         let context = container.mainContext
@@ -165,15 +165,15 @@ struct OnboardingViewModelTests {
         #expect(vm.didComplete == false)
     }
 
-    // MARK: - Llama step (044)
+    // MARK: - LLM step (044)
 
-    /// Llama "Download Now" success completes onboarding and persists it.
-    @Test func llamaDownloadSuccessCompletesOnboarding() async throws {
+    /// LLM "Download Now" success completes onboarding and persists it.
+    @Test func llmDownloadSuccessCompletesOnboarding() async throws {
         let container = try makeContainer()
         let context = container.mainContext
         let vm = makeViewModel()
 
-        await vm.downloadLlamaModel(modelContext: context)
+        await vm.downloadLLMModel(modelContext: context)
 
         #expect(vm.didComplete == true)
         #expect(vm.isDownloading == false)
@@ -181,34 +181,34 @@ struct OnboardingViewModelTests {
         let settings = try context.fetch(FetchDescriptor<AppSettings>())
         let row = try #require(settings.first)
         #expect(row.hasCompletedOnboarding == true)
-        #expect(row.declinedOnboardingLlamaDownload == false)
+        #expect(row.declinedOnboardingLLMDownload == false)
     }
 
-    /// Llama "Skip for Now": records the insights decline AND completes.
-    @Test func llamaSkipRecordsDeclineAndCompletes() throws {
+    /// LLM "Skip for Now": records the insights decline AND completes.
+    @Test func llmSkipRecordsDeclineAndCompletes() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let vm = makeViewModel()
 
-        vm.skipLlamaDownload(modelContext: context)
+        vm.skipLLMDownload(modelContext: context)
 
         let settings = try context.fetch(FetchDescriptor<AppSettings>())
         let row = try #require(settings.first)
         #expect(settings.count == 1)
         #expect(row.hasCompletedOnboarding == true)
-        #expect(row.declinedOnboardingLlamaDownload == true)
+        #expect(row.declinedOnboardingLLMDownload == true)
         #expect(vm.didComplete == true)
     }
 
-    /// Llama failure: typed cause surfaced, user stays on the step (retry/skip).
-    @Test func llamaDownloadFailureSurfacesErrorWithoutCompleting() async throws {
+    /// LLM failure: typed cause surfaced, user stays on the step (retry/skip).
+    @Test func llmDownloadFailureSurfacesErrorWithoutCompleting() async throws {
         let container = try makeContainer()
         let context = container.mainContext
         let mock = MockAIModelService()
         await mock.setDownloadFailure(.noNetwork)
         let vm = OnboardingViewModel(aiModelService: mock)
 
-        await vm.downloadLlamaModel(modelContext: context)
+        await vm.downloadLLMModel(modelContext: context)
 
         #expect(vm.didComplete == false)
         #expect(vm.isDownloading == false)

@@ -209,7 +209,7 @@ Design-system extensions add palette/display concerns (`MoodLevel+Palette.swift`
 - **Single-inference discipline:** the shared WhisperKit actor cancels any prior `activeTranscriptionTask` before starting a new one, and `CheckInViewModel` chains a new transcription after the prior one completes — the engine never runs two inferences at once (`WhisperKitTranscriptionService.swift:97`; `CheckInViewModel.swift:164-167`).
 - **Pending-transcription drain** runs on launch, every foreground, and background-download completion; an `isDraining` latch coalesces re-entrant calls, and UUIDs (not `@Model` objects) cross the actor hop (`PendingTranscriptionServiceImpl.swift:37-82`; `SquirlApp.swift:125-130,161`).
 - **RAM management:** the Whisper model is unloaded at the end of every transcription (success or error) so Metal/CoreML buffers are freed before NL extraction (`WhisperKitTranscriptionService.swift:163-201,216-219`).
-- **Compute units:** `.cpuAndGPU` on Simulator or debugger-attached runs (ANE compiler unreachable from Xcode-run processes), else `.cpuAndNeuralEngine` (`Utils/ComputeEnvironment.swift`).
+- **Compute units:** `.cpuAndGPU` on Simulator or development-signed builds (embedded provisioning profile ⇒ developer-tunnel launch, where the ANE compiler is unreachable — with or without a debugger), else `.cpuAndNeuralEngine` for TestFlight/App Store (`Utils/ComputeEnvironment.swift`).
 
 ## Acceptance criteria
 

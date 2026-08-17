@@ -2,7 +2,7 @@ import Foundation
 import Observation
 import SwiftData
 
-/// Drives the first-run flow (welcome → Siri → Whisper download → Llama
+/// Drives the first-run flow (welcome → Siri → Whisper download → LLM
 /// download): persist that onboarding is done, then signal so the cover can
 /// dismiss to the Check-in hub. Idempotent, and — per FR-005 — it signals
 /// completion even when the persist write fails, so the user is never stranded
@@ -10,7 +10,7 @@ import SwiftData
 ///
 /// The two model screens run in sequence and are independently skippable.
 /// "Download Now" on the Whisper screen resolves that step and advances to the
-/// Llama screen; the Llama screen's download/skip completes onboarding. A
+/// LLM screen; the LLM screen's download/skip completes onboarding. A
 /// failure surfaces the typed cause and keeps the user on the current screen
 /// (retry or skip). Each "Skip for Now" records its own decline flag so the
 /// launch-time background downloads honor the user's choice per model.
@@ -23,7 +23,7 @@ final class OnboardingViewModel {
     private(set) var didComplete = false
 
     /// Set when the Whisper step resolves (downloaded or skipped); the
-    /// permission screen observes this to push the Llama step.
+    /// permission screen observes this to push the LLM step.
     private(set) var didResolveWhisper = false
 
     // Model download state (shared by both steps; each download resets it)
@@ -53,7 +53,7 @@ final class OnboardingViewModel {
 
     /// "Skip for Now" on the Whisper screen — records the explicit decline
     /// (`declinedOnboardingModelDownload`) so its background download stays
-    /// off, then advances to the Llama step. The decline is persisted
+    /// off, then advances to the LLM step. The decline is persisted
     /// immediately: quitting before the next step must not lose the choice.
     /// Capture keeps working: recordings queue as `.pendingTranscription` until
     /// the model arrives via Settings.
@@ -69,18 +69,18 @@ final class OnboardingViewModel {
         }
     }
 
-    // MARK: - Llama step
+    // MARK: - LLM step
 
-    /// "Skip for Now" on the Llama screen — records the insights-model decline
+    /// "Skip for Now" on the LLM screen — records the insights-model decline
     /// and completes onboarding. Check-ins still transcribe; they simply skip
     /// signal extraction until the model arrives via Settings.
-    func skipLlamaDownload(modelContext: ModelContext) {
-        settingsRow(in: modelContext).declinedOnboardingLlamaDownload = true
+    func skipLLMDownload(modelContext: ModelContext) {
+        settingsRow(in: modelContext).declinedOnboardingLLMDownload = true
         complete(modelContext: modelContext)
     }
 
-    func downloadLlamaModel(modelContext: ModelContext) async {
-        await runDownload(.llama) { [self] in
+    func downloadLLMModel(modelContext: ModelContext) async {
+        await runDownload(.llm) { [self] in
             complete(modelContext: modelContext)
         }
     }
