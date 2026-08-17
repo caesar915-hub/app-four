@@ -1,431 +1,88 @@
-## 2026-07-16 19:24 – 2026-07-21 18:14 · Merge pull request #35 from caesar915-hub/feat/hide-handsfre · main
+## 2026-07-13 15:55 – 2026-08-17 19:01 · on-device MLX eval harness + tuning & 044 QA reports · feat/043-mlx-journal-service
 
 **Code changes**
 - _Major (feat)_
-  - `94a51181` feat: hide hands-free logging surface for 1.0 (revert this commit to restore)
-  - `02f83b17` feat: single meadow green across check-in + Insights month pill
-  - `81ce578c` feat: unify capture-flow green (#5FB36E) + whisper install toggle
+  - `3cf453f3` feat(043): port tuned two-pass prompts + extraction validator from macOS tuning
+  - `6b3f544a` feat(043): surface Llama summary on Recording Detail; full transcript
+  - `ef06ffb4` feat(043): Journal Insights row in Settings › AI Models
+  - `14ba99cf` feat(043): sequential Llama download step in onboarding
+  - `8362b7bc` feat(043): managed lifecycle for the Llama insights model
+  - `60ec4d75` feat: extraction review ui logic and validation (Part 3)
+  - `6eca6cb2` feat(mlx): add memory headroom alert and fallback handling (US7)
+  - `b5612ba5` feat(043): Part 3 - Update provenance tags from .nlp to .llm in ExtractionReviewViewModel
+  - `4ec0b7da` feat(043): Part 2 — validation & persistence pipeline (parseExtraction, ExtractionValidator, UnifiedExtraction)
+  - `14b940e6` feat: implement MLXJournalService phase 1-7
+  - `48084532` feat(daycard): rewrite folded summary to use standard arithmetic half-up rounding (#38)
+  - `d3f01b24` feat(daycard): folded summary averages mood/energy/focus rounded up across the day
+  - `718b3678` feat(us1): model download interception before recording
+  - `f7e70048` feat(onboarding): 3-step flow + 1.1 release cleanup (NFC hide, debug menu, fixes)
+  - `9931edd3` feat(030): restore hands-free logging surface for 1.1
+  - `4b6c1285` feat(onboarding): two-screen flow with explicit model-download opt-in
+  - `3317355c` feat(030): US4 StickerSetupView guided walkthrough + Settings entry (T035)
 - _Fixes_
-  - `d3beab80` fix: reset persisted debugMockMode on Release launch
-  - `7955d965` fix: close both archive-gate blockers from the final submission audit
-  - `70b46d46` fix: harden quarantine + migration per review round 2 (4 issues) and final refute pass (1)
-  - `50d9d843` fix: address all 6 adversarial-review findings on PR #34
-  - `28f4fe3d` fix: App Store readiness — private storage, crash-safe container, medical disclaimers
-  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
+  - `f48d1062` fix(043): resolve approachable-concurrency warnings
+  - `9c82b541` fix(043): rebuild noteExtraction JSON on review save; wire memory alert
+  - `448b64de` fix(043): interpolate transcript into LLM user message; guard stage-3 parse range
+  - `30076fe4` fix(store): trigger fetch on save to resolve TimelineDay state bugs
+  - `2a64984e` fix: resolve concurrency and performance issues from implementation review
+  - `f9d11c71` fix(settings): park My Medication focus scroll below the top edge (QA S5)
+  - `73660ced` fix(030): adapt StickerSetupView to main design-system API
+  - `15fdb0d9` fix(nlp): re-port missing side-effect phrasings from abandoned recall fix
+  - `81d8200b` fix(tests): eliminate remaining headless SwiftData crash across all suites
+  - `0ceb0c1b` fix(tests): eliminate headless SwiftData crash — one shared container per suite
+  - `6b3ebada` fix(030): US4 review findings — Palette.medication, stable identity, .card(), Dynamic Type, honest check-in copy
+- _Tests_
+  - `972afee3` test(043): on-device MLX eval harness + tuning & 044 QA reports
+  - `5e068a7e` test(030): harden US4 lock-copy assertion against the "unexpected" evasion
+  - `88af9d7e` test(030): copy-contract coverage for US4 StickerSetupView.StickerPath
+  - `4fab52b9` test(fix): update stale MoodLibrary timeline tests to feat/024 behavior
 - _docs_
-  - `c73e4586` docs: regen WORKLOG for the App Store readiness merge (PR #34)
-  - `b277f01d` docs(app-store): privacy policy live at squirl.pt/privacy; B4/H2 done
-  - `c72bbaee` docs: regen WORKLOG for Path-A shelving commit
-  - `1af71f1b` docs: Path A SHELVED by owner — current design retained; work archived
-  - `58cd8d0f` docs: regen WORKLOG for 040 rollout commit
-  - `e4097562` docs: 040 rollout complete on canvas — a03/a01/a07/trio refined (T007-T018)
-  - `6fac7461` docs: regen WORKLOG for a08-a commit
-  - `b66fcb40` docs: 040 a08-a built + verified (T001-T006) — first Path A rollout screen
-  - `7d852219` docs: regen WORKLOG for 040 pipeline commit
-  - `4acb2fee` docs: spec 040 Path A refine — full pipeline (spec/plan/research/contract/tasks)
-  - `6e7ffc73` docs: regen WORKLOG for Path-B kill + Path-A pilot commit
-  - `65c36d66` docs: Path B killed at pilot gate (owner); Path A refine pilot a02-a built
-  - `ede7d83b` docs: regen WORKLOG for 039 Gate-1 evidence commit
-  - `f3243c36` docs+design-db: 039 pilot a02-b built + verified — Gate 1 evidence pack
-  - `5e82884e` docs: regen WORKLOG for 039 pipeline commit
-  - `a0e1ac34` docs: spec 039 Path B grouped-table — full Spec Kit pipeline (specify→clarify→plan→tasks)
-  - `16888864` docs: regen WORKLOG for design-database + audits commit
-  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
-  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
-  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
-  - `5edb6732` docs: regen WORKLOG for capture-green + whisper toggle
-  - `c2322336` docs: DEVLOG/BACKLOG for capture-green + whisper toggle (81ce578c)
-  - `48823834` docs: regen WORKLOG + BACKLOG/DEVLOG for the 033-036 tower landing on main
-  - `ed126440` docs: regen WORKLOG after App Store readiness round (derived from git/gh)
-  - `7e4c9ed3` docs: App Store readiness — audit findings, submission playbook, privacy-policy draft
+  - `fbc78ed3` docs(043): mockup — summary card in transcript slot, full transcript below
+  - `22e3eeba` docs(043): recording-detail redesign variants mockup
+  - `1abed0d2` docs(043): add device QA checklist
+  - `aac3ed34` docs(043): mark completed tasks across parts 1-3
+  - `8d6eaa9a` docs: rewrite processing and extraction fsd with 5-stage pipeline
+  - `e918d57b` docs: finalize spec 041 with phase 3 settings integration
+  - `72569bb8` docs: finalize spec 041 and log Phase 2 completion
+  - `43eb6515` docs: 1.0 SUBMITTED for App Review (21:22, submission 75e49a99)
+  - `23d93fd4` docs: DEVLOG/BACKLOG through the 1.0 upload + submission prep
+  - `bac2863e` docs: regen WORKLOG through the v1.0 upload (PR #35, tag v1.0)
+  - `00cca98a` docs(030): bump tasks.md Updated timestamp
+  - `66ca8845` docs(030): reconcile tasks.md checkboxes with real state (US1-US3 shipped, US4 built)
+  - `c855e7f3` docs(030): regenerate WORKLOG after US4 review fixes
+  - `7d8b5176` docs(030): regenerate WORKLOG after US4 build + FR-005 amendment
+  - `57f21f72` docs(030): FR-005 haptic amendment (T037) + BACKLOG/DEVLOG for US1-US4
 - _chore_
-  - `f63e159b` chore(1.0): submission prep — MARKETING_VERSION 1.0, iPhone-only, support email
+  - `66dba5db` chore: accept Xcode project regeneration (local package refs, empty exceptions)
+  - `02866367` chore: drop deterministic-extraction gate from plan template
+  - `9843f17a` chore: clear Swift-6-language-mode test warnings + MyMedicationSection med token
 - _other_
+  - `726af0c2` spec(043): add implementation tasks — test-first phased breakdown
+  - `de06898d` spec(043): add implementation plan — MLXJournalService
+  - `99f6fcf0` spec(043): MLXJournalService — on-device LLM extraction specification
+  - `667d2027` Merge branch 'feat/1.1-release-prep'
+  - `b9e9a8a2` Merge pull request #37 from caesar915-hub/feat/1.1-release-prep
+  - `06cd741c` Merge feat/restore-handsfree-1.1: fold the hands-free restore into the 1.1 release PR
+  - `3ff74b5e` Merge branch 'feat/030-us3-us4'
   - `5cd7b22d` Merge pull request #35 from caesar915-hub/feat/hide-handsfree-1.0
-  - `04277df5` Merge fix/release-mockmode-reset: Release never honors persisted mock mode
-  - `b240d735` Merge fix/archive-gate: strip TESTFLIGHT from Release + in-app privacy link
-  - `e1a5b733` Merge fix/app-store-readiness into main: App Store readiness + 1.0 submission prep (PR #34)
-  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-  - `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
+  - `4b8d7573` mockup(030): US4 'Set up your sticker' guided walkthrough (T034 gate)
 
 **Git actions**
+- `667d2027` Merge branch 'feat/1.1-release-prep'
+- `b9e9a8a2` Merge pull request #37 from caesar915-hub/feat/1.1-release-prep
+- `06cd741c` Merge feat/restore-handsfree-1.1: fold the hands-free restore into the 1.1 release PR
+- `3ff74b5e` Merge branch 'feat/030-us3-us4'
 - `5cd7b22d` Merge pull request #35 from caesar915-hub/feat/hide-handsfree-1.0
-- `04277df5` Merge fix/release-mockmode-reset: Release never honors persisted mock mode
-- `b240d735` Merge fix/archive-gate: strip TESTFLIGHT from Release + in-app privacy link
-- `e1a5b733` Merge fix/app-store-readiness into main: App Store readiness + 1.0 submission prep (PR #34)
-- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-- `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
-- tag `refs/tags/stable-ref/0.8.0`
 - tag `refs/tags/v1.0`
 
-**gh actions**
-- PR #35 merged `feat/hide-handsfree-1.0` — "feat: hide hands-free (Siri/Shortcuts) surface for 1.0"
-- PR #34 merged `fix/app-store-readiness` — "fix: App Store readiness + 1.0 submission prep"
-- PR #35 opened `feat/hide-handsfree-1.0` — "feat: hide hands-free (Siri/Shortcuts) surface for 1.0" — MERGED/UNKNOWN
-- PR #34 opened `fix/app-store-readiness` — "fix: App Store readiness + 1.0 submission prep" — MERGED/UNKNOWN
-
 **Worktrees**
 ```
-/Users/caesargrey/Projects/app-four                                          4822ee28 [feat/038-icloud-sync]
-/Users/caesargrey/Projects/app-four-spm                                      4e6a8004 [feat/036-newlook-checkin-insights]
+/Users/caesargrey/Projects/app-four                                          da077d3d [feat/042-health-nutrition-signals]
+/Users/caesargrey/Projects/app-four-llama                                    972afee3 [feat/043-mlx-journal-service]
+/Users/caesargrey/Projects/app-four-phase0                                   43eb6515 [android-phase0-spikes] prunable
 /Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents        9e98adab [chore/swift6-tech-debt]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4            965dcf22 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/app-store-readiness    5cd7b22d [main]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals 5db316a6 [feat/healthkit-signals]
-```
-
----
-**Code changes**
-- _Major (feat)_
-  - `4e6a8004` feat(036): unify check-in + Insights green to Theme.meadowGreen
-- _Fixes_
-  - `70b46d46` fix: harden quarantine + migration per review round 2 (4 issues) and final refute pass (1)
-  - `50d9d843` fix: address all 6 adversarial-review findings on PR #34
-  - `28f4fe3d` fix: App Store readiness — private storage, crash-safe container, medical disclaimers
-  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
-- _docs_
-  - `b277f01d` docs(app-store): privacy policy live at squirl.pt/privacy; B4/H2 done
-  - `c72bbaee` docs: regen WORKLOG for Path-A shelving commit
-  - `1af71f1b` docs: Path A SHELVED by owner — current design retained; work archived
-  - `58cd8d0f` docs: regen WORKLOG for 040 rollout commit
-  - `e4097562` docs: 040 rollout complete on canvas — a03/a01/a07/trio refined (T007-T018)
-  - `6fac7461` docs: regen WORKLOG for a08-a commit
-  - `b66fcb40` docs: 040 a08-a built + verified (T001-T006) — first Path A rollout screen
-  - `7d852219` docs: regen WORKLOG for 040 pipeline commit
-  - `4acb2fee` docs: spec 040 Path A refine — full pipeline (spec/plan/research/contract/tasks)
-  - `6e7ffc73` docs: regen WORKLOG for Path-B kill + Path-A pilot commit
-  - `65c36d66` docs: Path B killed at pilot gate (owner); Path A refine pilot a02-a built
-  - `ede7d83b` docs: regen WORKLOG for 039 Gate-1 evidence commit
-  - `f3243c36` docs+design-db: 039 pilot a02-b built + verified — Gate 1 evidence pack
-  - `5e82884e` docs: regen WORKLOG for 039 pipeline commit
-  - `a0e1ac34` docs: spec 039 Path B grouped-table — full Spec Kit pipeline (specify→clarify→plan→tasks)
-  - `16888864` docs: regen WORKLOG for design-database + audits commit
-  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
-  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
-  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
-- _chore_
-  - `f63e159b` chore(1.0): submission prep — MARKETING_VERSION 1.0, iPhone-only, support email
-- _other_
-  - `e1a5b733` Merge fix/app-store-readiness into main: App Store readiness + 1.0 submission prep (PR #34)
-  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-
-**Git actions**
-- `e1a5b733` Merge fix/app-store-readiness into main: App Store readiness + 1.0 submission prep (PR #34)
-- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-- tag `refs/tags/stable-ref/0.8.0`
-
-**Worktrees**
-```
-/Users/caesargrey/Projects/app-four                                          4822ee28 [feat/038-icloud-sync]
-/Users/caesargrey/Projects/app-four-spm                                      4e6a8004 [feat/036-newlook-checkin-insights]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents        9e98adab [chore/swift6-tech-debt]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4            965dcf22 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/app-store-readiness    e1a5b733 [main]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals 5db316a6 [feat/healthkit-signals]
-```
-
----
-**Code changes**
-- _Major (feat)_
-  - `02f83b17` feat: single meadow green across check-in + Insights month pill
-  - `81ce578c` feat: unify capture-flow green (#5FB36E) + whisper install toggle
-- _Fixes_
-  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
-- _docs_
-  - `1af71f1b` docs: Path A SHELVED by owner — current design retained; work archived
-  - `58cd8d0f` docs: regen WORKLOG for 040 rollout commit
-  - `e4097562` docs: 040 rollout complete on canvas — a03/a01/a07/trio refined (T007-T018)
-  - `6fac7461` docs: regen WORKLOG for a08-a commit
-  - `b66fcb40` docs: 040 a08-a built + verified (T001-T006) — first Path A rollout screen
-  - `7d852219` docs: regen WORKLOG for 040 pipeline commit
-  - `4acb2fee` docs: spec 040 Path A refine — full pipeline (spec/plan/research/contract/tasks)
-  - `6e7ffc73` docs: regen WORKLOG for Path-B kill + Path-A pilot commit
-  - `65c36d66` docs: Path B killed at pilot gate (owner); Path A refine pilot a02-a built
-  - `ede7d83b` docs: regen WORKLOG for 039 Gate-1 evidence commit
-  - `f3243c36` docs+design-db: 039 pilot a02-b built + verified — Gate 1 evidence pack
-  - `5e82884e` docs: regen WORKLOG for 039 pipeline commit
-  - `a0e1ac34` docs: spec 039 Path B grouped-table — full Spec Kit pipeline (specify→clarify→plan→tasks)
-  - `16888864` docs: regen WORKLOG for design-database + audits commit
-  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
-  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
-  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
-  - `5edb6732` docs: regen WORKLOG for capture-green + whisper toggle
-  - `c2322336` docs: DEVLOG/BACKLOG for capture-green + whisper toggle (81ce578c)
-  - `48823834` docs: regen WORKLOG + BACKLOG/DEVLOG for the 033-036 tower landing on main
-  - `ed126440` docs: regen WORKLOG after App Store readiness round (derived from git/gh)
-  - `7e4c9ed3` docs: App Store readiness — audit findings, submission playbook, privacy-policy draft
-- _other_
-  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-  - `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
-
-**Git actions**
-- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-- `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
-- tag `refs/tags/stable-ref/0.8.0`
-
-**Worktrees**
-```
-/Users/caesargrey/Projects/app-four                                                                                 4822ee28 [feat/038-icloud-sync]
-/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9f3d12a2-8e2f-4a10-bc36-20e06ebe5efc/scratchpad/main-wt 1af71f1b [main]
-/Users/caesargrey/Projects/app-four-spm                                                                             4e6a8004 [feat/036-newlook-checkin-insights]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                               9e98adab [chore/swift6-tech-debt]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                   965dcf22 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                        5db316a6 [feat/healthkit-signals]
-```
-
----
-**Code changes**
-- _Major (feat)_
-  - `4e6a8004` feat(036): unify check-in + Insights green to Theme.meadowGreen
-- _Fixes_
-  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
-- _docs_
-  - `e4097562` docs: 040 rollout complete on canvas — a03/a01/a07/trio refined (T007-T018)
-  - `6fac7461` docs: regen WORKLOG for a08-a commit
-  - `b66fcb40` docs: 040 a08-a built + verified (T001-T006) — first Path A rollout screen
-  - `7d852219` docs: regen WORKLOG for 040 pipeline commit
-  - `4acb2fee` docs: spec 040 Path A refine — full pipeline (spec/plan/research/contract/tasks)
-  - `6e7ffc73` docs: regen WORKLOG for Path-B kill + Path-A pilot commit
-  - `65c36d66` docs: Path B killed at pilot gate (owner); Path A refine pilot a02-a built
-  - `ede7d83b` docs: regen WORKLOG for 039 Gate-1 evidence commit
-  - `f3243c36` docs+design-db: 039 pilot a02-b built + verified — Gate 1 evidence pack
-  - `5e82884e` docs: regen WORKLOG for 039 pipeline commit
-  - `a0e1ac34` docs: spec 039 Path B grouped-table — full Spec Kit pipeline (specify→clarify→plan→tasks)
-  - `16888864` docs: regen WORKLOG for design-database + audits commit
-  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
-  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
-  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
-- _other_
-  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-
-**Git actions**
-- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-- tag `refs/tags/stable-ref/0.8.0`
-
-**Worktrees**
-```
-/Users/caesargrey/Projects/app-four                                                                                 4822ee28 [feat/038-icloud-sync]
-/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9f3d12a2-8e2f-4a10-bc36-20e06ebe5efc/scratchpad/main-wt e4097562 [main]
-/Users/caesargrey/Projects/app-four-spm                                                                             4e6a8004 [feat/036-newlook-checkin-insights]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                               9e98adab [chore/swift6-tech-debt]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                   965dcf22 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                        5db316a6 [feat/healthkit-signals]
-```
-
----
-**Code changes**
-- _Major (feat)_
-  - `02f83b17` feat: single meadow green across check-in + Insights month pill
-  - `81ce578c` feat: unify capture-flow green (#5FB36E) + whisper install toggle
-- _Fixes_
-  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
-- _docs_
-  - `b66fcb40` docs: 040 a08-a built + verified (T001-T006) — first Path A rollout screen
-  - `7d852219` docs: regen WORKLOG for 040 pipeline commit
-  - `4acb2fee` docs: spec 040 Path A refine — full pipeline (spec/plan/research/contract/tasks)
-  - `6e7ffc73` docs: regen WORKLOG for Path-B kill + Path-A pilot commit
-  - `65c36d66` docs: Path B killed at pilot gate (owner); Path A refine pilot a02-a built
-  - `ede7d83b` docs: regen WORKLOG for 039 Gate-1 evidence commit
-  - `f3243c36` docs+design-db: 039 pilot a02-b built + verified — Gate 1 evidence pack
-  - `5e82884e` docs: regen WORKLOG for 039 pipeline commit
-  - `a0e1ac34` docs: spec 039 Path B grouped-table — full Spec Kit pipeline (specify→clarify→plan→tasks)
-  - `16888864` docs: regen WORKLOG for design-database + audits commit
-  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
-  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
-  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
-  - `5edb6732` docs: regen WORKLOG for capture-green + whisper toggle
-  - `c2322336` docs: DEVLOG/BACKLOG for capture-green + whisper toggle (81ce578c)
-  - `48823834` docs: regen WORKLOG + BACKLOG/DEVLOG for the 033-036 tower landing on main
-  - `ed126440` docs: regen WORKLOG after App Store readiness round (derived from git/gh)
-  - `7e4c9ed3` docs: App Store readiness — audit findings, submission playbook, privacy-policy draft
-- _other_
-  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-  - `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
-
-**Git actions**
-- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-- `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
-- tag `refs/tags/stable-ref/0.8.0`
-
-**Worktrees**
-```
-/Users/caesargrey/Projects/app-four                                                                                 4822ee28 [feat/038-icloud-sync]
-/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9f3d12a2-8e2f-4a10-bc36-20e06ebe5efc/scratchpad/main-wt b66fcb40 [main]
-/Users/caesargrey/Projects/app-four-spm                                                                             4e6a8004 [feat/036-newlook-checkin-insights]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                               9e98adab [chore/swift6-tech-debt]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                   12038b32 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                        5db316a6 [feat/healthkit-signals]
-```
-
----
-**Code changes**
-- _Major (feat)_
-  - `4e6a8004` feat(036): unify check-in + Insights green to Theme.meadowGreen
-- _Fixes_
-  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
-- _docs_
-  - `4acb2fee` docs: spec 040 Path A refine — full pipeline (spec/plan/research/contract/tasks)
-  - `6e7ffc73` docs: regen WORKLOG for Path-B kill + Path-A pilot commit
-  - `65c36d66` docs: Path B killed at pilot gate (owner); Path A refine pilot a02-a built
-  - `ede7d83b` docs: regen WORKLOG for 039 Gate-1 evidence commit
-  - `f3243c36` docs+design-db: 039 pilot a02-b built + verified — Gate 1 evidence pack
-  - `5e82884e` docs: regen WORKLOG for 039 pipeline commit
-  - `a0e1ac34` docs: spec 039 Path B grouped-table — full Spec Kit pipeline (specify→clarify→plan→tasks)
-  - `16888864` docs: regen WORKLOG for design-database + audits commit
-  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
-  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
-  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
-- _other_
-  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-
-**Git actions**
-- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-- tag `refs/tags/stable-ref/0.8.0`
-
-**Worktrees**
-```
-/Users/caesargrey/Projects/app-four                                                                                 4822ee28 [feat/038-icloud-sync]
-/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9f3d12a2-8e2f-4a10-bc36-20e06ebe5efc/scratchpad/main-wt 4acb2fee [main]
-/Users/caesargrey/Projects/app-four-spm                                                                             4e6a8004 [feat/036-newlook-checkin-insights]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                               9e98adab [chore/swift6-tech-debt]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                   12038b32 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                        5db316a6 [feat/healthkit-signals]
-```
-
----
-**Code changes**
-- _Major (feat)_
-  - `02f83b17` feat: single meadow green across check-in + Insights month pill
-  - `81ce578c` feat: unify capture-flow green (#5FB36E) + whisper install toggle
-- _Fixes_
-  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
-- _docs_
-  - `65c36d66` docs: Path B killed at pilot gate (owner); Path A refine pilot a02-a built
-  - `ede7d83b` docs: regen WORKLOG for 039 Gate-1 evidence commit
-  - `f3243c36` docs+design-db: 039 pilot a02-b built + verified — Gate 1 evidence pack
-  - `5e82884e` docs: regen WORKLOG for 039 pipeline commit
-  - `a0e1ac34` docs: spec 039 Path B grouped-table — full Spec Kit pipeline (specify→clarify→plan→tasks)
-  - `16888864` docs: regen WORKLOG for design-database + audits commit
-  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
-  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
-  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
-  - `5edb6732` docs: regen WORKLOG for capture-green + whisper toggle
-  - `c2322336` docs: DEVLOG/BACKLOG for capture-green + whisper toggle (81ce578c)
-  - `48823834` docs: regen WORKLOG + BACKLOG/DEVLOG for the 033-036 tower landing on main
-  - `ed126440` docs: regen WORKLOG after App Store readiness round (derived from git/gh)
-  - `7e4c9ed3` docs: App Store readiness — audit findings, submission playbook, privacy-policy draft
-- _other_
-  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-  - `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
-
-**Git actions**
-- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-- `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
-- tag `refs/tags/stable-ref/0.8.0`
-
-**Worktrees**
-```
-/Users/caesargrey/Projects/app-four                                                                                 4822ee28 [feat/038-icloud-sync]
-/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9f3d12a2-8e2f-4a10-bc36-20e06ebe5efc/scratchpad/main-wt 65c36d66 [main]
-/Users/caesargrey/Projects/app-four-spm                                                                             4e6a8004 [feat/036-newlook-checkin-insights]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                               9e98adab [chore/swift6-tech-debt]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                   12038b32 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                        5db316a6 [feat/healthkit-signals]
-```
-
----
-**Code changes**
-- _Major (feat)_
-  - `4e6a8004` feat(036): unify check-in + Insights green to Theme.meadowGreen
-- _Fixes_
-  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
-- _docs_
-  - `f3243c36` docs+design-db: 039 pilot a02-b built + verified — Gate 1 evidence pack
-  - `5e82884e` docs: regen WORKLOG for 039 pipeline commit
-  - `a0e1ac34` docs: spec 039 Path B grouped-table — full Spec Kit pipeline (specify→clarify→plan→tasks)
-  - `16888864` docs: regen WORKLOG for design-database + audits commit
-  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
-  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
-  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
-- _other_
-  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-
-**Git actions**
-- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-- tag `refs/tags/stable-ref/0.8.0`
-
-**Worktrees**
-```
-/Users/caesargrey/Projects/app-four                                                                                 4822ee28 [feat/038-icloud-sync]
-/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9f3d12a2-8e2f-4a10-bc36-20e06ebe5efc/scratchpad/main-wt f3243c36 [main]
-/Users/caesargrey/Projects/app-four-spm                                                                             4e6a8004 [feat/036-newlook-checkin-insights]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                               9e98adab [chore/swift6-tech-debt]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                   12038b32 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                        5db316a6 [feat/healthkit-signals]
-```
-
----
-**Code changes**
-- _Major (feat)_
-  - `02f83b17` feat: single meadow green across check-in + Insights month pill
-  - `81ce578c` feat: unify capture-flow green (#5FB36E) + whisper install toggle
-- _Fixes_
-  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
-- _docs_
-  - `a0e1ac34` docs: spec 039 Path B grouped-table — full Spec Kit pipeline (specify→clarify→plan→tasks)
-  - `16888864` docs: regen WORKLOG for design-database + audits commit
-  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
-  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
-  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
-  - `5edb6732` docs: regen WORKLOG for capture-green + whisper toggle
-  - `c2322336` docs: DEVLOG/BACKLOG for capture-green + whisper toggle (81ce578c)
-  - `48823834` docs: regen WORKLOG + BACKLOG/DEVLOG for the 033-036 tower landing on main
-  - `ed126440` docs: regen WORKLOG after App Store readiness round (derived from git/gh)
-  - `7e4c9ed3` docs: App Store readiness — audit findings, submission playbook, privacy-policy draft
-- _other_
-  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-  - `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
-
-**Git actions**
-- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-- `432525e9` Merge feat/033-036: app-wide New Look migration, DayCard a01, calendar scroll-collapse, check-in/Insights a04-a07 re-skin
-- tag `refs/tags/stable-ref/0.8.0`
-
-**Worktrees**
-```
-/Users/caesargrey/Projects/app-four                                                                                 4822ee28 [feat/038-icloud-sync]
-/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9f3d12a2-8e2f-4a10-bc36-20e06ebe5efc/scratchpad/main-wt a0e1ac34 [main]
-/Users/caesargrey/Projects/app-four-spm                                                                             4e6a8004 [feat/036-newlook-checkin-insights]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                               9e98adab [chore/swift6-tech-debt]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                   12038b32 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                        5db316a6 [feat/healthkit-signals]
-```
-
----
-**Code changes**
-- _Major (feat)_
-  - `4e6a8004` feat(036): unify check-in + Insights green to Theme.meadowGreen
-- _Fixes_
-  - `0629037e` fix: shrink more-affordance ⋯ 30% (30→21pt); explicit meadow tint on AI Models toggle
-- _docs_
-  - `61bcae47` docs+design: v3 design database, three design audits, and approved remediation
-  - `4822ee28` docs: regen WORKLOG for 037 Figma widget repro
-  - `e5e0d9fb` docs: DEVLOG — 037 Live Activity widget reproduced in Figma (13 frames + LA/Button set), AccentColor gap flagged
-- _other_
-  - `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-
-**Git actions**
-- `537e0340` Merge feat/036 into main: check-in + Insights green unified to meadow
-- tag `refs/tags/stable-ref/0.8.0`
-
-**Worktrees**
-```
-/Users/caesargrey/Projects/app-four                                                                                 4822ee28 [feat/038-icloud-sync]
-/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9f3d12a2-8e2f-4a10-bc36-20e06ebe5efc/scratchpad/wt-main 61bcae47 [main]
-/Users/caesargrey/Projects/app-four-spm                                                                             4e6a8004 [feat/036-newlook-checkin-insights]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                               9e98adab [chore/swift6-tech-debt]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                   12038b32 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                        5db316a6 [feat/healthkit-signals]
 ```
 
 ---
