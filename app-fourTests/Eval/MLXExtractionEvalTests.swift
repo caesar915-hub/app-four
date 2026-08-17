@@ -3,19 +3,22 @@ import Foundation
 import SquirlSignals
 @testable import app_four
 
-/// Regression floors for the MLX (LLM) extraction eval, initialized from the
-/// first green on-device run (2026-08-17, iPhone 12 Pro, current tuning).
-/// Same convention as `EvalFloors`: observed − 0.02, raise never lower.
+/// Regression floors for the MLX (LLM) extraction eval, recalibrated on the
+/// 2026-08-17-c on-device run (iPhone 12 Pro). Same convention as `EvalFloors`:
+/// observed − 0.02, raise never lower. Two deliberate resets vs the -b run:
+/// activities and sideEffectFlag precision were ~1.0 only because the pipeline
+/// never fired — the -c tuning made them fire (recall 0→0.857), so their
+/// precision floors were recalibrated to observed − 0.02 (owner-approved).
 enum MLXEvalFloors {
     static let mood           = (precision: 0.56, recall: 0.83)
-    static let energy         = (precision: 0.12, recall: 0.44)
+    static let energy         = (precision: 0.31, recall: 0.44)
     static let focus          = (precision: 0.29, recall: 0.73)
-    static let emotions       = (precision: 0.24, recall: 0.98)
-    static let activities     = (precision: 0.98, recall: 0.00)
-    static let meds           = (precision: 0.92, recall: 0.92)
-    static let sleepHours     = (precision: 0.36, recall: 0.98)
-    static let topics         = (precision: 0.11, recall: 0.64)
-    static let sideEffectFlag = (precision: 0.98, recall: 0.12)
+    static let emotions       = (precision: 0.27, recall: 0.98)
+    static let activities     = (precision: 0.31, recall: 0.83)
+    static let meds           = (precision: 0.98, recall: 0.98)
+    static let sleepHours     = (precision: 0.75, recall: 0.98)
+    static let topics         = (precision: 0.45, recall: 0.98)
+    static let sideEffectFlag = (precision: 0.73, recall: 0.83)
 }
 
 /// Eval gate: gated suites only run when explicitly requested (MLX_EVAL=1) AND

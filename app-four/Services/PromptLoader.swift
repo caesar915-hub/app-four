@@ -57,13 +57,23 @@ nonisolated enum PromptLoader {
     6. Sleep metrics (sleepHours, sleepQuality) always refer to the preceding night.
 
     WHEN TO USE null:
-    Use null ONLY when the transcript contains no evidence at all for the field. Explicit statements MUST be mapped to the closest allowed label — "I feel great" / "feeling unstoppable" → mood "great"; "well-rested" → mood "good", energy "alert"; "ready to work" → focus "present"; "no energy" / "exhausted" / "tired" → energy "sluggish" or "tired"; "can't focus" / "can't concentrate" / "severe brain fog" → focus "foggy" or "distracted"; "my mood is flat" / "meh" → mood "flat"; "zombie mode" / "brain fried" → mood "flat", energy "sluggish", focus "foggy". Never return null for a signal the user explicitly states.
+    Use null ONLY when the transcript contains no evidence at all for the field. Explicit statements MUST be mapped to the closest allowed label. Never return null for a signal the user explicitly states.
+
+    FIELD EXTRACTION RULES:
+    1. SLEEP HOURS: Extract a number ONLY if the speaker explicitly states their sleep duration (e.g. 'slept 7 hours', 'got 8h of sleep', 'only slept 4h', 'dormi 6 horas'). If sleep duration is NOT mentioned or transcript only mentions work hours/routine/bedtime, set sleepHours: null.
+    2. ENERGY: Extract ONLY when the speaker explicitly describes their physical/mental energy, fatigue, or alertness. For factual, routine, or neutral notes without energy remarks, set energy: null.
+    3. ACTIVITIES: ONLY select from standard categories: ["Resting", "Chores", "Fitness", "Work", "Hobbies", "Outdoors", "Eating", "Screen Time", "Appointments", "Self-Care"]. Map specific actions (e.g. laundry/dishes/cleaning/groceries → "Chores", run/gym/exercise → "Fitness", walking in park/nature → "Outdoors", reading/gaming → "Hobbies", meetings/coding/report/office → "Work", breakfast/lunch/dinner/eating → "Eating", scrolling/social media → "Screen Time", doctor/dentist/therapy/plumber → "Appointments"). If no activities mentioned, return [].
+    4. TOPICS: ONLY select high-level themes from: ["Medications", "Symptoms", "Appointments", "Work", "Sleep", "Health"]. Do NOT output arbitrary noun phrases from the transcript. If no high-level themes, return [].
+    5. SIDE EFFECTS: Extract physical adverse symptoms mentioned (e.g. "dry mouth", "heart racing", "headache", "loss of appetite", "insomnia", "tremors", "nausea", "sweating", "dehydrated", "migraine"). If none, return [].
+    6. MEDICATIONS: Extract medication name, dose, and taken boolean. If missed/skipped, set taken: false.
 
     ALLOWED VALUES:
     - mood: {{moodLabels}}
     - energy: {{energyLabels}}
     - focus: {{focusLabels}}
     - sleepQuality: {{sleepLabels}}
+    - activities: ["Resting", "Chores", "Fitness", "Work", "Hobbies", "Outdoors", "Eating", "Screen Time", "Appointments", "Self-Care"]
+    - topics: ["Medications", "Symptoms", "Appointments", "Work", "Sleep", "Health"]
     - medications: {{medications}}, Vyvanse, Concerta, Elvanse, Adderall, Ritalin, Strattera
 
     EXAMPLES:
@@ -73,7 +83,7 @@ nonisolated enum PromptLoader {
 
     Transcript: "Woke up feeling awful and foggy, could barely function. But after lunch and my 20mg Concerta, I'm locked in and feeling sharp."
     Output:
-    {"mood":"good","energy":"charged","focus":"lockedIn","sleepHours":null,"sleepQuality":null,"medications":[{"name":"Concerta","dose":"20mg","taken":true}],"emotions":[],"activities":[],"topics":["Medications"],"lexicon":[],"sideEffects":[]}
+    {"mood":"good","energy":"charged","focus":"lockedIn","sleepHours":null,"sleepQuality":null,"medications":[{"name":"Concerta","dose":"20mg","taken":true}],"emotions":[],"activities":["Eating"],"topics":["Medications"],"lexicon":[],"sideEffects":[]}
 
     Transcript: "My mood is flat, energy is sluggish, can't focus on anything."
     Output:
@@ -81,15 +91,15 @@ nonisolated enum PromptLoader {
 
     Transcript: "Woke up at 6am, ran 5k, had breakfast. Took 20mg Adderall at 8am. Was feeling on top of the world until 3pm when I crashed hard and now have a migraine."
     Output:
-    {"mood":"low","energy":"sluggish","focus":"foggy","sleepHours":null,"sleepQuality":null,"medications":[{"name":"Adderall","dose":"20mg","taken":true}],"emotions":[],"activities":["exercise"],"topics":["Medications"],"lexicon":[],"sideEffects":["migraine"]}
+    {"mood":"low","energy":"sluggish","focus":"foggy","sleepHours":null,"sleepQuality":null,"medications":[{"name":"Adderall","dose":"20mg","taken":true}],"emotions":[],"activities":["Fitness","Eating"],"topics":["Medications","Symptoms"],"lexicon":[],"sideEffects":["migraine"]}
 
     Transcript: "In total zombie mode, brain is completely fried, doomscrolling for 3 hours."
     Output:
-    {"mood":"flat","energy":"sluggish","focus":"foggy","sleepHours":null,"sleepQuality":null,"medications":[],"emotions":["frustrated"],"activities":[],"topics":[],"lexicon":[],"sideEffects":[]}
+    {"mood":"flat","energy":"sluggish","focus":"foggy","sleepHours":null,"sleepQuality":null,"medications":[],"emotions":["frustrated"],"activities":["Screen Time"],"topics":[],"lexicon":[],"sideEffects":[]}
 
     Transcript: "Nailed my presentation, got shit done, feeling unstoppable!"
     Output:
-    {"mood":"great","energy":"charged","focus":"sharp","sleepHours":null,"sleepQuality":null,"medications":[],"emotions":["excited"],"activities":["presentation"],"topics":[],"lexicon":[],"sideEffects":[]}
+    {"mood":"great","energy":"charged","focus":"sharp","sleepHours":null,"sleepQuality":null,"medications":[],"emotions":["excited"],"activities":["Work"],"topics":["Work"],"lexicon":[],"sideEffects":[]}
 
     Transcript: "I skipped my Elvanse today because I woke up too late."
     Output:

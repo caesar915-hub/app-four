@@ -96,12 +96,13 @@ enum MLXEvalSet {
             mood: "okay",
             hardGate: true, assertNil: ["medications"]
         ),
-        // Rule ordering: crash forces energy sluggish + mood low, then the
-        // positive-now rule lifts mood back to good (energy stays sluggish).
+        // Rule ordering (2026-08-17-c): crash forces energy sluggish + mood low,
+        // then positive-now lifts mood→good AND (new) energy→alert when the
+        // recovery cue is "locked in"/"sharp"/"energized"/"ready to tackle".
         MLXEvalCase(
             id: "tuned-crash-then-recovery", language: "en",
             transcript: "I crashed hard after lunch, could barely function for a while. But honestly right now I feel good and locked in again.",
-            mood: "good", energy: .sluggish, focus: .lockedIn,
+            mood: "good", energy: .alert, focus: .lockedIn,
             hardGate: true
         ),
         // Temporal rule 5: past emotions must not leak into the signals.
