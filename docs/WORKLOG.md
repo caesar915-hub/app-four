@@ -1,22 +1,18 @@
-## 2026-08-17 20:00–21:12 · address pre-merge code-review findings · feat/043-mlx-journal-service
+## 2026-08-17 20:32 – 2026-08-18 13:40 · vendor MLXLLM/MLXLMCommon as local package (CI-safe, keeps t · feat/043-mlx-journal-service
 
 **Code changes**
-- _Major (feat)_
-  - `c78993af` feat(043): LLM model management UI + recording pipeline wiring
-  - `ae474b6d` feat(044): download & transcription reliability
 - _Fixes_
+  - `afa4cf85` fix(spm): vendor MLXLLM/MLXLMCommon as local package (CI-safe, keeps tested dep graph)
+  - `c15b14be` fix(spm): switch mlx-swift-examples to remote 2.29.1, clean gitlinks & stale Hub/Tokenizers deps
   - `57bcf137` fix(043/044): address pre-merge code-review findings
 - _docs_
+  - `15dd1c06` docs: regenerate WORKLOG.md after review-fix commit
   - `74d00c20` docs(044): close T035 — save-count verification via counting mocks + call-site inspection
-  - `2e67073e` docs: regenerate WORKLOG.md after -c tuning sync commit
-
-**gh actions**
-- PR #39 opened `feat/043-mlx-journal-service` — "feat(043/044): on-device MLX journal pipeline + download reliability + tuned extraction" — OPEN/MERGEABLE
 
 **Worktrees**
 ```
 /Users/caesargrey/Projects/app-four                                          da077d3d [feat/042-health-nutrition-signals]
-/Users/caesargrey/Projects/app-four-llama                                    57bcf137 [feat/043-mlx-journal-service]
+/Users/caesargrey/Projects/app-four-llama                                    afa4cf85 [feat/043-mlx-journal-service]
 /Users/caesargrey/Projects/app-four-phase0                                   43eb6515 [android-phase0-spikes] prunable
 /Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents        9e98adab [chore/swift6-tech-debt]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4            965dcf22 [feat/037-live-activity-controls]
