@@ -18,7 +18,6 @@
 		99A8DD6F712ED882A9CCCFFA /* SquirlSignals in Frameworks */ = {isa = PBXBuildFile; productRef = AC13466A421DCDB2A4BCB3C5 /* SquirlSignals */; };
 		9CFF548080164D58F7E0D35A /* SquirlDesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 90059C596F1B493FEBD81C9B /* SquirlDesignSystem */; };
 		B7DF53EC6A4F154CC8919A08 /* Yams in Frameworks */ = {isa = PBXBuildFile; productRef = FE88BBE66B5C854E024D2711 /* Yams */; };
-		F3839BD74FA7AFBB55B2A810 /* HuggingFace in Frameworks */ = {isa = PBXBuildFile; productRef = EC864C841CD6FADFBDCB6ECA /* HuggingFace */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -88,7 +87,6 @@
 				89F3B632E312A6FC0EA8D895 /* MLXRandom in Frameworks */,
 				12F6E2AFB0B1C71A87B7DB2E /* MLXLLM in Frameworks */,
 				770F1DF603B78E0B919C9BD8 /* OrderedCollections in Frameworks */,
-				F3839BD74FA7AFBB55B2A810 /* HuggingFace in Frameworks */,
 				B7DF53EC6A4F154CC8919A08 /* Yams in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -185,7 +183,6 @@
 				7FAB8E7F5609EB652B23C655 /* MLXRandom */,
 				80B9330881E008D27B87336D /* MLXLLM */,
 				D7BBF6E30C328D9067BB5096 /* OrderedCollections */,
-				EC864C841CD6FADFBDCB6ECA /* HuggingFace */,
 				FE88BBE66B5C854E024D2711 /* Yams */,
 			);
 			productName = "app-four";
@@ -223,12 +220,11 @@
 			packageReferences = (
 				370F529C2FC2046C00504F1C /* XCRemoteSwiftPackageReference "WhisperKit" */,
 				5638591163E5BF5AC46DD98E /* XCRemoteSwiftPackageReference "mlx-swift" */,
-				97FE35B9200A6C415121059D /* XCRemoteSwiftPackageReference "mlx-swift-examples" */,
 				7010BCE5AEABE02169EAF6BA /* XCRemoteSwiftPackageReference "swift-collections" */,
 				EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "SquirlSignals" */,
 				4EABE850E49282202D027C08 /* XCLocalSwiftPackageReference "SquirlDesignSystem" */,
-				383BE6B7D2C1580D95E2904D /* XCRemoteSwiftPackageReference "swift-huggingface" */,
 				2D750759AD8C1C25A031DBA3 /* XCRemoteSwiftPackageReference "Yams" */,
+				E390BA9A0E7673893712C73A /* XCLocalSwiftPackageReference "MLXLibraries" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 37F17B2B2FC0CE4F00CAC42E /* Products */;
@@ -815,6 +811,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/SquirlDesignSystem;
 		};
+		E390BA9A0E7673893712C73A /* XCLocalSwiftPackageReference "MLXLibraries" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/MLXLibraries;
+		};
 		EFC80DAF055320FDD8DFD459 /* XCLocalSwiftPackageReference "SquirlSignals" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/SquirlSignals;
@@ -838,14 +838,6 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		383BE6B7D2C1580D95E2904D /* XCRemoteSwiftPackageReference "swift-huggingface" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/huggingface/swift-huggingface.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.0;
-			};
-		};
 		5638591163E5BF5AC46DD98E /* XCRemoteSwiftPackageReference "mlx-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ml-explore/mlx-swift";
@@ -860,14 +852,6 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.5.1;
-			};
-		};
-		97FE35B9200A6C415121059D /* XCRemoteSwiftPackageReference "mlx-swift-examples" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/ml-explore/mlx-swift-examples";
-			requirement = {
-				kind = exactVersion;
-				version = 2.29.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -898,7 +882,6 @@
 		};
 		80B9330881E008D27B87336D /* MLXLLM */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 97FE35B9200A6C415121059D /* XCRemoteSwiftPackageReference "mlx-swift-examples" */;
 			productName = MLXLLM;
 		};
 		90059C596F1B493FEBD81C9B /* SquirlDesignSystem */ = {
@@ -918,11 +901,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7010BCE5AEABE02169EAF6BA /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = OrderedCollections;
-		};
-		EC864C841CD6FADFBDCB6ECA /* HuggingFace */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 383BE6B7D2C1580D95E2904D /* XCRemoteSwiftPackageReference "swift-huggingface" */;
-			productName = HuggingFace;
 		};
 		FE88BBE66B5C854E024D2711 /* Yams */ = {
 			isa = XCSwiftPackageProductDependency;
