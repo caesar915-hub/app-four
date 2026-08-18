@@ -1,12 +1,11 @@
-## 2026-08-18 13:40–18:32 · canonicalize medication alias names in NLNoteExtractor to pr · feat/043-mlx-journal-service
+## 2026-08-18 17:22–18:36 · mark SummaryLengthTier as nonisolated enum · feat/043-mlx-journal-service
 
 **Code changes**
-- _Major (feat)_
-  - `9d1aebea` feat(043): sync tuning 2026-08-18-b from macOS harness
 - _Fixes_
+  - `aacf1d86` fix(concurrency): mark SummaryLengthTier as nonisolated enum
   - `8a2108e4` fix(nlp): canonicalize medication alias names in NLNoteExtractor to preserve eval floors
 - _docs_
-  - `45be4030` docs: regenerate WORKLOG.md after packaging fix
+  - `6906b873` docs: regenerate WORKLOG.md after eval-floor fix
 - _other_
   - `ee08788f` Merge pull request #40 from caesar915-hub/chore/tuning-2026-08-18-b
 
@@ -15,12 +14,11 @@
 
 **gh actions**
 - PR #40 merged `chore/tuning-2026-08-18-b` — "feat(043): sync tuning 2026-08-18-b from macOS harness"
-- PR #40 opened `chore/tuning-2026-08-18-b` — "feat(043): sync tuning 2026-08-18-b from macOS harness" — MERGED/UNKNOWN
 
 **Worktrees**
 ```
 /Users/caesargrey/Projects/app-four                                          137fd8d0 [main]
-/Users/caesargrey/Projects/app-four-llama                                    8a2108e4 [feat/043-mlx-journal-service]
+/Users/caesargrey/Projects/app-four-llama                                    aacf1d86 [feat/043-mlx-journal-service]
 /Users/caesargrey/Projects/app-four-phase0                                   43eb6515 [android-phase0-spikes] prunable
 /Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents        9e98adab [chore/swift6-tech-debt]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4            965dcf22 [feat/037-live-activity-controls]
