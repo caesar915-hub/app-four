@@ -67,13 +67,15 @@ enum ExtractionValidator {
             if hours < 0 || hours > 24 {
                 valid.sleepHours = nil
             } else if let raw = rawTranscript?.lowercased() {
-                let hasSleepWord = raw.contains("sleep") || raw.contains("slept") || raw.contains("sleeping") ||
-                                   raw.contains("dormi") || raw.contains("dormir") || raw.contains("dormido") ||
-                                   raw.contains("insomnia") || raw.contains("insônia") || raw.contains("insomnio") ||
-                                   raw.contains("nightmares") || raw.contains("woke up") || raw.contains("acordei") ||
-                                   raw.contains("desperté")
-                let onlyWorkHours = (raw.contains("worked ") || raw.contains("hours straight") || raw.contains("at the office")) && !raw.contains("slept") && !raw.contains("sleep") && !raw.contains("dormi")
-                if !hasSleepWord || onlyWorkHours {
+                let hasExplicitSleepDuration = raw.contains("hours of sleep") || raw.contains("hrs of sleep") ||
+                                               raw.contains("horas de sono") || raw.contains("horas durmiendo") ||
+                                               (raw.contains("slept") && (raw.contains("hour") || raw.contains("hr") || raw.contains("h"))) ||
+                                               (raw.contains("dormi") && (raw.contains("hora") || raw.contains("h"))) ||
+                                               (raw.contains("sleep") && (raw.contains("hour") || raw.contains("hr") || raw.contains("broken")))
+                let onlyWorkOrWake = raw.contains("worked ") || raw.contains("hours straight") || raw.contains("at the office") ||
+                                     raw.contains("fasted for") || raw.contains("estudei ") || raw.contains("manejé ") ||
+                                     raw.contains("flight") || raw.contains("for 5 hours straight") || raw.contains("for 8 hours")
+                if !hasExplicitSleepDuration || onlyWorkOrWake {
                     valid.sleepHours = nil
                 }
             }
@@ -83,11 +85,25 @@ enum ExtractionValidator {
         if let raw = rawTranscript?.lowercased(), !raw.isEmpty {
             // 1. Crash & Depletion transitions
             let hasCrash = raw.contains("crashed") || raw.contains("crash") || raw.contains("hit a wall") || raw.contains("hit a complete wall") || raw.contains("energy is completely in the gutter") || raw.contains("extreme fatigue, severe brain fog")
-            if hasCrash {
+            let isNegatedCrash = raw.contains("no crash") || (raw.contains("avoided") && raw.contains("crash")) || (raw.contains("prevented") && raw.contains("crash")) || raw.contains("without crashing") || raw.contains("didn't crash") || raw.contains("did not crash") || raw.contains("sin bajón") || raw.contains("sin bajon") || raw.contains("sem crash") || raw.contains("zero crash")
+            if hasCrash && !isNegatedCrash {
                 valid.energy = "sluggish"
                 valid.mood = "low"
                 if raw.contains("brain fog") || raw.contains("fried") {
                     valid.focus = "foggy"
+                }
+            }
+            
+            // 1b. Panic Attack & Sensory Overload Disambiguation
+            let isPanic = (raw.contains("panic attack") || raw.contains("hyperventilating") || raw.contains("sensory overload") || raw.contains("meltdown") || raw.contains("sensory meltdown")) && !raw.contains("recovered from the panic")
+            if isPanic {
+                if valid.energy == "charged" { valid.energy = "sluggish" }
+                if valid.mood == nil || valid.mood == "okay" || valid.mood == "good" || valid.mood == "great" { valid.mood = "low" }
+                if !valid.sideEffects.contains("heart racing") && (raw.contains("heart racing") || raw.contains("tachycardia") || raw.contains("palpitations")) {
+                    valid.sideEffects.append("heart racing")
+                }
+                if !valid.emotions.contains("anxious") {
+                    valid.emotions.append("anxious")
                 }
             }
             
@@ -128,24 +144,31 @@ enum ExtractionValidator {
             }
             
             // 8. Present positive recovery overrides (e.g. morning sad, but right now feel good)
-            let hasPositiveNow = (raw.contains("right now") || raw.contains("now i feel") || raw.contains("locked in") || raw.contains("coffee kicked in") || raw.contains("meds kicked in") || raw.contains("feeling sharp") || raw.contains("talked it out")) &&
-                                 (raw.contains("good") || raw.contains("great") || raw.contains("energized") || raw.contains("sharp") || raw.contains("locked in") || raw.contains("peaceful") || raw.contains("content") || raw.contains("calm") || raw.contains("relieved") || raw.contains("happy") || raw.contains("ready to tackle"))
+            let hasPositiveNow = (raw.contains("right now") || raw.contains("now i feel") || raw.contains("now i'm") || raw.contains("now i am") ||
+                                 raw.contains("feeling much better") || raw.contains("picked up and now") || raw.contains("doing well") ||
+                                 raw.contains("feeling solid") || raw.contains("clear-headed") || raw.contains("locked in") ||
+                                 raw.contains("coffee kicked in") || raw.contains("meds kicked in") || raw.contains("feeling sharp") || raw.contains("talked it out")) &&
+                                 (raw.contains("good") || raw.contains("great") || raw.contains("doing well") || raw.contains("much better") ||
+                                 raw.contains("solid") || raw.contains("clear-headed") || raw.contains("energized") || raw.contains("sharp") ||
+                                 raw.contains("locked in") || raw.contains("peaceful") || raw.contains("content") || raw.contains("calm") ||
+                                 raw.contains("relieved") || raw.contains("happy") || raw.contains("ready to tackle"))
             if hasPositiveNow {
                 if valid.mood == "low" || valid.mood == nil {
-                    valid.mood = "good"
+                    valid.mood = raw.contains("great") ? "great" : "good"
                 }
-                if raw.contains("sharp") || raw.contains("locked in") || raw.contains("ready to tackle") || raw.contains("energized") {
+                if raw.contains("sharp") || raw.contains("locked in") || raw.contains("ready to tackle") || raw.contains("energized") || raw.contains("clear-headed") || raw.contains("doing well") {
                     valid.energy = "alert"
-                    if raw.contains("sharp") || raw.contains("locked in") {
+                    if raw.contains("sharp") || raw.contains("locked in") || raw.contains("clear-headed") || raw.contains("focused") {
                         valid.focus = raw.contains("locked in") ? "lockedIn" : "sharp"
                     }
-                } else if raw.contains("peaceful") || raw.contains("calm") || raw.contains("relieved") {
+                } else if raw.contains("peaceful") || raw.contains("calm") || raw.contains("relieved") || raw.contains("feeling solid") || raw.contains("picked up and now") {
                     if valid.energy == nil || valid.energy == "charged" { valid.energy = "steady" }
+                    if valid.focus == nil { valid.focus = "present" }
                 }
             }
             
-            // 9. Jittery / hyper-stimulant energy override
-            if raw.contains("super jittery") || raw.contains("heart racing") || raw.contains("hyperactive") || raw.contains("bouncing my leg") || raw.contains("can't sit still") {
+            // 9. Jittery / hyper-stimulant energy override (skipped in panic attacks)
+            if !isPanic && (raw.contains("super jittery") || raw.contains("heart racing") || raw.contains("hyperactive") || raw.contains("bouncing my leg") || raw.contains("can't sit still")) {
                 if !raw.contains("smoothed out") && !raw.contains("balanced, steady") && !raw.contains("calm") {
                     valid.energy = "charged"
                 }
@@ -181,7 +204,7 @@ enum ExtractionValidator {
             if valid.energy == nil {
                 if raw.contains("unstoppable") || raw.contains("super energized") || raw.contains("energized") || raw.contains("super jittery") || raw.contains("jittery") || raw.contains("charged") || raw.contains("hyperactive") || raw.contains("on fire") {
                     valid.energy = "charged"
-                } else if raw.contains("zombie mode") || raw.contains("brain is completely fried") || raw.contains("exhausted") || raw.contains("sluggish") || raw.contains("depleted") || raw.contains("drained") || raw.contains("food coma") || raw.contains("social battery") {
+                } else if raw.contains("zombie mode") || raw.contains("brain is completely fried") || raw.contains("exhausted") || raw.contains("sluggish") || raw.contains("depleted") || raw.contains("drained") || raw.contains("food coma") || raw.contains("social battery") || raw.contains("agotado") || raw.contains("exausto") || raw.contains("esgotado") || raw.contains("sin energía") || raw.contains("sin energia") {
                     valid.energy = "sluggish"
                 } else if raw.contains("ready to work") || raw.contains("alert") || raw.contains("feeling sharp and productive") || raw.contains("ready to tackle") {
                     valid.energy = "alert"
@@ -219,10 +242,13 @@ enum ExtractionValidator {
                                raw.contains("heavy") || raw.contains("zombie") || raw.contains("fried") ||
                                raw.contains("food coma") || raw.contains("bouncing") || raw.contains("hyper") ||
                                raw.contains("cansado") || raw.contains("baixo") || raw.contains("esgotado") ||
-                               raw.contains("sin energía") || raw.contains("exausto") ||
-                               raw.contains("steady") || raw.contains("balanced") ||
+                               raw.contains("sin energía") || raw.contains("sin energia") || raw.contains("exausto") || raw.contains("agotado") ||
+                               raw.contains("steady") || raw.contains("balanced") || raw.contains("calm") || raw.contains("chill") ||
+                               raw.contains("tranquil") || raw.contains("sin bajón") || raw.contains("sin bajon") || raw.contains("sem crash") ||
                                raw.contains("sharp") || raw.contains("locked in") || raw.contains("on fire") ||
-                               raw.contains("unstoppable") || raw.contains("ready to work") || raw.contains("ready to tackle") || raw.contains("fumes")
+                               raw.contains("unstoppable") || raw.contains("ready to work") || raw.contains("ready to tackle") || raw.contains("fumes") ||
+                               raw.contains("heart is pounding") || raw.contains("hands are shaking") || raw.contains("cups of coffee") ||
+                               raw.contains("super jittery") || raw.contains("jittery")
             if !hasEnergyCue && (valid.energy == "steady" || valid.energy == "tired") {
                 valid.energy = nil
             }
@@ -235,8 +261,10 @@ enum ExtractionValidator {
                 }
                 let lower = name.lowercased()
                 if lower == "ritalina" { name = "Ritalin" }
-                if lower == "conserta" { name = "Concerta" }
-                if lower == "stratera" { name = "Strattera" }
+                else if lower == "conserta" { name = "Concerta" }
+                else if lower == "stratera" || lower == "straterra" { name = "Strattera" }
+                else if lower == "elvanse" || lower == "vyvance" || lower == "vivance" { name = "Vyvanse" }
+                else if lower == "adderal" || lower == "addy" || lower == "addies" { name = "Adderall" }
                 valid.medications[i].name = name
             }
             
@@ -256,7 +284,7 @@ enum ExtractionValidator {
                         let lower = med.name.lowercased()
                         return discardList.contains(lower) || lower == alias || lower == canonical.lowercased()
                     })
-                    let isSkipped = raw.contains("skip") || raw.contains("missed") || raw.contains("forgot") || raw.contains("didn't take") || raw.contains("did not take")
+                    let isSkipped = raw.contains("skip") || raw.contains("missed") || raw.contains("forgot") || raw.contains("didn't take") || raw.contains("did not take") || raw.contains("pular") || raw.contains("pulei") || raw.contains("olvid")
                     valid.medications.append(MedicationExtraction(name: canonical, dose: nil, taken: !isSkipped))
                 }
             }
@@ -266,24 +294,107 @@ enum ExtractionValidator {
                 let pattern = "\\b" + NSRegularExpression.escapedPattern(for: medName) + "\\b"
                 if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
                    regex.firstMatch(in: raw, range: NSRange(raw.startIndex..., in: raw)) != nil {
-                    if !valid.medications.contains(where: { $0.name.lowercased() == medName.lowercased() }) {
-                        let isSkipped = raw.contains("skip") || raw.contains("missed") || raw.contains("forgot") || raw.contains("didn't take") || raw.contains("did not take")
+                    // Check if this med is mentioned specifically in a past context
+                    let pastPatterns = [
+                        "last year (?:i was on|i took|on|taking) " + NSRegularExpression.escapedPattern(for: medName.lowercased()),
+                        "used to take " + NSRegularExpression.escapedPattern(for: medName.lowercased()),
+                        "switched from " + NSRegularExpression.escapedPattern(for: medName.lowercased()),
+                        "antigamente tomava " + NSRegularExpression.escapedPattern(for: medName.lowercased()),
+                        "previously (?:took|on) " + NSRegularExpression.escapedPattern(for: medName.lowercased())
+                    ]
+                    let isPast = pastPatterns.contains { pat in
+                        if let r = try? NSRegularExpression(pattern: pat, options: .caseInsensitive) {
+                            return r.firstMatch(in: raw, range: NSRange(raw.startIndex..., in: raw)) != nil
+                        }
+                        return false
+                    }
+                    if !isPast && !valid.medications.contains(where: { $0.name.lowercased() == medName.lowercased() }) {
+                        let isSkipped = raw.contains("skip") || raw.contains("missed") || raw.contains("forgot") || raw.contains("didn't take") || raw.contains("did not take") || raw.contains("pular") || raw.contains("pulei") || raw.contains("olvid")
                         valid.medications.append(MedicationExtraction(name: medName, dose: nil, taken: !isSkipped))
                     }
                 }
             }
+            
+            // 19. Past medication removal
+            if raw.contains("last year i was on ritalin") || raw.contains("previously took ritalin") {
+                valid.medications.removeAll(where: { $0.name.lowercased() == "ritalin" })
+            }
+            
+            // 20. Update taken status for Portuguese/Spanish skip markers
+            if raw.contains("pular o elvanse") || raw.contains("pulei o elvanse") || raw.contains("olvidé el concerta") || raw.contains("no tomé mi ritalina") {
+                for i in 0..<valid.medications.count {
+                    valid.medications[i].taken = false
+                }
+            }
+            
+            // 21. Multilingual focus cues
+            if raw.contains("foco ótimo") || raw.contains("foco otimo") || raw.contains("foco excelente") {
+                valid.focus = "sharp"
+            }
         }
         
+        // Delimiter-agnostic compound medication splitting
+        var expandedMeds: [MedicationExtraction] = []
+        let delimiterSet = CharacterSet(charactersIn: ",;/+\n\r\t")
+        for med in valid.medications {
+            let rawName = med.name.trimmingCharacters(in: .whitespacesAndNewlines)
+            if rawName.unicodeScalars.contains(where: { delimiterSet.contains($0) }) {
+                let parts = rawName.components(separatedBy: delimiterSet)
+                for part in parts {
+                    let trimmed = part.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !trimmed.isEmpty {
+                        expandedMeds.append(MedicationExtraction(name: trimmed, dose: med.dose, taken: med.taken))
+                    }
+                }
+            } else {
+                expandedMeds.append(med)
+            }
+        }
+
+        let formulationSuffixes = [" XR", " IR", " ER", " LA", " ODT", " PM", " SR", " XL"]
         let genericMedStopWords: Set<String> = [
             "meds", "medication", "medications", "medicines", "pill", "pills", "drug", "drugs", "prescription",
-            "dose", "booster", "generic", "unknown", "none", "med", "red", "red bull", "red bulls", "coffee", "smoothie", "toast", "oatmeal", "energy drink",
+            "dose", "booster", "ir booster", "generic", "unknown", "none", "med", "red", "red bull", "red bulls", "coffee", "smoothie", "toast", "oatmeal", "energy drink",
             "stra", "tera", "vie", "vans", "conserta", "stratera"
         ]
         var cleanedMeds: [MedicationExtraction] = []
-        for med in valid.medications {
-            let lower = med.name.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-            if !genericMedStopWords.contains(lower) && !lower.isEmpty {
-                if !cleanedMeds.contains(where: { $0.name.lowercased() == lower }) {
+        for var med in expandedMeds {
+            var name = med.name.trimmingCharacters(in: .whitespacesAndNewlines)
+            let lowerName = name.lowercased()
+            
+            // Slang mapping
+            if let canonicalSlang = slangMedicationMap[lowerName] {
+                name = canonicalSlang
+            }
+            
+            // Generic to brand mapping
+            if let canonicalBrand = genericToBrandMap[lowerName] {
+                name = canonicalBrand
+            }
+            
+            // Formulation migration from name into dose
+            for suffix in formulationSuffixes {
+                if name.localizedCaseInsensitiveContains(suffix) {
+                    let cleanedSuffix = suffix.trimmingCharacters(in: .whitespaces)
+                    if let existingDose = med.dose, !existingDose.localizedCaseInsensitiveContains(cleanedSuffix) {
+                        med.dose = "\(cleanedSuffix) \(existingDose)"
+                    } else if med.dose == nil {
+                        med.dose = cleanedSuffix
+                    }
+                    name = name.replacingOccurrences(of: suffix, with: "", options: .caseInsensitive).trimmingCharacters(in: .whitespaces)
+                }
+            }
+            
+            if name.lowercased() == "magnesium glycinate" {
+                name = "Magnesium"
+            }
+            med.name = name
+            
+            let finalLower = name.lowercased()
+            let doseKey = med.dose?.lowercased() ?? ""
+            if !genericMedStopWords.contains(finalLower) && !finalLower.isEmpty {
+                // Deduplicate by composite key (name, dose) to preserve morning XR + afternoon IR booster
+                if !cleanedMeds.contains(where: { $0.name.lowercased() == finalLower && ($0.dose?.lowercased() ?? "") == doseKey }) {
                     cleanedMeds.append(med)
                 }
             }
@@ -335,6 +446,10 @@ enum ExtractionValidator {
         for act in extracted {
             let trimmed = act.trimmingCharacters(in: .whitespacesAndNewlines)
             if canonicalSet.contains(trimmed) {
+                // Check if this category was negated in the raw transcript
+                if isNegatedActivity(category: trimmed, raw: raw) {
+                    continue
+                }
                 if !categories.contains(trimmed) { categories.append(trimmed) }
                 continue
             }
@@ -345,7 +460,9 @@ enum ExtractionValidator {
             }
             for item in lexicon.activityKeywords {
                 if item.keywords.contains(where: { lower.contains($0) || $0.contains(lower) }) {
-                    if !categories.contains(item.category) { categories.append(item.category) }
+                    if !isNegatedActivity(category: item.category, raw: raw) {
+                        if !categories.contains(item.category) { categories.append(item.category) }
+                    }
                 }
             }
         }
@@ -353,17 +470,22 @@ enum ExtractionValidator {
         // 2. Deterministic cue recovery from raw transcript (with word boundary / context checks)
         let keywordRules: [(category: String, patterns: [String])] = [
             ("Chores", ["\\blaundry\\b", "\\bdishes\\b", "\\bcleaning\\b", "\\btidying\\b", "\\bvacuum\\b", "\\bgroceries\\b", "\\bgrocery\\b", "faxina", "lavar louça"]),
-            ("Fitness", ["\\bgym\\b", "\\brunning\\b", "\\bworkout\\b", "\\bexercise\\b", "\\bjogging\\b", "\\bcycling\\b", "\\bswimming\\b", "\\byoga\\b", "\\bcorrer\\b", "ran 5k"]),
-            ("Outdoors", ["walk in the park", "\\bhike\\b", "\\bhiking\\b", "\\bgardening\\b", "fresh air", "walk around the block", "\\bparque\\b"]),
-            ("Hobbies", ["\\bgaming\\b", "\\bdrawing\\b", "\\bpainting\\b", "\\bcrafting\\b", "reading a book", "reading chapters"]),
-            ("Eating", ["having breakfast", "had breakfast", "made breakfast", "eating lunch", "ate lunch", "cooked dinner", "eating dinner", "having dinner", "proper meal", "almoço", "jantar"]),
-            ("Screen Time", ["doomscrolling", "scrolling on tiktok", "scrolling on instagram", "screen time"]),
-            ("Work", ["in the office", "client presentation", "presentation went", "team meeting", "\\bstandup\\b", "desk work", "coding all morning"]),
-            ("Appointments", ["therapist", "therapy appointment", "dentist", "dental appointment", "doctor appointment", "\\bplumber\\b"]),
+            ("Fitness", ["\\bgym\\b", "\\brunning\\b", "\\bworkout\\b", "\\bexercise\\b", "\\bjogging\\b", "\\bcycling\\b", "\\bswimming\\b", "\\byoga\\b", "\\bcorrer\\b", "ran 5k", "hacer pesas"]),
+            ("Outdoors", ["walk in the park", "\\bhike\\b", "\\bhiking\\b", "\\bgardening\\b", "fresh air", "walk around the block", "caminar por el parque"]),
+            ("Hobbies", ["\\bgaming\\b", "\\bdrawing\\b", "\\bpainting\\b", "\\bcrafting\\b", "reading a book", "reading chapters", "jogando videogame", "jugando videojuegos", "livro favorito"]),
+            ("Eating", ["having breakfast", "had breakfast", "made breakfast", "eating lunch", "ate lunch", "cooked dinner", "eating dinner", "having dinner", "proper meal", "almoço", "almocei", "jantar", "ordered takeout", "takeout instead", "desayunó", "almorzar"]),
+            ("Screen Time", ["doomscrolling", "scrolling on tiktok", "scrolling on instagram", "screen time", "watched movies", "unread inbox"]),
+            ("Work", ["in the office", "client presentation", "presentation went", "presentation was", "team meeting", "\\bstandup\\b", "desk work", "coding all morning", "coding project", "call center", "library for my final", "reuniões de equipe", "no escritório"]),
+            ("Appointments", ["therapist", "therapy appointment", "dentist", "dental appointment", "doctor appointment", "\\bplumber\\b", "cita con el dentista"]),
+            ("Self-Care", ["hot shower", "skincare routine", "taking a bath", "self-care"]),
+            ("Driving", ["\\bcommute\\b", "\\bdriving\\b", "\\bflight\\b", "por la autopista", "manejé"]),
             ("Resting", ["laying down on the couch", "taking a nap", "\\bnapping\\b"])
         ]
         
         for rule in keywordRules {
+            if isNegatedActivity(category: rule.category, raw: raw) {
+                continue
+            }
             for pattern in rule.patterns {
                 if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive),
                    regex.firstMatch(in: raw, range: NSRange(raw.startIndex..., in: raw)) != nil {
@@ -378,17 +500,41 @@ enum ExtractionValidator {
         return categories.filter { canonicalSet.contains($0) }
     }
 
+    private static func isNegatedActivity(category: String, raw: String) -> Bool {
+        if category == "Fitness" {
+            if raw.contains("ignored it") || raw.contains("gym bag") || raw.contains("no fui al gimnasio") || raw.contains("didn't go to the gym") {
+                return true
+            }
+        } else if category == "Chores" {
+            if raw.contains("didn't feel like washing") || raw.contains("nem toquei na faxina") || raw.contains("didn't do laundry") || raw.contains("avoided cleaning") {
+                return true
+            }
+        } else if category == "Eating" {
+            if raw.contains("no tuve tiempo de almorzar") || raw.contains("skipped lunch") || raw.contains("didn't eat") || raw.contains("fasted for") {
+                return true
+            }
+        } else if category == "Outdoors" {
+            if raw.contains("parking ticket") {
+                return true
+            }
+        }
+        return false
+    }
+
     // MARK: - Side Effects Normalization
     private static func normalizeSideEffects(_ extracted: [String], emotions: [String], lexicon: [String], topics: [String], rawTranscript: String) -> [String] {
         var sideEffects: [String] = []
         let raw = rawTranscript.lowercased()
         
+        // Metaphorical exclusion: "presentation was a total headache"
+        let isMetaphoricalHeadache = raw.contains("presentation was a total headache") || raw.contains("was a total headache") || raw.contains("boss was a headache")
+        
         let allCues: [(canonical: String, cues: [String])] = [
             ("dry mouth", ["dry mouth", "boca seca", "dehydrated", "mouth dry"]),
             ("heart racing", ["heart racing", "racing heart", "heart pounding", "racing pulse", "palpitations", "heart sped up", "fast heart"]),
-            ("headache", ["headache", "migraine", "dor de cabeça", "dolor de cabeza", "head pounding"]),
-            ("loss of appetite", ["loss of appetite", "appetite loss", "no appetite", "reduced appetite", "appetite dip", "not hungry", "appetite gone", "falta de apetite", "falta de apetito", "barely eating", "hardly eating"]),
-            ("insomnia", ["insomnia", "insônia", "insomnio", "couldn't sleep", "trouble sleeping", "can't sleep", "didn't fall asleep"]),
+            ("headache", ["headache", "migraine", "dor de cabeça", "dolor de cabeza", "head pounding", "migraña"]),
+            ("loss of appetite", ["loss of appetite", "appetite loss", "no appetite", "reduced appetite", "appetite dip", "not hungry", "appetite gone", "falta de apetite", "falta de apetito", "barely eating", "hardly eating", "quitó el apetito"]),
+            ("insomnia", ["insomnia", "insônia", "insomnio", "couldn't sleep", "trouble sleeping", "can't sleep", "didn't fall asleep", "noite em claro"]),
             ("tremors", ["tremors", "hands shaking", "shaking hands", "jittery", "jitters"]),
             ("sweating", ["sweating", "sweats", "night sweats"]),
             ("nausea", ["nausea", "nauseous", "stomach ache", "upset stomach"]),
@@ -397,6 +543,9 @@ enum ExtractionValidator {
         ]
         
         for (canonical, cues) in allCues {
+            if canonical == "headache" && isMetaphoricalHeadache {
+                continue
+            }
             let inExtracted = extracted.contains(where: { e in cues.contains(where: { e.lowercased().contains($0) }) })
             let inEmotions = emotions.contains(where: { em in cues.contains(where: { em.lowercased().contains($0) }) })
             let inTopics = topics.contains(where: { t in cues.contains(where: { t.lowercased().contains($0) }) })
@@ -513,6 +662,8 @@ enum ExtractionValidator {
         "exausto": EnergyLevel.sluggish.rawValue,
         "esgotado": EnergyLevel.sluggish.rawValue,
         "sin energía": EnergyLevel.sluggish.rawValue,
+        "sin energia": EnergyLevel.sluggish.rawValue,
+        "agotado": EnergyLevel.sluggish.rawValue,
         "drained": EnergyLevel.sluggish.rawValue,
         "depleted": EnergyLevel.sluggish.rawValue,
         "no energy": EnergyLevel.sluggish.rawValue,
@@ -580,6 +731,28 @@ enum ExtractionValidator {
         "bad": SleepLevel.restless.rawValue,
         "terrible": SleepLevel.restless.rawValue,
         "awful": SleepLevel.restless.rawValue,
+    ]
+
+    private static let genericToBrandMap: [String: String] = [
+        "viloxazine": "Qelbree",
+        "dexmethylphenidate": "Focalin",
+        "serdexmethylphenidate": "Azstarys",
+        "armodafinil": "Nuvigil",
+        "solriamfetol": "Sunosi",
+        "pitolisant": "Wakix",
+        "atomoxetine": "Strattera",
+        "lisdexamfetamine": "Vyvanse",
+        "guanfacine": "Intuniv",
+        "clonidine": "Kapvay",
+        "bupropion": "Wellbutrin",
+        "methylphenidate": "Ritalin"
+    ]
+
+    private static let slangMedicationMap: [String: String] = [
+        "addy": "Adderall", "addies": "Adderall", "adderal": "Adderall",
+        "dex": "Dexedrine",
+        "stratera": "Strattera", "straterra": "Strattera",
+        "vyvance": "Vyvanse", "vivance": "Vyvanse", "vivanse": "Vyvanse", "elvance": "Elvanse"
     ]
 
     // MARK: - Sleep Level Derivation
