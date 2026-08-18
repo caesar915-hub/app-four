@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>036 · Insights — evolution proposal (competitor-informed)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    /* New Look tokens (Packages/SquirlDesignSystem/Sources/SquirlDesignSystem/NewLook.swift) */
+    --screen:      #EFF2EB;
+    --card:        #FFFFFF;
+    --ink1:        #1C1B1F;
+    --ink2:        #8A8A8E;
+    --hairline:    #DBDDDE;
+    --tintNeutral: #ECEAE6;
+    --selection:   #54B492;
+    /* Theme / Palette */
+    --meadow:      #5F8A4C;
+    --med:         #7E5CA8;
+    --medEnd:      #AF99C3;
+    --sleepIndigo: #5566A6;
+    /* Mood ramp (base / partner) */
+    --mood1:#DA7A2A; --mood1p:#EA9248;
+    --mood2:#EDA94A; --mood2p:#FDC06C;
+    --mood3:#9FCB79; --mood3p:#B9DB9C;
+    --mood4:#5FB36E; --mood4p:#7EC38A;
+    --mood5:#2E8B57; --mood5p:#459B6B;
+    /* Energy ramp (base / partner) */
+    --en1:#7C6E2E; --en1p:#8C7F44;
+    --en2:#A89236; --en2p:#B8A450;
+    --en3:#D2BB40; --en3p:#E2CD5F;
+    --en4:#EEDA4C; --en4p:#FEEC6E;
+    --en5:#FCEE64; --en5p:#FFF482;
+    /* Focus ramp (base / partner) */
+    --fo1:#44546E; --fo1p:#5C697E;
+    --fo2:#4E6F94; --fo2p:#6985A4;
+    --fo3:#5889BA; --fo3p:#77A0CA;
+    --fo4:#63A4E0; --fo4p:#85BDF0;
+    --fo5:#79C4FF; --fo5p:#96D1FF;
+
+    --bezel: #17171C;
+    --page:  #F4F5F1;
+    --panel: #FFFFFF;
+    --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+    --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  body {
+    background: var(--page);
+    font-family: var(--sans);
+    color: var(--ink1);
+    padding: 48px 32px 96px;
+    min-width: 1280px;
+  }
+
+  /* ── Page header ── */
+  .doc-head { max-width: 1460px; margin: 0 auto 40px; }
+  .doc-eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 1.6px;
+    text-transform: uppercase; color: #7A7A72; margin-bottom: 10px;
+  }
+  .doc-title { font-size: 30px; font-weight: 700; letter-spacing: -0.3px; }
+  .doc-sub { font-size: 14px; color: #6E6E66; margin-top: 8px; max-width: 860px; line-height: 1.55; }
+  .doc-sub code { font-family: var(--mono); font-size: 12px; background: #E9EBE3; padding: 1px 5px; border-radius: 4px; }
+
+  .tokens { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 22px; align-items: flex-start; }
+  .token-group { display: flex; gap: 6px; align-items: center; }
+  .token-label { font-family: var(--mono); font-size: 10px; color: #8A8A82; margin-right: 2px; }
+  .sw { width: 18px; height: 18px; border-radius: 6px; border: 1px solid rgba(0,0,0,.08); }
+  .sw.round { border-radius: 50%; }
+
+  /* ── Spec sheet layout: continuous phone, side rails pinned by JS ── */
+  .sheet { position: relative; max-width: 1460px; margin: 0 auto; }
+  .phone-col { width: 410px; margin: 0 auto; }
+
+  .side { position: absolute; }
+  .side.left  { width: 300px; right: calc(50% + 245px); text-align: right; }
+  .side.right { width: 380px; left:  calc(50% + 245px); }
+  .side.left  .connector { position: absolute; top: 26px; right: -40px; width: 40px; height: 1px; background: #C9CCC0; }
+  .side.right .connector { position: absolute; top: 26px; left:  -40px; width: 40px; height: 1px; background: #C9CCC0; }
+  .side .num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--ink1); color: var(--screen);
+    font-family: var(--mono); font-size: 10px; font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .side h3 { font-size: 13px; font-weight: 700; margin-bottom: 6px; letter-spacing: .2px; }
+  .side p { font-size: 12px; line-height: 1.6; color: #5C5C55; }
+  .side p + p { margin-top: 6px; }
+
+  .calc {
+    background: var(--panel);
+    border: 1px solid #E2E4DA;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    line-height: 1.65;
+    color: #44463F;
+    text-align: left;
+  }
+  .calc .src { color: #9A9C90; font-size: 9.5px; display: block; margin-bottom: 6px; }
+  .calc .f { color: #1C1B1F; font-weight: 600; }
+  .calc .res { color: var(--meadow); font-weight: 700; }
+  .calc table { border-collapse: collapse; margin: 4px 0; width: 100%; }
+  .calc td, .calc th { padding: 1px 6px 1px 0; font-size: 10px; text-align: right; white-space: nowrap; }
+  .calc td:first-child, .calc th:first-child { text-align: left; }
+  .calc th { color: #9A9C90; font-weight: 400; border-bottom: 1px solid #ECEDE4; }
+  .calc .step { margin-top: 6px; padding-top: 6px; border-top: 1px dashed #E4E6DC; }
+
+  /* ── Phone ── */
+  .ps {
+    width: 410px;
+    background: var(--screen);
+    border-left: 12px solid var(--bezel);
+    border-right: 12px solid var(--bezel);
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .ps.first { border-top: 13px solid var(--bezel); border-radius: 54px 54px 0 0; padding-top: 16px; }
+  .ps.last  { border-bottom: 16px solid var(--bezel); border-radius: 0 0 54px 54px; }
+
+  .card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.05), 0 1px 2px rgba(0,0,0,.03);
+  }
+
+  /* status bar */
+  .statusbar { display: flex; justify-content: space-between; align-items: center; padding: 2px 10px 10px; }
+  .statusbar .time { font-size: 15px; font-weight: 600; }
+  .statusbar .icons { display: flex; gap: 5px; align-items: center; }
+
+  /* medication bar */
+  .medbar .row1 { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .medbar .title { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; }
+  .medbar .state { margin-left: auto; font-size: 12px; font-weight: 500; letter-spacing: .5px; text-transform: uppercase; color: var(--med); }
+  .medbar .track { height: 19px; border-radius: 999px; background: var(--tintNeutral); overflow: hidden; }
+  .medbar .track .fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--med), var(--medEnd)); }
+
+  /* identity */
+  .identity h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.2px; }
+  .identity .sub { font-size: 14px; font-weight: 500; color: var(--ink2); margin-top: 4px; }
+
+  /* month chips */
+  .months { display: flex; gap: 8px; overflow: hidden; justify-content: flex-end; }
+  .chip {
+    font-size: 12px; font-weight: 500; letter-spacing: 1.3px; text-transform: uppercase;
+    padding: 8px 12px; border-radius: 999px; white-space: nowrap; flex: none;
+    background: var(--card); border: 1px solid var(--hairline); color: var(--ink1);
+  }
+  .chip.sel { background: var(--meadow); border-color: transparent; color: #fff; }
+
+  /* in-card headers */
+  .cardhead { display: flex; align-items: baseline; margin-bottom: 12px; }
+  .cardhead h2 { font-size: 16px; font-weight: 600; }
+  .cardhead .trailing { margin-left: auto; font-size: 12px; color: var(--ink2); }
+  .cardsub { font-size: 12px; color: var(--ink2); margin-top: -8px; margin-bottom: 12px; }
+
+  /* bubble chart */
+  .bubbles { position: relative; height: 160px; } /* ZStack children are unclipped in SwiftUI; .card keeps overflow visible */
+  .bubble {
+    position: absolute; border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transform: translate(-50%, -50%);
+  }
+  .bubble .pct { font-size: 12px; font-weight: 600; line-height: 1.15; }
+  .bubble .lbl { font-size: 12px; font-weight: 500; line-height: 1.15; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .legend .lchip {
+    display: flex; align-items: center; gap: 4px;
+    background: var(--card); border: 1px solid var(--hairline); border-radius: 999px;
+    padding: 4px 12px; font-size: 12px;
+  }
+  .legend .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .legend .n { color: var(--ink2); }
+
+  /* signal strips */
+  .strip + .strip { margin-top: 12px; }
+  .strip .shead { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .strip .sname { font-size: 14px; font-weight: 500; }
+  .strip .ssum { margin-left: auto; font-size: 12px; color: var(--ink2); }
+  .beads { display: flex; padding: 4px 0; }
+  .bead { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 44px; }
+  .bead .wd { font-size: 9px; font-weight: 500; color: var(--ink2); }
+  .sleep-chip {
+    margin-top: 12px; display: inline-flex; align-items: center; gap: 4px;
+    padding: 8px 12px; border-radius: 999px;
+    border: 1px dashed var(--hairline);
+    color: var(--ink2); font-size: 12px;
+  }
+
+  /* gauges */
+  .gauges { display: flex; gap: 16px; align-items: flex-end; }
+  .gauge { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .gauge .tube { position: relative; width: 64px; height: 280px; border-radius: 10px; background: var(--tintNeutral); overflow: hidden; }
+  .gauge .fillbar { position: absolute; left: 0; bottom: 0; width: 64px; border-radius: 10px; }
+  .gauge .fillbar .flabel { position: absolute; top: 6px; left: 0; right: 0; text-align: center; font-size: 12px; font-weight: 600; }
+  .gauge .cap { font-size: 12px; color: var(--ink2); text-align: center; width: 64px; line-height: 1.35; }
+
+  /* rhythm matrix */
+  .matrix .mrow { display: flex; align-items: center; }
+  .matrix .mrow + .mrow { margin-top: 8px; }
+  .matrix .rlabel { width: 56px; font-size: 12px; font-weight: 500; color: var(--ink2); flex: none; }
+  .matrix .hlabel { flex: 1; text-align: center; font-size: 12px; color: var(--ink2); }
+  .matrix .cell { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 44px; }
+  .matrix .blob { width: 52px; height: 52px; border-radius: 50%; }
+  .matrix .blob.empty { border: 1.5px dashed rgba(138,138,142,.3); background: transparent; }
+  .matrix .clabel { font-size: 12px; font-weight: 500; color: var(--ink2); }
+
+  /* connections */
+  .eyebrow { font-size: 12px; font-weight: 500; letter-spacing: 1.3px; color: var(--ink2); }
+  .eyebrow-sub { font-size: 12px; color: var(--ink2); margin-top: 4px; }
+  .conn + .conn { margin-top: 12px; }
+  .conn .ctitle { font-size: 12px; font-weight: 500; letter-spacing: .5px; text-transform: uppercase; color: var(--ink2); }
+  .conn .sentence { font-size: 28px; font-weight: 600; letter-spacing: -0.4px; line-height: 1.22; margin-top: 12px; }
+  .minibar { margin-top: 12px; }
+  .minibar .track { height: 8px; border-radius: 999px; background: var(--tintNeutral); overflow: hidden; }
+  .minibar .track .fill { height: 100%; border-radius: 999px; background: var(--med); }
+  .minibar .labels { display: flex; margin-top: 6px; font-size: 12px; color: var(--ink2); }
+  .minibar .labels .val { font-weight: 600; color: var(--ink1); }
+  .minibar .labels .spacer { flex: 1; }
+  .conn.gated {
+    background: var(--card); border-radius: 20px; padding: 16px;
+    border: 1px dashed var(--hairline); box-shadow: none;
+  }
+  .conn.gated .lockrow { display: flex; align-items: center; }
+  .conn.gated .copy { font-size: 15px; color: var(--ink2); margin-top: 8px; line-height: 1.45; }
+
+  /* tab bar */
+  .tabbar {
+    display: flex; border-top: 1px solid rgba(0,0,0,.06);
+    padding: 8px 4px 4px;
+  }
+  .tab { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; color: #999B94; }
+  .tab.sel { color: var(--meadow); }
+  .tab .tlabel { font-size: 10px; font-weight: 500; }
+  .home { width: 134px; height: 5px; border-radius: 999px; background: var(--ink1); margin: 10px auto 4px; }
+
+  /* ── Proposal annotations + new blocks ── */
+  .ptag { font-family: var(--mono); font-size: 9px; font-weight: 700; letter-spacing: 1.2px; color: #A8641E; background: #FBF3E4; border: 1px solid #E8D9B8; border-radius: 4px; padding: 2px 6px; white-space: nowrap; }
+  .ptag-row { display: flex; justify-content: flex-end; margin-top: 6px; }
+  .presence { font-size: 15px; color: var(--ink1); margin-top: 8px; }
+  .takeaway { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12px; color: var(--ink2); }
+  .takeaway .tdot { width: 6px; height: 6px; border-radius: 50%; background: var(--meadow); flex: none; }
+  .weekrow { display: flex; align-items: center; gap: 8px; }
+  .weekrow + .weekrow { margin-top: 12px; }
+  .weekrow .wname { font-size: 14px; font-weight: 500; }
+  .weekrow .wval { margin-left: auto; font-size: 14px; font-weight: 600; }
+  .weekrow .wword { font-size: 12px; color: var(--ink2); }
+  .conf { font-size: 10px; font-weight: 600; letter-spacing: .8px; color: var(--meadow); border: 1px solid currentColor; border-radius: 999px; padding: 3px 8px; text-transform: uppercase; }
+  .vsbars { margin-top: 12px; display: flex; flex-direction: column; gap: 6px; }
+  .vsbar { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--ink2); }
+  .vsbar .vlabel { width: 72px; flex: none; }
+  .vsbar .vtrack { flex: 1; height: 8px; border-radius: 999px; background: var(--tintNeutral); overflow: hidden; }
+  .vsbar .vfill { display: block; height: 100%; border-radius: 999px; }
+  .vsbar .vnum { width: 28px; text-align: right; font-weight: 600; color: var(--ink1); flex: none; }
+  .sample { margin-top: 8px; font-size: 12px; color: var(--ink2); display: flex; align-items: center; }
+  .sel-matrix { max-width: 1460px; margin: 0 auto 40px; }
+  .sel-matrix h4 { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .sel-matrix .v { font-weight: 700; }
+  .sel-matrix .v.adopt { color: #2C6B3B; }
+  .sel-matrix .v.have { color: #5566A6; }
+  .sel-matrix .v.defer { color: #A8641E; }
+  .sel-matrix .v.reject { color: #B5503A; }
+
+  /* ── Appendix ── */
+  .appendix { max-width: 1460px; margin: 72px auto 0; }
+  .appendix h2 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .appendix .note { font-size: 12px; color: #7A7A72; margin-bottom: 16px; max-width: 900px; line-height: 1.55; }
+  .appendix h4 { font-size: 13px; font-weight: 700; margin: 24px 0 8px; }
+  .data-table { border-collapse: collapse; font-family: var(--mono); font-size: 10.5px; background: #fff; border: 1px solid #E2E4DA; border-radius: 12px; overflow: hidden; }
+  .data-table th { background: #EFEFE8; text-align: left; padding: 6px 10px; font-weight: 600; color: #5C5C55; white-space: nowrap; }
+  .data-table td { padding: 4px 10px; border-top: 1px solid #EFF0E8; white-space: nowrap; color: #44463F; }
+  .appendix .cols { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
+</style>
+</head>
+<body>
+
+<header class="doc-head">
+  <div class="doc-eyebrow">Squirl · spec 036 evolution · competitor-informed proposal</div>
+  <h1 class="doc-title">Insights — evolution proposal</h1>
+  <p class="doc-sub">
+    Evolution of <code>036-insights-view.html</code> — the current design below is unchanged; new sections carry an
+    amber <strong>PROPOSED</strong> tag. Informed by <code>docs/competitor-research-insights.md</code> (Daylio + Bearable, 2026-08-18).
+    Left rail = rationale + which competitor mechanic it adapts and why it passes Squirl's principles;
+    right rail = the exact deterministic calculation. All numbers derive from the same 18-check-in dataset (appendix A).
+  </p>
+  <div class="tokens">
+    <div class="token-group"><span class="token-label">screen</span><span class="sw" style="background:#EFF2EB"></span></div>
+    <div class="token-group"><span class="token-label">card</span><span class="sw" style="background:#FFFFFF"></span></div>
+    <div class="token-group"><span class="token-label">ink</span><span class="sw" style="background:#1C1B1F"></span><span class="sw" style="background:#8A8A8E"></span></div>
+    <div class="token-group"><span class="token-label">hairline</span><span class="sw" style="background:#DBDDDE"></span></div>
+    <div class="token-group"><span class="token-label">neutral</span><span class="sw" style="background:#ECEAE6"></span></div>
+    <div class="token-group"><span class="token-label">meadow</span><span class="sw" style="background:#5F8A4C"></span></div>
+    <div class="token-group"><span class="token-label">med</span><span class="sw" style="background:#7E5CA8"></span></div>
+    <div class="token-group"><span class="token-label">sleep</span><span class="sw" style="background:#5566A6"></span></div>
+    <div class="token-group"><span class="token-label">mood</span>
+      <span class="sw round" style="background:#DA7A2A"></span><span class="sw round" style="background:#EDA94A"></span><span class="sw round" style="background:#9FCB79"></span><span class="sw round" style="background:#5FB36E"></span><span class="sw round" style="background:#2E8B57"></span>
+    </div>
+    <div class="token-group"><span class="token-label">energy</span>
+      <span class="sw round" style="background:#7C6E2E"></span><span class="sw round" style="background:#A89236"></span><span class="sw round" style="background:#D2BB40"></span><span class="sw round" style="background:#EEDA4C"></span><span class="sw round" style="background:#FCEE64"></span>
+    </div>
+    <div class="token-group"><span class="token-label">focus</span>
+      <span class="sw round" style="background:#44546E"></span><span class="sw round" style="background:#4E6F94"></span><span class="sw round" style="background:#5889BA"></span><span class="sw round" style="background:#63A4E0"></span><span class="sw round" style="background:#79C4FF"></span>
+    </div>
+  </div>
+</header>
+
+<section class="sel-matrix">
+  <h4>Selection matrix — competitor mechanics → Squirl fit (full analysis: docs/competitor-research-insights.md)</h4>
+  <table class="data-table">
+    <tr><th>Competitor feature</th><th>Source</th><th>Verdict</th><th>Lands in this proposal</th></tr>
+    <tr><td>Influence on Mood (with-vs-without %)</td><td>Daylio · Premium</td><td class="v adopt">ADAPT</td><td>Connection card v2 — “Medication × focus” (section 9)</td></tr>
+    <tr><td>Confidence label Low / Med / High</td><td>Daylio · Premium</td><td class="v adopt">ADAPT — deterministic tiers</td><td>Confidence chip + sample-size line (section 9)</td></tr>
+    <tr><td>Next-day / lagged effect</td><td>Daylio · Bearable</td><td class="v adopt">ADAPT — 1-day lag only</td><td>Sleep × mood v2, gated preview (section 9, right rail)</td></tr>
+    <tr><td>Weekly report (last 7 vs previous 7)</td><td>Bearable · free tier</td><td class="v adopt">ADAPT — inline, no digest</td><td>“This week vs your usual” card (section 7)</td></tr>
+    <tr><td>Occurrence-per-weekday bars</td><td>Daylio · Premium</td><td class="v have">ALREADY HAVE (better: level strips)</td><td>+ takeaway sentence under strips (section 5)</td></tr>
+    <tr><td>Entry streak → presence framing</td><td>Daylio</td><td class="v adopt">ADAPT — de-shamed</td><td>Presence line under identity (section 2)</td></tr>
+    <tr><td>Minimum-data gate (3 with / 3 without)</td><td>Bearable</td><td class="v have">ALREADY HAVE (stronger gates + unlock copy)</td><td>kept; gates unchanged</td></tr>
+    <tr><td>Average mood / mood counts</td><td>both</td><td class="v have">ALREADY HAVE</td><td>bubbles, gauges (sections 4, 6)</td></tr>
+    <tr><td>Year in Pixels / mood calendar</td><td>Daylio</td><td class="v reject">REJECT — redundant with calendar tints</td><td>—</td></tr>
+    <tr><td>Mood stability score</td><td>Daylio · Premium</td><td class="v reject">REJECT — undefined + judgment risk</td><td>—</td></tr>
+    <tr><td>Entry streaks / achievements (sad-day badges)</td><td>Daylio</td><td class="v reject">REJECT — shame mechanics (anti-reference)</td><td>—</td></tr>
+    <tr><td>Goals / goal levels</td><td>both</td><td class="v reject">REJECT — out of scope (journal, not habit trainer)</td><td>—</td></tr>
+    <tr><td>Health Experiments (n-of-1)</td><td>Bearable</td><td class="v defer">DEFER → BACKLOG (a feature, not a stat)</td><td>—</td></tr>
+    <tr><td>Correlations grid / “30+ reports”</td><td>Bearable</td><td class="v reject">REJECT — overwhelm, anti-ADHD</td><td>—</td></tr>
+  </table>
+</section>
+
+<main class="sheet">
+  <div class="phone-col">
+
+    <!-- s0 · status bar + medication bar -->
+    <div class="ps first" id="s0">
+      <div class="statusbar">
+        <span class="time">9:41</span>
+        <span class="icons">
+          <svg width="17" height="11" viewBox="0 0 17 11" fill="#1C1B1F"><rect x="0" y="7" width="3" height="4" rx="1"/><rect x="4.5" y="5" width="3" height="6" rx="1"/><rect x="9" y="2.5" width="3" height="8.5" rx="1"/><rect x="13.5" y="0" width="3" height="11" rx="1"/></svg>
+          <svg width="15" height="11" viewBox="0 0 15 11" fill="#1C1B1F"><path d="M7.5 9.2a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8zM7.5 5.6c-1.7 0-3.2.66-4.35 1.74l1.5 1.53A4.1 4.1 0 0 1 7.5 7.6c1.1 0 2.1.43 2.85 1.27l1.5-1.53A6.1 6.1 0 0 0 7.5 5.6zM7.5 1C4.4 1 1.6 2.1-.4 4l1.5 1.5A8.9 8.9 0 0 1 7.5 3.1c2.4 0 4.6.9 6.4 2.4l1.5-1.5C13.4 2.1 10.6 1 7.5 1z" transform="translate(0.6,-1)"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3.5" stroke="#1C1B1F" opacity=".4"/><rect x="2" y="2" width="16" height="8" rx="2" fill="#1C1B1F"/><path d="M23 4v4c1-.2 1.8-1 1.8-2S24 4.2 23 4z" fill="#1C1B1F" opacity=".4"/></svg>
+        </span>
+      </div>
+      <div class="medbar card" style="padding:12px;">
+        <div class="row1">
+          <span data-glyph="capsule" data-size="24" data-color="#7E5CA8"></span>
+          <span class="title">08:00 · Elvanse 30 mg</span>
+          <span class="state">Active</span>
+        </div>
+        <div class="track"><div class="fill" style="width:62%"></div></div>
+      </div>
+    </div>
+
+    <!-- s1 · identity -->
+    <div class="ps" id="s1" style="padding-top:16px;">
+      <div class="identity">
+        <h1>Insights</h1>
+        <div class="sub">August · today vs your usual</div>
+        <div class="ptag-row"><span class="ptag">Proposed</span></div>
+        <div class="presence">You showed up 17 of 17 days — mostly Good.</div>
+      </div>
+    </div>
+
+    <!-- s2 · month chips -->
+    <div class="ps" id="s2" style="padding-top:24px; padding-bottom:8px;">
+      <div class="months">
+        <span class="chip">May 2026</span>
+        <span class="chip">Jun 2026</span>
+        <span class="chip">Jul 2026</span>
+        <span class="chip sel">Aug 2026</span>
+      </div>
+    </div>
+
+    <!-- s3 · breakdown card -->
+    <div class="ps" id="s3" style="padding-top:16px;">
+      <div class="card">
+        <div class="cardhead">
+          <h2>Your overall check-in breakdown</h2>
+          <span class="trailing">18 check-ins</span>
+        </div>
+        <div class="bubbles">
+          <div class="bubble" style="left:32.2px;  top:108px; width:70.2px; height:70.2px; background:radial-gradient(circle 110px at 32% 28%, #EA9248, #DA7A2A); color:#fff;"><span class="pct">6%</span><span class="lbl">Low</span></div>
+          <div class="bubble" style="left:96.6px;  top:94px;  width:81px;   height:81px;   background:radial-gradient(circle 110px at 32% 28%, #FDC06C, #EDA94A); color:#000;"><span class="pct">11%</span><span class="lbl">Flat</span></div>
+          <div class="bubble" style="left:161px;   top:80px;  width:96.3px; height:96.3px; background:radial-gradient(circle 110px at 32% 28%, #B9DB9C, #9FCB79); color:#000;"><span class="pct">22%</span><span class="lbl">Okay</span></div>
+          <div class="bubble" style="left:225.4px; top:66px;  width:118px;  height:118px;  background:radial-gradient(circle 110px at 32% 28%, #7EC38A, #5FB36E); color:#fff;"><span class="pct">44%</span><span class="lbl">Good</span></div>
+          <div class="bubble" style="left:289.8px; top:52px;  width:89.3px; height:89.3px; background:radial-gradient(circle 110px at 32% 28%, #459B6B, #2E8B57); color:#fff;"><span class="pct">17%</span><span class="lbl">Great</span></div>
+        </div>
+        <div class="legend">
+          <span class="lchip"><span class="dot" style="background:linear-gradient(135deg,#EA9248,#DA7A2A)"></span>Low <span class="n">(1)</span></span>
+          <span class="lchip"><span class="dot" style="background:linear-gradient(135deg,#FDC06C,#EDA94A)"></span>Flat <span class="n">(2)</span></span>
+          <span class="lchip"><span class="dot" style="background:linear-gradient(135deg,#B9DB9C,#9FCB79)"></span>Okay <span class="n">(4)</span></span>
+          <span class="lchip"><span class="dot" style="background:linear-gradient(135deg,#7EC38A,#5FB36E)"></span>Good <span class="n">(8)</span></span>
+          <span class="lchip"><span class="dot" style="background:linear-gradient(135deg,#459B6B,#2E8B57)"></span>Great <span class="n">(3)</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- s4 · signal strips card -->
+    <div class="ps" id="s4" style="padding-top:16px;">
+      <div class="card">
+        <div class="cardhead"><h2>Your month in three signals</h2></div>
+        <div class="cardsub">Average by weekday — this month</div>
+
+        <div class="strip">
+          <div class="shead">
+            <span data-glyph="sprout" data-level="4" data-size="18" data-color="#5FB36E"></span>
+            <span class="sname">Mood</span>
+            <span class="ssum">mostly Good</span>
+          </div>
+          <div class="beads">
+            <div class="bead"><span data-glyph="sprout" data-level="4" data-size="28" data-color="#5FB36E"></span><span class="wd">Mo</span></div>
+            <div class="bead"><span data-glyph="sprout" data-level="4" data-size="28" data-color="#5FB36E"></span><span class="wd">Tu</span></div>
+            <div class="bead"><span data-glyph="sprout" data-level="3" data-size="28" data-color="#9FCB79"></span><span class="wd">We</span></div>
+            <div class="bead"><span data-glyph="sprout" data-level="5" data-size="28" data-color="#2E8B57"></span><span class="wd">Th</span></div>
+            <div class="bead"><span data-glyph="sprout" data-level="4" data-size="28" data-color="#5FB36E"></span><span class="wd">Fr</span></div>
+            <div class="bead"><span data-glyph="sprout" data-level="4" data-size="28" data-color="#5FB36E"></span><span class="wd">Sa</span></div>
+            <div class="bead"><span data-glyph="sprout" data-level="3" data-size="28" data-color="#9FCB79"></span><span class="wd">Su</span></div>
+          </div>
+        </div>
+
+        <div class="strip">
+          <div class="shead">
+            <span data-glyph="bolt" data-level="3" data-size="18" data-color="#D2BB40"></span>
+            <span class="sname">Energy</span>
+            <span class="ssum">mostly Steady</span>
+          </div>
+          <div class="beads">
+            <div class="bead"><span data-glyph="bolt" data-level="3" data-size="28" data-color="#D2BB40"></span><span class="wd">Mo</span></div>
+            <div class="bead"><span data-glyph="bolt" data-level="4" data-size="28" data-color="#EEDA4C"></span><span class="wd">Tu</span></div>
+            <div class="bead"><span data-glyph="bolt" data-level="3" data-size="28" data-color="#D2BB40"></span><span class="wd">We</span></div>
+            <div class="bead"><span data-glyph="bolt" data-level="5" data-size="28" data-color="#FCEE64"></span><span class="wd">Th</span></div>
+            <div class="bead"><span data-glyph="bolt" data-level="3" data-size="28" data-color="#D2BB40"></span><span class="wd">Fr</span></div>
+            <div class="bead"><span data-glyph="bolt" data-level="4" data-size="28" data-color="#EEDA4C"></span><span class="wd">Sa</span></div>
+            <div class="bead"><span data-glyph="bolt" data-level="2" data-size="28" data-color="#A89236"></span><span class="wd">Su</span></div>
+          </div>
+        </div>
+
+        <div class="strip">
+          <div class="shead">
+            <span data-glyph="aperture" data-level="3" data-size="18" data-color="#5889BA"></span>
+            <span class="sname">Focus</span>
+            <span class="ssum">mostly Present</span>
+          </div>
+          <div class="beads">
+            <div class="bead"><span data-glyph="aperture" data-level="3" data-size="28" data-color="#5889BA"></span><span class="wd">Mo</span></div>
+            <div class="bead"><span data-glyph="aperture" data-level="4" data-size="28" data-color="#63A4E0"></span><span class="wd">Tu</span></div>
+            <div class="bead"><span data-glyph="aperture" data-level="3" data-size="28" data-color="#5889BA"></span><span class="wd">We</span></div>
+            <div class="bead"><span data-glyph="aperture" data-level="5" data-size="28" data-color="#79C4FF"></span><span class="wd">Th</span></div>
+            <div class="bead"><span data-glyph="aperture" data-level="3" data-size="28" data-color="#5889BA"></span><span class="wd">Fr</span></div>
+            <div class="bead"><span data-glyph="aperture" data-level="4" data-size="28" data-color="#63A4E0"></span><span class="wd">Sa</span></div>
+            <div class="bead"><span data-glyph="aperture" data-level="2" data-size="28" data-color="#4E6F94"></span><span class="wd">Su</span></div>
+          </div>
+        </div>
+
+        <div class="sleep-chip">
+          <span data-glyph="bed" data-size="15" data-color="#5566A6"></span>
+          Sleep · not tracked yet
+        </div>
+        <div class="takeaway"><span class="tdot"></span>Thursdays look brightest · Sundays flattest<span class="ptag" style="margin-left:auto;">Proposed</span></div>
+      </div>
+    </div>
+
+    <!-- s5 · averages gauges card -->
+    <div class="ps" id="s5" style="padding-top:16px;">
+      <div class="card">
+        <div class="cardhead"><h2>Where you averaged</h2></div>
+        <div class="gauges">
+          <div class="gauge">
+            <span data-glyph="sprout" data-level="3" data-size="26" data-color="#9FCB79"></span>
+            <div class="tube">
+              <div style="position:absolute;left:9px;bottom:56px;width:46px;height:1px;background:repeating-linear-gradient(90deg,var(--hairline) 0 4px,transparent 4px 6px);"></div>
+              <div style="position:absolute;left:9px;bottom:112px;width:46px;height:1px;background:repeating-linear-gradient(90deg,var(--hairline) 0 4px,transparent 4px 6px);"></div>
+              <div style="position:absolute;left:9px;bottom:168px;width:46px;height:1px;background:repeating-linear-gradient(90deg,var(--hairline) 0 4px,transparent 4px 6px);"></div>
+              <div style="position:absolute;left:9px;bottom:224px;width:46px;height:1px;background:repeating-linear-gradient(90deg,var(--hairline) 0 4px,transparent 4px 6px);"></div>
+              <div class="fillbar" style="height:199px;background:linear-gradient(135deg,#B9DB9C,#9FCB79);"><span class="flabel" style="color:#000;">Okay+</span></div>
+            </div>
+            <div class="cap">between Okay &amp; Good</div>
+          </div>
+          <div class="gauge">
+            <span data-glyph="bolt" data-level="3" data-size="26" data-color="#D2BB40"></span>
+            <div class="tube">
+              <div style="position:absolute;left:9px;bottom:56px;width:46px;height:1px;background:repeating-linear-gradient(90deg,var(--hairline) 0 4px,transparent 4px 6px);"></div>
+              <div style="position:absolute;left:9px;bottom:112px;width:46px;height:1px;background:repeating-linear-gradient(90deg,var(--hairline) 0 4px,transparent 4px 6px);"></div>
+              <div style="position:absolute;left:9px;bottom:168px;width:46px;height:1px;background:repeating-linear-gradient(90deg,var(--hairline) 0 4px,transparent 4px 6px);"></div>
+              <div style="position:absolute;left:9px;bottom:224px;width:46px;height:1px;background:repeating-linear-gradient(90deg,var(--hairline) 0 4px,transparent 4px 6px);"></div>
+              <div class="fillbar" style="height:177px;background:linear-gradient(135deg,#E2CD5F,#D2BB40);"><span class="flabel" style="color:#000;">Steady+</span></div>
+            </div>
+            <div class="cap">between Steady &amp; Alert</div>
+          </div>
+          <div class="gauge">
+            <span data-glyph="aperture" data-level="3" data-size="26" data-color="#5889BA"></span>
+            <div class="tube">
+              <div style="position:absolute;left:9px;bottom:56px;width:46px;height:1px;background:repeating-linear-gradient(90deg,var(--hairline) 0 4px,transparent 4px 6px);"></div>
+              <div style="position:absolute;left:9px;bottom:112px;width:46px;height:1px;background:repeating-linear-gradient(90deg,var(--hairline) 0 4px,transparent 4px 6px);"></div>
+              <div style="position:absolute;left:9px;bottom:168px;width:46px;height:1px;background:repeating-linear-gradient(90deg,var(--hairline) 0 4px,transparent 4px 6px);"></div>
+              <div style="position:absolute;left:9px;bottom:224px;width:46px;height:1px;background:repeating-linear-gradient(90deg,var(--hairline) 0 4px,transparent 4px 6px);"></div>
+              <div class="fillbar" style="height:177px;background:linear-gradient(135deg,#77A0CA,#5889BA);"><span class="flabel" style="color:#fff;">Present+</span></div>
+            </div>
+            <div class="cap">between Present &amp; Sharp</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- s6 · this week vs your usual (PROPOSED) -->
+    <div class="ps" id="s6" style="padding-top:16px;">
+      <div class="card">
+        <div class="cardhead">
+          <h2>This week vs your usual</h2>
+          <span class="ptag" style="margin-left:auto;">Proposed</span>
+        </div>
+        <div class="cardsub">Aug 11–17 vs Aug 4–10</div>
+        <div class="weekrow">
+          <span data-glyph="sprout" data-level="4" data-size="18" data-color="#5FB36E"></span>
+          <span class="wname">Mood</span>
+          <span class="wval">3.9</span>
+          <span class="wword">· up a little from 3.4</span>
+        </div>
+        <div class="weekrow">
+          <span data-glyph="bolt" data-level="4" data-size="18" data-color="#EEDA4C"></span>
+          <span class="wname">Energy</span>
+          <span class="wval">3.5</span>
+          <span class="wword">· about the same (3.3)</span>
+        </div>
+        <div class="weekrow">
+          <span data-glyph="aperture" data-level="4" data-size="18" data-color="#63A4E0"></span>
+          <span class="wname">Focus</span>
+          <span class="wval">3.5</span>
+          <span class="wword">· about the same (3.3)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- s7 · daily rhythm card -->
+    <div class="ps" id="s7" style="padding-top:16px;">
+      <div class="card">
+        <div class="cardhead"><h2>Your daily rhythm</h2></div>
+        <div class="cardsub">Dominant level per signal by time of day</div>
+        <div class="matrix">
+          <div class="mrow">
+            <span class="rlabel"></span>
+            <span class="hlabel">Morning</span><span class="hlabel">Afternoon</span><span class="hlabel">Evening</span><span class="hlabel">Late</span>
+          </div>
+          <div class="mrow">
+            <span class="rlabel">Mood</span>
+            <span class="cell"><span class="blob" style="background:linear-gradient(135deg,#459B6B,#2E8B57)"></span><span class="clabel">Great</span></span>
+            <span class="cell"><span class="blob" style="background:linear-gradient(135deg,#7EC38A,#5FB36E)"></span><span class="clabel">Good</span></span>
+            <span class="cell"><span class="blob" style="background:linear-gradient(135deg,#7EC38A,#5FB36E)"></span><span class="clabel">Good</span></span>
+            <span class="cell"><span class="blob empty"></span><span class="clabel" style="opacity:.4">—</span></span>
+          </div>
+          <div class="mrow">
+            <span class="rlabel">Energy</span>
+            <span class="cell"><span class="blob" style="background:linear-gradient(135deg,#FEEC6E,#EEDA4C)"></span><span class="clabel">Alert</span></span>
+            <span class="cell"><span class="blob" style="background:linear-gradient(135deg,#E2CD5F,#D2BB40)"></span><span class="clabel">Steady</span></span>
+            <span class="cell"><span class="blob" style="background:linear-gradient(135deg,#E2CD5F,#D2BB40)"></span><span class="clabel">Steady</span></span>
+            <span class="cell"><span class="blob empty"></span><span class="clabel" style="opacity:.4">—</span></span>
+          </div>
+          <div class="mrow">
+            <span class="rlabel">Focus</span>
+            <span class="cell"><span class="blob" style="background:linear-gradient(135deg,#85BDF0,#63A4E0)"></span><span class="clabel">Sharp</span></span>
+            <span class="cell"><span class="blob" style="background:linear-gradient(135deg,#77A0CA,#5889BA)"></span><span class="clabel">Present</span></span>
+            <span class="cell"><span class="blob" style="background:linear-gradient(135deg,#77A0CA,#5889BA)"></span><span class="clabel">Present</span></span>
+            <span class="cell"><span class="blob empty"></span><span class="clabel" style="opacity:.4">—</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- s8 · connections -->
+    <div class="ps" id="s8" style="padding-top:28px;">
+      <div>
+        <div class="eyebrow">CONNECTIONS</div>
+        <div class="eyebrow-sub">Patterns across signals — each unlocks with enough days</div>
+      </div>
+      <div class="card conn" style="margin-top:12px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="ctitle">Medication × focus</span>
+          <span class="conf" style="margin-left:auto;">High confidence</span>
+        </div>
+        <div class="sentence">Focus averages 18% higher on medication days.</div>
+        <div class="vsbars">
+          <div class="vsbar"><span class="vlabel">Med days</span><span class="vtrack"><span class="vfill" style="width:68%;background:#5889BA;"></span></span><span class="vnum">3.4</span></div>
+          <div class="vsbar"><span class="vlabel">Other days</span><span class="vtrack"><span class="vfill" style="width:58%;background:#DBDDDE;"></span></span><span class="vnum">2.9</span></div>
+        </div>
+        <div class="sample">based on 9 med days vs 8 other days<span class="ptag" style="margin-left:auto;">Proposed v2</span></div>
+      </div>
+      <div class="card conn">
+        <div class="ctitle">Energy × mood</div>
+        <div class="sentence">On high-energy days, good-or-better mood appeared 83% of the time.</div>
+        <div class="minibar">
+          <div class="track"><div class="fill" style="width:83%"></div></div>
+          <div class="labels"><span>High energy</span><span class="spacer"></span><span class="val">83%</span><span class="spacer"></span><span>Good+ mood</span></div>
+        </div>
+      </div>
+      <div class="conn gated">
+        <div class="lockrow">
+          <span class="ctitle">Sleep × mood</span>
+          <span style="margin-left:auto; color:var(--ink2);">
+            <svg width="12" height="15" viewBox="0 0 12 15" fill="none"><rect x="1" y="6" width="10" height="8" rx="2" fill="currentColor"/><path d="M3 6V4.5a3 3 0 0 1 6 0V6" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span>
+        </div>
+        <div class="copy">Note 1 more good-sleep day to unlock this connection.</div>
+      </div>
+    </div>
+
+    <!-- s9 · tab bar -->
+    <div class="ps last" id="s9" style="padding-top:40px;">
+      <div class="tabbar">
+        <span class="tab">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2.5" y="4" width="17" height="15.5" rx="3"/><line x1="2.5" y1="9" x2="19.5" y2="9"/><line x1="7" y1="2" x2="7" y2="5.5" stroke-linecap="round"/><line x1="15" y1="2" x2="15" y2="5.5" stroke-linecap="round"/></svg>
+          <span class="tlabel">Calendar</span>
+        </span>
+        <span class="tab">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8.5"/><path d="M7.2 11.4l2.4 2.4 5-5.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="tlabel">Check in</span>
+        </span>
+        <span class="tab sel">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="currentColor"><rect x="3" y="11" width="4.4" height="7" rx="1.4"/><rect x="8.8" y="6.5" width="4.4" height="11.5" rx="1.4"/><rect x="14.6" y="3" width="4.4" height="15" rx="1.4"/></svg>
+          <span class="tlabel">Insights</span>
+        </span>
+        <span class="tab">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="3"/><path d="M11 2.8v2.6M11 16.6v2.6M2.8 11h2.6M16.6 11h2.6M5.2 5.2l1.9 1.9M14.9 14.9l1.9 1.9M16.8 5.2l-1.9 1.9M7.1 14.9l-1.9 1.9" stroke-linecap="round"/></svg>
+          <span class="tlabel">Settings</span>
+        </span>
+      </div>
+      <div class="home"></div>
+    </div>
+
+  </div><!-- /phone-col -->
+
+  <!-- ── Left rail: what it is ── -->
+  <aside class="side left" data-target="s0">
+    <span class="num">1</span><span class="connector"></span>
+    <h3>Screen frame &amp; medication bar</h3>
+    <p>One continuous scroll — the 5-page snap pager was retired 2026-07-16 (a07, spec 036). Content fades into the tab bar (bottom edge-fade 36).</p>
+    <p>The medication capsule floats under the nav bar on every screen. Passive by design: progress only ever goes forward, a worn-off dose just goes quiet — no red alarms (locked anti-reference).</p>
+  </aside>
+  <aside class="side left" data-target="s1">
+    <span class="num">2</span><span class="connector"></span>
+    <h3>Identity + presence line (proposed)</h3>
+    <p>The screen frames every number as <em>you against your own baseline</em> — never against norms, streaks, or other people.</p>
+    <p><strong>Proposed:</strong> a presence line where other apps put a streak. It counts the days you showed up without ever counting the miss — Daylio's entry streak, de-shamed (their 10,000-day badge and sad-day achievements are exactly what PRODUCT.md forbids). The “mostly Good” tail answers “and how was it?” in the same breath.</p>
+  </aside>
+  <aside class="side left" data-target="s2">
+    <span class="num">3</span><span class="connector"></span>
+    <h3>Month scope chips</h3>
+    <p>One chip per month since the first check-in; switching month re-scopes every card on the screen. Shown scrolled to the selected (current) month.</p>
+    <p>New Look chip grammar: selected = solid meadow fill + white label; unselected = white + hairline + ink.</p>
+  </aside>
+  <aside class="side left" data-target="s3">
+    <span class="num">4</span><span class="connector"></span>
+    <h3>Overall check-in breakdown</h3>
+    <p>Mood distribution as area-proportional bubbles — <em>area</em>, not radius, carries the share, so a dominant mood reads honestly instead of exaggerating.</p>
+    <p>Position is semantic: valence low→great left→right, with a slight vertical float for higher moods. Percent inside the bubble, raw counts in the legend — colour is never the only cue (principle 5).</p>
+  </aside>
+  <aside class="side left" data-target="s4">
+    <span class="num">5</span><span class="connector"></span>
+    <h3>Month in three signals — weekday strips</h3>
+    <p>The month's weekly shape at a glance: each bead is the average level for that weekday, drawn as the signal's own glyph (sprout / bolt / aperture).</p>
+    <p>Level is encoded by the glyph's shape ladder — size, fill, notches, rings — so it survives grayscale and colour-blindness. A genuinely empty weekday would be a dashed outline, never a fake level-1 glyph (FR-015).</p>
+    <p>Sleep is spec'd but its ramp is deferred, so it shows as an honest dashed “not tracked yet” chip.</p>
+    <p><strong>Proposed takeaway line:</strong> the strips hold the answer but make the user find it; one plain sentence names it. Daylio ships the same data as premium weekday bar charts — Squirl already has the better visual, so the upgrade is language, not another chart.</p>
+  </aside>
+  <aside class="side left" data-target="s5">
+    <span class="num">6</span><span class="connector"></span>
+    <h3>Where you averaged — gauges</h3>
+    <p>One vertical gauge per signal, filling bottom-up to the month's mean on the 1–5 ordinal scale. Five dashed ticks mark the ordinal steps.</p>
+    <p>The wording avoids false precision: a fractional mean reads “Okay+” with the caption “between Okay &amp; Good”, never a decimal.</p>
+  </aside>
+  <aside class="side left" data-target="s6">
+    <span class="num">7</span><span class="connector"></span>
+    <h3>This week vs your usual (proposed)</h3>
+    <p>Bearable's weekly report is its most-loved surface — the last 7 days set against the 7 before. Squirl adapts it inline: three rows, no digest, no push notification.</p>
+    <p>It finally delivers the subtitle's “today vs your usual” promise with an actual contrast. The wording tiers do the emotional work: small changes read “about the same”, and the worst it can ever say is “down a little”.</p>
+  </aside>
+  <aside class="side left" data-target="s7">
+    <span class="num">8</span><span class="connector"></span>
+    <h3>Your daily rhythm</h3>
+    <p>Signal × time-of-day matrix. Each cell is the <em>dominant</em> (most frequent) level in that bucket — the mode, not the mean — so one unusually loud check-in can't swing a cell.</p>
+    <p>Ties break toward the higher level; a bucket with no check-ins renders as a dashed outline with an em-dash — honest emptiness, not fog.</p>
+  </aside>
+  <aside class="side left" data-target="s8">
+    <span class="num">9</span><span class="connector"></span>
+    <h3>Connections v2 (proposed)</h3>
+    <p>Co-occurrence (“56% of med days had sharp focus”) upgrades to a <em>contrast</em> — the with-vs-without difference that is Daylio's and Bearable's crown jewel, paywalled in both. Squirl's version stays deterministic: two means and a documented denominator.</p>
+    <p>The <strong>High confidence</strong> chip and the plain sample line do what neither competitor manages — Daylio's confidence is an opaque model, Bearable shows none at all. Tiers are fixed and shown in-app.</p>
+    <p>Card 2 stays on the current co-occurrence generation for comparison; card 3 previews the 1-day-lag logic while gated. The eyebrow copy fixes the “3 or more days” mismatch (gates are 4 / 5 / 3+3) called out in the UX critique.</p>
+  </aside>
+  <aside class="side left" data-target="s9">
+    <span class="num">10</span><span class="connector"></span>
+    <h3>Tab bar</h3>
+    <p>Four tabs; Insights is <code style="font-family:var(--mono);font-size:11px;">chart.bar.fill</code>. Selection tint is meadow green; unselected sit at secondary ink. Scroll content dissolves into the bar via the bottom edge-fade.</p>
+  </aside>
+
+  <!-- ── Right rail: calculation logic ── -->
+  <aside class="side right" data-target="s0">
+    <span class="connector"></span>
+    <div class="calc">
+      <span class="src">MedicationBarView.swift:51–86, 133–161</span>
+      <span class="f">stateWord(progress)</span><br>
+      p &lt; 0.2 → “kicking in” (pulsing)<br>
+      p &lt; 0.8 → “active”<br>
+      p &lt; 1.0 → “wearing off” · else “worn off”
+      <div class="step">track = capsule 19pt, groove <span class="f">tintNeutral</span>,<br>fill = medication → medicationFillEnd gradient,<br>width = max(19, w × p) → 62% here.</div>
+      <div class="step">Shown only when a dose window is live<br>(<span class="f">showBar &amp;&amp; !activeDoses.isEmpty</span>).</div>
+    </div>
+  </aside>
+  <aside class="side right" data-target="s1">
+    <span class="connector"></span>
+    <div class="calc">
+      <span class="src">InsightsView.swift:53–64 · InsightsViewModel.swift:9–23</span>
+      subtitle = <span class="f">currentMonth.formatted(.month(.wide))</span><br>
+      + “ · today vs your usual” → <span class="res">“August · …”</span>
+      <div class="step">Everything below is scoped by<br><span class="f">monthRecordings</span> = recordings where<br>createdAt ≡ currentMonth (granularity .month)<br>→ <span class="res">18 check-ins</span> (dataset, appendix A).</div>
+      <div class="step">hasAnyData = !monthRecordings.isEmpty → true<br>(false → empty state, InsightsView.swift:188).</div>
+      <div class="step">presence line (proposed):<br>days shown up = |Set(startOfDay(createdAt))| → <span class="res">17</span>;<br>elapsed = today day-of-month (Aug 17) → <span class="res">17</span>;<br>“mostly X” = stripSummary modal → <span class="res">mostly Good</span>.<br>Deliberately counts presence only — the missed-day<br>count a streak would show is never computed.</div>
+    </div>
+  </aside>
+  <aside class="side right" data-target="s2">
+    <span class="connector"></span>
+    <div class="calc">
+      <span class="src">InsightsViewModel.swift:25–36 · MonthSelectorScrollView.swift:15–32</span>
+      <span class="f">availableMonths</span> = startOfMonth(earliest<br>recording) … startOfMonth(now), step 1 mo<br>
+      → <span class="res">[May, Jun, Jul, Aug 2026]</span>
+      <div class="step">label = “MMM yyyy”.uppercased(), tracking 1.3<br>selected fill = Theme.meadowGreen <span class="res">#5F8A4C</span><br>(chip role .standard, NewLook.swift:73–87)</div>
+    </div>
+  </aside>
+  <aside class="side right" data-target="s3">
+    <span class="connector"></span>
+    <div class="calc">
+      <span class="src">InsightsViewModel+Signals.swift:101–111 · MoodBubbleChart.swift:31–47</span>
+      <span class="f">moodShares</span>: count each MoodLevel in monthRecordings;<br>
+      fraction = count ÷ total (18). Levels with 0 omitted.
+      <table>
+        <tr><th>level</th><th>n</th><th>fraction</th><th>%</th><th>diam</th></tr>
+        <tr><td>Low</td><td>1</td><td>0.056</td><td>6</td><td>70.2</td></tr>
+        <tr><td>Flat</td><td>2</td><td>0.111</td><td>11</td><td>81.0</td></tr>
+        <tr><td>Okay</td><td>4</td><td>0.222</td><td>22</td><td>96.3</td></tr>
+        <tr><td>Good</td><td>8</td><td>0.444</td><td>44</td><td>118</td></tr>
+        <tr><td>Great</td><td>3</td><td>0.167</td><td>17</td><td>89.3</td></tr>
+      </table>
+      <div class="step">
+        d = 44 + (118−44)·√(f ÷ f<sub>max</sub>), f<sub>max</sub> = 0.444<br>
+        x = (level − 0.5) × w/5 &nbsp;(w = 322 → step 64.4)<br>
+        y = 80 − (level − 3) × 14 &nbsp;(great floats, low sinks)<br>
+        ink = contrastingInk(base): white on Low/Good/Great,<br>black on Flat/Okay (luminance &gt; 0.6 → black)
+      </div>
+      <div class="step">% shown = (f × 100).rounded() — each rounded<br>independently; label hidden when d &lt; 68 (none here).</div>
+    </div>
+  </aside>
+  <aside class="side right" data-target="s4">
+    <span class="connector"></span>
+    <div class="calc">
+      <span class="src">InsightsViewModel+Signals.swift:132–157 · SignalStripsView.swift:23–28</span>
+      <span class="f">weekdaySignalStrips</span>: group monthRecordings by<br>
+      Calendar weekday; per signal × weekday:<br>
+      bead = level( round( mean(numericValues) ) ), nil if none.
+      <div class="step">
+        Worked — Monday mood (Aug 3, 10, 17 ×2):<br>
+        values [2, 4, 5, 4] → mean 3.75 → round → <span class="res">4 Good</span><br>
+        Thursday energy: [5, 5] → 5.0 → <span class="res">5 Charged</span><br>
+        Sunday focus: [2, 1, 3] → 2.0 → <span class="res">2 Distracted</span>
+      </div>
+      <div class="step">
+        summary “mostly X” = modal level over the whole month<br>
+        (stripSummary, :344–354): mood {1:1,2:2,3:4,4:8,5:3}<br>
+        → <span class="res">mostly Good</span> · energy {3×8} → <span class="res">mostly Steady</span><br>
+        · focus {3×7} → <span class="res">mostly Present</span><br>
+        header glyph level = modal bead level of that strip.
+      </div>
+      <div class="step">rounding note: .rounded() = half away from zero —<br>2.5 → 3, 3.5 → 4, 4.5 → 5 (Wed energy 2.5 → Steady).</div>
+      <div class="step">takeaway line (proposed): from the same weekday<br>means (appendix B) — mood max = Thu 4.5, min = Su 2.67<br>→ <span class="res">“Thursdays look brightest · Sundays flattest”</span>.<br>gate: weekday needs ≥ 2 check-ins (all have 2–4 here).</div>
+    </div>
+  </aside>
+  <aside class="side right" data-target="s5">
+    <span class="connector"></span>
+    <div class="calc">
+      <span class="src">InsightsViewModel+Signals.swift:161–187 · SignalAverageGauges.swift:59–76</span>
+      <span class="f">signalAverages</span>: avg = mean(numericValues);<br>
+      fraction = avg ÷ 5; lower = ⌊avg⌋.<br>
+      whole → “X” / “X on average”;<br>
+      else → “X+” / “between X &amp; X+1”.
+      <table>
+        <tr><th>signal</th><th>Σ/n</th><th>avg</th><th>fill</th><th>label</th></tr>
+        <tr><td>Mood</td><td>64/18</td><td>3.56</td><td>71.1%</td><td>Okay+</td></tr>
+        <tr><td>Energy</td><td>57/18</td><td>3.17</td><td>63.3%</td><td>Steady+</td></tr>
+        <tr><td>Focus</td><td>57/18</td><td>3.17</td><td>63.3%</td><td>Present+</td></tr>
+      </table>
+      <div class="step">
+        fill height = 280 × fraction → <span class="res">199 / 177 / 177 px</span>;<br>
+        fill gradient + glyph use level = lower (3), shipped<br>
+        explicitly by the VM — the gauge never re-derives it<br>
+        from the float (spec-036 FR-010).
+      </div>
+      <div class="step">empty signal → “—”, no fill, glyph placeholder.</div>
+    </div>
+  </aside>
+  <aside class="side right" data-target="s6">
+    <span class="connector"></span>
+    <div class="calc">
+      <span class="src">proposal · adapts Bearable weekly report (last 7 vs prev 7)</span>
+      windows: last 7 days (Aug 11–17 → 8 check-ins)<br>
+      vs previous 7 (Aug 4–10 → 7 check-ins).<br>
+      per signal: mean(numericValues) in each window.
+      <table>
+        <tr><th>signal</th><th>last 7</th><th>prev 7</th><th>Δ</th><th>wording</th></tr>
+        <tr><td>Mood</td><td>31/8 = 3.88</td><td>24/7 = 3.43</td><td>+0.45</td><td>up a little</td></tr>
+        <tr><td>Energy</td><td>28/8 = 3.50</td><td>23/7 = 3.29</td><td>+0.21</td><td>about the same</td></tr>
+        <tr><td>Focus</td><td>28/8 = 3.50</td><td>23/7 = 3.29</td><td>+0.21</td><td>about the same</td></tr>
+      </table>
+      <div class="step">wording tiers (non-judgmental): |Δ| &lt; 0.25 →<br>“about the same” · 0.25–0.75 → “up/down a little” ·<br>&gt; 0.75 → “up/down”. Never a red arrow, never a score.</div>
+      <div class="step">gate: ≥ 2 check-ins in each window, else the card hides.<br>glyph level = round(last-7 mean) → 4 / 4 / 4.</div>
+    </div>
+  </aside>
+  <aside class="side right" data-target="s7">
+    <span class="connector"></span>
+    <div class="calc">
+      <span class="src">InsightsViewModel+Signals.swift:49–72, 191–213</span>
+      <span class="f">TimeBucket.contains(hour)</span>:<br>
+      morning 06–11 · afternoon 12–17 · evening 18–21 ·<br>
+      late 22–23 + 00–05.
+      <div class="step">
+        <span class="f">dominant</span> = argmax freq(level);<br>
+        tie → highest level wins (keys.max());<br>
+        empty bucket → nil → dashed cell.
+      </div>
+      <div class="step">
+        Worked — Mood × Morning (9 check-ins):<br>
+        {2:1, 3:2, 4:3, 5:3} → max count 3, tie {4,5}<br>
+        → <span class="res">5 Great</span> (tie-break upward).<br>
+        Focus × Evening {2:1, 3:2, 4:1} → <span class="res">3 Present</span>.<br>
+        Late: 0 check-ins → <span class="res">— ×3</span>.
+      </div>
+    </div>
+  </aside>
+  <aside class="side right" data-target="s8">
+    <span class="connector"></span>
+    <div class="calc">
+      <span class="src">proposal v2 · adapts Daylio Influence on Mood + confidence label, Bearable 3/3 gate · base: InsightsViewModel+Signals.swift:217–328</span>
+      <span class="f">Medication × focus v2</span> — with-vs-without contrast:<br>
+      med-day check-ins (10): focus [3,1,4,5,3,4,4,3,4,3]<br>
+      → mean 34/10 = <span class="res">3.40</span> → bar 3.40/5 = 68%<br>
+      other-day check-ins (8): focus [2,3,3,4,1,2,3,5]<br>
+      → mean 23/8 = <span class="res">2.88</span> → bar 2.88/5 = 58%<br>
+      effect = (3.40 − 2.88) / 2.88 = <span class="res">+18%</span>
+      <div class="step">
+        confidence tiers (deterministic, thresholds in-app):<br>
+        n_with = 9 med days · n_without = 8 other days<br>
+        both ≥ 7 → <span class="res">High</span> · both ≥ 4 → Medium · else Low.<br>
+        gate: n_with ≥ 4 (current rule) and n_without ≥ 3.
+      </div>
+      <div class="step">
+        <span class="f">Energy × mood</span> — unchanged current generation,<br>
+        kept for comparison: 5/6 high-energy days with<br>
+        good+ mood = 0.833 → <span class="res">83%</span> (gate ≥ 5 days).
+      </div>
+      <div class="step">
+        <span class="f">Sleep × mood v2</span> — next-day alignment (1-day lag):<br>
+        good-sleep days {Aug 1, 6} → next-day mood 3, 4 → 3.50<br>
+        poor-sleep {Aug 3, 8, 9, 12} → next-day 3, 1, 4, 4 → 3.00<br>
+        still gated: needs ≥ 3 good-sleep days (have 2) —<br>
+        unlock copy unchanged.
+      </div>
+      <div class="step">eyebrow copy fix (ux-critique P3): “each unlocks<br>with enough days” replaces the wrong single “3 or more”.</div>
+    </div>
+  </aside>
+  <aside class="side right" data-target="s9">
+    <span class="connector"></span>
+    <div class="calc">
+      <span class="src">RootTabView.swift:19–37 · Icons.swift:7–10</span>
+      tabs: calendar / checkmark.circle / chart.bar.fill /<br>
+      gear · .tint(Theme.meadowGreen) → selected = <span class="res">#5F8A4C</span>.
+      <div class="step">edgeFadeMask(bottom: 36) on the scroll view<br>(ScreenContainer.swift:44–46, 78).</div>
+    </div>
+  </aside>
+
+</main>
+
+<!-- ── Appendix ──────────────────────────────────────────────────────────── -->
+<section class="appendix">
+  <h2>Appendix — the dataset behind every number</h2>
+  <p class="note">18 check-ins, 1–17 Aug 2026 (today: Mon Aug 17). Every figure on the phone above is recomputed from this table by the rules in the right rail. Levels are the 1–5 ordinals from <code>Packages/SquirlSignals/Sources/SquirlSignals/Levels.swift</code>.</p>
+
+  <h4>A · Sample dataset (monthRecordings for August)</h4>
+  <table class="data-table">
+    <tr><th>#</th><th>date</th><th>weekday</th><th>time</th><th>bucket</th><th>mood</th><th>energy</th><th>focus</th><th>med</th><th>sleep</th></tr>
+    <tr><td>1</td><td>Aug 01</td><td>Sa</td><td>09:15</td><td>morning</td><td>good (4)</td><td>steady (3)</td><td>present (3)</td><td>✓</td><td>good</td></tr>
+    <tr><td>2</td><td>Aug 02</td><td>Su</td><td>10:05</td><td>morning</td><td>okay (3)</td><td>tired (2)</td><td>distracted (2)</td><td></td><td></td></tr>
+    <tr><td>3</td><td>Aug 03</td><td>Mo</td><td>08:40</td><td>morning</td><td>flat (2)</td><td>sluggish (1)</td><td>foggy (1)</td><td>✓</td><td>poor</td></tr>
+    <tr><td>4</td><td>Aug 04</td><td>Tu</td><td>12:30</td><td>afternoon</td><td>okay (3)</td><td>steady (3)</td><td>present (3)</td><td></td><td></td></tr>
+    <tr><td>5</td><td>Aug 05</td><td>We</td><td>18:20</td><td>evening</td><td>good (4)</td><td>steady (3)</td><td>sharp (4)</td><td>✓</td><td></td></tr>
+    <tr><td>6</td><td>Aug 06</td><td>Th</td><td>09:00</td><td>morning</td><td>great (5)</td><td>charged (5)</td><td>locked in (5)</td><td>✓</td><td>good</td></tr>
+    <tr><td>7</td><td>Aug 07</td><td>Fr</td><td>21:10</td><td>evening</td><td>good (4)</td><td>steady (3)</td><td>present (3)</td><td></td><td></td></tr>
+    <tr><td>8</td><td>Aug 08</td><td>Sa</td><td>11:45</td><td>morning</td><td>okay (3)</td><td>alert (4)</td><td>sharp (4)</td><td></td><td>poor</td></tr>
+    <tr><td>9</td><td>Aug 09</td><td>Su</td><td>16:30</td><td>afternoon</td><td>low (1)</td><td>tired (2)</td><td>foggy (1)</td><td></td><td>rough</td></tr>
+    <tr><td>10</td><td>Aug 10</td><td>Mo</td><td>08:25</td><td>morning</td><td>good (4)</td><td>steady (3)</td><td>present (3)</td><td>✓</td><td></td></tr>
+    <tr><td>11</td><td>Aug 11</td><td>Tu</td><td>13:15</td><td>afternoon</td><td>good (4)</td><td>alert (4)</td><td>sharp (4)</td><td>✓</td><td></td></tr>
+    <tr><td>12</td><td>Aug 12</td><td>We</td><td>19:40</td><td>evening</td><td>flat (2)</td><td>tired (2)</td><td>distracted (2)</td><td></td><td>poor</td></tr>
+    <tr><td>13</td><td>Aug 13</td><td>Th</td><td>09:35</td><td>morning</td><td>good (4)</td><td>charged (5)</td><td>sharp (4)</td><td>✓</td><td></td></tr>
+    <tr><td>14</td><td>Aug 14</td><td>Fr</td><td>21:40</td><td>evening</td><td>okay (3)</td><td>steady (3)</td><td>present (3)</td><td></td><td></td></tr>
+    <tr><td>15</td><td>Aug 15</td><td>Sa</td><td>10:50</td><td>morning</td><td>great (5)</td><td>alert (4)</td><td>locked in (5)</td><td></td><td></td></tr>
+    <tr><td>16</td><td>Aug 16</td><td>Su</td><td>15:20</td><td>afternoon</td><td>good (4)</td><td>steady (3)</td><td>present (3)</td><td>✓</td><td></td></tr>
+    <tr><td>17</td><td>Aug 17</td><td>Mo</td><td>07:55</td><td>morning</td><td>great (5)</td><td>alert (4)</td><td>sharp (4)</td><td>✓</td><td></td></tr>
+    <tr><td>18</td><td>Aug 17</td><td>Mo</td><td>12:05</td><td>afternoon</td><td>good (4)</td><td>steady (3)</td><td>present (3)</td><td></td><td></td></tr>
+  </table>
+
+  <div class="cols">
+    <div>
+      <h4>B · Weekday averages → strip beads</h4>
+      <table class="data-table">
+        <tr><th>signal</th><th>Mo</th><th>Tu</th><th>We</th><th>Th</th><th>Fr</th><th>Sa</th><th>Su</th></tr>
+        <tr><td>mood</td><td>3.75→4</td><td>3.5→4</td><td>3.0→3</td><td>4.5→5</td><td>3.5→4</td><td>4.0→4</td><td>2.67→3</td></tr>
+        <tr><td>energy</td><td>2.75→3</td><td>3.5→4</td><td>2.5→3</td><td>5.0→5</td><td>3.0→3</td><td>3.67→4</td><td>2.33→2</td></tr>
+        <tr><td>focus</td><td>2.75→3</td><td>3.5→4</td><td>3.0→3</td><td>4.5→5</td><td>3.0→3</td><td>4.0→4</td><td>2.0→2</td></tr>
+      </table>
+    </div>
+    <div>
+      <h4>C · Rhythm — bucket counts → dominant</h4>
+      <table class="data-table">
+        <tr><th>signal</th><th>morning (9)</th><th>afternoon (5)</th><th>evening (4)</th><th>late (0)</th></tr>
+        <tr><td>mood</td><td>{2:1,3:2,4:3,5:3}→5</td><td>{1:1,3:1,4:3}→4</td><td>{2:1,3:1,4:2}→4</td><td>—</td></tr>
+        <tr><td>energy</td><td>{1:1,2:1,3:2,4:3,5:2}→4</td><td>{2:1,3:3,4:1}→3</td><td>{2:1,3:3}→3</td><td>—</td></tr>
+        <tr><td>focus</td><td>{1:1,2:1,3:2,4:3,5:2}→4</td><td>{1:1,3:3,4:1}→3</td><td>{2:1,3:2,4:1}→3</td><td>—</td></tr>
+      </table>
+    </div>
+    <div>
+      <h4>D · Level scales (labels)</h4>
+      <table class="data-table">
+        <tr><th></th><th>mood</th><th>energy</th><th>focus</th></tr>
+        <tr><td>1</td><td>Low</td><td>Sluggish</td><td>Foggy</td></tr>
+        <tr><td>2</td><td>Flat</td><td>Tired</td><td>Distracted</td></tr>
+        <tr><td>3</td><td>Okay</td><td>Steady</td><td>Present</td></tr>
+        <tr><td>4</td><td>Good</td><td>Alert</td><td>Sharp</td></tr>
+        <tr><td>5</td><td>Great</td><td>Charged</td><td>Locked In</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="cols">
+    <div>
+      <h4>E · Week windows — “this week vs your usual” (proposed)</h4>
+      <table class="data-table">
+        <tr><th>signal</th><th>last 7 (Aug 11–17)</th><th>prev 7 (Aug 4–10)</th><th>Δ</th><th>wording</th></tr>
+        <tr><td>mood</td><td>4,2,4,3,5,4,5,4 → 31/8 = 3.88</td><td>3,4,5,4,3,1,4 → 24/7 = 3.43</td><td>+0.45</td><td>up a little</td></tr>
+        <tr><td>energy</td><td>4,2,5,3,4,3,4,3 → 28/8 = 3.50</td><td>3,3,5,3,4,2,3 → 23/7 = 3.29</td><td>+0.21</td><td>about the same</td></tr>
+        <tr><td>focus</td><td>4,2,4,3,5,3,4,3 → 28/8 = 3.50</td><td>3,4,5,3,4,1,3 → 23/7 = 3.29</td><td>+0.21</td><td>about the same</td></tr>
+      </table>
+    </div>
+    <div>
+      <h4>F · Med × focus contrast + confidence (proposed)</h4>
+      <table class="data-table">
+        <tr><th>group</th><th>check-ins</th><th>focus values</th><th>mean</th><th>bar (mean/5)</th></tr>
+        <tr><td>med days (9)</td><td>10</td><td>3,1,4,5,3,4,4,3,4,3</td><td>3.40</td><td>68%</td></tr>
+        <tr><td>other days (8)</td><td>8</td><td>2,3,3,4,1,2,3,5</td><td>2.88</td><td>58%</td></tr>
+      </table>
+      <table class="data-table" style="margin-top:8px;">
+        <tr><th>confidence tier</th><th>rule</th><th>this dataset</th></tr>
+        <tr><td>High</td><td>n_with ≥ 7 and n_without ≥ 7</td><td>9 / 8 → <strong>High</strong></td></tr>
+        <tr><td>Medium</td><td>n_with ≥ 4 and n_without ≥ 4</td><td>—</td></tr>
+        <tr><td>Low</td><td>gate: n_with ≥ 4, n_without ≥ 3</td><td>—</td></tr>
+      </table>
+    </div>
+    <div>
+      <h4>G · Sleep × mood, next-day preview (gated)</h4>
+      <table class="data-table">
+        <tr><th>sleep day</th><th>quality</th><th>next-day mood</th></tr>
+        <tr><td>Aug 1</td><td>good</td><td>3 (Aug 2)</td></tr>
+        <tr><td>Aug 6</td><td>good</td><td>4 (Aug 7)</td></tr>
+        <tr><td>Aug 3</td><td>poor</td><td>3 (Aug 4)</td></tr>
+        <tr><td>Aug 8</td><td>poor</td><td>1 (Aug 9)</td></tr>
+        <tr><td>Aug 9</td><td>poor</td><td>4 (Aug 10)</td></tr>
+        <tr><td>Aug 12</td><td>poor</td><td>4 (Aug 13)</td></tr>
+      </table>
+      <p class="note" style="margin-top:6px;">good-sleep next-day mean 3.50 vs poor-sleep 3.00 — but good-sleep days = 2 &lt; 3, so the card stays gated.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+// Glyph generators — 1:1 ports of the Swift Canvas paths in
+// Packages/SquirlDesignSystem/Sources/SquirlDesignSystem/Glyphs/*.swift
+function frame(size, w, h, lift) {
+  const s = Math.min(size / w, size / h) * (lift || 1);
+  return `translate(${((size - w * s) / 2).toFixed(3)} ${((size - h * s) / 2).toFixed(3)}) scale(${s.toFixed(4)})`;
+}
+function svgWrap(size, inner) {
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${inner}</svg>`;
+}
+function sprout(level, color, size) {           // SproutGlyph.swift — 24×26 space
+  const open = level >= 4, top = open ? 9 : 11;
+  const fill = Math.min(1, 0.42 + level * 0.145);
+  const a = open ? 4 : 6, b = open ? 13 : 14, c = open ? 5 : 6, d = open ? 2 : 5;
+  const e = open ? 19 : 18, f = open ? 20 : 18;
+  let g = `<path d="M12 25 C12 18 12 14 12 ${top}" stroke="${color}" stroke-opacity="0.6" stroke-width="1.5" fill="none"/>`;
+  g += `<path d="M12 ${top} C ${a} ${b} ${c} ${d} 12 1 C ${e} ${d} ${f} ${b} 12 ${top} Z" fill="${color}" fill-opacity="${fill.toFixed(3)}" stroke="${color}" stroke-width="1.3"/>`;
+  if (level >= 3) g += `<line x1="12" y1="${top}" x2="12" y2="4" stroke="${color}" stroke-opacity="0.5" stroke-width="1"/>`;
+  if (level >= 5) g += `<circle cx="12" cy="6" r="2" fill="${color}"/>`;
+  return svgWrap(size, `<g transform="${frame(size, 24, 26, 0.66 + level * 0.068)}">${g}</g>`);
+}
+function bolt(level, color, size) {             // BoltGlyph.swift — 24×26 space
+  const fill = Math.min(1, 0.35 + level * 0.15), sw = 0.9 + level * 0.16;
+  const g = `<path d="M14 2 L6 15 L11 15 L9.5 24 L19 11 L13 11 Z" fill="${color}" fill-opacity="${fill.toFixed(3)}" stroke="${color}" stroke-width="${sw.toFixed(2)}" stroke-linejoin="round"/>`;
+  return svgWrap(size, `<g transform="${frame(size, 24, 26, 0.6 + level * 0.08)}">${g}</g>`);
+}
+function aperture(level, color, size) {         // ApertureGlyph.swift — 24×26 space, no lift
+  const ring = (r, extra) => `<circle cx="12" cy="13" r="${r}" fill="none" ${extra}/>`;
+  let g = ring(9, `stroke="${color}" stroke-opacity="${(0.3 + level * 0.12).toFixed(2)}" stroke-width="1.2"${level <= 2 ? ' stroke-dasharray="3 3"' : ''}`);
+  if (level >= 2) g += ring(6, `stroke="${color}" stroke-opacity="${(0.4 + level * 0.11).toFixed(2)}" stroke-width="1.3"`);
+  if (level >= 4) g += ring(3.3, `stroke="${color}" stroke-opacity="0.92" stroke-width="1.4"`);
+  if (level >= 3) g += `<circle cx="12" cy="13" r="${((level - 1) * 0.85).toFixed(2)}" fill="${color}" fill-opacity="${(0.5 + level * 0.1).toFixed(2)}"/>`;
+  return svgWrap(size, `<g transform="${frame(size, 24, 26, 1)}">${g}</g>`);
+}
+function bed(color, size) {                     // BedIcon.swift — 24×24 space
+  const g = `<path d="M3 18 L3 12 Q3 10 5 10 L14 10 Q18 10 18 14 L18 18" fill="none" stroke="${color}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>`
+    + `<path d="M3 14 L20 14" stroke="${color}" stroke-width="1.7" stroke-linecap="round"/>`
+    + `<rect x="6.2" y="8.4" width="4.6" height="1.6" rx="0.8" fill="none" stroke="${color}" stroke-width="1.4"/>`;
+  return svgWrap(size, `<g transform="${frame(size, 24, 24, 1)}">${g}</g>`);
+}
+function capsule(color, size) {                 // CapsuleGlyph.swift — 0.86w × 0.42h centred
+  const w = size * 0.86, h = size * 0.42, x = (size - w) / 2, y = (size - h) / 2, r = h / 2;
+  const id = 'cap' + size;
+  const g = `<defs><clipPath id="${id}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}"/></clipPath></defs>`
+    + `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${color}" fill-opacity="0.22"/>`
+    + `<rect x="${x}" y="${y}" width="${w / 2}" height="${h}" fill="${color}" fill-opacity="0.5" clip-path="url(#${id})"/>`
+    + `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="none" stroke="${color}" stroke-width="2"/>`
+    + `<rect x="${size / 2 - 0.8}" y="${size / 2 - h * 0.33}" width="1.6" height="${h * 0.66}" fill="${color}" fill-opacity="0.8"/>`;
+  return svgWrap(size, g);
+}
+const builders = { sprout, bolt, aperture, bed: (_l, c, s) => bed(c, s), capsule: (_l, c, s) => capsule(c, s) };
+document.querySelectorAll('[data-glyph]').forEach(el => {
+  const kind = el.dataset.glyph, size = +el.dataset.size, color = el.dataset.color;
+  el.innerHTML = builders[kind](+el.dataset.level || 0, color, size);
+  el.style.display = 'inline-flex';
+});
+
+// Pin each side panel vertically to its phone section; stack per rail so
+// panels never overlap even when sections are shorter than panels.
+function layoutSides() {
+  const sheet = document.querySelector('.sheet');
+  const sheetRect = sheet.getBoundingClientRect();
+  for (const sel of ['.side.left', '.side.right']) {
+    let prevBottom = -Infinity;
+    document.querySelectorAll(sel).forEach(el => {
+      const t = document.getElementById(el.dataset.target);
+      const r = t.getBoundingClientRect();
+      let top = r.top - sheetRect.top + r.height / 2 - el.offsetHeight / 2;
+      top = Math.max(top, prevBottom + 14, 0);
+      el.style.top = top + 'px';
+      prevBottom = top + el.offsetHeight;
+    });
+  }
+}
+layoutSides();
+window.addEventListener('load', layoutSides);
+window.addEventListener('resize', layoutSides);
+</script>
+</body>
+</html>
