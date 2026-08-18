@@ -607,9 +607,24 @@ public nonisolated struct NLNoteExtractor: NoteExtractor, Sendable {
             let (time, timeLabel) = extractPreciseTime(from: clauseText)
             let quantity = detectQuantity(from: clauseText)
             let change = detectMedChange(from: clauseText)
-            events.append(MedEvent(name: hit.med, dose: dose, time: time, timeLabel: timeLabel, taken: !(negated || notTaken), quantity: quantity, change: change))
+            let canonicalName = canonicalMedicationName(hit.med)
+            events.append(MedEvent(name: canonicalName, dose: dose, time: time, timeLabel: timeLabel, taken: !(negated || notTaken), quantity: quantity, change: change))
         }
         return events
+    }
+
+    private func canonicalMedicationName(_ name: String) -> String {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let lower = trimmed.lowercased()
+        switch lower {
+        case "ritalina": return "Ritalin"
+        case "conserta": return "Concerta"
+        case "stratera", "straterra": return "Strattera"
+        case "vyvance", "vivance": return "Vyvanse"
+        case "elvanse": return "Elvanse"
+        case "adderal", "addy", "addies": return "Adderall"
+        default: return trimmed
+        }
     }
 
     /// Split a sentence into clause ranges at coordinating conjunctions, so each
