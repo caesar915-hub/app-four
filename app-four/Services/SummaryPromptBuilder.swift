@@ -1,7 +1,7 @@
 import Foundation
 
 /// Defines progressive summary length and token budgets based on transcript duration (from 15 seconds up to 15+ minutes).
-public enum SummaryLengthTier: Sendable {
+public nonisolated enum SummaryLengthTier: Sendable {
     case micro          // < 1 min (< 120 words): 1-2 sentences (max 100 tokens)
     case standard       // 1-3 min (120-400 words): 2-3 sentences (max 160 tokens)
     case extended       // 3-7 min (400-1000 words): 3-4 sentences (max 240 tokens)
