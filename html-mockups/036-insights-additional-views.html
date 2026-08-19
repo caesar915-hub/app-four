@@ -95,6 +95,18 @@
   .lagrow .lg { display: flex; gap: 14px; align-items: center; }
   .lagrow .lg .gi { display: flex; align-items: center; gap: 4px; font-size: 11px; color: var(--ink2); }
 
+  /* mix bars / ledger */
+  .mixrow { display: flex; align-items: center; gap: 10px; }
+  .mixrow + .mixrow { margin-top: 10px; }
+  .mixrow .ml { width: 70px; flex: none; font-size: 12px; color: var(--ink2); }
+  .mixbar { display: flex; height: 22px; border-radius: 6px; overflow: hidden; flex: 1; }
+  .mixbar .seg { display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; }
+  .lrow { display: flex; gap: 6px; }
+  .lcell { flex: 1; text-align: center; border: 1px solid var(--hairline); border-radius: 10px; padding: 8px 2px; }
+  .lcell .ls { font-size: 13px; font-weight: 700; }
+  .lcell .ld { font-size: 9px; color: var(--ink2); margin-top: 2px; font-family: var(--mono); }
+  .lcell .lb { font-size: 11px; font-weight: 600; margin-top: 3px; }
+
   .footnote { max-width: 1460px; margin: 48px auto 0; font-size: 12px; color: #7A7A72; line-height: 1.6; }
 </style>
 </head>
@@ -104,8 +116,10 @@
   <div class="doc-eyebrow">Squirl · spec 036 evolution · concept gallery</div>
   <h1 class="doc-title">Insights — additional view concepts</h1>
   <p class="doc-sub">
-    Nine further candidates adapted from the Daylio / Bearable inventory (<code>docs/competitor-research-insights.md</code>),
-    beyond the four already spec'd in <code>036-insights-evolution-proposal.html</code>. For visualization only — no commitment.
+    Fifteen further candidates, beyond the four already spec'd in <code>036-insights-evolution-proposal.html</code>.
+    A–I adapt the Daylio / Bearable inventory; J–O come from a wider scan of famous app visualizations
+    (Oura, Whoop, Apple Health, Garmin Body Battery, AutoSleep, Gentler Streak, Strava, How We Feel, Screen Time, WaterMinder).
+    Full sources: <code>docs/competitor-research-insights.md</code>. For visualization only — no commitment.
     Each concept states what it adapts, the deterministic calculation, and its evidence gate.
     Numbers come from the same 18-check-in August dataset unless tagged <strong>illustrative</strong>.
   </p>
@@ -305,13 +319,121 @@
     </div>
   </div>
 
+
+  <!-- J · emotion field -->
+  <div class="concept">
+    <div class="mini">
+      <div class="card">
+        <div class="cardhead"><h2>Where you were</h2><span class="trailing">mood × energy</span></div>
+        <div class="cardsub">One cell per mood–energy pair · bigger dot = more check-ins</div>
+        <div id="quadrant"></div>
+      </div>
+    </div>
+    <div class="cap">
+      <h3><span class="idx">J</span>Emotion field — mood × energy map</h3>
+      <div class="meta"><span class="ad">adapts:</span> How We Feel valence–arousal grid &nbsp;·&nbsp; <span class="ad">gate:</span> ≥ 5 check-ins</div>
+      <div class="calc">cell = (mood, energy) pair per check-in; dot size = count.<br>Home cell here: (Good, Steady) × 6 of 18.<br>Position carries the meaning; hue is only a mood echo.</div>
+    </div>
+  </div>
+
+  <!-- K · energy through the day -->
+  <div class="concept">
+    <div class="mini">
+      <div class="card">
+        <div class="cardhead"><h2>Energy through the day</h2></div>
+        <div class="cardsub">Average per time bucket — the late hours stay honestly empty</div>
+        <div id="energycurve"></div>
+      </div>
+    </div>
+    <div class="cap">
+      <h3><span class="idx">K</span>Energy curve — the charge/drain shape</h3>
+      <div class="meta"><span class="ad">adapts:</span> Garmin Body Battery, minus the battery &nbsp;·&nbsp; <span class="ad">gate:</span> ≥ 2 check-ins in ≥ 2 buckets</div>
+      <div class="calc">mean energy per bucket: morning 31/9 = 3.44,<br>afternoon 15/5 = 3.00, evening 11/4 = 2.75, late none → gap.<br>No score, no “manage your charge” coaching — just the slope.</div>
+    </div>
+  </div>
+
+  <!-- L · usual-range band -->
+  <div class="concept">
+    <div class="mini">
+      <div class="card">
+        <div class="cardhead"><h2>Inside your usual range</h2></div>
+        <div class="cardsub">Mood, 3-day rolling average against your month-to-date range</div>
+        <div id="rangeband"></div>
+        <div class="capline">Mostly inside your usual range — a visit to the edges is information, never a grade.</div>
+      </div>
+    </div>
+    <div class="cap">
+      <h3><span class="idx">L</span>Usual-range band</h3>
+      <div class="meta"><span class="ad">adapts:</span> Gentler Streak Activity Path (band, not number) &nbsp;·&nbsp; <span class="ad">gate:</span> ≥ 10 check-in days</div>
+      <div class="calc">band = month mean of daily means ± 0.5 → 3.74 → [3.24, 4.24];<br>line = 3-day rolling mean (from day 3).<br>Position words only: inside / above / below.</div>
+    </div>
+  </div>
+
+  <!-- M · notable day -->
+  <div class="concept">
+    <div class="mini">
+      <div class="card">
+        <div class="eyebrow">NOTABLE DAY · AUGUST</div>
+        <div class="sentence" style="font-size:24px;">Thursday, August 6 — your brightest day this month.</div>
+        <div class="lagrow" style="margin-top:12px;">
+          <span class="lg">
+            <span class="gi"><span data-glyph="sprout" data-level="5" data-size="22" data-color="#2E8B57"></span>Great</span>
+            <span class="gi"><span data-glyph="bolt" data-level="5" data-size="22" data-color="#FCEE64"></span>Charged</span>
+            <span class="gi"><span data-glyph="aperture" data-level="5" data-size="22" data-color="#79C4FF"></span>Locked in</span>
+          </span>
+        </div>
+        <div class="capline">The one day all three signals sat at their top level. One highlight, not a leaderboard.</div>
+      </div>
+    </div>
+    <div class="cap">
+      <h3><span class="idx">M</span>Notable-day highlight</h3>
+      <div class="meta"><span class="ad">adapts:</span> Apple Health Highlights &nbsp;·&nbsp; <span class="ad">gate:</span> unique maximum with sum ≥ 13</div>
+      <div class="calc">per day: sum(rounded daily means of mood+energy+focus)<br>→ Aug 6 = 15 (5+5+5), the unique max.<br>Second-best is never shown — no ranking, no league table.</div>
+    </div>
+  </div>
+
+  <!-- N · weekly mix -->
+  <div class="concept">
+    <div class="mini">
+      <div class="card">
+        <div class="cardhead"><h2>How the weeks mixed</h2></div>
+        <div class="cardsub">Mood share per week — same ramp as the breakdown bubbles</div>
+        <div id="mixbars"></div>
+        <div class="legendrow" id="mixlegend"></div>
+      </div>
+    </div>
+    <div class="cap">
+      <h3><span class="idx">N</span>Weekly mix bars</h3>
+      <div class="meta"><span class="ad">adapts:</span> Apple Screen Time composition bars &nbsp;·&nbsp; <span class="ad">gate:</span> ≥ 3 check-ins per week</div>
+      <div class="calc">per week: mood counts ÷ week total.<br>w1 {2:1,3:2,4:3,5:1} · w2 {1:1,2:1,3:2,4:3} · w3 {4:2,5:2}.<br>Counts printed inside segments — color never the only cue.</div>
+    </div>
+  </div>
+
+  <!-- O · rest ledger -->
+  <div class="concept">
+    <div class="mini">
+      <div class="card">
+        <div class="cardhead"><h2>Rest ledger</h2><span class="trailing">borderline — see note</span></div>
+        <div class="cardsub">Restful night +1 · rough night −1, running balance</div>
+        <div class="lrow" id="ledger"></div>
+        <div class="capline">Balance −2 this month. The open question: can a signed number stay non-judgmental? Shown for discussion — it may stay rejected.</div>
+      </div>
+    </div>
+    <div class="cap">
+      <h3><span class="idx">O</span>Rest ledger (sleep bank)</h3>
+      <div class="meta"><span class="ad">adapts:</span> AutoSleep Sleep Bank &nbsp;·&nbsp; <span class="ad">gate:</span> ≥ 5 sleep-noted days &nbsp;·&nbsp; ⚠ framing risk</div>
+      <div class="calc">good sleep day = +1, poor/rough = −1:<br>Aug 1 +1 → 1 · 3 −1 → 0 · 6 +1 → 1 · 8 −1 → 0 ·<br>9 −1 → −1 · 12 −1 → −2. Zero-based, self-referential.</div>
+    </div>
+  </div>
+
 </div>
 
 <p class="footnote">
   Concept D doubles as the unlocked state of the sleep × mood v2 connection in the proposal mockup.
   Concepts E and F use invented sample values (tagged “illustrative”); every other number derives from the 18-check-in
-  dataset in <code>036-insights-evolution-proposal.html</code> appendix A. Rejected-on-principle mechanics
-  (streaks, achievements, mood-stability scores, report grids) are deliberately absent here.
+  dataset in <code>036-insights-evolution-proposal.html</code> appendix A. Concept O is deliberately flagged borderline:
+  a signed balance may violate the non-judgment principle even without red ink. Rejected mechanics
+  (streaks, achievements, stability scores, red zones, report grids) stay absent.
 </p>
 
 <script>
@@ -410,6 +532,102 @@ document.querySelectorAll('[data-glyph]').forEach(el => {
        <line x1="${med}" y1="4" x2="${med}" y2="46" stroke="#1C1B1F" stroke-width="1.4"/>
      </svg>`;
 })();
+// J · emotion field — (mood, energy) cell counts from the dataset
+(function () {
+  const cells = { '4,3': 6, '3,3': 2, '5,4': 2, '3,2': 1, '2,1': 1, '3,4': 1, '1,2': 1, '4,4': 1, '4,5': 1, '5,5': 1, '2,2': 1 };
+  const moodColor = { 1: '#DA7A2A', 2: '#EDA94A', 3: '#9FCB79', 4: '#5FB36E', 5: '#2E8B57' };
+  const ink = m => (m === 2 || m === 3) ? '#1C1B1F' : '#FFFFFF';
+  const W = 322, H = 252, padL = 26, padB = 24;
+  const cw = (W - padL) / 5, ch = (H - padB) / 5;
+  let g = '';
+  for (let i = 0; i <= 5; i++) {
+    g += `<line x1="${padL + i * cw}" y1="0" x2="${padL + i * cw}" y2="${H - padB}" stroke="#ECEEE5" stroke-width="1"/>`;
+    g += `<line x1="${padL}" y1="${i * ch}" x2="${W}" y2="${i * ch}" stroke="#ECEEE5" stroke-width="1"/>`;
+  }
+  for (const [k, n] of Object.entries(cells)) {
+    const [m, e] = k.split(',').map(Number);
+    const cx = padL + (m - 0.5) * cw, cy = (5 - e + 0.5) * ch;
+    const r = 5 + n * 2.4;
+    g += `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r.toFixed(1)}" fill="${moodColor[m]}" fill-opacity="0.88"/>`;
+    if (n > 1) g += `<text x="${cx.toFixed(1)}" y="${(cy + 3).toFixed(1)}" font-size="9" text-anchor="middle" fill="${ink(m)}" font-family="ui-monospace" font-weight="600">${n}</text>`;
+  }
+  g += `<text x="${padL + (W - padL) / 2}" y="${H - 6}" font-size="9" fill="#8A8A8E" text-anchor="middle" font-family="ui-monospace">mood, low → great</text>`;
+  g += `<text x="10" y="${(H - padB) / 2}" font-size="9" fill="#8A8A8E" text-anchor="middle" font-family="ui-monospace" transform="rotate(-90 10 ${(H - padB) / 2})">energy, low → charged</text>`;
+  document.getElementById('quadrant').innerHTML = `<svg width="100%" viewBox="0 0 ${W} ${H}">${g}</svg>`;
+})();
+
+// K · energy through the day — bucket means, honest gap at late
+(function () {
+  const pts = [{ l: 'Morning', v: 3.44 }, { l: 'Afternoon', v: 3.00 }, { l: 'Evening', v: 2.75 }];
+  const W = 322, H = 120, y = v => 100 - (v - 1) / 4 * 90;
+  const xs = [0.125, 0.375, 0.625, 0.875].map(f => f * W);
+  let g = '';
+  for (let l = 1; l <= 5; l++) g += `<line x1="0" y1="${y(l)}" x2="${W}" y2="${y(l)}" stroke="#EFF0E8" stroke-width="1"/>`;
+  const path = pts.map((p, i) => `${i ? 'L' : 'M'}${xs[i].toFixed(1)} ${y(p.v).toFixed(1)}`).join(' ');
+  g += `<path d="${path} L${xs[2].toFixed(1)} 110 L${xs[0].toFixed(1)} 110 Z" fill="#E2CD5F" fill-opacity="0.3"/>`;
+  g += `<path d="${path}" fill="none" stroke="#D2BB40" stroke-width="2" stroke-linecap="round"/>`;
+  pts.forEach((p, i) => {
+    g += `<circle cx="${xs[i].toFixed(1)}" cy="${y(p.v).toFixed(1)}" r="3" fill="#D2BB40"/>`;
+    g += `<text x="${xs[i].toFixed(1)}" y="${(y(p.v) - 8).toFixed(1)}" font-size="9" text-anchor="middle" fill="#7C6E2E" font-family="ui-monospace">${p.v.toFixed(1)}</text>`;
+    g += `<text x="${xs[i].toFixed(1)}" y="118" font-size="9" text-anchor="middle" fill="#8A8A8E">${p.l}</text>`;
+  });
+  g += `<line x1="${xs[2].toFixed(1)}" y1="${y(2.75).toFixed(1)}" x2="${xs[3].toFixed(1)}" y2="${y(2.75).toFixed(1)}" stroke="#DBDDDE" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+  g += `<text x="${xs[3].toFixed(1)}" y="118" font-size="9" text-anchor="middle" fill="#8A8A8E">Late —</text>`;
+  document.getElementById('energycurve').innerHTML = `<svg width="100%" viewBox="0 0 ${W} ${H}">${g}</svg>`;
+})();
+
+// L · usual-range band — month mean ± 0.5, 3-day rolling line
+(function () {
+  const roll = [3.0, 2.67, 3.0, 4.0, 4.33, 4.0, 2.67, 2.67, 3.0, 3.33, 3.33, 3.0, 4.0, 4.0, 4.5]; // days 3–17
+  const W = 322, H = 110, y = v => 95 - (v - 1) / 4 * 85, x = i => 10 + i * ((W - 20) / 16);
+  let g = '';
+  for (let l = 1; l <= 5; l++) g += `<line x1="0" y1="${y(l)}" x2="${W}" y2="${y(l)}" stroke="#EFF0E8" stroke-width="1"/>`;
+  g += `<rect x="${x(0)}" y="${y(4.24)}" width="${(x(16) - x(0)).toFixed(1)}" height="${(y(3.24) - y(4.24)).toFixed(1)}" rx="6" fill="#5F8A4C" fill-opacity="0.10"/>`;
+  g += `<line x1="${x(0)}" y1="${y(4.24)}" x2="${x(16)}" y2="${y(4.24)}" stroke="#5F8A4C" stroke-width="1" stroke-dasharray="4 3" stroke-opacity="0.5"/>`;
+  g += `<line x1="${x(0)}" y1="${y(3.24)}" x2="${x(16)}" y2="${y(3.24)}" stroke="#5F8A4C" stroke-width="1" stroke-dasharray="4 3" stroke-opacity="0.5"/>`;
+  g += `<polyline points="${roll.map((v, i) => `${x(i + 2).toFixed(1)},${y(v).toFixed(1)}`).join(' ')}" fill="none" stroke="#2E8B57" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>`;
+  g += `<text x="${x(0)}" y="${y(4.24) - 4}" font-size="8" fill="#5F8A4C" font-family="ui-monospace">your usual range (3.2–4.2)</text>`;
+  document.getElementById('rangeband').innerHTML = `<svg width="100%" viewBox="0 0 ${W} ${H}">${g}</svg>`;
+})();
+
+// N · weekly mix bars
+(function () {
+  const moodColor = { 1: '#DA7A2A', 2: '#EDA94A', 3: '#9FCB79', 4: '#5FB36E', 5: '#2E8B57' };
+  const ink = m => (m === 2 || m === 3) ? '#1C1B1F' : '#FFFFFF';
+  const weeks = [
+    { l: 'Aug 1–7',  segs: [[2, 1], [3, 2], [4, 3], [5, 1]], n: 7 },
+    { l: 'Aug 8–14', segs: [[1, 1], [2, 1], [3, 2], [4, 3]], n: 7 },
+    { l: 'Aug 15–17', segs: [[4, 2], [5, 2]], n: 4 },
+  ];
+  document.getElementById('mixbars').innerHTML = weeks.map(w => `
+    <div class="mixrow"><span class="ml">${w.l}</span>
+      <span class="mixbar">${w.segs.map(([lv, c]) =>
+        `<span class="seg" style="width:${(c / w.n * 100).toFixed(1)}%;background:${moodColor[lv]};color:${ink(lv)}">${c > 1 ? c : ''}</span>`).join('')}
+      </span>
+    </div>`).join('');
+  const names = { 1: 'Low', 2: 'Flat', 3: 'Okay', 4: 'Good', 5: 'Great' };
+  document.getElementById('mixlegend').innerHTML = [1, 2, 3, 4, 5].map(lv =>
+    `<span class="li"><span class="swatch" style="background:${moodColor[lv]};height:8px;width:8px;border-radius:50%;"></span>${names[lv]}</span>`).join('');
+})();
+
+// O · rest ledger
+(function () {
+  const steps = [
+    { d: 'Aug 1', q: 'good',  s: '+1', b: '1' },
+    { d: 'Aug 3', q: 'poor',  s: '−1', b: '0' },
+    { d: 'Aug 6', q: 'good',  s: '+1', b: '1' },
+    { d: 'Aug 8', q: 'poor',  s: '−1', b: '0' },
+    { d: 'Aug 9', q: 'rough', s: '−1', b: '−1' },
+    { d: 'Aug 12', q: 'poor', s: '−1', b: '−2' },
+  ];
+  document.getElementById('ledger').innerHTML = steps.map(t => `
+    <div class="lcell">
+      <div class="ls" style="color:${t.s === '+1' ? '#5566A6' : '#8A8A8E'}">${t.s}</div>
+      <div class="ld">${t.d}</div>
+      <div class="lb">${t.b}</div>
+    </div>`).join('');
+})();
+
 </script>
 </body>
 </html>

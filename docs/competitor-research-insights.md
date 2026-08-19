@@ -112,3 +112,25 @@ Four additions, all deterministic, all computable from existing `Recording` fiel
 Plus one micro-addition: **weekday takeaway sentence** under the strips ("Thursdays look brightest · Sundays flattest") — the strips already compute everything it needs. *Adapts: Daylio occurrence-during-week, elevated from bars to language.*
 
 Explicitly NOT in the proposal: streaks, achievements, goals, year-in-pixels, stability score, reports grid, PDF export.
+
+## 6. Wider scan — signature visualizations of famous apps (2026-08-18, second wave)
+
+Researched for the concept gallery (`html-mockups/036-insights-additional-views.html`, concepts J–O). Formulas marked "not publicly documented" where proprietary.
+
+| App | Signature visualization | How it works (public record) | Transfer verdict | Source |
+|---|---|---|---|---|
+| Oura Ring | 0–100 scores + **contributor breakdowns** | Readiness = 7 named contributors; "balance" contributors compare a 14-day weighted average to a 2-month baseline; weights proprietary — not publicly documented | **Adapt:** headline value expanding into named "why" rows — Squirl can fully disclose weights | support.ouraring.com (Readiness Score, Contributors) |
+| Whoop | Recovery 0–100 % with green/yellow/**red** zones; Strain 0–21 logarithmic | Morning recovery from HRV/RHR/resp-rate/sleep; strain on Borg scale. Proprietary | **Reject:** red zones + performance grades = shame machinery | developer.whoop.com/docs/whoop-101 |
+| Apple Health | Highlights cards; **Trends** arrows | Trend arrow compares last ~90 days against the trailing year; deterministic, neutral wording, no score | **Adapt:** directional trends with fixed, explainable windows | support.apple.com (view-your-health-data), Macworld |
+| Garmin Connect | **Body Battery** charge/drain curve | 0–100 intraday curve: drains with activity/stress, charges with rest/sleep (Firstbeat algorithm, not publicly documented) | **Adapt:** energy-through-the-day curve; drop battery coaching + red | garmin.com (Body Battery tech page) |
+| AutoSleep | Sleep rings; **Sleep Bank** (7-night credit/debit vs goal); readiness vs own baseline | Rolling balance of hours vs self-set goal; scrub-able history; weightings not publicly documented | **Adapt with caution:** self-referential balance is gentle, but any signed "debt" number risks judgment — shown as borderline concept O | autosleepapp.tantsissa.com |
+| Gentler Streak | **Activity Path**: band = personalized optimal range + dotted actual line + plain-language message | Band rises/falls with recent history; position words, not grades; rest days keep the streak alive | **Adapt:** "inside your usual range" band — best anti-shame pattern found | docs.gentler.app, developer.apple.com |
+| Strava | Fitness & Freshness 3-line curve (Form = Fitness − Fatigue) | Published Banister impulse-response model (42-day vs 7-day load) | **Reject:** athlete optimization machinery, high cognitive load | support.strava.com (15402032) |
+| How We Feel | **Valence × arousal emotion grid** (Yale RULER Mood Meter) | 2×2 grid of 100+ labeled emotion words; "emotions are neither good nor bad" | **Adapt:** mood × energy scatter — words/position carry meaning, not color | medicine.yale.edu, themoodmeter.com |
+| Moodnotes | Mood charts + CBT "thinking traps" tally | Names/explains traps detected in written entries (method not publicly documented) | **Note:** vocabulary-teaching angle; trap detection out of scope | onemindpsyberguide.org |
+| Stoic | Morning/evening scaffold + streaks & badges | "Can you collect them all?" — explicit gamification | **Reject** (gamification); note its on-device + iCloud privacy posture | getstoic.com/features |
+| WaterMinder | Filling silhouette / rings vs daily goal | Deterministic sum vs personalized goal; redundant numeric + visual encoding | **Note:** glanceable single-metric pattern; goals out of scope for Squirl | waterminder.com |
+| Apple Screen Time | **Stacked daily/weekly composition bars** + daily average reference | Deterministic category aggregation, day/week toggle, no praise/blame | **Adapt:** weekly mood-mix composition bars | support.apple.com |
+| Fitbit / Athlytic / Bevel | Daily readiness/recovery scores | Baseline-referenced 0–100; proprietary; third-party tests show poor cross-device agreement ("a score is just its opinion") | **Reject:** opaque judging scores | lifehacker.com, healthappinsider.com |
+
+**Cross-cutting lessons:** (1) self-referential baselines (own history, never population norms) are the industry-standard trick for staying non-judgmental; (2) band-not-number (Gentler Streak) and position-words are the strongest calm-viz pattern; (3) every wearable score is proprietary and opinionated — Squirl's disclosed deterministic math on 1–5 ordinals is a genuine differentiator; (4) red = failure color semantics are endemic in wearables and banned here.
