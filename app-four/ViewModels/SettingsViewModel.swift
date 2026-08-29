@@ -6,6 +6,7 @@ import SwiftData
 @MainActor
 final class SettingsViewModel {
     @ObservationIgnored private let aiModelService: AIModelService
+    @ObservationIgnored private let connectivity: any Connectivity
     @ObservationIgnored private let store: RecordingStore
     @ObservationIgnored private let storageService: AudioFileStorageService
     @ObservationIgnored private let exportService: ExportService
@@ -14,18 +15,26 @@ final class SettingsViewModel {
     var whisperModelInstalled: Bool = false
     var isDownloadingWhisper: Bool = false
     var whisperDownloadProgress: Double = 0
+    var llmModelInstalled: Bool = false
+    var isDownloadingLLM: Bool = false
+    var llmDownloadProgress: Double = 0
     var storageUsedMB: Double = 0.0
 
-    /// The cause of the most recent failed download, surfaced inline so the row
-    /// can show plain-language recovery copy. `nil` when there is no active error
-    /// (never attempted, in progress, succeeded, or cancelled).
-    var downloadError: ModelDownloadFailure?
+    /// The cause of each model's most recent failed download, surfaced inline so
+    /// its row can show plain-language recovery copy. No entry when there is no
+    /// active error (never attempted, in progress, succeeded, or cancelled).
+    private(set) var downloadErrors: [AIModelType: ModelDownloadFailure] = [:]
 
-    /// True only when the active error is a cellular-metered block, so the row can
-    /// offer a one-tap "allow on cellular" shortcut alongside "Try again".
-    var canAllowCellular: Bool { downloadError == .cellularDisabled }
+    /// True only when the model's active error is a cellular-metered block, so its
+    /// row can offer a one-tap "allow on cellular" shortcut alongside "Try again".
+    func canAllowCellular(for type: AIModelType) -> Bool { downloadErrors[type] == .cellularDisabled }
 
-    @ObservationIgnored private var downloadTask: Task<Void, Never>?
+    @ObservationIgnored private var downloadTasks: [AIModelType: Task<Void, Never>] = [:]
+
+    /// Re-reads filesystem truth when any download path (Settings toggle,
+    /// app-launch background fetch) completes or deletes a model — otherwise a
+    /// background completion leaves the toggle showing OFF while open.
+    @ObservationIgnored private var modelAvailabilityObserver: (any NSObjectProtocol)?
 
     var recordingCount: Int {
         store.recordings.count
@@ -65,6 +74,7 @@ final class SettingsViewModel {
     init(store: RecordingStore, services: AppServices, context: ModelContext? = nil) {
         self.store = store
         self.aiModelService = services.aiModelService
+        self.connectivity = services.connectivity
         self.storageService = services.storageService
         self.exportService = services.exportService
         self.context = context ?? AppModelContainer.container.mainContext
@@ -77,8 +87,22 @@ final class SettingsViewModel {
         self.doseGuardMode = DoseGuardMode(raw: settings.doseGuardModeRaw)
         self.doseGuardWindowHours = settings.doseGuardWindowHours
 
+        modelAvailabilityObserver = NotificationCenter.default.addObserver(
+            forName: .aiModelAvailabilityDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in await self?.checkModels() }
+        }
+
         Task { await updateStorage() }
         Task { await checkModels() }
+    }
+
+    deinit {
+        if let modelAvailabilityObserver {
+            NotificationCenter.default.removeObserver(modelAvailabilityObserver)
+        }
     }
 
     func syncDownloadOverCellular() {
@@ -127,10 +151,11 @@ final class SettingsViewModel {
         // Filesystem is the source of truth — a SwiftData flag can lie if files
         // were evicted, partially downloaded, or restored without metadata.
         self.whisperModelInstalled = aiModelService.localPath(for: .whisper) != nil
+        self.llmModelInstalled = aiModelService.localPath(for: .llm) != nil
     }
 
     func downloadModel(_ type: AIModelType) async {
-        downloadError = nil
+        downloadErrors[type] = nil
         setDownloading(type, to: true)
         setProgress(type, to: 0)
 
@@ -139,34 +164,43 @@ final class SettingsViewModel {
                 setDownloading(type, to: false)
                 setProgress(type, to: 0)
             }
+            // Blips and stalls retry via the shared driver (waiting for a
+            // permitted network, resuming at file granularity); only the FINAL
+            // failure lands in `downloadErrors[type]` for the row's recovery copy.
+            let driver = ResilientModelDownload(
+                download: { [aiModelService] in try await aiModelService.download(type) },
+                connectivity: connectivity,
+                allowsCellular: { [weak self] in
+                    self?.downloadOverCellular ?? false
+                }
+            )
             do {
-                let stream = try await aiModelService.download(type)
-                for try await progress in stream {
-                    setProgress(type, to: progress)
+                try await driver.run { [weak self] progress in
+                    self?.setProgress(type, to: progress)
                 }
                 await checkModels()
             } catch is CancellationError {
                 // User cancelled — not an error; the filesystem-truth recheck in
                 // cancelDownload() settles the row.
             } catch let cause as ModelDownloadFailure {
-                downloadError = cause
+                downloadErrors[type] = cause
                 await checkModels()
             } catch {
-                downloadError = .other(String(describing: Swift.type(of: error)))
+                downloadErrors[type] = .other(String(describing: Swift.type(of: error)))
                 await checkModels()
             }
         }
-        downloadTask = task
+        downloadTasks[type] = task
         await task.value
-        downloadTask = nil
+        downloadTasks[type] = nil
     }
 
     /// Cancels an in-flight download and re-reads filesystem truth so the row
     /// returns to "not installed" with no partial/installed model left behind.
-    func cancelDownload() {
-        downloadTask?.cancel()
-        downloadTask = nil
-        downloadError = nil
+    func cancelDownload(_ type: AIModelType) {
+        downloadTasks[type]?.cancel()
+        downloadTasks[type] = nil
+        downloadErrors[type] = nil
         Task { await checkModels() }
     }
 
@@ -177,11 +211,17 @@ final class SettingsViewModel {
     }
 
     private func setDownloading(_ type: AIModelType, to value: Bool) {
-        if type == .whisper { isDownloadingWhisper = value }
+        switch type {
+        case .whisper: isDownloadingWhisper = value
+        case .llm: isDownloadingLLM = value
+        }
     }
 
     private func setProgress(_ type: AIModelType, to value: Double) {
-        if type == .whisper { whisperDownloadProgress = value }
+        switch type {
+        case .whisper: whisperDownloadProgress = value
+        case .llm: llmDownloadProgress = value
+        }
     }
 
     func deleteModel(_ type: AIModelType) async {

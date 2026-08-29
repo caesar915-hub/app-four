@@ -115,4 +115,133 @@ struct ExtractionReviewViewModelTests {
         #expect(json?.sideEffects.isEmpty == true)
         #expect(json?.sleepHours == nil)
     }
+
+    // MARK: - Part 3 (Phase 1)
+
+    @Test func unmodifiedFieldsYieldLLMTagsAndModifiedYieldUserCorrected() {
+        let rec = makeRecording()
+        let vm = ExtractionReviewViewModel(result: result(mood: "good"), recording: rec, store: store, onComplete: { _ in })
+        
+        vm.setMood("great") // modify mood
+        // leave energy unmodified (it was steady in result)
+        
+        vm.confirm()
+        
+        let tags = rec.correctionTags ?? []
+        let moodTag = tags.first(where: { $0.category == TagCategory.mood.rawValue })
+        let energyTag = tags.first(where: { $0.category == TagCategory.energy.rawValue })
+        
+        #expect(moodTag?.source == TagSource.userCorrected.rawValue)
+        #expect(energyTag?.source == TagSource.llm.rawValue)
+    }
+
+    @Test func confirmAppliesEditedColumns() {
+        let rec = makeRecording()
+        let vm = ExtractionReviewViewModel(result: result(mood: "good"), recording: rec, store: store, onComplete: { _ in })
+        
+        vm.setMood("great")
+        vm.setEnergy(.charged)
+        vm.confirm()
+        
+        #expect(rec.mood == "great")
+        #expect(rec.energyLevel == "charged")
+    }
+
+    // MARK: - Part 3 (Phase 2, 3, 4)
+
+    // T004: Comma-to-Dot Sleep Normalisation
+    @Test func sleepNormalisationParsesCommasAsDots() {
+        let rec = makeRecording()
+        let vm = ExtractionReviewViewModel(result: result(mood: "good"), recording: rec, store: store, onComplete: { _ in })
+        
+        vm.setSleepHours(fromString: "7,5")
+        #expect(vm.sleepHours == 7.5)
+        
+        vm.setSleepHours(fromString: "6.2")
+        #expect(vm.sleepHours == 6.2)
+    }
+
+    // T007: Cancel Semantics
+    @Test func cancelSetsStatusToFailedIfNotCompleted() {
+        let rec = makeRecording()
+        rec.summaryStatus = SummaryStatus.generating.rawValue
+        
+        let vm = ExtractionReviewViewModel(result: result(mood: "good"), recording: rec, store: store, onComplete: { _ in })
+        vm.cancel()
+        
+        #expect(rec.summaryStatus == SummaryStatus.failed.rawValue)
+    }
+
+    @Test func cancelIgnoresIfAlreadyCompleted() {
+        let rec = makeRecording()
+        rec.summaryStatus = SummaryStatus.completed.rawValue
+        
+        let vm = ExtractionReviewViewModel(result: result(mood: "good"), recording: rec, store: store, onComplete: { _ in })
+        vm.cancel()
+        
+        #expect(rec.summaryStatus == SummaryStatus.completed.rawValue)
+    }
+
+    // T009: Nil Extraction Safety
+    @Test func nilExtractionResultSafelyDefaultsToNilAndEmpty() {
+        let rec = makeRecording()
+        // Create an empty fallback result
+        let fallback = SummaryResult(
+            bullets: [], medications: [], generatedTitle: "Generated Title",
+            energyLevel: nil, focusLevel: nil, mood: nil, sleepHours: nil,
+            sleepQuality: nil, sleepEvent: nil, sleepLevel: nil, sideEffects: [],
+            emotions: [], topics: [], noteExtraction: nil
+        )
+        
+        let vm = ExtractionReviewViewModel(result: fallback, recording: rec, store: store, onComplete: { _ in })
+        
+        #expect(vm.mood == "")
+        #expect(vm.energy == nil)
+        #expect(vm.focus == nil)
+        #expect(vm.sleepHours == nil)
+        #expect(vm.medications.isEmpty)
+        #expect(vm.emotions.isEmpty)
+        #expect(vm.sideEffects.isEmpty)
+        
+        // Ensure saving this empty fallback doesn't crash and generates no tags
+        vm.confirm()
+        
+        let tags = rec.correctionTags ?? []
+        #expect(tags.isEmpty)
+        #expect(rec.mood == nil)
+    }
+
+    // T003/SC-006 — the production path (convenience init, used by RecordingDetailView)
+    // must rebuild noteExtractionJSON on save: edited meds/title/sleep land in the JSON,
+    // and column-less fields from the prior extraction are carried over.
+    @Test func productionPathRebuildsNoteExtractionJSON() throws {
+        let rec = makeRecording(title: "Voice Note")
+        rec.mood = "good"
+        rec.energyLevel = "steady"
+        rec.focusLevel = "sharp"
+        let stale = NoteExtraction(activities: ["Fitness"], title: "Voice Note", durationHours: 8)
+        rec.noteExtractionJSON = String(data: try JSONEncoder().encode(stale), encoding: .utf8)
+
+        let vm = ExtractionReviewViewModel(recording: rec, store: store, onComplete: { _ in })
+        vm.setMood("great")
+        vm.setSleepHours(fromString: "7,5")
+        vm.setSleepLevel(.good)
+        vm.addMedication("Vyvanse")
+        vm.name = "My Day"
+        vm.confirm()
+
+        let json = try #require(rec.decodedNoteExtraction)
+        #expect(json.title == "My Day")                       // user title wins, JSON matches
+        #expect(rec.title == "My Day")
+        #expect(json.activities == ["Fitness"])               // carried over, not dropped
+        #expect(json.durationHours == 8)                      // carried over
+        #expect(json.medications.map(\.name) == ["Vyvanse"])  // med edit lands in JSON
+        #expect(json.sleep?.hours == 7.5)                     // sleep edit lands in JSON
+        #expect(json.sleep?.quality == SleepLevel.good.rawValue)
+        // Redundant-with-column fields are still stripped by applySummary.
+        #expect(json.mood == nil)
+        #expect(rec.mood == "great")
+        // The sleep event JSON tracks the edited sleep too.
+        #expect(rec.decodedSleepEvent?.hours == 7.5)
+    }
 }

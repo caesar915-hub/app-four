@@ -14,6 +14,9 @@ final class ProcessingViewModel {
     @ObservationIgnored private let summarizationService: SummarizationService
     @ObservationIgnored private let store: RecordingStore
     @ObservationIgnored private(set) var activeTask: Task<Void, Never>?
+    
+    var showMemoryError: Bool = false
+    var showModelMissing: Bool = false
 
     init(store: RecordingStore, summarizationService: SummarizationService) {
         self.store = store
@@ -71,6 +74,16 @@ final class ProcessingViewModel {
         let result: SummaryResult
         do {
             result = try await summarizationService.summarize(rawTranscription: rawText)
+        } catch SummarizationError.insufficientMemory {
+            showMemoryError = true
+            result = ExtractionValidator.fallbackResult(rawTranscript: rawText)
+            AppLogger.log("ProcessingViewModel: insufficient memory, applying fallback result.")
+        } catch SummarizationError.modelNotInstalled {
+            // The managed-lifecycle model simply isn't on the device yet — keep the
+            // transcript and let the user fetch the model from Settings later.
+            showModelMissing = true
+            result = ExtractionValidator.fallbackResult(rawTranscript: rawText)
+            AppLogger.log("ProcessingViewModel: insights model not installed, applying fallback result.")
         } catch {
             // Surface a clear failure ("Tap to retry") instead of echoing the transcript.
             recording.summaryStatus = SummaryStatus.failed.rawValue

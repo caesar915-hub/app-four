@@ -58,7 +58,7 @@ struct ExportServiceTests {
         context.insert(segment)
         segment.recording = rich
 
-        let tag = RecordingTag(name: "focus", category: .focus, source: .nlp, confidence: 0.9)
+        let tag = RecordingTag(name: "focus", category: .focus, source: .llm, confidence: 0.9)
         context.insert(tag)
         tag.recording = rich
 

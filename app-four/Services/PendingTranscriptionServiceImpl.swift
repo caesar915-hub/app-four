@@ -110,7 +110,6 @@ actor PendingTranscriptionServiceImpl: PendingTranscriptionService {
         }
         recording.fullTranscriptText = text
         recording.status = .transcribing
-        store.save()
         return true
     }
 

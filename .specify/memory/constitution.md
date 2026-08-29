@@ -1,25 +1,13 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 1.1.0 → 1.2.0
-Rationale: Adopt test-first development (TDD) as the discipline for the Spec Kit
-  implement step. Adds Principle X (Test-First Development, NON-NEGOTIABLE) and
-  corrects the Testing stack to Swift Testing (reconciling the v1.1.1 BACKLOG note
-  that was logged but never applied to this file).
-Added principles:
-  - X. Test-First Development (NON-NEGOTIABLE) — RED-GREEN-REFACTOR, test-first for
-    logic (models, services, view-models, NLP extraction); SwiftUI views exempt
-    (verified by build + simulator run). Tests MANDATORY, not optional.
+Version change: 2.0.0 → 2.1.0
+Rationale: Added Principle XI (Architectural Exhaustiveness) to ensure detailed and comprehensive documentation in plans and specs.
 Modified sections:
-  - Technology Stack — Testing: XCTest → Swift Testing (@Test/#expect), test-first
-  - Governance — Constitution Check gate now spans Principles I–X
-Removed sections: n/a
+  - Added Principle XI
+  - Governance updated to require compliance with Principles I-XI
 Templates requiring updates:
-  - .specify/templates/plan-template.md ✅ — Constitution Check adds Principle X;
-    version reference bumped to v1.2.0
-  - .specify/templates/tasks-template.md ✅ — tests flipped OPTIONAL → MANDATORY
-    test-first; explicit RED checkpoint before implementation per user story
-  - .specify/templates/spec-template.md ✅ — no edit needed; principles inform criteria
+  - .specify/templates/plan-template.md — Constitution Check references updated
 Deferred TODOs: none
 -->
 
@@ -69,7 +57,7 @@ MUST be flagged.
 
 ### VI. On-Device Privacy (NON-NEGOTIABLE)
 
-All transcription, NLP extraction, and storage MUST run on-device. There is no
+All transcription, extraction, and storage MUST run on-device. There is no
 account, no server, and no cloud by default. Raw audio and derived health, mood,
 or medication data MUST NOT leave the device. iCloud sync, if added, MUST be
 opt-in and OFF by default, and the SwiftData store MUST stay excluded from iCloud
@@ -78,17 +66,18 @@ sensitive health information. Diagnostics and logging MUST record counts,
 durations, and token estimates ONLY — never transcript text or medication
 content.
 
-### VII. Deterministic, Measured Extraction
+### VII. On-Device LLM Extraction
 
-The NLP extraction pipeline (`NLNoteExtractor`) MUST be deterministic, on-device,
-and run off the main actor. Matching is whole-token / contiguous multi-word
-lexicon matching — never substrings (`window` ≠ `win`). There MUST be no
-sentiment-valence fallback and no `NLEmbedding` word-vector rescue; both were
-deliberately removed and MUST NOT be reintroduced without an amendment.
-Extraction vocabulary lives as DATA (`Resources/lexicon.json`), not hardcoded,
-with a personal overlay built from `userCorrected` tags. Any change touching
-extraction MUST run the eval harness and MUST NOT regress the tracked
-precision/recall floors.
+The extraction pipeline (`MLXJournalService`) uses Llama 3.2 1B (4-bit quantised)
+via MLX-Swift, running 100% on-device off the main actor. The curated lexicon
+(`Resources/lexicon.json`, 718 entries) is retained as the source of truth for
+ADHD-specific vocabulary: it seeds the LLM system prompt and provides the
+canonical allowlists for Swift-side validation (Layer 4). Signal output MUST be
+validated against `Levels.swift` enum rawValues — any value not in the canonical
+set is clamped to `nil`. Memory lifecycle MUST follow Peak Shaving: Whisper
+unloads before Llama loads, and `os_proc_available_memory()` is checked before
+loading weights. The `SummarizationService` protocol is the integration boundary;
+downstream consumers MUST remain unaware of the extraction backend.
 
 ### VIII. Service-Oriented Architecture
 
@@ -114,7 +103,7 @@ plan's Complexity Tracking before it is merged.
 ### X. Test-First Development (NON-NEGOTIABLE)
 
 Testable logic — SwiftData `@Model` types, `Services/` implementations,
-`@MainActor @Observable` view-models, and the `NLNoteExtractor` extraction
+`@MainActor @Observable` view-models, and the `MLXJournalService` extraction
 pipeline — MUST be built test-first: a failing test (**RED**) is written and
 confirmed to fail BEFORE the implementation that makes it pass (**GREEN**), after
 which the code is refactored with the test staying green. Tests for this logic are
@@ -124,7 +113,11 @@ views are EXEMPT from unit-test-first: they are verified by build + on-simulator
 run (Principle II) and an HTML mockup (Principle I); snapshot tests are encouraged,
 not required. Tests use **Swift Testing** (`@Test`, `#expect`/`#require`). This
 complements Principle II (the full suite stays green before "done") and Principle
-VII (the extraction eval harness and non-regressing precision/recall floors).
+VII (Layer 4 validation and signal enum conformance).
+
+### XI. Architectural Exhaustiveness
+
+Plans and specs must not leave implementation details to the imagination. Every edge case, error state, and data structure must be explicitly defined before proceeding to tasks. Summaries are strictly forbidden; exhaustive detail is required.
 
 ## Technology Stack
 
@@ -133,8 +126,9 @@ VII (the extraction eval harness and non-regressing precision/recall floors).
 - **Persistence**: SwiftData
 - **Async**: Swift Concurrency (`async/await`, `Actor`, `AsyncStream`)
 - **On-device ML**: WhisperKit running OpenAI Whisper Small (`openai_whisper-small`)
-  for transcription; Apple `NaturalLanguage` (`NLNoteExtractor`) for extraction.
-  `AIModelType` has a single case, `.whisper` — Gemma was removed before the fork.
+  for transcription; Llama 3.2 1B (4-bit quantised) via MLX-Swift
+  (`MLXJournalService`) for extraction. `AIModelType` has two cases: `.whisper`
+  and `.llama`. Lexicon (`lexicon.json`, 718 entries) seeds prompts and validation.
 - **Testing**: Swift Testing (`@Test`/`#expect`) for unit + integration, test-first per Principle X; XCUITest for UI flows where warranted
 - **Platform**: iOS (primary), iPadOS (secondary)
 - **Target / identity**: Xcode target & module `app-four`; bundle id
@@ -167,9 +161,9 @@ Amendments require:
 4. Update to `LAST_AMENDED_DATE`.
 
 All specs and plans MUST include a Constitution Check gate that verifies
-compliance with Principles I–X before Phase 0 research proceeds.
+compliance with Principles I–XI before Phase 0 research proceeds.
 
 Runtime development guidance lives in `CLAUDE.md` at the repository root. The
 Spec Kit operating procedure lives in `docs/SPECKIT.md`.
 
-**Version**: 1.2.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-06-16
+**Version**: 2.1.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-08-11

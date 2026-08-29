@@ -5,13 +5,11 @@ struct RecordingDetailView: View {
     @State private var viewModel: RecordingDetailViewModel
 
     @State private var editViewModel: ExtractionReviewViewModel?
-    @State private var isTranscriptExpanded = false
     @State private var pendingDelete = false
     @State private var showDeleteConfirm = false
     @Environment(\.dismiss) private var dismiss
     @Environment(RecordingStore.self) private var store
     @Environment(AppServices.self) private var services
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     init(recording: Recording, store: RecordingStore, services: AppServices) {
         self.recording = recording
@@ -28,6 +26,7 @@ struct RecordingDetailView: View {
                 titleBlock
                 if hasSignals { signalHeroStrip }
                 ADHDSummarySection(recording: viewModel.recording)
+                if hasSummary { summaryCard }
                 transcriptSection
                 audioCard
                 deleteButton
@@ -84,6 +83,11 @@ struct RecordingDetailView: View {
                 // completes; otherwise SwiftUI swallows it and the user stays trapped on the screen.
                 Task { @MainActor in dismiss() }
             }
+        }
+        .alert("Insights Model Not Downloaded", isPresented: $viewModel.showModelMissing) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Your note is saved, but mood, energy and focus weren't extracted because the insights model isn't on this device yet. Download it from Settings › AI Models.")
         }
     }
 
@@ -184,30 +188,48 @@ struct RecordingDetailView: View {
             .foregroundStyle(NewLook.inkPrimary)
     }
 
+    // MARK: - Summary (LLM bullets — surfaced per the 043 detail redesign)
+
+    private var hasSummary: Bool {
+        let bullets = viewModel.recording.summaryBullets
+        // The fallback "summary" is the raw transcript echoed back — suppress the
+        // card (and its AI-authorship caption); the transcript section below
+        // already shows the same text.
+        return !bullets.isEmpty && bullets != [viewModel.recording.fullTranscriptText]
+    }
+
+    /// The on-device model's second-person read-back of the check-in. Sits in
+    /// the transcript's old slot; the full transcript follows, always expanded.
+    private var summaryCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            cardHeader("Summary")
+            VStack(alignment: .leading, spacing: Spacing.s) {
+                ForEach(viewModel.recording.summaryBullets, id: \.self) { bullet in
+                    Text(bullet)
+                        .font(Typography.body)
+                        .foregroundStyle(NewLook.inkPrimary)
+                        .lineSpacing(4)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Label("Written by on-device AI from your voice — tap Edit to correct", systemImage: "sparkles")
+                .font(Typography.caption)
+                .foregroundStyle(NewLook.inkSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .newLookCard()
+    }
+
     // MARK: - Transcript
 
     @ViewBuilder
     private var transcriptSection: some View {
         VStack(alignment: .leading, spacing: Spacing.m) {
-            Button {
-                withAnimation(reduceMotion ? nil : .easeInOut(duration: 0.2)) {
-                    isTranscriptExpanded.toggle()
-                }
-            } label: {
-                HStack {
-                    cardHeader("Transcript")
-                    Spacer()
-                    transcriptionStatusPill
-                    Image(systemName: "chevron.down")
-                        .font(Typography.caption)
-                        .foregroundStyle(NewLook.inkSecondary)
-                        .rotationEffect(.degrees(isTranscriptExpanded ? 180 : 0))
-                        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: isTranscriptExpanded)
-                        .accessibilityHidden(true)
-                }
+            HStack {
+                cardHeader("Transcript")
+                Spacer()
+                transcriptionStatusPill
             }
-            .buttonStyle(.plain)
-            .accessibilityHint(isTranscriptExpanded ? "Collapse transcript" : "Expand transcript")
 
             if viewModel.recording.status == .failed {
                 Button("Retry transcription") {
@@ -216,25 +238,23 @@ struct RecordingDetailView: View {
                 .buttonStyle(.secondary)
             }
 
-            if isTranscriptExpanded {
-                if viewModel.recording.status == .transcribing {
-                    HStack(spacing: Spacing.s) {
-                        ProgressView().scaleEffect(0.8)
-                        Text("Transcribing…")
-                            .font(Typography.body)
-                            .foregroundStyle(NewLook.inkSecondary)
-                    }
-                    .padding(.vertical, Spacing.s)
-                } else if viewModel.recording.fullTranscriptText.isEmpty {
-                    Text("No transcript available yet.")
+            if viewModel.recording.status == .transcribing {
+                HStack(spacing: Spacing.s) {
+                    ProgressView().scaleEffect(0.8)
+                    Text("Transcribing…")
                         .font(Typography.body)
                         .foregroundStyle(NewLook.inkSecondary)
-                } else {
-                    Text(viewModel.recording.transcriptText)
-                        .font(Typography.body)
-                        .foregroundStyle(NewLook.inkPrimary)
-                        .lineSpacing(4)
                 }
+                .padding(.vertical, Spacing.s)
+            } else if viewModel.recording.fullTranscriptText.isEmpty {
+                Text("No transcript available yet.")
+                    .font(Typography.body)
+                    .foregroundStyle(NewLook.inkSecondary)
+            } else {
+                Text(viewModel.recording.transcriptText)
+                    .font(Typography.body)
+                    .foregroundStyle(NewLook.inkPrimary)
+                    .lineSpacing(4)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

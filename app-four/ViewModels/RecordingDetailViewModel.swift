@@ -12,6 +12,10 @@ final class RecordingDetailViewModel {
     @ObservationIgnored private var retryTask: Task<Void, Never>?
     private(set) var summaryTask: Task<Void, Never>?
 
+    /// Set when summarization couldn't run because the insights model isn't on the
+    /// device; the view surfaces a calm notice (mirrors ProcessingViewModel).
+    var showModelMissing: Bool = false
+
     init(recording: Recording, store: RecordingStore, services: AppServices) {
         self.recording = recording
         self.store = store
@@ -84,10 +88,11 @@ final class RecordingDetailViewModel {
         retryTask = Task { @MainActor in
             do {
                 let stream = try await transcriptionService.transcribe(audioURL: recording.audioURL)
-                try await consumeTranscription(stream, timeoutSeconds: 90)
+                let timeout = TranscriptionTimeoutCalculator.timeout(for: recording.duration)
+                try await consumeTranscription(stream, timeoutSeconds: timeout)
                 recording.status = .completed
                 store.save()
-                await regenerateSummary()
+                await performSummarization()
             } catch is CancellationError {
                 finishFailed("Transcription cancelled. Tap Retry to try again.")
             } catch RecordingError.timeout {
@@ -107,7 +112,7 @@ final class RecordingDetailViewModel {
 
     private func consumeTranscription(
         _ stream: AsyncStream<TranscriptionSegmentDTO>,
-        timeoutSeconds: UInt64
+        timeoutSeconds: TimeInterval
     ) async throws {
         try await withThrowingTaskGroup(of: Void.self) { group in
             group.addTask { @MainActor in
@@ -117,11 +122,10 @@ final class RecordingDetailViewModel {
                     }
                     self.recording.fullTranscriptText = segment.text
                     self.recording.status = .transcribing
-                    self.store.save()
                 }
             }
             group.addTask {
-                try await Task.sleep(nanoseconds: timeoutSeconds * 1_000_000_000)
+                try await Task.sleep(nanoseconds: UInt64(timeoutSeconds * 1_000_000_000))
                 throw RecordingError.timeout
             }
             try await group.next()
@@ -141,6 +145,15 @@ final class RecordingDetailViewModel {
 
             recording.applySummary(result)
             AppLogger.log("Summary generated for \(recording.id)")
+            store.save()
+        } catch SummarizationError.modelNotInstalled {
+            // The managed-lifecycle model simply isn't on the device yet — not a
+            // failure. Keep the transcript via the fallback result and let the
+            // user fetch the model from Settings, then Regenerate (mirrors
+            // ProcessingViewModel).
+            showModelMissing = true
+            recording.applySummary(ExtractionValidator.fallbackResult(rawTranscript: recording.fullTranscriptText))
+            AppLogger.log("Summary skipped for \(recording.id): insights model not installed")
             store.save()
         } catch {
             recording.summaryStatus = SummaryStatus.failed.rawValue

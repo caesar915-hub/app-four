@@ -6,42 +6,44 @@
 
 **Note**: This template is filled in by the `/speckit-plan` command. See `.specify/templates/plan-template.md` for the execution workflow.
 
-## Summary
+## Feature Definition & Scope
 
-[Extract from feature spec: primary requirement + technical approach from research]
+<!--
+  ACTION REQUIRED: Do NOT provide a brief summary. Per Principle XI (Architectural Exhaustiveness),
+  you must provide an exhaustive definition of the feature's requirements, scope, and the complete 
+  technical approach from research.
+-->
+
+[Exhaustive extraction from feature spec: primary requirements, constraints, and complete technical approach]
 
 ## Technical Context
 
 <!--
-  ACTION REQUIRED: Replace the content in this section with the technical details
-  for the project. The structure here is presented in advisory capacity to guide
-  the iteration process.
+  ACTION REQUIRED: Do not provide one-word answers. Write at least one paragraph 
+  for each section below explaining the *why* and *how* of the architectural choices.
 -->
 
-**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]
+### 1. Language & Runtime Environment
+[Detail the specific language versions, compiler flags, and runtime constraints]
 
-**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]
+### 2. Core Dependencies & Frameworks
+[Exhaustively list required frameworks. Explain *why* they were chosen over alternatives and how they will be integrated]
 
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+### 3. State Management & Data Flow
+[Describe exactly how state moves through the application (e.g. from UI -> ViewModel -> Service -> Storage). Identify potential bottlenecks]
 
-**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]
+### 4. Storage & Persistence Strategy
+[If applicable, detail the exact storage mechanism, schema migration strategy, and data lifecycle. If N/A, explain why no state is persisted]
 
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
-
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]
-
-**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]
-
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]
-
-**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
+### 5. Performance & Constraints
+[Define hard boundaries for memory, CPU, and latency. How will this feature impact the app's overall footprint?]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 Mark each PASS / FAIL / N-A and justify any FAIL in Complexity Tracking. See
-`.specify/memory/constitution.md` (v1.2.0).
+`.specify/memory/constitution.md` (v2.1.0).
 
 - [ ] **I. SwiftUI-First** — UI is SwiftUI on modern APIs (iOS 26+); no UIKit
       unless no SwiftUI equivalent; new views have an HTML mockup first.
@@ -55,8 +57,6 @@ Mark each PASS / FAIL / N-A and justify any FAIL in Complexity Tracking. See
       `fix/…` branch, `/code-review` before merge, `main` stays releasable.
 - [ ] **VI. On-Device Privacy** — no audio/health/mood/med data leaves the device;
       no cloud by default; logs are counts/durations only.
-- [ ] **VII. Deterministic, Measured Extraction** — extraction stays deterministic,
-      off-main, whole-token, lexicon-as-data; eval harness run, floors not regressed.
 - [ ] **VIII. Service-Oriented Architecture** — new capabilities behind a `Services/`
       protocol via `AppDependencies`; `@MainActor @Observable` VMs; heavy work off-main.
 - [ ] **IX. Pre-Release Data Posture** — schema stays CloudKit-compatible (optional/
@@ -64,6 +64,10 @@ Mark each PASS / FAIL / N-A and justify any FAIL in Complexity Tracking. See
 - [ ] **X. Test-First Development** — logic (models, services, view-models, NLP
       extraction) is built test-first (RED→GREEN→refactor) with Swift Testing; tests
       are MANDATORY, ordered before implementation; SwiftUI views exempt (build + run).
+- [ ] **XI. Architectural Exhaustiveness** — Plans and specs must not leave implementation
+      details to the imagination. Every edge case, error state, and data structure must be
+      explicitly defined before proceeding to tasks. Summaries are strictly forbidden; exhaustive
+      detail is required.
 
 ## Project Structure
 
@@ -125,6 +129,17 @@ ios/ or android/
 
 **Structure Decision**: [Document the selected structure and reference the real
 directories captured above]
+
+### File Manifest & Responsibilities
+
+<!--
+  ACTION REQUIRED: For every NEW or MODIFIED file in the tree above, create a row in the table below.
+  You MUST define the exact single-responsibility of the file and its primary functions/structs.
+-->
+
+| File Path | Responsibility | Key Structs / Functions / Protocols |
+|-----------|----------------|-------------------------------------|
+| `path/to/file` | [Deep explanation of responsibility] | [API surface, e.g. `class XYZ`, `func abc()`] |
 
 ## Complexity Tracking
 

@@ -1,0 +1,1091 @@
+{
+  "medications": [
+    "Concerta",
+    "Concerta XL",
+    "Ritalin",
+    "Ritalin LA",
+    "Daytrana",
+    "Metadate",
+    "Methylin",
+    "Aptensio XR",
+    "Cotempla XR-ODT",
+    "Jornay PM",
+    "Quillivant XR",
+    "QuilliChew ER",
+    "Relexxii",
+    "Medikinet XL",
+    "Equasym XL",
+    "Adderall",
+    "Adderall XR",
+    "Mydayis",
+    "Vyvanse",
+    "Elvanse",
+    "Arynta",
+    "Evekeo",
+    "Evekeo ODT",
+    "Dexedrine",
+    "ProCentra",
+    "Zenzedi",
+    "Xelstrym",
+    "Dyanavel XR",
+    "Adzenys ER",
+    "Adzenys XR-ODT",
+    "Dexamfetamine",
+    "Focalin",
+    "Focalin XR",
+    "Azstarys",
+    "Strattera",
+    "Atomoxetine",
+    "Atoncy",
+    "Qelbree",
+    "Viloxazine",
+    "Intuniv",
+    "Guanfacine",
+    "Kapvay",
+    "Clonidine",
+    "Onyda XR",
+    "Wellbutrin",
+    "Bupropion",
+    "Provigil",
+    "Modafinil",
+    "Nuvigil",
+    "Armodafinil",
+    "methylphenidate",
+    "lisdexamfetamine",
+    "amphetamine",
+    "dextroamphetamine",
+    "dexmethylphenidate",
+    "serdexmethylphenidate",
+    "vyv",
+    "addy",
+    "addies",
+    "dex",
+    "rits",
+    "meth patch",
+    "Ritalin SR",
+    "Ritalin IR",
+    "vyvance",
+    "vivance",
+    "vivanse",
+    "adderal",
+    "stratera",
+    "straterra",
+    "strattera xr",
+    "Tenex",
+    "Catapres",
+    "Qelbree XR",
+    "Clobenzorex",
+    "Pemoline",
+    "Cylert",
+    "Sparlon",
+    "Modafinil XR",
+    "Nuplazid",
+    "Sunosi",
+    "Solriamfetol",
+    "Wakix",
+    "Pitolisant",
+    "buproprion",
+    "wellbutin",
+    "concerta er",
+    "Methylphenidate ER",
+    "Methylphenidate SR"
+  ],
+  "moodSpecific": [
+    {
+      "word": "bleak",
+      "label": "low"
+    },
+    {
+      "word": "numb",
+      "label": "low"
+    },
+    {
+      "word": "terrible",
+      "label": "low"
+    },
+    {
+      "word": "awful",
+      "label": "low"
+    },
+    {
+      "word": "destroyed",
+      "label": "low"
+    },
+    {
+      "word": "hopeless",
+      "label": "low"
+    },
+    {
+      "word": "can't go on",
+      "label": "low"
+    },
+    {
+      "word": "muted",
+      "label": "low"
+    },
+    {
+      "word": "depressed",
+      "label": "low"
+    },
+    {
+      "word": "really sad",
+      "label": "low"
+    },
+    {
+      "word": "feeling down",
+      "label": "low"
+    },
+    {
+      "word": "rock bottom",
+      "label": "low"
+    },
+    {
+      "word": "flat",
+      "label": "flat"
+    },
+    {
+      "word": "meh",
+      "label": "flat"
+    },
+    {
+      "word": "hollow",
+      "label": "flat"
+    },
+    {
+      "word": "emotionless",
+      "label": "flat"
+    },
+    {
+      "word": "zombie",
+      "label": "flat"
+    },
+    {
+      "word": "neutral",
+      "label": "flat"
+    },
+    {
+      "word": "detached",
+      "label": "flat"
+    },
+    {
+      "word": "okay",
+      "label": "okay"
+    },
+    {
+      "word": "fine",
+      "label": "okay"
+    },
+    {
+      "word": "alright",
+      "label": "okay"
+    },
+    {
+      "word": "not bad",
+      "label": "okay"
+    },
+    {
+      "word": "so-so",
+      "label": "okay"
+    },
+    {
+      "word": "steady mood",
+      "label": "okay"
+    },
+    {
+      "word": "getting by",
+      "label": "okay"
+    },
+    {
+      "word": "warm",
+      "label": "good"
+    },
+    {
+      "word": "lifted",
+      "label": "good"
+    },
+    {
+      "word": "better",
+      "label": "good"
+    },
+    {
+      "word": "pretty good",
+      "label": "good"
+    },
+    {
+      "word": "feeling good",
+      "label": "good"
+    },
+    {
+      "word": "feel good",
+      "label": "good"
+    },
+    {
+      "word": "positive",
+      "label": "good"
+    },
+    {
+      "word": "great",
+      "label": "great"
+    },
+    {
+      "word": "amazing",
+      "label": "great"
+    },
+    {
+      "word": "thriving",
+      "label": "great"
+    },
+    {
+      "word": "bright",
+      "label": "great"
+    },
+    {
+      "word": "fantastic",
+      "label": "great"
+    },
+    {
+      "word": "wonderful",
+      "label": "great"
+    },
+    {
+      "word": "on top of the world",
+      "label": "great"
+    },
+    {
+      "word": "brilliant",
+      "label": "great"
+    },
+    {
+      "word": "anxious",
+      "label": "low"
+    },
+    {
+      "word": "worried",
+      "label": "low"
+    },
+    {
+      "word": "angry",
+      "label": "low"
+    },
+    {
+      "word": "furious",
+      "label": "low"
+    },
+    {
+      "word": "grumpy",
+      "label": "low"
+    },
+    {
+      "word": "snappy",
+      "label": "low"
+    },
+    {
+      "word": "irritable",
+      "label": "low"
+    },
+    {
+      "word": "irritated",
+      "label": "low"
+    },
+    {
+      "word": "frustrated",
+      "label": "low"
+    },
+    {
+      "word": "stressed",
+      "label": "low"
+    },
+    {
+      "word": "overwhelmed",
+      "label": "low"
+    },
+    {
+      "word": "miserable",
+      "label": "low"
+    },
+    {
+      "word": "sad",
+      "label": "low"
+    },
+    {
+      "word": "zoned out",
+      "label": "low"
+    },
+    {
+      "word": "calm",
+      "label": "good"
+    },
+    {
+      "word": "relaxed",
+      "label": "good"
+    },
+    {
+      "word": "content",
+      "label": "good"
+    },
+    {
+      "word": "chill",
+      "label": "good"
+    },
+    {
+      "word": "at ease",
+      "label": "good"
+    },
+    {
+      "word": "peaceful",
+      "label": "good"
+    },
+    {
+      "word": "happy",
+      "label": "great"
+    },
+    {
+      "word": "cheerful",
+      "label": "great"
+    },
+    {
+      "word": "joyful",
+      "label": "great"
+    },
+    {
+      "word": "glad",
+      "label": "great"
+    },
+    {
+      "word": "ecstatic",
+      "label": "great"
+    },
+    {
+      "word": "nailed it",
+      "label": "great"
+    },
+    {
+      "word": "crushed it",
+      "label": "great"
+    },
+    {
+      "word": "accomplished",
+      "label": "great"
+    },
+    {
+      "word": "optimistic",
+      "label": "good"
+    },
+    {
+      "word": "subdued",
+      "label": "low"
+    },
+    {
+      "word": "ruminating",
+      "label": "low"
+    },
+    {
+      "word": "looping",
+      "label": "low"
+    },
+    {
+      "word": "grouchy",
+      "label": "low"
+    },
+    {
+      "word": "touchy",
+      "label": "low"
+    },
+    {
+      "word": "short fuse",
+      "label": "low"
+    },
+    {
+      "word": "zombified",
+      "label": "flat"
+    },
+    {
+      "word": "lifeless",
+      "label": "flat"
+    },
+    {
+      "word": "not myself",
+      "label": "flat"
+    },
+    {
+      "word": "disconnected",
+      "label": "flat"
+    },
+    {
+      "word": "robotic",
+      "label": "flat"
+    },
+    {
+      "word": "dulled",
+      "label": "flat"
+    },
+    {
+      "word": "feel empty",
+      "label": "flat"
+    },
+    {
+      "word": "feeling empty",
+      "label": "flat"
+    },
+    {
+      "word": "felt empty",
+      "label": "flat"
+    },
+    {
+      "word": "feel nothing",
+      "label": "flat"
+    },
+    {
+      "word": "feeling nothing",
+      "label": "flat"
+    },
+    {
+      "word": "felt nothing",
+      "label": "flat"
+    },
+    {
+      "word": "feel heavy",
+      "label": "low"
+    },
+    {
+      "word": "feeling heavy",
+      "label": "low"
+    }
+  ],
+  "energyCharged": [
+    "charged",
+    "electric",
+    "energized",
+    "wired",
+    "buzzing",
+    "pumped",
+    "on fire",
+    "vibing",
+    "high energy",
+    "unstoppable",
+    "firing on all cylinders",
+    "full tank",
+    "raring to go",
+    "ready to sprint",
+    "lit up",
+    "bouncing off the walls",
+    "amped up",
+    "absolutely buzzing",
+    "could run a marathon",
+    "ten out of ten energy",
+    "going a hundred miles an hour",
+    "so much juice right now",
+    "peaking"
+  ],
+  "energyAlert": [
+    "alert",
+    "awake",
+    "ready",
+    "clear headed",
+    "refreshed",
+    "perked up",
+    "switched on"
+  ],
+  "energySteady": [
+    "steady",
+    "stable",
+    "moderate",
+    "baseline",
+    "okay energy",
+    "normal energy",
+    "holding up",
+    "managing"
+  ],
+  "energyTired": [
+    "tired",
+    "fatigued",
+    "low energy",
+    "wiped out",
+    "no spoons",
+    "running on empty",
+    "need a nap",
+    "running out of steam",
+    "eyes are heavy",
+    "barely keeping my eyes open",
+    "need to lie down",
+    "hitting a wall energy-wise",
+    "coasting on fumes",
+    "body wants to quit",
+    "just so weary",
+    "can barely lift my arms",
+    "totally zonked",
+    "flat as a pancake"
+  ],
+  "energySluggish": [
+    "sluggish",
+    "dragging",
+    "lethargic",
+    "moving slowly",
+    "burnt out",
+    "drained",
+    "crashed",
+    "crashing",
+    "hit a wall",
+    "sudden fatigue",
+    "shutdown",
+    "melted down",
+    "wiped",
+    "feel heavy",
+    "feeling heavy",
+    "felt heavy",
+    "feel empty of energy",
+    "totally spent",
+    "feel spent",
+    "felt spent",
+    "feeling slow",
+    "feel slow",
+    "moving through mud",
+    "body is lagging",
+    "feel like concrete",
+    "everything takes twice as long",
+    "stuck in slow motion",
+    "ground to a halt",
+    "running at half speed",
+    "no momentum",
+    "feel like i need a jumpstart",
+    "dragging my feet",
+    "body won't cooperate",
+    "engine won't turn over",
+    "low battery",
+    "need a reboot",
+    "feel like i waded through honey all day"
+  ],
+  "focusLockedIn": [
+    "locked in",
+    "hyperfocus",
+    "hyperfocused",
+    "deep focus",
+    "in the zone",
+    "flow state",
+    "tunnel vision",
+    "locked on",
+    "flowing",
+    "zeroed in",
+    "completely absorbed",
+    "couldn't pull myself away",
+    "on a roll",
+    "nothing could interrupt me",
+    "laser focused",
+    "totally locked",
+    "single-track brain",
+    "head down grinding",
+    "fully dialed in",
+    "nothing else existed",
+    "couldn't stop if i tried",
+    "in a groove",
+    "task absorbed me completely"
+  ],
+  "focusSharp": [
+    "sharp",
+    "focused",
+    "focus",
+    "on task",
+    "concentrating",
+    "concentration",
+    "on track",
+    "clear",
+    "keeping up"
+  ],
+  "focusPresent": [
+    "present",
+    "grounded",
+    "with it",
+    "tuned in",
+    "showing up",
+    "engaged"
+  ],
+  "focusDistracted": [
+    "distracted",
+    "distractible",
+    "can't focus",
+    "unable to concentrate",
+    "zoning out",
+    "spacing out",
+    "daydreaming",
+    "mind wandering",
+    "pulled",
+    "unsteady",
+    "sidetracked",
+    "keep jumping tracks",
+    "brain keeps switching tabs",
+    "can't stay on one thing",
+    "every little thing pulls me away",
+    "attention keeps slipping",
+    "scattered all over the place",
+    "chasing squirrels",
+    "three tasks at once and finishing none",
+    "keep losing the thread",
+    "flitting between things",
+    "attention won't stick",
+    "ten browser tabs in my head"
+  ],
+  "focusFoggy": [
+    "brain fog",
+    "foggy",
+    "hazy",
+    "drifting",
+    "cloudy",
+    "mental haze",
+    "fuzzy",
+    "can't think straight",
+    "jumbled thoughts",
+    "groggy",
+    "feel lost",
+    "feeling lost",
+    "went blank",
+    "drawing a blank",
+    "feel scattered",
+    "feeling scattered",
+    "felt scattered",
+    "so scattered",
+    "all over the place",
+    "fragmented",
+    "jumping around",
+    "all over the shop",
+    "mind blank",
+    "head is full of static",
+    "thinking through cotton wool",
+    "words won't form",
+    "can't hold a thought",
+    "brain offline",
+    "feel mentally blurry",
+    "thoughts keep dissolving",
+    "can't connect the dots",
+    "head is swimming",
+    "like my brain is buffering",
+    "short-circuiting",
+    "mind is mush",
+    "processing at dial-up speed",
+    "can't string two thoughts together",
+    "feels like someone scooped out my brain"
+  ],
+  "emotions": [
+    "excited",
+    "joyful",
+    "proud",
+    "thrilled",
+    "inspired",
+    "angry",
+    "anxious",
+    "frustrated",
+    "irritated",
+    "jealous",
+    "content",
+    "grateful",
+    "peaceful",
+    "secure",
+    "serene",
+    "sad",
+    "lonely",
+    "disappointed",
+    "hopeless",
+    "discouraged"
+  ],
+  "taskCompletionCues": [
+    "finished",
+    "completed",
+    "done",
+    "checked off",
+    "ticked off",
+    "wrapped up",
+    "got through",
+    "got shit done",
+    "did the thing",
+    "nailed it",
+    "smashed it"
+  ],
+  "taskAvoidanceCues": [
+    "avoided",
+    "avoiding",
+    "procrastinated",
+    "procrastinating",
+    "put off",
+    "kept putting off",
+    "couldn't start",
+    "stuck on",
+    "paralyzed by",
+    "task paralysis",
+    "initiation paralysis",
+    "frozen",
+    "stuck",
+    "doom pile",
+    "doom piles",
+    "revenge bedtime procrastination",
+    "kept scrolling instead",
+    "doom scrolling",
+    "avoidance spiral",
+    "can't make myself do it",
+    "shame spiral about not starting",
+    "dread the task",
+    "dreading it",
+    "task feels impossible",
+    "won't let myself start"
+  ],
+  "winCues": [
+    "proud",
+    "accomplished",
+    "win",
+    "nailed it",
+    "nailed",
+    "smashed it",
+    "victory",
+    "achievement",
+    "crushed it",
+    "got shit done",
+    "did the thing"
+  ],
+  "overwhelmCues": [
+    "overwhelmed",
+    "too much",
+    "drowning",
+    "buried",
+    "can't keep up",
+    "paralyzed",
+    "decision fatigue",
+    "chaos",
+    "spoon deficit",
+    "low spoons",
+    "no spoons left",
+    "popcorn brain",
+    "rejection sensitive",
+    "rsd spiral",
+    "emotional dysregulation",
+    "all or nothing",
+    "shutdown mode",
+    "can't function",
+    "fried",
+    "everything feels urgent",
+    "sensory overload"
+  ],
+  "appointmentCues": [
+    "appointment",
+    "appointments",
+    "psychiatrist",
+    "psychiatry",
+    "therapist",
+    "therapy session",
+    "doctor",
+    "gp",
+    "dentist",
+    "check-up",
+    "checkup",
+    "follow-up",
+    "follow up",
+    "prescription renewal",
+    "refill appointment",
+    "blood test",
+    "bloodwork"
+  ],
+  "executiveDysfunction": [
+    "executive dysfunction",
+    "can't start",
+    "task paralysis",
+    "initiation paralysis",
+    "procrastinating",
+    "avoidance",
+    "avoiding",
+    "stuck",
+    "frozen",
+    "decision fatigue",
+    "can't prioritize",
+    "disorganized",
+    "time blind",
+    "no sense of time",
+    "running late",
+    "missed deadline",
+    "forgot to eat",
+    "forgot to drink",
+    "body doubling",
+    "waiting mode",
+    "time blindness",
+    "object permanence",
+    "out of sight out of mind",
+    "analysis paralysis",
+    "adhd tax",
+    "wall of awful",
+    "can't make decisions",
+    "lost track of time",
+    "hyperfixating",
+    "context switching",
+    "task switching cost",
+    "forgot it existed",
+    "can't hold the plan in my head"
+  ],
+  "sideEffectCues": [
+    "dry mouth",
+    "headache",
+    "nausea",
+    "loss of appetite",
+    "insomnia",
+    "jittery",
+    "heart racing",
+    "palpitations",
+    "anxious",
+    "irritable",
+    "moody",
+    "crash",
+    "stomach ache",
+    "dizzy",
+    "racing pulse",
+    "sweating",
+    "clenched jaw",
+    "tense",
+    "tight shoulders",
+    "appetite gone",
+    "not hungry",
+    "dehydrated",
+    "grinding teeth",
+    "rebound",
+    "wearing off",
+    "zombie",
+    "emotionless",
+    "flat affect",
+    "no personality"
+  ],
+  "physicalStim": [
+    "fidgeting",
+    "bouncing",
+    "leg bouncing",
+    "tapping",
+    "stimming",
+    "hand flapping",
+    "pacing",
+    "can't sit still",
+    "skin picking",
+    "nail biting",
+    "hair pulling",
+    "chewing on things",
+    "chewing pen",
+    "chewing shirt",
+    "rocking",
+    "object fidgeting",
+    "spinning ring",
+    "clicking pen",
+    "twirling hair",
+    "skin scratching",
+    "knuckle cracking",
+    "doodling compulsively",
+    "can't stop moving",
+    "need to move"
+  ],
+  "physicalSideEffects": [
+    "headache",
+    "stomach ache",
+    "nausea",
+    "dry mouth",
+    "dizzy",
+    "heart racing",
+    "racing pulse",
+    "palpitations",
+    "sweating",
+    "clenched jaw",
+    "tense",
+    "tight shoulders",
+    "appetite gone",
+    "not hungry",
+    "dehydrated",
+    "grinding teeth",
+    "jaw clench",
+    "jaw clenching",
+    "jaw tension",
+    "clenching jaw",
+    "racing heart",
+    "heart sped up",
+    "fast heart",
+    "reduced appetite",
+    "appetite reduction",
+    "appetite dip",
+    "less hungry",
+    "appetite suppression",
+    "slightly less hungry"
+  ],
+  "sleepQualityGood": [
+    "slept well",
+    "slept like a rock",
+    "good sleep",
+    "rested",
+    "refreshed",
+    "deep sleep",
+    "solid sleep",
+    "crashed hard",
+    "passed out cold",
+    "out like a light",
+    "actually slept through the night",
+    "slept straight through",
+    "woke up feeling human",
+    "best sleep in a while",
+    "finally got good rest",
+    "knocked out immediately",
+    "slept so hard i didn't move"
+  ],
+  "sleepQualityBad": [
+    "slept badly",
+    "broken sleep",
+    "woke up every hour",
+    "nightmares",
+    "vivid dreams",
+    "overslept",
+    "couldn't wake up",
+    "tossed and turned",
+    "woke up",
+    "nightmare",
+    "bad sleep",
+    "light sleep",
+    "garbage sleep",
+    "barely slept",
+    "restless all night",
+    "kept waking up every few hours",
+    "up at 3am again",
+    "woke up exhausted",
+    "slept but didn't rest",
+    "groggy all morning",
+    "hit the pillow but never really slept",
+    "fitful sleep"
+  ],
+  "sleepInsomnia": [
+    "insomnia",
+    "can't sleep",
+    "wired at night",
+    "racing thoughts at bedtime",
+    "took hours to fall asleep",
+    "couldn't switch off",
+    "couldn't shut my brain off",
+    "brain wouldn't stop",
+    "lay there for hours",
+    "stared at the ceiling",
+    "mind going a million miles an hour",
+    "couldn't wind down",
+    "never felt sleepy",
+    "hyper at midnight",
+    "thoughts wouldn't stop",
+    "still awake at 2am",
+    "body tired but brain awake"
+  ],
+  "reboundTerms": [
+    "rebound",
+    "medication rebound",
+    "wearing off",
+    "drop off",
+    "steep drop",
+    "afternoon crash",
+    "evening crash",
+    "symptoms flared",
+    "rebound irritability",
+    "rebound hyperactivity",
+    "rebound sadness",
+    "worse than usual",
+    "comedown",
+    "the drop",
+    "meds wore off",
+    "crash time",
+    "the wall",
+    "coming down hard",
+    "late afternoon slump",
+    "falling off a cliff",
+    "when the meds stopped working",
+    "end of dose crash"
+  ],
+  "appetiteLoss": [
+    "no appetite",
+    "food is gross",
+    "force eating",
+    "forgot lunch",
+    "skipped dinner",
+    "not hungry",
+    "can't eat",
+    "appetite gone",
+    "meds killed my appetite",
+    "couldn't look at food",
+    "food sounds disgusting",
+    "nothing sounds good",
+    "just not interested in eating",
+    "too focused to eat",
+    "appetite suppressed",
+    "stomach is off",
+    "eating felt like a chore",
+    "couldn't stomach anything"
+  ],
+  "appetiteReturn": [
+    "finally hungry",
+    "ravenous",
+    "binge ate",
+    "crash eating",
+    "starving",
+    "ate everything",
+    "rebound hunger",
+    "meds wore off and i was starving",
+    "suddenly so hungry",
+    "ate like i hadn't eaten in days",
+    "appetite came back with a vengeance",
+    "couldn't stop eating once i started",
+    "compensating for not eating earlier",
+    "evening munchies",
+    "late night hunger hit hard"
+  ],
+  "negationTokens": [
+    "not",
+    "never",
+    "no",
+    "n't",
+    "without"
+  ],
+  "medNotTakenVerbs": [
+    "forgot",
+    "missed",
+    "skipped",
+    "skip",
+    "forget"
+  ],
+  "timeOfDayKeywords": [
+    {
+      "keyword": "morning",
+      "normalized": "morning"
+    },
+    {
+      "keyword": "afternoon",
+      "normalized": "afternoon"
+    },
+    {
+      "keyword": "evening",
+      "normalized": "evening"
+    },
+    {
+      "keyword": "night",
+      "normalized": "night"
+    },
+    {
+      "keyword": "bedtime",
+      "normalized": "bedtime"
+    },
+    {
+      "keyword": "lunch",
+      "normalized": "afternoon"
+    },
+    {
+      "keyword": "breakfast",
+      "normalized": "morning"
+    },
+    {
+      "keyword": "dinner",
+      "normalized": "evening"
+    }
+  ],
+  "activityKeywords": [
+    {"category": "Resting",     "keywords": ["resting", "relaxing", "chilling", "laying down", "lying down", "rest", "taking it easy"]},
+    {"category": "Hobbies",     "keywords": ["hobby", "reading", "gaming", "drawing", "playing", "painting", "crafting", "writing"]},
+    {"category": "Hanging Out", "keywords": ["hanging out", "with friends", "socializing", "party", "gathering", "meeting up"]},
+    {"category": "Fitness",     "keywords": ["gym", "running", "workout", "exercise", "walking", "jogging", "cycling", "swimming", "yoga"]},
+    {"category": "Eating",      "keywords": ["eating", "breakfast", "lunch", "dinner", "snack", "cooking", "meal", "food"]},
+    {"category": "Driving",     "keywords": ["driving", "commuting", "in the car", "on the bus", "on the train", "traveling"]},
+    {"category": "Work",        "keywords": ["work", "meeting", "meetings", "deadline", "email", "emails", "office", "standup", "presentation", "shift"]},
+    {"category": "Chores",      "keywords": ["laundry", "dishes", "cleaning", "tidying", "tidied", "vacuum", "vacuuming", "groceries", "grocery run"]},
+    {"category": "Errands",     "keywords": ["errand", "errands", "post office", "bank", "pharmacy", "dry cleaner", "returns"]},
+    {"category": "Outdoors",    "keywords": ["outside", "park", "nature", "fresh air", "hike", "hiking", "garden", "gardening", "walk in the park", "long walk"]},
+    {"category": "Screen Time", "keywords": ["scrolling", "doomscrolling", "netflix", "youtube", "tiktok", "instagram", "binge watched", "binged", "screen time"]}
+  ]
+}

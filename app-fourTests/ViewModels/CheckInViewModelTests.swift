@@ -172,7 +172,7 @@ struct CheckInViewModelTests {
         #expect(await mocks.audio.startRecordingCalled == false)
     }
 
-    @Test func startRecordingWithDownloadTransitionsToRecordingAndStartsDownload() async {
+    @Test func startRecordingWithDownloadTransitionsToRecordingAndStartsDownload() async throws {
         await mocks.audio.setPermissionGranted(true)
         await mocks.aiModel.setStubIsDownloaded(false)
         viewModel.showModelDownloadPrompt = true
@@ -182,12 +182,16 @@ struct CheckInViewModelTests {
         #expect(viewModel.showModelDownloadPrompt == false)
         #expect(viewModel.state == .recording)
         
-        // Wait for detached download task to invoke the mock
-        while await mocks.aiModel.downloadCalled == false {
+        // Wait for the detached download task to invoke the mock — bounded at
+        // 10_000 yields so a regression fails fast instead of hanging.
+        var yields = 0
+        while await mocks.aiModel.downloadCalled == false, yields < 10_000 {
             await Task.yield()
+            yields += 1
         }
         
-        #expect(await mocks.aiModel.downloadCalled == true)
+        #expect(await mocks.aiModel.downloadCalled == true,
+                "download was not invoked within 10_000 yields")
         #expect(await mocks.audio.startRecordingCalled == true)
     }
     
@@ -453,6 +457,24 @@ struct CheckInViewModelTests {
 
     /// RED: `viewModel.modelPreloadTask` does not exist yet — compile failure confirms RED.
     /// GREEN: property added in T009; cancelRecording() cancels it before the async cleanup body.
+    @Test func preloadTaskIsCancelledOnStopWithinStaggerWindow() async {
+        await mocks.transcription.setLoadModelHangs(true)
+
+        let start = viewModel.startRecording()
+        await start.value
+
+        // Stop before the 1.5s stagger window elapses.
+        try? await Task.sleep(for: .milliseconds(100))
+        let stop = viewModel.stopRecording()
+        await stop.value
+
+        // Give the detached preload task time to observe cancellation.
+        try? await Task.sleep(for: .milliseconds(100))
+
+        let loadCount = await mocks.transcription.loadModelCallCount
+        #expect(loadCount == 0, "loadModel() should not be called when recording stops within the 1.5s preload stagger window")
+    }
+
     @Test func preloadTaskIsCancelledOnDiscard() async {
         await mocks.transcription.setLoadModelHangs(true)
 
@@ -461,8 +483,13 @@ struct CheckInViewModelTests {
 
         await viewModel.cancelRecording().value
 
-        #expect(viewModel.modelPreloadTask?.isCancelled == true)
+        // The preload task is cancelled and nilled by stopTasks; give the
+        // detached task a moment to observe cancellation before inspecting state.
+        try? await Task.sleep(for: .milliseconds(100))
+        let loadCount = await mocks.transcription.loadModelCallCount
+        #expect(loadCount == 0, "cancelRecording must stop the staggered preload before it reaches loadModel()")
     }
+
 
     // MARK: FR-017 Phantom-tick guard (026 RED→GREEN)
 

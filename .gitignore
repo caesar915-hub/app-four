@@ -71,3 +71,11 @@ html-mockups/onboarding-swift-mockups.html
 html-mockups/app-intents-siri-nfc-proposals.html
 html-mockups/unified-onboarding-flow.html
 
+# Test/profiling artifacts (build output — kept on disk locally, never tracked)
+test_output.log
+default.profraw
+
+
+# Local MLX checkouts (used by the app-four-macos harness; not part of the iOS repo)
+Packages/mlx-swift-examples/
+Packages/swift-transformers/

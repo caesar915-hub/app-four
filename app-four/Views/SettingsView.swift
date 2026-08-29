@@ -135,17 +135,35 @@ struct SettingsView: View {
                 isInstalled: viewModel.whisperModelInstalled,
                 isDownloading: viewModel.isDownloadingWhisper,
                 downloadProgress: viewModel.whisperDownloadProgress,
-                errorMessage: viewModel.downloadError.map { viewModel.message(for: $0) },
-                canAllowCellular: viewModel.canAllowCellular,
+                errorMessage: viewModel.downloadErrors[.whisper].map { viewModel.message(for: $0) },
+                canAllowCellular: viewModel.canAllowCellular(for: .whisper),
                 onDownload: { Task { await viewModel.downloadModel(.whisper) } },
                 onRetry: { Task { await viewModel.downloadModel(.whisper) } },
-                onCancel: { viewModel.cancelDownload() },
+                onCancel: { viewModel.cancelDownload(.whisper) },
                 onAllowCellular: {
                     viewModel.downloadOverCellular = true
                     viewModel.syncDownloadOverCellular()
                     Task { await viewModel.downloadModel(.whisper) }
                 },
                 onDelete: { Task { await viewModel.deleteModel(.whisper) } }
+            )
+            ModelDownloadRow(
+                title: "Journal Insights",
+                icon: "brain.head.profile",
+                isInstalled: viewModel.llmModelInstalled,
+                isDownloading: viewModel.isDownloadingLLM,
+                downloadProgress: viewModel.llmDownloadProgress,
+                errorMessage: viewModel.downloadErrors[.llm].map { viewModel.message(for: $0) },
+                canAllowCellular: viewModel.canAllowCellular(for: .llm),
+                onDownload: { Task { await viewModel.downloadModel(.llm) } },
+                onRetry: { Task { await viewModel.downloadModel(.llm) } },
+                onCancel: { viewModel.cancelDownload(.llm) },
+                onAllowCellular: {
+                    viewModel.downloadOverCellular = true
+                    viewModel.syncDownloadOverCellular()
+                    Task { await viewModel.downloadModel(.llm) }
+                },
+                onDelete: { Task { await viewModel.deleteModel(.llm) } }
             )
         }
     }

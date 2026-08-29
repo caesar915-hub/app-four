@@ -213,5 +213,6 @@ enum SummarizationError: Error, Sendable {
     case contextTooLong
     case timeout
     case parsingFailed
+    case insufficientMemory
     case inferenceFailed(String)
 }

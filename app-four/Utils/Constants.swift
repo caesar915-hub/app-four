@@ -16,6 +16,30 @@ enum ModelConstants {
         FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
             .appendingPathComponent("whisperkit")
     }()
+
+    /// Base directory for the managed insights-model snapshot download. The
+    /// background downloader stages files under `staging/<repoID>/` and promotes
+    /// the completed snapshot to `models/<repoID>/`.
+    nonisolated static let llmDownloadBase: URL = {
+        let library = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
+        let base = library.appendingPathComponent("llm")
+        // Legacy migration: the pre-rename download base was Library/llama. Move an
+        // existing download over once so the already-downloaded model isn't re-fetched.
+        let legacy = library.appendingPathComponent("llama")
+        let fileManager = FileManager.default
+        if !fileManager.fileExists(atPath: base.path),
+           fileManager.fileExists(atPath: legacy.path) {
+            try? fileManager.moveItem(at: legacy, to: base)
+        }
+        return base
+    }()
+
+    /// Insights/summarization model. Qwen2.5-1.5B-Instruct replaces
+    /// Llama-3.2-1B-Instruct: the 1B Llama ignored the JSON-only output contract
+    /// (replied with prose preambles → unparseable → transcript echoed as the
+    /// "summary" and zero signals), while Qwen2.5 instruct models follow
+    /// structured-output instructions far more reliably at a similar size.
+    nonisolated static let llmHubRepoID = "mlx-community/Qwen2.5-1.5B-Instruct-4bit"
 }
 
 enum SettingsKeys {
