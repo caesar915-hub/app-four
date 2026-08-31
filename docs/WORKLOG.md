@@ -1,27 +1,17 @@
-## 2026-08-18 14:45 – 2026-08-31 02:02 · September Shipaton sprint doc system · main
+## 2026-08-31 02:01–13:09 · log debug console restore + open compliance gap in DEVLOG · fix/restore-debug-menu
 
 **Code changes**
-- _Major (feat)_
-  - `a92dc759` feat(043/044): on-device MLX journal pipeline + download reliability + tuned extraction
+- _Fixes_
+  - `4d12246d` fix(settings): restore the 5-tap debug console
 - _docs_
+  - `ef335b1e` docs: log debug console restore + open compliance gap in DEVLOG
+  - `2553e251` docs: regenerate WORKLOG.md after the Shipaton sprint doc commits
   - `ade0967c` docs(process): September Shipaton sprint doc system
   - `f84d4585` docs(shipaton): RevenueCat research, hard-paywall decision, and md corrections
-  - `4d1a3e88` docs(mockups): add 6 view concepts (J-O) from wider app-viz scan; extend research
-  - `4fcdc81b` docs: regenerate WORKLOG.md after concurrency warning fix
-  - `137fd8d0` docs(mockups): add 036 insights additional view concepts gallery
-  - `483276a0` docs(mockups): add 036 insights evolution proposal (competitor-informed)
-  - `7128996b` docs(research): daylio/bearable insights inventory; fix 036 mockup sleep dataset
-  - `a2155542` docs(mockups): add 036 insights screen spec mockup
-
-**Git actions**
-- `a92dc759` feat(043/044): on-device MLX journal pipeline + download reliability + tuned extraction
-
-**gh actions**
-- PR #39 merged `feat/043-mlx-journal-service` — "feat(043/044): on-device MLX journal pipeline + download reliability + tuned extraction"
 
 **Worktrees**
 ```
-/Users/caesargrey/Projects/app-four                                                                                                                                   ade0967c [main]
+/Users/caesargrey/Projects/app-four                                                                                                                                   ef335b1e [fix/restore-debug-menu]
 /Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-74ef9339           760154c5 [subagent-5-Stage-Pipeline-Engine-self-74ef9339]
 /Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-b7470585           760154c5 [subagent-5-Stage-Pipeline-Engine-self-b7470585]
 /Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Creative-Product-Strategist-self-78bed542       760154c5 [subagent-Creative-Product-Strategist-self-78bed542]
