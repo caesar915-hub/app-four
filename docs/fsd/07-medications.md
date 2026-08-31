@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-27 15:10 (WEST) · Updated: 2026-07-27 15:10 (WEST) -->
+<!-- Created: 2026-07-27 15:10 (WEST) · Updated: 2026-08-31 01:18 (WEST) -->
 # 07 — Medications
 
 Documents branch `main` @ `43eb6515a63a0eca957a79aad257da380c73edd4`. All `path:line` citations are against `main`.
@@ -9,7 +9,7 @@ Describe medication support in Squirl: the static medication catalog, the persis
 
 **Shipping status.** The feature ships in two tiers on `main`:
 1. **Active in 1.0:** the medication bar (display + Log Dose sheet + delete), the picker, the "Medication Bar" settings section, and transcript-extracted `MedicationEvent`s.
-2. **Implemented, dormant in 1.0:** `LogDefaultDoseIntent`, `DoseLogService`, Dose Guard, and the "My Medication" / "Confirmations" / "Dose Guard" settings sections exist in code but are **not user-reachable** — the intent has `isDiscoverable = false` and no `AppShortcutsProvider` exists; the settings sections are not instantiated anywhere in the app target. Restore plan (per `docs/BACKLOG.md:13`): "1.1 restore = `git revert 94a51181`".
+2. **Implemented, dormant in 1.0:** `LogDefaultDoseIntent`, `DoseLogService`, Dose Guard, and the "My Medication" / "Confirmations" / "Dose Guard" settings sections exist in code but are **not user-reachable** — the intent has `isDiscoverable = false` and no `AppShortcutsProvider` exists; the settings sections are not instantiated anywhere in the app target. Restore plan (per `docs/BACKLOG.md` §"Last updated"): "1.1 restore = `git revert 94a51181`".
 
 ## Scope
 
@@ -144,5 +144,5 @@ Describe medication support in Squirl: the static medication catalog, the persis
 - `app-four/Views/Components/MedicationBarView.swift:8-173` · `MedicationLogSheet.swift:8-192`
 - `app-four/Views/Settings/MedicationBarSettingsSection.swift` · `MyMedicationSection.swift:21-177` · `DoseGuardSection.swift:14-99` · `app-four/Views/SettingsView.swift:78-85, 181`
 - `app-four/DesignSystem/MedicationBarOverlay.swift:14-27` · `ScreenContainer.swift:79,82` · `app-four/Views/RecordingDetailView.swift:41` · `app-four/App/SquirlApp.swift:40, 53` · `app-four/Store/RecordingStore.swift:69, 113, 141-152`
-- `Packages/SquirlDesignSystem/Sources/SquirlDesignSystem/Palette.swift:12-17` · `docs/BACKLOG.md:13`
+- `Packages/SquirlDesignSystem/Sources/SquirlDesignSystem/Palette.swift:12-17` · `docs/BACKLOG.md` §"Last updated"
 - Sibling FSD: [Processing & Extraction](04-processing-and-extraction.md) · [Library & History](05-library-and-history.md) · [Insights](06-insights.md)
