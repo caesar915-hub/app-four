@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 struct SettingsView: View {
     @Binding var selectedTab: Tab
     @State private var viewModel: SettingsViewModel
+    @State private var showingDebug = false
     @State private var showingClearConfirmation = false
     @State private var medicationPickerExpanded = false
     @Environment(AppIntentRouter.self) private var router
@@ -93,6 +94,9 @@ struct SettingsView: View {
             }
         }
         .trackScreen("SettingsView")
+        .sheet(isPresented: $showingDebug) {
+            TestServicesView()
+        }
         .alert("Clear All Data?", isPresented: $showingClearConfirmation) {
             Button("Clear All Data", role: .destructive) {
                 viewModel.clearAllData()
@@ -289,6 +293,9 @@ struct SettingsView: View {
                 Text(versionLabel)
                     .font(Typography.caption)
                     .foregroundStyle(NewLook.inkSecondary)
+                    #if DEBUG || TESTFLIGHT
+                    .onTapGesture(count: 5) { showingDebug = true }
+                    #endif
                 Spacer()
             }
         }
