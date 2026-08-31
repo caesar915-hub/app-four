@@ -4,6 +4,7 @@ import SwiftData
 /// Debug console (mock-data toggle, service probes). Reached via a 5-tap
 /// gesture on the version label in `SettingsView`, gated to DEBUG/TESTFLIGHT.
 struct TestServicesView: View {
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Environment(RecordingStore.self) private var store
     @AppStorage("debugMockMode") private var mockMode: Bool = false
@@ -153,9 +154,7 @@ struct TestServicesView: View {
             }
             .navigationTitle("Service Debug")
             .toolbar {
-                Button("Done") {
-                    // Close sheet action would go here
-                }
+                Button("Done") { dismiss() }
             }
         }
     }
