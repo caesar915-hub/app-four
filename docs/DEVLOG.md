@@ -1,4 +1,4 @@
-<!-- Created: 2026-06-14 23:59 WEST · Updated: 2026-08-31 01:18 (WEST) -->
+<!-- Created: 2026-06-14 23:59 WEST · Updated: 2026-08-31 13:08 (WEST) -->
 # app-four DevLog
 
 > 🧊 **FROZEN 2026-09-01 → 2026-09-30 — do not append.**
@@ -12,6 +12,10 @@ This complements, never duplicates: **[BACKLOG.md](BACKLOG.md)** holds current *
 **Entry types:** `Recap` (morning standup, written by `/recap`) · `Decision` (with *why:*) · `Investigation` (with outcome) · `Direction` · `Shipped` · `Open`.
 
 ---
+
+## 2026-08-31
+
+- **[2026-08-31 13:08 WEST] Shipped — 5-tap debug console restored** on `fix/restore-debug-menu` (`4d12246d`). _what:_ Re-added the `showingDebug` state, the 5-tap `onTapGesture` on the version label, and `.sheet(TestServicesView())` in [SettingsView.swift](../app-four/Views/SettingsView.swift) — the exact wiring `f7e70048` removed on 2026-08-04 as 1.1 release cleanup. Gate is unchanged: `#if DEBUG || TESTFLIGHT`. Corrected two stale "unmounted for submission" comments left in `SquirlApp.swift`/`TestServicesView.swift` from that cleanup. Build clean, full suite green (544 tests). _why:_ owner asked for it back after a git-archaeology session traced the app-four-llama worktree's PR #39 merge (2026-08-29, `a92dc759`) and confirmed the debug console's removal was unrelated — an Aug 4 1.1-cleanup commit, 25 days earlier. _compliance check done before restoring:_ the `TESTFLIGHT` compile flag that caused the original G2.3.1 finding (hidden Service Debug console reachable in a submitted Release build, fixed `b240d735` 2026-07-21) is **not currently defined in any build config** — grepped `project.pbxproj`, zero hits. So today this gate is DEBUG-only in practice; TESTFLIGHT stays in the `#if` for whenever a dedicated TestFlight config re-defines it, at which point the G2.3.1 risk returns unless that config is Release-config-adjacent. _still open, unaffected by this change:_ the 1.0 post-submission cleanup backlog item "wrap TestServicesView+MockDataGenerator in `#if DEBUG`" was never done — the file compiles into every configuration including Release, just unreached by UI. Flagging again since Shipaton submission scrutiny starts tomorrow.
 
 ## 2026-08-30
 
