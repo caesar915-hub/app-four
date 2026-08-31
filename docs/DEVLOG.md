@@ -1,5 +1,9 @@
-<!-- Created: 2026-06-14 23:59 WEST · Updated: 2026-08-17 19:05 WEST -->
+<!-- Created: 2026-06-14 23:59 WEST · Updated: 2026-08-31 13:08 (WEST) -->
 # app-four DevLog
+
+> 🧊 **FROZEN 2026-09-01 → 2026-09-30 — do not append.**
+> Sprint entries go to **[shipaton_plan/DEVLOG.md](../shipaton_plan/DEVLOG.md)**.
+> This file stays here for history. It is unfrozen by the exit ritual on **2026-10-01**.
 
 Chronological narrative of the project — the *why* behind what happened. Newest day on top.
 
@@ -8,6 +12,14 @@ This complements, never duplicates: **[BACKLOG.md](BACKLOG.md)** holds current *
 **Entry types:** `Recap` (morning standup, written by `/recap`) · `Decision` (with *why:*) · `Investigation` (with outcome) · `Direction` · `Shipped` · `Open`.
 
 ---
+
+## 2026-08-31
+
+- **[2026-08-31 13:08 WEST] Shipped — 5-tap debug console restored** on `fix/restore-debug-menu` (`4d12246d`). _what:_ Re-added the `showingDebug` state, the 5-tap `onTapGesture` on the version label, and `.sheet(TestServicesView())` in [SettingsView.swift](../app-four/Views/SettingsView.swift) — the exact wiring `f7e70048` removed on 2026-08-04 as 1.1 release cleanup. Gate is unchanged: `#if DEBUG || TESTFLIGHT`. Corrected two stale "unmounted for submission" comments left in `SquirlApp.swift`/`TestServicesView.swift` from that cleanup. Build clean, full suite green (544 tests). _why:_ owner asked for it back after a git-archaeology session traced the app-four-llama worktree's PR #39 merge (2026-08-29, `a92dc759`) and confirmed the debug console's removal was unrelated — an Aug 4 1.1-cleanup commit, 25 days earlier. _compliance check done before restoring:_ the `TESTFLIGHT` compile flag that caused the original G2.3.1 finding (hidden Service Debug console reachable in a submitted Release build, fixed `b240d735` 2026-07-21) is **not currently defined in any build config** — grepped `project.pbxproj`, zero hits. So today this gate is DEBUG-only in practice; TESTFLIGHT stays in the `#if` for whenever a dedicated TestFlight config re-defines it, at which point the G2.3.1 risk returns unless that config is Release-config-adjacent. _still open, unaffected by this change:_ the 1.0 post-submission cleanup backlog item "wrap TestServicesView+MockDataGenerator in `#if DEBUG`" was never done — the file compiles into every configuration including Release, just unreached by UI. Flagging again since Shipaton submission scrutiny starts tomorrow.
+
+## 2026-08-30
+
+- **[2026-08-30 23:19 WEST] Direction — Squirl 1.1 monetizes with RevenueCat for Shipaton 2026; submit to App Review by Fri 4 Sep.** _what:_ Deep research (4 background agents + 1 nested) into RevenueCat procedure, failure modes, Shipaton rules and paywall UX, all re-verified against primary sources. Produced [SEPTEMBER_PLAN.md](../SEPTEMBER_PLAN.md) (epic/ticket structure, JIRA-export-ready), [SHIPATON_PLAN.md](engineering/SHIPATON_PLAN.md) and [REVENUECAT_INTEGRATION.md](engineering/REVENUECAT_INTEGRATION.md). Corrected the md files against `main`: extraction is an **on-device LLM** (Qwen2.5-1.5B-Instruct-4bit via MLX), not the retired NaturalLanguage path; `PRODUCT.md` principle 4 "deterministic over probabilistic" rewritten to "auditable over opaque · correctable over final" since an LLM *is* probabilistic; DESIGN.md token path fixed (`app-two/` → `Packages/SquirlDesignSystem/`). Privacy policy rewritten — the shipped claims "No servers" and "No third-party data sharing" become false under RevenueCat and were replaced with the narrower, still-true "your journal never leaves your device"; staged, **not deployed until the paid build ships**, per the policy's own "updated first" clause. _why:_ Shipaton settles the build-vs-buy question that `REVENUECAT_INTEGRATION.md` had answered the other way — that recommendation (native StoreKit 2) is void, not withdrawn on merit. **Eligibility confirmed after an error on my part:** I first read the 21 Jul *submission* date as the release date and called Squirl disqualified; release mode was manual and it went public **4 Aug**, inside the Jul 31–Sep 30 window, so it qualifies. _decisions locked:_ 1.1 ships from `main` (053/054 do not gate it; WIP parked in `stash@{0}`) · gate Insights + Export, never capture · monthly + annual with a 7-day trial · custom SwiftUI paywall over RevenueCatUI (which leaks 58 MB → 1 GB+, issue #6018) · existing 1.0 users grandfathered. _landmines found:_ the In-App Purchase Key is **mandatory** for StoreKit 2 (without it Apple charges the customer and RevenueCat never grants the entitlement — this corrected an earlier error in my own doc recommending the deprecated Shared Secret); purchases-ios **#4623 is open** — iOS prewarming while locked makes UserDefaults unreadable, so RevenueCat mints a new anonymous ID and strands paying users after a reboot; `EntitlementInfo` has no public initializer, which forces `PurchaseService` to return our own types or the paying-user path is untestable. _open:_ the Paid Applications Agreement is almost certainly unsigned (1.0 was free) and gates everything — it is the only item Apple's queue controls, not effort.
 
 ## 2026-08-17
 

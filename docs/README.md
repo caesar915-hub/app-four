@@ -4,10 +4,19 @@ Map of the project's documentation. Source of truth for *where things live*.
 
 > Agent rules are in [`/CLAUDE.md`](../CLAUDE.md) (must stay at repo root — auto-loaded).
 
-## Planning (kept at `docs/` root — `/recap` and CLAUDE hard-code these paths)
-- [BACKLOG.md](BACKLOG.md) — every feature/idea by stage (💡 Idea → 📐 Plan → 🔨 In code → ✅ Shipped) + milestones + ship checklist.
-- [DEVLOG.md](DEVLOG.md) — chronological *why* narrative; written by `/recap`.
+## Planning
+
+> 🧊 **September 2026:** the two files below are **FROZEN** for the Shipaton sprint
+> (2026-09-01 → 2026-09-30). Live planning lives in
+> [`shipaton_plan/`](../shipaton_plan/) — [SEPTEMBER_PLAN.md](../shipaton_plan/SEPTEMBER_PLAN.md)
+> (plan + release train), [BACKLOG.md](../shipaton_plan/BACKLOG.md) (state),
+> [DEVLOG.md](../shipaton_plan/DEVLOG.md) (why). Unfrozen by the exit ritual on 2026-10-01.
+
+- [BACKLOG.md](BACKLOG.md) — every feature/idea by stage (💡 Idea → 📐 Plan → 🔨 In code → ✅ Shipped) + milestones + ship checklist. *Frozen for September.*
+- [DEVLOG.md](DEVLOG.md) — chronological *why* narrative. *Frozen for September.*
 - [TODO.md](TODO.md) — foundational / pre-launch action list (the load-bearing gaps).
+
+Written by `/morning` (standup) and `/evening` (wrap). *`/recap` was never merged to `main` and is not a valid command — `/morning` replaces it.*
 
 ## product/
 Product definition — PRD, persona, success metric, monetization.

@@ -16,22 +16,23 @@ struct SquirlApp: App {
         StorageMigration.run()
         #if DEBUG
         // Mock mode is opt-in via the `-mockData` launch argument (scheme → Run
-        // → Arguments) — the debug console that toggled it is unmounted for
-        // submission. Any persisted value from that era is cleared, so a plain
-        // dev run is production-like: real data and the real onboarding gate.
-        // Read before AppDependencies.store, which reads the key eagerly via
-        // RecordingStore.loadRecordings().
+        // → Arguments) or the debug console's toggle (5-tap the version label
+        // in Settings, DEBUG/TESTFLIGHT only). Any persisted value from a prior
+        // run without either is cleared, so a plain dev run is production-like:
+        // real data and the real onboarding gate. Read before AppDependencies.store,
+        // which reads the key eagerly via RecordingStore.loadRecordings().
         if CommandLine.arguments.contains("-mockData") {
             UserDefaults.standard.set(true, forKey: "debugMockMode")
         } else {
             UserDefaults.standard.removeObject(forKey: "debugMockMode")
         }
         #else
-        // A container that ever ran a Debug build (or the old TestFlight debug
-        // console) can carry a persisted debugMockMode=true — and the data
-        // paths honor the key, which would hide every real recording behind
-        // the mock filter after a store upgrade. Release never offers the
-        // toggle, so clear it before the store reads the key eagerly below.
+        // A container that ever ran a Debug or TestFlight build (where the
+        // debug console's toggle is reachable) can carry a persisted
+        // debugMockMode=true — and the data paths honor the key, which would
+        // hide every real recording behind the mock filter after a store
+        // upgrade. Release never offers the toggle, so clear it before the
+        // store reads the key eagerly below.
         UserDefaults.standard.removeObject(forKey: "debugMockMode")
         #endif
         // Touch global dependencies at startup so stores begin observing the DB.

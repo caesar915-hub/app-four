@@ -1,12 +1,10 @@
 import SwiftUI
 import SwiftData
 
-/// Debug console (mock-data toggle, service probes). UNMOUNTED as of 1.1 — the
-/// 5-tap version-label entry in `SettingsView` was removed for submission.
-/// Kept compiled for dev use; restore = re-add the gesture + `.sheet` there.
-/// Without it, DEBUG builds always run with Mock Mode on — use a Release run
-/// (or TestFlight build) for first-run/onboarding QA.
+/// Debug console (mock-data toggle, service probes). Reached via a 5-tap
+/// gesture on the version label in `SettingsView`, gated to DEBUG/TESTFLIGHT.
 struct TestServicesView: View {
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
     @Environment(RecordingStore.self) private var store
     @AppStorage("debugMockMode") private var mockMode: Bool = false
@@ -156,9 +154,7 @@ struct TestServicesView: View {
             }
             .navigationTitle("Service Debug")
             .toolbar {
-                Button("Done") {
-                    // Close sheet action would go here
-                }
+                Button("Done") { dismiss() }
             }
         }
     }

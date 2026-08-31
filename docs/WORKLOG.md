@@ -1,28 +1,27 @@
-## 2026-08-18 17:22–18:36 · mark SummaryLengthTier as nonisolated enum · feat/043-mlx-journal-service
+## 2026-08-31 02:01–13:09 · log debug console restore + open compliance gap in DEVLOG · fix/restore-debug-menu
 
 **Code changes**
 - _Fixes_
-  - `aacf1d86` fix(concurrency): mark SummaryLengthTier as nonisolated enum
-  - `8a2108e4` fix(nlp): canonicalize medication alias names in NLNoteExtractor to preserve eval floors
+  - `4d12246d` fix(settings): restore the 5-tap debug console
 - _docs_
-  - `6906b873` docs: regenerate WORKLOG.md after eval-floor fix
-- _other_
-  - `ee08788f` Merge pull request #40 from caesar915-hub/chore/tuning-2026-08-18-b
-
-**Git actions**
-- `ee08788f` Merge pull request #40 from caesar915-hub/chore/tuning-2026-08-18-b
-
-**gh actions**
-- PR #40 merged `chore/tuning-2026-08-18-b` — "feat(043): sync tuning 2026-08-18-b from macOS harness"
+  - `ef335b1e` docs: log debug console restore + open compliance gap in DEVLOG
+  - `2553e251` docs: regenerate WORKLOG.md after the Shipaton sprint doc commits
+  - `ade0967c` docs(process): September Shipaton sprint doc system
+  - `f84d4585` docs(shipaton): RevenueCat research, hard-paywall decision, and md corrections
 
 **Worktrees**
 ```
-/Users/caesargrey/Projects/app-four                                          137fd8d0 [main]
-/Users/caesargrey/Projects/app-four-llama                                    aacf1d86 [feat/043-mlx-journal-service]
-/Users/caesargrey/Projects/app-four-phase0                                   43eb6515 [android-phase0-spikes] prunable
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents        9e98adab [chore/swift6-tech-debt]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4            965dcf22 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals 5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four                                                                                                                                   ef335b1e [fix/restore-debug-menu]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-74ef9339           760154c5 [subagent-5-Stage-Pipeline-Engine-self-74ef9339]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-b7470585           760154c5 [subagent-5-Stage-Pipeline-Engine-self-b7470585]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Creative-Product-Strategist-self-78bed542       760154c5 [subagent-Creative-Product-Strategist-self-78bed542]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Hackathon-Strategy-Researcher-research-15c26d5b 760154c5 [subagent-Hackathon-Strategy-Researcher-research-15c26d5b]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Wellness-App-Market-Analyst-research-26f5fc3b   760154c5 [subagent-Wellness-App-Market-Analyst-research-26f5fc3b]
+/Users/caesargrey/Projects/app-four-phase0                                                                                                                            43eb6515 [android-phase0-spikes] prunable
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                                                                                 9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                                                                     965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/054-settings-topic-hub                                                                                          4d1a3e88 [feat/054-settings-topic-hub]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                                                                          5db316a6 [feat/healthkit-signals]
 ```
 
 ---
