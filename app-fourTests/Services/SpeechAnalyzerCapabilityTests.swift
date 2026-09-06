@@ -1,0 +1,36 @@
+import Foundation
+import Testing
+@testable import app_four
+
+/// 045 / T002 — the SpeechTranscriber → DictationTranscriber fallback ladder.
+/// Pure resolution logic: the async locale lookups happen in the service and are
+/// passed in, so the ladder is unit-testable without the Speech SDK (which reports
+/// `isAvailable == false` on the Simulator).
+@Suite struct SpeechAnalyzerCapabilityTests {
+    let enUS = Locale(identifier: "en-US")
+    let enGB = Locale(identifier: "en-GB")
+
+    @Test func availableWithSpeechLocaleChoosesSpeechTranscriber() {
+        let choice = SpeechAnalyzerCapability.resolve(
+            isAvailable: true, resolvedSpeechLocale: enUS, resolvedDictationLocale: enGB)
+        #expect(choice == .speechTranscriber(enUS))
+    }
+
+    @Test func unavailableFallsBackToDictation() {
+        let choice = SpeechAnalyzerCapability.resolve(
+            isAvailable: false, resolvedSpeechLocale: enUS, resolvedDictationLocale: enGB)
+        #expect(choice == .dictation(enGB))
+    }
+
+    @Test func availableButNoSupportedSpeechLocaleUsesDictation() {
+        let choice = SpeechAnalyzerCapability.resolve(
+            isAvailable: true, resolvedSpeechLocale: nil, resolvedDictationLocale: enGB)
+        #expect(choice == .dictation(enGB))
+    }
+
+    @Test func nothingSupportedIsUnavailable() {
+        let choice = SpeechAnalyzerCapability.resolve(
+            isAvailable: true, resolvedSpeechLocale: nil, resolvedDictationLocale: nil)
+        #expect(choice == .unavailable)
+    }
+}
