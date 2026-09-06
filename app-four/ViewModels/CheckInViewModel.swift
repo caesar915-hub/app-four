@@ -134,13 +134,10 @@ final class CheckInViewModel {
         isSpeaking = false
         promptAnnouncementIsPending = false
         hasShownCapApproach = false
-        
-        // Model Download Intercept (US1)
-        if !skipModelCheck && !aiModelService.isDownloading && aiModelService.localPath(for: .whisper) == nil {
-            showModelDownloadPrompt = true
-            return Task {}
-        }
 
+        // Spec 045: no app-driven model download. SpeechAnalyzer's asset is system-managed
+        // and installed lazily during recording (loadModel preload) / on first transcribe;
+        // recordings captured before it lands queue via PendingTranscriptionService.
         return Task {
             let available = await storageService.availableStorage()
             guard available > LayoutConstants.minDiskSpaceForRecordingBytes else {
@@ -263,23 +260,21 @@ final class CheckInViewModel {
             self.pendingSave = nil
             self.saveFailed = false
 
-            // Immediately show done; transcribe in background
+            // Immediately show done; transcribe (or queue) in background.
             self.state = .done
 
-            // Model not ready: persist as pending and skip transcription. The
-            // PendingTranscriptionService drains it through this exact path once the
-            // model lands — capture stays "Captured.", never a .failed (FR-011/012).
-            guard self.aiModelService.localPath(for: .whisper) != nil else {
-                recording.status = .pendingTranscription
-                self.store.save()
-                return
-            }
-
             self.transcriptionTask = Task {
-                // Let the prior transcription finish first (serialize on the single
-                // Whisper instance). It's never cancelled here, so its work is kept.
+                // Serialize after any prior transcription (never cancelled — its work is kept).
                 await priorTranscription?.value
-                await self.transcribeInBackground(recording)
+                // Model asset not ready (e.g. first run offline): persist as pending; the
+                // PendingTranscriptionService drains it through this exact path once the
+                // asset lands — capture stays "Captured.", never a .failed (FR-011/012).
+                if await self.transcriptionService.isModelReady() {
+                    await self.transcribeInBackground(recording)
+                } else {
+                    recording.status = .pendingTranscription
+                    self.store.save()
+                }
             }
         } catch {
             // Never silently reset to idle — retain the buffer and surface a calm,

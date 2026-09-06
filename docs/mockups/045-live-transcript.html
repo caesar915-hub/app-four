@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Transcript — Check-in (spec 045)</title>
+<style>
+  :root{
+    --paper:#F6F1E7; --surface:#FCF8EF; --inset:#EFE8D8; --ink:#221E16; --muted:#7A7361;
+    --hairline:#E3DAC7; --green:#5F8A4C; --amber:#E0A33A; --bronze:#B8842A;
+  }
+  .dark{
+    --paper:#14130F; --surface:#1E1C16; --inset:#272419; --ink:#F3EEE0; --muted:#9A917C;
+    --hairline:#322E22; --green:#6E9A58; --amber:#E8B255; --bronze:#D4A24A;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#0d0c0a;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;
+       display:flex;flex-wrap:wrap;gap:28px;justify-content:center;padding:28px;color:#ddd}
+  .col{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .caption{font-size:12px;color:#8a8578;letter-spacing:.02em}
+  /* phone */
+  .phone{width:330px;height:700px;border-radius:44px;background:var(--paper);color:var(--ink);
+         box-shadow:0 12px 40px rgba(0,0,0,.5);overflow:hidden;position:relative;border:1px solid var(--hairline)}
+  .status{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;font-size:13px;font-weight:600}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:6px 20px 2px}
+  .nav .title{font-size:17px;font-weight:600}
+  .nav .x{color:var(--muted);font-size:15px}
+  /* crescent + timer */
+  .stage{display:flex;flex-direction:column;align-items:center;padding:8px 0 4px}
+  .ring{width:150px;height:150px;position:relative;display:flex;align-items:center;justify-content:center}
+  .timer{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:30px;font-weight:600;letter-spacing:.02em}
+  .listening{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:13px;margin-top:6px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(95,138,76,.5);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(95,138,76,.45)}70%{box-shadow:0 0 0 9px rgba(95,138,76,0)}100%{box-shadow:0 0 0 0 rgba(95,138,76,0)}}
+  /* transcript card */
+  .tcard{margin:14px 16px 0;background:var(--surface);border:1px solid var(--hairline);border-radius:20px;
+         padding:16px 16px 14px;min-height:230px;display:flex;flex-direction:column}
+  .tlabel{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;gap:6px;align-items:center}
+  .transcript{font-size:18px;line-height:1.5;flex:1}
+  .committed{color:var(--ink)}
+  .volatile{color:var(--muted);font-style:normal;opacity:.85}
+  .caret{display:inline-block;width:2px;height:20px;background:var(--bronze);margin-left:1px;vertical-align:-3px;animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .hint{font-size:12px;color:var(--muted);margin-top:10px}
+  /* controls */
+  .controls{position:absolute;bottom:26px;left:0;right:0;display:flex;justify-content:center;gap:26px;align-items:center}
+  .stop{width:70px;height:70px;border-radius:50%;background:linear-gradient(145deg,var(--green),var(--amber));
+        display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(95,138,76,.35)}
+  .stop .sq{width:24px;height:24px;border-radius:6px;background:#fff}
+  .ghost{width:52px;height:52px;border-radius:50%;border:1px solid var(--hairline);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:20px}
+  .done-badge{color:var(--green);font-weight:600;font-size:14px;display:flex;gap:6px;align-items:center}
+  .primary{margin:0 16px;height:52px;border-radius:16px;background:var(--bronze);color:#fff;font-weight:600;font-size:16px;display:flex;align-items:center;justify-content:center}
+  svg{position:absolute;inset:0}
+</style>
+</head>
+<body>
+
+<!-- STATE 1: recording, live partial text -->
+<div class="col">
+  <div class="phone">
+    <div class="status"><span>9:41</span><span>●●●  Wi-Fi  ▮▮</span></div>
+    <div class="nav"><span class="x">Cancel</span><span class="title">Check-in</span><span class="x">·</span></div>
+    <div class="stage">
+      <div class="ring">
+        <svg viewBox="0 0 150 150"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#5F8A4C"/><stop offset="1" stop-color="#E0A33A"/></linearGradient></defs>
+          <circle cx="75" cy="75" r="66" fill="none" stroke="#E3DAC7" stroke-width="5"/>
+          <circle cx="75" cy="75" r="66" fill="none" stroke="url(#g1)" stroke-width="5" stroke-linecap="round"
+                  stroke-dasharray="415" stroke-dashoffset="150" transform="rotate(-90 75 75)"/></svg>
+        <div class="timer">0:12</div>
+      </div>
+      <div class="listening"><span class="dot"></span> Listening · on-device</div>
+    </div>
+    <div class="tcard">
+      <div class="tlabel">Live transcript</div>
+      <div class="transcript">
+        <span class="committed">Slept about seven hours, energy is decent today and I actually</span>
+        <span class="volatile"> feel pretty focused after my</span><span class="caret"></span>
+      </div>
+      <div class="hint">Words settle as you speak — nothing leaves your device.</div>
+    </div>
+    <div class="controls">
+      <div class="ghost">✎</div>
+      <div class="stop" title="Stop"><div class="sq"></div></div>
+      <div class="ghost">🗑</div>
+    </div>
+  </div>
+  <div class="caption">1 · Recording — committed text (solid) + volatile tail (muted) + caret</div>
+</div>
+
+<!-- STATE 2: just stopped, finalized -->
+<div class="col">
+  <div class="phone">
+    <div class="status"><span>9:41</span><span>●●●  Wi-Fi  ▮▮</span></div>
+    <div class="nav"><span class="x">Cancel</span><span class="title">Check-in</span><span class="x">·</span></div>
+    <div class="stage">
+      <div class="ring">
+        <svg viewBox="0 0 150 150"><circle cx="75" cy="75" r="66" fill="none" stroke="#E3DAC7" stroke-width="5"/>
+          <circle cx="75" cy="75" r="66" fill="none" stroke="#5F8A4C" stroke-width="5"/></svg>
+        <div class="done-badge">✓ Captured</div>
+      </div>
+      <div class="listening" style="visibility:hidden">.</div>
+    </div>
+    <div class="tcard">
+      <div class="tlabel">Transcript</div>
+      <div class="transcript"><span class="committed">Slept about seven hours, energy is decent today and I actually feel pretty focused after my meds this morning.</span></div>
+      <div class="hint">Tap to edit before it’s saved and analyzed.</div>
+    </div>
+    <div class="controls" style="flex-direction:column;gap:10px;left:0;right:0">
+      <div class="primary" style="align-self:stretch">Save check-in</div>
+    </div>
+  </div>
+  <div class="caption">2 · Stopped — volatile cleared, final transcript committed</div>
+</div>
+
+<!-- STATE 3: dark, first-run model preparing (pending) -->
+<div class="col">
+  <div class="phone dark">
+    <div class="status"><span>9:41</span><span>●●●  Wi-Fi  ▮▮</span></div>
+    <div class="nav"><span class="x">Cancel</span><span class="title">Check-in</span><span class="x">·</span></div>
+    <div class="stage">
+      <div class="ring">
+        <svg viewBox="0 0 150 150"><defs><linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#6E9A58"/><stop offset="1" stop-color="#E8B255"/></linearGradient></defs>
+          <circle cx="75" cy="75" r="66" fill="none" stroke="#322E22" stroke-width="5"/>
+          <circle cx="75" cy="75" r="66" fill="none" stroke="url(#g2)" stroke-width="5" stroke-linecap="round"
+                  stroke-dasharray="415" stroke-dashoffset="260" transform="rotate(-90 75 75)"/></svg>
+        <div class="timer">0:06</div>
+      </div>
+      <div class="listening"><span class="dot"></span> Listening · on-device</div>
+    </div>
+    <div class="tcard">
+      <div class="tlabel">Live transcript</div>
+      <div class="transcript" style="display:flex;align-items:center;justify-content:center;color:var(--muted);text-align:center;font-size:15px">
+        Preparing the on-device voice model…<br>your words are saved and will transcribe automatically.
+      </div>
+      <div class="hint" style="text-align:center">First run only. No large download — it’s system-managed.</div>
+    </div>
+    <div class="controls">
+      <div class="ghost">✎</div>
+      <div class="stop"><div class="sq"></div></div>
+      <div class="ghost">🗑</div>
+    </div>
+  </div>
+  <div class="caption">3 · Dark · first-run: model preparing → capture queues (pending), never lost</div>
+</div>
+
+</body>
+</html>

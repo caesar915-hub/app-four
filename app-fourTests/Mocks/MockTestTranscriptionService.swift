@@ -6,8 +6,11 @@ actor MockTestTranscriptionService: TranscriptionService {
     var mockTranscriptText = "This is a mock transcript."
     var loadModelHangs = false
     private(set) var loadModelCallCount = 0
+    var modelReady = true
 
     func setLoadModelHangs(_ v: Bool) { loadModelHangs = v }
+    func setModelReady(_ v: Bool) { modelReady = v }
+    func isModelReady() async -> Bool { modelReady }
 
     func loadModel() async throws {
         loadModelCallCount += 1

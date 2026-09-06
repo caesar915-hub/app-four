@@ -18,24 +18,24 @@ actor PendingTranscriptionServiceImpl: PendingTranscriptionService {
     private let store: RecordingStore
     private let transcriptionService: TranscriptionService
     private let summarizationService: SummarizationService
-    private let aiModelService: AIModelService
 
     private var isDraining = false
 
     init(
         store: RecordingStore,
         transcriptionService: TranscriptionService,
-        summarizationService: SummarizationService,
-        aiModelService: AIModelService
+        summarizationService: SummarizationService
     ) {
         self.store = store
         self.transcriptionService = transcriptionService
         self.summarizationService = summarizationService
-        self.aiModelService = aiModelService
     }
 
     func drainIfModelReady() async {
-        guard aiModelService.localPath(for: .whisper) != nil else { return }
+        // SpeechAnalyzer assets are system-managed: attempt an install, then gate on
+        // whether the engine can transcribe now (asset installed for the resolved locale).
+        try? await transcriptionService.loadModel()
+        guard await transcriptionService.isModelReady() else { return }
         guard !isDraining else { return }
         isDraining = true
         defer { isDraining = false }
@@ -45,8 +45,8 @@ actor PendingTranscriptionServiceImpl: PendingTranscriptionService {
         AppLogger.log("PendingTranscriptionService: draining \(ids.count) pending recording(s)")
 
         for id in ids {
-            // The model could be deleted between recordings; stop draining if so.
-            guard aiModelService.localPath(for: .whisper) != nil else { return }
+            // Readiness can change between recordings (asset reclaimed); re-check.
+            guard await transcriptionService.isModelReady() else { return }
             await drain(id)
         }
     }
