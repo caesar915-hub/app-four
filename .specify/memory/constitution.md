@@ -1,7 +1,16 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 2.1.0 → 2.2.0
+Version change: 2.2.0 → 2.3.0
+Rationale (2.3.0, 2026-09-06): Spec 045 replaces the transcription engine — WhisperKit /
+OpenAI Whisper Small is removed in favour of Apple SpeechAnalyzer/SpeechTranscriber (iOS 26,
+system-managed model) with a DictationTranscriber fallback. Updates the Technology Stack
+transcription line, removes the `.whisper` AIModelType case, and rewrites Principle VII's
+Peak-Shaving memory sentence (no in-process transcription model to unload). MINOR: no
+principle is removed or redefined; the extraction pipeline and the on-device-privacy
+guarantees are unchanged.
+Modified sections (2.3.0): Technology Stack (on-device ML transcription); Principle VII
+(memory lifecycle).
 Rationale (2.2.0, 2026-08-31): Time-boxed September 2026 Shipaton sprint. Development
 Workflow now points the backlog/devlog/session-start rules at `shipaton_plan/` for
 2026-09-01 → 2026-09-30, so the constitution does not contradict CLAUDE.md. MINOR, not
@@ -80,9 +89,11 @@ via MLX-Swift, running 100% on-device off the main actor. The curated lexicon
 ADHD-specific vocabulary: it seeds the LLM system prompt and provides the
 canonical allowlists for Swift-side validation (Layer 4). Signal output MUST be
 validated against `Levels.swift` enum rawValues — any value not in the canonical
-set is clamped to `nil`. Memory lifecycle MUST follow Peak Shaving: Whisper
-unloads before Llama loads, and `os_proc_available_memory()` is checked before
-loading weights. The `SummarizationService` protocol is the integration boundary;
+set is clamped to `nil`. Memory lifecycle MUST follow Peak Shaving:
+`os_proc_available_memory()` is checked before loading the LLM weights.
+Transcription no longer loads an in-process model — Apple's `SpeechAnalyzer` uses
+the system-managed speech model — so there is no transcription model to unload
+before extraction. The `SummarizationService` protocol is the integration boundary;
 downstream consumers MUST remain unaware of the extraction backend.
 
 ### VIII. Service-Oriented Architecture
@@ -131,10 +142,11 @@ Plans and specs must not leave implementation details to the imagination. Every 
 - **UI**: SwiftUI (iOS 26+)
 - **Persistence**: SwiftData
 - **Async**: Swift Concurrency (`async/await`, `Actor`, `AsyncStream`)
-- **On-device ML**: WhisperKit running OpenAI Whisper Small (`openai_whisper-small`)
-  for transcription; Llama 3.2 1B (4-bit quantised) via MLX-Swift
-  (`MLXJournalService`) for extraction. `AIModelType` has two cases: `.whisper`
-  and `.llama`. Lexicon (`lexicon.json`, 718 entries) seeds prompts and validation.
+- **On-device ML**: Apple `SpeechAnalyzer`/`SpeechTranscriber` (iOS 26, system-managed
+  model) for transcription, with `DictationTranscriber` as the fallback for devices or
+  locales where `SpeechTranscriber` is unavailable; Llama 3.2 1B (4-bit quantised) via
+  MLX-Swift (`MLXJournalService`) for extraction. The `.whisper` `AIModelType` case is
+  removed with WhisperKit. Lexicon (`lexicon.json`, 718 entries) seeds prompts and validation.
 - **Testing**: Swift Testing (`@Test`/`#expect`) for unit + integration, test-first per Principle X; XCUITest for UI flows where warranted
 - **Platform**: iOS (primary), iPadOS (secondary)
 - **Target / identity**: Xcode target & module `app-four`; bundle id
@@ -179,4 +191,4 @@ compliance with Principles I–XI before Phase 0 research proceeds.
 Runtime development guidance lives in `CLAUDE.md` at the repository root. The
 Spec Kit operating procedure lives in `docs/SPECKIT.md`.
 
-**Version**: 2.2.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-08-31
+**Version**: 2.3.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-09-06
