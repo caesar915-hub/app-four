@@ -282,6 +282,10 @@ struct SettingsView: View {
         return "\(name) v\(version)"
     }
 
+    /// DEBUG-only developer console, reached by tapping the version label 5 times
+    /// (restored for spec-045 on-device QA; never compiled into Release/TestFlight).
+    @State private var showDebugConsole = false
+
     private var versionSection: some View {
         Section {
             HStack {
@@ -289,10 +293,18 @@ struct SettingsView: View {
                 Text(versionLabel)
                     .font(Typography.caption)
                     .foregroundStyle(NewLook.inkSecondary)
+                    #if DEBUG
+                    .contentShape(Rectangle())
+                    .onTapGesture(count: 5) { showDebugConsole = true }
+                    .accessibilityHint("Developer: five taps opens the debug console")
+                    #endif
                 Spacer()
             }
         }
         .listRowBackground(Color.clear)
+        #if DEBUG
+        .sheet(isPresented: $showDebugConsole) { TestServicesView() }
+        #endif
     }
 }
 
