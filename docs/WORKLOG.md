@@ -1,3 +1,39 @@
+## 2026-08-31 02:01 – 2026-09-06 04:54 · convergence pass — FR/SC coverage, build/test state, carried · feat/speech-transcriber-probe
+
+**Code changes**
+- _Major (feat)_
+  - `2dc5c8c7` feat(045): additive SpeechAnalyzer engine + capability ladder (Phase 2, TDD)
+- _docs_
+  - `051b167f` docs(045): convergence pass — FR/SC coverage, build/test state, carried findings
+  - `82718d97` docs(045): speckit tasks — TDD-ordered, additive-first/removal-last
+  - `042260ef` docs(045): speckit plan + constitution 2.3.0 for SpeechAnalyzer migration
+  - `2553e251` docs: regenerate WORKLOG.md after the Shipaton sprint doc commits
+  - `ade0967c` docs(process): September Shipaton sprint doc system
+  - `f84d4585` docs(shipaton): RevenueCat research, hard-paywall decision, and md corrections
+
+**gh actions**
+- PR #41 opened `fix/restore-debug-menu` — "fix(settings): restore the 5-tap debug console" — OPEN/MERGEABLE
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                                                                                                   074bb264 [docs/llm-fsd-alignment]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-74ef9339           760154c5 [subagent-5-Stage-Pipeline-Engine-self-74ef9339]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-b7470585           760154c5 [subagent-5-Stage-Pipeline-Engine-self-b7470585]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Creative-Product-Strategist-self-78bed542       760154c5 [subagent-Creative-Product-Strategist-self-78bed542]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Hackathon-Strategy-Researcher-research-15c26d5b 760154c5 [subagent-Hackathon-Strategy-Researcher-research-15c26d5b]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Wellness-App-Market-Analyst-research-26f5fc3b   760154c5 [subagent-Wellness-App-Market-Analyst-research-26f5fc3b]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                                                                                 9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                                                                     965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/054-settings-topic-hub                                                                                          4d1a3e88 [feat/054-settings-topic-hub]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/055-rc-foundation                                                                                               2b9800f2 [feat/055-revenuecat]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                                                                          5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/remove-nlp                                                                                                      73e8a091 [chore/remove-dead-nlp]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/speech-transcriber-probe                                                                                        051b167f [feat/speech-transcriber-probe]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ui-refresh                                                                                                      2553e251 [feat/ui-refresh]
+```
+
+---
+
 ## 2026-08-18 14:45 – 2026-08-31 02:02 · September Shipaton sprint doc system · main
 
 **Code changes**
