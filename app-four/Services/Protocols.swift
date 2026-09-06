@@ -78,12 +78,20 @@ protocol TranscriptionService: Sendable {
     /// Preloads the model so it's ready before transcription starts.
     /// Default implementation is a no-op for services that don't require preloading.
     func loadModel() async throws
+
+    /// Whether the engine can transcribe now without an app-driven download —
+    /// i.e. the on-device model asset is installed. Drives the pending-transcription
+    /// queue (record now, transcribe once ready). Default `true` for engines with
+    /// no separate asset step.
+    func isModelReady() async -> Bool
 }
 
 extension TranscriptionService {
     func loadModel() async throws {
         // Default no-op
     }
+
+    func isModelReady() async -> Bool { true }
 }
 
 /// Protocol for managing audio recording state and hardware.

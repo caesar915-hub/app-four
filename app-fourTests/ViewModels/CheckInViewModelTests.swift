@@ -100,7 +100,7 @@ struct CheckInViewModelTests {
     /// as `.pendingTranscription` (never `.transcribing`, never `.failed`) and still reach
     /// the `.done`/"Captured." UI state — the audio queues for later draining (FR-011/012).
     @Test func stopWhenModelNotReadyPersistsPendingAndStillReachesDone() async throws {
-        await mocks.aiModel.setStubIsDownloaded(false)  // localPath(for: .whisper) == nil
+        await mocks.transcription.setModelReady(false)  // SpeechAnalyzer asset not installed
 
         let task = viewModel.stopRecording()
         await task.value
@@ -161,16 +161,9 @@ struct CheckInViewModelTests {
 
     // MARK: Model Download Interception (T004-T006)
 
-    @Test func startRecordingSetsDownloadPromptWhenModelMissing() async {
-        await mocks.audio.setPermissionGranted(true)
-        await mocks.aiModel.setStubIsDownloaded(false) // Model missing
-        
-        await viewModel.startRecording().value
-        
-        #expect(viewModel.showModelDownloadPrompt == true)
-        #expect(viewModel.state == .idle)
-        #expect(await mocks.audio.startRecordingCalled == false)
-    }
+    // (spec 045) The whisper "download model" intercept was removed — SpeechAnalyzer's
+    // asset is system-managed and installs lazily; recording starts immediately. The
+    // startRecordingWith(out)Download methods remain (dormant) pending Phase-5 UX cleanup.
 
     @Test func startRecordingWithDownloadTransitionsToRecordingAndStartsDownload() async throws {
         await mocks.audio.setPermissionGranted(true)

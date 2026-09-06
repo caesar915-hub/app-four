@@ -49,7 +49,10 @@
 
 ---
 
-## Phase 3: User Story 1 — live streaming as primary (Priority: P1) ⏭ DEFERRED (device QA)
+## Phase 3: Switchover — SpeechAnalyzer is the live engine (Priority: P1) — file-based switchover DONE; live streaming pending
+
+**Done (file-based switchover, on-device QA-able):** DI now binds `SpeechAnalyzerTranscriptionService`; readiness moved to `TranscriptionService.isModelReady()`; the whisper "download model" intercept removed (SpeechAnalyzer asset self-installs); pending decision + `PendingTranscriptionServiceImpl` gate reconciled to `isModelReady()`. Tests green 556/556. The real check-in flow records → transcribes via SpeechAnalyzer (record-then-transcribe; live partial text is the T007–T010 enhancement).
+**Dormant (Phase-5 cleanup):** the whisper download-prompt UI (`showModelDownloadPrompt`, `startRecordingWith(out)Download`, the CheckInView alerts) + `SettingsViewModel.whisperModelInstalled` remain but never fire.
 
 **Goal**: Live/streaming capture with volatile→final partial results, primary engine = SpeechTranscriber.
 
@@ -61,7 +64,7 @@
 - [ ] `T008` `[US1]` **`AVAudioEngine` dual-sink** in `Services/Audio/AudioRecordingServiceImpl.swift` — tap → `AVAudioFile` (stored audio) + converted `AnalyzerInput` stream (`AVAudioConverter` to `bestAvailableAudioFormat`); preserve pause/resume/cancel/interruption/max-duration/`audioLevelStream`.
 - [ ] `T009` `[US1]` **Live transcription in the engine** — implement `transcribeLive` (`.progressiveTranscription`, consume `results` in a task, finalize correctly).
 - [ ] `T010` `[US1]` **Wire live path in `CheckInViewModel`** — concurrent record+transcribe, live UI text.
-- [ ] `T011` `[US1]` **Flip the DI binding** — `Store/AppDependencies.swift` bind `SpeechAnalyzerTranscriptionService` (the single swap point).
+- [x] `T011` `[US1]` **Flip the DI binding** — DONE: `Store/AppDependencies.swift` binds `SpeechAnalyzerTranscriptionService`.
 
 **Checkpoint**: Primary path live on device; owner QA.
 
@@ -70,7 +73,7 @@
 ## Phase 4: User Story 2 — fallback + pending queue (Priority: P2) — partially done (additive)
 
 - [x] `T012` `[US2]` **DictationTranscriber path in the engine** (used when capability = `.dictation`). DONE additively: `SpeechAnalyzerTranscriptionService` now resolves both engines (`resolveChoice`) and runs `DictationTranscriber(locale:preset:.longDictation)` for the `.dictation` branch. Not yet exercised at runtime (engine unwired until the DI swap, T011).
-- [~] `T013` `[US2]` **Pending-queue reconciliation** — additive **readiness helper done** (`SpeechAnalyzerCapability.isModelInstalled(for:installedSpeechLocales:installedDictationLocales:)`, unit-tested). REMAINING (Phase-3-coupled, ⏭ deferred): rewire `PendingTranscriptionServiceImpl.drainIfModelReady()` from the `.whisper` `localPath` gate to this `AssetInventory` readiness + file-based deferred transcription; update `PendingTranscriptionServiceTests`. Not done now because changing the live gate while WhisperKit is still the engine would mismatch readiness vs. engine.
+- [x] `T013` `[US2]` **Pending-queue reconciliation** — DONE: `PendingTranscriptionServiceImpl.drainIfModelReady()` now attempts `loadModel()` (asset install) then gates on `transcriptionService.isModelReady()`; the `.whisper` `localPath` gates are gone; `aiModelService` dependency removed; `PendingTranscriptionServiceTests` updated to drive readiness via the transcription mock. (Readiness decision from `SpeechAnalyzerCapability.isModelInstalled`, unit-tested.)
 - [ ] `T014` `[US2]` Unavailable-engine UX (persist audio, surface state; edge cases from spec) + MIN-2 (`SFSpeechError.Code` → clearer copy). ⏭ DEFERRED (ties to wiring).
 
 **Checkpoint**: Fallback + deferred transcription verified.

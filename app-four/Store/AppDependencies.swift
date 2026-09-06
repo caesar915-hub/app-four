@@ -9,7 +9,7 @@ enum AppDependencies {
     static let medicationBarViewModel = MedicationBarViewModel(context: AppModelContainer.container.mainContext)
     static let audioService: AudioRecordingService = AudioRecordingServiceImpl()
     static let storageService: AudioFileStorageService = AudioFileStorageServiceImpl(context: AppModelContainer.container.mainContext)
-    static let transcriptionService: TranscriptionService = sharedWhisperKitService
+    static let transcriptionService: TranscriptionService = sharedSpeechAnalyzerService
     static let aiModelService: AIModelService = AIModelServiceImpl(context: AppModelContainer.container.mainContext)
     static let diagnosticsStore = DiagnosticsStore()
     static let screenTracker = ScreenTracker()
@@ -29,8 +29,7 @@ enum AppDependencies {
     static let pendingTranscriptionService: PendingTranscriptionService = PendingTranscriptionServiceImpl(
         store: store,
         transcriptionService: transcriptionService,
-        summarizationService: summarizationService,
-        aiModelService: aiModelService
+        summarizationService: summarizationService
     )
     static let exportService: ExportService = ExportServiceImpl()
 
@@ -46,7 +45,7 @@ enum AppDependencies {
         exportService: exportService
     )
 
-    private static let sharedWhisperKitService = WhisperKitTranscriptionService(
-        diagnosticsStore: diagnosticsStore
-    )
+    // Spec 045: SpeechAnalyzer/SpeechTranscriber is the live transcription engine.
+    // WhisperKitTranscriptionService remains in the tree (removed in Phase 5) for revert.
+    private static let sharedSpeechAnalyzerService = SpeechAnalyzerTranscriptionService()
 }

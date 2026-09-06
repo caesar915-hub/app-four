@@ -16,7 +16,6 @@ struct PendingTranscriptionServiceTests {
     }()
 
     var store: RecordingStore
-    let aiModel = MockAIModelService()
     let summarization = MockSummarizationService()
 
     init() throws {
@@ -42,18 +41,18 @@ struct PendingTranscriptionServiceTests {
         PendingTranscriptionServiceImpl(
             store: store,
             transcriptionService: transcription,
-            summarizationService: summarization,
-            aiModelService: aiModel
+            summarizationService: summarization
         )
     }
 
     // MARK: Model not ready → untouched
 
     @Test func drainWithModelNotReadyLeavesPendingUntouched() async throws {
-        await aiModel.setStubIsDownloaded(false)  // localPath == nil
+        let notReady = MockTestTranscriptionService()
+        await notReady.setModelReady(false)
         let pending = makePending("a.m4a", createdAt: Date())
 
-        let service = makeService(transcription: MockTestTranscriptionService())
+        let service = makeService(transcription: notReady)
         await service.drainIfModelReady()
 
         #expect(pending.status == .pendingTranscription)  // not transcribed, not failed
@@ -63,7 +62,6 @@ struct PendingTranscriptionServiceTests {
     // MARK: Model ready → drains, completes, applies extraction
 
     @Test func drainWithModelReadyTranscribesAllAndAppliesExtraction() async throws {
-        await aiModel.setStubIsDownloaded(true)
         let older = makePending("older.m4a", createdAt: Date(timeIntervalSince1970: 100))
         let newer = makePending("newer.m4a", createdAt: Date(timeIntervalSince1970: 200))
 
@@ -86,7 +84,6 @@ struct PendingTranscriptionServiceTests {
     }
 
     @Test func drainSavesOnlyOncePerRecording() async throws {
-        await aiModel.setStubIsDownloaded(true)
         let older = makePending("older.m4a", createdAt: Date(timeIntervalSince1970: 100))
         let newer = makePending("newer.m4a", createdAt: Date(timeIntervalSince1970: 200))
         store.resetSaveCallCount()
@@ -100,7 +97,6 @@ struct PendingTranscriptionServiceTests {
     }
 
     @Test func drainTranscribesInCaptureOrderOldestFirst() async throws {
-        await aiModel.setStubIsDownloaded(true)
         // Insert out of chronological order to prove the service sorts by createdAt.
         let newer = makePending("newer.m4a", createdAt: Date(timeIntervalSince1970: 300))
         let oldest = makePending("oldest.m4a", createdAt: Date(timeIntervalSince1970: 100))
@@ -120,7 +116,6 @@ struct PendingTranscriptionServiceTests {
     // MARK: Deleted-meanwhile recording is skipped (no crash)
 
     @Test func drainSkipsRecordingDeletedMeanwhile() async throws {
-        await aiModel.setStubIsDownloaded(true)
         let keep = makePending("keep.m4a", createdAt: Date(timeIntervalSince1970: 100))
         let doomed = makePending("doomed.m4a", createdAt: Date(timeIntervalSince1970: 200))
 
@@ -138,7 +133,6 @@ struct PendingTranscriptionServiceTests {
     // MARK: Serialization — no overlapping inference
 
     @Test func drainSerializesNoOverlappingInference() async throws {
-        await aiModel.setStubIsDownloaded(true)
         _ = makePending("s1.m4a", createdAt: Date(timeIntervalSince1970: 100))
         _ = makePending("s2.m4a", createdAt: Date(timeIntervalSince1970: 200))
         _ = makePending("s3.m4a", createdAt: Date(timeIntervalSince1970: 300))

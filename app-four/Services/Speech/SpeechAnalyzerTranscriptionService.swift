@@ -75,6 +75,25 @@ actor SpeechAnalyzerTranscriptionService: TranscriptionService {
         }
     }
 
+    /// The system model asset is installed for the resolved engine/locale, so a
+    /// recording can transcribe immediately (vs. queueing until the asset lands).
+    func isModelReady() async -> Bool {
+        switch await resolveChoice() {
+        case .speechTranscriber(let locale):
+            return SpeechAnalyzerCapability.isModelInstalled(
+                for: .speechTranscriber(locale),
+                installedSpeechLocales: await SpeechTranscriber.installedLocales,
+                installedDictationLocales: [])
+        case .dictation(let locale):
+            return SpeechAnalyzerCapability.isModelInstalled(
+                for: .dictation(locale),
+                installedSpeechLocales: [],
+                installedDictationLocales: await DictationTranscriber.installedLocales)
+        case .unavailable:
+            return false
+        }
+    }
+
     // MARK: - File-based transcription
 
     func transcribe(audioURL url: URL) async throws -> AsyncStream<TranscriptionSegmentDTO> {
