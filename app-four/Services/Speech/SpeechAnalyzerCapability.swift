@@ -28,4 +28,23 @@ struct SpeechAnalyzerCapability: Sendable {
         }
         return .unavailable
     }
+
+    /// Whether the system-managed model asset for the chosen engine's resolved locale is
+    /// already installed (so a recording can transcribe immediately vs. wait for download).
+    /// Pure: the caller supplies `AssetInventory`-derived installed-locale lists. Used by
+    /// the pending-transcription queue's readiness gate after the engine is wired in (T013).
+    static func isModelInstalled(
+        for choice: TranscriptionEngineChoice,
+        installedSpeechLocales: [Locale],
+        installedDictationLocales: [Locale]
+    ) -> Bool {
+        func contains(_ list: [Locale], _ locale: Locale) -> Bool {
+            list.contains { $0.identifier(.bcp47) == locale.identifier(.bcp47) }
+        }
+        switch choice {
+        case .speechTranscriber(let locale): return contains(installedSpeechLocales, locale)
+        case .dictation(let locale): return contains(installedDictationLocales, locale)
+        case .unavailable: return false
+        }
+    }
 }

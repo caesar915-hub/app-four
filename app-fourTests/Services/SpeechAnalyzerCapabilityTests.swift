@@ -33,4 +33,28 @@ import Testing
             isAvailable: true, resolvedSpeechLocale: nil, resolvedDictationLocale: nil)
         #expect(choice == .unavailable)
     }
+
+    // T013 — pure model-installed readiness (consumed by the pending queue post-swap).
+
+    @Test func speechModelInstalledWhenResolvedLocaleIsInstalled() {
+        #expect(SpeechAnalyzerCapability.isModelInstalled(
+            for: .speechTranscriber(enUS), installedSpeechLocales: [enUS], installedDictationLocales: []))
+    }
+
+    @Test func speechModelNotInstalledWhenLocaleMissing() {
+        #expect(!SpeechAnalyzerCapability.isModelInstalled(
+            for: .speechTranscriber(enUS), installedSpeechLocales: [enGB], installedDictationLocales: []))
+    }
+
+    @Test func dictationReadinessChecksDictationLocalesOnly() {
+        #expect(SpeechAnalyzerCapability.isModelInstalled(
+            for: .dictation(enGB), installedSpeechLocales: [], installedDictationLocales: [enGB]))
+        #expect(!SpeechAnalyzerCapability.isModelInstalled(
+            for: .dictation(enGB), installedSpeechLocales: [enGB], installedDictationLocales: []))
+    }
+
+    @Test func unavailableIsNeverInstalled() {
+        #expect(!SpeechAnalyzerCapability.isModelInstalled(
+            for: .unavailable, installedSpeechLocales: [enUS], installedDictationLocales: [enGB]))
+    }
 }

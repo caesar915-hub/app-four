@@ -2,19 +2,16 @@ import Foundation
 import Speech
 import AVFoundation
 
-/// On-device transcription via Apple's iOS 26 `SpeechAnalyzer` + `SpeechTranscriber`
-/// (spec 045). This is the primary engine: it conforms to the existing file-based
-/// `TranscriptionService` (used for the deferred/pending path and as the drop-in
-/// replacement for the WhisperKit engine at the `AppDependencies` seam). Live/streaming
-/// capture and the `DictationTranscriber` fallback module are separate, later phases
-/// (tasks T007–T013); this service uses the shared `SpeechAnalyzerCapability` ladder to
-/// decide whether `SpeechTranscriber` can serve the current device/locale and, if not,
-/// surfaces an honest error segment while the caller preserves the audio.
+/// On-device transcription via Apple's iOS 26 `SpeechAnalyzer` (spec 045). Primary engine
+/// `SpeechTranscriber`, automatic fallback to `DictationTranscriber` for devices/locales
+/// where `SpeechTranscriber` is unavailable (the ladder in `SpeechAnalyzerCapability`).
+/// Conforms to the existing file-based `TranscriptionService` (deferred/pending path and
+/// the drop-in replacement for the WhisperKit engine at the `AppDependencies` seam).
+/// Live/streaming capture and the `AppDependencies` swap are later phases (T007–T011).
 ///
-/// Modelled on the verified on-device probe (`Probes/SpeechTranscriberProbe`) and the
-/// `speech-recognition` skill's analyzer patterns. The model asset is system-managed via
-/// `AssetInventory` — nothing is bundled or app-downloaded (SC-001). Logs are
-/// counts/status only, never transcript text (Principle VI).
+/// Model assets are system-managed via `AssetInventory` — nothing is bundled or
+/// app-downloaded (SC-001). Logs are counts/status only, never transcript text (Principle VI).
+/// Modelled on the verified on-device probe and the `speech-recognition` skill patterns.
 actor SpeechAnalyzerTranscriptionService: TranscriptionService {
     private var activeTranscriptionTask: Task<Void, Never>?
 
@@ -44,14 +41,35 @@ actor SpeechAnalyzerTranscriptionService: TranscriptionService {
         TranscriptionSegmentDTO(text: "Transcription error: \(message)", startTime: 0, endTime: 0, isFinal: true, confidence: nil, isError: true)
     }
 
+    // MARK: - Engine selection (the fallback ladder)
+
+    /// Resolves the `SpeechTranscriber → DictationTranscriber` ladder for the current locale.
+    private func resolveChoice() async -> TranscriptionEngineChoice {
+        let isAvailable = SpeechTranscriber.isAvailable
+        let speechLocale = isAvailable ? await SpeechTranscriber.supportedLocale(equivalentTo: .current) : nil
+        let dictationLocale = await DictationTranscriber.supportedLocale(equivalentTo: .current)
+        return SpeechAnalyzerCapability.resolve(
+            isAvailable: isAvailable,
+            resolvedSpeechLocale: speechLocale,
+            resolvedDictationLocale: dictationLocale)
+    }
+
     // MARK: - Asset installation
 
-    /// Installs the system-managed model asset for the resolved locale, if needed.
+    /// Installs the system-managed model asset for the resolved engine/locale, if needed.
     func loadModel() async throws {
-        guard SpeechTranscriber.isAvailable,
-              let locale = await SpeechTranscriber.supportedLocale(equivalentTo: .current) else { return }
-        let transcriber = SpeechTranscriber(locale: locale, preset: .transcription)
-        if let request = try await AssetInventory.assetInstallationRequest(supporting: [transcriber]) {
+        switch await resolveChoice() {
+        case .speechTranscriber(let locale):
+            try await Self.installAssets(for: SpeechTranscriber(locale: locale, preset: .transcription))
+        case .dictation(let locale):
+            try await Self.installAssets(for: DictationTranscriber(locale: locale, preset: .longDictation))
+        case .unavailable:
+            break
+        }
+    }
+
+    private static func installAssets(for module: any SpeechModule) async throws {
+        if let request = try await AssetInventory.assetInstallationRequest(supporting: [module]) {
             AppLogger.log("SpeechAnalyzer: installing model asset…")
             try await request.downloadAndInstall()
         }
@@ -65,47 +83,24 @@ actor SpeechAnalyzerTranscriptionService: TranscriptionService {
         activeTranscriptionTask?.cancel()
         let task = Task {
             do {
-                let resolvedSpeech = SpeechTranscriber.isAvailable
-                    ? await SpeechTranscriber.supportedLocale(equivalentTo: .current)
-                    : nil
-                let choice = SpeechAnalyzerCapability.resolve(
-                    isAvailable: SpeechTranscriber.isAvailable,
-                    resolvedSpeechLocale: resolvedSpeech,
-                    resolvedDictationLocale: nil)   // DictationTranscriber module lands in T012
-
-                guard case let .speechTranscriber(locale) = choice else {
-                    AppLogger.log("SpeechAnalyzer: SpeechTranscriber unavailable for this device/locale")
-                    continuation.yield(Self.errorSegment("on-device transcription is unavailable on this device"))
-                    continuation.finish()
-                    return
-                }
-
-                continuation.yield(Self.progressSegment("Transcribing…"))
-
-                let transcriber = SpeechTranscriber(locale: locale, preset: .transcription)
-                if let request = try await AssetInventory.assetInstallationRequest(supporting: [transcriber]) {
-                    continuation.yield(Self.progressSegment("Preparing on-device model…"))
-                    try await request.downloadAndInstall()
-                }
-
-                let analyzer = SpeechAnalyzer(modules: [transcriber], options: nil)
-                let audioFile = try AVAudioFile(forReading: url)
-
-                async let collected = transcriber.results.reduce(into: AttributedString()) { acc, result in
-                    if result.isFinal { acc.append(result.text) }
-                }
-
-                if let lastSample = try await analyzer.analyzeSequence(from: audioFile) {
-                    try await analyzer.finalizeAndFinish(through: lastSample)
-                } else {
-                    try await analyzer.finalizeAndFinishThroughEndOfInput()
-                }
-
-                let text = String(try await collected.characters)
+                let choice = await resolveChoice()
                 let duration = AudioConverter.getDuration(url: url)
-                continuation.yield(Self.makeFinalSegment(text: text, start: 0, end: duration))
+
+                switch choice {
+                case .speechTranscriber(let locale):
+                    continuation.yield(Self.progressSegment("Transcribing…"))
+                    let text = try await Self.runSpeechTranscriber(locale: locale, url: url)
+                    continuation.yield(Self.makeFinalSegment(text: text, start: 0, end: duration))
+                case .dictation(let locale):
+                    continuation.yield(Self.progressSegment("Transcribing…"))
+                    let text = try await Self.runDictation(locale: locale, url: url)
+                    continuation.yield(Self.makeFinalSegment(text: text, start: 0, end: duration))
+                case .unavailable:
+                    AppLogger.log("SpeechAnalyzer: no engine available for this device/locale")
+                    continuation.yield(Self.errorSegment("on-device transcription is unavailable on this device"))
+                }
                 continuation.finish()
-                AppLogger.log("SpeechAnalyzer: transcription finished (\(text.count) chars)")
+                AppLogger.log("SpeechAnalyzer: transcription finished")
             } catch {
                 AppLogger.log("SpeechAnalyzer error: \(error)")
                 continuation.yield(Self.errorSegment(error.localizedDescription))
@@ -119,6 +114,42 @@ actor SpeechAnalyzerTranscriptionService: TranscriptionService {
             Task { await self.cancelTranscription() }
         }
         return stream
+    }
+
+    // MARK: - Per-engine file analysis
+
+    private static func runSpeechTranscriber(locale: Locale, url: URL) async throws -> String {
+        let transcriber = SpeechTranscriber(locale: locale, preset: .transcription)
+        try await installAssets(for: transcriber)
+        let analyzer = SpeechAnalyzer(modules: [transcriber], options: nil)
+        let audioFile = try AVAudioFile(forReading: url)
+        async let collected = transcriber.results.reduce(into: AttributedString()) { acc, result in
+            if result.isFinal { acc.append(result.text) }
+        }
+        try await Self.finish(analyzer, file: audioFile)
+        return String(try await collected.characters)
+    }
+
+    private static func runDictation(locale: Locale, url: URL) async throws -> String {
+        let transcriber = DictationTranscriber(locale: locale, preset: .longDictation)
+        try await installAssets(for: transcriber)
+        let analyzer = SpeechAnalyzer(modules: [transcriber], options: nil)
+        let audioFile = try AVAudioFile(forReading: url)
+        async let collected = transcriber.results.reduce(into: AttributedString()) { acc, result in
+            if result.isFinal { acc.append(result.text) }
+        }
+        try await Self.finish(analyzer, file: audioFile)
+        return String(try await collected.characters)
+    }
+
+    /// Analyze the whole file then explicitly finish the session (ending the input does
+    /// not finish the analyzer — a documented trap).
+    private static func finish(_ analyzer: SpeechAnalyzer, file: AVAudioFile) async throws {
+        if let lastSample = try await analyzer.analyzeSequence(from: file) {
+            try await analyzer.finalizeAndFinish(through: lastSample)
+        } else {
+            try await analyzer.finalizeAndFinishThroughEndOfInput()
+        }
     }
 
     func cancelTranscription() async {

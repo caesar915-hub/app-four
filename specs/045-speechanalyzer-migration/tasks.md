@@ -67,11 +67,11 @@
 
 ---
 
-## Phase 4: User Story 2 — fallback + pending queue (Priority: P2) ⏭ DEFERRED
+## Phase 4: User Story 2 — fallback + pending queue (Priority: P2) — partially done (additive)
 
-- [ ] `T012` `[US2]` DictationTranscriber path in the engine (used when capability = `.dictation`).
-- [ ] `T013` `[US2]` **Pending-queue reconciliation** — `PendingTranscriptionServiceImpl` readiness via `AssetInventory` installed-state; deferred transcription file-based; update `PendingTranscriptionServiceTests`.
-- [ ] `T014` `[US2]` Unavailable-engine UX (persist audio, surface state; edge cases from spec).
+- [x] `T012` `[US2]` **DictationTranscriber path in the engine** (used when capability = `.dictation`). DONE additively: `SpeechAnalyzerTranscriptionService` now resolves both engines (`resolveChoice`) and runs `DictationTranscriber(locale:preset:.longDictation)` for the `.dictation` branch. Not yet exercised at runtime (engine unwired until the DI swap, T011).
+- [~] `T013` `[US2]` **Pending-queue reconciliation** — additive **readiness helper done** (`SpeechAnalyzerCapability.isModelInstalled(for:installedSpeechLocales:installedDictationLocales:)`, unit-tested). REMAINING (Phase-3-coupled, ⏭ deferred): rewire `PendingTranscriptionServiceImpl.drainIfModelReady()` from the `.whisper` `localPath` gate to this `AssetInventory` readiness + file-based deferred transcription; update `PendingTranscriptionServiceTests`. Not done now because changing the live gate while WhisperKit is still the engine would mismatch readiness vs. engine.
+- [ ] `T014` `[US2]` Unavailable-engine UX (persist audio, surface state; edge cases from spec) + MIN-2 (`SFSpeechError.Code` → clearer copy). ⏭ DEFERRED (ties to wiring).
 
 **Checkpoint**: Fallback + deferred transcription verified.
 
