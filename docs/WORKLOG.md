@@ -1,3 +1,30 @@
+## 2026-09-12 23:36–23:52 · Spec Kit brief — Gemma 4 E2B text-only via LiteRT-LM on iPho · feat/speech-transcriber-probe
+
+**Code changes**
+- _docs_
+  - `970c48ca` docs(engineering): Spec Kit brief — Gemma 4 E2B text-only via LiteRT-LM on iPhone 12 Pro
+  - `67eb8c76` docs: regenerate WORKLOG.md after Gemma migration brief
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                                                                                                   074bb264 [docs/llm-fsd-alignment]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-74ef9339           760154c5 [subagent-5-Stage-Pipeline-Engine-self-74ef9339]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-b7470585           760154c5 [subagent-5-Stage-Pipeline-Engine-self-b7470585]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Creative-Product-Strategist-self-78bed542       760154c5 [subagent-Creative-Product-Strategist-self-78bed542]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Hackathon-Strategy-Researcher-research-15c26d5b 760154c5 [subagent-Hackathon-Strategy-Researcher-research-15c26d5b]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Wellness-App-Market-Analyst-research-26f5fc3b   760154c5 [subagent-Wellness-App-Market-Analyst-research-26f5fc3b]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                                                                                 9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                                                                     965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/054-settings-topic-hub                                                                                          4d1a3e88 [feat/054-settings-topic-hub]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/055-rc-foundation                                                                                               9564e392 [feat/055-revenuecat]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                                                                          5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/remove-nlp                                                                                                      73e8a091 [chore/remove-dead-nlp]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/speech-transcriber-probe                                                                                        970c48ca [feat/speech-transcriber-probe]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ui-refresh                                                                                                      2553e251 [feat/ui-refresh]
+```
+
+---
+
 ## 2026-09-06 13:22 – 2026-09-12 23:36 · Spec Kit handoff brief — Gemma 3 1B (QAT int4) extraction mi · feat/speech-transcriber-probe
 
 **Code changes**
