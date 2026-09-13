@@ -1,3 +1,4 @@
+#if DEBUG || TESTFLIGHT
 import SwiftUI
 import UIKit
 
@@ -10,3 +11,4 @@ struct ShareSheetView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
+#endif

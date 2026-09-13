@@ -90,7 +90,9 @@ nonisolated struct MLXJournalService: SummarizationService {
                 AppLogger.log("MLXJournalService: pass1 returned empty summary")
                 return nil
             }
+            #if DEBUG
             AppLogger.log("MLXJournalService: pass1 summary: \(text.prefix(200))")
+            #endif
             return text
         } catch {
             AppLogger.log("MLXJournalService: pass1 failed: \(error)")
@@ -114,7 +116,9 @@ nonisolated struct MLXJournalService: SummarizationService {
             AppLogger.log("MLXJournalService: pass2 generation failed: \(error)")
             return nil
         }
+        #if DEBUG
         AppLogger.log("MLXJournalService: pass2 raw: \(rawJSON.prefix(500))")
+        #endif
 
         // 3-stage recovery (direct → backtick strip → substring). If the model
         // ignored the JSON-only contract, retry once with a stricter prompt.
@@ -132,7 +136,9 @@ nonisolated struct MLXJournalService: SummarizationService {
             AppLogger.log("MLXJournalService: pass2 retry generation failed: \(error)")
             return nil
         }
+        #if DEBUG
         AppLogger.log("MLXJournalService: pass2 retry raw: \(rawJSON.prefix(500))")
+        #endif
 
         if let extraction = await ExtractionValidator.parseExtraction(from: rawJSON) {
             return extraction

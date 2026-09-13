@@ -1,3 +1,4 @@
+#if DEBUG || TESTFLIGHT
 import SwiftUI
 
 /// Captures the current screen as a UIImage, temporarily hiding the feedback
@@ -33,3 +34,4 @@ final class ScreenshotCapture {
         return image
     }
 }
+#endif

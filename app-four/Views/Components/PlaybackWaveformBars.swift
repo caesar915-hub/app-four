@@ -43,8 +43,8 @@ struct PlaybackWaveformBars: View {
         var hasher = Hasher()
         hasher.combine(seed)
         hasher.combine(index)
-        let hash = abs(hasher.finalize())
-        let normalized = Double(hash % 1000) / 1000.0
+        let hash = Int(hasher.finalize().magnitude % 1000)
+        let normalized = Double(hash) / 1000.0
         return CGFloat(4 + normalized * 20)
     }
 }

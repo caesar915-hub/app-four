@@ -105,7 +105,9 @@ enum AppModelContainer {
         let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: true)
         do {
             let container = try ModelContainer(for: schema, configurations: [config])
+            #if DEBUG
             MockDataGenerator.generate(context: container.mainContext)
+            #endif
             return container
         } catch {
             fatalError("Could not create Preview ModelContainer: \(error)")
