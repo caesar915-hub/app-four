@@ -1,3 +1,137 @@
+## 2026-09-12 23:52 – 2026-09-13 21:30 · run summary + sprint DEVLOG/BACKLOG checkpoint · feat/gemma4-litert-extraction
+
+**Code changes**
+- _Major (feat)_
+  - `20bbb0ed` feat(056): additive Gemma 4 E2B / LiteRT-LM extraction backend (inert, TDD)
+- _Tests_
+  - `bbae0473` test(056): gated Gemma extraction eval + test plan (device-only)
+- _refactor_
+  - `47405951` refactor(056): /code-review pass — Gemma-appropriate memory floor + convergence record
+- _docs_
+  - `0b010f54` docs(056): run summary + sprint DEVLOG/BACKLOG checkpoint
+  - `bd25a421` docs(056): speckit tasks — TDD-ordered, additive tonight / device-gated switchover last
+  - `141fe4d9` docs(056): speckit specify + plan + constitution 2.4.0 (Gemma 4 via LiteRT-LM)
+  - `36f9c526` docs(056): fold /speckit-clarify resolutions into LiteRT brief
+  - `39308e33` docs: regenerate WORKLOG.md after LiteRT-LM brief
+
+**gh actions**
+- PR #45 opened `fix/audit-high-medium` — "fix(audit): high + medium remediation (recording-cap, delete-orphan, save-safety, focus, sleep, regenerate)" — OPEN/MERGEABLE
+- PR #44 opened `fix/audit-safe-cleanup` — "fix(audit): safe cleanup (dead code, debug gating, RC-30, privacy logs)" — OPEN/MERGEABLE
+- PR #43 opened `docs/codebase-audit-2026-09` — "docs(audit): full codebase audit of main @ 2553e251" — OPEN/MERGEABLE
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                                                                                                   074bb264 [docs/llm-fsd-alignment]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9b2edc5e-33b2-475c-b128-3fa4ef03a52c/scratchpad/fix-wt                                                    39a2ab3d [fix/audit-safe-cleanup]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9b2edc5e-33b2-475c-b128-3fa4ef03a52c/scratchpad/hm-wt                                                     05ee8e38 [fix/audit-high-medium]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9b2edc5e-33b2-475c-b128-3fa4ef03a52c/scratchpad/report-wt                                                 4134eec4 [docs/codebase-audit-2026-09]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-74ef9339           760154c5 [subagent-5-Stage-Pipeline-Engine-self-74ef9339]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-b7470585           760154c5 [subagent-5-Stage-Pipeline-Engine-self-b7470585]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Creative-Product-Strategist-self-78bed542       760154c5 [subagent-Creative-Product-Strategist-self-78bed542]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Hackathon-Strategy-Researcher-research-15c26d5b 760154c5 [subagent-Hackathon-Strategy-Researcher-research-15c26d5b]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Wellness-App-Market-Analyst-research-26f5fc3b   760154c5 [subagent-Wellness-App-Market-Analyst-research-26f5fc3b]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                                                                                 9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                                                                     965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/054-settings-topic-hub                                                                                          4d1a3e88 [feat/054-settings-topic-hub]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/055-rc-foundation                                                                                               9564e392 [feat/055-revenuecat]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                                                                          5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/remove-nlp                                                                                                      73e8a091 [chore/remove-dead-nlp]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/speech-transcriber-probe                                                                                        0b010f54 [feat/gemma4-litert-extraction]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ui-refresh                                                                                                      2553e251 [feat/ui-refresh]
+```
+
+---
+**Code changes**
+- _docs_
+  - `970c48ca` docs(engineering): Spec Kit brief — Gemma 4 E2B text-only via LiteRT-LM on iPhone 12 Pro
+  - `67eb8c76` docs: regenerate WORKLOG.md after Gemma migration brief
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                                                                                                   074bb264 [docs/llm-fsd-alignment]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-74ef9339           760154c5 [subagent-5-Stage-Pipeline-Engine-self-74ef9339]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-b7470585           760154c5 [subagent-5-Stage-Pipeline-Engine-self-b7470585]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Creative-Product-Strategist-self-78bed542       760154c5 [subagent-Creative-Product-Strategist-self-78bed542]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Hackathon-Strategy-Researcher-research-15c26d5b 760154c5 [subagent-Hackathon-Strategy-Researcher-research-15c26d5b]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Wellness-App-Market-Analyst-research-26f5fc3b   760154c5 [subagent-Wellness-App-Market-Analyst-research-26f5fc3b]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                                                                                 9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                                                                     965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/054-settings-topic-hub                                                                                          4d1a3e88 [feat/054-settings-topic-hub]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/055-rc-foundation                                                                                               9564e392 [feat/055-revenuecat]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                                                                          5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/remove-nlp                                                                                                      73e8a091 [chore/remove-dead-nlp]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/speech-transcriber-probe                                                                                        970c48ca [feat/speech-transcriber-probe]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ui-refresh                                                                                                      2553e251 [feat/ui-refresh]
+```
+
+---
+
+## 2026-09-06 13:22 – 2026-09-12 23:36 · Spec Kit handoff brief — Gemma 3 1B (QAT int4) extraction mi · feat/speech-transcriber-probe
+
+**Code changes**
+- _docs_
+  - `36aac586` docs(engineering): Spec Kit handoff brief — Gemma 3 1B (QAT int4) extraction migration
+  - `4d5de682` docs: regenerate WORKLOG.md after Gemma comparison doc
+  - `a9ecd932` docs(engineering): Gemma 2/3/4 on-device comparison for iPhone 12 Pro (extraction-model decision)
+- _chore_
+  - `9cdb848b` chore(045): AppLogger also emits to os_log (unified logging) for device QA
+  - `392f3bc8` chore(045): restore DEBUG debug console (5-tap version) + live-transcript UX mockup
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                                                                                                   074bb264 [docs/llm-fsd-alignment]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-74ef9339           760154c5 [subagent-5-Stage-Pipeline-Engine-self-74ef9339]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-b7470585           760154c5 [subagent-5-Stage-Pipeline-Engine-self-b7470585]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Creative-Product-Strategist-self-78bed542       760154c5 [subagent-Creative-Product-Strategist-self-78bed542]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Hackathon-Strategy-Researcher-research-15c26d5b 760154c5 [subagent-Hackathon-Strategy-Researcher-research-15c26d5b]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Wellness-App-Market-Analyst-research-26f5fc3b   760154c5 [subagent-Wellness-App-Market-Analyst-research-26f5fc3b]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                                                                                 9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                                                                     965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/054-settings-topic-hub                                                                                          4d1a3e88 [feat/054-settings-topic-hub]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/055-rc-foundation                                                                                               9564e392 [feat/055-revenuecat]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                                                                          5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/remove-nlp                                                                                                      73e8a091 [chore/remove-dead-nlp]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/speech-transcriber-probe                                                                                        36aac586 [feat/speech-transcriber-probe]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ui-refresh                                                                                                      2553e251 [feat/ui-refresh]
+```
+
+---
+
+## 2026-09-06 04:54 – 2026-09-12 12:19 · Gemma 2/3/4 on-device comparison for iPhone 12 Pro (extracti · feat/speech-transcriber-probe
+
+**Code changes**
+- _Major (feat)_
+  - `de28afbe` feat(045): production switchover — SpeechAnalyzer is the live transcription engine (T011, T013)
+  - `48b7cb15` feat(045): DictationTranscriber fallback path + asset-readiness helper (T012, T013-additive)
+- _docs_
+  - `a9ecd932` docs(engineering): Gemma 2/3/4 on-device comparison for iPhone 12 Pro (extraction-model decision)
+  - `96e6bfad` docs(045): one-page run summary (Step G)
+  - `e596c42d` docs: regenerate WORKLOG.md after 045 plan/tasks/impl/converge
+  - `051b167f` docs(045): convergence pass — FR/SC coverage, build/test state, carried findings
+- _chore_
+  - `9cdb848b` chore(045): AppLogger also emits to os_log (unified logging) for device QA
+  - `392f3bc8` chore(045): restore DEBUG debug console (5-tap version) + live-transcript UX mockup
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                                                                                                   074bb264 [docs/llm-fsd-alignment]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-74ef9339           760154c5 [subagent-5-Stage-Pipeline-Engine-self-74ef9339]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-b7470585           760154c5 [subagent-5-Stage-Pipeline-Engine-self-b7470585]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Creative-Product-Strategist-self-78bed542       760154c5 [subagent-Creative-Product-Strategist-self-78bed542]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Hackathon-Strategy-Researcher-research-15c26d5b 760154c5 [subagent-Hackathon-Strategy-Researcher-research-15c26d5b]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Wellness-App-Market-Analyst-research-26f5fc3b   760154c5 [subagent-Wellness-App-Market-Analyst-research-26f5fc3b]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                                                                                 9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                                                                     965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/054-settings-topic-hub                                                                                          4d1a3e88 [feat/054-settings-topic-hub]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/055-rc-foundation                                                                                               9564e392 [feat/055-revenuecat]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                                                                          5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/remove-nlp                                                                                                      73e8a091 [chore/remove-dead-nlp]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/speech-transcriber-probe                                                                                        a9ecd932 [feat/speech-transcriber-probe]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ui-refresh                                                                                                      2553e251 [feat/ui-refresh]
+```
+
+---
+
 ## 2026-08-31 02:01 – 2026-09-06 04:54 · convergence pass — FR/SC coverage, build/test state, carried · feat/speech-transcriber-probe
 
 **Code changes**

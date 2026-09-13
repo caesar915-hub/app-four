@@ -40,6 +40,13 @@ enum ModelConstants {
     /// "summary" and zero signals), while Qwen2.5 instruct models follow
     /// structured-output instructions far more reliably at a similar size.
     nonisolated static let llmHubRepoID = "mlx-community/Qwen2.5-1.5B-Instruct-4bit"
+
+    /// Gemma 4 E2B (text-only) via LiteRT-LM — the extraction model that supersedes
+    /// Qwen2.5-1.5B/MLX (spec 056). ADDITIVE: `llmHubRepoID` above is unchanged; the
+    /// switchover (repoint + DI flip) is device-gated. CPU/XNNPACK build.
+    nonisolated static let gemmaLiteRTRepoID = "litert-community/gemma-4-E2B-it-litert-lm"
+    nonisolated static let gemmaLiteRTFileName = "gemma-4-E2B-it.litertlm"
+    nonisolated static let gemmaLiteRTExpectedBytes: Int64 = 2_588_147_712  // 2.41 GiB
 }
 
 enum SettingsKeys {
