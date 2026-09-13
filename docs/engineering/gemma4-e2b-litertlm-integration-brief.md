@@ -1,4 +1,4 @@
-<!-- Created: 2026-09-12 23:50 (WEST) · Updated: 2026-09-12 23:50 (WEST) -->
+<!-- Created: 2026-09-12 23:50 (WEST) · Updated: 2026-09-13 00:18 (WEST) -->
 # Spec Kit brief — Gemma 4 E2B (text-only) on iPhone 12 Pro via LiteRT-LM
 
 **Purpose:** everything needed to prepare + run a Spec Kit cycle to adopt **Gemma 4 E2B, text-only, via Google LiteRT-LM** for on-device extraction on the iPhone 12 Pro (A14, 6 GB). Self-contained. Companion docs: [gemma-ondevice-comparison-2026-09.md](gemma-ondevice-comparison-2026-09.md) (full matrix), [gemma3-1b-extraction-migration-brief.md](gemma3-1b-extraction-migration-brief.md) (the lower-risk MLX alternative). Evidence: two independent multi-agent runs (my 10-agent max-review + a 14-agent Antigravity run) that **converge** on this being feasible via LiteRT-LM (not MLX).
@@ -36,17 +36,24 @@ Then `/speckit-plan` (Constitution Check will flag the runtime+model change — 
 ---
 
 ## 3. Runtime & Swift integration (LiteRT-LM / MediaPipe GenAI)
-- **Package:** [google-ai-edge/LiteRT-LM](https://github.com/google-ai-edge/LiteRT-LM) — first-party iOS/Swift runtime; Metal (GPU) + XNNPACK (CPU) backends; `.litertlm` format. **Verify the current Swift package (SPM/CocoaPods) + exact API surface** — it is new and moving.
-- **Shape of the API** (from research; confirm against the repo's iOS sample): `Engine` / `EngineConfig(modelPath:backend:)` → `Session`/`Conversation` → `generate`/stream.
-- **Minimal sketch (verify against the shipping API):**
+- **Package** (✅ verified 2026-09-13): SPM `https://github.com/google-ai-edge/LiteRT-LM`, product **`LiteRTLM`**, min **`0.12.0`** — first-party iOS/macOS runtime; `.cpu()` (XNNPACK) + `.gpu` (Metal) backends; `.litertlm` format. Status is **🚀 Early Preview** ([Swift API doc](https://developers.google.com/edge/litert-lm/swift)) — the API is moving; pin the version.
+- **Verified API surface** (replaces the earlier guess; loads by **file path** ✓):
   ```swift
-  // Load by FILE PATH — never as Data/bytes (that defeats mmap and OOMs).
-  let cfg = EngineConfig(modelPath: modelURL.path, backend: .cpu)   // .cpu on A14 for memory safety
-  let engine = try Engine(cfg)
-  let session = try engine.createSession()
-  let reply = try await session.generate(prompt)                    // apply Gemma 4 chat template
+  // Load by FILE PATH — never as Data/bytes (defeats mmap → OOM). cacheDir is REQUIRED.
+  let cfg = EngineConfig(
+    modelPath: modelURL.path,
+    backend: .cpu(),          // .cpu() on A14 for memory safety; .gpu is Metal
+    maxNumTokens: 2048,       // default is 512 — raise for our two-pass prompts
+    cacheDir: cacheURL.path
+    // visionBackend / audioBackend default nil → text-only is free ✓ (never set them)
+  )
+  let engine = Engine(engineConfig: cfg)
+  try await engine.initialize()
+  let convo = try await engine.createConversation()            // ConversationConfig(tools:) for pass-2
+  let reply = try await convo.sendMessage(message)             // or sendMessageStream(_:)
   ```
-- **⚠️ OPEN — structured/JSON decoding:** MLX had `MLXGuidedGeneration` (grammar-constrained JSON). **Confirm whether LiteRT-LM/MediaPipe supports constrained/grammar decoding on iOS.** If not, pass-2 strict-JSON relies on the model + `ExtractionValidator` retry only — a real risk for a quantized model. This is the single biggest integration unknown — resolve in `/speckit-clarify`.
+- **⚠️ Thinking model:** Gemma 4 E2B is a *reasoning* model; the API exposes `thinkingConfig` / a thinking-token budget. For deterministic pass-2 JSON, **bound thinking to ~0** or it emits reasoning before the payload.
+- **✅ CLARIFY 2026-09-13 — structured/JSON decoding: NOT supported.** Confirmed across the repo README, [API overview](https://developers.google.com/edge/litert-lm/api_overview), and Swift API doc — **no grammar-constrained decoding, no JSON-schema enforcement, no `response_schema`.** There is **Tool Use / function calling** (Swift `Tool` protocol + `@ToolParam` + `run()`, registered via `ConversationConfig(tools:)`), but it is the *model deciding* to emit a typed call — not a decode-time schema guarantee. **Owner decision:** pass-2 is reframed as **Tool Use / function calling** (signals schema as a `Tool`), *not* free-form+validator. Residual risk: reliability now rests on Gemma 4's on-device tool-calling (itself Early Preview, unmeasured on A14) + `ExtractionValidator` retry — carry `ExtractionValidator` as the backstop.
 
 ---
 
@@ -66,7 +73,7 @@ Then `/speckit-plan` (Constitution Check will flag the runtime+model change — 
 5. **Entitlements:** add `com.apple.developer.kernel.increased-memory-limit` + `com.apple.developer.kernel.extended-virtual-addressing`. (LiteRT GPU ~1.45 GB likely fits under the *default* cap, so the entitlement may be optional for LiteRT — but add it for headroom and it's mandatory if you ever fall back to a llama.cpp GGUF path at ~3.35–3.85 GB.)
 6. **Sequential residency:** fully tear down SpeechAnalyzer/WhisperKit **and** any MLX model, `await` deinit, and confirm reclamation via `os_proc_available_memory()` **before** constructing the `Engine`. Never hold two model runtimes resident on 6 GB.
 7. **Background lifecycle:** unload the engine on `sceneDidEnterBackground` (backgrounded apps get <50 MB).
-8. **RAM gate:** `ProcessInfo.processInfo.physicalMemory` — enable this path on the A14 only if the on-device RSS check passes; else fall back (Gemma 3 1B/MLX or Qwen).
+8. **RAM gate:** `ProcessInfo.processInfo.physicalMemory` — enable this path on the A14 only if the on-device RSS check passes. **⚠️ AMENDED by CLARIFY 2026-09-13:** the owner chose to **drop MLX from the Shipaton build**, so the original "else fall back to Gemma 3 1B/MLX or Qwen" branch is **removed** — there is no runtime fallback in the submitted build. Gate-fail behavior therefore degrades to *no extraction* (transcription-only), not a fallback model. This is an **accepted risk on an unmeasured A14 (Q3)** and MUST be re-flagged in the plan's Constitution Check (reliability / fail-safe principles).
 
 ---
 
@@ -83,10 +90,10 @@ iOS jetsam kills on `phys_footprint` = **dirty + compressed-anonymous + wired**;
 
 ## 8. Acceptance & success criteria (spec seeds)
 - **SC-1:** On a physical iPhone 12 Pro with transcription torn down, extraction runs end-to-end without jetsam; logged `task_vm_info.phys_footprint` < device ceiling (record the number + backend).
-- **SC-2:** JSON validity ≥ Qwen baseline on the two-pass eval (after `ExtractionValidator` + retry); confirm whether LiteRT constrained decoding is available (SC-2a).
+- **SC-2:** JSON validity ≥ Qwen baseline on the two-pass eval, with pass-2 emitted via **Tool Use / function calling** (D1) and `ExtractionValidator` + retry as backstop. **SC-2a (revised):** tool-call schema-conformance rate measured on-device — no constrained decoding exists (Q1), so this is a model-reliability metric, not a guarantee.
 - **SC-3:** Signal-field correctness ≥ Qwen baseline on `app-four-mlx-eval` fixtures (Gemma 4 should exceed it given IFEval 94.6).
 - **SC-4:** Decode ≥ ~8 tok/s sustained on A14 (background task; not interactive).
-- **SC-5:** Full `app-fourTests` green; `SummarizationService` API unchanged; no VM/View edits; MLX removed from the extraction path only if fully replaced.
+- **SC-5:** Full `app-fourTests` green; `SummarizationService` API unchanged; no VM/View edits; **MLX removed from the extraction path in the Shipaton build (D2) — LiteRT is the sole runtime, no fallback.** A/B vs Qwen happens during dev only; the shipped build does not carry both runtimes.
 
 ---
 
@@ -95,13 +102,24 @@ Bigger than the Gemma 3 path: it changes **both** the extraction *model* (Qwen �
 
 ---
 
-## 10. Risks & open questions (resolve in /speckit-clarify)
-- **[Q1 — biggest]** Does LiteRT-LM/MediaPipe support **grammar-constrained / structured-JSON decoding** on iOS? If not, pass-2 reliability rests on the model + validator retry only.
-- **[Q2]** LiteRT-LM **iOS Swift API maturity + SPM availability** — new and moving; confirm the exact package + API before planning tasks.
-- **[Q3]** **No A14 measurement** exists (only A15/iPhone 14). Confirm resident RSS + tok/s + thermals on a real 12 Pro.
-- **[Q4]** Exact `.litertlm` filenames/sizes (CPU vs GPU) on the `litert-community` repo — verify via the HF tree API.
-- **[Q5]** Download integration: the current pipeline is HF-snapshot-based; adapt for the single `.litertlm` file (or snapshot the litert-community repo).
-- **[Q6]** Do we drop MLX entirely (extraction) or keep it for a Gemma-3-1B fallback? Two runtimes = more binary size + maintenance.
+## 10. Clarify resolutions (2026-09-13)
+Research (WebFetch of the LiteRT-LM repo + Google AI Edge docs; HF tree API) + owner decisions from the `/speckit-clarify` pass. These are the inputs `/speckit-specify` consumes.
+
+**Research-resolved (facts):**
+- **[Q1 — RESOLVED: NO constrained decoding]** LiteRT-LM has no grammar/JSON-schema/`response_schema` enforcement. Tool Use (function calling) exists but is not a decode-time guarantee. → pass-2 reframed as Tool Use (see §3, decision below).
+- **[Q2 — RESOLVED]** SPM `google-ai-edge/LiteRT-LM`, product `LiteRTLM`, min `0.12.0`, **🚀 Early Preview**. Verified API in §3. Loads by file path ✓; `cacheDir` required; text-only free (leave vision/audio backends nil).
+- **[Q4 — RESOLVED]** iOS builds: CPU `gemma-4-E2B-it.litertlm` **2,588,147,712 B (2.41 GiB)** · GPU `gemma-4-E2B-it-gpu.litertlm` **2,008,432,640 B (1.87 GiB)**. The `-web`/`.task` and `_Google_Tensor_*`/`_intel_*`/`_qualcomm_*` files are **not for iOS** — never download them. (repo sha `b3ca0d2`, 2026-08-31.)
+- **[Q5 — RESOLVED]** It's a **single `.litertlm` LFS file**, not a multi-file snapshot. Adapt the HF pipeline to a single-file download; provision a writable `cacheDir`.
+
+**Owner decisions (the clarifications):**
+- **[D1 — pass-2 strategy]** **Tool Use / function-calling reframe** (not free-form+validator). Signals schema → Swift `Tool` + `@ToolParam`; keep `ExtractionValidator` as the retry backstop. Rewrites SC-2/SC-2a.
+- **[D2 — MLX fate (was Q6)]** **Drop MLX from the extraction path for the Shipaton build.** LiteRT is the *sole* extraction runtime in the submitted binary — **no runtime fallback** (amends rule #8, §5).
+- **[D3 — timing]** **In-scope for Shipaton** (target ~Sep 23 App Review submission), accepting the Early-Preview runtime + Early-Preview Tool Use risk on the critical path.
+
+**Still open — device QA, not clarifiable from a desk:**
+- **[Q3 — OPEN]** No real iPhone 12 Pro (A14) measurement exists (only iPhone 14/A15). Resident `phys_footprint` + tok/s + thermals MUST be measured on a physical 12 Pro (becomes SC-1). With D2 there is no fallback, so a gate-fail = no extraction — Q3 is now load-bearing for the ship decision.
+
+> **⚠️ Senior-engineer flag (recorded, overruled by owner):** D1+D2+D3 stack the highest-risk option on every axis — an Early-Preview runtime **and** Early-Preview Tool Use, sole-runtime with **no fallback**, on an **unmeasured A14**, feeding the **hardest deadline** in the sprint (~Sep 23). Recommended de-risk was: build in-scope behind a toggle (default off), keep Qwen/MLX as the shipping default + rule-#8 fallback until SC-1…SC-4 pass on a real 12 Pro, then drop MLX post-launch. Owner chose the literal drop. `/speckit-plan`'s Constitution Check must treat Q3 as a hard gate.
 
 ---
 
