@@ -83,8 +83,7 @@ final class AudioRecordingServiceImpl: NSObject, AudioRecordingService, AVAudioR
         wasInterrupted = false
 
         setupInterruptionObserver()
-        startMaxDurationTimer()
-        
+
         AppLogger.log("Recording started at \(url.path)")
         return url
     }
@@ -245,19 +244,6 @@ final class AudioRecordingServiceImpl: NSObject, AudioRecordingService, AVAudioR
             }
         } catch {
             AppLogger.log("Interruption ended — failed to reactivate session: \(error)")
-        }
-    }
-    
-    private func startMaxDurationTimer() {
-        Task {
-            while isRecording {
-                if totalDuration >= LayoutConstants.maxRecordingDuration {
-                    AppLogger.log("Max duration reached (\(LayoutConstants.maxRecordingDuration)s). Auto-stopping.")
-                    _ = try? await stopRecording()
-                    break
-                }
-                try? await Task.sleep(nanoseconds: 100_000_000) // 100ms check
-            }
         }
     }
     

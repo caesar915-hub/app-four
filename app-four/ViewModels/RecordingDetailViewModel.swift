@@ -144,6 +144,11 @@ final class RecordingDetailViewModel {
             let result = try await summarizationService.summarize(rawTranscription: recording.fullTranscriptText)
 
             recording.applySummary(result)
+            recording.setMedicationEvents(
+                from: result.medications,
+                durationHours: result.noteExtraction?.durationHours,
+                context: store.context
+            )
             AppLogger.log("Summary generated for \(recording.id)")
             store.save()
         } catch SummarizationError.modelNotInstalled {

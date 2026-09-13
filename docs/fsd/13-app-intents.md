@@ -1,4 +1,4 @@
-<!-- Created: 2026-07-31 00:03 (WEST) · Updated: 2026-07-31 00:03 (WEST) -->
+<!-- Created: 2026-07-31 00:03 (WEST) · Updated: 2026-08-31 01:18 (WEST) -->
 # 13 — App Intents & NFC Sticker Actions
 
 Documents branch `main` @ `73660ced44baeb65381efe699576cdf2b08847bc` (post-1.0-submission; includes merge `3ff74b5e` `feat/030-us3-us4` and `73660ced`). All `path:line` citations are against that commit — **later than the rest of this document set** (`43eb6515`); see the README's documented-source note. Derived from feature spec 030 (`specs/030-app-intents-foundation/`). Sibling documents: [Medications](07-medications.md) (catalog, `MedicationEvent`, in-app Log Dose sheet) · [Settings & Data](08-settings-and-data.md) (remaining Settings sections) · [Data Model](09-data-model.md).
@@ -14,7 +14,7 @@ Around them: a user-configurable **Dose Guard** against double-logging (US3), di
 
 **Shipping status (honest, two layers).**
 1. **Settings surface — live on `main`:** the "My Medication", "Confirmations", and "Dose Guard" sections and the "Set up your sticker" walkthrough **are mounted** in `SettingsView` (restored by merge `3ff74b5e`; `SettingsView.swift:54-57, 190-200`). Note: the 1.0 submission build (tag `v1.0`, `5cd7b22d`) shipped with these unmounted — the mount is post-submission.
-2. **Intent engine — implemented, dormant:** both intents compile with `isDiscoverable = false` and **no `AppShortcutsProvider` exists** — `SquirlAppShortcuts.swift` was deleted by the hide commit `94a51181` ("hide hands-free logging surface for 1.0") and was **not** restored by the merge. The intents are therefore unreachable from Siri, Shortcuts, and Spotlight, and NFC stickers cannot trigger them (a sticker is just a Shortcuts automation). Restore plan (per `docs/BACKLOG.md:13` and the commit message): `git revert 94a51181` — which re-adds the provider and flips `isDiscoverable` — plus the never-run S1–S10 device QA (`specs/030-app-intents-foundation/quickstart.md`).
+2. **Intent engine — implemented, dormant:** both intents compile with `isDiscoverable = false` and **no `AppShortcutsProvider` exists** — `SquirlAppShortcuts.swift` was deleted by the hide commit `94a51181` ("hide hands-free logging surface for 1.0") and was **not** restored by the merge. The intents are therefore unreachable from Siri, Shortcuts, and Spotlight, and NFC stickers cannot trigger them (a sticker is just a Shortcuts automation). Restore plan (per `docs/BACKLOG.md` §"Last updated" and the commit message): `git revert 94a51181` — which re-adds the provider and flips `isDiscoverable` — plus the never-run S1–S10 device QA (`specs/030-app-intents-foundation/quickstart.md`).
 
 This creates a **doc/code tension to flag**: the mounted Settings copy advertises "sticker, Siri, or Shortcuts" while the engine those triggers would fire is hidden — exactly the reviewer-visible-promise problem `94a51181` removed for 1.0. Any 1.1 build from `main` before the revert ships that promise with nothing answering it.
 
@@ -60,7 +60,7 @@ Requirement IDs follow this set's per-area convention (`FR-AI-NN`); each maps to
   | `.failed` | `"Couldn't save that dose — nothing was logged. Try again in the app."` | same |
 
   The `named` flag governs every surface uniformly; no response ever carries journal content beyond the just-logged fact (`DoseConfirmationCopy.swift:7-25`). **Haptics:** none, anywhere — per the FR-005 amendment (D9), a background intent's engine is suspended and cannot play a haptic; the acknowledgment is the system banner plus, for a voice trigger, the spoken dialog.
-- **FR-AI-10 — Siri/Shortcuts/Spotlight exposure (spec FR-017/FR-018) — designed, not shipped.** The contract's `SquirlAppShortcuts` provider (exactly two `AppShortcut`s, iOS 17+ `shortTitle` initializer, phrases containing `.applicationName` — working set "Log my meds in `.applicationName`", "`.applicationName` dose", "Check in on `.applicationName`", "Start a `.applicationName` check-in") **does not exist on `main`**: deleted by `94a51181` because Siri phrases compile into binary metadata that runtime-emptying cannot be trusted to hide. Zero-setup discovery (SC-003) is therefore unmet in the shipping binary; restore = revert `94a51181` + S1–S10 device QA (`contracts/app-intents.md:41-48`; `docs/BACKLOG.md:13`).
+- **FR-AI-10 — Siri/Shortcuts/Spotlight exposure (spec FR-017/FR-018) — designed, not shipped.** The contract's `SquirlAppShortcuts` provider (exactly two `AppShortcut`s, iOS 17+ `shortTitle` initializer, phrases containing `.applicationName` — working set "Log my meds in `.applicationName`", "`.applicationName` dose", "Check in on `.applicationName`", "Start a `.applicationName` check-in") **does not exist on `main`**: deleted by `94a51181` because Siri phrases compile into binary metadata that runtime-emptying cannot be trusted to hide. Zero-setup discovery (SC-003) is therefore unmet in the shipping binary; restore = revert `94a51181` + S1–S10 device QA (`contracts/app-intents.md:41-48`; `docs/BACKLOG.md` §"Last updated").
 
 ### Dose Guard (US3)
 
@@ -129,7 +129,7 @@ Requirement IDs follow this set's per-area convention (`FR-AI-NN`); each maps to
 | Confirmations default | discreet (`nameMedicationInConfirmations = false`) | `AppSettings.swift:19` |
 | Dose intent modes / auth | `[.background, .foreground(.dynamic)]`; `.alwaysAllowed` | `LogDefaultDoseIntent.swift:16-19` |
 | Check-in intent modes / auth | `.foreground`; default policy (unlock required) | `StartCheckInIntent.swift:17` |
-| Discoverability | `isDiscoverable = false` ×2; no `AppShortcutsProvider` (deleted `94a51181`) | both intents; `docs/BACKLOG.md:13` |
+| Discoverability | `isDiscoverable = false` ×2; no `AppShortcutsProvider` (deleted `94a51181`) | both intents; `docs/BACKLOG.md` §"Last updated" |
 | Hand-off URL | plain `shortcuts://` (no automation-creation URL exists) | `StickerSetupView.swift:141-143` |
 | Background time ceiling | 30 s platform limit; actual work is one fetch + one insert + save | `contracts/app-intents.md:16` |
 | Platform floor | iOS 26.0 (raised from 17.0, D15) | `specs/030-app-intents-foundation/plan.md:22` |
@@ -172,6 +172,6 @@ Requirement IDs follow this set's per-area convention (`FR-AI-NN`); each maps to
 - `app-four/Views/Settings/MyMedicationSection.swift:9-201` · `DoseGuardSection.swift:8-101` · `StickerSetupView.swift:9-262`
 - `app-four/Views/SettingsView.swift:35, 54-57, 82-88, 190-200` · `app-four/Views/CheckIn/CheckInView.swift:33, 68-82`
 - `app-four/App/SquirlApp.swift:34-41, 59-79` · `app-four/Store/AppDependencies.swift:18-26` · `app-four/ViewModels/SettingsViewModel.swift:97-117`
-- Hide/restore: commit `94a51181` (hide, revert to restore) · merge `3ff74b5e` (Settings restore) · `docs/BACKLOG.md:13`
+- Hide/restore: commit `94a51181` (hide, revert to restore) · merge `3ff74b5e` (Settings restore) · `docs/BACKLOG.md` §"Last updated"
 - Spec 030: `specs/030-app-intents-foundation/{spec,plan,data-model,tasks}.md` · `contracts/app-intents.md` · `quickstart.md` (S1–S26 device QA)
 - Sibling FSD: [Medications](07-medications.md) · [Settings & Data](08-settings-and-data.md) · [Check-in Capture](03-check-in-capture.md) · [Data Model](09-data-model.md)

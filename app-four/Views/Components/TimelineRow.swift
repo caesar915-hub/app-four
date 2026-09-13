@@ -129,10 +129,14 @@ struct TimelineRow: View {
     private func chips(_ recording: Recording?) -> [Chip] {
         var c: [Chip] = []
         if let energy = recording?.energyLevel, !energy.isEmpty {
-            c.append(Chip(kind: .energy, level: EnergyLevel(rawValue: energy.lowercased())?.numericValue, text: energy, color: .primary))
+            let level = EnergyLevel(rawValue: energy)
+            c.append(Chip(kind: .energy, level: level?.numericValue, text: level?.displayLabel ?? energy, color: .primary))
         }
         if let focus = recording?.focusLevel, !focus.isEmpty {
-            c.append(Chip(kind: .focus, level: FocusLevel(rawValue: focus.lowercased())?.numericValue, text: focus, color: .primary))
+            // Stored value is the enum rawValue ("lockedIn" is camelCase); lowercasing it
+            // returned nil for level-5 focus, dropping the glyph fill and printing "lockedIn".
+            let level = FocusLevel(rawValue: focus)
+            c.append(Chip(kind: .focus, level: level?.numericValue, text: level?.displayLabel ?? focus, color: .primary))
         }
         for name in distinctMedicationNames {
             c.append(Chip(kind: .medication, level: nil, text: name, color: Palette.medication))
@@ -173,8 +177,8 @@ struct TimelineRow: View {
         var parts: [String] = []
         if let level { parts.append(level.displayLabel) }
         parts.append(node.time.formatted(.dateTime.hour().minute(.twoDigits)))
-        if let energy = node.recording?.energyLevel, !energy.isEmpty { parts.append(energy) }
-        if let focus = node.recording?.focusLevel, !focus.isEmpty { parts.append(focus) }
+        if let energy = node.recording?.energyLevel, !energy.isEmpty { parts.append(EnergyLevel(rawValue: energy)?.displayLabel ?? energy) }
+        if let focus = node.recording?.focusLevel, !focus.isEmpty { parts.append(FocusLevel(rawValue: focus)?.displayLabel ?? focus) }
         parts.append(contentsOf: distinctMedicationNames)
         if let sleep = node.recording?.sleepLabel { parts.append(sleep) }
         if let recording = node.recording {

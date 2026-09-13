@@ -19,8 +19,11 @@ final class AudioFileStorageServiceImpl: AudioFileStorageService {
         let fileName = "recording_\(id.uuidString.lowercased()).m4a"
         let destinationURL = recordingsDir.appendingPathComponent(fileName)
         
-        try FileManager.default.moveItem(at: temporaryURL, to: destinationURL)
-        
+        // Copy (not move) so a save failure leaves the temp capture intact for the
+        // view-model's retry path (FR-005); the temp is removed only after the row
+        // is durably saved.
+        try FileManager.default.copyItem(at: temporaryURL, to: destinationURL)
+
         let fileSize = (try? FileManager.default.attributesOfItem(atPath: destinationURL.path)[.size] as? Int64) ?? 0
         let createdAt = Date()
         let title = "Recording \(createdAt.formatted(date: .abbreviated, time: .shortened))"
@@ -37,8 +40,16 @@ final class AudioFileStorageServiceImpl: AudioFileStorageService {
         )
         
         context.insert(recording)
-        try context.save()
-        
+        do {
+            try context.save()
+        } catch {
+            // Never orphan a file with no row: roll back the copy and keep the temp
+            // so the caller can retry from the same buffer.
+            try? FileManager.default.removeItem(at: destinationURL)
+            throw error
+        }
+        try? FileManager.default.removeItem(at: temporaryURL)
+
         AppLogger.log("File saved: \(fileSize) bytes at \(destinationURL.path)")
         return recording
     }

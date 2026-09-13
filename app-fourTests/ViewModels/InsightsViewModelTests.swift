@@ -153,6 +153,16 @@ struct InsightsViewModelTests {
         #expect(abs(frac - 1.0) < 0.0001) // 4/4 sharp-or-better
     }
 
+    // Regression: level-5 focus is stored as camelCase "lockedIn"; a prior `.lowercased()`
+    // returned nil so the top focus level was silently dropped from this analytic.
+    @Test func medFocusCountsLockedInFocus() {
+        for d in 1...4 { add(day: d, hour: 14, focus: "lockedIn", med: "Concerta") }
+        guard case .unlocked(_, let frac, _, _, _) = vm().connections[0].state else {
+            Issue.record("expected unlocked med×focus"); return
+        }
+        #expect(abs(frac - 1.0) < 0.0001) // 4/4 locked-in counts as sharp-or-better
+    }
+
     @Test func energyMoodGatesUnderFiveHighEnergy() {
         for d in 1...4 { add(day: d, mood: "good", energy: "alert") }
         guard case .gated = vm().connections[1].state else { Issue.record("expected gated energy×mood"); return }

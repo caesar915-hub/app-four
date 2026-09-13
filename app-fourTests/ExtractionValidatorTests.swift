@@ -107,6 +107,26 @@ import Foundation
         #expect(ExtractionValidator.validate(makeExtraction(sleepHours: nil), lexicon: lexicon).sleepHours == nil)
     }
 
+    @Test func sleptForNHoursKeepsDuration() {
+        let out = ExtractionValidator.validate(makeExtraction(sleepHours: 8.0), lexicon: lexicon,
+                                               rawTranscript: "I slept for 8 hours last night")
+        #expect(out.sleepHours == 8.0)
+    }
+
+    @Test func workedHoursStraightNullsDuration() {
+        let out = ExtractionValidator.validate(makeExtraction(sleepHours: 8.0), lexicon: lexicon,
+                                               rawTranscript: "I worked 8 hours straight at the office")
+        #expect(out.sleepHours == nil)
+    }
+
+    // Discriminates the new !mentionsSleep gate: "hours straight" that DOES mention sleep is
+    // kept (pre-fix, the unconditional "hours straight" clause nulled it).
+    @Test func sleptHoursStraightKeepsDuration() {
+        let out = ExtractionValidator.validate(makeExtraction(sleepHours: 8.0), lexicon: lexicon,
+                                               rawTranscript: "I slept 8 hours straight last night")
+        #expect(out.sleepHours == 8.0)
+    }
+
     // SleepQuality clamping
     @Test(arguments: ["restless", "light", "okay", "good", "deep"])
     func validSleepQualityPasses(quality: String) {

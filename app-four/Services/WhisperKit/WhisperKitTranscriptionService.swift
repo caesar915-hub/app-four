@@ -142,13 +142,16 @@ actor WhisperKitTranscriptionService: TranscriptionService {
 
                 // Keep the app alive while CoreML/Metal runs so the OS doesn't
                 // suspend us mid-transcription (which causes GPU background errors).
-                let backgroundTaskID = await MainActor.run {
-                    UIApplication.shared.beginBackgroundTask(withName: "WhisperTranscription")
+                // Ends exactly once — via the OS expiration handler OR the defer, never both.
+                // Built on the main actor (the token is MainActor-isolated); the reference is
+                // Sendable, so the off-main body can hold it and end it back on the main actor.
+                let bgToken = await MainActor.run { () -> BackgroundTaskToken in
+                    let token = BackgroundTaskToken()
+                    token.begin("WhisperTranscription")
+                    return token
                 }
                 defer {
-                    Task { @MainActor in
-                        UIApplication.shared.endBackgroundTask(backgroundTaskID)
-                    }
+                    Task { @MainActor in bgToken.end() }
                 }
 
                 let results: [TranscriptionResult] = try await kit.transcribe(audioPath: url.path, decodeOptions: options)
@@ -222,5 +225,25 @@ actor WhisperKitTranscriptionService: TranscriptionService {
         AppLogger.log("WhisperKit transcription cancellation requested")
         activeTranscriptionTask?.cancel()
         activeTranscriptionTask = nil
+    }
+}
+
+/// Owns a UIKit background-task identifier and ends it exactly once, whether the OS
+/// expiration handler fires or the caller's defer runs first — avoiding the double-end /
+/// identifier-reuse footgun of ending the same id twice.
+@MainActor
+private final class BackgroundTaskToken {
+    private var id: UIBackgroundTaskIdentifier = .invalid
+
+    func begin(_ name: String) {
+        id = UIApplication.shared.beginBackgroundTask(withName: name) { [weak self] in
+            self?.end()
+        }
+    }
+
+    func end() {
+        guard id != .invalid else { return }
+        UIApplication.shared.endBackgroundTask(id)
+        id = .invalid
     }
 }
