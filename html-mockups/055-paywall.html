@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Squirl · 055 Paywall — hard paywall + trial (RC-10)</title>
+<style>
+  :root{
+    --sf:-apple-system,"SF Pro Text","SF Pro Display",system-ui,"Segoe UI",sans-serif;
+    /* New Look (spec 033) — the shipping language. NOT Paper & Pollen. */
+    --screen:#EFF2EB; --card:#FFFFFF;
+    --ink:#1C1B1F; --ink2:#8A8A8E; --hair:#DBDDDE; --tint:#ECEAE6;
+    --sel:#54B492; --onsel:#FFFFFF;
+    --accent:#B8842A; --med:#7E5CA8; --danger:#D54037;
+    --scale:1;
+  }
+  [data-theme="dark"]{
+    --screen:#12140F; --card:#1C1E19;
+    --ink:#F2F3EE; --ink2:#9BA09A; --hair:#33362F; --tint:#272A22;
+    --sel:#5FC49F; --onsel:#1C1B1F;
+    --accent:#D4A24A; --med:#957BC1; --danger:#E8695F;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:#1d1c1a;color:#EDE9DC;font-family:var(--sf);-webkit-font-smoothing:antialiased;
+       min-height:100vh;display:flex;flex-direction:column;align-items:center;gap:16px;padding:30px 24px 70px;}
+
+  .topctl{display:flex;flex-wrap:wrap;gap:9px;align-items:center;justify-content:center;max-width:940px;}
+  .lab{font-size:11.5px;color:#9d988a;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-right:2px;}
+  .btn{font-size:13px;font-weight:600;cursor:pointer;background:#2a2823;color:#EDE9DC;border:1px solid #3a382f;
+       border-radius:999px;padding:8px 15px;font-family:var(--sf);}
+  .btn.on{background:#2f4a3e;border-color:#4a6a5a;color:#d5efe3;}
+  .btn.warn.on{background:#4a3226;border-color:#6a4a36;color:#f0d3c0;}
+  .btn:focus-visible{outline:2px solid #7fbfa4;outline-offset:2px;}
+  .hint{font-size:12.5px;color:#9d988a;max-width:800px;text-align:center;line-height:1.6;}
+  .hint b{color:#cfc9b8;}
+  .hint code{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:11.5px;color:#c9b98f;}
+  .alarm{border:1px solid #6a4a36;background:#241a14;border-radius:12px;padding:14px 18px;max-width:800px;
+         font-size:13px;line-height:1.6;color:#e8cbb4;}
+  .alarm b{color:#ffd9b8;}
+
+  .stage{display:flex;flex-wrap:wrap;gap:30px;align-items:flex-start;justify-content:center;}
+  .unit{display:flex;flex-direction:column;align-items:center;gap:10px;}
+  .cap{font-size:12.5px;color:#9d988a;font-weight:500;max-width:393px;text-align:center;line-height:1.55;}
+  .cap b{color:#dfd8c6;font-weight:700;}
+
+  .phone{position:relative;width:393px;height:852px;background:var(--screen);border-radius:54px;overflow:hidden;
+         box-shadow:0 0 0 12px #0c0b0a,0 30px 72px rgba(0,0,0,.55);flex:none;}
+  .island{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:122px;height:35px;background:#0c0b0a;border-radius:20px;z-index:60;}
+  .screen{position:absolute;inset:0;display:flex;flex-direction:column;}
+  .statusbar{height:56px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 30px 6px;
+             font-size:15px;font-weight:600;color:var(--ink);}
+  .scroll{flex:1;overflow-y:auto;padding:0 20px 26px;display:flex;flex-direction:column;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .nav{flex:none;display:flex;align-items:center;justify-content:space-between;padding:2px 20px 8px;min-height:44px;}
+  .restore-top{background:none;border:none;color:var(--accent);font-family:var(--sf);
+               font-size:calc(15px * var(--scale));font-weight:600;cursor:pointer;padding:8px 4px;min-height:44px;}
+  .navlabel{font-size:calc(13px * var(--scale));font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);}
+
+  .lede{padding:4px 0 2px;}
+  .lede h1{margin:0 0 9px;font-size:calc(27px * var(--scale));line-height:1.16;font-weight:700;
+           letter-spacing:-.02em;color:var(--ink);text-wrap:balance;}
+  .lede p{margin:0;font-size:calc(15px * var(--scale));line-height:1.5;color:var(--ink);text-wrap:pretty;}
+
+  .value{display:flex;flex-direction:column;gap:1px;margin:17px 0 4px;}
+  .vrow{display:flex;gap:12px;align-items:flex-start;padding:8px 0;}
+  .vico{width:26px;height:26px;flex:none;border-radius:8px;display:flex;align-items:center;justify-content:center;
+        font-size:13px;margin-top:1px;}
+  .vtxt{flex:1;min-width:0;}
+  .vtxt b{display:block;font-size:calc(15px * var(--scale));font-weight:600;color:var(--ink);line-height:1.35;margin-bottom:2px;}
+  .vtxt span{display:block;font-size:calc(13.5px * var(--scale));color:var(--ink2);line-height:1.45;}
+
+  .trialbox{background:var(--tint);border-radius:14px;padding:14px 15px;margin:14px 0 18px;}
+  .trialbox .th{font-size:calc(13px * var(--scale));font-weight:700;color:var(--ink);margin-bottom:9px;
+                letter-spacing:.03em;text-transform:uppercase;}
+  .tl{display:flex;flex-direction:column;gap:0;}
+  .tstep{display:flex;gap:11px;align-items:flex-start;position:relative;padding-bottom:11px;}
+  .tstep:last-child{padding-bottom:0;}
+  .tstep::before{content:"";position:absolute;left:5px;top:14px;bottom:0;width:1px;background:var(--hair);}
+  .tstep:last-child::before{display:none;}
+  .tdot{width:11px;height:11px;flex:none;border-radius:50%;background:var(--sel);margin-top:4px;position:relative;z-index:1;}
+  .tstep.future .tdot{background:var(--hair);}
+  .tbody{flex:1;min-width:0;font-size:calc(13.5px * var(--scale));line-height:1.45;color:var(--ink);}
+  .tbody b{font-weight:650;}
+
+  .plans{display:flex;flex-direction:column;gap:11px;}
+  .plan{position:relative;display:flex;align-items:center;gap:13px;width:100%;text-align:left;cursor:pointer;
+        background:var(--card);border:1.5px solid var(--hair);border-radius:16px;padding:15px 16px;
+        min-height:44px;font-family:var(--sf);}
+  .plan:focus-visible{outline:2px solid var(--sel);outline-offset:2px;}
+  .plan[aria-checked="true"]{border-color:var(--sel);border-width:2px;padding:14.5px 15.5px;}
+  .tick{width:24px;height:24px;flex:none;border-radius:50%;border:1.5px solid var(--hair);
+        display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:transparent;}
+  .plan[aria-checked="true"] .tick{background:var(--sel);border-color:var(--sel);color:var(--onsel);}
+  .pbody{flex:1;min-width:0;}
+  .pname{font-size:calc(16px * var(--scale));font-weight:650;color:var(--ink);line-height:1.3;}
+  .pprice{font-size:calc(21px * var(--scale));font-weight:700;color:var(--ink);letter-spacing:-.015em;
+          line-height:1.25;margin-top:3px;font-variant-numeric:tabular-nums;}
+  .pper{font-size:calc(13.5px * var(--scale));font-weight:500;color:var(--ink);}
+  .pnote{font-size:calc(13px * var(--scale));color:var(--ink);line-height:1.45;margin-top:3px;}
+  .badge{display:inline-flex;align-items:center;gap:4px;background:var(--sel);color:var(--onsel);
+         font-size:calc(11px * var(--scale));font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+         border-radius:999px;padding:3px 9px;margin-bottom:7px;}
+
+  .cta{width:100%;margin:18px 0 0;background:var(--ink);color:var(--card);border:none;border-radius:16px;
+       padding:17px 20px;font-family:var(--sf);font-size:calc(17px * var(--scale));font-weight:650;
+       cursor:pointer;min-height:44px;}
+  .cta.ghost{background:none;color:var(--ink);border:1.5px solid var(--hair);margin-top:10px;}
+  .cta:focus-visible{outline:2px solid var(--sel);outline-offset:3px;}
+  .ctasub{text-align:center;font-size:calc(13px * var(--scale));color:var(--ink);margin:11px 0 0;line-height:1.5;}
+
+  .disclose{display:flex;gap:10px;align-items:flex-start;margin:18px 0 0;padding:12px 14px;
+            border:1px solid var(--hair);border-radius:13px;}
+  .disclose .k{font-size:14px;flex:none;margin-top:1px;}
+  .disclose p{margin:0;font-size:calc(12.5px * var(--scale));line-height:1.5;color:var(--ink);}
+  .legal{margin:15px 0 0;text-align:center;font-size:calc(12.5px * var(--scale));line-height:1.65;color:var(--ink);}
+  .legal a{color:var(--accent);text-decoration:none;font-weight:600;}
+  .legal .sep{color:var(--ink2);margin:0 5px;}
+  .legal .cancel{display:block;margin-top:7px;color:var(--ink2);}
+
+  .centred{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+           text-align:center;padding:24px 22px 40px;gap:13px;}
+  .bigico{width:54px;height:54px;border-radius:50%;background:var(--tint);display:flex;align-items:center;
+          justify-content:center;font-size:23px;margin-bottom:2px;}
+  .centred h2{margin:0;font-size:calc(22px * var(--scale));font-weight:700;color:var(--ink);letter-spacing:-.018em;text-wrap:balance;}
+  .centred p{margin:0;font-size:calc(15px * var(--scale));color:var(--ink);line-height:1.55;max-width:31ch;}
+  .centred p.sub{color:var(--ink2);font-size:calc(13.5px * var(--scale));}
+  .safe{border:1px solid var(--hair);border-radius:14px;padding:13px 15px;margin-top:6px;max-width:32ch;}
+  .safe p{font-size:calc(13px * var(--scale));color:var(--ink);margin:0;line-height:1.5;}
+
+  .sgroup{background:var(--card);border-radius:14px;overflow:hidden;margin-bottom:18px;}
+  .srow{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--hair);min-height:44px;}
+  .srow:last-child{border-bottom:none;}
+  .srow .t{flex:1;font-size:calc(15.5px * var(--scale));color:var(--ink);}
+  .srow .v{font-size:calc(14px * var(--scale));color:var(--ink2);}
+  .srow .chev{color:var(--ink2);font-size:14px;}
+  .shdr{font-size:calc(12.5px * var(--scale));font-weight:650;letter-spacing:.05em;text-transform:uppercase;
+        color:var(--ink2);padding:0 4px 8px;}
+  .statuspill{display:inline-flex;align-items:center;gap:5px;background:var(--sel);color:var(--onsel);
+              font-size:calc(12px * var(--scale));font-weight:700;border-radius:999px;padding:4px 10px;}
+
+  .variant{display:none;}
+  .variant.on{display:contents;}
+  @media (max-width:900px){ .phone{transform:scale(.86);transform-origin:top center;margin-bottom:-110px;} }
+</style>
+</head>
+<body>
+
+<div class="topctl">
+  <span class="lab">Screen</span>
+  <button class="btn on" data-v="A" onclick="setV('A')">A · Hard paywall</button>
+  <button class="btn warn" data-v="B" onclick="setV('B')">B · Trial ended</button>
+  <button class="btn warn" data-v="C" onclick="setV('C')">C · Fail-open</button>
+  <button class="btn" data-v="D" onclick="setV('D')">D · Settings</button>
+</div>
+<div class="topctl">
+  <span class="lab">Mode</span>
+  <button class="btn" id="thm" onclick="tog()">Dark mode</button>
+  <span class="lab" style="margin-left:10px">Type size</span>
+  <button class="btn on" id="ts1" onclick="setS(1)">Default</button>
+  <button class="btn" id="ts2" onclick="setS(1.35)">AX3</button>
+  <button class="btn" id="ts3" onclick="setS(1.75)">AX5</button>
+</div>
+
+<div class="alarm">
+  <b>Hard paywall changes the failure model.</b> With freemium, a broken paywall meant no upsell. Here it means
+  <b>the user cannot reach their own journal</b> — data that lives on their device and that they created.
+  Two known bugs produce exactly that: empty offerings (the most common RevenueCat failure) and
+  <b>purchases-ios #4623</b>, which regenerates the anonymous ID after a locked reboot and strands a paying customer.
+  <b>Screen C is therefore not optional</b> — it is the safety valve that keeps a wrong answer from bricking the app.
+</div>
+
+<div class="stage">
+  <div class="unit">
+    <div class="phone">
+      <div class="island"></div>
+      <div class="screen">
+        <div class="statusbar"><span>9:41</span><span>􀙇 􀋨 􀛨</span></div>
+
+        <!-- ============ A · HARD PAYWALL ============ -->
+        <div class="variant on" id="vA">
+          <div class="nav"><span></span><button class="restore-top">Restore</button></div>
+          <div class="scroll">
+            <div class="lede">
+              <h1>A minute a day, and Squirl does the rest</h1>
+              <p>Speak your check-in. Squirl transcribes it, pulls out the signals, and shows you the patterns — all on your device.</p>
+            </div>
+
+            <div class="value">
+              <div class="vrow">
+                <span class="vico" style="background:rgba(95,179,110,.16);color:#3F8C52">􀊰</span>
+                <span class="vtxt"><b>Voice check-ins</b><span>Talk for a minute. No forms, no typing.</span></span>
+              </div>
+              <div class="vrow">
+                <span class="vico" style="background:rgba(84,180,146,.18);color:#2F7A61">􀟢</span>
+                <span class="vtxt"><b>Insights</b><span>Mood, energy and focus over time — and what moves them.</span></span>
+              </div>
+              <div class="vrow">
+                <span class="vico" style="background:rgba(126,92,168,.16);color:#6B4E8F">􀐫</span>
+                <span class="vtxt"><b>Medication tracking</b><span>Doses, timing, and how they line up with your day.</span></span>
+              </div>
+              <div class="vrow">
+                <span class="vico" style="background:rgba(184,132,42,.16);color:#8A6420">􀎡</span>
+                <span class="vtxt"><b>Private by architecture</b><span>Transcription and analysis run on your iPhone. Nothing is uploaded.</span></span>
+              </div>
+            </div>
+
+            <div class="trialbox">
+              <div class="th">How the free trial works</div>
+              <div class="tl">
+                <div class="tstep"><span class="tdot"></span><span class="tbody"><b>Today.</b> Full access. You are not charged.</span></div>
+                <div class="tstep"><span class="tdot"></span><span class="tbody"><b>Day 5.</b> We remind you the trial is ending.</span></div>
+                <div class="tstep future"><span class="tdot"></span><span class="tbody"><b>Day 7.</b> Your subscription starts, unless you cancelled.</span></div>
+              </div>
+            </div>
+
+            <div class="plans" role="radiogroup" aria-label="Choose a plan">
+              <button class="plan" role="radio" aria-checked="true" onclick="pick(this)">
+                <span class="tick" aria-hidden="true">✓</span>
+                <span class="pbody">
+                  <span class="badge">Best value · save 33%</span>
+                  <span class="pname">Yearly</span>
+                  <span class="pprice">€39,99<span class="pper"> / year</span></span>
+                  <span class="pnote">That's €3,33 a month.</span>
+                </span>
+              </button>
+              <button class="plan" role="radio" aria-checked="false" onclick="pick(this)">
+                <span class="tick" aria-hidden="true">✓</span>
+                <span class="pbody">
+                  <span class="pname">Monthly</span>
+                  <span class="pprice">€4,99<span class="pper"> / month</span></span>
+                  <span class="pnote">Cancel any time.</span>
+                </span>
+              </button>
+            </div>
+
+            <button class="cta">Start 7 days free</button>
+            <p class="ctasub">Then €39,99 a year. Cancel any time in Settings.</p>
+
+            <div class="disclose">
+              <span class="k">􀎡</span>
+              <p>Purchases are verified by our payments provider. <b>Your journal never leaves this device.</b></p>
+            </div>
+
+            <p class="legal">
+              <a href="#">Terms</a><span class="sep">·</span><a href="#">Privacy Policy</a><span class="sep">·</span><a href="#">Restore Purchases</a>
+              <span class="cancel">Cancel in Settings ▸ Apple Account ▸ Subscriptions.</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- ============ B · TRIAL ENDED ============ -->
+        <div class="variant" id="vB">
+          <div class="nav"><span></span><button class="restore-top">Restore</button></div>
+          <div class="scroll">
+            <div class="centred">
+              <div class="bigico">􀎠</div>
+              <h2>Your trial has ended</h2>
+              <p>Subscribe to pick up where you left off.</p>
+              <p class="sub">Your 34 check-ins are safe on this device. Nothing has been deleted.</p>
+              <div class="safe">
+                <p>􀈃&nbsp; You can export your journal without subscribing — your writing is yours.</p>
+              </div>
+              <button class="cta" style="margin-top:14px">Subscribe · €39,99 / year</button>
+              <button class="cta ghost">Export my journal</button>
+              <p class="legal" style="margin-top:14px">
+                <a href="#">Restore Purchases</a><span class="sep">·</span><a href="#">Terms</a><span class="sep">·</span><a href="#">Privacy</a>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ C · FAIL-OPEN ============ -->
+        <div class="variant" id="vC">
+          <div class="nav"><span class="navlabel">Squirl</span><span></span></div>
+          <div class="scroll">
+            <div class="centred">
+              <div class="bigico">􀙤</div>
+              <h2>We couldn't check your subscription</h2>
+              <p>You're offline, or the store isn't responding. We've unlocked the app so you're not stuck.</p>
+              <p class="sub">We'll check again next time you're online. If you're subscribed, nothing changes.</p>
+              <button class="cta" style="margin-top:12px">Continue to Squirl</button>
+              <button class="cta ghost">Try again</button>
+              <p class="legal" style="margin-top:14px"><a href="#">Restore Purchases</a></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ D · SETTINGS ============ -->
+        <div class="variant" id="vD">
+          <div class="nav"><span class="navlabel">Settings</span><span></span></div>
+          <div class="scroll">
+            <div style="padding-top:10px">
+              <div class="shdr">Subscription</div>
+              <div class="sgroup">
+                <div class="srow"><span class="t">Squirl</span><span class="statuspill">Trial · 5 days left</span></div>
+                <div class="srow"><span class="t">Starts billing</span><span class="v">6 Sep 2026</span></div>
+                <div class="srow"><span class="t">Manage subscription</span><span class="chev">›</span></div>
+                <div class="srow"><span class="t">Restore purchases</span><span class="chev">›</span></div>
+              </div>
+              <div class="shdr">Your data</div>
+              <div class="sgroup">
+                <div class="srow"><span class="t">Export journal</span><span class="chev">›</span></div>
+                <div class="srow"><span class="t">Privacy policy</span><span class="chev">›</span></div>
+                <div class="srow"><span class="t">Terms of use</span><span class="chev">›</span></div>
+              </div>
+              <p style="font-size:calc(12.5px * var(--scale));color:var(--ink2);line-height:1.55;padding:0 4px;margin:0">
+                Privacy policy and terms open inside the app — they work with no connection.
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <p class="cap" id="cap"><b>A · Hard paywall.</b> Shown after Welcome, <b>before</b> the ~500 MB model download — so nobody waits through a long download and is then asked for money, and a bounce costs them no bandwidth.</p>
+  </div>
+</div>
+
+<p class="hint" style="max-width:840px">
+  <b>Decisions for you.</b>
+  (1) <b>Prices are placeholders.</b> RC-06 needs real numbers Monday; product IDs are permanent.
+  (2) <b>Existing 1.0 users are grandfathered</b> and never see screen A — the flag must ship in this build, it cannot be backfilled.
+  (3) <b>Screen B offers export without subscribing.</b> Strongly recommended: their journal is data they created and Apple takes a dim view of holding user content hostage. Removing it is your call, but I'd argue against.
+  (4) <b>Day-5 trial reminder</b> is factual, not loss-framed — three touches max, neutral tone.
+  (5) <b>Your App Store screenshots still advertise a free app</b> — Guideline <b>2.3.1</b>. They must be refreshed in the same submission.
+</p>
+
+<script>
+  var caps={
+    A:"<b>A · Hard paywall.</b> Shown after Welcome, <b>before</b> the ~500 MB model download — so nobody waits through a long download and is then asked for money, and a bounce costs them no bandwidth.",
+    B:"<b>B · Trial ended.</b> The state most apps make hostile. No countdown, no guilt — it states what is true, confirms the data is safe, and lets them export regardless.",
+    C:"<b>C · Fail-open.</b> Entitlement could not be verified, so the app <b>unlocks</b> rather than locking out. This screen is what stops bug #4623 or an empty-offerings failure from bricking a paying user's app.",
+    D:"<b>D · Settings.</b> Restore appears here as well as on the paywall (Guideline 3.1.1). Terms and privacy are bundled natively so they open offline."
+  };
+  function setV(v){
+    ['A','B','C','D'].forEach(function(k){ document.getElementById('v'+k).classList.toggle('on', k===v); });
+    document.querySelectorAll('[data-v]').forEach(function(b){ b.classList.toggle('on', b.dataset.v===v); });
+    document.getElementById('cap').innerHTML=caps[v];
+  }
+  function tog(){
+    var d=document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', d?'light':'dark');
+    document.getElementById('thm').textContent = d?'Dark mode':'Light mode';
+    document.getElementById('thm').classList.toggle('on',!d);
+  }
+  function setS(s){
+    document.documentElement.style.setProperty('--scale',s);
+    document.getElementById('ts1').classList.toggle('on',s===1);
+    document.getElementById('ts2').classList.toggle('on',s===1.35);
+    document.getElementById('ts3').classList.toggle('on',s===1.75);
+  }
+  function pick(el){
+    el.parentElement.querySelectorAll('.plan').forEach(function(p){p.setAttribute('aria-checked','false');});
+    el.setAttribute('aria-checked','true');
+    var yearly = el.querySelector('.badge')!==null;
+    document.querySelector('#vA .ctasub').textContent = yearly
+      ? 'Then €39,99 a year. Cancel any time in Settings.'
+      : 'Then €4,99 a month. Cancel any time in Settings.';
+  }
+</script>
+</body>
+</html>
