@@ -1,7 +1,16 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 2.2.0 → 2.3.0
+Version change: 2.3.0 → 2.4.0
+Rationale (2.4.0, 2026-09-13): Spec 056 replaces the EXTRACTION engine. Qwen2.5-1.5B (the
+live model; the prior "Llama 3.2 1B" wording was already stale) via MLX-Swift is replaced by
+Gemma 4 E2B (text-only) via Google LiteRT-LM, targeting the iPhone 12 Pro (A14, 6 GB). Updates
+the Technology Stack extraction line, Principle VII's engine/model + memory-lifecycle wording
+(LiteRT loads by file path and streams weights as clean memory-mapped pages rather than charging
+Metal buffers dirty), and Principle VIII's "free Metal/CoreML buffers" clause (also "evict the
+LiteRT engine's mmap'd + KV state"). MINOR: no principle is removed or redefined; on-device
+privacy and the SummarizationService boundary are unchanged. Drafted in an autonomous /speckit
+run — PENDING OWNER RATIFICATION before the switchover build. See specs/056-gemma4-litert-extraction/.
 Rationale (2.3.0, 2026-09-06): Spec 045 replaces the transcription engine — WhisperKit /
 OpenAI Whisper Small is removed in favour of Apple SpeechAnalyzer/SpeechTranscriber (iOS 26,
 system-managed model) with a DictationTranscriber fallback. Updates the Technology Stack
@@ -83,14 +92,16 @@ content.
 
 ### VII. On-Device LLM Extraction
 
-The extraction pipeline (`MLXJournalService`) uses Llama 3.2 1B (4-bit quantised)
-via MLX-Swift, running 100% on-device off the main actor. The curated lexicon
+The extraction pipeline (`GemmaJournalService`) uses Gemma 4 E2B (text-only) via
+Google LiteRT-LM, running 100% on-device off the main actor. The curated lexicon
 (`Resources/lexicon.json`, 718 entries) is retained as the source of truth for
 ADHD-specific vocabulary: it seeds the LLM system prompt and provides the
 canonical allowlists for Swift-side validation (Layer 4). Signal output MUST be
 validated against `Levels.swift` enum rawValues — any value not in the canonical
 set is clamped to `nil`. Memory lifecycle MUST follow Peak Shaving:
-`os_proc_available_memory()` is checked before loading the LLM weights.
+`os_proc_available_memory()` is checked before loading the LLM weights; the model
+MUST be loaded by file path so weights stream as clean memory-mapped pages (never
+charged dirty), and the resident engine MUST be unloaded on background/memory-warning/idle.
 Transcription no longer loads an in-process model — Apple's `SpeechAnalyzer` uses
 the system-managed speech model — so there is no transcription model to unload
 before extraction. The `SummarizationService` protocol is the integration boundary;
@@ -104,7 +115,7 @@ summarization) MUST sit behind a protocol in `Services/`, injected via the
 mockable at the seam. ViewModels MUST be `@MainActor @Observable`, hold no
 persistence logic, and dispatch CPU/IO-heavy work off the main actor. Model
 lifecycle MUST be RAM-isolated: load lazily, then unload (free Metal/CoreML
-buffers) BEFORE downstream extraction runs.
+buffers, or evict the LiteRT engine's mmap'd + KV state) BEFORE downstream extraction runs.
 
 ### IX. Pre-Release Data Posture
 
@@ -144,9 +155,11 @@ Plans and specs must not leave implementation details to the imagination. Every 
 - **Async**: Swift Concurrency (`async/await`, `Actor`, `AsyncStream`)
 - **On-device ML**: Apple `SpeechAnalyzer`/`SpeechTranscriber` (iOS 26, system-managed
   model) for transcription, with `DictationTranscriber` as the fallback for devices or
-  locales where `SpeechTranscriber` is unavailable; Llama 3.2 1B (4-bit quantised) via
-  MLX-Swift (`MLXJournalService`) for extraction. The `.whisper` `AIModelType` case is
-  removed with WhisperKit. Lexicon (`lexicon.json`, 718 entries) seeds prompts and validation.
+  locales where `SpeechTranscriber` is unavailable; Gemma 4 E2B (text-only) via Google
+  LiteRT-LM (`GemmaJournalService`) for extraction — loaded by file path, text-only,
+  CPU/XNNPACK on A14 — superseding the interim Qwen2.5-1.5B/MLX backend. The `.whisper`
+  `AIModelType` case is removed with WhisperKit. Lexicon (`lexicon.json`, 718 entries) seeds
+  prompts and validation.
 - **Testing**: Swift Testing (`@Test`/`#expect`) for unit + integration, test-first per Principle X; XCUITest for UI flows where warranted
 - **Platform**: iOS (primary), iPadOS (secondary)
 - **Target / identity**: Xcode target & module `app-four`; bundle id
@@ -191,4 +204,4 @@ compliance with Principles I–XI before Phase 0 research proceeds.
 Runtime development guidance lives in `CLAUDE.md` at the repository root. The
 Spec Kit operating procedure lives in `docs/SPECKIT.md`.
 
-**Version**: 2.3.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-09-06
+**Version**: 2.4.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-09-13
