@@ -237,6 +237,19 @@ final class AIModelServiceImpl: AIModelService {
     /// actually holds the model files) inside the managed download layout. Scoped to
     /// the configured repo (`ModelConstants.llmHubRepoID`) so a stale snapshot
     /// of a previously-shipped model is never loaded by accident. Returns nil for
+    /// Whether the Gemma 4 LiteRT `.litertlm` model is fully downloaded (present at the
+    /// expected byte size). The LiteRT analogue of `findLLMModelDirectory` — a single
+    /// file, not a `.safetensors` snapshot. Additive: the MLX check below is untouched.
+    nonisolated static func gemmaLiteRTModelInstalled(in base: URL) -> Bool {
+        let file = base
+            .appendingPathComponent("models", isDirectory: true)
+            .appendingPathComponent(ModelConstants.gemmaLiteRTRepoID, isDirectory: true)
+            .appendingPathComponent(ModelConstants.gemmaLiteRTFileName)
+        guard let attrs = try? FileManager.default.attributesOfItem(atPath: file.path),
+              let size = (attrs[.size] as? NSNumber)?.int64Value else { return false }
+        return size == ModelConstants.gemmaLiteRTExpectedBytes
+    }
+
     /// a missing or partial download — an incomplete directory must never be
     /// handed to the MLX loader.
     nonisolated static func findLLMModelDirectory(in base: URL) -> URL? {
