@@ -1,4 +1,4 @@
-<!-- Created: 2026-08-31 01:18 (WEST) · Updated: 2026-08-31 01:39 (WEST) -->
+<!-- Created: 2026-08-31 01:18 (WEST) · Updated: 2026-09-13 21:29 (WEST) -->
 # Shipaton Sprint DevLog — September 2026
 
 Chronological narrative of the sprint — the *why* behind what happened. Newest day on top.
@@ -10,6 +10,12 @@ This complements, never duplicates: **[BACKLOG.md](BACKLOG.md)** holds current *
 **Entry types:** `Recap` (morning standup, written by `/morning`) · `Evening` (written by `/evening`) · `Decision` (with *why:*) · `Investigation` (with outcome) · `Direction` · `Shipped` · `Open`.
 
 Rule inherited from `docs/DEVLOG.md`: **the why, not every edit.**
+
+---
+
+## 2026-09-13
+
+- **[21:29 WEST] Direction — Gemma 4 E2B via LiteRT-LM landed additive/inert (spec 056), simulator-green, device-gated switchover pending.** _what:_ full autonomous `/speckit` cycle on `feat/gemma4-litert-extraction` (spec→plan→tasks→implement→code-review→converge). New `GemmaJournalService` behind the `SummarizationService` seam with the live LiteRT calls compile-guarded, reusing `ExtractionValidator`/prompts/lexicon verbatim; constitution 2.3.0→2.4.0. **584 tests green**; DI binding + `llmHubRepoID` untouched so the app is unchanged. _why:_ owner directed the LiteRT/Gemma path in-scope for Shipaton (D1 Tool Use · D2 drop MLX, no fallback · D3 ~Sep 23) over the recommended de-risk; building it additive keeps `main` releasable while the Early-Preview runtime is unverified. _found:_ the current MLX/Qwen path **never used constrained decoding**, so LiteRT lacking it is not a regression — the pass-2 free-form+validator path is a proven equal and Tool Use is a device-day upgrade (currently a documented stub). _open:_ SC-1 (A14 `phys_footprint`) + SC-4 (tok/s) are unverifiable off-device and there is **no fallback** (D2) — the physical iPhone 12 Pro spike is the go/no-go; constitution 2.4.0 wording awaits owner ratification. See [spec 056 RUN_SUMMARY](../specs/056-gemma4-litert-extraction/RUN_SUMMARY.md).
 
 ---
 

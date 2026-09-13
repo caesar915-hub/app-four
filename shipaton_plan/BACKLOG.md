@@ -1,4 +1,4 @@
-<!-- Created: 2026-08-31 01:18 (WEST) · Updated: 2026-08-31 01:39 (WEST) -->
+<!-- Created: 2026-08-31 01:18 (WEST) · Updated: 2026-09-13 21:29 (WEST) -->
 # Shipaton Sprint Backlog — September 2026
 
 **The board for 2026-09-01 → 2026-09-30.** `docs/BACKLOG.md` is frozen for the sprint — read it for history, never edit it.
@@ -15,6 +15,7 @@ Newest first. **Keep to 15 rows** — older rows drop off; the devlog holds the 
 
 | When | What changed |
 |---|---|
+| 2026-09-13 21:29 | **Spec 056** Gemma 4 E2B/LiteRT-LM extraction → 🔨 In code (additive/inert, 584 tests green) on `feat/gemma4-litert-extraction`; switchover **device-gated** (A14 QA). Constitution 2.4.0 (pending ratification). LLM stream. |
 | 2026-08-31 01:39 | Sprint tooling landed (`/morning`, `/evening`, constitution 2.2.0). **No ticket stages moved** — RC-08 + RC-10 still 🔨 In code, uncommitted |
 | 2026-08-31 01:18 | Board created. RC-08 + RC-10 → 🔨 In code; RC-01 → ⏭️ Today (blocking, owner) |
 
