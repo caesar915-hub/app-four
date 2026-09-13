@@ -29,7 +29,7 @@ nonisolated struct GemmaJournalService: SummarizationService {
         installedCheck: @escaping @Sendable () -> Bool = {
             AIModelServiceImpl.gemmaLiteRTModelInstalled(in: ModelConstants.llmDownloadBase)
         },
-        memoryMinimumBytes: UInt64 = 1_500_000_000,
+        memoryMinimumBytes: UInt64 = 1_000_000_000,
         generatorProvider: (@Sendable () async throws -> LiteRTTextGenerator)? = nil,
         preloadedGenerator: LiteRTTextGenerator? = nil
     ) {
@@ -130,7 +130,10 @@ nonisolated struct GemmaJournalService: SummarizationService {
         )
     }
 
-    static func checkMemoryHeadroom(minimumBytes: UInt64 = 1_500_000_000) -> Bool {
+    /// Gemma 4 E2B (CPU/XNNPACK) targets ~607 MB resident, so the floor is 1 GB
+    /// (model + KV + margin) — lower than the MLX/Qwen 1.5 GB it was NOT copied from.
+    /// Recalibrate to the measured A14 `phys_footprint` (device-qa-checklist).
+    static func checkMemoryHeadroom(minimumBytes: UInt64 = 1_000_000_000) -> Bool {
         os_proc_available_memory() >= minimumBytes
     }
 
