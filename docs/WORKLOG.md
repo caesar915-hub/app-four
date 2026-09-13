@@ -1,5 +1,46 @@
-## 2026-09-12 23:36–23:52 · Spec Kit brief — Gemma 4 E2B text-only via LiteRT-LM on iPho · feat/speech-transcriber-probe
+## 2026-09-12 23:52 – 2026-09-13 21:30 · run summary + sprint DEVLOG/BACKLOG checkpoint · feat/gemma4-litert-extraction
 
+**Code changes**
+- _Major (feat)_
+  - `20bbb0ed` feat(056): additive Gemma 4 E2B / LiteRT-LM extraction backend (inert, TDD)
+- _Tests_
+  - `bbae0473` test(056): gated Gemma extraction eval + test plan (device-only)
+- _refactor_
+  - `47405951` refactor(056): /code-review pass — Gemma-appropriate memory floor + convergence record
+- _docs_
+  - `0b010f54` docs(056): run summary + sprint DEVLOG/BACKLOG checkpoint
+  - `bd25a421` docs(056): speckit tasks — TDD-ordered, additive tonight / device-gated switchover last
+  - `141fe4d9` docs(056): speckit specify + plan + constitution 2.4.0 (Gemma 4 via LiteRT-LM)
+  - `36f9c526` docs(056): fold /speckit-clarify resolutions into LiteRT brief
+  - `39308e33` docs: regenerate WORKLOG.md after LiteRT-LM brief
+
+**gh actions**
+- PR #45 opened `fix/audit-high-medium` — "fix(audit): high + medium remediation (recording-cap, delete-orphan, save-safety, focus, sleep, regenerate)" — OPEN/MERGEABLE
+- PR #44 opened `fix/audit-safe-cleanup` — "fix(audit): safe cleanup (dead code, debug gating, RC-30, privacy logs)" — OPEN/MERGEABLE
+- PR #43 opened `docs/codebase-audit-2026-09` — "docs(audit): full codebase audit of main @ 2553e251" — OPEN/MERGEABLE
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                                                                                                   074bb264 [docs/llm-fsd-alignment]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9b2edc5e-33b2-475c-b128-3fa4ef03a52c/scratchpad/fix-wt                                                    39a2ab3d [fix/audit-safe-cleanup]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9b2edc5e-33b2-475c-b128-3fa4ef03a52c/scratchpad/hm-wt                                                     05ee8e38 [fix/audit-high-medium]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9b2edc5e-33b2-475c-b128-3fa4ef03a52c/scratchpad/report-wt                                                 4134eec4 [docs/codebase-audit-2026-09]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-74ef9339           760154c5 [subagent-5-Stage-Pipeline-Engine-self-74ef9339]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-5-Stage-Pipeline-Engine-self-b7470585           760154c5 [subagent-5-Stage-Pipeline-Engine-self-b7470585]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Creative-Product-Strategist-self-78bed542       760154c5 [subagent-Creative-Product-Strategist-self-78bed542]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Hackathon-Strategy-Researcher-research-15c26d5b 760154c5 [subagent-Hackathon-Strategy-Researcher-research-15c26d5b]
+/Users/caesargrey/.gemini/antigravity/brain/f0a7ed43-6f8a-4528-92a2-231c22f85aae/.system_generated/worktrees/subagent-Wellness-App-Market-Analyst-research-26f5fc3b   760154c5 [subagent-Wellness-App-Market-Analyst-research-26f5fc3b]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                                                                                 9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                                                                     965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/054-settings-topic-hub                                                                                          4d1a3e88 [feat/054-settings-topic-hub]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/055-rc-foundation                                                                                               9564e392 [feat/055-revenuecat]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                                                                          5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/remove-nlp                                                                                                      73e8a091 [chore/remove-dead-nlp]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/speech-transcriber-probe                                                                                        0b010f54 [feat/gemma4-litert-extraction]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ui-refresh                                                                                                      2553e251 [feat/ui-refresh]
+```
+
+---
 **Code changes**
 - _docs_
   - `970c48ca` docs(engineering): Spec Kit brief — Gemma 4 E2B text-only via LiteRT-LM on iPhone 12 Pro
