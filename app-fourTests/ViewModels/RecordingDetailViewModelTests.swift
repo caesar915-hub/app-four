@@ -75,4 +75,17 @@ struct RecordingDetailViewModelTests {
         viewModel.delete()
         #expect(store.recordings.isEmpty)
     }
+
+    // Regenerate previously refreshed the summary/signals but not medication events;
+    // the mock summary carries a Concerta dose, which must land on the recording.
+    @Test func regenerateRefreshesMedicationEvents() async {
+        #expect(recording.medicationEvents.isEmpty)
+        // Regenerate summarizes the transcript; a non-empty transcript is required or
+        // generateSummary() short-circuits before the summarization path runs.
+        recording.fullTranscriptText = "Took Concerta this morning, feeling focused."
+        store.context.insert(recording)
+        viewModel.startRegenerate()
+        await viewModel.summaryTask?.value
+        #expect(recording.medicationEvents.contains { $0.name == "Concerta" })
+    }
 }

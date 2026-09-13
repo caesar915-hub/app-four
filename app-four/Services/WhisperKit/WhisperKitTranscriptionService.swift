@@ -143,7 +143,13 @@ actor WhisperKitTranscriptionService: TranscriptionService {
                 // Keep the app alive while CoreML/Metal runs so the OS doesn't
                 // suspend us mid-transcription (which causes GPU background errors).
                 let backgroundTaskID = await MainActor.run {
-                    UIApplication.shared.beginBackgroundTask(withName: "WhisperTranscription")
+                    var id: UIBackgroundTaskIdentifier = .invalid
+                    id = UIApplication.shared.beginBackgroundTask(withName: "WhisperTranscription") {
+                        // Expiration handler: end the task so the OS reclaims it gracefully
+                        // instead of killing the app if the background window runs out.
+                        UIApplication.shared.endBackgroundTask(id)
+                    }
+                    return id
                 }
                 defer {
                     Task { @MainActor in

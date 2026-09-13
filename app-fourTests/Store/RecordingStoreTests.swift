@@ -41,6 +41,21 @@ struct RecordingStoreTests {
         #expect(store.recordings.count == countAfterAdd - 1)
     }
 
+    @Test func deletingRecordingRemovesAudioFile() throws {
+        let fm = FileManager.default
+        let name = "recording_\(UUID().uuidString.lowercased()).m4a"
+        let url = AppPaths.recordings.appendingPathComponent(name)
+        try Data("audio".utf8).write(to: url)
+        #expect(fm.fileExists(atPath: url.path))
+
+        let recording = Recording(audioFileName: name, title: "With Audio")
+        store.addRecording(recording)
+        store.deleteRecording(recording)
+
+        // The sensitive .m4a must be gone from disk, not just the SwiftData row.
+        #expect(!fm.fileExists(atPath: url.path))
+    }
+
     @Test func toggleFavorite() throws {
         let recording = Recording(audioFileName: "fav.m4a", title: "Favorite Test")
         store.addRecording(recording)

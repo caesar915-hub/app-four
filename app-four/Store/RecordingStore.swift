@@ -65,7 +65,17 @@ class RecordingStore {
     }
     
     func deleteRecording(_ recording: Recording) {
-        // AudioFileStorageService handles the actual file deletion
+        // Delete the on-disk audio file first, then the row. Both single-delete UIs
+        // (detail view, calendar) route through here; without this the sensitive
+        // .m4a is orphaned on disk forever after the user deletes the entry.
+        let fileURL = AppPaths.recordings.appendingPathComponent(recording.audioFileName)
+        if FileManager.default.fileExists(atPath: fileURL.path) {
+            do {
+                try FileManager.default.removeItem(at: fileURL)
+            } catch {
+                AppLogger.log("Failed to delete audio file for \(recording.id): \(error)")
+            }
+        }
         modelContext.delete(recording)
         try? modelContext.save()
         loadRecordings()

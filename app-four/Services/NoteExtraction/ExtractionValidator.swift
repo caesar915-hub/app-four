@@ -72,9 +72,17 @@ enum ExtractionValidator {
                                                (raw.contains("slept") && (raw.contains("hour") || raw.contains("hr") || raw.contains("h"))) ||
                                                (raw.contains("dormi") && (raw.contains("hora") || raw.contains("h"))) ||
                                                (raw.contains("sleep") && (raw.contains("hour") || raw.contains("hr") || raw.contains("broken")))
-                let onlyWorkOrWake = raw.contains("worked ") || raw.contains("hours straight") || raw.contains("at the office") ||
+                let mentionsSleep = raw.contains("slept") || raw.contains("sleep") || raw.contains("dormi") ||
+                                    raw.contains("of sleep") || raw.contains("sono")
+                // Unambiguous non-sleep contexts always disqualify the duration; the bare
+                // "N hours"/"hours straight" phrasings only do so when nothing marks it as sleep,
+                // so "slept for 8 hours" is no longer thrown away.
+                let onlyWorkOrWake = raw.contains("worked ") || raw.contains("at the office") ||
                                      raw.contains("fasted for") || raw.contains("estudei ") || raw.contains("manejé ") ||
-                                     raw.contains("flight") || raw.contains("for 5 hours straight") || raw.contains("for 8 hours")
+                                     raw.contains("flight") ||
+                                     (!mentionsSleep && (raw.contains("hours straight") ||
+                                                         raw.contains("for 5 hours straight") ||
+                                                         raw.contains("for 8 hours")))
                 if !hasExplicitSleepDuration || onlyWorkOrWake {
                     valid.sleepHours = nil
                 }

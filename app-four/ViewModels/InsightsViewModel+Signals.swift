@@ -229,7 +229,7 @@ extension InsightsViewModel {
         let goodFocusDays = medDayDates.filter { day -> Bool in
             let dayRecs = monthRecordings.filter { self.calendar.startOfDay(for: $0.createdAt) == day }
             return dayRecs.contains { r -> Bool in
-                let level = r.focusLevel.flatMap { FocusLevel(rawValue: $0.lowercased()) }
+                let level = r.focusLevel.flatMap { FocusLevel(rawValue: $0) }
                 return (level?.numericValue ?? 0) >= 4
             }
         }
@@ -337,7 +337,7 @@ extension InsightsViewModel {
         switch kind {
         case .mood:   return r.mood.flatMap { MoodLevel(name: $0) }
         case .energy: return r.energyLevel.flatMap { EnergyLevel(rawValue: $0.lowercased()) }
-        case .focus:  return r.focusLevel.flatMap { FocusLevel(rawValue: $0.lowercased()) }
+        case .focus:  return r.focusLevel.flatMap { FocusLevel(rawValue: $0) }
         }
     }
 
