@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "B7E2C1A0-0056-4E12-9F3A-1A2B3C4D5E6F",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "environmentVariableEntries" : [
+      {
+        "key" : "GEMMA_EVAL",
+        "value" : "1"
+      }
+    ]
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:app-four.xcodeproj",
+        "identifier" : "3724CF852FC9292700427F48",
+        "name" : "app-fourTests"
+      }
+    }
+  ],
+  "version" : 1
+}
