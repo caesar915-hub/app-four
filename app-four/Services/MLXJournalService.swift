@@ -63,7 +63,9 @@ nonisolated struct MLXJournalService: SummarizationService {
 
         // Validate and clamp all fields against Levels.swift enums + lexicon allowlists.
         let validated = ExtractionValidator.validate(merged, lexicon: lexicon, rawTranscript: trimmed)
+        #if DEBUG
         AppLogger.log("MLXJournalService: extraction parsed — mood=\(String(describing: validated.mood)), energy=\(String(describing: validated.energy)), focus=\(String(describing: validated.focus)), summary=\(validated.summary == nil ? "nil" : "present")")
+        #endif
 
         #if !targetEnvironment(simulator)
         MLX.GPU.clearCache()

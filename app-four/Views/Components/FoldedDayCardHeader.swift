@@ -109,10 +109,14 @@ struct FoldedDayCardHeader: View {
     private var chips: [Chip] {
         var c: [Chip] = []
         if let energy = summary.energy {
-            c.append(Chip(kind: .energy, level: EnergyLevel(rawValue: energy.lowercased())?.numericValue, text: energy, color: .primary))
+            // summary.energy/.focus are displayLabels ("Charged", "Locked In"); resolve the
+            // level by matching displayLabel so multi-word "Locked In" (focus 5) keeps its fill.
+            let level = EnergyLevel.allCases.first { $0.displayLabel == energy }?.numericValue
+            c.append(Chip(kind: .energy, level: level, text: energy, color: .primary))
         }
         if let focus = summary.focus {
-            c.append(Chip(kind: .focus, level: FocusLevel(rawValue: focus.lowercased())?.numericValue, text: focus, color: .primary))
+            let level = FocusLevel.allCases.first { $0.displayLabel == focus }?.numericValue
+            c.append(Chip(kind: .focus, level: level, text: focus, color: .primary))
         }
         if let med = summary.mostRecentMedicationName {
             c.append(Chip(kind: .medication, level: nil, text: med, color: Palette.medication))
