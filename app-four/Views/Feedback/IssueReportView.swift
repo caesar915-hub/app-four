@@ -1,3 +1,4 @@
+#if DEBUG || TESTFLIGHT
 import SwiftUI
 import MessageUI
 
@@ -256,3 +257,4 @@ struct MailAttachment {
     let mimeType: String
     let fileName: String
 }
+#endif

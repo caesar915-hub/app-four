@@ -2,7 +2,7 @@ import Foundation
 
 /// The extracted ADHD journal schema from a voice note transcript.
 public struct NoteExtraction: Sendable, Codable, Equatable {
-    public var mood: String?          // MoodLevel rawValue (dark/low/flat/okay/good/high)
+    public var mood: String?          // MoodLevel rawValue (low/flat/okay/good/great)
     public var energy: EnergyLevel?
     public var focus: FocusLevel?
     public var emotions: [String]     // curated Mood-Meter emotions (anxious, grateful, etc.)

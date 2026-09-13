@@ -1,3 +1,4 @@
+#if DEBUG
 import SwiftUI
 import SwiftData
 
@@ -175,3 +176,4 @@ struct TestServicesView: View {
     TestServicesView()
         .modelContainer(AppModelContainer.previewContainer)
 }
+#endif

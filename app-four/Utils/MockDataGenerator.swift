@@ -1,3 +1,4 @@
+#if DEBUG
 import Foundation
 import SwiftData
 
@@ -123,3 +124,4 @@ class MockDataGenerator {
         try? context.save()
     }
 }
+#endif

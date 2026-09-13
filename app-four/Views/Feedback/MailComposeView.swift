@@ -1,3 +1,4 @@
+#if DEBUG || TESTFLIGHT
 import SwiftUI
 import MessageUI
 
@@ -41,3 +42,4 @@ struct MailComposeView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: MFMailComposeViewController, context: Context) {}
 }
+#endif
