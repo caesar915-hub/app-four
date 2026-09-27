@@ -1,4 +1,4 @@
-<!-- Created: 2026-08-31 01:18 (WEST) · Updated: 2026-08-31 01:39 (WEST) -->
+<!-- Created: 2026-08-31 01:18 (WEST) · Updated: 2026-09-27 12:55 (WEST) -->
 # Shipaton Sprint DevLog — September 2026
 
 Chronological narrative of the sprint — the *why* behind what happened. Newest day on top.
@@ -12,6 +12,10 @@ This complements, never duplicates: **[BACKLOG.md](BACKLOG.md)** holds current *
 Rule inherited from `docs/DEVLOG.md`: **the why, not every edit.**
 
 ---
+
+## 2026-09-27
+
+- **[12:55 WEST] Investigation — repo made public for Shipaton; secret scan finds the June Anthropic keys still in history; README added.** _what:_ owner made `caesar915-hub/app-four` public (35 branches + 13 tags). gitleaks over every public ref: the only real secret is the pair of Anthropic API keys in `docs/archive/handover-two.md` at `88f423b` — redacted from the tree on 2026-06-15 but still in history on every branch and tag. Everything else was a false positive (Figma file keys, doc strings); no `.p8`, `.env`, provisioning profile, RevenueCat secret, HF token or audio was ever pushed. Untracked `.gems/` (183 vendored Ruby gem files, tracked since the first commit), added credential patterns to `.gitignore`, wrote the root README. _why:_ a public repo turns a months-old leak into a live one; the README exists because judges will otherwise assume `main` is what's in the App Store — it isn't (1.0 = `v1.0`, NaturalLanguage extractor; `main` = unsubmitted 1.1 with MLX; RevenueCat implemented on `feat/055-revenuecat`, not approved). Same day: owner re-listed 1.0 in all 175 storefronts. _open:_ **the keys must be confirmed revoked in the Anthropic console** — revocation is the fix, not history rewriting (GitHub keeps `refs/pull/*` copies regardless). _next:_ owner confirms revocation.
 
 ## 2026-08-31
 
