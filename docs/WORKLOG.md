@@ -1,3 +1,48 @@
+## 2026-09-28 13:48–15:37 · board, log and task checklist for C4–C7 and the D1/D2 sweeps · feat/057-ui-refresh
+
+**Code changes**
+- _Major (feat)_
+  - `3ea70ed7` feat(057/C7): Settings as card groups + medication-bar title options
+  - `a4b3fa1b` feat(057/C6): Insights on the pen's four cards + connections
+  - `be7a813e` feat(057/C5): Edit Check-In as a pushed page with a dirty-gated Save
+  - `4b818a06` feat(057/C4): Day Details on the pen's page + wave-1 screenshot fixes
+  - `e952998d` feat(057/C3): secondary surfaces wave 1 — text composer, Log Dose sheet, onboarding tokens
+  - `05f0db2e` feat(057/C2): Calendar / Mood Journal on the pen's cards, week strip and medication bar
+  - `f68469d1` feat(057/C1): check-in trio on the pen's anchored ring (hub · listening · saved)
+  - `64179bb0` feat(057/B4): floating tab bar + Add button, chrome-less roots, chrome visibility preference
+  - `c3a8f2ec` feat(057/B3): pen glyphs as SwiftUI paths, sleep ramp, medication atoms, ring, level tiles
+  - `03492ed7` feat(057/B2): button styles, Bill-shape chips, nav pills, controls and icon map
+  - `6bb864af` feat(057/B1): pen-derived tokens, typography roles, layout tokens and card atoms
+- _Fixes_
+  - `b5769642` fix(057/D2): wave-2 screenshot findings + sandbox build
+- _docs_
+  - `fbd43e23` docs(057): board, log and task checklist for C4–C7 and the D1/D2 sweeps
+  - `de50df00` docs(057): decisions accepted (UI-02), Epic UI tickets + backlog (UI-03), Spec Kit 057 (UI-05)
+  - `e0dc67b5` docs(057): pen-derived DESIGN.md, UI refresh plan, research pack and pen exports
+- _chore_
+  - `51576547` chore(057/D1): delete the refresh-orphaned code and the pre-057 token aliases
+
+**gh actions**
+- PR #47 opened `fix/insights-sleep-mood-gate` — "fix(insights): Sleep × Mood connection gates on the canonical sleep level (UI-40)" — OPEN/MERGEABLE
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                                               074bb264 [docs/llm-fsd-alignment]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9b2edc5e-33b2-475c-b128-3fa4ef03a52c/scratchpad/qa-wt 05ee8e38 [fix/audit-high-medium] prunable
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                             9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                 965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/040-sleep-mood-gate                                         51d84d44 [fix/insights-sleep-mood-gate]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/054-settings-topic-hub                                      4d1a3e88 [feat/054-settings-topic-hub]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/055-rc-foundation                                           7002bb5b [feat/055-revenuecat]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/057-ui-refresh                                              fbd43e23 [feat/057-ui-refresh]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                      5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/remove-nlp                                                  73e8a091 [chore/remove-dead-nlp]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/speech-transcriber-probe                                    d5d7dc31 [feat/gemma4-litert-extraction]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ui-refresh                                                  08ba8cba [feat/ui-refresh]
+```
+
+---
+
 ## 2026-08-11 19:45 – 2026-09-27 12:55 · public-repo README + untrack vendored .gems + credential git · main
 
 **Code changes**
