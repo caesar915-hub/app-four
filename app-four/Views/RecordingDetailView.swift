@@ -1,5 +1,10 @@
 import SwiftUI
 
+/// Day Details as the pen draws it (spec 057, `iPhone 17 - 1`): a back pill + relative title +
+/// dated subtitle with a `•••` menu (Edit · Transcript · Delete), the three-signal summary card,
+/// emotion chips, sleep and side-effect chip rows (kept — D7), the medication rows, and the
+/// "Daily check-in" AI card with its inline player, followed by the transcript disclosure.
+/// One check-in per page (D18); the floating chrome stays visible (D-N4).
 struct RecordingDetailView: View {
     let recording: Recording
     @State private var viewModel: RecordingDetailViewModel
@@ -7,7 +12,9 @@ struct RecordingDetailView: View {
     @State private var editViewModel: ExtractionReviewViewModel?
     @State private var pendingDelete = false
     @State private var showDeleteConfirm = false
+    @State private var showTranscript = false
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(RecordingStore.self) private var store
     @Environment(AppServices.self) private var services
 
@@ -22,101 +29,81 @@ struct RecordingDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Spacing.m) {
-                titleBlock
-                if hasSignals { signalHeroStrip }
-                ADHDSummarySection(recording: viewModel.recording)
-                if hasSummary { summaryCard }
-                transcriptSection
-                audioCard
-                deleteButton
+            VStack(alignment: .leading, spacing: Spacing.cardGap) {
+                header
+                signalsSection
+                emotionsSection
+                sleepSection
+                sideEffectsSection
+                medicationsSection
+                checkInSection
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(Spacing.l)
+            .padding(.horizontal, Spacing.gutter)
+            .padding(.top, Spacing.m)
+            .padding(.bottom, Spacing.xxl)
         }
-        .background(NewLook.screen.ignoresSafeArea())
-        // The medication bar rides above as its own floating Paper & Pollen element — an accepted
-        // within-screen seam (spec 032, T017): it is a shared overlay, not part of this re-skin.
-        .medicationBarOverlay()
-        // Pushed from the calendar / insights (spec 023): a standard back control returns to the day;
-        // the date rides the nav bar and the ⋯ menu carries the quiet Delete affordance.
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(NewLook.screen, for: .navigationBar)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Text(navDate)
-                    .font(Typography.label)
-                    .textCase(.uppercase)
-                    .tracking(0.6)
-                    .foregroundStyle(NewLook.inkSecondary)
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    editViewModel = ExtractionReviewViewModel(
-                        recording: viewModel.recording,
-                        store: store,
-                        onComplete: { [self] _ in editViewModel = nil }
-                    )
-                } label: {
-                    Image(systemName: "pencil")
-                        .font(Typography.subheadline)
-                        .foregroundStyle(NewLook.inkPrimary)
-                        .frame(width: 44, height: 44)
-                        .background(NewLook.card, in: .circle)
-                }
-                .accessibilityLabel("Edit check-in")
-            }
+        .background(Surface.screen.ignoresSafeArea())
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            Color.clear.frame(height: Metrics.floatingChromeInset)
         }
+        .toolbar(.hidden, for: .navigationBar)
         .trackScreen("RecordingDetailView")
-        .sheet(item: $editViewModel) { vm in
+        .navigationDestination(item: $editViewModel) { vm in
             ExtractionReviewView(viewModel: vm)
         }
-        // Delete only after this view is torn down. Deleting a @Model is an
-        // @Observable mutation that invalidates every view still reading it;
-        // doing it while the sheet is mounted re-renders a detached object and
-        // traps in SwiftData (BackingData "detached without resolving faults").
+        // Delete only after this view is torn down: deleting a @Model while a view still reads it
+        // re-renders a detached object and traps in SwiftData.
         .onDisappear { if pendingDelete { viewModel.delete() } }
         .confirmationDialog("Delete this check-in?", isPresented: $showDeleteConfirm, titleVisibility: .visible) {
             Button("Delete", role: .destructive) {
                 pendingDelete = true
-                // Defer the dismissal to ensure it executes after the dialog's own pop animation
-                // completes; otherwise SwiftUI swallows it and the user stays trapped on the screen.
+                // Dismiss after the dialog's own pop animation, or SwiftUI swallows it.
                 Task { @MainActor in dismiss() }
             }
+        } message: {
+            Text("The recording, its transcript and its signals are removed from this device.")
         }
         .alert("Insights Model Not Downloaded", isPresented: $viewModel.showModelMissing) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text("Your note is saved, but mood, energy and focus weren't extracted because the insights model isn't on this device yet. Download it from Settings › AI Models.")
+            Text("Your note is saved, but mood, energy and focus weren't extracted because the insights model isn't on this device yet. Add them with Edit check-in, or download the model from Settings › AI Models for your next check-ins.")
         }
     }
 
-    // MARK: - Title + meta
+    // MARK: - Header
 
-    private var titleBlock: some View {
-        VStack(alignment: .leading, spacing: Spacing.xs) {
-            Text(viewModel.recording.displayTitle)
-                .font(Typography.title)
-                .foregroundStyle(NewLook.inkPrimary)
-                .fixedSize(horizontal: false, vertical: true)
-            Text(metaLine)
-                .font(Typography.mono12)
-                .foregroundStyle(NewLook.inkSecondary)
+    private var header: some View {
+        NavHeader(title: viewModel.relativeTitle, subtitle: viewModel.subtitle, onBack: { dismiss() }) {
+            Menu {
+                Button("Edit check-in", systemImage: Icons.note) { openEditor() }
+                Button(showTranscript ? "Hide transcript" : "Show transcript", systemImage: Icons.voice) {
+                    withAnimation(reduceMotion ? nil : Motion.expand) { showTranscript.toggle() }
+                }
+                Button("Delete check-in", systemImage: Icons.trash, role: .destructive) { showDeleteConfirm = true }
+            } label: {
+                Image(systemName: Icons.more)
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundStyle(Accent.deepText)
+                    .frame(width: Metrics.navPill, height: Metrics.navPill)
+                    .background(Surface.card, in: .circle)
+                    .overlay { Circle().strokeBorder(Stroke.chip, lineWidth: Stroke.hairlineWidth) }
+                    .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
+                    .contentShape(.rect)
+            }
+            .accessibilityLabel("More")
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    private var navDate: String {
-        let d = viewModel.recording.createdAt
-        return "\(d.formatted(.dateTime.weekday(.abbreviated))) · \(d.formatted(.dateTime.day().month(.wide)))"
+    private func openEditor() {
+        editViewModel = ExtractionReviewViewModel(
+            recording: viewModel.recording,
+            store: store,
+            onComplete: { [self] _ in editViewModel = nil }
+        )
     }
 
-    private var metaLine: String {
-        let time = viewModel.recording.createdAt.formatted(date: .omitted, time: .shortened)
-        return "\(time) · \(viewModel.recording.durationString)"
-    }
-
-    // MARK: - Signal hero strip (glyph · level word · micro-label · level bar)
+    // MARK: - Signals (Mood · Focus · Energy — the pen's order)
 
     private var hasSignals: Bool {
         viewModel.recording.mood != nil
@@ -124,189 +111,292 @@ struct RecordingDetailView: View {
             || viewModel.recording.focusLevel != nil
     }
 
-    private var signalHeroStrip: some View {
-        HStack(alignment: .top, spacing: Spacing.s) {
-            if let mood = viewModel.recording.mood, let level = MoodLevel(name: mood) {
-                heroColumn(.mood, level: level.numericValue, word: mood.capitalized, tint: level.deepFill)
-            }
-            // energyLevel / focusLevel are stored as the canonical enum rawValue
-            // ("charged", "lockedIn"); match it verbatim and show the human displayLabel.
-            if let energy = viewModel.recording.energyLevel, let level = EnergyLevel(rawValue: energy) {
-                heroColumn(.energy, level: level.numericValue, word: level.displayLabel, tint: rampColor(.energy, level.numericValue))
-            }
-            if let focus = viewModel.recording.focusLevel, let level = FocusLevel(rawValue: focus) {
-                heroColumn(.focus, level: level.numericValue, word: level.displayLabel, tint: rampColor(.focus, level.numericValue))
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .newLookCard()
-    }
-
-    private func heroColumn(_ kind: GlyphSignal, level: Int?, word: String, tint: Color) -> some View {
-        VStack(spacing: Spacing.xs) {
-            SignalGlyph(kind, level: level, size: 30, decorative: true)
-            Text(word)
-                .font(Typography.headline)
-                .foregroundStyle(NewLook.inkPrimary)
-            Text(kind.title)
-                .font(Typography.label)
-                .textCase(.uppercase)
-                .tracking(0.6)
-                .foregroundStyle(NewLook.inkSecondary)
-            levelBar(level: level, tint: tint)
-        }
-        .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(kind.title): \(word)")
-    }
-
-    private func levelBar(level: Int?, tint: Color) -> some View {
-        GeometryReader { proxy in
-            let fraction = CGFloat(level ?? 0) / 5
-            ZStack(alignment: .leading) {
-                Capsule().fill(NewLook.hairline)
-                Capsule().fill(tint).frame(width: max(0, proxy.size.width * fraction))
+    @ViewBuilder private var signalsSection: some View {
+        if hasSignals {
+            VStack(alignment: .leading, spacing: Spacing.m) {
+                Text("How did you feel?")
+                    .font(Typography.question)
+                    .foregroundStyle(Ink.primary)
+                    .accessibilityAddTraits(.isHeader)
+                SignalSummaryCard(
+                    mood: MoodLevel(name: viewModel.recording.mood),
+                    focus: viewModel.recording.focusLevel.flatMap { FocusLevel(rawValue: $0) },
+                    energy: viewModel.recording.energyLevel.flatMap { EnergyLevel(rawValue: $0) }
+                )
             }
         }
-        .frame(height: 4)
     }
 
-    private func rampColor(_ kind: GlyphSignal, _ level: Int) -> Color {
-        guard level >= 1, level <= 5 else { return NewLook.inkSecondary }
-        switch kind {
-        case .energy: return Palette.energyRamp[level - 1]
-        case .focus:  return Palette.focusRamp[level - 1]
-        default:      return NewLook.selection
+    // MARK: - Chip rows
+
+    @ViewBuilder private var emotionsSection: some View {
+        let emotions = viewModel.recording.decodedEmotions
+        if !emotions.isEmpty {
+            chipSection("Emotions", words: emotions)
         }
     }
 
-    // MARK: - Card header
-
-    private func cardHeader(_ title: String) -> some View {
-        Text(title)
-            .font(Typography.headline)
-            .foregroundStyle(NewLook.inkPrimary)
+    @ViewBuilder private var sleepSection: some View {
+        if let label = sleepLabel {
+            VStack(alignment: .leading, spacing: Spacing.m) {
+                SectionHeading("Sleep")
+                HStack(spacing: Spacing.s) {
+                    SignalGlyph(.sleep, level: viewModel.recording.decodedSleepLevel?.numericValue, size: Metrics.glyphInline, decorative: true)
+                    BillChip(label, style: .solid, large: true)
+                }
+            }
+        }
     }
 
-    // MARK: - Summary (LLM bullets — surfaced per the 043 detail redesign)
+    private var sleepLabel: String? {
+        if let level = viewModel.recording.decodedSleepLevel {
+            if let hours = viewModel.recording.sleepLabel { return "\(level.displayLabel) · \(hours)" }
+            return level.displayLabel
+        }
+        return viewModel.recording.sleepLabel
+    }
 
+    @ViewBuilder private var sideEffectsSection: some View {
+        let effects = viewModel.recording.decodedSideEffects
+        if !effects.isEmpty {
+            chipSection("Side effects", words: effects)
+        }
+    }
+
+    private func chipSection(_ title: String, words: [String]) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            SectionHeading(title)
+            ChipRow {
+                ForEach(Array(words.enumerated()), id: \.offset) { _, word in
+                    BillChip(word.capitalized, style: .solid, large: true)
+                }
+            }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("\(title): \(words.map(\.capitalized).joined(separator: ", "))")
+        }
+    }
+
+    // MARK: - Medications
+
+    /// Transcript-sourced doses only, as before the refresh (plan Q30 — manual doses on a
+    /// check-in's page — is undecided).
+    private var medicationEvents: [MedicationEvent] {
+        viewModel.recording.medicationEvents
+            .filter { $0.source == .transcript }
+            .sorted { $0.takenAt < $1.takenAt }
+    }
+
+    @ViewBuilder private var medicationsSection: some View {
+        if !medicationEvents.isEmpty {
+            VStack(alignment: .leading, spacing: Spacing.m) {
+                SectionHeading("Your medications")
+                VStack(spacing: Spacing.m) {
+                    ForEach(Array(medicationEvents.enumerated()), id: \.element.id) { index, event in
+                        if index > 0 { HairlineDivider() }
+                        HStack(spacing: Spacing.m) {
+                            MedicationBadge(size: 28)
+                            Text(medicationLine(event))
+                                .font(Typography.rowLabel)
+                                .foregroundStyle(Ink.title)
+                            Spacer(minLength: Spacing.s)
+                            if !event.taken {
+                                Text("Missed")
+                                    .font(Typography.status)
+                                    .foregroundStyle(Ink.tertiary)
+                            }
+                        }
+                        .accessibilityElement(children: .combine)
+                    }
+                }
+                .card(.small)
+            }
+        }
+    }
+
+    private func medicationLine(_ event: MedicationEvent) -> String {
+        var text = event.dose.map { "\(event.name) · \($0)" } ?? event.name
+        let qty = event.quantity ?? 1.0
+        if qty == 0.5 { text += " ×½" }
+        else if qty != 1.0 {
+            let f = qty == qty.rounded() ? String(Int(qty)) : String(format: "%.1f", qty)
+            text += " ×\(f)"
+        }
+        return text
+    }
+
+    // MARK: - Daily check-in (AI summary + player + transcript)
+
+    private var isTextCheckIn: Bool { viewModel.recording.audioFileName.hasPrefix("text-") }
+
+    /// The fallback "summary" is the raw transcript echoed back — never present it under the AI byline.
     private var hasSummary: Bool {
         let bullets = viewModel.recording.summaryBullets
-        // The fallback "summary" is the raw transcript echoed back — suppress the
-        // card (and its AI-authorship caption); the transcript section below
-        // already shows the same text.
         return !bullets.isEmpty && bullets != [viewModel.recording.fullTranscriptText]
     }
 
-    /// The on-device model's second-person read-back of the check-in. Sits in
-    /// the transcript's old slot; the full transcript follows, always expanded.
-    private var summaryCard: some View {
+    private var checkInSection: some View {
         VStack(alignment: .leading, spacing: Spacing.m) {
-            cardHeader("Summary")
-            VStack(alignment: .leading, spacing: Spacing.s) {
-                ForEach(viewModel.recording.summaryBullets, id: \.self) { bullet in
-                    Text(bullet)
-                        .font(Typography.body)
-                        .foregroundStyle(NewLook.inkPrimary)
-                        .lineSpacing(4)
-                        .fixedSize(horizontal: false, vertical: true)
+            SectionHeading("Daily check-in")
+            VStack(alignment: .leading, spacing: Spacing.rowInset) {
+                if hasSummary {
+                    byline
+                    HairlineDivider()
+                    ForEach(viewModel.recording.summaryBullets, id: \.self) { bullet in
+                        Text(bullet)
+                            .font(Typography.narrative)
+                            .foregroundStyle(Ink.primary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                } else {
+                    transcriptionState
+                }
+                if !isTextCheckIn {
+                    HairlineDivider()
+                    AudioPlayerView(recording: viewModel.recording, storageService: services.storageService)
                 }
             }
-            Label("Written by on-device AI from your voice — tap Edit to correct", systemImage: "sparkles")
-                .font(Typography.caption)
-                .foregroundStyle(NewLook.inkSecondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .raisedCard(.large, padding: Spacing.rowInset)
+
+            transcriptDisclosure
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .newLookCard()
     }
 
-    // MARK: - Transcript
+    private var byline: some View {
+        HStack(alignment: .top, spacing: Spacing.s) {
+            Image(systemName: Icons.sparkle)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(Accent.connection)
+                .accessibilityHidden(true)
+            Text("Written by on-device AI from your voice. Tap Edit to correct.")
+                .font(Typography.captionQuiet)
+                .foregroundStyle(Ink.placeholder)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
 
-    @ViewBuilder
-    private var transcriptSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.m) {
-            HStack {
-                cardHeader("Transcript")
-                Spacer()
-                transcriptionStatusPill
+    /// What the card shows before a summary exists: the transcription's state, with the only
+    /// recovery path the app has (retry) — kept, D7.
+    @ViewBuilder private var transcriptionState: some View {
+        switch viewModel.recording.status {
+        case .transcribing:
+            HStack(spacing: Spacing.s) {
+                ProgressView().tint(Accent.primary)
+                Text("Transcribing…")
+                    .font(Typography.narrative)
+                    .foregroundStyle(Ink.tertiary)
             }
-
-            if viewModel.recording.status == .failed {
-                Button("Retry transcription") {
-                    viewModel.retryTranscription()
-                }
-                .buttonStyle(.secondary)
+        case .failed:
+            VStack(alignment: .leading, spacing: Spacing.s) {
+                Text(viewModel.recording.fullTranscriptText.isEmpty ? "Transcription failed." : viewModel.recording.fullTranscriptText)
+                    .font(Typography.cardSubtitle)
+                    .foregroundStyle(Ink.tertiary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button("Retry transcription") { viewModel.retryTranscription() }
+                    .buttonStyle(.outlined(.small))
             }
-
-            if viewModel.recording.status == .transcribing {
-                HStack(spacing: Spacing.s) {
-                    ProgressView().scaleEffect(0.8)
-                    Text("Transcribing…")
-                        .font(Typography.body)
-                        .foregroundStyle(NewLook.inkSecondary)
-                }
-                .padding(.vertical, Spacing.s)
-            } else if viewModel.recording.fullTranscriptText.isEmpty {
-                Text("No transcript available yet.")
-                    .font(Typography.body)
-                    .foregroundStyle(NewLook.inkSecondary)
+        default:
+            if viewModel.recording.fullTranscriptText.isEmpty {
+                Text("Waiting for the voice model — your check-in is saved.")
+                    .font(Typography.narrative)
+                    .foregroundStyle(Ink.tertiary)
             } else {
                 Text(viewModel.recording.transcriptText)
-                    .font(Typography.body)
-                    .foregroundStyle(NewLook.inkPrimary)
-                    .lineSpacing(4)
+                    .font(Typography.narrative)
+                    .foregroundStyle(Ink.primary)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .newLookCard()
     }
 
-    @ViewBuilder
-    private var transcriptionStatusPill: some View {
-        switch viewModel.recording.status {
-        case .recorded:
-            statusLabel("Recorded", color: Theme.meadowAmber)
-        case .transcribing:
-            statusLabel("Transcribing", color: NewLook.selection)
-        case .completed:
-            statusLabel("Completed", color: Theme.statusDone)
-        case .failed:
-            statusLabel("Failed", color: Theme.danger)
-        default:
-            EmptyView()
+    @ViewBuilder private var transcriptDisclosure: some View {
+        let transcript = viewModel.recording.fullTranscriptText
+        if hasSummary, !transcript.isEmpty {
+            VStack(alignment: .leading, spacing: Spacing.m) {
+                Button {
+                    withAnimation(reduceMotion ? nil : Motion.expand) { showTranscript.toggle() }
+                } label: {
+                    HStack(spacing: Spacing.s) {
+                        Text("Transcript")
+                            .font(Typography.rowTitle)
+                            .foregroundStyle(Ink.primary)
+                        Spacer()
+                        Image(systemName: showTranscript ? Icons.chevronUp : Icons.chevronDown)
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundStyle(Accent.primaryText)
+                    }
+                    .frame(minHeight: Metrics.minTapTarget)
+                    .contentShape(.rect)
+                }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(showTranscript ? [.isSelected] : [])
+                .accessibilityValue(showTranscript ? "Expanded" : "Collapsed")
+
+                if showTranscript {
+                    Text(transcript)
+                        .font(Typography.narrative)
+                        .foregroundStyle(Ink.primary)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .transition(.opacity)
+                }
+            }
+            .card(.small, padding: Spacing.cardInset)
         }
     }
+}
 
-    private func statusLabel(_ text: String, color: Color) -> some View {
-        Text(text)
-            .font(Typography.label)
-            .padding(.horizontal, Spacing.s)
-            .padding(.vertical, Spacing.xs)
-            .background(color.opacity(0.15), in: .capsule)
-            .foregroundStyle(color)
-    }
+// MARK: - Signal summary card
 
-    // MARK: - Audio (last card)
+/// The pen's three-column signal card: glyph · label · value word · 86 × 4 bar, split by hairlines.
+private struct SignalSummaryCard: View {
+    let mood: MoodLevel?
+    let focus: FocusLevel?
+    let energy: EnergyLevel?
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
-    private var audioCard: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            cardHeader("Audio")
-            AudioPlayerView(recording: viewModel.recording, storageService: services.storageService)
+    var body: some View {
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(spacing: Spacing.m) { columns }
+            } else {
+                HStack(alignment: .top, spacing: 0) { columns }
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .newLookCard()
-    }
-
-    // MARK: - Delete (visible destructive action)
-
-    private var deleteButton: some View {
-        Button("Delete check-in", role: .destructive) {
-            showDeleteConfirm = true
-        }
-        .buttonStyle(.plain)
-        .foregroundStyle(Theme.danger)
         .frame(maxWidth: .infinity)
-        .padding(.top, Spacing.s)
+        .card(.small, padding: Spacing.l)
+    }
+
+    @ViewBuilder private var columns: some View {
+        column(.mood, level: mood?.numericValue, word: mood?.displayLabel, color: mood?.wordColor ?? Ink.tertiary)
+        separator
+        column(.focus, level: focus?.numericValue, word: focus?.displayLabel, color: Accent.focusText)
+        separator
+        column(.energy, level: energy?.numericValue, word: energy?.displayLabel, color: Accent.energyText)
+    }
+
+    @ViewBuilder private var separator: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            HairlineDivider()
+        } else {
+            Rectangle().fill(Stroke.separator).frame(width: Stroke.hairlineWidth, height: 80)
+        }
+    }
+
+    private func column(_ kind: GlyphSignal, level: Int?, word: String?, color: Color) -> some View {
+        VStack(spacing: Spacing.xs) {
+            SignalGlyph(kind, level: level, size: 32, decorative: true)
+            Text(kind.title)
+                .font(Typography.rowLabel)
+                .foregroundStyle(Ink.primary)
+            Text(word ?? "—")
+                .font(Typography.status)
+                .foregroundStyle(word == nil ? Ink.tertiary : color)
+            SignalMiniBar(level: level ?? 0, color: color)
+                .frame(maxWidth: 86)
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(word.map { "\(kind.title): \($0)" } ?? "\(kind.title): not captured")
     }
 }
 

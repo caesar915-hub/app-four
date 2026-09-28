@@ -1,39 +1,30 @@
 import SwiftUI
 
-/// Energy — a lightning bolt that grows and fills across levels 1…5.
-/// Ported from the approved `gEnergy` generator (24×26 design space). Level is encoded by
-/// an internal size lift, fill depth and stroke weight, so low and high read apart in grayscale.
+/// Energy — the pen's bolt: a pale base with the amber fill rising 30 % → 100 % by level
+/// (the rising fill is a clip mask — D3.1; the export's black block was the mask itself).
 public struct BoltGlyph: View {
     public let level: Int
-    public let color: Color
+
+    public init(level: Int) {
+        self.level = level
+    }
 
     public var body: some View {
         Canvas { ctx, size in
-            let lift = 0.6 + Double(level) * 0.08
-            let s = min(size.width / 24, size.height / 26) * lift
-            ctx.translateBy(x: (size.width - 24 * s) / 2, y: (size.height - 26 * s) / 2)
-            ctx.scaleBy(x: s, y: s)
-
-            let fill = min(1.0, 0.35 + Double(level) * 0.15)
-            let stroke = 0.9 + Double(level) * 0.16
-
-            var bolt = Path()
-            bolt.move(to: CGPoint(x: 14, y: 2))
-            for p in [CGPoint(x: 6, y: 15), CGPoint(x: 11, y: 15), CGPoint(x: 9.5, y: 24),
-                      CGPoint(x: 19, y: 11), CGPoint(x: 13, y: 11)] {
-                bolt.addLine(to: p)
+            ctx.enterGlyphSpace(size)
+            let clamped = min(5, max(1, level))
+            ctx.fill(GlyphArt.Bolt.outline, with: .color(Accent.energyPale))
+            ctx.drawLayer { layer in
+                layer.clip(to: layer.risingMask(height: GlyphArt.Bolt.fillHeights[clamped - 1]))
+                layer.fill(GlyphArt.Bolt.outline, with: .color(Accent.energyDark))
+                layer.fill(GlyphArt.Bolt.facet, with: .color(Accent.energyAmber))
             }
-            bolt.closeSubpath()
-
-            ctx.fill(bolt, with: .color(color.opacity(fill)))
-            ctx.stroke(bolt, with: .color(color),
-                       style: StrokeStyle(lineWidth: stroke, lineJoin: .round))
         }
     }
 }
 
 #Preview {
     HStack(spacing: 12) {
-        ForEach(1...5, id: \.self) { BoltGlyph(level: $0, color: .yellow).frame(width: 28, height: 30) }
+        ForEach(1...5, id: \.self) { BoltGlyph(level: $0).frame(width: 34, height: 34) }
     }.padding()
 }

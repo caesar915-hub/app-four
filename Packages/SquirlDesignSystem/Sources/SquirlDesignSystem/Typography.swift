@@ -1,14 +1,11 @@
 import SwiftUI
 import UIKit
 
-/// Squirl typography — **Apple SF**: SF Pro (text/display) and SF Mono (data/time).
-/// Every role scales with Dynamic Type via `UIFontMetrics` (relative to a text style),
-/// so custom point sizes still respond to the user's text-size setting. Roles keep their
-/// names so every call site is unchanged; only the underlying face changed (Fraunces +
-/// DM Sans + IBM Plex Mono → SF), with weight carrying the hierarchy the serif gave by style.
+/// Squirl typography — native SF (D1: the pen's Inter ramp mapped 1:1 by size and weight).
+/// Every role scales with Dynamic Type via `UIFontMetrics` relative to a text style. Role names
+/// are DESIGN.md §5.2 verbatim.
 public enum Typography {
 
-    /// SF Pro / SF Mono at an explicit point size, scaled relative to `style` for Dynamic Type.
     private static func sf(_ size: CGFloat, _ weight: UIFont.Weight, _ style: UIFont.TextStyle, mono: Bool = false) -> Font {
         let base = mono
             ? UIFont.monospacedSystemFont(ofSize: size, weight: weight)
@@ -16,59 +13,66 @@ public enum Typography {
         return Font(UIFontMetrics(forTextStyle: style).scaledFont(for: base))
     }
 
-    // MARK: Display (SF Pro)
-    /// Serif-replacement display header — Insights section titles, the Check-in headline.
-    public static let display: Font = sf(28, .semibold, .title1)
-    /// Screen hero — used sparingly.
-    public static let largeTitle: Font = sf(34, .bold, .largeTitle)
-    /// Primary section title.
-    public static let title: Font = sf(22, .semibold, .title2)
-    /// Folded day-card weekday label.
-    public static let dayCardDate: Font = sf(16, .semibold, .subheadline)
-    /// Day-card mood word (spec 034 folded title + expanded entry row) — SF Bold 24, Dynamic-Type
-    /// scaled relative to `.title2`. One role so the folded card and the entry rows stay identical.
-    public static let moodWord: Font = sf(24, .bold, .title2)
+    // MARK: Titles
+    /// "Insights", "Settings", "How do you feel?", "Check-in saved" — 34/600.
+    public static let pageTitle: Font = sf(34, .semibold, .largeTitle)
+    /// Under a page title — 16/500.
+    public static let pageSubtitle: Font = sf(16, .medium, .body)
+    /// Nav-bar title beside the back pill — 18/600.
+    public static let navTitle: Font = sf(18, .semibold, .title3)
+    /// Nav-bar subtitle (the date) — 12/500.
+    public static let navSubtitle: Font = sf(12, .medium, .caption1)
+    /// Listening prompt title — 24/500.
+    public static let promptTitle: Font = sf(24, .medium, .title2)
+    /// Listening prompt subtitle — 12/500.
+    public static let promptSubtitle: Font = sf(12, .medium, .caption1)
+    /// On-page question ("How do you feel today?") — 20/600.
+    public static let question: Font = sf(20, .semibold, .title3)
+    /// Section titles on the ground and card titles — 16/600.
+    public static let sectionTitle: Font = sf(16, .semibold, .headline)
+    public static let cardTitle: Font = sf(16, .semibold, .headline)
+    /// Card subtitle / description — 14/400.
+    public static let cardSubtitle: Font = sf(14, .regular, .subheadline)
 
-    // MARK: Content (SF Pro)
-    /// Row / card headline.
-    public static let headline: Font = sf(16, .semibold, .headline)
-    /// Group / section header label.
-    public static let subheadline: Font = sf(14, .medium, .subheadline)
-    /// Primary body copy.
-    public static let body: Font = sf(16, .regular, .body)
-    /// Secondary body copy.
-    public static let callout: Font = sf(15, .regular, .callout)
+    // MARK: Rows and body
+    /// Row label — 14/500.
+    public static let rowLabel: Font = sf(14, .medium, .subheadline)
+    /// Strong row title, times — 14/600.
+    public static let rowTitle: Font = sf(14, .semibold, .subheadline)
+    /// Journal entry title (the mood word) — 14/600.
+    public static let entryTitle: Font = sf(14, .semibold, .subheadline)
+    /// The AI narrative and any long-form body — 16/400 (D-T2: the pen's 12 pt is refused).
+    public static let narrative: Font = sf(16, .regular, .body)
+    /// Emphasised body — 12/500.
+    public static let bodyEmphasis: Font = sf(12, .medium, .caption1)
 
-    // MARK: Metadata (SF Pro)
-    /// Timestamps, labels, metadata.
-    public static let caption: Font = sf(12, .regular, .caption1)
-    /// Uppercase section labels with tracking — call `.textCase(.uppercase)` separately.
-    public static let label: Font = sf(12, .medium, .caption1)
+    // MARK: Captions
+    /// Pen caption with weight — 12/500 (medication name, counts, weekday letters).
+    /// Named `captionMedium` while the pre-057 `caption` (12/400) still has call sites;
+    /// UI-49 renames it to `caption` once those sites migrate.
+    public static let captionMedium: Font = sf(12, .medium, .caption1)
+    /// Quiet caption — 12/400 (range labels, "Low"/"High", the AI byline).
+    public static let captionQuiet: Font = sf(12, .regular, .caption1)
+    /// Chip label — 12/500.
+    public static let chipLabel: Font = sf(12, .medium, .caption1)
+    /// Status / value word — 12/600 ("Active", "Charged", "MEDICATION × FOCUS").
+    public static let status: Font = sf(12, .semibold, .caption1)
+    /// Micro captions — 11/500 (rhythm captions). Nothing ships below 11 pt.
+    public static let micro: Font = sf(11, .medium, .caption2)
 
-    // MARK: Data / time (SF Mono)
-    /// Timers and durations.
-    public static let timer: Font = sf(22, .medium, .title2, mono: true)
-    public static let duration: Font = sf(12, .regular, .caption1, mono: true)
-    /// Generic mono for inline data (time labels, counts).
+    // MARK: Controls
+    public static let buttonSmall: Font = sf(14, .medium, .subheadline)
+    public static let buttonMedium: Font = sf(16, .medium, .body)
+    public static let buttonLarge: Font = sf(18, .medium, .title3)
+    public static let tabLabel: Font = sf(12, .medium, .caption1)
+    public static let bubbleValue: Font = sf(14, .medium, .subheadline)
+    public static let bubbleWord: Font = sf(12, .medium, .caption1)
+    public static let stripDay: Font = sf(12, .medium, .caption1)
+    public static let stripNumber: Font = sf(12, .semibold, .caption1)
+    public static let segmentLabel: Font = sf(12, .medium, .caption1)
+    /// The recording timer — 72/500 with tabular digits, capped by the caller so it stays in the disc.
+    public static let timerHero: Font = sf(72, .medium, .largeTitle).monospacedDigit()
+
+    /// 12/400 monospaced — the recovery key.
     public static let mono12: Font = sf(12, .regular, .caption1, mono: true)
-
-    // MARK: Bespoke sizes (explicit point size + Dynamic Type scaling)
-
-    /// SF Pro text at an explicit size (for call sites that need a specific point size — e.g. the
-    /// check-in row's mood word). Scales relative to `style`.
-    public static func text(_ size: CGFloat, weight: UIFont.Weight = .regular, relativeTo style: UIFont.TextStyle = .body) -> Font {
-        sf(size, weight, style)
-    }
-    /// SF Mono at an explicit size (inline time/data). Scales relative to `style`.
-    public static func mono(_ size: CGFloat, weight: UIFont.Weight = .regular, relativeTo style: UIFont.TextStyle = .caption1) -> Font {
-        sf(size, weight, style, mono: true)
-    }
-}
-
-// MARK: - View extensions for ergonomic usage
-
-public extension View {
-    func typography(_ style: Font) -> some View {
-        self.font(style)
-    }
 }

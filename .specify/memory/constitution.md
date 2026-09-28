@@ -1,8 +1,14 @@
 <!--
 SYNC IMPACT REPORT
 ==================
-Version change: 2.0.0 → 2.1.0
-Rationale: Added Principle XI (Architectural Exhaustiveness) to ensure detailed and comprehensive documentation in plans and specs.
+Version change: 2.1.0 → 2.2.0
+Rationale (2.2.0, 2026-08-31): Time-boxed September 2026 Shipaton sprint. Development
+Workflow now points the backlog/devlog/session-start rules at `shipaton_plan/` for
+2026-09-01 → 2026-09-30, so the constitution does not contradict CLAUDE.md. MINOR, not
+MAJOR: no principle is removed or redefined — only the workflow's document paths change,
+and the change carries an explicit expiry. Reverts on 2026-10-01 via the exit ritual in
+`shipaton_plan/SEPTEMBER_PLAN.md`.
+Prior rationale (2.1.0): Added Principle XI (Architectural Exhaustiveness) to ensure detailed and comprehensive documentation in plans and specs.
 Modified sections:
   - Added Principle XI
   - Governance updated to require compliance with Principles I-XI
@@ -138,6 +144,13 @@ Plans and specs must not leave implementation details to the imagination. Every 
 
 ## Development Workflow
 
+> **September 2026 sprint override (2026-09-01 → 2026-09-30, EXPIRES 2026-10-01).**
+> For the duration of the Shipaton sprint the backlog is `shipaton_plan/BACKLOG.md`,
+> the devlog is `shipaton_plan/DEVLOG.md`, and the plan of record is
+> `shipaton_plan/SEPTEMBER_PLAN.md`. The `docs/` pair is FROZEN — read for history,
+> never edit. Session start reads the `shipaton_plan/` documents. Everything else in
+> this section stands unchanged. Reverts via the exit ritual on 2026-10-01.
+
 - **Backlog**: `docs/BACKLOG.md` is the single registry. Update stage on every
   state change: 💡 Idea → 📐 Plan → 🔨 In code → ✅ Shipped.
 - **Session start**: Read `docs/BACKLOG.md` and `docs/DEVLOG.md` before any work.
@@ -166,4 +179,4 @@ compliance with Principles I–XI before Phase 0 research proceeds.
 Runtime development guidance lives in `CLAUDE.md` at the repository root. The
 Spec Kit operating procedure lives in `docs/SPECKIT.md`.
 
-**Version**: 2.1.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-08-11
+**Version**: 2.2.0 | **Ratified**: 2026-06-15 | **Last Amended**: 2026-08-31

@@ -1,14 +1,11 @@
 import Foundation
 
-/// The five drawable signal marks. A glyph-layer scope distinct from the Insights
-/// `SignalKind` (which is the three ramped self-state signals): this adds `sleep` and
-/// `medication`, which are single icons, not 1→5 ramps. Names/synonyms reuse the existing
-/// `MoodLevel`/`EnergyLevel`/`FocusLevel` SSOT — no parallel table.
+/// The five drawable signal marks. A glyph-layer scope distinct from the Insights `SignalKind`
+/// (the three ramped self-state signals): this adds `sleep` (a 1→5 moon ramp since spec 057)
+/// and `medication` (a single capsule). Names reuse the level-enum SSOT — no parallel table.
 public enum GlyphSignal: String, CaseIterable, Hashable, Sendable {
     case mood, energy, focus, sleep, medication
 
-    /// The three self-state signals that carry a 1→5 level (pickers, ramps).
-    public static let selfState: [GlyphSignal] = [.mood, .energy, .focus]
 
     public var title: String {
         switch self {
@@ -23,21 +20,9 @@ public enum GlyphSignal: String, CaseIterable, Hashable, Sendable {
     /// Whether the glyph encodes a 1…5 level (false → a single fixed icon).
     public var variesByLevel: Bool {
         switch self {
-        case .mood, .energy, .focus: true
-        case .sleep, .medication: false
+        case .mood, .energy, .focus, .sleep: true
+        case .medication: false
         }
-    }
-}
-
-/// A small descriptor letting a tag/badge carry a Paper & Pollen glyph instead of an
-/// SF Symbol. Set on the signal tags; absent on non-signal tags (category, emotion…).
-public struct GlyphBadge: Hashable, Sendable {
-    public let kind: GlyphSignal
-    public var level: Int? = nil
-
-    public init(kind: GlyphSignal, level: Int? = nil) {
-        self.kind = kind
-        self.level = level
     }
 }
 
@@ -50,30 +35,31 @@ public nonisolated func clampedSignalLevel(_ raw: Int?) -> Int? {
     return min(5, max(1, raw))
 }
 
-/// The named level for a self-state signal ("Great", "Alert", "Locked In"). `nil` for
-/// `sleep`/`medication` (no level) or an unresolvable level.
+/// The named level for a ramped signal ("Great", "Alert", "Locked In", "Deep"). `nil` for
+/// `medication` (no level) or an unresolvable level.
 public nonisolated func signalName(_ kind: GlyphSignal, level: Int) -> String? {
     switch kind {
-    case .mood: MoodLevel.allCases.first { $0.numericValue == level }?.rawValue.capitalized
-    case .energy: EnergyLevel.allCases.first { $0.numericValue == level }?.rawValue.capitalized
+    case .mood: MoodLevel.allCases.first { $0.numericValue == level }?.displayLabel
+    case .energy: EnergyLevel.allCases.first { $0.numericValue == level }?.displayLabel
     case .focus: FocusLevel.allCases.first { $0.numericValue == level }?.displayLabel
-    case .sleep, .medication: nil
+    case .sleep: SleepLevel.allCases.first { $0.numericValue == level }?.displayLabel
+    case .medication: nil
     }
 }
 
-/// The synonym line shown under the picker ("bright, thriving"). Reuses each level
-/// enum's `subtitle`. `nil` for non-level signals.
+/// The synonym line ("bright, thriving"). Reuses each level enum's `subtitle`. `nil` for medication.
 public nonisolated func signalSynonym(_ kind: GlyphSignal, level: Int) -> String? {
     switch kind {
     case .mood: MoodLevel.allCases.first { $0.numericValue == level }?.subtitle
     case .energy: EnergyLevel.allCases.first { $0.numericValue == level }?.subtitle
     case .focus: FocusLevel.allCases.first { $0.numericValue == level }?.subtitle
-    case .sleep, .medication: nil
+    case .sleep: SleepLevel.allCases.first { $0.numericValue == level }?.subtitle
+    case .medication: nil
     }
 }
 
-/// VoiceOver label: "Energy: Alert, 4 of 5" for self-state signals, or just the title
-/// ("Sleep") for single icons / absent level.
+/// VoiceOver label: "Energy: Alert, 4 of 5" for ramped signals, or just the title
+/// ("Sleep", "Medication") for a single icon / absent level.
 public nonisolated func signalAccessibilityLabel(_ kind: GlyphSignal, level: Int?) -> String {
     guard kind.variesByLevel, let level = clampedSignalLevel(level),
           let name = signalName(kind, level: level) else {

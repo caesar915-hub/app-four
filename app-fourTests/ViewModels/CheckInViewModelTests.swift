@@ -25,6 +25,25 @@ struct CheckInViewModelTests {
         viewModel = CheckInViewModel(store: store, services: mocks.services)
     }
 
+    // MARK: Spec 057 — ring flow progress and level glow
+
+    @Test func flowProgressPerState() {
+        #expect(viewModel.flowProgress == 1.0 / 3.0)
+        viewModel.state = .recording
+        #expect(viewModel.flowProgress == 2.0 / 3.0)
+        viewModel.state = .processing
+        #expect(viewModel.flowProgress == 2.0 / 3.0)
+        viewModel.state = .done
+        #expect(viewModel.flowProgress == 1)
+    }
+
+    @Test func ingestAudioLevelStoresClampedLevel() {
+        viewModel.ingestAudioLevel(0.42)
+        #expect(viewModel.audioLevel == 0.42)
+        viewModel.ingestAudioLevel(1.7)
+        #expect(viewModel.audioLevel == 1)
+    }
+
     // MARK: Nudges
 
     @Test func nudgePromptsCount() {

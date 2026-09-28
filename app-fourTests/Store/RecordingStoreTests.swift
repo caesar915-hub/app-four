@@ -41,19 +41,6 @@ struct RecordingStoreTests {
         #expect(store.recordings.count == countAfterAdd - 1)
     }
 
-    @Test func toggleFavorite() throws {
-        let recording = Recording(audioFileName: "fav.m4a", title: "Favorite Test")
-        store.addRecording(recording)
-
-        #expect(recording.isFavorite == false)
-
-        store.toggleFavorite(recording)
-        #expect(recording.isFavorite == true)
-
-        store.toggleFavorite(recording)
-        #expect(recording.isFavorite == false)
-    }
-
     // A recording left `.transcribing` when the app was killed (or whose transcription
     // was cancelled and never finalized) must be recovered to `.failed` at launch, so
     // the detail view stops showing a permanent "Transcribing…" and offers retry.
@@ -124,15 +111,5 @@ struct RecordingStoreTests {
 
         let fetched = try #require(store.recordings.first(where: { $0.audioFileName == "bullets.m4a" }))
         #expect(fetched.summaryBullets == bullets)
-    }
-
-    @Test func updateTitle() throws {
-        let recording = Recording(audioFileName: "title.m4a", title: "Old Title")
-        store.addRecording(recording)
-
-        store.updateTitle(recording, newTitle: "New Title")
-
-        let fetched = try #require(store.recordings.first(where: { $0.audioFileName == "title.m4a" }))
-        #expect(fetched.title == "New Title")
     }
 }

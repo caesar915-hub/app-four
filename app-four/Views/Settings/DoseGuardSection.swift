@@ -1,66 +1,48 @@
 import SwiftUI
 
-/// 030 App Intents — Dose Guard (FR-008..FR-012). Native grouped-`List` chrome.
-/// off (default) / total / time-window(1–4h). Three always-visible selectable rows
-/// with an inline segmented hours control per the approved T011 mockup — one selected
-/// value, never independent toggles, no push-navigation. Guards expedited logs only;
-/// the in-app Log Dose sheet is never blocked.
+/// Settings › Dose guard (030 App Intents, FR-008..FR-012): three `RadioRow`s — one selected
+/// value, never independent toggles — the "Blocked for" chips shown only for Time window, and
+/// the per-mode footnote. Guards expedited logs only; the in-app Log Dose sheet is never blocked.
 struct DoseGuardSection: View {
     @Bindable var viewModel: SettingsViewModel
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        Section {
-            ForEach(DoseGuardMode.allCases, id: \.self) { mode in
-                Button {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            ForEach(Array(DoseGuardMode.allCases.enumerated()), id: \.element) { index, mode in
+                if index > 0 { HairlineDivider() }
+                RadioRow(title(for: mode), subtitle: subtitle(for: mode), isSelected: viewModel.doseGuardMode == mode) {
                     withAnimation(reduceMotion ? nil : Motion.snappy) { viewModel.doseGuardMode = mode }
                     viewModel.syncDoseGuard()
-                } label: {
-                    HStack {
-                        Label {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(title(for: mode))
-                                Text(subtitle(for: mode))
-                                    .font(.footnote)
-                                    .foregroundStyle(.secondary)
-                            }
-                        } icon: {
-                            Image(systemName: "shield")
-                        }
-                        Spacer()
-                        if viewModel.doseGuardMode == mode {
-                            Image(systemName: "checkmark")
-                                .font(.body.weight(.semibold))
-                                .foregroundStyle(Color.accentColor)
-                        }
-                    }
                 }
-                .foregroundStyle(.primary)
-                .accessibilityAddTraits(viewModel.doseGuardMode == mode ? .isSelected : [])
                 .accessibilityHint(hint(for: mode))
             }
 
             if viewModel.doseGuardMode == .window {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Blocked for")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                    Picker("Blocked for", selection: $viewModel.doseGuardWindowHours) {
-                        ForEach([1, 2, 3, 4], id: \.self) { hours in
-                            Text("\(hours) h").tag(hours)
+                HairlineDivider()
+                ChipGroupView("Blocked for") {
+                    ForEach([1, 2, 3, 4], id: \.self) { hours in
+                        let selected = viewModel.doseGuardWindowHours == hours
+                        Button {
+                            withAnimation(reduceMotion ? nil : Motion.snappy) { viewModel.doseGuardWindowHours = hours }
+                            viewModel.syncDoseGuard()
+                        } label: {
+                            BillChip("\(hours) h", style: selected ? .solidWithCheck : .outline)
+                                .frame(minHeight: Metrics.minTapTarget)
+                                .contentShape(.rect)
                         }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("\(hours) hours")
+                        .accessibilityAddTraits(selected ? [.isSelected] : [])
                     }
-                    .pickerStyle(.segmented)
-                    .onChange(of: viewModel.doseGuardWindowHours) { viewModel.syncDoseGuard() }
-                    .accessibilityHint("How long a second hands-free dose log stays blocked.")
                 }
-                .padding(.vertical, 4)
+                .accessibilityHint("How long a second hands-free dose log stays blocked.")
             }
-        } header: {
-            Text("Dose Guard")
-        } footer: {
-            Text(guardFooter)
+
+            HairlineDivider()
+            InfoRow(symbol: Icons.info, text: guardFooter)
         }
+        .animation(reduceMotion ? nil : Motion.expand, value: viewModel.doseGuardMode)
     }
 
     private func title(for mode: DoseGuardMode) -> String {

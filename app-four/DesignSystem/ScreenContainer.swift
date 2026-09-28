@@ -1,38 +1,28 @@
 import SwiftUI
 
-/// Standard screen wrapper that every tab uses.
+/// Standard screen wrapper that every tab root uses.
 ///
 /// Provides:
 /// - `NavigationStack` with a bound or internal `NavigationPath`
-/// - `.navigationTitle` + `.navigationBarTitleDisplayMode(.inline)`
-/// - Medication bar via `.medicationBarOverlay()` — single shared placement, floating Liquid Glass capsule.
-/// - Edge fade mask on scrollable content (top is 0 — bar is translucent glass so content shows under it; bottom aligns with tab bar).
-/// - Programmatic scroll-to-top: increment `scrollResetToken` from outside to jump back.
-/// - Optional `ScrollView` wrapper — pass `scrollable: false` for screens that manage
+/// - the pen's chrome-less root: no system navigation bar, no system tab bar (the floating
+///   chrome is overlaid by `RootTabView`), and a bottom inset that keeps content clear of it
+/// - the medication bar via `.medicationBarOverlay()` — single shared placement
+/// - programmatic scroll-to-top: increment `scrollResetToken` from outside to jump back
+/// - optional `ScrollView` wrapper — pass `scrollable: false` for screens that manage
 ///   their own scroll (List) or use Spacer-based layouts (CheckInView).
-///
-/// Usage:
-/// ```swift
-/// // Scrollable (default — Calendar, Insights):
-/// ScreenContainer(title: "", path: $path, scrollResetToken: resetToken) {
-///     VStack { ... }
-/// }
-///
-/// // Non-scrollable (CheckInView, SettingsView with List):
-/// ScreenContainer(title: "", scrollable: false) {
-///     VStack { Spacer(); micButton; Spacer() }
-/// }
-/// ```
 struct ScreenContainer<Content: View>: View {
     let title: String
     var showsMedicationBar: Bool = true
     var scrollable: Bool = true
+    /// Whether to reserve the floating chrome's height at the bottom (false while a screen hides it).
+    var reservesFloatingChrome: Bool = true
     /// Increment to programmatically scroll the container back to the top.
     var scrollResetToken: Int = 0
     var path: Binding<NavigationPath>?
 
     @ViewBuilder let content: () -> Content
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var internalPath = NavigationPath()
     @State private var scrollPosition = ScrollPosition(edge: .top)
 
@@ -40,24 +30,17 @@ struct ScreenContainer<Content: View>: View {
         path ?? $internalPath
     }
 
-    // No top fade — the bar is now a translucent .bar material; content should frost under it, not fade to clear.
-    private let barFadeHeight: CGFloat = 0
-    // Matches the approximate tab bar height so content dissolves into the bar below.
-    private let tabBarFadeHeight: CGFloat = 36
-
     var body: some View {
         NavigationStack(path: resolvedPath) {
             primaryContent
                 .navigationTitle(title)
                 .navigationBarTitleDisplayMode(.inline)
-                .background(NewLook.screen.ignoresSafeArea())
-                .toolbarBackground(NewLook.screen, for: .navigationBar)
+                .toolbar(.hidden, for: .navigationBar)
+                .toolbar(.hidden, for: .tabBar)
+                .background(Surface.screen.ignoresSafeArea())
+                .toolbarBackground(Surface.screen, for: .navigationBar)
         }
-        .tint(Theme.meadowGreen)
-        // Tab-bar appearance is a preference that flows UP from tab content — it must live here
-        // (every tab's root), not on the TabView, where it silently no-ops.
-        .toolbarBackground(NewLook.screen, for: .tabBar)
-        .toolbarBackgroundVisibility(.visible, for: .tabBar)
+        .tint(Accent.primaryFill)
     }
 
     // MARK: - Private
@@ -71,15 +54,22 @@ struct ScreenContainer<Content: View>: View {
             .scrollContentBackground(.hidden)
             .scrollPosition($scrollPosition)
             .onChange(of: scrollResetToken) {
-                withAnimation(.easeOut(duration: 0.25)) {
+                withAnimation(reduceMotion ? nil : Motion.expand) {
                     scrollPosition.scrollTo(edge: .top)
                 }
             }
-            .edgeFadeMask(top: barFadeHeight, bottom: tabBarFadeHeight)
+            .safeAreaInset(edge: .bottom, spacing: 0) { chromeInset }
             .medicationBarOverlay(shown: showsMedicationBar)
         } else {
             content()
+                .safeAreaInset(edge: .bottom, spacing: 0) { chromeInset }
                 .medicationBarOverlay(shown: showsMedicationBar)
+        }
+    }
+
+    @ViewBuilder private var chromeInset: some View {
+        if reservesFloatingChrome {
+            Color.clear.frame(height: Metrics.floatingChromeInset)
         }
     }
 }

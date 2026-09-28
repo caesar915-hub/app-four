@@ -62,6 +62,8 @@ final class CheckInViewModel {
     /// True while the latest audio level indicates the user is actively speaking; used to
     /// defer prompt-advance announcements so VoiceOver never talks over the speaker.
     private(set) var isSpeaking: Bool = false
+    /// Last normalised mic level (0…1) — drives the ring's level glow while recording (D-R2).
+    private(set) var audioLevel: Float = 0
 
     /// A prompt-advance announcement the view requested but that is held until the next
     /// quiet (it must not fire mid-sentence). The view reads `promptAnnouncementIsEligible`.
@@ -94,6 +96,15 @@ final class CheckInViewModel {
     private var levelTask: Task<Void, Never>?
     private(set) var transcriptionTask: Task<Void, Never>?
     private(set) var modelPreloadTask: Task<Void, Never>?
+
+    /// The check-in ring's arc: a three-step flow indicator — ⅓ idle, ⅔ while capturing, full once saved.
+    var flowProgress: Double {
+        switch state {
+        case .idle: 1.0 / 3.0
+        case .recording, .processing: 2.0 / 3.0
+        case .done: 1
+        }
+    }
 
     var timeString: String {
         AccessibilityHelpers.formatDuration(elapsedTime)
@@ -462,6 +473,7 @@ final class CheckInViewModel {
     /// Feeds the live audio level into the active-voice gate (FR-010, R4). Called from
     /// `startLevelMonitoring()` for each emitted sample; also the test seam for the gate.
     func ingestAudioLevel(_ level: Float) {
+        audioLevel = max(0, min(1, level))
         isSpeaking = level >= Self.activeVoiceThreshold
     }
 

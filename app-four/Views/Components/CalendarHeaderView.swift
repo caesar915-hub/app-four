@@ -1,9 +1,9 @@
 import SwiftUI
 
-/// Collapsible week↔month calendar header for the Calendar tab.
-/// Collapsed shows the selected day's week; tapping the month label/chevron expands
-/// to the full month. Horizontal swipe pages months. At accessibility text sizes the
-/// month grid is force-collapsed to a single week (cells get unreadable otherwise).
+/// The pen's week strip (DESIGN.md §8.22): "September 2026 ›" then seven columns of 3-letter
+/// day names over day numbers. Tapping the month label expands to the full month (kept — D6.1);
+/// a horizontal swipe pages months. At accessibility text sizes the grid is force-collapsed to
+/// one week and the day names fall back to single letters.
 struct CalendarHeaderView: View {
     let model: CalendarMonthModel
     @Binding var selectedDay: Date
@@ -15,10 +15,15 @@ struct CalendarHeaderView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private let weekdaySymbols = ["M", "T", "W", "T", "F", "S", "S"]
-
     private var forceWeek: Bool { dynamicTypeSize >= .accessibility1 }
     private var effectiveExpanded: Bool { isExpanded && !forceWeek }
+
+    /// Monday-first day names from the locale — "Mon Tue …", or "M T …" at accessibility sizes.
+    private var weekdaySymbols: [String] {
+        let calendar = Calendar.current
+        let symbols = forceWeek ? calendar.veryShortWeekdaySymbols : calendar.shortWeekdaySymbols
+        return Array(symbols[1...]) + [symbols[0]]
+    }
 
     private var weeks: [[CalendarMonthModel.DayCell]] {
         stride(from: 0, to: model.cells.count, by: 7).map {
@@ -36,7 +41,7 @@ struct CalendarHeaderView: View {
     }
 
     var body: some View {
-        VStack(spacing: Spacing.s) {
+        VStack(spacing: Spacing.m) {
             header
             weekdayCaps
             grid
@@ -47,11 +52,9 @@ struct CalendarHeaderView: View {
     private var header: some View {
         HStack(spacing: Spacing.xs) {
             if forceWeek {
-                // At AX text sizes the month grid is force-collapsed; the button does
-                // nothing, so render plain text to avoid a no-op interactive element.
                 Text(monthLabel)
-                    .font(Typography.headline)
-                    .foregroundStyle(.primary)
+                    .font(Typography.rowTitle)
+                    .foregroundStyle(Ink.primary)
                     .frame(minHeight: Metrics.minTapTarget, alignment: .leading)
             } else {
                 expandButton
@@ -68,18 +71,16 @@ struct CalendarHeaderView: View {
         } label: {
             HStack(spacing: Spacing.xs) {
                 Text(monthLabel)
-                    .font(Typography.headline)
-                    .foregroundStyle(.primary)
-                if !forceWeek {
-                    Image(systemName: "chevron.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(NewLook.inkSecondary)
-                        .rotationEffect(.degrees(effectiveExpanded ? 90 : 0))
-                        .accessibilityHidden(true)   // decorative; the month text is the label
-                }
+                    .font(Typography.rowTitle)
+                    .foregroundStyle(Ink.primary)
+                Image(systemName: Icons.chevronRight)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(Ink.primary)
+                    .rotationEffect(.degrees(effectiveExpanded ? 90 : 0))
+                    .accessibilityHidden(true)
             }
-            .frame(minHeight: Metrics.minTapTarget, alignment: .leading)   // ≥44pt tap target (HIG)
-            .contentShape(Rectangle())
+            .frame(minHeight: Metrics.minTapTarget, alignment: .leading)
+            .contentShape(.rect)
         }
         .buttonStyle(.plain)
     }
@@ -88,11 +89,13 @@ struct CalendarHeaderView: View {
         HStack(spacing: 0) {
             ForEach(weekdaySymbols.indices, id: \.self) { i in
                 Text(weekdaySymbols[i])
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkSecondary)
+                    .font(Typography.stripDay)
+                    .foregroundStyle(Ink.tertiary)
+                    .lineLimit(1)
                     .frame(maxWidth: .infinity)
             }
         }
+        .accessibilityHidden(true)
     }
 
     private var grid: some View {
@@ -135,9 +138,10 @@ private extension Array {
         model: CalendarMonthModel(month: .now, days: [], today: .now),
         selectedDay: $selected,
         isExpanded: $expanded,
-        monthLabel: "June 2026",
+        monthLabel: "September 2026",
         onSelect: { selected = $0.date },
         onPageMonth: { _ in }
     )
-    .padding()
+    .padding(Spacing.gutter)
+    .background(Surface.screen)
 }

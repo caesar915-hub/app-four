@@ -1,37 +1,44 @@
 import SwiftUI
 
-/// 3-signal × 4-time-bucket matrix. Each cell shows the dominant level for that
-/// signal at that time of day. Empty cells render as dashed outlines (not foggy grey).
+/// The daily rhythm matrix (DESIGN.md §8.16): uppercase time-of-day headers (narrow fallback),
+/// icon + label row heads, and 44 ⌀ tinted tiles (`RhythmTint`, D-I4) with the dominant level's
+/// glyph and word. Empty cells are outlined with "—". `RhythmCell` is the untouched model.
 struct DailyRhythmMatrix: View {
     let matrix: [RhythmRow]
 
-    private let blobSize: CGFloat = 52
-    private let rowLabelWidth: CGFloat = 56
+    private let rowLabelWidth: CGFloat = 64
 
     var body: some View {
-        VStack(spacing: Spacing.s) {
-            // Column headers
+        VStack(spacing: Spacing.m) {
             HStack(spacing: 0) {
-                Spacer().frame(width: rowLabelWidth)
+                Color.clear.frame(width: rowLabelWidth, height: 1)
                 ForEach(TimeBucket.allCases, id: \.self) { bucket in
-                    Text(bucket.label)
-                        .font(Typography.caption)
-                        .foregroundStyle(NewLook.inkSecondary)
-                        .frame(maxWidth: .infinity)
-                        .multilineTextAlignment(.center)
+                    ViewThatFits(in: .horizontal) {
+                        Text(bucket.label.uppercased())
+                        Text(bucket.shortLabel.uppercased())
+                    }
+                    .font(Typography.captionMedium)
+                    .foregroundStyle(Ink.secondary)
+                    .lineLimit(1)
+                    .frame(maxWidth: .infinity)
                 }
             }
+            .accessibilityHidden(true)
 
             ForEach(matrix, id: \.kind) { row in
-                HStack(spacing: 0) {
-                    Text(row.kind.label)
-                        .font(Typography.caption)
-                        .fontWeight(.medium)
-                        .foregroundStyle(NewLook.inkSecondary)
-                        .frame(width: rowLabelWidth, alignment: .leading)
+                HStack(alignment: .top, spacing: 0) {
+                    HStack(spacing: Spacing.xs) {
+                        IdentityIcon(row.kind.glyphSignal, size: 14)
+                        Text(row.kind.label)
+                            .font(Typography.captionMedium)
+                            .foregroundStyle(Ink.primary)
+                    }
+                    .frame(width: rowLabelWidth, alignment: .leading)
+                    .padding(.top, Spacing.m)
+                    .accessibilityHidden(true)
 
                     ForEach(Array(row.cells.enumerated()), id: \.offset) { _, cell in
-                        RhythmCellView(cell: cell, blobSize: blobSize)
+                        RhythmTile(cell: cell, signal: row.kind)
                             .frame(maxWidth: .infinity)
                     }
                 }
@@ -41,62 +48,49 @@ struct DailyRhythmMatrix: View {
     }
 }
 
-private struct RhythmCellView: View {
+private struct RhythmTile: View {
     let cell: RhythmCell
-    let blobSize: CGFloat
+    let signal: SignalKind
 
     var body: some View {
-        VStack(spacing: 4) {
-            if let level = cell.dominant {
-                Circle()
-                    .fill(level.fillGradient)
-                    .frame(width: blobSize, height: blobSize)
-                Text(level.displayLabel)
-                    .font(Typography.label)
-                    .foregroundStyle(NewLook.inkSecondary)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-            } else {
-                Circle()
-                    .strokeBorder(
-                        NewLook.inkSecondary.opacity(0.3),
-                        style: StrokeStyle(lineWidth: 1.5, dash: [3, 2])
-                    )
-                    .frame(width: blobSize, height: blobSize)
-                Text("—")
-                    .font(Typography.label)
-                    .foregroundStyle(NewLook.inkSecondary.opacity(0.4))
+        VStack(spacing: Spacing.xs) {
+            ZStack {
+                if let level = cell.dominant, let tint = RhythmTint.tint(level: level.numericValue) {
+                    Circle().fill(tint)
+                    SignalGlyph(signal.glyphSignal, level: level.numericValue, size: Metrics.glyphInline, decorative: true)
+                } else {
+                    Circle().strokeBorder(Stroke.empty, lineWidth: Stroke.hairlineWidth)
+                }
             }
+            .frame(width: Metrics.minTapTarget, height: Metrics.minTapTarget)
+            Text(cell.dominant?.displayLabel ?? "—")
+                .font(Typography.micro)
+                .foregroundStyle(cell.dominant == nil ? Ink.placeholder : Ink.tertiary)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
         }
-        .frame(minWidth: 44, minHeight: 44)  // 44pt hit target floor
-        .accessibilityLabel(a11yLabel)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(label)
     }
 
-    private var a11yLabel: String {
-        if let level = cell.dominant {
-            return "\(cell.bucket.label): \(level.displayLabel)"
-        }
-        return "\(cell.bucket.label): no data"
+    private var label: String {
+        let where_ = "\(signal.label), \(cell.bucket.label)"
+        return cell.dominant.map { "\(where_): \($0.displayLabel)" } ?? "\(where_): no data"
     }
 }
 
 #Preview {
     let matrix: [RhythmRow] = SignalKind.allCases.map { kind in
-        let cells = TimeBucket.allCases.enumerated().map { idx, bucket -> RhythmCell in
-            let level: (any SignalLevel)?
-            if idx % 3 == 0 {
-                level = nil
-            } else {
-                switch kind {
-                case .mood:   level = MoodLevel.allCases[min(idx, 4)]
-                case .energy: level = EnergyLevel.allCases[min(idx, 4)]
-                case .focus:  level = FocusLevel.allCases[min(idx, 4)]
-                }
+        let cells = TimeBucket.allCases.enumerated().map { index, bucket -> RhythmCell in
+            let level: (any SignalLevel)? = switch kind {
+            case .mood: MoodLevel.allCases[min(index + 2, 4)]
+            case .energy: EnergyLevel.allCases[min(index + 2, 4)]
+            case .focus: FocusLevel.allCases[min(index + 2, 4)]
             }
-            return RhythmCell(bucket: bucket, dominant: level, count: idx * 2)
+            return RhythmCell(bucket: bucket, dominant: index == 3 ? nil : level, count: index * 2)
         }
         return RhythmRow(kind: kind, cells: cells)
     }
     DailyRhythmMatrix(matrix: matrix)
-        .padding(.vertical)
+        .padding(Spacing.gutter)
 }

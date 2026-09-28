@@ -22,7 +22,7 @@ struct DownloadPermissionView: View {
                     .frame(maxWidth: .infinity, minHeight: geo.size.height)
             }
         }
-        .background(NewLook.screen.ignoresSafeArea())
+        .background(Surface.screen.ignoresSafeArea())
         .navigationBarBackButtonHidden(viewModel.isDownloading)
         // Whisper resolved (downloaded or skipped) → the insights-model step.
         .navigationDestination(isPresented: $showLLMStep) {
@@ -37,27 +37,27 @@ struct DownloadPermissionView: View {
         VStack(spacing: Spacing.section) {
             Spacer(minLength: Spacing.section)
 
-            Image(systemName: "lock.shield")
+            Image(systemName: Icons.lockShield)
                 .font(.system(size: 64))
-                .foregroundStyle(NewLook.checkInGreen)
+                .foregroundStyle(Accent.primary)
                 .accessibilityHidden(true)
 
             VStack(spacing: Spacing.m) {
                 Text("On-Device Privacy")
-                    .font(Typography.largeTitle)
-                    .foregroundStyle(NewLook.inkPrimary)
+                    .font(Typography.pageTitle)
+                    .foregroundStyle(Ink.primary)
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
 
                 Text("To keep your journal completely private, Squirl processes your voice directly on this device.")
-                    .font(Typography.body)
-                    .foregroundStyle(NewLook.inkSecondary)
+                    .font(Typography.narrative)
+                    .foregroundStyle(Ink.tertiary)
                     .multilineTextAlignment(.center)
 
                 if let error = viewModel.downloadError {
                     Text(error.userMessage)
-                        .font(Typography.caption)
-                        .foregroundStyle(Theme.danger)
+                        .font(Typography.captionQuiet)
+                        .foregroundStyle(Ink.destructive)
                         .multilineTextAlignment(.center)
                         .padding(.top, Spacing.s)
                 }
@@ -71,22 +71,22 @@ struct DownloadPermissionView: View {
                     VStack(spacing: Spacing.s) {
                         ProgressView(value: viewModel.downloadProgress)
                             .progressViewStyle(.linear)
-                            .tint(NewLook.checkInGreen)
+                            .tint(Accent.primary)
                         Text("Downloading model... \(Int(viewModel.downloadProgress * 100))%")
-                            .font(Typography.caption)
-                            .foregroundStyle(NewLook.inkSecondary)
+                            .font(Typography.captionQuiet)
+                            .foregroundStyle(Ink.tertiary)
                     }
                     .padding(.horizontal, Spacing.xl)
                 } else {
                     Button(action: downloadModel) {
                         Text("Download Now (~150 MB)")
                     }
-                    .buttonStyle(.checkInPrimary)
+                    .buttonStyle(.filled(fullWidth: true))
 
                     Button(action: skip) {
                         Text("Skip for Now")
                     }
-                    .buttonStyle(.secondary)
+                    .buttonStyle(.outlined(fullWidth: true))
                 }
             }
         }

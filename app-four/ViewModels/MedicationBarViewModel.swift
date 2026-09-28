@@ -22,6 +22,33 @@ final class MedicationBarViewModel {
     /// Up to 3 active doses, sorted oldest → newest (1st dose at top).
     var activeDoses: [DoseDisplay] = []
 
+    /// How long a finished dose lingers as "Worn off" before it leaves the bar.
+    static let wornOffGrace: TimeInterval = 60 * 60
+
+    /// Where a dose is in its window, by fill fraction (D10). Words stay quiet — a worn-off dose is
+    /// grey, never red.
+    enum DoseStatus: Equatable {
+        case kickingIn, active, wearingOff, wornOff
+
+        init(progress: Double) {
+            switch progress {
+            case ..<0.2: self = .kickingIn
+            case ..<0.8: self = .active
+            case ..<1.0: self = .wearingOff
+            default: self = .wornOff
+            }
+        }
+
+        var displayLabel: String {
+            switch self {
+            case .kickingIn: "Kicking in"
+            case .active: "Active"
+            case .wearingOff: "Wearing off"
+            case .wornOff: "Worn off"
+            }
+        }
+    }
+
     struct DoseDisplay: Equatable {
         let eventID: UUID
         let name: String
@@ -35,6 +62,28 @@ final class MedicationBarViewModel {
         let doseNumber: Int
         let totalDosesToday: Int
         let progress: Double
+
+        var status: DoseStatus { DoseStatus(progress: progress) }
+
+        /// "Concerta 36 mg", or just the name when no dose was captured.
+        var nameText: String { effectiveDose.map { "\(name) \($0)" } ?? name }
+
+        /// Settings › Medication bar: which parts the row's title line carries.
+        struct TitleOptions: Equatable {
+            var showName = true
+            var showTakenTime = true
+            var showEndTime = false
+        }
+
+        /// The title parts in order — taken time · name + dose · "ends HH:mm" — per the options.
+        /// With everything switched off the name still shows: a bar row must say what it is.
+        func titleParts(_ options: TitleOptions, time: (Date) -> String) -> [String] {
+            var parts: [String] = []
+            if options.showTakenTime { parts.append(time(takenAt)) }
+            if options.showName { parts.append(nameText) }
+            if options.showEndTime { parts.append("ends \(time(endsAt))") }
+            return parts.isEmpty ? [nameText] : parts
+        }
     }
 
     init(context: ModelContext? = nil) {
@@ -70,9 +119,10 @@ final class MedicationBarViewModel {
             return
         }
 
-        // Up to 3 most-recent events still within their window, then reversed for oldest-first display.
+        // Up to 3 most-recent events within their window — plus a quiet hour after it, so a
+        // worn-off dose reads "Worn off" (grey, dimmed; D10) before it leaves the bar.
         let active = events
-            .filter { $0.takenAt.addingTimeInterval($0.durationHours * 3600) > now }
+            .filter { $0.takenAt.addingTimeInterval($0.durationHours * 3600 + Self.wornOffGrace) > now }
             .prefix(3)
             .reversed() // oldest first → 1st dose at top
 

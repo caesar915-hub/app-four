@@ -2,16 +2,25 @@ import SwiftUI
 import UIKit
 
 public extension Color {
-    /// An adaptive colour from a light + dark hex pair — the Paper & Pollen token pattern
-    /// (warm paper in light, warm loam in dark).
+    /// An adaptive colour from a light + dark hex pair. The pen (spec 057) is light-only; every
+    /// dark value is derived and recorded in DESIGN.md §11.
     public init(lightHex: String, darkHex: String) {
         self.init(uiColor: UIColor { trait in
             UIColor(Color(hex: trait.userInterfaceStyle == .dark ? darkHex : lightHex))
         })
     }
 
+    /// An adaptive colour with a per-appearance alpha — hairlines and washes such as
+    /// `#000000 @ 0.10` in light / `#ffffff @ 0.12` in dark.
+    public init(lightHex: String, lightAlpha: Double, darkHex: String, darkAlpha: Double) {
+        self.init(uiColor: UIColor { trait in
+            let dark = trait.userInterfaceStyle == .dark
+            return UIColor(Color(hex: dark ? darkHex : lightHex))
+                .withAlphaComponent(dark ? darkAlpha : lightAlpha)
+        })
+    }
+
     /// Creates an sRGB colour from a hex string like `"#79B89C"` or `"79B89C"`.
-    /// Used for the custom mood palette, which is not part of the iOS system colours.
     public init(hex: String) {
         let cleaned = hex.trimmingCharacters(in: CharacterSet(charactersIn: "# "))
         var value: UInt64 = 0

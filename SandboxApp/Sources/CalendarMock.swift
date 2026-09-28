@@ -72,7 +72,7 @@ struct SandboxCalendar: View {
             }
             .padding(16)
         }
-        .background(NewLook.screen.ignoresSafeArea())
+        .background(Surface.screen.ignoresSafeArea())
     }
 }
 
@@ -94,7 +94,7 @@ private struct DayCardMock: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(NewLook.card)
+        .background(Surface.card)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
 
@@ -102,21 +102,21 @@ private struct DayCardMock: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 12) {
                 ZStack {
-                    Circle().fill(day.mood?.badgeTint ?? NewLook.tintNeutral)
+                    Circle().fill(day.mood?.avatarTint ?? Surface.track)
                     if let m = day.mood { SignalGlyph(.mood, level: m.numericValue, size: 24, decorative: true) }
                 }.frame(width: 42, height: 42)
-                titleText.font(.fraunces(16)).frame(maxWidth: .infinity, alignment: .leading)
+                titleText.font(Typography.cardTitle).frame(maxWidth: .infinity, alignment: .leading)
                 Image(systemName: "chevron.down").font(.caption.weight(.semibold))
-                    .foregroundStyle(NewLook.inkSecondary).rotationEffect(.degrees(isOpen ? 180 : 0))
+                    .foregroundStyle(Ink.tertiary).rotationEffect(.degrees(isOpen ? 180 : 0))
             }
             .padding(.horizontal, 16)
             if !isOpen {
-                Rectangle().fill(NewLook.hairline).frame(height: 1)
+                Rectangle().fill(Stroke.separator).frame(height: 1)
                 summaryLine.padding(.horizontal, 16)
             }
         }
         .padding(.vertical, 16)
-        .background(day.mood?.blockTint ?? .clear)
+        .background(day.mood?.dayCardFill ?? .clear)
         .contentShape(Rectangle())
     }
 
@@ -124,17 +124,17 @@ private struct DayCardMock: View {
         let weekday = Text(day.label).foregroundColor(.primary)
         guard let m = day.mood else { return weekday }
         return Text(m.displayLabel).foregroundColor(m.wordColor).bold()
-            + Text(" · ").foregroundColor(NewLook.inkSecondary) + weekday
+            + Text(" · ").foregroundColor(Ink.tertiary) + weekday
     }
 
     @ViewBuilder private var summaryLine: some View {
         HStack(spacing: 14) {
             if let e = day.energy { seg { SignalGlyph(.energy, level: e.numericValue, size: 15, decorative: true); Text(e.displayLabel) } }
             if let f = day.focus { seg { SignalGlyph(.focus, level: f.numericValue, size: 15, decorative: true); Text(f.displayLabel) } }
-            if let med = day.med { seg { SignalGlyph(.medication, size: 15, decorative: true); Text(med).foregroundStyle(Palette.medication) } }
+            if let med = day.med { seg { SignalGlyph(.medication, size: 15, decorative: true); Text(med).foregroundStyle(Accent.violet) } }
             Spacer(minLength: 0)
         }
-        .font(Typography.caption)
+        .font(Typography.captionQuiet)
     }
 
     @ViewBuilder private func seg<C: View>(@ViewBuilder _ content: () -> C) -> some View {
@@ -150,32 +150,32 @@ private struct TimelineRowMock: View {
         HStack(alignment: .top, spacing: 12) {
             VStack(spacing: 0) {
                 ZStack {
-                    Circle().fill(entry.mood.badgeTint).frame(width: 42, height: 42)
+                    Circle().fill(entry.mood.avatarTint).frame(width: 42, height: 42)
                     SignalGlyph(.mood, level: entry.mood.numericValue, size: 25, decorative: true)
                     if let r = entry.ring {
                         Circle().trim(from: 0, to: max(0.001, r))
-                            .stroke(Palette.medication, style: StrokeStyle(lineWidth: 3.3, lineCap: .round))
+                            .stroke(Accent.violet, style: StrokeStyle(lineWidth: 3.3, lineCap: .round))
                             .rotationEffect(.degrees(-90)).frame(width: 38, height: 38)
                     }
                 }
-                if !isLast { Rectangle().fill(NewLook.hairline).frame(width: 1).frame(maxHeight: .infinity) }
+                if !isLast { Rectangle().fill(Stroke.separator).frame(width: 1).frame(maxHeight: .infinity) }
             }
             .fixedSize(horizontal: true, vertical: false)
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(entry.mood.displayLabel).font(.fraunces(14)).foregroundStyle(entry.mood.wordColor)
-                    Text(entry.time).font(.plexMono(11)).foregroundStyle(NewLook.inkSecondary)
+                    Text(entry.mood.displayLabel).font(Typography.cardTitle).foregroundStyle(entry.mood.wordColor)
+                    Text(entry.time).font(Typography.mono12).foregroundStyle(Ink.tertiary)
                     Spacer(minLength: 8)
-                    Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(NewLook.inkSecondary)
+                    Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(Ink.tertiary)
                 }
                 if entry.energy != nil || entry.focus != nil {
                     HStack(spacing: 12) {
                         if let e = entry.energy { sg { SignalGlyph(.energy, level: e.numericValue, size: 13, decorative: true); Text(e.displayLabel) } }
                         if let f = entry.focus { sg { SignalGlyph(.focus, level: f.numericValue, size: 13, decorative: true); Text(f.displayLabel) } }
-                    }.font(Typography.caption)
+                    }.font(Typography.captionQuiet)
                 }
-                Text(entry.note).font(Typography.callout).foregroundStyle(NewLook.inkPrimary)
+                Text(entry.note).font(Typography.cardSubtitle).foregroundStyle(Ink.primary)
                 chips
             }
             .padding(.top, 16)
@@ -193,9 +193,9 @@ private struct TimelineRowMock: View {
                         Text(item.label)
                     }
                     .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(item.med ? Palette.medication : NewLook.inkPrimary)
+                    .foregroundStyle(item.med ? Accent.violet : Ink.primary)
                     .padding(.horizontal, 8).padding(.vertical, 4)
-                    .background(item.med ? Palette.medication.opacity(0.13) : Color(.secondarySystemFill), in: .capsule)
+                    .background(item.med ? Accent.violet.opacity(0.13) : Color(.secondarySystemFill), in: .capsule)
                 }
             }
         }

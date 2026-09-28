@@ -79,3 +79,13 @@ default.profraw
 # Local MLX checkouts (used by the app-four-macos harness; not part of the iOS repo)
 Packages/mlx-swift-examples/
 Packages/swift-transformers/
+
+# Vendored Ruby gems (local xcodeproj tooling) — not app source
+.gems/
+
+# Credentials — never commit (App Store Connect / In-App Purchase keys, certificates, profiles, env files)
+*.p8
+*.p12
+*.mobileprovision
+.env
+.env.*

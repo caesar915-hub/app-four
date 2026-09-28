@@ -1,5 +1,7 @@
 import SwiftUI
 
+/// The pen's inline player (DESIGN.md §8.24): a 28-pt violet play disc, quantised waveform bars,
+/// and the duration in one small caption. Lives inside the Day Details AI card.
 struct AudioPlayerView: View {
     let recording: Recording
     @State private var viewModel: AudioPlaybackViewModel
@@ -12,8 +14,6 @@ struct AudioPlayerView: View {
     var body: some View {
         HStack(spacing: Spacing.m) {
             playPauseButton
-                .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
-                .contentShape(.rect)
 
             PlaybackWaveformBars(
                 seed: recording.id.uuidString,
@@ -24,10 +24,10 @@ struct AudioPlayerView: View {
             )
 
             Text(timeString(viewModel.currentTime))
-                .font(Typography.duration)
+                .font(Typography.micro)
                 .monospacedDigit()
-                .foregroundStyle(NewLook.inkSecondary)
-                .frame(minWidth: 42, alignment: .trailing)
+                .foregroundStyle(Ink.secondary)
+                .frame(minWidth: 36, alignment: .trailing)
         }
         .onDisappear {
             viewModel.cleanup()
@@ -46,10 +46,12 @@ struct AudioPlayerView: View {
             }
         } label: {
             Image(systemName: iconName)
-                .font(Typography.subheadline.weight(.semibold))
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Palette.medication, in: Circle())
+                .font(.system(size: 12, weight: .bold))
+                .foregroundStyle(Ink.onAccent)
+                .frame(width: 28, height: 28)
+                .background(Accent.violet, in: .circle)
+                .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
+                .contentShape(.rect)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(accessibilityLabel)
@@ -57,25 +59,24 @@ struct AudioPlayerView: View {
 
     private var iconName: String {
         switch viewModel.state {
-        case .playing: return "pause.fill"
-        case .loading: return "ellipsis"
-        case .idle, .paused, .finished, .error: return "play.fill"
+        case .playing: Icons.pause
+        case .loading: Icons.more
+        case .idle, .paused, .finished, .error: Icons.play
         }
     }
 
     private var accessibilityLabel: String {
         switch viewModel.state {
-        case .playing: return "Pause"
-        case .loading: return "Loading"
-        case .idle, .paused, .finished, .error: return "Play"
+        case .playing: "Pause"
+        case .loading: "Loading"
+        case .idle, .paused, .finished, .error: "Play"
         }
     }
 
+    /// One duration format app-wide ("3:24", as `Recording.formattedDuration`) — UI-54.
     private func timeString(_ time: TimeInterval) -> String {
         let total = Int(time)
-        let minutes = total / 60
-        let seconds = total % 60
-        return String(format: "%02d:%02d", minutes, seconds)
+        return String(format: "%d:%02d", total / 60, total % 60)
     }
 }
 

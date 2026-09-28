@@ -18,7 +18,6 @@ enum RecordingStatus: String, Codable, Sendable {
 enum RecordingState: String, Codable, Sendable {
     case idle
     case recording
-    case paused
     case processing
     case done
 }

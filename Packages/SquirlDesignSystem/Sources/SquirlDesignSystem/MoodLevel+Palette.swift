@@ -1,65 +1,101 @@
 import SwiftUI
 
-/// Calendar + Insights display palette for the extracted ``MoodLevel`` (defined in
-/// NoteExtraction). The **app-wide mood SSOT**: the Meadow·Burnt valence ramp
-/// (low→great = burnt-orange→amber→green). Calendar timeline, mood library, recording
-/// detail, and Insights all read it, so re-coloring here re-colors the whole app.
-///
-/// Two ends per level:
-/// - ``color`` / ``deepFill`` — the saturated **base** (deep shade): header text, accents,
-///   the dark end of Insights gradients, and legend dots.
-/// - ``gradientPartner`` / ``fill`` — the **light partner**: flat bead/banner surfaces paired
-///   with the fixed dark ``onColor`` ink, and the light end of Insights gradients.
+/// The app-wide mood palette (DESIGN.md §4.4), as the pen draws it: one chart ramp (bubbles,
+/// legend dots, range bars, mini bars) plus per-level word, avatar, day-card and tile-ring
+/// tints. Levels 3–4 were not drawn for the tints; their values are mixes of the ramp colour
+/// toward the surface and are marked derived. Dark pairs are the same mixes toward the dark card.
 public extension MoodLevel {
 
-    /// Meadow·Burnt base — saturated valence colour (burnt-orange→amber→green). The dark end of every fill.
+    /// Chart ramp — `#da7a2a · #eda94a · #9dcca2 · #55a75d · #2a9134`. Static across appearances.
     public var color: Color {
         switch self {
         case .low:   Color(hex: "#DA7A2A")
         case .flat:  Color(hex: "#EDA94A")
-        case .okay:  Color(hex: "#9FCB79")
-        case .good:  Color(hex: "#5FB36E")
-        case .great: Color(hex: "#2E8B57")
+        case .okay:  Color(hex: "#9DCCA2")
+        case .good:  Color(hex: "#55A75D")
+        case .great: Color(hex: "#2A9134")
         }
     }
 
-    /// Meadow·Burnt light partner — the light end of every fill, and the flat calendar bead/banner
-    /// surface (kept light so the fixed dark ``onColor`` ink stays legible).
+    /// Lighter partner of the ramp colour (35 % toward white) — gradient light ends, flat beads.
     public var gradientPartner: Color {
         switch self {
-        case .low:   Color(hex: "#EA9248")
-        case .flat:  Color(hex: "#FDC06C")
-        case .okay:  Color(hex: "#B9DB9C")
-        case .good:  Color(hex: "#7EC38A")
-        case .great: Color(hex: "#459B6B")
+        case .low:   Color(hex: "#E7A975")
+        case .flat:  Color(hex: "#F3C789")
+        case .okay:  Color(hex: "#BFDEC3")
+        case .good:  Color(hex: "#90C696")
+        case .great: Color(hex: "#75B87B")
         }
     }
 
-    /// Soft fill for banners and beads — paired with the dark ``onColor`` ink.
     public var fill: Color { gradientPartner }
-
-    /// Deeper, legible shade of the same hue — used for the day header text.
     public var deepFill: Color { color }
 
-    /// Day-card mood-block tint (spec 019, "#4 Divided · Cream disc"): the representative-mood base
-    /// colour at `Opacity.moodBlock`, filling the folded card and the open-state strip header.
-    public var blockTint: Color { color.opacity(Opacity.moodBlock) }
-    /// Cream-disc mood badge behind the mood glyph (folded header + check-in bead).
-    public var badgeTint: Color { color.opacity(Opacity.moodBadge) }
-    /// Mood-word colour on the block tint — a deeper, AA-legible shade, per appearance.
-    /// Decoupled from ``deepFill`` (which stays the saturated base for marker dots and gradient
-    /// ends): in **light** the hue is darkened to clear WCAG AA 4.5:1 on the 0.24 block tint over
-    /// the cream card; in **dark** the burnt-orange/green ramp ends are brightened to clear 4.5:1
-    /// on the tint over loam. All five levels measure ≥4.9:1 light / ≥5.0:1 dark. (Design-review
-    /// finding ①: the old `wordColor = deepFill = color` washed out to as low as 1.54:1 in light.)
+    /// The mood word ("Great", "Low"). Light: the pen's word colours, with flat darkened so it
+    /// clears AA on its card (`#da7a2a` is 3.0:1). Dark: the ramp partners (≥ 5:1 on the tints).
     public var wordColor: Color {
         switch self {
-        case .low:   Color(lightHex: "#8E470F", darkHex: "#E89A5A")
-        case .flat:  Color(lightHex: "#8A5600", darkHex: "#EDA94A")
-        case .okay:  Color(lightHex: "#41691F", darkHex: "#B7D897")
-        case .good:  Color(lightHex: "#2C6B3B", darkHex: "#79C98E")
-        case .great: Color(lightHex: "#1E5C38", darkHex: "#57C98A")
+        case .low:   Color(lightHex: "#842626", darkHex: "#E7A975")
+        case .flat:  Color(lightHex: "#8A5600", darkHex: "#F3C789")
+        case .okay:  Color(lightHex: "#1E6725", darkHex: "#BFDEC3")
+        case .good:  Color(lightHex: "#1B5E23", darkHex: "#90C696") // derived
+        case .great: Color(lightHex: "#17501D", darkHex: "#75B87B")
         }
+    }
+
+    /// 44 ⌀ avatar tint behind the sprout on journal rows and previous-day cards.
+    public var avatarTint: Color {
+        switch self {
+        case .low:   Color(lightHex: "#F4DDDD", darkHex: "#46321D")
+        case .flat:  Color(lightHex: "#FEE8D1", darkHex: "#4A3D24")
+        case .okay:  Color(lightHex: "#E5F7E5", darkHex: "#384437")
+        case .good:  Color(lightHex: "#DDEDDF", darkHex: "#293C28") // derived
+        case .great: Color(lightHex: "#DDF4DE", darkHex: "#1F371F")
+        }
+    }
+
+    /// Collapsed day-card fill.
+    public var dayCardFill: Color {
+        switch self {
+        case .low:   Color(lightHex: "#FFFDFD", darkHex: "#22201D")
+        case .flat:  Color(lightHex: "#FEFDFA", darkHex: "#22211C")
+        case .okay:  Color(lightHex: "#FCFDFC", darkHex: "#1E211E") // derived
+        case .good:  Color(lightHex: "#F9FCF9", darkHex: "#1C211C") // derived
+        case .great: Color(lightHex: "#F8FFFC", darkHex: "#1A221B")
+        }
+    }
+
+    /// Collapsed day-card stroke (drawn at 0.5 opacity in the pen).
+    public var dayCardStroke: Color {
+        switch self {
+        case .low:   Color(lightHex: "#F3B09A", darkHex: "#724721")
+        case .flat:  Color(lightHex: "#F6CC8A", darkHex: "#7A5D2F")
+        case .okay:  Color(lightHex: "#C9E3CC", darkHex: "#566C57") // derived
+        case .good:  Color(lightHex: "#A2CFA6", darkHex: "#365C38") // derived
+        case .great: Color(lightHex: "#ABBBA3", darkHex: "#225225")
+        }
+    }
+
+    /// Level-tile selected ring tint (D-E2 — the selected treatment adds a green-600 stroke).
+    public var tileRing: Color {
+        switch self {
+        case .low:   Color(lightHex: "#F3B09A", darkHex: "#724721")
+        case .flat:  Color(lightHex: "#F6CC8A", darkHex: "#7A5D2F")
+        case .okay:  Color(lightHex: "#B6D9B9", darkHex: "#566C57") // derived
+        case .good:  Color(lightHex: "#80BD86", darkHex: "#365C38") // derived
+        case .great: Color(lightHex: "#70B577", darkHex: "#225225")
+        }
+    }
+
+    /// Bubble-chart fill — the ramp colour, except the great bubble, which carries a white label
+    /// and so takes green-600 (D14: white on green-500 is 4.04:1, on green-600 4.75:1).
+    public var bubbleFill: Color {
+        self == .great ? Color(hex: "#26842F") : color
+    }
+
+    /// Ink on the bubble of this level — dark on 1–4, white only on the great bubble.
+    public var bubbleInk: Color {
+        self == .great ? Color(hex: "#FFFFFF") : Color(hex: "#1C1B1F")
     }
 
     public var displayLabel: String {
@@ -72,10 +108,8 @@ public extension MoodLevel {
         }
     }
 
-    /// Dark ink for text/icons on the light fills. Fixed (the fills don't adapt to dark
-    /// mode, so the ink stays dark) — a justified exception to the "semantic colours only"
-    /// rule, the mood palette itself being custom.
-    public static let onColor = Color(hex: "#1C1C1E")
+    /// Dark ink for text on the light ramp partners (fixed — the partners do not adapt).
+    public static let onColor = Color(hex: "#1C1B1F")
 
     /// Rounded half-up average deep shade of several moods, for the day header.
     public static func averageDeep(of moods: [String?]) -> Color? { average(of: moods)?.deepFill }

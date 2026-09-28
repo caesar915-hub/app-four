@@ -45,24 +45,6 @@ final class InsightsViewModel {
         self.store = store
     }
 
-    func prevMonth() {
-        currentMonth = calendar.date(byAdding: .month, value: -1, to: currentMonth) ?? currentMonth
-    }
-
-    func nextMonth() {
-        guard !isCurrentMonth else { return }
-        currentMonth = calendar.date(byAdding: .month, value: 1, to: currentMonth) ?? currentMonth
-    }
-
-    func jumpToToday() {
-        currentMonth = Date()
-    }
-
-    func recording(for id: UUID) -> Recording? {
-        store.recordings.first { $0.id == id }
-    }
-
-
     var hasAnyData: Bool { !monthRecordings.isEmpty }
 }
 

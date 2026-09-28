@@ -1,11 +1,17 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+/// Settings as the pen draws it (spec 057, `iPhone 17 - 16`): a page title and card groups —
+/// heading 16/600 over a `.large` / `.medium` card — instead of the native inset-grouped list,
+/// plus the rows the pen omits but the product must keep (D7 / D-ST1): the insights-model row,
+/// My medication, the medical disclaimer, journal export (never gated), Clear all data, the
+/// privacy statement and the version.
 struct SettingsView: View {
     @Binding var selectedTab: Tab
     @State private var viewModel: SettingsViewModel
     @State private var showingClearConfirmation = false
     @State private var medicationPickerExpanded = false
+    @State private var scrollPosition = ScrollPosition(idType: String.self)
     @Environment(AppIntentRouter.self) private var router
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -39,67 +45,66 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        // List manages its own scroll — ScreenContainer is non-scrollable here.
-        // The inline navigation title is exposed to VoiceOver as a heading by default,
-        // so passing it here both shows "Settings" and gives the screen a landmark.
         ScreenContainer(title: "", showsMedicationBar: true, scrollable: false) {
-            ScrollViewReader { proxy in
-                List {
-                    aiModelsSection
+            ScrollView {
+                VStack(alignment: .leading, spacing: Spacing.cardGap) {
+                    PageTitleBlock("Settings", subtitle: "Make the app work for you")
                         .id(Self.topID)
-                    systemSection
-                    checkInSection
-                    dayCardSection
-                    MyMedicationSection(viewModel: viewModel, isPickerExpanded: $medicationPickerExpanded)
-                        .id(Self.myMedicationID)
-                    DoseGuardSection(viewModel: viewModel)
-                    // stickerSetupSection stays unmounted for 1.1: the NFC-sticker
-                    // walkthrough is held back for a later (paid-tier) release.
-                    // Section + StickerSetupView remain compiled; restore = re-add
-                    // this one line.
-                    medicationBarSection
-                    MedicalInfoSection()
-                    accessibilitySection
-                    YourDataSection()
-                    journalExportSection
-                    dangerSection
-                    versionSection
-                }
-                .listStyle(.insetGrouped)
-                .scrollContentBackground(.hidden)        // reveal NewLook.screen under the grouped list
-                .listRowBackground(NewLook.card)  // white inset cards instead of system grouped gray
-                // TabView keeps this tab alive, so its scroll offset persists.
-                // Reset to top each time Settings becomes the active tab — unless a
-                // My-Medication focus is pending, which owns the scroll instead.
-                .onChange(of: selectedTab) { _, newValue in
-                    guard newValue == .settings, !router.shouldFocusMyMedication else { return }
-                    withAnimation(reduceMotion ? nil : Motion.smooth) {
-                        proxy.scrollTo(Self.topID, anchor: .top)
+                    group("Check-in calendar") { checkInCalendarCard }
+                    group("Voice & storage") { voiceAndStorageCard }
+                    group("My medication") {
+                        MyMedicationSection(viewModel: viewModel, isPickerExpanded: $medicationPickerExpanded)
                     }
-                }
-                // Consumes the intent's one-shot focus (FR-007/D13): scrolls the
-                // My Medication section into view AND opens its picker. `task(id:)`
-                // runs on appear and on re-arm, so it covers a cold headless launch,
-                // a tab switch, and the already-on-Settings case alike. The anchor
-                // parks the section just below the top edge (not flush against it)
-                // so the header keeps its breathing room (device QA, S5).
-                .task(id: router.shouldFocusMyMedication) {
-                    guard router.shouldFocusMyMedication, router.consumeMyMedicationFocus() else { return }
-                    medicationPickerExpanded = true
-                    withAnimation(reduceMotion ? nil : Motion.smooth) {
-                        proxy.scrollTo(Self.myMedicationID, anchor: UnitPoint(x: 0, y: 0.12))
+                    .id(Self.myMedicationID)
+                    group("Confirmations", style: .medium) { ConfirmationsSection(viewModel: viewModel) }
+                    group("Dose guard") { DoseGuardSection(viewModel: viewModel) }
+                    // The NFC-sticker walkthrough (030 / US4) stays unmounted for 1.1; `StickerSetupView`
+                    // remains compiled so restoring it is one group here.
+                    group("Medication bar") { MedicationBarSettingsSection() }
+                    group("Accessibility", style: .medium) {
+                        InfoRow(symbol: Icons.accessibility,
+                                text: "Squirl follows the iOS motion setting. Turn on Reduce Motion in Settings › Accessibility to still animations.")
                     }
+                    group("Medication info", style: .medium) { MedicalInfoSection() }
+                    group("Your data", style: .medium) { yourDataCard }
+                    versionLine
+                }
+                .scrollTargetLayout()
+                .padding(.horizontal, Spacing.gutter)
+                .padding(.top, Spacing.m)
+                // The Add button floats over the last group at rest (D-ST3) — keep it scrollable clear.
+                .padding(.bottom, Spacing.hero * 2)
+            }
+            .scrollPosition($scrollPosition)
+            // TabView keeps this tab alive, so its scroll offset persists. Reset to top each time
+            // Settings becomes the active tab — unless a My-Medication focus is pending, which
+            // owns the scroll instead.
+            .onChange(of: selectedTab) { _, newValue in
+                guard newValue == .settings, !router.shouldFocusMyMedication else { return }
+                withAnimation(reduceMotion ? nil : Motion.smooth) {
+                    scrollPosition.scrollTo(id: Self.topID, anchor: .top)
+                }
+            }
+            // Consumes the intent's one-shot focus (FR-007/D13): scrolls the My medication group
+            // into view AND opens its picker. `task(id:)` runs on appear and on re-arm, so it
+            // covers a cold headless launch, a tab switch, and the already-on-Settings case alike.
+            // The anchor parks the group just below the top edge so the heading keeps its room.
+            .task(id: router.shouldFocusMyMedication) {
+                guard router.shouldFocusMyMedication, router.consumeMyMedicationFocus() else { return }
+                medicationPickerExpanded = true
+                withAnimation(reduceMotion ? nil : Motion.smooth) {
+                    scrollPosition.scrollTo(id: Self.myMedicationID, anchor: UnitPoint(x: 0, y: 0.12))
                 }
             }
         }
         .trackScreen("SettingsView")
-        .alert("Clear All Data?", isPresented: $showingClearConfirmation) {
-            Button("Clear All Data", role: .destructive) {
+        .alert("Clear all data?", isPresented: $showingClearConfirmation) {
+            Button("Clear all data", role: .destructive) {
                 viewModel.clearAllData()
             }
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("This permanently deletes all your recordings and check-ins. Your downloaded transcription model and preferences are kept. This can’t be undone.")
+            Text("This permanently deletes all your recordings and check-ins. Your downloaded models and preferences are kept. This can’t be undone.")
         }
         .fileExporter(
             isPresented: $isPresentingFileExporter,
@@ -125,13 +130,56 @@ struct SettingsView: View {
         }
     }
 
-    // MARK: - Sections
+    // MARK: - Group scaffold
 
-    private var aiModelsSection: some View {
-        Section("AI Models") {
+    private func group<Content: View>(_ heading: String, style: CardStyle = .large,
+                                      @ViewBuilder content: () -> Content) -> some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            Text(heading)
+                .font(Typography.sectionTitle)
+                .foregroundStyle(Ink.primary)
+                .accessibilityAddTraits(.isHeader)
+            content()
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .card(style)
+        }
+    }
+
+    // MARK: - Check-in calendar
+
+    private var checkInCalendarCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            VStack(alignment: .leading, spacing: Spacing.xs) {
+                Text("Voice prompts")
+                    .font(Typography.rowTitle)
+                    .foregroundStyle(Ink.primary)
+                    .accessibilityAddTraits(.isHeader)
+                Text("How long each prompt stays on screen during a voice check-in.")
+                    .font(Typography.captionMedium)
+                    .foregroundStyle(Ink.tertiary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            ChipRow(interactive: true) {
+                ForEach([PromptPace.brisk, .relaxed], id: \.self) { pace in
+                    ChipButton(pace.displayLabel, selected: viewModel.promptPace == pace) {
+                        viewModel.promptPace = pace
+                        viewModel.syncPromptPace()
+                    }
+                }
+            }
+            .accessibilityLabel("Prompt pace")
+            HairlineDivider()
+            DayCardSettingsSection()
+        }
+    }
+
+    // MARK: - Voice & storage
+
+    private var voiceAndStorageCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
             ModelDownloadRow(
                 title: "Voice Transcription",
-                icon: "waveform",
+                icon: Icons.waveform,
                 isInstalled: viewModel.whisperModelInstalled,
                 isDownloading: viewModel.isDownloadingWhisper,
                 downloadProgress: viewModel.whisperDownloadProgress,
@@ -147,9 +195,10 @@ struct SettingsView: View {
                 },
                 onDelete: { Task { await viewModel.deleteModel(.whisper) } }
             )
+            HairlineDivider()
             ModelDownloadRow(
                 title: "Journal Insights",
-                icon: "brain.head.profile",
+                icon: Icons.brain,
                 isInstalled: viewModel.llmModelInstalled,
                 isDownloading: viewModel.isDownloadingLLM,
                 downloadProgress: viewModel.llmDownloadProgress,
@@ -165,88 +214,92 @@ struct SettingsView: View {
                 },
                 onDelete: { Task { await viewModel.deleteModel(.llm) } }
             )
+            HairlineDivider()
+            HStack(spacing: Spacing.m) {
+                Image(systemName: Icons.record)
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundStyle(Accent.primaryText)
+                    .frame(width: 21, height: 21)
+                    .accessibilityHidden(true)
+                Text("Storage")
+                    .font(Typography.rowLabel)
+                    .foregroundStyle(Ink.primary)
+                Spacer(minLength: Spacing.s)
+                Text(storageValue)
+                    .font(Typography.captionMedium)
+                    .foregroundStyle(Ink.secondary)
+                    .multilineTextAlignment(.trailing)
+            }
+            .frame(minHeight: Metrics.minTapTarget)
+            .accessibilityElement(children: .combine)
+            HairlineDivider()
+            ToggleRow("Download over cellular",
+                      description: "Allow model downloads over mobile data — the voice model and the insights model.",
+                      isOn: $viewModel.downloadOverCellular)
+                .onChange(of: viewModel.downloadOverCellular) { viewModel.syncDownloadOverCellular() }
         }
     }
 
-    private var systemSection: some View {
-        Section("System") {
-            LabeledContent("Storage") {
-                let count = viewModel.recordingCount
-                Text("\(count) \(count == 1 ? "recording" : "recordings") · \(String(format: "%.1f", viewModel.storageUsedMB)) MB")
-                    .foregroundStyle(NewLook.inkSecondary)
-            }
-            Toggle(isOn: $viewModel.downloadOverCellular) {
-                Label("Download over Cellular", systemImage: "antenna.radiowaves.left.and.right")
-            }
-            .onChange(of: viewModel.downloadOverCellular) {
-                viewModel.syncDownloadOverCellular()
-            }
-        }
+    private var storageValue: String {
+        let count = viewModel.recordingCount
+        return "\(String(format: "%.1f", viewModel.storageUsedMB)) MB · \(count) \(count == 1 ? "recording" : "recordings")"
     }
 
-    private var checkInSection: some View {
-        Section {
-            Picker("Prompt Pace", selection: $viewModel.promptPace) {
-                ForEach(PromptPace.allCases, id: \.self) { pace in
-                    Text(pace.displayLabel).tag(pace)
-                }
-            }
-            .onChange(of: viewModel.promptPace) { viewModel.syncPromptPace() }
-        } header: {
-            Text("Check-in")
-        } footer: {
-            Text("How long each prompt stays on screen during a voice check-in.")
-        }
-    }
+    // MARK: - Your data (statement, links, export, clear)
 
-    @ViewBuilder
-    private var medicationBarSection: some View {
-        MedicationBarSettingsSection()
-    }
-
-    // 030 / US4 — guided NFC-sticker setup (FR-019). A calm entry into the
-    // walkthrough; the verbs already work from install, this makes stickers reachable.
-    // Currently UNMOUNTED from the section list above (1.1 paid-tier holdback) —
-    // kept compiled so the restore is a one-line change, mirroring the 1.0
-    // hands-free hide's unreferenced-sections pattern.
-    private var stickerSetupSection: some View {
-        Section {
-            NavigationLink {
-                StickerSetupView()
-            } label: {
-                Label("Set up your sticker", systemImage: "sensor.tag.radiowaves.forward")
-            }
-        } footer: {
-            Text("Turn a blank NFC sticker into a one-tap dose log or check-in. About a minute, once per sticker.")
-        }
-    }
-
-    private var dayCardSection: some View {
-        DayCardSettingsSection()
-    }
-
-    private var accessibilitySection: some View {
-        Section("Accessibility") {
-            Text("Squirl follows the iOS motion setting. Turn on Reduce Motion in Settings › Accessibility to still animations.")
-                .font(Typography.caption)
-                .foregroundStyle(NewLook.inkSecondary)
-        }
-    }
-
-    private var journalExportSection: some View {
-        Section {
+    private var yourDataCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            YourDataSection()
+            HairlineDivider()
             Button(action: startExport) {
-                HStack {
-                    Label("Save a copy of my journal — yours to keep", systemImage: "lock.doc")
+                HStack(spacing: Spacing.m) {
+                    Image(systemName: Icons.export)
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(Accent.primaryText)
+                        .frame(width: 21, height: 21)
+                        .accessibilityHidden(true)
+                    Text("Save a copy of my journal — yours to keep")
+                        .font(Typography.rowLabel)
+                        .foregroundStyle(Ink.primary)
+                        .multilineTextAlignment(.leading)
+                    Spacer(minLength: Spacing.s)
                     if isPreparingExport {
-                        Spacer()
-                        ProgressView()
+                        ProgressView().tint(Accent.primaryFill)
+                    } else {
+                        Image(systemName: Icons.chevronRight)
+                            .font(.system(size: 14, weight: .semibold))
+                            .foregroundStyle(Ink.primary)
+                            .accessibilityHidden(true)
                     }
                 }
+                .frame(minHeight: Metrics.minTapTarget)
+                .contentShape(.rect)
             }
+            .buttonStyle(.plain)
             .disabled(isPreparingExport)
-        } footer: {
             Text("Saves one encrypted file you can keep or share. We’ll show you a key to open it — keep it safe. If you lose the key, the backup can’t be recovered — not even by us.")
+                .font(Typography.captionMedium)
+                .foregroundStyle(Ink.tertiary)
+                .fixedSize(horizontal: false, vertical: true)
+            HairlineDivider()
+            Button(role: .destructive) {
+                showingClearConfirmation = true
+            } label: {
+                HStack(spacing: Spacing.m) {
+                    Image(systemName: Icons.trash)
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(Ink.destructive)
+                        .frame(width: 21, height: 21)
+                        .accessibilityHidden(true)
+                    Text("Clear all data")
+                        .font(Typography.rowLabel)
+                        .foregroundStyle(Ink.destructive)
+                    Spacer(minLength: 0)
+                }
+                .frame(minHeight: Metrics.minTapTarget)
+                .contentShape(.rect)
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -266,15 +319,7 @@ struct SettingsView: View {
         }
     }
 
-    private var dangerSection: some View {
-        Section {
-            Button(role: .destructive) {
-                showingClearConfirmation = true
-            } label: {
-                Label("Clear All Data", systemImage: "trash")
-            }
-        }
-    }
+    // MARK: - Version
 
     private var versionLabel: String {
         let name = Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? "Squirl"
@@ -282,17 +327,11 @@ struct SettingsView: View {
         return "\(name) v\(version)"
     }
 
-    private var versionSection: some View {
-        Section {
-            HStack {
-                Spacer()
-                Text(versionLabel)
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkSecondary)
-                Spacer()
-            }
-        }
-        .listRowBackground(Color.clear)
+    private var versionLine: some View {
+        Text(versionLabel)
+            .font(Typography.captionQuiet)
+            .foregroundStyle(Ink.tertiary)
+            .frame(maxWidth: .infinity)
     }
 }
 

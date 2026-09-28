@@ -3,8 +3,12 @@ import Observation
 
 @MainActor
 @Observable
-final class ExtractionReviewViewModel: Identifiable {
+final class ExtractionReviewViewModel: Identifiable, Hashable {
     let id = UUID()
+
+    // Identity-based so the edit page can be a `navigationDestination(item:)` (D-E1).
+    nonisolated static func == (lhs: ExtractionReviewViewModel, rhs: ExtractionReviewViewModel) -> Bool { lhs.id == rhs.id }
+    nonisolated func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
     // MARK: - Editable fields
     var name: String {
@@ -35,6 +39,51 @@ final class ExtractionReviewViewModel: Identifiable {
     private var editedFields: Set<TagCategory> = []
     var onComplete: (Recording) -> Void
 
+    /// Every editable value, captured once at seed time so "Save changes" can be gated on a real
+    /// difference (D-E5) instead of on which setter happened to run.
+    private struct Snapshot: Equatable {
+        var name: String
+        var date: Date
+        var mood: String
+        var energy: EnergyLevel?
+        var focus: FocusLevel?
+        var sleepLevel: SleepLevel?
+        var sleepHours: Double?
+        var medications: [MedEvent]
+        var emotions: Set<String>
+        var sideEffects: Set<String>
+    }
+    private var seeded: Snapshot?
+    private var current: Snapshot {
+        Snapshot(name: name, date: date, mood: mood, energy: energy, focus: focus,
+                 sleepLevel: sleepLevel, sleepHours: sleepHours, medications: medications,
+                 emotions: emotions, sideEffects: sideEffects)
+    }
+    var isDirty: Bool { current != seeded }
+
+    /// One row per medication name, holding its dose events in time order ("HH:mm", untimed
+    /// last) — the Edit card's shape.
+    struct MedicationRow: Identifiable {
+        let name: String
+        let events: [MedEvent]
+        var id: String { name }
+    }
+    var medicationRows: [MedicationRow] {
+        var order: [String] = []
+        var groups: [String: [MedEvent]] = [:]
+        for med in medications {
+            if groups[med.name] == nil { order.append(med.name) }
+            groups[med.name, default: []].append(med)
+        }
+        return order.map { name in
+            MedicationRow(name: name, events: (groups[name] ?? []).sorted { ($0.time ?? "~") < ($1.time ?? "~") })
+        }
+    }
+
+    /// Set by `confirm()` and `cancel()`; `cancelIfUnsaved()` is the view's `onDisappear` hook and
+    /// must be a no-op after a save (a pop after "Save changes" must not mark the summary failed).
+    private(set) var isFinished = false
+
     init(
         result: SummaryResult,
         recording: Recording,
@@ -56,6 +105,7 @@ final class ExtractionReviewViewModel: Identifiable {
         self.medications = result.medications
         self.emotions = Set(result.emotions)
         self.sideEffects = Set(result.sideEffects)
+        self.seeded = current
     }
 
     convenience init(
@@ -189,6 +239,8 @@ final class ExtractionReviewViewModel: Identifiable {
     // MARK: - Confirm / Cancel
 
     func confirm() {
+        // A second tap during the pop animation must not re-insert the provenance tags.
+        guard !isFinished else { return }
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
 
         // Mirror applySummary's auto "Mood · Energy · Focus" title so the JSON
@@ -291,14 +343,21 @@ final class ExtractionReviewViewModel: Identifiable {
         }
         store.addCorrectionTags(tags, for: recording)
         store.save()
+        isFinished = true
         onComplete(recording)
     }
 
     func cancel() {
+        isFinished = true
         if recording.summaryStatus != SummaryStatus.completed.rawValue {
             recording.summaryStatus = SummaryStatus.failed.rawValue
             store.save()
         }
+    }
+
+    func cancelIfUnsaved() {
+        guard !isFinished else { return }
+        cancel()
     }
 }
 

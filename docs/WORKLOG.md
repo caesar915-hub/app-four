@@ -1,28 +1,142 @@
-## 2026-08-18 17:22–18:36 · mark SummaryLengthTier as nonisolated enum · feat/043-mlx-journal-service
+## 2026-09-28 13:48–15:56 · review round logged; board updated · feat/057-ui-refresh
 
 **Code changes**
+- _Major (feat)_
+  - `3ea70ed7` feat(057/C7): Settings as card groups + medication-bar title options
+  - `a4b3fa1b` feat(057/C6): Insights on the pen's four cards + connections
+  - `be7a813e` feat(057/C5): Edit Check-In as a pushed page with a dirty-gated Save
+  - `4b818a06` feat(057/C4): Day Details on the pen's page + wave-1 screenshot fixes
+  - `e952998d` feat(057/C3): secondary surfaces wave 1 — text composer, Log Dose sheet, onboarding tokens
+  - `05f0db2e` feat(057/C2): Calendar / Mood Journal on the pen's cards, week strip and medication bar
+  - `f68469d1` feat(057/C1): check-in trio on the pen's anchored ring (hub · listening · saved)
+  - `64179bb0` feat(057/B4): floating tab bar + Add button, chrome-less roots, chrome visibility preference
+  - `c3a8f2ec` feat(057/B3): pen glyphs as SwiftUI paths, sleep ramp, medication atoms, ring, level tiles
+  - `03492ed7` feat(057/B2): button styles, Bill-shape chips, nav pills, controls and icon map
+  - `6bb864af` feat(057/B1): pen-derived tokens, typography roles, layout tokens and card atoms
+- _Fixes_
+  - `620100f7` fix(057/D3): code-review findings on PR #48
+  - `b5769642` fix(057/D2): wave-2 screenshot findings + sandbox build
+- _docs_
+  - `4d24cce2` docs(057): review round logged; board updated
+  - `43eeff7d` docs: regenerate WORKLOG.md for feat/057-ui-refresh
+  - `fbd43e23` docs(057): board, log and task checklist for C4–C7 and the D1/D2 sweeps
+  - `de50df00` docs(057): decisions accepted (UI-02), Epic UI tickets + backlog (UI-03), Spec Kit 057 (UI-05)
+  - `e0dc67b5` docs(057): pen-derived DESIGN.md, UI refresh plan, research pack and pen exports
+- _chore_
+  - `51576547` chore(057/D1): delete the refresh-orphaned code and the pre-057 token aliases
+
+**gh actions**
+- PR #48 opened `feat/057-ui-refresh` — "feat(057): UI refresh from the Pencil design — tokens, glyphs, chrome and all eight screens" — OPEN/MERGEABLE
+- PR #47 opened `fix/insights-sleep-mood-gate` — "fix(insights): Sleep × Mood connection gates on the canonical sleep level (UI-40)" — OPEN/MERGEABLE
+
+**Worktrees**
+```
+/Users/caesargrey/Projects/app-four                                                                               074bb264 [docs/llm-fsd-alignment]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9b2edc5e-33b2-475c-b128-3fa4ef03a52c/scratchpad/qa-wt 05ee8e38 [fix/audit-high-medium] prunable
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                             9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                 965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/040-sleep-mood-gate                                         51d84d44 [fix/insights-sleep-mood-gate]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/054-settings-topic-hub                                      4d1a3e88 [feat/054-settings-topic-hub]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/055-rc-foundation                                           7002bb5b [feat/055-revenuecat]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/057-ui-refresh                                              4d24cce2 [feat/057-ui-refresh]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                      5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/remove-nlp                                                  73e8a091 [chore/remove-dead-nlp]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/speech-transcriber-probe                                    d5d7dc31 [feat/gemma4-litert-extraction]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ui-refresh                                                  08ba8cba [feat/ui-refresh]
+```
+
+---
+
+## 2026-08-11 19:45 – 2026-09-27 12:55 · public-repo README + untrack vendored .gems + credential git · main
+
+**Code changes**
+- _Major (feat)_
+  - `a92dc759` feat(043/044): on-device MLX journal pipeline + download reliability + tuned extraction
+  - `9d1aebea` feat(043): sync tuning 2026-08-18-b from macOS harness
+  - `c78993af` feat(043): LLM model management UI + recording pipeline wiring
+  - `ae474b6d` feat(044): download & transcription reliability
+  - `9219eb40` feat(043): sync tuning 2026-08-17-c + establish tuning sync system
+  - `3cf453f3` feat(043): port tuned two-pass prompts + extraction validator from macOS tuning
+  - `6b3f544a` feat(043): surface Llama summary on Recording Detail; full transcript
+  - `ef06ffb4` feat(043): Journal Insights row in Settings › AI Models
+  - `14ba99cf` feat(043): sequential Llama download step in onboarding
+  - `8362b7bc` feat(043): managed lifecycle for the Llama insights model
+  - `60ec4d75` feat: extraction review ui logic and validation (Part 3)
+  - `6eca6cb2` feat(mlx): add memory headroom alert and fallback handling (US7)
+  - `b5612ba5` feat(043): Part 3 - Update provenance tags from .nlp to .llm in ExtractionReviewViewModel
+  - `4ec0b7da` feat(043): Part 2 — validation & persistence pipeline (parseExtraction, ExtractionValidator, UnifiedExtraction)
+  - `14b940e6` feat: implement MLXJournalService phase 1-7
 - _Fixes_
   - `aacf1d86` fix(concurrency): mark SummaryLengthTier as nonisolated enum
   - `8a2108e4` fix(nlp): canonicalize medication alias names in NLNoteExtractor to preserve eval floors
+  - `afa4cf85` fix(spm): vendor MLXLLM/MLXLMCommon as local package (CI-safe, keeps tested dep graph)
+  - `c15b14be` fix(spm): switch mlx-swift-examples to remote 2.29.1, clean gitlinks & stale Hub/Tokenizers deps
+  - `57bcf137` fix(043/044): address pre-merge code-review findings
+  - `f48d1062` fix(043): resolve approachable-concurrency warnings
+  - `9c82b541` fix(043): rebuild noteExtraction JSON on review save; wire memory alert
+  - `448b64de` fix(043): interpolate transcript into LLM user message; guard stage-3 parse range
+- _Tests_
+  - `972afee3` test(043): on-device MLX eval harness + tuning & 044 QA reports
 - _docs_
+  - `93c342e9` docs: public-repo README + untrack vendored .gems + credential gitignore
+  - `2553e251` docs: regenerate WORKLOG.md after the Shipaton sprint doc commits
+  - `ade0967c` docs(process): September Shipaton sprint doc system
+  - `f84d4585` docs(shipaton): RevenueCat research, hard-paywall decision, and md corrections
+  - `4d1a3e88` docs(mockups): add 6 view concepts (J-O) from wider app-viz scan; extend research
+  - `4fcdc81b` docs: regenerate WORKLOG.md after concurrency warning fix
   - `6906b873` docs: regenerate WORKLOG.md after eval-floor fix
+  - `137fd8d0` docs(mockups): add 036 insights additional view concepts gallery
+  - `483276a0` docs(mockups): add 036 insights evolution proposal (competitor-informed)
+  - `7128996b` docs(research): daylio/bearable insights inventory; fix 036 mockup sleep dataset
+  - `a2155542` docs(mockups): add 036 insights screen spec mockup
+  - `45be4030` docs: regenerate WORKLOG.md after packaging fix
+  - `15dd1c06` docs: regenerate WORKLOG.md after review-fix commit
+  - `74d00c20` docs(044): close T035 — save-count verification via counting mocks + call-site inspection
+  - `2e67073e` docs: regenerate WORKLOG.md after -c tuning sync commit
+  - `63d75728` docs: regenerate WORKLOG.md after 043 tuning-port + QA commits
+  - `fbc78ed3` docs(043): mockup — summary card in transcript slot, full transcript below
+  - `22e3eeba` docs(043): recording-detail redesign variants mockup
+  - `1abed0d2` docs(043): add device QA checklist
+  - `aac3ed34` docs(043): mark completed tasks across parts 1-3
+  - `8d6eaa9a` docs: rewrite processing and extraction fsd with 5-stage pipeline
+- _chore_
+  - `66dba5db` chore: accept Xcode project regeneration (local package refs, empty exceptions)
+  - `02866367` chore: drop deterministic-extraction gate from plan template
 - _other_
   - `ee08788f` Merge pull request #40 from caesar915-hub/chore/tuning-2026-08-18-b
+  - `726af0c2` spec(043): add implementation tasks — test-first phased breakdown
+  - `de06898d` spec(043): add implementation plan — MLXJournalService
+  - `99f6fcf0` spec(043): MLXJournalService — on-device LLM extraction specification
 
 **Git actions**
+- `a92dc759` feat(043/044): on-device MLX journal pipeline + download reliability + tuned extraction
 - `ee08788f` Merge pull request #40 from caesar915-hub/chore/tuning-2026-08-18-b
 
 **gh actions**
 - PR #40 merged `chore/tuning-2026-08-18-b` — "feat(043): sync tuning 2026-08-18-b from macOS harness"
+- PR #39 merged `feat/043-mlx-journal-service` — "feat(043/044): on-device MLX journal pipeline + download reliability + tuned extraction"
+- PR #46 opened `feat/gemma4-litert-extraction` — "feat(056): Gemma 4 E2B extraction via LiteRT-LM (additive/inert, device-gated switchover)" — OPEN/MERGEABLE
+- PR #45 opened `fix/audit-high-medium` — "fix(audit): high + medium remediation (recording-cap, delete-orphan, save-safety, focus, sleep, regenerate)" — OPEN/MERGEABLE
+- PR #44 opened `fix/audit-safe-cleanup` — "fix(audit): safe cleanup (dead code, debug gating, RC-30, privacy logs)" — OPEN/MERGEABLE
+- PR #43 opened `docs/codebase-audit-2026-09` — "docs(audit): full codebase audit of main @ 2553e251" — OPEN/MERGEABLE
+- PR #42 opened `feat/speech-transcriber-probe` — "feat(045): SpeechAnalyzer migration — plan + tasks + additive engine (REVIEW ONLY, do not merge)" — OPEN/MERGEABLE
+- PR #41 opened `fix/restore-debug-menu` — "fix(settings): restore the 5-tap debug console" — OPEN/MERGEABLE
+- PR #40 opened `chore/tuning-2026-08-18-b` — "feat(043): sync tuning 2026-08-18-b from macOS harness" — MERGED/CONFLICTING
+- PR #39 opened `feat/043-mlx-journal-service` — "feat(043/044): on-device MLX journal pipeline + download reliability + tuned extraction" — MERGED/UNKNOWN
 
 **Worktrees**
 ```
-/Users/caesargrey/Projects/app-four                                          137fd8d0 [main]
-/Users/caesargrey/Projects/app-four-llama                                    aacf1d86 [feat/043-mlx-journal-service]
-/Users/caesargrey/Projects/app-four-phase0                                   43eb6515 [android-phase0-spikes] prunable
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents        9e98adab [chore/swift6-tech-debt]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4            965dcf22 [feat/037-live-activity-controls]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals 5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four                                                                                 074bb264 [docs/llm-fsd-alignment]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/7f435f5e-2d88-4eca-a724-fc844837b1dd/scratchpad/main-wt 93c342e9 [main]
+/private/tmp/claude-501/-Users-caesargrey-Projects-app-four/9b2edc5e-33b2-475c-b128-3fa4ef03a52c/scratchpad/qa-wt   05ee8e38 [fix/audit-high-medium]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-app-intents                                               9e98adab [chore/swift6-tech-debt]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/030-us3-us4                                                   965dcf22 [feat/037-live-activity-controls]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/054-settings-topic-hub                                        4d1a3e88 [feat/054-settings-topic-hub]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/055-rc-foundation                                             9564e392 [feat/055-revenuecat]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                        5db316a6 [feat/healthkit-signals]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/remove-nlp                                                    73e8a091 [chore/remove-dead-nlp]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/speech-transcriber-probe                                      d5d7dc31 [feat/gemma4-litert-extraction]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/ui-refresh                                                    2553e251 [feat/ui-refresh]
 ```
 
 ---

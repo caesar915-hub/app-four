@@ -1,68 +1,71 @@
 import CoreFoundation
 
-/// Layout metrics that aren't spacing or radius: tap targets, content width
-/// limits, and standard decorative icon sizes.
+/// Layout metrics that aren't spacing or radius: tap targets, content width limits and the
+/// fixed-point sizes of imagery (glyphs, rings, chrome) — never Dynamic-Type copy.
 ///
-/// Named `Metrics` (not `Layout`) to avoid shadowing the SwiftUI `Layout`
-/// protocol, which is conformed to by `FlowLayout` in `TagFlowView`.
+/// Named `Metrics` (not `Layout`) to avoid shadowing the SwiftUI `Layout` protocol.
 public enum Metrics {
     /// Minimum interactive target per Apple HIG
     public static let minTapTarget: CGFloat = 44
     /// Maximum readable content width (used to inset content on iPad)
     public static let maxContentWidth: CGFloat = 600
-    /// Standard minimum row height
-    public static let rowMinHeight: CGFloat = 44
 
-    /// Diameter of the cream-disc mood badge in the day-card header (folded block + open strip)
-    public static let headerMoodBadge: CGFloat = 42
-    /// Base size for the folded-card summary's inline signal glyph (fixed-point, decorative) and
-    /// its mood text (scales with Dynamic Type) — the two align at the default text size.
-    public static let summarySignal: CGFloat = 15
-    /// Check-in row signal-glyph size — the energy/focus chip glyphs in the expanded entry row.
-    public static let rowSignal: CGFloat = 12
-    /// Diameter of the no-disc day-header's inline mood glyph, folded + expanded (spec 023).
-    public static let dayHeaderGlyph: CGFloat = 40
+    // MARK: Chrome (spec 057)
+    /// Floating tab bar height and pill radius (60 high, r 75).
+    public static let tabBarHeight: CGFloat = 60
+    /// Compact tab bar width (icon-only active pill, shares the row with the FAB).
+    public static let tabBarCompactWidth: CGFloat = 274
+    /// Active tab pill (icon-only).
+    public static let tabPillWidth: CGFloat = 64
+    public static let tabPillHeight: CGFloat = 44
+    /// Tab-bar icon size.
+    public static let tabIcon: CGFloat = 24
+    /// Add button diameter.
+    public static let fab: CGFloat = 50
+    /// Back / more nav pill diameter, and its row-sized variant.
+    public static let navPill: CGFloat = 43
+    public static let navPillSmall: CGFloat = 24
+    /// Bottom inset, above the home-indicator safe area, that keeps content clear of the floating
+    /// chrome: bar 60 + its 4 pt bottom gap + 8 pt breathing room.
+    public static let floatingChromeInset: CGFloat = 72
 
-    // MARK: - DayCard a01 (spec 034)
-    /// Unfolded entry-row mood disc (a01 node 308:1957 — 43pt), tinted with the row's own
-    /// mood at `Opacity.moodBadge`.
-    public static let rowMoodDisc: CGFloat = 43
-    /// Mood sprout size inside the entry-row disc — a badge glyph with a visible tint ring
-    /// (smaller than the disc so the disc reads as an avatar, matching the app's bead proportions).
-    public static let rowMoodGlyph: CGFloat = 28
-    /// Outlined "more" (⋯) affordance circle on an unfolded entry row (a01, reduced 30% from 30pt).
-    public static let moreAffordance: CGFloat = 21
+    // MARK: Glyphs (spec 057 — Frame 12 placed sizes)
+    /// Level-picker tiles, weekday rows, rhythm tiles, avatars.
+    public static let glyphTile: CGFloat = 33.55
+    /// Inline signal words on cards.
+    public static let glyphInline: CGFloat = 24
+    /// Journal rows.
+    public static let glyphRow: CGFloat = 18
+    /// Section-header identity icons.
+    public static let glyphHeader: CGFloat = 16
+    /// Level tile side.
+    public static let levelTile: CGFloat = 56
+    /// Mood avatar diameter.
+    public static let avatar: CGFloat = 44
+    /// Medication badge diameter.
+    public static let medicationBadge: CGFloat = 26
+    /// Bill-shape chip height.
+    public static let chipHeight: CGFloat = 27
 
-    /// Decorative SF Symbol sizes (large hero glyphs, not Dynamic Type text).
-    /// These use a fixed point size intentionally because they are imagery, not copy.
-    public enum IconSize {
-        /// Inline control glyphs (play/pause, close)
-        public static let control: CGFloat = 32
-        /// Empty-state / section illustration glyph
-        public static let illustration: CGFloat = 48
-        /// Onboarding hero glyph
-        public static let hero: CGFloat = 72
-    }
-
-    /// Fixed-point dimensions of the Check-in capture surface — imagery and hand-rolled
-    /// control glyphs, not Dynamic-Type copy, so they are intentionally point-sized.
-    /// Named here (rather than scattered as literals) so the capture screen reads from
-    /// one place; tap targets still use `minTapTarget`.
+    /// Fixed-point dimensions of the check-in capture surface.
     public enum CheckIn {
-        /// Check-in ring diameter — same in idle and recording states (spec 025).
-        public static let crescentDiameter: CGFloat = 300
-        /// Side of the rounded "stop" square glyph inside the Stop & save button.
-        public static let stopGlyph: CGFloat = 11
-        /// Corner radius of that stop-square glyph.
-        public static let stopGlyphRadius: CGFloat = 3
-        /// Diameter of a single prompt-progress dot, and the gap between dots.
-        public static let promptDot: CGFloat = 6
-        /// Height of the thin prompt-progress bar at the top of the recording stage
-        /// (4pt per Figma a05, spec 036 — was 3 pre-New-Look).
-        public static let promptBarHeight: CGFloat = 4
-        /// Saved-state confirmation disc diameter.
-        public static let savedDisc: CGFloat = 78
-        /// Saved-state checkmark glyph point size.
-        public static let savedCheck: CGFloat = 32
+        /// Ring diameter at 402 pt — callers clamp to `min(width − 2·gutter, ringDiameter)`.
+        public static let ringDiameter: CGFloat = 347
+        /// Accessibility text sizes: the ring shrinks and the stage becomes a scrolling column.
+        public static let ringAccessibilityDiameter: CGFloat = 160
+        /// Ring diameter on the saved screen.
+        public static let ringSavedDiameter: CGFloat = 211
+        /// Ring track / arc width, idle-listening and saved.
+        /// The pen's strokes (21.33 on 347, 12.97 on 211) are the same proportion — one rule.
+        public static let ringStrokeRatio: CGFloat = 21.33 / 347
+        public static var ringStroke: CGFloat { ringDiameter * ringStrokeRatio }
+        /// The saved-screen check tile side.
+        public static let checkTile: CGFloat = 97
+        /// Prompt-progress dot diameter.
+        public static let promptDot: CGFloat = 7.25
+        /// Stop glyph inside the Stop & Save button.
+        public static let stopGlyph: CGFloat = 16
+        public static let stopGlyphRadius: CGFloat = 4
+
     }
 }

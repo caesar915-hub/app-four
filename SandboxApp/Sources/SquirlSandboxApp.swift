@@ -27,7 +27,7 @@ struct RootView: View {
                 .tabItem { Label("Gallery", systemImage: "square.grid.2x2") }.tag("gallery")
         }
         .preferredColorScheme(dark ? .dark : .light)
-        .tint(Theme.meadowGreen)
+        .tint(Accent.primaryFill)
     }
 
     private func navWrap<C: View>(_ content: C, title: String) -> some View {
