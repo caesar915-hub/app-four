@@ -25,8 +25,9 @@ public enum Metrics {
     /// Back / more nav pill diameter, and its row-sized variant.
     public static let navPill: CGFloat = 43
     public static let navPillSmall: CGFloat = 24
-    /// Bottom inset that keeps content clear of the floating chrome (bar + gap + home indicator).
-    public static let floatingChromeInset: CGFloat = 104
+    /// Bottom inset, above the home-indicator safe area, that keeps content clear of the floating
+    /// chrome: bar 60 + its 4 pt bottom gap + 8 pt breathing room.
+    public static let floatingChromeInset: CGFloat = 72
 
     // MARK: Glyphs (spec 057 — Frame 12 placed sizes)
     /// Level-picker tiles, weekday rows, rhythm tiles, avatars.

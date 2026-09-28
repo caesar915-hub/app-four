@@ -23,11 +23,14 @@ struct CheckInView: View {
     var body: some View {
         @Bindable var viewModel = viewModel
 
-        ScreenContainer(title: "", showsMedicationBar: true, scrollable: false) {
+        ScreenContainer(title: "", showsMedicationBar: viewModel.state == .idle, scrollable: false,
+                        reservesFloatingChrome: viewModel.state == .idle) {
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .animation(reduceMotion ? nil : Motion.smooth, value: viewModel.state)
         }
+        // The floating tab bar leaves while capturing and while the saved screen is up (D5).
+        .hidesFloatingChrome(viewModel.state != .idle)
         .trackScreen("CheckInView")
         .onAppear { consumeAutoStart() }
         .onChange(of: shouldAutoStart) { _, isOn in if isOn { consumeAutoStart() } }
