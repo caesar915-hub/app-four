@@ -1,4 +1,4 @@
-<!-- Created: 2026-08-31 01:18 (WEST) · Updated: 2026-09-28 15:33 (WEST) -->
+<!-- Created: 2026-08-31 01:18 (WEST) · Updated: 2026-09-28 15:58 (WEST) -->
 # Shipaton Sprint Backlog — September 2026
 
 **The board for 2026-09-01 → 2026-09-30.** `docs/BACKLOG.md` is frozen for the sprint — read it for history, never edit it.
@@ -15,6 +15,7 @@ Newest first. **Keep to 15 rows** — older rows drop off; the devlog holds the 
 
 | When | What changed |
 |---|---|
+| 2026-09-28 15:58 | PR #48 open (`feat/057-ui-refresh` → `main`); `/code-review` round done (9 fixes, dead API deleted, 565 tests); UI-50 gate → owner device QA; UI-44/49 closed |
 | 2026-09-28 15:33 | UI-30, UI-32, UI-42, UI-44, UI-49 → 🔨 In code (Insights, Settings card groups, bar title keys, dead-code + alias sweep; 562 tests); UI-33b partial (RecoveryKeySheet + Acknowledgements restyled; 055 paywall surfaces wait for 055) |
 | 2026-09-28 15:22 | UI-20–23, UI-25, UI-27, UI-28, UI-33a, UI-34–39, UI-41, UI-53 → 🔨 In code on `feat/057-ui-refresh` (check-in trio, Calendar, Day Details, Edit, Insights built; 570 tests); UI-40 → 🔨 In code as PR #47 `fix/insights-sleep-mood-gate`; UI-24/26/29 folded into spec 057 (deviation in DEVLOG) |
 | 2026-09-28 14:24 | UI epic scoped from the pen (spec 057): UI-01–03, UI-06–18 → 🔨 In code on `feat/057-ui-refresh` (Phase A docs + B1–B4 built, 552 tests green); UI-04/05/05b/19 partial (deviations in DEVLOG); UI-20–54 → 📐 Planned |
