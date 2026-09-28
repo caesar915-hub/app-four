@@ -6,9 +6,26 @@ import SwiftData
 struct SquirlApp: App {
     // Reconnects nsurlsessiond-owned model downloads after a background relaunch.
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
-    @State private var selectedTab: Tab = .calendar
+    @State private var selectedTab: Tab = SquirlApp.launchTab
     @State private var shouldAutoStartRecording = false
     @State private var router = AppDependencies.appIntentRouter
+
+    /// DEBUG-only: `-startTab calendar|checkIn|insights|settings` opens the app on that root — used
+    /// by the simulator screenshot pass (spec 057 UI-53). Release always starts on Calendar.
+    private static var launchTab: Tab {
+        #if DEBUG
+        let args = CommandLine.arguments
+        if let i = args.firstIndex(of: "-startTab"), i + 1 < args.count {
+            switch args[i + 1] {
+            case "checkIn": return .checkIn
+            case "insights": return .insights
+            case "settings": return .settings
+            default: return .calendar
+            }
+        }
+        #endif
+        return .calendar
+    }
 
     init() {
         // Relocate any pre-1.0 user data out of the Files-app-exposed Documents

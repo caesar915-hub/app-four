@@ -125,30 +125,12 @@ struct CheckInView: View {
     private var isCapturing: Bool { viewModel.state != .idle }
 
     private var captureStage: some View {
-        GeometryReader { geo in
-            let accessibilitySize = dynamicTypeSize.isAccessibilitySize
-            let ringSize = accessibilitySize ? 160 : min(geo.size.width, Metrics.CheckIn.ringDiameter)
-            ZStack {
-                VStack(spacing: Spacing.l) {
-                    ZStack {
-                        CheckInRing(progress: viewModel.flowProgress, diameter: ringSize)
-                            .overlay { levelGlow(diameter: ringSize) }
-                        if !accessibilitySize { ringCentre(ringSize: ringSize) }
-                    }
-                    if accessibilitySize { ringCentre(ringSize: ringSize) }
-                }
-
-                VStack(spacing: 0) {
-                    if isCapturing { capturingHeader } else { hubHeader }
-                    Spacer(minLength: 0)
-                }
-
-                VStack(spacing: 0) {
-                    Spacer(minLength: 0)
-                    hintLine
-                }
+        Group {
+            if dynamicTypeSize.isAccessibilitySize {
+                accessibilityStage
+            } else {
+                anchoredStage
             }
-            .frame(width: geo.size.width, height: geo.size.height)
         }
         .padding(.horizontal, Spacing.gutter)
         .onChange(of: viewModel.saveFailed) { _, failed in
@@ -190,6 +172,45 @@ struct CheckInView: View {
                 .padding(Metrics.CheckIn.ringStroke)
                 .animation(.linear(duration: 0.1), value: viewModel.audioLevel)
                 .allowsHitTesting(false)
+        }
+    }
+
+    /// The pen's composition: the ring anchored mid-stage, the header pinned above it and the
+    /// hint below, so hub → capturing swaps content without the ring moving.
+    private var anchoredStage: some View {
+        GeometryReader { geo in
+            let ringSize = min(geo.size.width, Metrics.CheckIn.ringDiameter)
+            ZStack {
+                CheckInRing(progress: viewModel.flowProgress, diameter: ringSize)
+                    .overlay { levelGlow(diameter: ringSize) }
+                    .overlay { ringCentre(ringSize: ringSize) }
+
+                VStack(spacing: 0) {
+                    if isCapturing { capturingHeader } else { hubHeader }
+                    Spacer(minLength: 0)
+                }
+
+                VStack(spacing: 0) {
+                    Spacer(minLength: 0)
+                    hintLine
+                }
+            }
+            .frame(width: geo.size.width, height: geo.size.height)
+        }
+    }
+
+    /// Accessibility sizes: the same pieces in reading order, scrolling — once the title wraps
+    /// to four lines the anchored layers overlap, so the stage becomes a column instead.
+    private var accessibilityStage: some View {
+        ScrollView {
+            VStack(spacing: Spacing.l) {
+                if isCapturing { capturingHeader } else { hubHeader }
+                CheckInRing(progress: viewModel.flowProgress, diameter: Metrics.CheckIn.ringAccessibilityDiameter)
+                    .overlay { levelGlow(diameter: Metrics.CheckIn.ringAccessibilityDiameter) }
+                ringCentre(ringSize: Metrics.CheckIn.ringAccessibilityDiameter)
+                hintLine
+            }
+            .frame(maxWidth: .infinity)
         }
     }
 

@@ -51,6 +51,8 @@ public enum Metrics {
     public enum CheckIn {
         /// Ring diameter at 402 pt — callers clamp to `min(width − 2·gutter, ringDiameter)`.
         public static let ringDiameter: CGFloat = 347
+        /// Accessibility text sizes: the ring shrinks and the stage becomes a scrolling column.
+        public static let ringAccessibilityDiameter: CGFloat = 160
         /// Ring diameter on the saved screen.
         public static let ringSavedDiameter: CGFloat = 211
         /// Ring track / arc width, idle-listening and saved.

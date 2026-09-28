@@ -10,7 +10,6 @@ final class RecordingDetailViewModel {
     @ObservationIgnored private let summarizationService: SummarizationService
     @ObservationIgnored private let transcriptionService: TranscriptionService
     @ObservationIgnored private var retryTask: Task<Void, Never>?
-    private(set) var summaryTask: Task<Void, Never>?
 
     /// Set when summarization couldn't run because the insights model isn't on the
     /// device; the view surfaces a calm notice (mirrors ProcessingViewModel).
@@ -27,51 +26,23 @@ final class RecordingDetailViewModel {
         retryTask?.cancel()
     }
 
-    func toggleFavorite() {
-        store.toggleFavorite(recording)
-    }
-
     func delete() {
         store.deleteRecording(recording)
     }
 
-    func generateSummary() async {
-        guard !recording.fullTranscriptText.isEmpty else {
-            return
-        }
-
-        await performSummarization()
+    /// "Today" / "Yesterday" / the weekday — the nav title (D18: one check-in per page).
+    var relativeTitle: String {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(recording.createdAt) { return "Today" }
+        if calendar.isDateInYesterday(recording.createdAt) { return "Yesterday" }
+        return recording.createdAt.formatted(.dateTime.weekday(.wide))
     }
 
-    func regenerateSummary() async {
-        recording.summary = nil
-        recording.topicTagsJSON = nil
-        recording.summaryStatus = SummaryStatus.notGenerated.rawValue
-        store.save()
-        await generateSummary()
-    }
-
-    func startRegenerate() {
-        summaryTask?.cancel()
-        summaryTask = Task { await self.regenerateSummary() }
-    }
-
-    func updateTitle(_ newTitle: String) {
-        recording.title = newTitle
-        recording.updatedAt = Date()
-        store.save()
-    }
-
-    func updateDate(_ newDate: Date) {
-        recording.createdAt = newDate
-        recording.updatedAt = Date()
-        store.save()
-    }
-
-    func updateMood(_ newMood: String) {
-        recording.mood = newMood.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        recording.updatedAt = Date()
-        store.save()
+    /// "Monday, Jun 29 · 18:30" — keeps three same-day check-ins distinct.
+    var subtitle: String {
+        let date = recording.createdAt
+        return date.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
+            + " · " + date.formatted(date: .omitted, time: .shortened)
     }
 
     // MARK: - Retry transcription

@@ -28,20 +28,20 @@ struct RecordingDetailViewModelTests {
         viewModel = RecordingDetailViewModel(recording: recording, store: store, services: mocks.services)
     }
 
-    // MARK: FR-019 Re-entry protection (026 RED\u2192GREEN)
+    // MARK: Spec 057 / UI-38 — relative title + dated subtitle (D18: one check-in per page)
 
-    /// RED: `viewModel.summaryTask` and `viewModel.startRegenerate()` do not exist \u2014
-    /// compile failure confirms RED.
-    /// GREEN: T013 adds both; second call cancels the first task and stores the new one.
-    @Test func startRegenerateOnSecondCallCancelsPreviousTask() async {
-        await mocks.summarization.setHangs(true)
-
-        viewModel.startRegenerate()
-        let first = viewModel.summaryTask
-        viewModel.startRegenerate()
-
-        #expect(first?.isCancelled == true)
-        #expect(viewModel.summaryTask != nil)
+    @Test func relativeTitleByDay() throws {
+        let cal = Calendar.current
+        recording.createdAt = Date()
+        #expect(viewModel.relativeTitle == "Today")
+        recording.createdAt = try #require(cal.date(byAdding: .day, value: -1, to: Date()))
+        #expect(viewModel.relativeTitle == "Yesterday")
+        let older = try #require(cal.date(byAdding: .day, value: -3, to: Date()))
+        recording.createdAt = older
+        #expect(viewModel.relativeTitle == older.formatted(.dateTime.weekday(.wide)))
+        let expectedSubtitle = older.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
+            + " · " + older.formatted(date: .omitted, time: .shortened)
+        #expect(viewModel.subtitle == expectedSubtitle)
     }
 
     // MARK: US3 Delete characterization

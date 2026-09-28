@@ -30,7 +30,12 @@ struct DayCard: View {
             HStack(alignment: .top, spacing: Spacing.m) {
                 MoodAvatar(level: level)
                 VStack(alignment: .leading, spacing: Spacing.s) {
-                    titleRow
+                    HStack(alignment: .top, spacing: Spacing.s) {
+                        titleRow
+                        Spacer(minLength: Spacing.s)
+                        NavPill(.chevronDown, size: Metrics.navPillSmall, action: onToggleExpand)
+                            .accessibilityHidden(true)
+                    }
                     if summary.isEmpty {
                         Text(DayCardSummary.emptyCopy)
                             .font(Typography.captionMedium)
@@ -42,8 +47,6 @@ struct DayCard: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                NavPill(.chevronDown, size: Metrics.navPillSmall, action: onToggleExpand)
-                    .accessibilityHidden(true)
             }
             .contentShape(.rect)
         }
