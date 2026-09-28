@@ -169,7 +169,7 @@ struct CheckInView: View {
         if viewModel.state == .recording, !reduceMotion {
             Circle()
                 .fill(Accent.primary.opacity(Double(viewModel.audioLevel) * 0.08))
-                .padding(Metrics.CheckIn.ringStroke)
+                .padding(diameter * Metrics.CheckIn.ringStrokeRatio)
                 .animation(.linear(duration: 0.1), value: viewModel.audioLevel)
                 .allowsHitTesting(false)
         }
@@ -352,7 +352,7 @@ struct CheckInView: View {
                 .foregroundStyle(Ink.title)
                 .lineLimit(1)
                 .minimumScaleFactor(0.5)
-                .frame(maxWidth: ringSize - 2 * Metrics.CheckIn.ringStroke - Spacing.l)
+                .frame(maxWidth: ringSize * (1 - 2 * Metrics.CheckIn.ringStrokeRatio) - Spacing.l)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Recording, \(viewModel.timeString) elapsed")
                 .accessibilityAddTraits(.updatesFrequently)

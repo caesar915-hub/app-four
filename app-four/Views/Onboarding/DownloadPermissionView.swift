@@ -37,7 +37,7 @@ struct DownloadPermissionView: View {
         VStack(spacing: Spacing.section) {
             Spacer(minLength: Spacing.section)
 
-            Image(systemName: "lock.shield")
+            Image(systemName: Icons.lockShield)
                 .font(.system(size: 64))
                 .foregroundStyle(Accent.primary)
                 .accessibilityHidden(true)

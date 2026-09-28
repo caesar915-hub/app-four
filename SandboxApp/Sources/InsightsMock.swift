@@ -134,7 +134,7 @@ struct SandboxInsights: View {
 
     private var connection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Medication × focus").cardEyebrow()
+            Text("Medication × focus").font(Typography.rowLabel).foregroundStyle(Ink.primary)
             Text("On medication days, sharp focus appeared 75% of the time.")
                 .font(Typography.question).foregroundStyle(Ink.primary)
             Capsule().fill(Surface.track).frame(height: 8)

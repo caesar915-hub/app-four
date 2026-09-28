@@ -56,8 +56,9 @@ public enum Metrics {
         /// Ring diameter on the saved screen.
         public static let ringSavedDiameter: CGFloat = 211
         /// Ring track / arc width, idle-listening and saved.
-        public static let ringStroke: CGFloat = 21.33
-        public static let ringSavedStroke: CGFloat = 12.97
+        /// The pen's strokes (21.33 on 347, 12.97 on 211) are the same proportion — one rule.
+        public static let ringStrokeRatio: CGFloat = 21.33 / 347
+        public static var ringStroke: CGFloat { ringDiameter * ringStrokeRatio }
         /// The saved-screen check tile side.
         public static let checkTile: CGFloat = 97
         /// Prompt-progress dot diameter.

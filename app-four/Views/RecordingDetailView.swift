@@ -67,7 +67,7 @@ struct RecordingDetailView: View {
         .alert("Insights Model Not Downloaded", isPresented: $viewModel.showModelMissing) {
             Button("OK", role: .cancel) {}
         } message: {
-            Text("Your note is saved, but mood, energy and focus weren't extracted because the insights model isn't on this device yet. Download it from Settings › AI Models.")
+            Text("Your note is saved, but mood, energy and focus weren't extracted because the insights model isn't on this device yet. Add them with Edit check-in, or download the model from Settings › AI Models for your next check-ins.")
         }
     }
 
@@ -178,8 +178,12 @@ struct RecordingDetailView: View {
 
     // MARK: - Medications
 
+    /// Transcript-sourced doses only, as before the refresh (plan Q30 — manual doses on a
+    /// check-in's page — is undecided).
     private var medicationEvents: [MedicationEvent] {
-        viewModel.recording.medicationEvents.sorted { $0.takenAt < $1.takenAt }
+        viewModel.recording.medicationEvents
+            .filter { $0.source == .transcript }
+            .sorted { $0.takenAt < $1.takenAt }
     }
 
     @ViewBuilder private var medicationsSection: some View {

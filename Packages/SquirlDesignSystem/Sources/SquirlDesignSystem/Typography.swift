@@ -3,8 +3,7 @@ import UIKit
 
 /// Squirl typography — native SF (D1: the pen's Inter ramp mapped 1:1 by size and weight).
 /// Every role scales with Dynamic Type via `UIFontMetrics` relative to a text style. Role names
-/// are DESIGN.md §5.2 verbatim; the pre-057 role names below stay as aliases until every call
-/// site has migrated (UI-49 deletes them) — an alias never changes a call site's metrics.
+/// are DESIGN.md §5.2 verbatim.
 public enum Typography {
 
     private static func sf(_ size: CGFloat, _ weight: UIFont.Weight, _ style: UIFont.TextStyle, mono: Bool = false) -> Font {

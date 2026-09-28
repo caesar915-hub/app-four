@@ -28,7 +28,7 @@ struct LLMDownloadView: View {
         VStack(spacing: Spacing.section) {
             Spacer(minLength: Spacing.section)
 
-            Image(systemName: "brain.head.profile")
+            Image(systemName: Icons.brain)
                 .font(.system(size: 64))
                 .foregroundStyle(Accent.primary)
                 .accessibilityHidden(true)

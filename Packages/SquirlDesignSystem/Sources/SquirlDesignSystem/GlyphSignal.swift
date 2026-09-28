@@ -6,8 +6,6 @@ import Foundation
 public enum GlyphSignal: String, CaseIterable, Hashable, Sendable {
     case mood, energy, focus, sleep, medication
 
-    /// The three self-state signals that carry a 1→5 level in the tile pickers.
-    public static let selfState: [GlyphSignal] = [.mood, .energy, .focus]
 
     public var title: String {
         switch self {

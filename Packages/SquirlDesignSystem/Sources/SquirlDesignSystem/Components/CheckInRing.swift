@@ -12,10 +12,12 @@ public struct CheckInRing: View {
     /// - Parameters:
     ///   - progress: 0…1 of the arc.
     ///   - diameter: the pen's 347 (idle / listening) or 211 (saved); callers clamp to the width.
+    ///     The stroke follows the diameter (`Metrics.CheckIn.ringStrokeRatio`), so the 160 pt
+    ///     accessibility ring and the Welcome ring keep the pen's proportion.
     public init(progress: Double, diameter: CGFloat = Metrics.CheckIn.ringDiameter) {
         self.progress = min(1, max(0, progress))
         self.diameter = diameter
-        self.strokeWidth = diameter >= 300 ? Metrics.CheckIn.ringStroke : Metrics.CheckIn.ringSavedStroke
+        self.strokeWidth = diameter * Metrics.CheckIn.ringStrokeRatio
     }
 
     public var body: some View {

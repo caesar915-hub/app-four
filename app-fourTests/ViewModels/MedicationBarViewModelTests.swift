@@ -153,10 +153,27 @@ struct MedicationBarViewModelTests {
         #expect((viewModel.activeDoses.first?.progress ?? 1) < 0.01)
     }
 
+    // Spec 057 / D10 — a dose that ended within the last hour lingers quietly as "Worn off".
+    @Test func wornOffDoseLingersWithinTheGraceHour() throws {
+        let event = MedicationEvent(
+            name: "Fading Dose", dose: "10mg",
+            takenAt: Date().addingTimeInterval(-10.5 * 3600),
+            taken: true, durationHours: 10.0, source: .manual
+        )
+        context.insert(event)
+        try context.save()
+
+        viewModel.refresh()
+
+        let dose = try #require(viewModel.activeDoses.first)
+        #expect(dose.status == .wornOff)
+        #expect(dose.progress == 1)
+    }
+
     @Test func expiredEventIsNotShown() throws {
         let event = MedicationEvent(
             name: "Old Dose", dose: "10mg",
-            takenAt: Date().addingTimeInterval(-11 * 3600),
+            takenAt: Date().addingTimeInterval(-12 * 3600),
             taken: true, durationHours: 10.0, source: .manual
         )
         context.insert(event)

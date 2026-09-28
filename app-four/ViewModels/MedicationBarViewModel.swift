@@ -22,6 +22,9 @@ final class MedicationBarViewModel {
     /// Up to 3 active doses, sorted oldest → newest (1st dose at top).
     var activeDoses: [DoseDisplay] = []
 
+    /// How long a finished dose lingers as "Worn off" before it leaves the bar.
+    static let wornOffGrace: TimeInterval = 60 * 60
+
     /// Where a dose is in its window, by fill fraction (D10). Words stay quiet — a worn-off dose is
     /// grey, never red.
     enum DoseStatus: Equatable {
@@ -116,9 +119,10 @@ final class MedicationBarViewModel {
             return
         }
 
-        // Up to 3 most-recent events still within their window, then reversed for oldest-first display.
+        // Up to 3 most-recent events within their window — plus a quiet hour after it, so a
+        // worn-off dose reads "Worn off" (grey, dimmed; D10) before it leaves the bar.
         let active = events
-            .filter { $0.takenAt.addingTimeInterval($0.durationHours * 3600) > now }
+            .filter { $0.takenAt.addingTimeInterval($0.durationHours * 3600 + Self.wornOffGrace) > now }
             .prefix(3)
             .reversed() // oldest first → 1st dose at top
 

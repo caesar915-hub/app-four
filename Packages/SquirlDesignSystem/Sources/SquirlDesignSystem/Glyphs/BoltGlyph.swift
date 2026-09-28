@@ -4,12 +4,9 @@ import SwiftUI
 /// (the rising fill is a clip mask — D3.1; the export's black block was the mask itself).
 public struct BoltGlyph: View {
     public let level: Int
-    /// Ignored — the bolt carries the pen's amber family. Kept so pre-057 call sites compile.
-    public var color: Color? = nil
 
-    public init(level: Int, color: Color? = nil) {
+    public init(level: Int) {
         self.level = level
-        self.color = color
     }
 
     public var body: some View {

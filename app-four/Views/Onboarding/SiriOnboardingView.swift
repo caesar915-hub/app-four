@@ -35,7 +35,7 @@ struct SiriOnboardingView: View {
             } label: {
                 HStack(spacing: Spacing.s) {
                     Text("Continue to Model Download")
-                    Image(systemName: "arrow.right")
+                    Image(systemName: Icons.arrowRight)
                         .accessibilityHidden(true)
                 }
             }
@@ -51,7 +51,7 @@ struct SiriOnboardingView: View {
 
     private var copyBlock: some View {
         VStack(alignment: .leading, spacing: Spacing.m) {
-            // Green eyebrow per the mockup — same grammar as `cardEyebrow()`
+            // Green eyebrow per the mockup
             // (label font, uppercase, tracking) with the check-in accent.
             Text("Hands-free voice")
                 .font(Typography.status)
@@ -70,14 +70,14 @@ struct SiriOnboardingView: View {
 
     private var phrasesCard: some View {
         VStack(alignment: .leading, spacing: Spacing.m) {
-            Label("Siri Voice Phrases", systemImage: "mic.fill")
+            Label("Siri Voice Phrases", systemImage: Icons.mic)
                 .font(Typography.rowTitle)
                 .foregroundStyle(Ink.primary)
 
             // Icons mirror the AppShortcut glyphs (pills.fill / waveform) so the
             // phrases read the same here as in Spotlight and the Shortcuts app.
-            phraseBubble("Hey Siri, log my meds in Squirl", systemImage: "pills.fill")
-            phraseBubble("Hey Siri, check in on Squirl", systemImage: "waveform")
+            phraseBubble("Hey Siri, log my meds in Squirl", systemImage: Icons.medication)
+            phraseBubble("Hey Siri, check in on Squirl", systemImage: Icons.waveform)
         }
         .card(.large)
     }

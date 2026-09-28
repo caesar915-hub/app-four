@@ -25,6 +25,8 @@ public enum Accent {
     /// Violet-600 — connection eyebrows, lock icon, AI sparkle.
     public static let connection = Color(lightHex: "#7f5fc0", darkHex: "#b29ae2")
     /// Violet-700 — the "Log Medications" outlined-button label.
+    /// Calendar strip "has check-ins" dot — green-400 (the pen's `#55a75d`).
+    public static let calendarDot = Color(lightHex: "#55a75d", darkHex: "#70b577")
     public static let violetText = Color(lightHex: "#634a96", darkHex: "#cabaeb")
     /// Start of the medication-bar / connection-bar gradient (drawn only by `ProgressTrack`).
     public static let medicationBarStart = Color(lightHex: "#8061bf", darkHex: "#8c68d3")

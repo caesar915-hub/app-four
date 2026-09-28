@@ -45,7 +45,7 @@ struct CalendarDayCell: View {
 
     @ViewBuilder private var marker: some View {
         switch cell.marker {
-        case .mood: Circle().fill(Palette.green400)
+        case .mood: Circle().fill(Accent.calendarDot)
         case .neutral: Circle().fill(Ink.tertiary)
         case .none: Color.clear
         }

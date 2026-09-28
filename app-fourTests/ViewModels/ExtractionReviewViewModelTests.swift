@@ -267,14 +267,24 @@ struct ExtractionReviewViewModelTests {
     }
 
     @Test func medicationRowsGroupByName() {
-        let meds = [MedEvent(name: "Concerta", dose: "36 mg", time: "08:00"),
+        let meds = [MedEvent(name: "Concerta", dose: "18 mg", time: "16:00"),
                     MedEvent(name: "Ritalin", dose: "10 mg", time: "13:00"),
-                    MedEvent(name: "Concerta", dose: "18 mg", time: "16:00")]
+                    MedEvent(name: "Concerta", dose: "36 mg", time: "08:00"),
+                    MedEvent(name: "Concerta", dose: "27 mg")]
         let vm = ExtractionReviewViewModel(result: result(meds: meds), recording: makeRecording(), store: store, onComplete: { _ in })
         let rows = vm.medicationRows
         #expect(rows.map(\.name) == ["Concerta", "Ritalin"])
-        #expect(rows[0].events.map(\.dose) == ["36 mg", "18 mg"])
+        #expect(rows[0].events.map(\.dose) == ["36 mg", "18 mg", "27 mg"])
         #expect(rows[1].events.count == 1)
+    }
+
+    @Test func confirmRunsOnce() {
+        var completions = 0
+        let vm = ExtractionReviewViewModel(result: result(), recording: makeRecording(), store: store, onComplete: { _ in completions += 1 })
+        vm.confirm()
+        vm.confirm()
+        #expect(completions == 1)
+        #expect(vm.isFinished)
     }
 
     @Test func cancelIfUnsavedSkipsAfterConfirmAndIsIdempotent() {

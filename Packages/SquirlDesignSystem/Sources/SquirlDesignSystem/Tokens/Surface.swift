@@ -20,6 +20,8 @@ public enum Surface {
     public static let field = card
     /// Medication capsule tile, locked connection tile, confirmation preview row (violet-50).
     public static let medicationTint = Color(lightHex: "#f4f0fb", darkHex: "#352e42")
+    /// Unplayed waveform bars — violet-100 (the pen's `#eaf4eb` is 1.1:1 on the card).
+    public static let waveformUnplayed = Color(lightHex: "#dbd0f1", darkHex: "#3b2c59")
     /// Unlocked connection tile.
     public static let connectionUnlocked = Color(lightHex: "#e3d8f9", darkHex: "#4e3f6d")
     /// Disabled filled control (Frame 3 button tokens).

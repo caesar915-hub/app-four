@@ -93,10 +93,10 @@ struct DesignGallery: View {
     private var buttons: some View {
         VStack(alignment: .leading, spacing: 12) {
             title("Buttons & card")
-            Button("Primary action") {}.buttonStyle(.primary)
-            Button("Secondary action") {}.buttonStyle(.secondary)
+            Button("Primary action") {}.buttonStyle(.filled(fullWidth: true))
+            Button("Secondary action") {}.buttonStyle(.outlined(fullWidth: true))
             VStack(alignment: .leading, spacing: 6) {
-                Text("Summary").cardEyebrow()
+                Text("Summary").font(Typography.rowLabel).foregroundStyle(Ink.primary)
                 Text("The standard card surface — cream, hairline, soft shadow.")
                     .font(Typography.narrative).foregroundStyle(Ink.primary)
             }

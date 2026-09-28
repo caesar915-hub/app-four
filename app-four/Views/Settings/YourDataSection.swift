@@ -72,14 +72,14 @@ struct SettingsLinkRow: View {
 }
 
 /// Plain-text credits for the open-source components Squirl builds on. Kept calm and brief.
+/// Pushed on the Settings stack: back pill + title, the floating chrome stays (like Day Details).
 private struct AcknowledgementsView: View {
+    @Environment(\.dismiss) private var dismiss
+
     var body: some View {
-        ScreenContainer(title: "Acknowledgements", showsMedicationBar: false) {
+        ScrollView {
             VStack(alignment: .leading, spacing: Spacing.cardGap) {
-                Text("Acknowledgements")
-                    .font(Typography.navTitle)
-                    .foregroundStyle(Ink.title)
-                    .accessibilityAddTraits(.isHeader)
+                NavHeader(title: "Acknowledgements", onBack: { dismiss() })
                 credit(
                     "WhisperKit",
                     detail: "On-device speech recognition that turns your voice into text without leaving the device."
@@ -87,8 +87,14 @@ private struct AcknowledgementsView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, Spacing.gutter)
-            .padding(.vertical, Spacing.xl)
+            .padding(.top, Spacing.m)
+            .padding(.bottom, Spacing.section)
         }
+        .background(Surface.screen.ignoresSafeArea())
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            Color.clear.frame(height: Metrics.floatingChromeInset)
+        }
+        .toolbar(.hidden, for: .navigationBar)
     }
 
     private func credit(_ name: String, detail: String) -> some View {

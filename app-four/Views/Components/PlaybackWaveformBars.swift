@@ -20,7 +20,7 @@ struct PlaybackWaveformBars: View {
             HStack(alignment: .center, spacing: Self.pitch - Self.barWidth) {
                 ForEach(0..<count, id: \.self) { index in
                     Capsule()
-                        .fill(isPlayed(index: index, of: count) ? Accent.violet : Palette.violet100)
+                        .fill(isPlayed(index: index, of: count) ? Accent.violet : Surface.waveformUnplayed)
                         .frame(width: Self.barWidth, height: barHeight(for: index))
                 }
             }

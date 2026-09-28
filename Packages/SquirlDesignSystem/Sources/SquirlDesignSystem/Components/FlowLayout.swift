@@ -35,6 +35,7 @@ public struct FlowLayout: Layout {
         var x: CGFloat = 0
         var y: CGFloat = 0
         var rowHeight: CGFloat = 0
+        var contentWidth: CGFloat = 0
 
         for subview in subviews {
             let size = subview.sizeThatFits(.unspecified)
@@ -44,10 +45,11 @@ public struct FlowLayout: Layout {
                 rowHeight = 0
             }
             origins.append(CGPoint(x: x, y: y))
+            contentWidth = max(contentWidth, x + size.width)
             x += size.width + spacing
             rowHeight = max(rowHeight, size.height)
         }
 
-        return LayoutResult(origins: origins, size: CGSize(width: maxWidth, height: y + rowHeight))
+        return LayoutResult(origins: origins, size: CGSize(width: min(contentWidth, maxWidth), height: y + rowHeight))
     }
 }

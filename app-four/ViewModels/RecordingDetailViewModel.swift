@@ -119,9 +119,9 @@ final class RecordingDetailViewModel {
             store.save()
         } catch SummarizationError.modelNotInstalled {
             // The managed-lifecycle model simply isn't on the device yet — not a
-            // failure. Keep the transcript via the fallback result and let the
-            // user fetch the model from Settings, then Regenerate (mirrors
-            // ProcessingViewModel).
+            // failure. Keep the transcript via the fallback result; the signals can be
+            // added by hand in Edit check-in (there is no re-extraction entry point —
+            // Regenerate was not adopted, plan D7/§7).
             showModelMissing = true
             recording.applySummary(ExtractionValidator.fallbackResult(rawTranscript: recording.fullTranscriptText))
             AppLogger.log("Summary skipped for \(recording.id): insights model not installed")

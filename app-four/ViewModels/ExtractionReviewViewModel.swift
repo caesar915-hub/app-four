@@ -61,7 +61,8 @@ final class ExtractionReviewViewModel: Identifiable, Hashable {
     }
     var isDirty: Bool { current != seeded }
 
-    /// One row per medication name, holding its dose events in time order — the Edit card's shape.
+    /// One row per medication name, holding its dose events in time order ("HH:mm", untimed
+    /// last) — the Edit card's shape.
     struct MedicationRow: Identifiable {
         let name: String
         let events: [MedEvent]
@@ -74,7 +75,9 @@ final class ExtractionReviewViewModel: Identifiable, Hashable {
             if groups[med.name] == nil { order.append(med.name) }
             groups[med.name, default: []].append(med)
         }
-        return order.map { MedicationRow(name: $0, events: groups[$0] ?? []) }
+        return order.map { name in
+            MedicationRow(name: name, events: (groups[name] ?? []).sorted { ($0.time ?? "~") < ($1.time ?? "~") })
+        }
     }
 
     /// Set by `confirm()` and `cancel()`; `cancelIfUnsaved()` is the view's `onDisappear` hook and
@@ -236,6 +239,8 @@ final class ExtractionReviewViewModel: Identifiable, Hashable {
     // MARK: - Confirm / Cancel
 
     func confirm() {
+        // A second tap during the pop animation must not re-insert the provenance tags.
+        guard !isFinished else { return }
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
 
         // Mirror applySummary's auto "Mood · Energy · Focus" title so the JSON

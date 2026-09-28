@@ -89,6 +89,7 @@ private final class SVGScanner {
             let c = chars[index]
             if c.isNumber || c == "." || c == "-" || c == "+" || c == "e" || c == "E" {
                 if (c == "-" || c == "+") && !text.isEmpty && !(text.last == "e" || text.last == "E") { break }
+                if c == "." && text.contains(".") { break }
                 text.append(c); index += 1
             } else { break }
         }

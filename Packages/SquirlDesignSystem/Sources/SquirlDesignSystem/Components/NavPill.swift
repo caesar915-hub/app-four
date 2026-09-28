@@ -4,25 +4,21 @@ import SwiftUI
 /// the row-sized expand / more pills (24 pt). Always a 44 pt hit target.
 public struct NavPill: View {
     public enum Kind {
-        case back, more, chevronUp, chevronDown, chevronRight
+        case back, chevronUp, chevronDown
 
         var symbol: String {
             switch self {
             case .back: Icons.back
-            case .more: Icons.more
             case .chevronUp: Icons.chevronUp
             case .chevronDown: Icons.chevronDown
-            case .chevronRight: Icons.chevronRight
             }
         }
 
         var label: String {
             switch self {
             case .back: "Back"
-            case .more: "More"
             case .chevronUp: "Collapse"
             case .chevronDown: "Expand"
-            case .chevronRight: "Open"
             }
         }
     }

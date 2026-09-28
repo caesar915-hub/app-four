@@ -141,7 +141,7 @@ struct StickerSetupView: View {
                     Button {
                         if let url = URL(string: "shortcuts://") { openURL(url) }
                     } label: {
-                        Label("Open Shortcuts", systemImage: "arrow.up.forward.app")
+                        Label("Open Shortcuts", systemImage: Icons.shortcuts)
                     }
                     .buttonStyle(.filled(.small))
                     .padding(.top, Spacing.xs)
@@ -152,7 +152,7 @@ struct StickerSetupView: View {
 
     private var doneRow: some View {
         HStack(alignment: .top, spacing: Spacing.m) {
-            Image(systemName: "checkmark.circle.fill")
+            Image(systemName: Icons.done)
                 .font(.title3)
                 .foregroundStyle(path.tint)
                 .frame(width: badge, height: badge)
@@ -237,7 +237,7 @@ struct StickerSetupView: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: Spacing.s) {
             if let header {
-                Text(header).cardEyebrow().padding(.horizontal, Spacing.xs)
+                Text(header).font(Typography.rowLabel).foregroundStyle(Ink.primary).padding(.horizontal, Spacing.xs)
             }
             VStack(alignment: .leading, spacing: Spacing.m) {
                 content()

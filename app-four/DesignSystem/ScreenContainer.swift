@@ -22,6 +22,7 @@ struct ScreenContainer<Content: View>: View {
 
     @ViewBuilder let content: () -> Content
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var internalPath = NavigationPath()
     @State private var scrollPosition = ScrollPosition(edge: .top)
 
@@ -53,7 +54,7 @@ struct ScreenContainer<Content: View>: View {
             .scrollContentBackground(.hidden)
             .scrollPosition($scrollPosition)
             .onChange(of: scrollResetToken) {
-                withAnimation(.easeOut(duration: 0.25)) {
+                withAnimation(reduceMotion ? nil : Motion.expand) {
                     scrollPosition.scrollTo(edge: .top)
                 }
             }

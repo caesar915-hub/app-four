@@ -29,7 +29,7 @@ struct TokenContrastTests {
             let traits = UITraitCollection(userInterfaceStyle: style)
             for (name, ink) in [("primaryText", Accent.primaryText), ("energyText", Accent.energyText),
                                 ("focusText", Accent.focusText), ("connection", Accent.connection),
-                                ("violetText", Accent.violetText)] {
+                                ("violetText", Accent.violetText), ("deepText", Accent.deepText)] {
                 let ratio = Self.contrast(ink, Surface.card, traits)
                 #expect(ratio >= 4.5, "Accent.\(name) on card (\(mode)) = \(Self.fmt(ratio))")
             }

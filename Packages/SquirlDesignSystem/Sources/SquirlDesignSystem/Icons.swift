@@ -52,4 +52,9 @@ public enum Icons {
     public static let credits = "heart"                        // acknowledgements
     public static let warning = "exclamationmark.triangle"     // ephemeral store
     public static let copy = "doc.on.doc"                      // recovery key
+    public static let arrowRight = "arrow.right"               // onboarding continue
+    public static let lockShield = "lock.shield"               // download permission
+    public static let feedback = "exclamationmark.bubble"      // debug feedback button
+    public static let shortcuts = "arrow.up.forward.app"       // sticker walkthrough hand-off
+    public static let done = "checkmark.circle.fill"           // sticker walkthrough "Done"
 }

@@ -4,12 +4,9 @@ import SwiftUI
 /// 84 % → 100 % from level 1 to 5 (D3.3), so low and high still read apart in greyscale.
 public struct SproutGlyph: View {
     public let level: Int
-    /// Ignored — the sprout carries the pen's per-level colours. Kept so pre-057 call sites compile.
-    public var color: Color? = nil
 
-    public init(level: Int, color: Color? = nil) {
+    public init(level: Int) {
         self.level = level
-        self.color = color
     }
 
     public var body: some View {

@@ -108,9 +108,6 @@ public extension ButtonStyle where Self == FilledButtonStyle {
     static func filled(_ size: ButtonSize = .medium, fullWidth: Bool = false) -> FilledButtonStyle {
         FilledButtonStyle(size: size, fullWidth: fullWidth)
     }
-    /// Pre-057 aliases — a full-width medium filled pill (migrate, then UI-49 deletes).
-    static var primary: FilledButtonStyle { FilledButtonStyle(size: .medium, fullWidth: true) }
-    static var checkInPrimary: FilledButtonStyle { FilledButtonStyle(size: .medium, fullWidth: true) }
 }
 
 public extension ButtonStyle where Self == OutlinedButtonStyle {
@@ -118,8 +115,6 @@ public extension ButtonStyle where Self == OutlinedButtonStyle {
     static func outlined(_ size: ButtonSize = .medium, fullWidth: Bool = false, tint: ButtonTint = .green) -> OutlinedButtonStyle {
         OutlinedButtonStyle(size: size, fullWidth: fullWidth, tint: tint)
     }
-    /// Pre-057 alias — a full-width medium outlined pill.
-    static var secondary: OutlinedButtonStyle { OutlinedButtonStyle(size: .medium, fullWidth: true) }
 }
 
 public extension ButtonStyle where Self == UnderlineButtonStyle {

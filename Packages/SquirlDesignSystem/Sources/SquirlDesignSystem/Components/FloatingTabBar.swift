@@ -80,7 +80,7 @@ public struct AddButton: View {
         Button(action: action) {
             Image(systemName: Icons.add)
                 .font(.system(size: 22, weight: .medium))
-                .foregroundStyle(Palette.grey50)
+                .foregroundStyle(Ink.onAccent)
                 .frame(width: Metrics.fab, height: Metrics.fab)
                 .background(Accent.violet, in: .circle)
                 .elevation(Elevation.fab)
