@@ -1,4 +1,4 @@
-## 2026-09-28 13:48–15:37 · board, log and task checklist for C4–C7 and the D1/D2 sweeps · feat/057-ui-refresh
+## 2026-09-28 13:48–15:56 · review round logged; board updated · feat/057-ui-refresh
 
 **Code changes**
 - _Major (feat)_
@@ -14,8 +14,11 @@
   - `03492ed7` feat(057/B2): button styles, Bill-shape chips, nav pills, controls and icon map
   - `6bb864af` feat(057/B1): pen-derived tokens, typography roles, layout tokens and card atoms
 - _Fixes_
+  - `620100f7` fix(057/D3): code-review findings on PR #48
   - `b5769642` fix(057/D2): wave-2 screenshot findings + sandbox build
 - _docs_
+  - `4d24cce2` docs(057): review round logged; board updated
+  - `43eeff7d` docs: regenerate WORKLOG.md for feat/057-ui-refresh
   - `fbd43e23` docs(057): board, log and task checklist for C4–C7 and the D1/D2 sweeps
   - `de50df00` docs(057): decisions accepted (UI-02), Epic UI tickets + backlog (UI-03), Spec Kit 057 (UI-05)
   - `e0dc67b5` docs(057): pen-derived DESIGN.md, UI refresh plan, research pack and pen exports
@@ -23,6 +26,7 @@
   - `51576547` chore(057/D1): delete the refresh-orphaned code and the pre-057 token aliases
 
 **gh actions**
+- PR #48 opened `feat/057-ui-refresh` — "feat(057): UI refresh from the Pencil design — tokens, glyphs, chrome and all eight screens" — OPEN/MERGEABLE
 - PR #47 opened `fix/insights-sleep-mood-gate` — "fix(insights): Sleep × Mood connection gates on the canonical sleep level (UI-40)" — OPEN/MERGEABLE
 
 **Worktrees**
@@ -34,7 +38,7 @@
 /Users/caesargrey/Projects/app-four/.claude/worktrees/040-sleep-mood-gate                                         51d84d44 [fix/insights-sleep-mood-gate]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/054-settings-topic-hub                                      4d1a3e88 [feat/054-settings-topic-hub]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/055-rc-foundation                                           7002bb5b [feat/055-revenuecat]
-/Users/caesargrey/Projects/app-four/.claude/worktrees/057-ui-refresh                                              fbd43e23 [feat/057-ui-refresh]
+/Users/caesargrey/Projects/app-four/.claude/worktrees/057-ui-refresh                                              4d24cce2 [feat/057-ui-refresh]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/feat+healthkit-signals                                      5db316a6 [feat/healthkit-signals]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/remove-nlp                                                  73e8a091 [chore/remove-dead-nlp]
 /Users/caesargrey/Projects/app-four/.claude/worktrees/speech-transcriber-probe                                    d5d7dc31 [feat/gemma4-litert-extraction]
