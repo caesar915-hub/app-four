@@ -28,17 +28,6 @@ public enum GlyphSignal: String, CaseIterable, Hashable, Sendable {
     }
 }
 
-/// A small descriptor letting a tag/badge carry a signal glyph instead of an SF Symbol.
-public struct GlyphBadge: Hashable, Sendable {
-    public let kind: GlyphSignal
-    public var level: Int? = nil
-
-    public init(kind: GlyphSignal, level: Int? = nil) {
-        self.kind = kind
-        self.level = level
-    }
-}
-
 // MARK: - Pure helpers (Constitution Principle X — covered by SignalGlyphTests)
 
 /// Clamp a raw level into 1…5. `nil` passes through (absent ≠ level 1); out-of-range

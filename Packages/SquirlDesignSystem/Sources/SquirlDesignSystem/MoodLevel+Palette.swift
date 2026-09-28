@@ -31,11 +31,6 @@ public extension MoodLevel {
     public var fill: Color { gradientPartner }
     public var deepFill: Color { color }
 
-    /// Pre-057 tints (spec 019) — kept for the folded day card until UI-25 replaces them with
-    /// `avatarTint` / `dayCardFill`.
-    public var blockTint: Color { color.opacity(Opacity.moodBlock) }
-    public var badgeTint: Color { color.opacity(Opacity.moodBadge) }
-
     /// The mood word ("Great", "Low"). Light: the pen's word colours, with flat darkened so it
     /// clears AA on its card (`#da7a2a` is 3.0:1). Dark: the ramp partners (≥ 5:1 on the tints).
     public var wordColor: Color {

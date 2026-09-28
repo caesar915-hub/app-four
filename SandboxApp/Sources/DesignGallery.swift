@@ -16,11 +16,11 @@ struct DesignGallery: View {
             .padding(20)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .background(NewLook.screen.ignoresSafeArea())
+        .background(Surface.screen.ignoresSafeArea())
     }
 
     private func title(_ s: String) -> some View {
-        Text(s).font(Typography.title).foregroundStyle(NewLook.inkPrimary)
+        Text(s).font(Typography.question).foregroundStyle(Ink.primary)
     }
 
     // MARK: Glyphs
@@ -32,7 +32,7 @@ struct DesignGallery: View {
             glyphRow("Energy", .energy)
             glyphRow("Focus", .focus)
             HStack(spacing: 18) {
-                Text("Sleep · Med").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
+                Text("Sleep · Med").font(Typography.captionQuiet).foregroundStyle(Ink.tertiary)
                     .frame(width: 80, alignment: .leading)
                 SignalGlyph(.sleep, size: 32)
                 SignalGlyph(.medication, size: 32)
@@ -42,7 +42,7 @@ struct DesignGallery: View {
 
     private func glyphRow(_ name: String, _ kind: GlyphSignal) -> some View {
         HStack(spacing: 14) {
-            Text(name).font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
+            Text(name).font(Typography.captionQuiet).foregroundStyle(Ink.tertiary)
                 .frame(width: 80, alignment: .leading)
             ForEach(1...5, id: \.self) { lvl in
                 SignalGlyph(kind, level: lvl, size: 30)
@@ -58,19 +58,19 @@ struct DesignGallery: View {
             swatches("Mood", MoodLevel.allCases.map(\.color))
             swatches("Energy", Palette.energyRamp)
             swatches("Focus", Palette.focusRamp)
-            swatches("Surfaces", [NewLook.screen, NewLook.card, NewLook.tintNeutral])
-            swatches("Accents", [Theme.accent, Theme.meadowGreen, Theme.meadowAmber, Palette.medication, Palette.sleepIndigo, Theme.danger])
+            swatches("Surfaces", [Surface.screen, Surface.card, Surface.track])
+            swatches("Accents", [Accent.primaryText, Accent.primaryFill, Accent.energyText, Accent.violet, Accent.violetDeep, Ink.destructive])
         }
     }
 
     private func swatches(_ name: String, _ colors: [Color]) -> some View {
         HStack(spacing: 8) {
-            Text(name).font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
+            Text(name).font(Typography.captionQuiet).foregroundStyle(Ink.tertiary)
                 .frame(width: 80, alignment: .leading)
             ForEach(Array(colors.enumerated()), id: \.offset) { _, c in
                 RoundedRectangle(cornerRadius: 8, style: .continuous).fill(c)
                     .frame(width: 32, height: 32)
-                    .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).strokeBorder(NewLook.hairline, lineWidth: 1))
+                    .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).strokeBorder(Stroke.separator, lineWidth: 1))
             }
         }
     }
@@ -80,11 +80,11 @@ struct DesignGallery: View {
     private var typography: some View {
         VStack(alignment: .leading, spacing: 8) {
             title("Typography")
-            Text("Fraunces · display").font(Typography.display).foregroundStyle(NewLook.inkPrimary)
-            Text("Fraunces · title").font(Typography.title).foregroundStyle(NewLook.inkPrimary)
-            Text("DM Sans · headline").font(Typography.headline).foregroundStyle(NewLook.inkPrimary)
-            Text("DM Sans · body, the quick brown fox jumps").font(Typography.body).foregroundStyle(NewLook.inkPrimary)
-            Text("DM Sans · caption / metadata").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
+            Text("Fraunces · display").font(Typography.pageTitle).foregroundStyle(Ink.primary)
+            Text("Fraunces · title").font(Typography.question).foregroundStyle(Ink.primary)
+            Text("DM Sans · headline").font(Typography.sectionTitle).foregroundStyle(Ink.primary)
+            Text("DM Sans · body, the quick brown fox jumps").font(Typography.narrative).foregroundStyle(Ink.primary)
+            Text("DM Sans · caption / metadata").font(Typography.captionQuiet).foregroundStyle(Ink.tertiary)
         }
     }
 
@@ -98,7 +98,7 @@ struct DesignGallery: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Summary").cardEyebrow()
                 Text("The standard card surface — cream, hairline, soft shadow.")
-                    .font(Typography.body).foregroundStyle(NewLook.inkPrimary)
+                    .font(Typography.narrative).foregroundStyle(Ink.primary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .newLookCard()

@@ -74,23 +74,7 @@ public enum Typography {
     /// The recording timer — 72/500 with tabular digits, capped by the caller so it stays in the disc.
     public static let timerHero: Font = sf(72, .medium, .largeTitle).monospacedDigit()
 
-    // MARK: Pre-057 roles (aliases — same metrics as before; migrate, then UI-49 deletes)
-    public static let display: Font = pageTitle
-    public static let largeTitle: Font = pageTitle
-    /// 22/600 → the pen's 20/600 question (reviewed in the B1 screenshot pack).
-    public static let title: Font = question
-    public static let headline: Font = sectionTitle
-    public static let subheadline: Font = rowLabel
-    public static let body: Font = narrative
-    /// 15/400 → the pen's 14/400 card subtitle (reviewed in the B1 screenshot pack).
-    public static let callout: Font = cardSubtitle
-    /// 12/400 — unchanged; identical to `captionQuiet`.
-    public static let caption: Font = captionQuiet
-    /// 12/500 — identical to `captionMedium`.
-    public static let label: Font = captionMedium
-    /// Day-card mood word — keeps its 24/700 until the journal migrates (UI-25).
-    public static let moodWord: Font = sf(24, .bold, .title2)
-    public static let duration: Font = sf(12, .regular, .caption1, mono: true)
+    /// 12/400 monospaced — the recovery key.
     public static let mono12: Font = sf(12, .regular, .caption1, mono: true)
 
     /// SF at an explicit size, scaled relative to `style`.

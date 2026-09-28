@@ -84,18 +84,6 @@ class RecordingStore {
         NotificationCenter.default.post(name: .medicationEventsDidChange, object: nil)
     }
 
-    func toggleFavorite(_ recording: Recording) {
-        recording.isFavorite.toggle()
-        recording.updatedAt = Date()
-        try? modelContext.save()
-    }
-
-    func updateTitle(_ recording: Recording, newTitle: String) {
-        recording.title = newTitle
-        recording.updatedAt = Date()
-        try? modelContext.save()
-    }
-
     func addCorrectionTags(_ tags: [RecordingTag], for recording: Recording) {
         for tag in tags {
             modelContext.insert(tag)

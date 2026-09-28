@@ -14,7 +14,7 @@ struct StickerSetupView: View {
         case dose, checkIn
         var id: String { rawValue }
         var label: String { self == .dose ? "Dose sticker" : "Check-in sticker" }
-        var tint: Color { self == .dose ? Palette.medication : Theme.meadowGreen }
+        var tint: Color { self == .dose ? Accent.violet : Accent.primaryFill }
         var action: String { self == .dose ? "Log My Meds" : "Check In" }
         var doneLine: String {
             self == .dose ? "log your default dose" : "open Squirl already recording"
@@ -51,8 +51,8 @@ struct StickerSetupView: View {
         ScreenContainer(title: "Set up your sticker", showsMedicationBar: false) {
             VStack(alignment: .leading, spacing: Spacing.xxl) {
                 Text("Turn any blank NFC sticker into a one-tap Squirl action. About a minute, once per sticker. Squirl walks you through the Shortcuts app.")
-                    .font(Typography.callout)
-                    .foregroundStyle(NewLook.inkSecondary)
+                    .font(Typography.cardSubtitle)
+                    .foregroundStyle(Ink.tertiary)
 
                 Picker("Sticker type", selection: $path) {
                     ForEach(StickerPath.allCases) { Text($0.label).tag($0) }
@@ -64,7 +64,7 @@ struct StickerSetupView: View {
                 lockCallout
                 tipCallout
             }
-            .padding(.horizontal, Spacing.l)
+            .padding(.horizontal, Spacing.gutter)
             .padding(.vertical, Spacing.xl)
             .frame(maxWidth: .infinity, alignment: .leading)
             .animation(reduceMotion ? nil : Motion.snappy, value: path)
@@ -75,11 +75,11 @@ struct StickerSetupView: View {
 
     private var needSection: some View {
         card(header: "What you'll need") {
-            row(symbol: "tag", tint: NewLook.inkSecondary,
+            row(symbol: "tag", tint: Ink.tertiary,
                 title: "A blank NFC sticker", subtitle: "Any cheap NDEF tag, nothing pre-written")
             if path.needsMedication {
-                Divider().overlay(NewLook.hairline).padding(.leading, badge + Spacing.m)
-                row(symbol: "pills.fill", tint: Palette.medication,
+                HairlineDivider().padding(.leading, badge + Spacing.m)
+                row(symbol: "pills.fill", tint: Accent.violet,
                     title: "A default medication set", subtitle: "Settings › My Medication")
             }
         }
@@ -107,10 +107,10 @@ struct StickerSetupView: View {
             // Keyed by position (offset), not a per-render UUID, so switching paths
             // updates step 4 in place instead of remove-inserting all five rows.
             ForEach(Array(items.enumerated()), id: \.offset) { index, step in
-                if index > 0 { Divider().overlay(NewLook.hairline).padding(.leading, badge + Spacing.m) }
+                if index > 0 { HairlineDivider().padding(.leading, badge + Spacing.m) }
                 stepRow(number: "\(index + 1)", step: step)
             }
-            Divider().overlay(NewLook.hairline).padding(.leading, badge + Spacing.m)
+            HairlineDivider().padding(.leading, badge + Spacing.m)
             doneRow
         }
     }
@@ -121,11 +121,11 @@ struct StickerSetupView: View {
             VStack(alignment: .leading, spacing: Spacing.xs) {
                 HStack(alignment: .firstTextBaseline, spacing: Spacing.s) {
                     Text(.init(step.text))
-                        .font(Typography.body)
-                        .foregroundStyle(NewLook.inkPrimary)
+                        .font(Typography.narrative)
+                        .foregroundStyle(Ink.primary)
                     if step.recommended {
                         Text("Recommended")
-                            .font(Typography.label)
+                            .font(Typography.captionMedium)
                             .foregroundStyle(.white)
                             .padding(.horizontal, Spacing.s)
                             .padding(.vertical, 2)
@@ -134,8 +134,8 @@ struct StickerSetupView: View {
                 }
                 if let detail = step.detail {
                     Text(detail)
-                        .font(Typography.caption)
-                        .foregroundStyle(NewLook.inkSecondary)
+                        .font(Typography.captionQuiet)
+                        .foregroundStyle(Ink.tertiary)
                 }
                 if step.handoff {
                     Button {
@@ -143,8 +143,7 @@ struct StickerSetupView: View {
                     } label: {
                         Label("Open Shortcuts", systemImage: "arrow.up.forward.app")
                     }
-                    .buttonStyle(.borderedProminent)
-                    .tint(path.tint)
+                    .buttonStyle(.filled(.small))
                     .padding(.top, Spacing.xs)
                 }
             }
@@ -158,8 +157,8 @@ struct StickerSetupView: View {
                 .foregroundStyle(path.tint)
                 .frame(width: badge, height: badge)
             Text(.init("**Done.** Tap the sticker to \(path.doneLine). \(path.doneTail)"))
-                .font(Typography.body)
-                .foregroundStyle(NewLook.inkPrimary)
+                .font(Typography.narrative)
+                .foregroundStyle(Ink.primary)
         }
     }
 
@@ -167,13 +166,13 @@ struct StickerSetupView: View {
 
     private var lockCallout: some View {
         card {
-            calloutHeader(symbol: "iphone.gen3", tint: Theme.accent, title: "What to expect when you tap it")
+            calloutHeader(symbol: "iphone.gen3", tint: Accent.primaryText, title: "What to expect when you tap it")
             VStack(alignment: .leading, spacing: Spacing.s) {
                 lockLine("Unlocked", "It runs instantly, no prompt. This is the zero-tap setup working.")
                 lockLine("Locked", "iPhone shows a notification instead. Tap it and the action runs.")
                 Text("The tap is never lost, and a locked phone showing a notification is just how iOS handles it, not something you did wrong.")
-                    .font(Typography.callout)
-                    .foregroundStyle(NewLook.inkPrimary)
+                    .font(Typography.cardSubtitle)
+                    .foregroundStyle(Ink.primary)
                     .padding(.top, Spacing.xs)
             }
             .padding(.leading, badge + Spacing.m)
@@ -182,10 +181,10 @@ struct StickerSetupView: View {
 
     private var tipCallout: some View {
         card {
-            calloutHeader(symbol: "sensor.tag.radiowaves.forward", tint: Theme.meadowAmber, title: "Can't get it to read?")
+            calloutHeader(symbol: "sensor.tag.radiowaves.forward", tint: Accent.energyText, title: "Can't get it to read?")
             Text(.init("Hold the **top-back of your phone**, up by the cameras, flat against the sticker for a second. That's where the NFC reader is. A thick case or a metal surface behind the sticker can block it."))
-                .font(Typography.callout)
-                .foregroundStyle(NewLook.inkSecondary)
+                .font(Typography.cardSubtitle)
+                .foregroundStyle(Ink.tertiary)
                 .padding(.leading, badge + Spacing.m)
         }
     }
@@ -207,8 +206,8 @@ struct StickerSetupView: View {
                 .foregroundStyle(tint)
                 .frame(width: badge, height: badge)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(Typography.body).foregroundStyle(NewLook.inkPrimary)
-                Text(subtitle).font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
+                Text(title).font(Typography.narrative).foregroundStyle(Ink.primary)
+                Text(subtitle).font(Typography.captionQuiet).foregroundStyle(Ink.tertiary)
             }
         }
     }
@@ -219,14 +218,14 @@ struct StickerSetupView: View {
                 .font(.body)
                 .foregroundStyle(tint)
                 .frame(width: badge, height: badge)
-            Text(title).font(Typography.headline).foregroundStyle(NewLook.inkPrimary)
+            Text(title).font(Typography.sectionTitle).foregroundStyle(Ink.primary)
         }
     }
 
     private func lockLine(_ state: String, _ detail: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(state).font(Typography.subheadline).foregroundStyle(NewLook.inkPrimary)
-            Text(detail).font(Typography.callout).foregroundStyle(NewLook.inkSecondary)
+            Text(state).font(Typography.rowLabel).foregroundStyle(Ink.primary)
+            Text(detail).font(Typography.cardSubtitle).foregroundStyle(Ink.tertiary)
         }
     }
 
@@ -244,11 +243,11 @@ struct StickerSetupView: View {
                 content()
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .newLookCard()
+            .card(.large)
             if let footnote {
                 Text(footnote)
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkSecondary)
+                    .font(Typography.captionQuiet)
+                    .foregroundStyle(Ink.tertiary)
                     .padding(.horizontal, Spacing.xs)
             }
         }

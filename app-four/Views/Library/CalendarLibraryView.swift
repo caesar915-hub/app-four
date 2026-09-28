@@ -55,6 +55,14 @@ struct CalendarLibraryView: View {
             }
         }
         .trackScreen("CalendarLibraryView")
+        #if DEBUG
+        // Screenshot pass: `-openLatest` pushes the newest check-in so Day Details can be captured.
+        .onAppear {
+            guard CommandLine.arguments.contains("-openLatest"), path.isEmpty,
+                  let latest = store.recordings.first else { return }
+            path.append(latest.id)
+        }
+        #endif
         .onChange(of: selectedTab) { oldValue, newValue in
             if oldValue == .calendar && newValue != .calendar {
                 path.removeLast(path.count)

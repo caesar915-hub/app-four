@@ -15,10 +15,10 @@ struct FeedbackButton: View {
             isShowingReport = true
         } label: {
             Image(systemName: "exclamationmark.bubble")
-                .font(Typography.title.weight(.semibold))
+                .font(Typography.question)
                 .foregroundStyle(.primary)
                 .frame(width: 48, height: 48)
-                .background(NewLook.card)
+                .background(Surface.card)
                 .clipShape(Circle())
                 .shadow(radius: 4)
         }

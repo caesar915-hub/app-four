@@ -35,8 +35,8 @@ import Foundation
     }
 
     @Test func tintsMatchEachActionsDesignToken() {
-        #expect(Path.dose.tint == Palette.medication)
-        #expect(Path.checkIn.tint == Theme.meadowGreen)
+        #expect(Path.dose.tint == Accent.violet)
+        #expect(Path.checkIn.tint == Accent.primaryFill)
     }
 
     // D12 — the footnote is the one place users are told what the button does and

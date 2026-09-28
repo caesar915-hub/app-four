@@ -22,13 +22,4 @@ public enum Radius {
     /// 999 — every button, toggle and bar
     public static let pill: CGFloat = 999
 
-    // MARK: Pre-057 (aliases until their consumers migrate; UI-49 deletes)
-    /// 16 → large card
-    public static let card: CGFloat = cardL
-    /// 10 → small card
-    public static let control: CGFloat = cardS
-    /// 16 → pill
-    public static let button: CGFloat = pill
-    /// 20 → large card
-    public static let newLookCard: CGFloat = cardL
 }
