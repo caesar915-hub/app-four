@@ -32,30 +32,3 @@ public extension View {
         elevation(Elevation.card)
     }
 }
-
-// MARK: - Chip grammar (alias of `BillChip` styling; migrates in UI-10 consumers)
-
-/// Which accent a selected chip fills with. The pen fills every selected chip green-600;
-/// the medication role is kept as a name only until its call sites migrate.
-public enum NewLookChipRole {
-    case standard
-    case medication
-    case checkIn
-
-    var selectedFill: Color { Accent.primaryFill }
-}
-
-public extension View {
-    /// Pre-057 chip styling — now the Bill-shape chip's outline / solid states.
-    func newLookChip(selected: Bool, role: NewLookChipRole = .standard) -> some View {
-        self
-            .font(Typography.chipLabel)
-            .foregroundStyle(selected ? Ink.onAccent : Ink.chip)
-            .padding(.horizontal, Spacing.cardInset)
-            .padding(.vertical, 5)
-            .background(selected ? role.selectedFill : Surface.card, in: .capsule)
-            .overlay {
-                Capsule().strokeBorder(selected ? role.selectedFill : Stroke.chip, lineWidth: Stroke.hairlineWidth)
-            }
-    }
-}

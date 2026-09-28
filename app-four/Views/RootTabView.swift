@@ -38,7 +38,7 @@ struct RootTabView: View {
                 CheckInView(store: store, services: services, shouldAutoStart: $shouldAutoStartRecording)
             }
             SwiftUI.Tab("Insights", systemImage: Icons.insights, value: Tab.insights) {
-                InsightsView(store: store, selectedTab: $selectedTab)
+                InsightsView(store: store)
             }
             SwiftUI.Tab("Settings", systemImage: Icons.settings, value: Tab.settings) {
                 SettingsView(store: store, services: services, selectedTab: $selectedTab)

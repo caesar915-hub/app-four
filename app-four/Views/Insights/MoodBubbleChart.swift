@@ -1,92 +1,63 @@
 import SwiftUI
 
-/// Area-proportional bubble chart for mood distribution.
-/// Each bubble's area is proportional to that mood's share of check-ins.
-/// Positioned low→great left→right with slight vertical elevation for higher moods.
+/// The pen's mood bubbles (DESIGN.md §8.13): five flat circles on a rising baseline, low → great
+/// left → right, later levels drawn on top. Diameter follows `MoodBubbleLayout` (D-I2); the fill
+/// and ink come from the level (`bubbleFill` / `bubbleInk`, AA-checked).
 struct MoodBubbleChart: View {
     let shares: [MoodShare]
-    @Environment(\.colorScheme) private var colorScheme
-
-    private let chartHeight: CGFloat = 160
-    private let maxDiameter: CGFloat = 118
-    private let minDiameter: CGFloat = 44
 
     var body: some View {
         GeometryReader { geo in
             ZStack {
                 ForEach(shares, id: \.level) { share in
-                    let d = diameter(for: share)
-                    let x = xPos(for: share, width: geo.size.width)
-                    let y = yPos(for: share, height: geo.size.height)
-                    BubbleCell(share: share, diameter: d, colorScheme: colorScheme)
-                        .position(x: x, y: y)
+                    let diameter = MoodBubbleLayout.diameter(fraction: share.fraction)
+                    BubbleCell(share: share, diameter: diameter)
+                        .position(MoodBubbleLayout.center(level: share.level.numericValue, diameter: diameter, in: geo.size))
                 }
             }
         }
-        .frame(height: chartHeight)
+        .frame(height: MoodBubbleLayout.chartHeight)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel(a11ySummary)
+        .accessibilityLabel(summary)
     }
 
-    private func diameter(for share: MoodShare) -> CGFloat {
-        let maxFrac = shares.map(\.fraction).max() ?? 1
-        guard maxFrac > 0 else { return minDiameter }
-        let rel = sqrt(share.fraction / maxFrac)
-        return minDiameter + (maxDiameter - minDiameter) * rel
-    }
-
-    private func xPos(for share: MoodShare, width: CGFloat) -> CGFloat {
-        let step = width / CGFloat(5)
-        return step * CGFloat(share.level.numericValue - 1) + step / 2
-    }
-
-    private func yPos(for share: MoodShare, height: CGFloat) -> CGFloat {
-        let mid = height / 2
-        let normalized = CGFloat(share.level.numericValue - 3)  // −2…+2
-        return mid - normalized * 14  // great floats up, low sinks down
-    }
-
-    private var a11ySummary: String {
+    private var summary: String {
         shares.map { "\($0.level.displayLabel) \(Int(($0.fraction * 100).rounded()))%" }
-              .joined(separator: ", ")
+            .joined(separator: ", ")
     }
 }
 
 private struct BubbleCell: View {
     let share: MoodShare
     let diameter: CGFloat
-    let colorScheme: ColorScheme
+
+    private var percent: Int { Int((share.fraction * 100).rounded()) }
 
     var body: some View {
-        let ink = Color.contrastingInk(for: share.level.color, in: colorScheme)
         ZStack {
-            Circle()
-                .fill(share.level.bubbleFill)
-                .frame(width: diameter, height: diameter)
+            Circle().fill(share.level.bubbleFill)
             VStack(spacing: 1) {
-                Text("\(Int((share.fraction * 100).rounded()))%")
-                    .font(Typography.label)
-                    .fontWeight(.semibold)
+                Text("\(percent)%")
+                    .font(Typography.bubbleValue)
                 if diameter >= 68 {
                     Text(share.level.displayLabel)
-                        .font(Typography.label)
+                        .font(Typography.bubbleWord)
                 }
             }
-            .foregroundStyle(ink)
+            .foregroundStyle(share.level.bubbleInk)
         }
         .frame(width: diameter, height: diameter)
-        .accessibilityLabel("\(share.level.displayLabel): \(share.count) check-in\(share.count == 1 ? "" : "s"), \(Int((share.fraction * 100).rounded()))%")
+        .accessibilityLabel("\(share.level.displayLabel): \(share.count) check-in\(share.count == 1 ? "" : "s"), \(percent)%")
     }
 }
 
 #Preview {
-    let shares: [MoodShare] = [
-        MoodShare(level: .low,   count: 1, fraction: 0.083),
-        MoodShare(level: .flat,  count: 2, fraction: 0.167),
-        MoodShare(level: .okay,  count: 4, fraction: 0.333),
-        MoodShare(level: .good,  count: 4, fraction: 0.333),
-        MoodShare(level: .great, count: 1, fraction: 0.083),
-    ]
-    MoodBubbleChart(shares: shares)
-        .padding()
+    MoodBubbleChart(shares: [
+        MoodShare(level: .low, count: 2, fraction: 0.08),
+        MoodShare(level: .flat, count: 4, fraction: 0.17),
+        MoodShare(level: .okay, count: 8, fraction: 0.33),
+        MoodShare(level: .good, count: 7, fraction: 0.29),
+        MoodShare(level: .great, count: 3, fraction: 0.13),
+    ])
+    .padding(Spacing.gutter)
 }

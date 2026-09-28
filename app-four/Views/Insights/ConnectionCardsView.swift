@@ -1,8 +1,7 @@
 import SwiftUI
 
-/// Three insight cards: medication×focus, energy×mood, sleep×mood.
-/// Unlocked cards show a serif sentence + mini bar. Gated cards show a
-/// dashed border with explicit unlock copy — never ambiguous "not enough data".
+/// The three connection cards (medication × focus, energy × mood, sleep × mood) in the
+/// view-model's test-pinned order.
 struct ConnectionCardsView: View {
     let connections: [Connection]
 
@@ -16,133 +15,72 @@ struct ConnectionCardsView: View {
     }
 }
 
-private struct ConnectionCard: View {
+/// A connection card (DESIGN.md §8.17): `.medium` card, 42 pt icon tile (violet-50 + lock while
+/// gated, lavender + open lock once unlocked), uppercase 12/600 violet title, 12/500 body; the
+/// unlocked state adds the gradient bar and its percentage. The gating copy always says exactly
+/// what is missing — never "not enough data".
+struct ConnectionCard: View {
     let connection: Connection
 
-    var body: some View {
-        switch connection.state {
-        case let .gated(unlockCopy):
-            GatedCard(title: connection.title, unlockCopy: unlockCopy)
-        case let .unlocked(sentence, fraction, barLabel, leadingText, trailingText):
-            UnlockedCard(
-                title: connection.title,
-                sentence: sentence,
-                fraction: fraction,
-                barLabel: barLabel,
-                leadingText: leadingText,
-                trailingText: trailingText
-            )
-        }
+    private var isUnlocked: Bool {
+        if case .unlocked = connection.state { return true }
+        return false
     }
-}
-
-private struct UnlockedCard: View {
-    let title: String
-    let sentence: String
-    let fraction: Double
-    let barLabel: String
-    let leadingText: String
-    let trailingText: String
-    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.m) {
-            Text(title)
-                .font(Typography.label)
-                .foregroundStyle(NewLook.inkSecondary)
-                .textCase(.uppercase)
-                .tracking(0.5)
-
-            Text(sentence)
-                .font(Typography.display)
-                .foregroundStyle(NewLook.inkPrimary)
-                .fixedSize(horizontal: false, vertical: true)
-
-            MiniBar(
-                fraction: fraction,
-                barLabel: barLabel,
-                leadingText: leadingText,
-                trailingText: trailingText
-            )
-        }
-        .newLookCard()
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(title): \(sentence) \(barLabel)")
-    }
-}
-
-private struct GatedCard: View {
-    let title: String
-    let unlockCopy: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            HStack {
-                Text(title)
-                    .font(Typography.label)
-                    .foregroundStyle(NewLook.inkSecondary)
+        HStack(alignment: .top, spacing: Spacing.m) {
+            iconTile
+            VStack(alignment: .leading, spacing: Spacing.s) {
+                Text(connection.title)
+                    .font(Typography.status)
+                    .foregroundStyle(Accent.violetText)
                     .textCase(.uppercase)
-                    .tracking(0.5)
-                Spacer()
-                Image(systemName: "lock")
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkSecondary)
-            }
-            Text(unlockCopy)
-                .font(Typography.callout)
-                .foregroundStyle(NewLook.inkSecondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(Spacing.l)
-        .background(NewLook.card, in: .rect(cornerRadius: Radius.newLookCard))
-        .overlay(
-            RoundedRectangle(cornerRadius: Radius.newLookCard)
-                .strokeBorder(
-                    NewLook.hairline,
-                    style: StrokeStyle(lineWidth: 1, dash: [5, 3])
-                )
-        )
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(title): locked. \(unlockCopy)")
-    }
-}
-
-private struct MiniBar: View {
-    let fraction: Double
-    let barLabel: String
-    let leadingText: String
-    let trailingText: String
-
-    private let barHeight: CGFloat = 8
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(NewLook.tintNeutral)
-                    Capsule()
-                        .fill(Palette.medication)
-                        .frame(width: max(barHeight, geo.size.width * fraction))
+                switch connection.state {
+                case let .gated(unlockCopy):
+                    Text(unlockCopy)
+                        .font(Typography.captionMedium)
+                        .foregroundStyle(Ink.primary)
+                        .fixedSize(horizontal: false, vertical: true)
+                case let .unlocked(sentence, fraction, barLabel, _, _):
+                    Text(sentence)
+                        .font(Typography.captionMedium)
+                        .foregroundStyle(Ink.primary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    HStack(spacing: Spacing.s) {
+                        ProgressTrack(fraction: fraction, height: 6)
+                        Text(barLabel)
+                            .font(Typography.status)
+                            .foregroundStyle(Ink.secondary)
+                    }
                 }
-                .frame(height: barHeight)
             }
-            .frame(height: barHeight)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .card(.medium)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+    }
 
-            HStack {
-                Text(leadingText)
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkSecondary)
-                Spacer()
-                Text(barLabel)
-                    .font(Typography.label)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(NewLook.inkPrimary)
-                Spacer()
-                Text(trailingText)
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkSecondary)
+    private var iconTile: some View {
+        RoundedRectangle(cornerRadius: Radius.iconTile)
+            .fill(isUnlocked ? Surface.connectionUnlocked : Surface.medicationTint)
+            .overlay {
+                RoundedRectangle(cornerRadius: Radius.iconTile)
+                    .strokeBorder(Stroke.card, lineWidth: 0.45)
             }
+            .overlay {
+                Image(systemName: isUnlocked ? Icons.unlock : Icons.lock)
+                    .font(.system(size: 20, weight: .regular))
+                    .foregroundStyle(isUnlocked ? Accent.violetDeep : Accent.connection)
+            }
+            .frame(width: 42, height: 42)
+            .accessibilityHidden(true)
+    }
+
+    private var accessibilityLabel: String {
+        switch connection.state {
+        case let .gated(unlockCopy): "\(connection.title): locked. \(unlockCopy)"
+        case let .unlocked(sentence, _, barLabel, _, _): "\(connection.title): \(sentence) \(barLabel)"
         }
     }
 }
@@ -154,10 +92,7 @@ private struct MiniBar: View {
                 title: "Medication × focus",
                 state: .unlocked(
                     sentence: "On medication days, sharp focus appeared 75% of the time.",
-                    fraction: 0.75,
-                    barLabel: "75%",
-                    leadingText: "Med days",
-                    trailingText: "Sharp+ focus"
+                    fraction: 0.75, barLabel: "75%", leadingText: "Med days", trailingText: "Sharp+ focus"
                 )
             ),
             Connection(title: "Energy × mood",
@@ -165,6 +100,6 @@ private struct MiniBar: View {
             Connection(title: "Sleep × mood",
                        state: .gated(unlockCopy: "Note 1 more good-sleep day and 3 more poor-sleep days to unlock this connection.")),
         ])
-        .padding()
+        .padding(Spacing.gutter)
     }
 }
