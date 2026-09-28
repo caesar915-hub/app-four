@@ -49,7 +49,7 @@ struct RecordingDetailView: View {
         }
         .toolbar(.hidden, for: .navigationBar)
         .trackScreen("RecordingDetailView")
-        .sheet(item: $editViewModel) { vm in
+        .navigationDestination(item: $editViewModel) { vm in
             ExtractionReviewView(viewModel: vm)
         }
         // Delete only after this view is torn down: deleting a @Model while a view still reads it

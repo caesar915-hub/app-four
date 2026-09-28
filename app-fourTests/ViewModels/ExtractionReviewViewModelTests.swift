@@ -244,4 +244,52 @@ struct ExtractionReviewViewModelTests {
         // The sleep event JSON tracks the edited sleep too.
         #expect(rec.decodedSleepEvent?.hours == 7.5)
     }
+
+    // MARK: - UI-39 (spec 057): dirty gate, medication rows, idempotent cancel
+
+    @Test func isDirtyTracksEveryField() {
+        let rec = makeRecording()
+        let meds = [MedEvent(name: "Concerta", dose: "36 mg", time: "08:00")]
+        let vm = ExtractionReviewViewModel(result: result(meds: meds), recording: rec, store: store, onComplete: { _ in })
+        #expect(!vm.isDirty)
+        vm.setMood("low"); #expect(vm.isDirty); vm.setMood("good"); #expect(!vm.isDirty)
+        vm.setEnergy(.charged); #expect(vm.isDirty); vm.setEnergy(.steady); #expect(!vm.isDirty)
+        vm.setFocus(.foggy); #expect(vm.isDirty); vm.setFocus(.sharp); #expect(!vm.isDirty)
+        vm.setSleepLevel(.deep); #expect(vm.isDirty); vm.setSleepLevel(nil); #expect(!vm.isDirty)
+        vm.setSleepHours(7); #expect(vm.isDirty); vm.setSleepHours(nil); #expect(!vm.isDirty)
+        vm.toggleEmotion("proud"); #expect(vm.isDirty); vm.toggleEmotion("proud"); #expect(!vm.isDirty)
+        vm.toggleSideEffect("headache"); #expect(vm.isDirty); vm.toggleSideEffect("headache"); #expect(!vm.isDirty)
+        vm.toggleMedTaken(meds[0]); #expect(vm.isDirty); vm.toggleMedTaken(vm.medications[0]); #expect(!vm.isDirty)
+        vm.addMedication("Ritalin"); #expect(vm.isDirty); vm.removeMedication("Ritalin"); #expect(!vm.isDirty)
+        let seededDate = vm.date
+        vm.date = seededDate.addingTimeInterval(3600); #expect(vm.isDirty); vm.date = seededDate; #expect(!vm.isDirty)
+        vm.name = "Renamed"; #expect(vm.isDirty)
+    }
+
+    @Test func medicationRowsGroupByName() {
+        let meds = [MedEvent(name: "Concerta", dose: "36 mg", time: "08:00"),
+                    MedEvent(name: "Ritalin", dose: "10 mg", time: "13:00"),
+                    MedEvent(name: "Concerta", dose: "18 mg", time: "16:00")]
+        let vm = ExtractionReviewViewModel(result: result(meds: meds), recording: makeRecording(), store: store, onComplete: { _ in })
+        let rows = vm.medicationRows
+        #expect(rows.map(\.name) == ["Concerta", "Ritalin"])
+        #expect(rows[0].events.map(\.dose) == ["36 mg", "18 mg"])
+        #expect(rows[1].events.count == 1)
+    }
+
+    @Test func cancelIfUnsavedSkipsAfterConfirmAndIsIdempotent() {
+        let saved = makeRecording()
+        saved.summaryStatus = SummaryStatus.notGenerated.rawValue
+        let vm = ExtractionReviewViewModel(result: result(), recording: saved, store: store, onComplete: { _ in })
+        vm.confirm()
+        vm.cancelIfUnsaved()
+        #expect(saved.summaryStatus != SummaryStatus.failed.rawValue)
+
+        let abandoned = makeRecording()
+        abandoned.summaryStatus = SummaryStatus.notGenerated.rawValue
+        let vm2 = ExtractionReviewViewModel(result: result(), recording: abandoned, store: store, onComplete: { _ in })
+        vm2.cancelIfUnsaved()
+        vm2.cancelIfUnsaved()
+        #expect(abandoned.summaryStatus == SummaryStatus.failed.rawValue)
+    }
 }

@@ -59,39 +59,3 @@ public extension View {
             }
     }
 }
-
-// MARK: - Nav row (single consumer: the edit sheet, migrates in UI-28)
-
-public struct NewLookNavBar<Leading: View, Trailing: View>: View {
-    private let title: String
-    private let leading: Leading
-    private let trailing: Trailing
-
-    public init(
-        _ title: String,
-        @ViewBuilder leading: () -> Leading,
-        @ViewBuilder trailing: () -> Trailing
-    ) {
-        self.title = title
-        self.leading = leading()
-        self.trailing = trailing()
-    }
-
-    public var body: some View {
-        ZStack {
-            Text(title)
-                .font(Typography.navTitle)
-                .foregroundStyle(Ink.title)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .accessibilityAddTraits(.isHeader)
-
-            HStack {
-                leading
-                Spacer(minLength: Spacing.s)
-                trailing
-            }
-        }
-        .padding(.horizontal, Spacing.l)
-        .padding(.vertical, Spacing.s)
-    }
-}

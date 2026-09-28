@@ -1,173 +1,146 @@
 import SwiftUI
 
+/// Edit Check-In as the pen draws it (spec 057, `iPhone 17 - 18`): a pushed page — back pill +
+/// title, tab bar hidden — with "Date & time" fields, the collapsible "How did you feel?" card
+/// (three level-tile pickers + the sleep row), the Medication card (catalog chips, one row per
+/// medication with dose chips, Taken / Missed and effect hours), Emotions and Side effects chip
+/// groups, and a full-width "Save changes" enabled only once something changed (D-E5).
 struct ExtractionReviewView: View {
     @Bindable var viewModel: ExtractionReviewViewModel
     @Environment(\.dismiss) private var dismiss
-    @State private var customHoursText: String = ""
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private struct ChipGroup: Identifiable {
-        var id: String { label }
-        let label: String
-        let items: [String]
+    @State private var feelingsExpanded = true
+    @State private var activePicker: PickerKind?
+    @State private var showDiscardPrompt = false
+    @State private var customHoursText = ""
+
+    private enum PickerKind: String, Identifiable {
+        case date, time
+        var id: String { rawValue }
     }
 
-    // The 20 curated Mood-Meter emotions (5 per valence×energy quadrant), grouped by
-    // valence and ordered high→low energy within each group. Mirrors Lexicon.defaultEmotions
-    // and lexicon.json's "emotions" key — see specs/020-emotions-lexicon/contracts.
-    private let emotionGroups: [ChipGroup] = [
-        ChipGroup(label: "Pleasant",   items: ["excited", "joyful", "proud", "thrilled", "inspired",
-                                               "content", "grateful", "peaceful", "secure", "serene"]),
-        ChipGroup(label: "Unpleasant", items: ["angry", "anxious", "frustrated", "irritated", "jealous",
-                                               "sad", "lonely", "disappointed", "hopeless", "discouraged"])
-    ]
-
-    private let commonSideEffects = [
+    // The 20 curated Mood-Meter emotions (5 per valence×energy quadrant), grouped by valence and
+    // ordered high→low energy within each group. Mirrors Lexicon.defaultEmotions and
+    // lexicon.json's "emotions" key — see specs/020-emotions-lexicon/contracts.
+    private static let pleasantEmotions = ["excited", "joyful", "proud", "thrilled", "inspired",
+                                           "content", "grateful", "peaceful", "secure", "serene"]
+    private static let unpleasantEmotions = ["angry", "anxious", "frustrated", "irritated", "jealous",
+                                             "sad", "lonely", "disappointed", "hopeless", "discouraged"]
+    private static let commonSideEffects = [
         "dry mouth", "headache", "nausea", "appetite gone", "insomnia",
         "jittery", "heart racing", "stomach ache", "dizzy", "irritable",
         "rebound", "crash", "sweating", "grinding teeth", "flat affect"
     ]
-
-    private let sleepDurations = [2.0, 4.0, 6.0, 8.0, 10.0]
+    private static let sleepDurations: [Double] = [2, 4, 6, 8, 10]
 
     var body: some View {
-        VStack(spacing: 0) {
-            NewLookNavBar("Edit check-in") {
-                cancelPill
-            } trailing: {
-                savePill
+        ScrollView {
+            VStack(alignment: .leading, spacing: Spacing.cardGap) {
+                NavHeader(title: "Edit check-in", onBack: goBack)
+                dateTimeSection
+                feelingsCard
+                medicationCard
+                emotionsCard
+                sideEffectsCard
+                saveButton
             }
-            ScrollView {
-                VStack(alignment: .leading, spacing: Spacing.m) {
-                    whenCard
-                    signalsCard
-                    sleepCard
-                    medicationsCard
-                    emotionsCard
-                    sideEffectsCard
-                }
-                .padding(.horizontal, Spacing.l)
-                .padding(.bottom, Spacing.l)
-            }
+            .padding(.horizontal, Spacing.gutter)
+            .padding(.top, Spacing.m)
+            .padding(.bottom, Spacing.section)
         }
-        .background(NewLook.screen.ignoresSafeArea())
-        .presentationDetents([.large])
-        .presentationDragIndicator(.visible)
+        .scrollDismissesKeyboard(.interactively)
+        .background(Surface.screen.ignoresSafeArea())
+        .toolbar(.hidden, for: .navigationBar)
+        .hidesFloatingChrome()
+        .trackScreen("ExtractionReviewView")
         .onAppear(perform: syncCustomHours)
-    }
-
-    // MARK: - Nav pills
-
-    private var cancelPill: some View {
-        Button {
-            viewModel.cancel()
-            dismiss()
-        } label: {
-            Image(systemName: "chevron.backward")
-                .font(Typography.headline)
-                .foregroundStyle(NewLook.checkInGreen)
-                .frame(width: 44, height: 44)
-                .background(NewLook.card, in: .circle)
-        }
-        .accessibilityLabel("Cancel")
-    }
-
-    private var savePill: some View {
-        Button(action: save) {
-            Text("Save")
-                .font(Typography.headline)
-                .foregroundStyle(NewLook.checkInGreen)
-                .padding(.horizontal, Spacing.l)
-                .frame(height: 44)
-                .background(NewLook.card, in: .capsule)
-        }
-        .accessibilityLabel("Save corrections")
-    }
-
-    // MARK: - Card scaffold
-
-    private func cardHeader(_ title: String, @ViewBuilder trailing: () -> some View = { EmptyView() }) -> some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(title)
-                .font(Typography.headline)
-                .foregroundStyle(NewLook.inkPrimary)
-            Spacer()
-            trailing()
+        .onDisappear { viewModel.cancelIfUnsaved() }
+        .sheet(item: $activePicker) { kind in pickerSheet(kind) }
+        .confirmationDialog("Discard changes?", isPresented: $showDiscardPrompt, titleVisibility: .visible) {
+            Button("Discard changes", role: .destructive) { dismiss() }
+            Button("Keep editing", role: .cancel) {}
         }
     }
 
-    private func groupEyebrow(_ text: String) -> some View {
-        Text(text)
-            .font(Typography.label)
-            .textCase(.uppercase)
-            .tracking(0.6)
-            .foregroundStyle(NewLook.inkSecondary)
+    private func goBack() {
+        if viewModel.isDirty { showDiscardPrompt = true } else { dismiss() }
     }
 
-    /// The "Great · bright, thriving" current-value line: name in selection accent, synonym muted.
-    @ViewBuilder
-    private func synonym(_ name: String?, _ syn: String?) -> some View {
-        if let name {
-            let nameText = Text(name).font(Typography.caption.weight(.semibold)).foregroundStyle(NewLook.checkInGreen)
-            let synText = Text(syn.map { " · \($0)" } ?? "").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
-            Text("\(nameText)\(synText)")
-        }
-    }
+    // MARK: - Date & time
 
-    // MARK: - When
-
-    private var whenCard: some View {
+    private var dateTimeSection: some View {
         VStack(alignment: .leading, spacing: Spacing.m) {
-            cardHeader("When")
-            HStack(spacing: Spacing.s) {
-                dateBox("Date") {
-                    DatePicker("", selection: $viewModel.date, in: ...Date(), displayedComponents: .date)
-                        .labelsHidden().accessibilityLabel("Check-in date")
+            SectionHeading("Date & time")
+            HStack(spacing: Spacing.m) {
+                DateTimeField("Date", kind: .date,
+                              value: viewModel.date.formatted(.dateTime.month(.abbreviated).day())) {
+                    activePicker = .date
                 }
-                dateBox("Time") {
-                    DatePicker("", selection: $viewModel.date, in: ...Date(), displayedComponents: .hourAndMinute)
-                        .labelsHidden().accessibilityLabel("Check-in time")
+                DateTimeField("Time", kind: .time,
+                              value: viewModel.date.formatted(date: .omitted, time: .shortened)) {
+                    activePicker = .time
                 }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .newLookCard()
     }
 
-    private func dateBox<P: View>(_ label: String, @ViewBuilder picker: () -> P) -> some View {
-        HStack {
-            Text(label).font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
-            Spacer()
-            picker()
+    /// D-E3: the compact picker cannot take the pen's field styling, so the field presents one.
+    private func pickerSheet(_ kind: PickerKind) -> some View {
+        NavigationStack {
+            Group {
+                switch kind {
+                case .date:
+                    DatePicker("Check-in date", selection: $viewModel.date, in: ...Date(), displayedComponents: .date)
+                        .datePickerStyle(.graphical)
+                case .time:
+                    DatePicker("Check-in time", selection: $viewModel.date, in: ...Date(), displayedComponents: .hourAndMinute)
+                        .datePickerStyle(.wheel)
+                }
+            }
+            .labelsHidden()
+            .tint(Accent.primaryFill)
+            .padding(.horizontal, Spacing.gutter)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .background(Surface.screen.ignoresSafeArea())
+            .navigationTitle(kind == .date ? "Date" : "Time")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { activePicker = nil }
+                }
+            }
         }
-        .padding(.horizontal, Spacing.m)
-        .padding(.vertical, Spacing.s)
-        .frame(maxWidth: .infinity)
-        .background(NewLook.card, in: .rect(cornerRadius: Radius.control))
-        .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(NewLook.hairline, lineWidth: 1))
+        .presentationDetents([.medium])
+        .presentationDragIndicator(.visible)
     }
 
-    // MARK: - Signals (Mood · Energy · Focus grouped)
+    // MARK: - How did you feel?
 
-    private var signalsCard: some View {
+    private var feelingsCard: some View {
         VStack(alignment: .leading, spacing: Spacing.l) {
-            cardHeader("How did you feel?")
-            LevelTilePicker(.mood, label: "Mood", selection: moodBinding)
-            LevelTilePicker(.energy, label: "Energy level", selection: energyBinding)
-            LevelTilePicker(.focus, label: "Focus level", selection: focusBinding)
+            HStack {
+                Text("How did you feel?")
+                    .font(Typography.cardTitle)
+                    .foregroundStyle(Ink.primary)
+                    .accessibilityAddTraits(.isHeader)
+                Spacer()
+                NavPill(feelingsExpanded ? .chevronUp : .chevronDown, size: Metrics.navPillSmall) {
+                    withAnimation(reduceMotion ? nil : Motion.expand) { feelingsExpanded.toggle() }
+                }
+                .accessibilityValue(feelingsExpanded ? "Expanded" : "Collapsed")
+            }
+            if feelingsExpanded {
+                HairlineDivider()
+                LevelTilePicker(.mood, label: "Mood", selection: moodBinding)
+                LevelTilePicker(.energy, label: "Energy level", selection: energyBinding)
+                LevelTilePicker(.focus, label: "Focus level", selection: focusBinding)
+                HairlineDivider()
+                sleepRow
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .newLookCard()
-    }
-
-    private func signalRow<R: View, V: View>(_ label: String, @ViewBuilder ramp: () -> R, @ViewBuilder value: () -> V) -> some View {
-        VStack(alignment: .leading, spacing: Spacing.xs) {
-            HStack {
-                groupEyebrow(label)
-                Spacer()
-                value()
-            }
-            ramp()
-        }
+        .card(.large)
     }
 
     private var moodBinding: Binding<MoodLevel?> {
@@ -180,166 +153,160 @@ struct ExtractionReviewView: View {
         Binding(get: { viewModel.focus }, set: { viewModel.setFocus($0) })
     }
 
-    // MARK: - Sleep
-
-    private var sleepCard: some View {
-        VStack(alignment: .leading, spacing: Spacing.m) {
-            cardHeader("Sleep") {
-                HStack(spacing: Spacing.xs) {
-                    SignalGlyph(.sleep, size: 16, decorative: true)
-                    Text("no synonyms").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
-                }
-            }
-            FlowLayout(spacing: Spacing.s) {
+    /// D-V1: the sleep vocabulary is the canonical `SleepLevel` ramp; hours stay editable (a
+    /// function the pen dropped — D7).
+    private var sleepRow: some View {
+        VStack(alignment: .leading, spacing: Spacing.s) {
+            ChipGroupView("Your sleep") {
                 ForEach(SleepLevel.allCases, id: \.self) { level in
-                    chipButton(level.rawValue.capitalized, selected: viewModel.sleepLevel == level) {
+                    ChipButton(level.displayLabel, selected: viewModel.sleepLevel == level) {
                         viewModel.setSleepLevel(viewModel.sleepLevel == level ? nil : level)
                     }
                 }
             }
-            FlowLayout(spacing: Spacing.s) {
-                ForEach(sleepDurations, id: \.self) { hours in
-                    chipButton("\(Int(hours))h", selected: viewModel.sleepHours == hours) {
+            ChipRow(interactive: true) {
+                ForEach(Self.sleepDurations, id: \.self) { hours in
+                    ChipButton("\(Int(hours))h", selected: viewModel.sleepHours == hours) {
                         viewModel.setSleepHours(viewModel.sleepHours == hours ? nil : hours)
                         customHoursText = ""
                     }
                 }
-                customHoursBox
+                customHoursField
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .newLookCard()
     }
 
-    /// A New Look selectable chip (capture-flow green by default; medication chips pass `.medication`).
-    /// Tapping toggles via `action`.
-    private func chipButton(_ text: String, selected: Bool, role: NewLookChipRole = .checkIn, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(text).newLookChip(selected: selected, role: role)
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(selected ? [.isSelected] : [])
-    }
-
-    private var customHoursBox: some View {
+    private var customHoursField: some View {
         HStack(spacing: Spacing.xs) {
             TextField("7.5", text: $customHoursText)
                 .keyboardType(.decimalPad)
                 .multilineTextAlignment(.center)
-                .font(Typography.caption)
-                .foregroundStyle(NewLook.inkPrimary)
-                .fixedSize()
-                .frame(minWidth: 24)
+                .font(Typography.chipLabel)
+                .foregroundStyle(Ink.chip)
+                .frame(width: 36)
                 .onChange(of: customHoursText) { _, text in
                     viewModel.setSleepHours(fromString: text)
-                    if text.isEmpty, !sleepDurations.contains(viewModel.sleepHours ?? -1) {
-                        // Field cleared (and not on a preset) → clear the stored custom value.
+                    if text.isEmpty, !Self.sleepDurations.contains(viewModel.sleepHours ?? -1) {
                         viewModel.setSleepHours(nil)
                     }
                 }
-            Text("h").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
+            Text("h")
+                .font(Typography.chipLabel)
+                .foregroundStyle(Ink.tertiary)
         }
         .padding(.horizontal, Spacing.m)
-        .padding(.vertical, Spacing.s)
-        .background(NewLook.card, in: .capsule)
-        .overlay(Capsule().strokeBorder(isCustomHours ? NewLook.checkInGreen : NewLook.hairline, lineWidth: 1))
+        .frame(height: Metrics.chipHeight)
+        .background(Surface.card, in: .capsule)
+        .overlay {
+            Capsule().strokeBorder(isCustomHours ? Accent.primaryFill : Stroke.chip, lineWidth: Stroke.hairlineWidth)
+        }
+        .frame(minHeight: Metrics.minTapTarget)
         .accessibilityLabel("Custom sleep hours")
     }
 
     private var isCustomHours: Bool {
-        guard let h = viewModel.sleepHours else { return false }
-        return !sleepDurations.contains(h)
+        guard let hours = viewModel.sleepHours else { return false }
+        return !Self.sleepDurations.contains(hours)
     }
 
     private func syncCustomHours() {
-        if let h = viewModel.sleepHours, !sleepDurations.contains(h) {
-            customHoursText = h == h.rounded() ? String(Int(h)) : String(h)
+        if let hours = viewModel.sleepHours, !Self.sleepDurations.contains(hours) {
+            customHoursText = hours == hours.rounded() ? String(Int(hours)) : String(hours)
         }
     }
 
-    // MARK: - Medications (inline-expand)
+    // MARK: - Medication
 
-    private var medicationsCard: some View {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            cardHeader("Medications") {
-                Text("Stimulants · no limit").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
+    private var medicationCard: some View {
+        VStack(alignment: .leading, spacing: Spacing.l) {
+            Text("Medication")
+                .font(Typography.cardTitle)
+                .foregroundStyle(Ink.primary)
+                .accessibilityAddTraits(.isHeader)
+            ChipRow(interactive: true) {
+                ForEach(MedicationCatalog.all) { entry in
+                    let on = viewModel.medications.contains { $0.name == entry.name }
+                    ChipButton(entry.name, selected: on) {
+                        if on { viewModel.removeMedication(entry.name) } else { viewModel.addMedication(entry.name) }
+                    }
+                }
             }
-            ForEach(viewModel.medications, id: \.editRowID) { med in
-                selectedMedCard(med)
+            ForEach(viewModel.medicationRows) { row in
+                HairlineDivider()
+                medicationRow(row)
             }
-            medGrid
-            Text("Tap to add · expands inline · × to remove · independent events")
-                .font(Typography.caption)
-                .foregroundStyle(NewLook.inkSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .newLookCard()
+        .card(.large)
     }
 
-    private func selectedMedCard(_ med: MedEvent) -> some View {
-        let entry = MedicationCatalog.entry(matching: med.name)
-        return VStack(alignment: .leading, spacing: Spacing.s) {
-            HStack(spacing: Spacing.s) {
-                SignalGlyph(.medication, size: 22, decorative: true)
-                Text(med.name).font(Typography.subheadline.weight(.semibold)).foregroundStyle(NewLook.inkPrimary)
-                Spacer()
-                Button { viewModel.toggleMedTaken(med) } label: {
-                    Text(med.taken ? "Taken" : "Missed")
-                        .font(Typography.label)
-                        .foregroundStyle(med.taken ? NewLook.onSelection : NewLook.inkPrimary)
-                        .padding(.horizontal, Spacing.s)
-                        .padding(.vertical, Spacing.xs)
-                        .background(med.taken ? Palette.medication : NewLook.tintNeutral, in: .capsule)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Mark \(med.name) as taken or missed")
-                .accessibilityValue(med.taken ? "Taken" : "Missed")
-                Button { viewModel.removeMedication(id: med.editRowID) } label: {
-                    Image(systemName: "xmark").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Remove \(med.name)")
-            }
-
-            if let entry {
-                Grid(alignment: .leading, horizontalSpacing: Spacing.s, verticalSpacing: Spacing.s) {
-                    GridRow(alignment: .top) {
-                        groupEyebrow("Dose")
-                        FlowLayout(spacing: Spacing.xs) {
+    private func medicationRow(_ row: ExtractionReviewViewModel.MedicationRow) -> some View {
+        let entry = MedicationCatalog.entry(matching: row.name)
+        return VStack(alignment: .leading, spacing: Spacing.l) {
+            ForEach(row.events, id: \.editRowID) { event in
+                VStack(alignment: .leading, spacing: Spacing.s) {
+                    HStack(spacing: Spacing.s) {
+                        MedicationBadge(size: 22)
+                        Text(doseRowLabel(row, event))
+                            .font(Typography.rowLabel)
+                            .foregroundStyle(Ink.primary)
+                        Spacer(minLength: Spacing.s)
+                        Button {
+                            viewModel.removeMedication(id: event.editRowID)
+                        } label: {
+                            Image(systemName: Icons.close)
+                                .font(.system(size: 12, weight: .semibold))
+                                .foregroundStyle(Ink.tertiary)
+                                .frame(width: Metrics.minTapTarget, height: Metrics.minTapTarget)
+                                .contentShape(.rect)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Remove \(row.name)")
+                    }
+                    if let entry {
+                        ChipRow(interactive: true) {
                             ForEach(entry.doseOptions, id: \.self) { dose in
-                                chipButton(dose, selected: med.dose == dose, role: .medication) {
-                                    viewModel.setMedDose(med, dose: dose)
+                                ChipButton(dose, selected: event.dose == dose) {
+                                    viewModel.setMedDose(event, dose: dose)
                                 }
                             }
                         }
+                    } else if let dose = event.dose {
+                        Text(dose)
+                            .font(Typography.captionMedium)
+                            .foregroundStyle(Ink.secondary)
                     }
-                    GridRow {
-                        groupEyebrow("Time")
-                        Text("\(med.time ?? "08:00") · info").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
-                    }
-                    GridRow(alignment: .center) {
-                        groupEyebrow("Dur")
-                        HStack(spacing: Spacing.xs) {
-                            DurationField(current: med.durationHours, fallback: entry.durationHours) {
-                                viewModel.setMedDuration(med, hours: $0)
-                            }
-                            Text("shortest").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
+                    HStack(spacing: Spacing.m) {
+                        SegmentedPicker([true, false], selection: takenBinding(event)) { $0 ? "Taken" : "Missed" }
+                            .frame(maxWidth: 180)
+                            .accessibilityLabel("\(row.name) taken or missed")
+                        Spacer(minLength: Spacing.s)
+                        DurationField(current: event.durationHours, fallback: entry?.durationHours ?? 10) {
+                            viewModel.setMedDuration(event, hours: $0)
                         }
                     }
                 }
-            } else if let dose = med.dose {
-                Text(dose).font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
             }
         }
-        .padding(Spacing.m)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(NewLook.card, in: .rect(cornerRadius: Radius.newLookCard))
-        .overlay(RoundedRectangle(cornerRadius: Radius.newLookCard).strokeBorder(Palette.medication.opacity(0.35), lineWidth: 1))
     }
 
-    /// Per-med duration input — backed by local `@State` so partial/fractional typing
-    /// (e.g. "7.") is never reformatted away mid-keystroke; commits only parseable values
-    /// and normalizes a locale comma to a dot. Seeds from the stored value on appear.
+    private func doseRowLabel(_ row: ExtractionReviewViewModel.MedicationRow, _ event: MedEvent) -> String {
+        guard row.events.count > 1, let time = event.time else { return "\(row.name) dose" }
+        return "\(row.name) dose · \(time)"
+    }
+
+    private func takenBinding(_ event: MedEvent) -> Binding<Bool> {
+        Binding(
+            get: { viewModel.medications.first { $0.editRowID == event.editRowID }?.taken ?? event.taken },
+            set: { taken in
+                let current = viewModel.medications.first { $0.editRowID == event.editRowID }?.taken ?? event.taken
+                if taken != current { viewModel.toggleMedTaken(event) }
+            }
+        )
+    }
+
+    /// Effect-window hours per dose (the medication bar reads it). Local text state so partial
+    /// input ("7.") is never reformatted mid-keystroke; commits parseable values, comma → dot.
     private struct DurationField: View {
         let current: Double?
         let fallback: Double
@@ -351,83 +318,83 @@ struct ExtractionReviewView: View {
                 TextField(Self.format(fallback), text: $text)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkPrimary)
-                    .fixedSize()
+                    .font(Typography.status)
+                    .foregroundStyle(Ink.chip)
+                    .frame(width: 36)
                     .onChange(of: text) { _, value in
-                        let norm = value.replacingOccurrences(of: ",", with: ".")
-                        onCommit(norm.isEmpty ? nil : Double(norm))
+                        let normalised = value.replacingOccurrences(of: ",", with: ".")
+                        onCommit(normalised.isEmpty ? nil : Double(normalised))
                     }
-                Text("h").font(Typography.caption).foregroundStyle(NewLook.inkSecondary)
+                Text("h effect")
+                    .font(Typography.captionQuiet)
+                    .foregroundStyle(Ink.tertiary)
             }
-            .padding(.horizontal, Spacing.s)
-            .padding(.vertical, Spacing.xs)
-            .background(NewLook.card, in: .rect(cornerRadius: Radius.control))
-            .overlay(RoundedRectangle(cornerRadius: Radius.control).strokeBorder(NewLook.hairline, lineWidth: 1))
-            .onAppear { if let h = current { text = Self.format(h) } }
-            .accessibilityLabel("Duration hours")
+            .padding(.horizontal, Spacing.m)
+            .frame(minHeight: 39)
+            .background(Surface.card, in: .rect(cornerRadius: Radius.field))
+            .overlay {
+                RoundedRectangle(cornerRadius: Radius.field)
+                    .strokeBorder(Stroke.field, lineWidth: Stroke.hairlineWidth)
+            }
+            .onAppear { if let current { text = Self.format(current) } }
+            .accessibilityLabel("Effect duration in hours")
         }
 
-        private static func format(_ h: Double) -> String {
-            h == h.rounded() ? String(Int(h)) : String(h)
-        }
-    }
-
-    private var medGrid: some View {
-        FlowLayout(spacing: Spacing.s) {
-            ForEach(MedicationCatalog.all) { entry in
-                let on = viewModel.medications.contains { $0.name == entry.name }
-                chipButton(entry.name, selected: on, role: .medication) {
-                    if on { viewModel.removeMedication(entry.name) } else { viewModel.addMedication(entry.name) }
-                }
-                .accessibilityLabel("\(entry.name)\(on ? ", selected" : "")")
-            }
+        private static func format(_ hours: Double) -> String {
+            hours == hours.rounded() ? String(Int(hours)) : String(hours)
         }
     }
 
     // MARK: - Emotions / Side effects
 
     private var emotionsCard: some View {
-        VStack(alignment: .leading, spacing: Spacing.m) {
-            cardHeader("Emotions")
-            ForEach(emotionGroups) { group in
-                VStack(alignment: .leading, spacing: Spacing.s) {
-                    groupEyebrow(group.label)
-                    FlowLayout(spacing: Spacing.s) {
-                        ForEach(group.items, id: \.self) { emotion in
-                            chipButton(emotion.capitalized, selected: viewModel.emotions.contains(emotion)) {
-                                viewModel.toggleEmotion(emotion)
-                            }
-                            .accessibilityLabel("\(emotion)\(viewModel.emotions.contains(emotion) ? ", selected" : "")")
-                        }
-                    }
+        VStack(alignment: .leading, spacing: Spacing.l) {
+            Text("Emotions")
+                .font(Typography.cardTitle)
+                .foregroundStyle(Ink.primary)
+                .accessibilityAddTraits(.isHeader)
+            emotionGroup("Pleasant", Self.pleasantEmotions)
+            emotionGroup("Unpleasant", Self.unpleasantEmotions)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .card(.large)
+    }
+
+    private func emotionGroup(_ title: String, _ emotions: [String]) -> some View {
+        ChipGroupView(title) {
+            ForEach(emotions, id: \.self) { emotion in
+                ChipButton(emotion.capitalized, selected: viewModel.emotions.contains(emotion)) {
+                    viewModel.toggleEmotion(emotion)
                 }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .newLookCard()
     }
 
     private var sideEffectsCard: some View {
-        VStack(alignment: .leading, spacing: Spacing.m) {
-            cardHeader("Side effects")
-            FlowLayout(spacing: Spacing.s) {
-                ForEach(commonSideEffects, id: \.self) { effect in
-                    chipButton(effect.capitalized, selected: viewModel.sideEffects.contains(effect)) {
+        VStack(alignment: .leading, spacing: Spacing.l) {
+            Text("Side effects")
+                .font(Typography.cardTitle)
+                .foregroundStyle(Ink.primary)
+                .accessibilityAddTraits(.isHeader)
+            ChipRow(interactive: true) {
+                ForEach(Self.commonSideEffects, id: \.self) { effect in
+                    ChipButton(effect.capitalized, selected: viewModel.sideEffects.contains(effect)) {
                         viewModel.toggleSideEffect(effect)
                     }
-                    .accessibilityLabel("\(effect)\(viewModel.sideEffects.contains(effect) ? ", selected" : "")")
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .newLookCard()
+        .card(.large)
     }
 
-    // MARK: - Commit
+    // MARK: - Save
 
-    private func save() {
-        viewModel.confirm()
-        dismiss()
+    /// `confirm()` calls `onComplete`, whose owner pops this page; no `dismiss()` here or the
+    /// stack pops twice.
+    private var saveButton: some View {
+        Button("Save changes") { viewModel.confirm() }
+            .buttonStyle(.filled(fullWidth: true))
+            .disabled(!viewModel.isDirty)
     }
 }

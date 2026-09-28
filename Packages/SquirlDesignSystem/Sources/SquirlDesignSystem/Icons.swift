@@ -21,6 +21,7 @@ public enum Icons {
     public static let chevronRight = "chevron.right"           // arrow-right
     public static let add = "plus"                             // add
     public static let check = "checkmark"
+    public static let close = "xmark"
 
     // MARK: Actions
     public static let mic = "mic.fill"                         // microphone-2
