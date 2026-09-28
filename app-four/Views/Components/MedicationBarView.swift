@@ -1,5 +1,8 @@
 import SwiftUI
 
+/// The pen's medication bar (DESIGN.md §8.10): a small card of dose rows — badge · "HH:mm" ·
+/// name + dose · status word — each over a 10-pt violet progress track. Tapping a row offers
+/// "Log new dose" / "Delete this dose". A worn-off dose goes quiet (grey word, dimmed row).
 struct MedicationBarView: View {
     @Environment(MedicationBarViewModel.self) private var viewModel
     @State private var showLogSheet = false
@@ -10,13 +13,13 @@ struct MedicationBarView: View {
 
     var body: some View {
         if showBar, !viewModel.activeDoses.isEmpty {
-            VStack(spacing: Spacing.s) {
+            VStack(spacing: Spacing.m) {
                 ForEach(Array(viewModel.activeDoses.enumerated()), id: \.element.eventID) { index, dose in
-                    if index > 0 { Divider().overlay(NewLook.hairline) }
-                    doseRow(dose)
+                    if index > 0 { HairlineDivider() }
+                    DoseRow(dose: dose, showName: showName) { selectedDose = dose }
                 }
             }
-            .newLookCard(padding: Spacing.m)
+            .card(.small)
             .confirmationDialog(
                 selectedDose.map { "\($0.name)\($0.dose.map { " \($0)" } ?? "")" } ?? "",
                 isPresented: Binding(
@@ -45,47 +48,16 @@ struct MedicationBarView: View {
             .onAppear { viewModel.refresh() }
         }
     }
+}
 
-    // MARK: - Single row
+// MARK: - Row
 
-    private func doseRow(_ dose: MedicationBarViewModel.DoseDisplay) -> some View {
-        Button { selectedDose = dose } label: {
-            VStack(alignment: .leading, spacing: Spacing.xs) {
-                HStack(spacing: Spacing.s) {
-                    SignalGlyph(.medication, size: 24, decorative: true)
-                    Text(titleLine(dose: dose))
-                        .font(Typography.text(15, weight: .semibold, relativeTo: .subheadline))
-                        .foregroundStyle(NewLook.inkPrimary)
-                        .lineLimit(1)
-                    Spacer(minLength: 0)
-                    Text(stateWord(for: dose.progress))
-                        .font(Typography.label)
-                        .textCase(.uppercase)
-                        .tracking(0.5)
-                        .foregroundStyle(Palette.medication)
-                        .lineLimit(1)
-                }
-                DoseTrack(progress: dose.progress)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(accessibilityLabel(dose: dose))
-    }
-
-    /// Stage by fill amount only — 0–20% kicking in · 20–80% active · 80–100% wearing off.
-    /// Never red/alarming (locked decision).
-    private func stateWord(for progress: Double) -> String {
-        switch progress {
-        case ..<0.2: return "kicking in"
-        case ..<0.8: return "active"
-        case ..<1.0: return "wearing off"
-        default:     return "worn off"
-        }
-    }
-
-    // MARK: - Labels
+private struct DoseRow: View {
+    let dose: MedicationBarViewModel.DoseDisplay
+    let showName: Bool
+    let onTap: () -> Void
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var pulsing = false
 
     private static let timeFormatter: DateFormatter = {
         let f = DateFormatter()
@@ -93,75 +65,70 @@ struct MedicationBarView: View {
         return f
     }()
 
-    /// Title — "HH:mm · Name Dose" (a01 design, time-first). `showName` toggles the name/dose
-    /// suffix; time always shows, so a multi-dose stack stays distinguishable without an
-    /// ordinal word — row order (oldest → newest) already conveys sequence.
-    private func titleLine(dose: MedicationBarViewModel.DoseDisplay) -> String {
-        let time = Self.timeFormatter.string(from: dose.takenAt)
-        guard showName else { return time }
-        let nameText = dose.effectiveDose.map { "\(dose.name) \($0)" } ?? dose.name
-        return "\(time) · \(nameText)"
+    private var isWornOff: Bool { dose.status == .wornOff }
+    /// Today's only "kicking in" cue: a soft opacity pulse on the fill during onset, never under Reduce Motion.
+    private var onsetPulsing: Bool { dose.status == .kickingIn && !reduceMotion }
+
+    var body: some View {
+        Button(action: onTap) {
+            VStack(alignment: .leading, spacing: Spacing.s) {
+                HStack(spacing: Spacing.s) {
+                    MedicationBadge()
+                    title
+                        .lineLimit(1)
+                    Spacer(minLength: Spacing.s)
+                    Text(dose.status.displayLabel)
+                        .font(Typography.status)
+                        .foregroundStyle(isWornOff ? Ink.tertiary : Accent.primaryText)
+                        .lineLimit(1)
+                }
+                ProgressTrack(fraction: dose.progress)
+                    .opacity(onsetPulsing && pulsing ? 0.55 : 1)
+            }
+            .opacity(isWornOff ? 0.6 : 1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(accessibilityLabel)
+        .onAppear { syncPulse() }
+        .onChange(of: onsetPulsing) { _, _ in syncPulse() }
     }
 
-    private func accessibilityLabel(dose: MedicationBarViewModel.DoseDisplay) -> String {
-        let nameText = dose.effectiveDose.map { "\(dose.name) \($0)" } ?? dose.name
+    /// "09:54 • Concerta 36 mg" — time 14/600, the rest 12/500 secondary; `showName` drops the suffix.
+    private var title: Text {
+        let time = Text(Self.timeFormatter.string(from: dose.takenAt))
+            .font(Typography.rowTitle)
+            .foregroundStyle(Ink.primary)
+        guard showName else { return time }
+        let name = Text(nameText)
+            .font(Typography.captionMedium)
+            .foregroundStyle(Ink.secondary)
+        let dot = Text(" • ")
+            .font(Typography.captionMedium)
+            .foregroundStyle(Ink.secondary)
+        return Text("\(time)\(dot)\(name)")
+    }
+
+    private var nameText: String {
+        dose.effectiveDose.map { "\(dose.name) \($0)" } ?? dose.name
+    }
+
+    private var accessibilityLabel: String {
         let taken = Self.timeFormatter.string(from: dose.takenAt)
         let ends = Self.timeFormatter.string(from: dose.endsAt)
         let percent = Int(dose.progress * 100)
         let ordinalPrefix = dose.totalDosesToday > 1 ? "\(ordinal(dose.doseNumber)) dose, " : ""
-        return "\(ordinalPrefix)\(nameText), taken at \(taken), \(percent)% elapsed, ends \(ends). Tap to manage."
+        return "\(ordinalPrefix)\(nameText), taken at \(taken), \(dose.status.displayLabel.lowercased()), \(percent)% elapsed, ends \(ends). Tap to manage."
     }
 
     private func ordinal(_ n: Int) -> String {
         switch n {
-        case 1: return "1st"
-        case 2: return "2nd"
-        case 3: return "3rd"
-        default: return "\(n)th"
+        case 1: "1st"
+        case 2: "2nd"
+        case 3: "3rd"
+        default: "\(n)th"
         }
-    }
-}
-
-// MARK: - Track
-
-/// Progress capsule: a neutral groove with a medication-purple → lighter-purple gradient fill
-/// that grows empty→full across the dose window, pulsing softly during onset (<20%). Reduce
-/// Motion collapses to a static fill. The state word lives beside the title, not inside the
-/// track — an in-track label was tried and dropped: independently audited, it failed WCAG AA
-/// contrast against the gradient fill at every case (max ~2.6:1 of a required 4.5:1) and
-/// overflowed the track at large Dynamic Type sizes.
-private struct DoseTrack: View {
-    let progress: Double
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var pulsing = false
-
-    private static let height: CGFloat = 19
-
-    /// Pulse only during onset (<20%) and never under Reduce Motion.
-    private var onsetPulsing: Bool { progress < 0.2 && !reduceMotion }
-
-    var body: some View {
-        GeometryReader { geo in
-            ZStack(alignment: .leading) {
-                Capsule().fill(NewLook.tintNeutral)
-                Capsule()
-                    .fill(
-                        LinearGradient(
-                            colors: [Palette.medication, Palette.medicationFillEnd],
-                            startPoint: .leading,
-                            endPoint: .trailing
-                        )
-                    )
-                    .frame(width: max(Self.height, geo.size.width * progress))
-                    .opacity(onsetPulsing && pulsing ? 0.55 : 1)
-            }
-        }
-        .frame(height: Self.height)
-        .animation(reduceMotion ? nil : .easeInOut(duration: 0.5), value: progress)
-        .onAppear { syncPulse() }
-        // React to onset ending and to a live Reduce-Motion toggle, so the
-        // repeatForever pulse is actually stopped rather than latched at appear.
-        .onChange(of: onsetPulsing) { _, _ in syncPulse() }
     }
 
     private func syncPulse() {
@@ -174,20 +141,11 @@ private struct DoseTrack: View {
 }
 
 #Preview {
-    ZStack(alignment: .top) {
-        // Scrollable content so the blur material has something to frost over
-        ScrollView {
-            VStack(spacing: 0) {
-                ForEach(0..<20) { i in
-                    Text("Row \(i)")
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(Spacing.l)
-                    Divider()
-                }
-            }
-            .padding(.top, 50)
-        }
+    VStack {
         MedicationBarView()
+            .padding(.horizontal, Spacing.gutter)
+        Spacer()
     }
+    .background(Surface.screen)
     .environment(MedicationBarViewModel())
 }

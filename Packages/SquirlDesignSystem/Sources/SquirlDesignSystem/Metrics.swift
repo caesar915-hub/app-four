@@ -47,20 +47,6 @@ public enum Metrics {
     /// Bill-shape chip height.
     public static let chipHeight: CGFloat = 27
 
-    // MARK: Day card (spec 034 — migrates in UI-25)
-    /// Base size for the folded-card summary's inline signal glyph.
-    public static let summarySignal: CGFloat = 15
-    /// Check-in row signal-glyph size.
-    public static let rowSignal: CGFloat = 12
-    /// Diameter of the day-header's inline mood glyph.
-    public static let dayHeaderGlyph: CGFloat = 40
-    /// Unfolded entry-row mood disc.
-    public static let rowMoodDisc: CGFloat = 43
-    /// Mood sprout size inside the entry-row disc.
-    public static let rowMoodGlyph: CGFloat = 28
-    /// Outlined "more" affordance circle on an entry row.
-    public static let moreAffordance: CGFloat = 21
-
     /// Fixed-point dimensions of the check-in capture surface.
     public enum CheckIn {
         /// Ring diameter at 402 pt — callers clamp to `min(width − 2·gutter, ringDiameter)`.

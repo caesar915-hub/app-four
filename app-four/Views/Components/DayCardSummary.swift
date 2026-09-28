@@ -30,6 +30,19 @@ struct DayCardSummary {
         day.nodes.first { !$0.intakeDoses.isEmpty }?.intakeDoses.first?.name
     }
 
+    /// The newest intake's recorded dose ("36mg"), for the collapsed card's medication line.
+    var mostRecentMedicationDose: String? {
+        day.nodes.first { !$0.intakeDoses.isEmpty }?.intakeDoses.first?.dose
+    }
+
+    /// The newest recording's sleep level, for the collapsed card's moon glyph.
+    var sleepLevel: SleepLevel? {
+        for node in day.nodes {
+            if let level = node.recording?.decodedSleepLevel { return level }
+        }
+        return nil
+    }
+
     /// Most recent captured sleep for the day ("7h sleep" / "calm sleep"), or nil when no
     /// check-in that day logged sleep (spec 034). Nodes are newest-first, so the first
     /// recording carrying a sleep label is the most recent one.

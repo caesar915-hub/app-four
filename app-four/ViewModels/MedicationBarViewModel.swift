@@ -22,6 +22,30 @@ final class MedicationBarViewModel {
     /// Up to 3 active doses, sorted oldest → newest (1st dose at top).
     var activeDoses: [DoseDisplay] = []
 
+    /// Where a dose is in its window, by fill fraction (D10). Words stay quiet — a worn-off dose is
+    /// grey, never red.
+    enum DoseStatus: Equatable {
+        case kickingIn, active, wearingOff, wornOff
+
+        init(progress: Double) {
+            switch progress {
+            case ..<0.2: self = .kickingIn
+            case ..<0.8: self = .active
+            case ..<1.0: self = .wearingOff
+            default: self = .wornOff
+            }
+        }
+
+        var displayLabel: String {
+            switch self {
+            case .kickingIn: "Kicking in"
+            case .active: "Active"
+            case .wearingOff: "Wearing off"
+            case .wornOff: "Worn off"
+            }
+        }
+    }
+
     struct DoseDisplay: Equatable {
         let eventID: UUID
         let name: String
@@ -35,6 +59,8 @@ final class MedicationBarViewModel {
         let doseNumber: Int
         let totalDosesToday: Int
         let progress: Double
+
+        var status: DoseStatus { DoseStatus(progress: progress) }
     }
 
     init(context: ModelContext? = nil) {

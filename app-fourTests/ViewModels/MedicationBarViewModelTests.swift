@@ -25,6 +25,20 @@ struct MedicationBarViewModelTests {
         viewModel = MedicationBarViewModel(context: context)
     }
 
+    // Spec 057 / D10 — status by fill fraction; worn-off stays quiet (never red).
+    @Test func doseStatusFollowsFillThresholds() {
+        typealias S = MedicationBarViewModel.DoseStatus
+        #expect(S(progress: 0) == .kickingIn)
+        #expect(S(progress: 0.19) == .kickingIn)
+        #expect(S(progress: 0.2) == .active)
+        #expect(S(progress: 0.79) == .active)
+        #expect(S(progress: 0.8) == .wearingOff)
+        #expect(S(progress: 0.99) == .wearingOff)
+        #expect(S(progress: 1) == .wornOff)
+        #expect(S.kickingIn.displayLabel == "Kicking in")
+        #expect(S.wornOff.displayLabel == "Worn off")
+    }
+
     @Test func logManualDoseUsesGivenDuration() throws {
         viewModel.logManualDose(name: "Concerta", dose: "36 mg", takenAt: Date(), durationHours: 8)
         let events = try context.fetch(FetchDescriptor<MedicationEvent>())

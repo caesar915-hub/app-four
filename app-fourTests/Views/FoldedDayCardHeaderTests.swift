@@ -36,6 +36,23 @@ import Foundation
     }
 
     // FR-002 — unlogged signals omitted, never zeroed/blanked
+    // Spec 057 / UI-36 — the collapsed day card shows the newest intake's dose and a sleep level.
+    @Test func mostRecentMedicationDoseComesFromNewestIntake() {
+        let older = MedicationEvent(name: "Concerta", dose: "36mg", takenAt: at(9), taken: true, durationHours: 10, source: .manual)
+        let newer = MedicationEvent(name: "Ritalin", dose: "18mg", takenAt: at(14), taken: true, durationHours: 4, source: .manual)
+        let s = summary([node(at(14), doses: [newer]), node(at(9), doses: [older])])
+        #expect(s.mostRecentMedicationDose == "18mg")
+        #expect(summary([node(at(9))]).mostRecentMedicationDose == nil)
+    }
+
+    @Test func sleepLevelComesFromNewestRecordingThatHasOne() {
+        let newest = Recording(audioFileName: "a.m4a", mood: nil)
+        let older = Recording(audioFileName: "b.m4a", mood: nil, sleepLevelValue: "deep")
+        let s = summary([node(at(14), rec: newest), node(at(9), rec: older)])
+        #expect(s.sleepLevel == .deep)
+        #expect(summary([node(at(14), rec: newest)]).sleepLevel == nil)
+    }
+
     @Test func omitsUnloggedSignals() {
         let s = summary([node(at(16), rec: rec("Great"))])
         #expect(s.mood == "Great")
