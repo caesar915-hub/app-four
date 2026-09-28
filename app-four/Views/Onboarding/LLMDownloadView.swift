@@ -20,7 +20,7 @@ struct LLMDownloadView: View {
                     .frame(maxWidth: .infinity, minHeight: geo.size.height)
             }
         }
-        .background(NewLook.screen.ignoresSafeArea())
+        .background(Surface.screen.ignoresSafeArea())
         .navigationBarBackButtonHidden(viewModel.isDownloading)
     }
 
@@ -30,25 +30,25 @@ struct LLMDownloadView: View {
 
             Image(systemName: "brain.head.profile")
                 .font(.system(size: 64))
-                .foregroundStyle(NewLook.checkInGreen)
+                .foregroundStyle(Accent.primary)
                 .accessibilityHidden(true)
 
             VStack(spacing: Spacing.m) {
                 Text("Journal Insights")
-                    .font(Typography.largeTitle)
-                    .foregroundStyle(NewLook.inkPrimary)
+                    .font(Typography.pageTitle)
+                    .foregroundStyle(Ink.primary)
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
 
                 Text("A second on-device model reads your check-ins and picks out mood, energy, focus, sleep and medications — still private, still on this iPhone.")
-                    .font(Typography.body)
-                    .foregroundStyle(NewLook.inkSecondary)
+                    .font(Typography.narrative)
+                    .foregroundStyle(Ink.tertiary)
                     .multilineTextAlignment(.center)
 
                 if let error = viewModel.downloadError {
                     Text(error.userMessage)
-                        .font(Typography.caption)
-                        .foregroundStyle(Theme.danger)
+                        .font(Typography.captionQuiet)
+                        .foregroundStyle(Ink.destructive)
                         .multilineTextAlignment(.center)
                         .padding(.top, Spacing.s)
                 }
@@ -62,26 +62,26 @@ struct LLMDownloadView: View {
                     VStack(spacing: Spacing.s) {
                         ProgressView(value: viewModel.downloadProgress)
                             .progressViewStyle(.linear)
-                            .tint(NewLook.checkInGreen)
+                            .tint(Accent.primary)
                         Text("Downloading insights model... \(Int(viewModel.downloadProgress * 100))%")
-                            .font(Typography.caption)
-                            .foregroundStyle(NewLook.inkSecondary)
+                            .font(Typography.captionQuiet)
+                            .foregroundStyle(Ink.tertiary)
                     }
                     .padding(.horizontal, Spacing.xl)
                 } else {
                     Button(action: downloadModel) {
                         Text("Download Now (~740 MB)")
                     }
-                    .buttonStyle(.checkInPrimary)
+                    .buttonStyle(.filled(fullWidth: true))
 
                     Text("Wi-Fi recommended")
-                        .font(Typography.caption)
-                        .foregroundStyle(NewLook.inkSecondary)
+                        .font(Typography.captionQuiet)
+                        .foregroundStyle(Ink.tertiary)
 
                     Button(action: skip) {
                         Text("Skip for Now")
                     }
-                    .buttonStyle(.secondary)
+                    .buttonStyle(.outlined(fullWidth: true))
                 }
             }
         }

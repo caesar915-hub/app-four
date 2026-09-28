@@ -149,24 +149,11 @@ struct ExtractionReviewView: View {
     // MARK: - Signals (Mood · Energy · Focus grouped)
 
     private var signalsCard: some View {
-        VStack(alignment: .leading, spacing: Spacing.m) {
-            cardHeader("Signals")
-            signalRow("MOOD", ramp: {
-                GlyphRampPicker(kind: .mood, selection: moodBinding, ringTint: NewLook.checkInGreen)
-            }, value: {
-                let level = MoodLevel(rawValue: viewModel.mood)
-                synonym(level?.displayLabel, level?.subtitle)
-            })
-            signalRow("ENERGY", ramp: {
-                GlyphRampPicker(kind: .energy, selection: energyBinding, ringTint: NewLook.checkInGreen)
-            }, value: {
-                synonym(viewModel.energy?.displayLabel, viewModel.energy?.subtitle)
-            })
-            signalRow("FOCUS", ramp: {
-                GlyphRampPicker(kind: .focus, selection: focusBinding, ringTint: NewLook.checkInGreen)
-            }, value: {
-                synonym(viewModel.focus?.displayLabel, viewModel.focus?.subtitle)
-            })
+        VStack(alignment: .leading, spacing: Spacing.l) {
+            cardHeader("How did you feel?")
+            LevelTilePicker(.mood, label: "Mood", selection: moodBinding)
+            LevelTilePicker(.energy, label: "Energy level", selection: energyBinding)
+            LevelTilePicker(.focus, label: "Focus level", selection: focusBinding)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .newLookCard()

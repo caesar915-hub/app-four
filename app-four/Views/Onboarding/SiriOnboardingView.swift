@@ -20,7 +20,7 @@ struct SiriOnboardingView: View {
                     .frame(maxWidth: .infinity, minHeight: geo.size.height)
             }
         }
-        .background(NewLook.screen.ignoresSafeArea())
+        .background(Surface.screen.ignoresSafeArea())
     }
 
     private var content: some View {
@@ -39,7 +39,7 @@ struct SiriOnboardingView: View {
                         .accessibilityHidden(true)
                 }
             }
-            .buttonStyle(.checkInPrimary)
+            .buttonStyle(.filled(fullWidth: true))
             .accessibilityHint("Shows the on-device voice model download")
             .simultaneousGesture(TapGesture().onEnded {
                 Haptics.selection()
@@ -53,52 +53,50 @@ struct SiriOnboardingView: View {
         VStack(alignment: .leading, spacing: Spacing.m) {
             // Green eyebrow per the mockup — same grammar as `cardEyebrow()`
             // (label font, uppercase, tracking) with the check-in accent.
-            Text("Hands-Free Voice")
-                .font(Typography.label)
-                .textCase(.uppercase)
-                .tracking(0.7)
-                .foregroundStyle(NewLook.checkInGreen)
+            Text("Hands-free voice")
+                .font(Typography.status)
+                .foregroundStyle(Accent.primaryText)
 
-            Text("Speak to Siri Anytime")
-                .font(Typography.title.weight(.bold))
-                .foregroundStyle(NewLook.inkPrimary)
+            Text("Speak to Siri anytime")
+                .font(Typography.question)
+                .foregroundStyle(Ink.primary)
                 .accessibilityAddTraits(.isHeader)
 
             Text("Squirl works hands-free with Siri right out of the box — zero setup required.")
-                .font(Typography.callout)
-                .foregroundStyle(NewLook.inkSecondary)
+                .font(Typography.cardSubtitle)
+                .foregroundStyle(Ink.tertiary)
         }
     }
 
     private var phrasesCard: some View {
         VStack(alignment: .leading, spacing: Spacing.m) {
             Label("Siri Voice Phrases", systemImage: "mic.fill")
-                .font(Typography.subheadline.weight(.semibold))
-                .foregroundStyle(NewLook.inkPrimary)
+                .font(Typography.rowTitle)
+                .foregroundStyle(Ink.primary)
 
             // Icons mirror the AppShortcut glyphs (pills.fill / waveform) so the
             // phrases read the same here as in Spotlight and the Shortcuts app.
             phraseBubble("Hey Siri, log my meds in Squirl", systemImage: "pills.fill")
             phraseBubble("Hey Siri, check in on Squirl", systemImage: "waveform")
         }
-        .newLookCard()
+        .card(.large)
     }
 
     private func phraseBubble(_ phrase: String, systemImage: String) -> some View {
         Label {
             Text(phrase)
-                .foregroundStyle(NewLook.inkPrimary)
+                .foregroundStyle(Ink.primary)
         } icon: {
             Image(systemName: systemImage)
-                .foregroundStyle(NewLook.checkInGreen)
+                .foregroundStyle(Accent.primary)
         }
-        .font(Typography.subheadline.weight(.semibold))
+        .font(Typography.rowTitle)
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(Spacing.m)
-        .background(NewLook.screen, in: .rect(cornerRadius: Radius.control))
+        .background(Surface.screen, in: .rect(cornerRadius: Radius.cardS))
         .overlay {
-            RoundedRectangle(cornerRadius: Radius.control)
-                .strokeBorder(NewLook.hairline, style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
+            RoundedRectangle(cornerRadius: Radius.cardS)
+                .strokeBorder(Stroke.chip, style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
         }
     }
 }

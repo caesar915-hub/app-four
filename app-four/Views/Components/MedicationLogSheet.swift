@@ -1,5 +1,8 @@
 import SwiftUI
 
+/// Log a dose by hand (the hub's "Log medications", the medication bar's "Log new dose"). Undrawn
+/// in the pen; built from its atoms (UI-33a): back pill + title + a filled Save pill, catalog
+/// medications as wrapping Bill-shape chips, cards for the dose, duration and time fields.
 struct MedicationLogSheet: View {
     let onLog: (String, String?, Date, Double) -> Void
     @Environment(\.dismiss) private var dismiss
@@ -15,178 +18,139 @@ struct MedicationLogSheet: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            sheetNav
+            header
             ScrollView {
-                VStack(alignment: .leading, spacing: Spacing.l) {
+                VStack(alignment: .leading, spacing: Spacing.cardGap) {
                     medicationSection
                     doseSection
                     durationSection
                     takenAtSection
                 }
-                .padding(Spacing.l)
+                .padding(.horizontal, Spacing.gutter)
+                .padding(.bottom, Spacing.xxl)
             }
         }
-        .background(NewLook.screen.ignoresSafeArea())
+        .background(Surface.screen.ignoresSafeArea())
         .presentationDragIndicator(.visible)
         .onChange(of: name) { _, newName in applyCatalogDefaults(for: newName) }
     }
 
-    // MARK: - Nav
+    // MARK: - Header
 
-    private var sheetNav: some View {
-        HStack {
-            Button { dismiss() } label: {
-                Image(systemName: "xmark")
-                    .font(Typography.subheadline)
-                    .foregroundStyle(NewLook.inkPrimary)
-                    .frame(width: 30, height: 30)
-                    .background(NewLook.card, in: Circle())
-                    .overlay(Circle().strokeBorder(NewLook.hairline, lineWidth: 1))
-            }
-            .accessibilityLabel("Cancel")
-
-            Spacer()
-            Text("Log Dose")
-                .font(Typography.title)
-                .foregroundStyle(NewLook.inkPrimary)
-            Spacer()
-
+    private var header: some View {
+        NavHeader(title: "Log dose", onBack: { dismiss() }) {
             Button("Save") {
                 onLog(trimmedName, dose.isEmpty ? nil : dose, takenAt, durationHours)
                 dismiss()
             }
-            .font(Typography.subheadline.weight(.semibold))
-            .foregroundStyle(trimmedName.isEmpty ? NewLook.inkSecondary : Theme.meadowGreen)
+            .buttonStyle(.filled(.small))
             .disabled(trimmedName.isEmpty)
         }
-        .padding(.horizontal, Spacing.l)
+        .padding(.horizontal, Spacing.gutter)
         .padding(.vertical, Spacing.m)
     }
 
     // MARK: - Sections
 
+    private func sectionLabel(_ text: String) -> some View {
+        Text(text)
+            .font(Typography.sectionTitle)
+            .foregroundStyle(Ink.primary)
+            .accessibilityAddTraits(.isHeader)
+    }
+
     private var medicationSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.xs) {
-            Text("Medication")
-                .font(Typography.label.weight(.semibold))
-                .foregroundStyle(NewLook.inkSecondary)
-            VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            sectionLabel("Medication")
+            VStack(alignment: .leading, spacing: Spacing.m) {
                 medicationChips
-                Divider().overlay(NewLook.hairline)
+                HairlineDivider()
                 TextField("Name", text: $name)
                     .autocorrectionDisabled()
-                    .font(Typography.body)
-                    .foregroundStyle(NewLook.inkPrimary)
-                    .padding(Spacing.m)
+                    .font(Typography.narrative)
+                    .foregroundStyle(Ink.primary)
             }
-            .newLookCard()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .card(.large)
         }
     }
 
     private var doseSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.xs) {
-            Text("Dose")
-                .font(Typography.label.weight(.semibold))
-                .foregroundStyle(NewLook.inkSecondary)
-            VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            sectionLabel("Dose")
+            VStack(alignment: .leading, spacing: Spacing.m) {
                 if let entry = catalogEntry {
-                    Picker("Dose", selection: $dose) {
-                        Text("—").tag("")
-                        ForEach(entry.doseOptions, id: \.self) { Text($0).tag($0) }
-                    }
-                    .pickerStyle(.menu)
-                    .foregroundStyle(NewLook.inkPrimary)
-                    .padding(.horizontal, Spacing.m)
-                    .padding(.vertical, Spacing.s)
-                    Divider().overlay(NewLook.hairline)
+                    doseChips(entry)
+                    HairlineDivider()
                     HStack {
-                        Text("Onset").font(Typography.body).foregroundStyle(NewLook.inkPrimary)
+                        Text("Onset").font(Typography.rowLabel).foregroundStyle(Ink.primary)
                         Spacer()
-                        Text("≈ \(entry.onsetMinutes) min").font(Typography.body).foregroundStyle(NewLook.inkSecondary)
+                        Text("≈ \(entry.onsetMinutes) min").font(Typography.captionMedium).foregroundStyle(Ink.secondary)
                     }
-                    .padding(.horizontal, Spacing.m)
-                    .padding(.vertical, Spacing.s)
                 } else {
                     TextField("Dose (optional)", text: $dose)
                         .autocorrectionDisabled()
-                        .font(Typography.body)
-                        .foregroundStyle(NewLook.inkPrimary)
-                        .padding(Spacing.m)
+                        .font(Typography.narrative)
+                        .foregroundStyle(Ink.primary)
                 }
             }
-            .newLookCard()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .card(.large)
 
             if catalogEntry != nil {
                 Text("Typical values from product labeling — your response may differ.")
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkPrimary)
+                    .font(Typography.captionQuiet)
+                    .foregroundStyle(Ink.tertiary)
             }
         }
     }
 
     private var durationSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.xs) {
-            Text("Effect Duration")
-                .font(Typography.label.weight(.semibold))
-                .foregroundStyle(NewLook.inkSecondary)
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            sectionLabel("Effect duration")
             HStack {
-                Text("Hours").font(Typography.body).foregroundStyle(NewLook.inkPrimary)
+                Text("Hours").font(Typography.rowLabel).foregroundStyle(Ink.primary)
                 Spacer()
                 TextField("", value: $durationHours, format: .number)
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
-                    .font(Typography.body)
-                    .foregroundStyle(NewLook.inkPrimary)
+                    .font(Typography.narrative)
+                    .foregroundStyle(Ink.primary)
                     .frame(width: 60)
             }
-            .padding(.horizontal, Spacing.m)
-            .padding(.vertical, Spacing.s)
-            .newLookCard()
+            .card(.small)
         }
     }
 
     private var takenAtSection: some View {
-        VStack(alignment: .leading, spacing: Spacing.xs) {
-            Text("Taken At")
-                .font(Typography.label.weight(.semibold))
-                .foregroundStyle(NewLook.inkSecondary)
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            sectionLabel("Taken at")
             DatePicker("Time", selection: $takenAt, in: ...Date(), displayedComponents: .hourAndMinute)
                 .labelsHidden()
-                .padding(.horizontal, Spacing.m)
-                .padding(.vertical, Spacing.s)
+                .tint(Accent.primaryFill)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .newLookCard()
+                .card(.small)
         }
     }
 
-    // MARK: - Chip picker
+    // MARK: - Chips
 
     private var medicationChips: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: Spacing.s) {
-                ForEach(viewModel.pickableNames, id: \.self) { medName in
-                    let selected = MedicationPickerViewModel.baseName(medName)
-                        == MedicationPickerViewModel.baseName(name)
-                    Button { name = medName } label: {
-                        Text(medName)
-                            .font(.callout.weight(selected ? .semibold : .regular))
-                            .padding(.horizontal, Spacing.m)
-                            .padding(.vertical, Spacing.s)
-                            .background(
-                                selected ? Palette.medication.opacity(0.25) : NewLook.tintNeutral,
-                                in: .capsule
-                            )
-                            .overlay(Capsule().strokeBorder(
-                                selected ? Palette.medication : .clear, lineWidth: 1
-                            ))
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityAddTraits(selected ? [.isSelected] : [])
-                }
+        ChipRow(interactive: true) {
+            ForEach(viewModel.pickableNames, id: \.self) { medName in
+                let selected = MedicationPickerViewModel.baseName(medName)
+                    == MedicationPickerViewModel.baseName(name)
+                ChipButton(medName, selected: selected) { name = medName }
             }
-            .padding(.vertical, 2)
         }
-        .padding(Spacing.m)
+    }
+
+    private func doseChips(_ entry: MedicationCatalogEntry) -> some View {
+        ChipRow(interactive: true) {
+            ForEach(entry.doseOptions, id: \.self) { option in
+                ChipButton(option, selected: dose == option) { dose = option }
+            }
+        }
     }
 
     private func applyCatalogDefaults(for newName: String) {

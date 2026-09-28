@@ -36,7 +36,7 @@ struct WelcomeView: View {
                         .frame(maxWidth: .infinity, minHeight: geo.size.height)
                 }
             }
-            .background(NewLook.screen.ignoresSafeArea())
+            .background(Surface.screen.ignoresSafeArea())
         }
         .onChange(of: viewModel.didComplete) { _, didComplete in
             if didComplete {
@@ -53,19 +53,19 @@ struct WelcomeView: View {
 
             VStack(spacing: Spacing.m) {
                 Text("Welcome to Squirl")
-                    .font(Typography.largeTitle)
-                    .foregroundStyle(NewLook.inkPrimary)
+                    .font(Typography.pageTitle)
+                    .foregroundStyle(Ink.primary)
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
 
                 Text("A calm place to speak your day. Everything stays on this device.")
-                    .font(Typography.body)
-                    .foregroundStyle(NewLook.inkSecondary)
+                    .font(Typography.narrative)
+                    .foregroundStyle(Ink.tertiary)
                     .multilineTextAlignment(.center)
 
                 Text("Squirl is a journal — it doesn't give medical advice.")
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkPrimary)
+                    .font(Typography.captionQuiet)
+                    .foregroundStyle(Ink.primary)
                     .multilineTextAlignment(.center)
             }
             .padding(.horizontal, Spacing.l)
@@ -77,7 +77,7 @@ struct WelcomeView: View {
             } label: {
                 Text("Start")
             }
-            .buttonStyle(.checkInPrimary)
+            .buttonStyle(.filled(fullWidth: true))
             .accessibilityHint("Shows the hands-free Siri voice commands")
             .simultaneousGesture(TapGesture().onEnded {
                 Haptics.success()
