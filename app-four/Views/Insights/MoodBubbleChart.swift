@@ -17,6 +17,9 @@ struct MoodBubbleChart: View {
             }
         }
         .frame(height: MoodBubbleLayout.chartHeight)
+        // The bubbles are fixed geometry; their labels stop scaling at xxxLarge so they stay inside.
+        // The legend chips below carry the same numbers at every size.
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(summary)
     }

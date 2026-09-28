@@ -102,10 +102,10 @@ private struct DayCardMock: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 12) {
                 ZStack {
-                    Circle().fill(day.mood?.badgeTint ?? Surface.track)
+                    Circle().fill(day.mood?.avatarTint ?? Surface.track)
                     if let m = day.mood { SignalGlyph(.mood, level: m.numericValue, size: 24, decorative: true) }
                 }.frame(width: 42, height: 42)
-                titleText.font(.fraunces(16)).frame(maxWidth: .infinity, alignment: .leading)
+                titleText.font(Typography.cardTitle).frame(maxWidth: .infinity, alignment: .leading)
                 Image(systemName: "chevron.down").font(.caption.weight(.semibold))
                     .foregroundStyle(Ink.tertiary).rotationEffect(.degrees(isOpen ? 180 : 0))
             }
@@ -116,7 +116,7 @@ private struct DayCardMock: View {
             }
         }
         .padding(.vertical, 16)
-        .background(day.mood?.blockTint ?? .clear)
+        .background(day.mood?.dayCardFill ?? .clear)
         .contentShape(Rectangle())
     }
 
@@ -150,7 +150,7 @@ private struct TimelineRowMock: View {
         HStack(alignment: .top, spacing: 12) {
             VStack(spacing: 0) {
                 ZStack {
-                    Circle().fill(entry.mood.badgeTint).frame(width: 42, height: 42)
+                    Circle().fill(entry.mood.avatarTint).frame(width: 42, height: 42)
                     SignalGlyph(.mood, level: entry.mood.numericValue, size: 25, decorative: true)
                     if let r = entry.ring {
                         Circle().trim(from: 0, to: max(0.001, r))
@@ -164,8 +164,8 @@ private struct TimelineRowMock: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(entry.mood.displayLabel).font(.fraunces(14)).foregroundStyle(entry.mood.wordColor)
-                    Text(entry.time).font(.plexMono(11)).foregroundStyle(Ink.tertiary)
+                    Text(entry.mood.displayLabel).font(Typography.cardTitle).foregroundStyle(entry.mood.wordColor)
+                    Text(entry.time).font(Typography.mono12).foregroundStyle(Ink.tertiary)
                     Spacer(minLength: 8)
                     Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(Ink.tertiary)
                 }

@@ -6,6 +6,7 @@ import SwiftUI
 /// floating chrome stays (root tab).
 struct InsightsView: View {
     @State private var viewModel: InsightsViewModel
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(store: RecordingStore) {
         _viewModel = State(wrappedValue: InsightsViewModel(store: store))
@@ -56,29 +57,48 @@ struct InsightsView: View {
         return month <= thisMonth && month >= min(earliest, selectedMonth)
     }
 
+    /// Three segments fit "Sep 2026" at the default size; accessibility sizes drop the year.
+    private func monthLabel(_ month: Date) -> String {
+        dynamicTypeSize.isAccessibilitySize
+            ? month.formatted(.dateTime.month(.abbreviated))
+            : month.formatted(.dateTime.month(.abbreviated).year())
+    }
+
     private var monthPicker: some View {
-        SegmentedPicker(monthOptions, selection: monthSelection,
-                        label: { $0.formatted(.dateTime.month(.abbreviated).year()) },
-                        isEnabled: isMonthEnabled)
+        SegmentedPicker(monthOptions, selection: monthSelection, label: monthLabel, isEnabled: isMonthEnabled)
             .accessibilityLabel("Month")
             .accessibilityValue(selectedMonth.formatted(.dateTime.month(.wide).year()))
     }
 
     // MARK: - Card scaffold
 
+    /// Title + trailing count share a line; at accessibility sizes the count drops under the title
+    /// so the title never breaks mid-word.
     private func cardHeader(_ title: String, trailing: String? = nil, subtitle: String? = nil) -> some View {
         VStack(alignment: .leading, spacing: Spacing.xs) {
-            HStack(alignment: .firstTextBaseline) {
+            if dynamicTypeSize.isAccessibilitySize {
                 Text(title)
                     .font(Typography.cardTitle)
                     .foregroundStyle(Ink.primary)
                     .accessibilityAddTraits(.isHeader)
                 if let trailing {
-                    Spacer(minLength: Spacing.s)
                     Text(trailing)
                         .font(Typography.captionMedium)
                         .foregroundStyle(Ink.secondary)
-                        .multilineTextAlignment(.trailing)
+                }
+            } else {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(title)
+                        .font(Typography.cardTitle)
+                        .foregroundStyle(Ink.primary)
+                        .accessibilityAddTraits(.isHeader)
+                    if let trailing {
+                        Spacer(minLength: Spacing.s)
+                        Text(trailing)
+                            .font(Typography.captionMedium)
+                            .foregroundStyle(Ink.secondary)
+                            .multilineTextAlignment(.trailing)
+                    }
                 }
             }
             if let subtitle {

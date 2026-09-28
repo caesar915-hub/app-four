@@ -21,4 +21,13 @@ struct MoodBubbleLayoutTests {
         #expect(low == CGPoint(x: 30, y: 142))
         #expect(great == CGPoint(x: 270, y: 90))
     }
+
+    @Test func wideBubblesStayInsideTheChart() {
+        let size = CGSize(width: 300, height: 180)
+        let low = MoodBubbleLayout.center(level: 1, diameter: 110, in: size)
+        let great = MoodBubbleLayout.center(level: 5, diameter: 110, in: size)
+        #expect(low.x == 55)
+        #expect(great.x == 245)
+        #expect(MoodBubbleLayout.center(level: 3, diameter: 110, in: size).x == 150)
+    }
 }

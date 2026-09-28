@@ -76,9 +76,4 @@ public enum Typography {
 
     /// 12/400 monospaced — the recovery key.
     public static let mono12: Font = sf(12, .regular, .caption1, mono: true)
-
-    /// SF at an explicit size, scaled relative to `style`.
-    public static func text(_ size: CGFloat, weight: UIFont.Weight = .regular, relativeTo style: UIFont.TextStyle = .body) -> Font {
-        sf(size, weight, style)
-    }
 }

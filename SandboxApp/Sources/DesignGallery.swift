@@ -101,7 +101,7 @@ struct DesignGallery: View {
                     .font(Typography.narrative).foregroundStyle(Ink.primary)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .newLookCard()
+            .card(.large)
         }
     }
 }

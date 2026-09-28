@@ -18,11 +18,13 @@ enum MoodBubbleLayout {
     }
 
     /// Centre of a level's (1–5) bubble inside a chart of `size`: five equal columns, bottoms on
-    /// the rising baseline.
+    /// the rising baseline, and the centre clamped so the bubble never leaves the chart's width
+    /// (the pen's bubbles overlap — they are wider than their columns).
     static func center(level: Int, diameter: CGFloat, in size: CGSize) -> CGPoint {
         let column = size.width / 5
-        let x = column * (CGFloat(level) - 0.5)
-        let y = size.height - baselineInset - baselineStep * CGFloat(level - 1) - diameter / 2
+        let radius = diameter / 2
+        let x = min(max(column * (CGFloat(level) - 0.5), radius), size.width - radius)
+        let y = size.height - baselineInset - baselineStep * CGFloat(level - 1) - radius
         return CGPoint(x: x, y: y)
     }
 }
