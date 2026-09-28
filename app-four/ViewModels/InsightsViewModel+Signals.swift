@@ -280,15 +280,14 @@ extension InsightsViewModel {
     }
 
     private var sleepMoodConnection: Connection {
-        let goodSleep: Set<String> = ["good", "great", "excellent", "well"]
-        let poorSleep: Set<String> = ["poor", "bad", "terrible", "awful", "rough"]
-        let withSleep = monthRecordings.filter { $0.sleepQuality != nil }
-        let goodDays = Set(withSleep
-            .filter { goodSleep.contains($0.sleepQuality?.lowercased() ?? "") }
-            .map { calendar.startOfDay(for: $0.createdAt) })
-        let poorDays = Set(withSleep
-            .filter { poorSleep.contains($0.sleepQuality?.lowercased() ?? "") }
-            .map { calendar.startOfDay(for: $0.createdAt) })
+        // Gate on the canonical `SleepLevel` the validator writes (`restless…deep`), never on
+        // free-text quality words: the old "good/great" vs "poor/bad" lists matched nothing the
+        // pipeline produces, so the connection could never unlock on shipped data.
+        let withSleep = monthRecordings.compactMap { recording in
+            Self.sleepLevel(of: recording).map { (day: calendar.startOfDay(for: recording.createdAt), level: $0) }
+        }
+        let goodDays = Set(withSleep.filter { $0.level.numericValue >= 4 }.map(\.day))
+        let poorDays = Set(withSleep.filter { $0.level.numericValue <= 2 }.map(\.day))
         guard goodDays.count >= 3, poorDays.count >= 3 else {
             let needGood = max(0, 3 - goodDays.count)
             let needPoor = max(0, 3 - poorDays.count)
@@ -331,6 +330,12 @@ extension InsightsViewModel {
 
     /// "day" / "days" for unlock copy.
     fileprivate static func dayNoun(_ n: Int) -> String { n == 1 ? "day" : "days" }
+
+    /// The recording's sleep level: the persisted level column, or — for rows written before the
+    /// column existed — the quality word when it is already one of the canonical level names.
+    private static func sleepLevel(of recording: Recording) -> SleepLevel? {
+        recording.decodedSleepLevel ?? recording.sleepQuality.flatMap { SleepLevel(rawValue: $0.lowercased()) }
+    }
 
     private func signalLevel(for kind: SignalKind, from recording: Recording?) -> (any SignalLevel)? {
         guard let r = recording else { return nil }

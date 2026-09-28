@@ -27,10 +27,12 @@ struct InsightsViewModelTests {
 
     @discardableResult
     private func add(day: Int = 1, hour: Int = 10, mood: String? = nil, energy: String? = nil,
-                     focus: String? = nil, sleepQuality: String? = nil, med: String? = nil) -> Recording {
+                     focus: String? = nil, sleepQuality: String? = nil, sleepLevel: String? = nil,
+                     med: String? = nil) -> Recording {
         let date = Calendar.current.date(from: DateComponents(year: 2025, month: 6, day: day, hour: hour))!
         let r = Recording(createdAt: date, audioFileName: "r.m4a",
-                          energyLevel: energy, focusLevel: focus, mood: mood, sleepQuality: sleepQuality)
+                          energyLevel: energy, focusLevel: focus, mood: mood, sleepQuality: sleepQuality,
+                          sleepLevelValue: sleepLevel)
         context.insert(r)
         if let med {
             let e = MedicationEvent(name: med, takenAt: date, taken: true, source: .manual)
@@ -167,14 +169,38 @@ struct InsightsViewModelTests {
     }
 
     @Test func sleepMoodGatesWithoutThreeEachSide() {
-        for d in 1...3 { add(day: d, mood: "good", sleepQuality: "good") } // only good-sleep side
+        for d in 1...3 { add(day: d, mood: "good", sleepLevel: "good") } // only good-sleep side
         guard case .gated = vm().connections[2].state else { Issue.record("expected gated sleep×mood"); return }
     }
 
-    @Test func sleepMoodUnlocksWithThreeEachSide() {
+    /// The validator writes `restless … deep` — the values shipped data actually holds.
+    @Test func sleepMoodUnlocksOnCanonicalSleepLevels() {
+        add(day: 1, mood: "great", sleepLevel: "good")
+        add(day: 2, mood: "good", sleepLevel: "deep")
+        add(day: 3, mood: "great", sleepLevel: "good")
+        add(day: 4, mood: "low", sleepLevel: "restless")
+        add(day: 5, mood: "flat", sleepLevel: "light")
+        add(day: 6, mood: "low", sleepLevel: "restless")
+        guard case let .unlocked(_, frac, _, _, _) = vm().connections[2].state else {
+            Issue.record("expected unlocked sleep×mood"); return
+        }
+        #expect(abs(frac - 1.0) < 0.0001)
+    }
+
+    /// Rows written before the level column existed carry the canonical word in `sleepQuality`.
+    @Test func sleepMoodFallsBackToCanonicalQualityWord() {
         for d in 1...3 { add(day: d, mood: "great", sleepQuality: "good") }
-        for d in 4...6 { add(day: d, mood: "low", sleepQuality: "poor") }
+        for d in 4...6 { add(day: d, mood: "low", sleepQuality: "restless") }
         guard case .unlocked = vm().connections[2].state else { Issue.record("expected unlocked sleep×mood"); return }
+    }
+
+    /// "okay" sleep is neither side; a free-text word the validator never writes counts for nothing.
+    @Test func sleepMoodIgnoresMiddleAndUnknownValues() {
+        for d in 1...3 { add(day: d, mood: "great", sleepLevel: "good") }
+        for d in 4...6 { add(day: d, mood: "low", sleepLevel: "okay") }
+        add(day: 7, mood: "low", sleepQuality: "poor")
+        guard case let .gated(copy) = vm().connections[2].state else { Issue.record("expected gated sleep×mood"); return }
+        #expect(copy == "Note 3 more poor-sleep days to unlock this connection.")
     }
 
     @Test func gatedCopyCountsRemainingDays() {
