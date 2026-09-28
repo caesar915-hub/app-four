@@ -25,6 +25,8 @@ public enum Ink {
     public static let tabInactive = tertiary
     /// The app's only destructive ink (Clear All Data, delete). Not drawn in the pen — D-C10.
     public static let destructive = Color(lightHex: "#d54037", darkHex: "#f07b72")
+    /// Label on a disabled control (Frame 3 button tokens).
+    public static let disabled = Color(lightHex: "#9ca3af", darkHex: "#6b7280")
     /// The single pure-black ink the pen uses (Settings accessibility figure).
     public static let iconBlack = Color(lightHex: "#000000", darkHex: "#f2f3ee")
 }

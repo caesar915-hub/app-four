@@ -14,6 +14,8 @@ public enum Stroke {
     public static let tile = Color(lightHex: "#e5f7e5", darkHex: "#2f4f32")
     /// Outlined buttons (Frame 3).
     public static let outlinedButton = Color(lightHex: "#cbd5e1", darkHex: "#44484c")
+    /// Disabled outlined button.
+    public static let disabledOutlined = Color(lightHex: "#e2e8f0", darkHex: "#33362f")
     /// Date / time fields.
     public static let field = Color(lightHex: "#1c1b1f", lightAlpha: 0.10, darkHex: "#ffffff", darkAlpha: 0.12)
     /// Empty rhythm tile / empty weekday circle.

@@ -22,6 +22,11 @@ public enum Surface {
     public static let medicationTint = Color(lightHex: "#f4f0fb", darkHex: "#352e42")
     /// Unlocked connection tile.
     public static let connectionUnlocked = Color(lightHex: "#e3d8f9", darkHex: "#4e3f6d")
+    /// Disabled filled control (Frame 3 button tokens).
+    public static let disabledFill = Color(lightHex: "#e5e7eb", darkHex: "#2c2f33")
+    /// Disabled and pressed outlined control.
+    public static let disabledOutlined = Color(lightHex: "#f8fafc", darkHex: "#1c1e19")
+    public static let pressedOutlined = Color(lightHex: "#f8fafc", darkHex: "#23262a")
     /// Mini-bar track on the day-details signal summary (grey-50).
     public static let miniTrack = Color(lightHex: "#e9e9ea", darkHex: "#2c2f33")
 }

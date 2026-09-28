@@ -13,6 +13,8 @@ public enum Accent {
     public static let primaryText = Color(lightHex: "#26842f", darkHex: "#70b577")
     /// Pressed fill for filled controls (the pen's "Hovered" green-700).
     public static let pressed = Color(lightHex: "#1e6725", darkHex: "#1e6725")
+    /// Green-700 as text/icon: back chevrons, ellipsis dots, selected segment labels.
+    public static let deepText = Color(lightHex: "#1e6725", darkHex: "#9dcca2")
     /// Deep green (the pen's "Focused" fill).
     public static let deep = Color(lightHex: "#17501d", darkHex: "#123d16")
 
