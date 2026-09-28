@@ -1,23 +1,34 @@
 import SwiftUI
 
-/// Medication — a single horizontal two-tone capsule (does not vary by level; rendered as
-/// a chip, never on the 1→5 ramp). One darker half + a seam read instantly as "a dose".
+/// Medication — the pen's diagonal line-style capsule (one half filled, one hollow), violet-800
+/// inside its violet-50 tile. Does not vary by level.
 public struct CapsuleGlyph: View {
-    public var color: Color = Palette.medication
+    public var color: Color = Accent.violetDeep
+
+    public init(color: Color = Accent.violetDeep) {
+        self.color = color
+    }
 
     public var body: some View {
-        GeometryReader { geo in
-            let capW = geo.size.width * 0.86
-            let capH = geo.size.height * 0.42
-            ZStack {
-                Capsule().fill(color.opacity(0.22))
-                Capsule().fill(color.opacity(0.5))
-                    .mask(alignment: .leading) { Color.black.frame(width: capW / 2) }
-                Capsule().strokeBorder(color, lineWidth: 2)
-                Rectangle().fill(color.opacity(0.8)).frame(width: 1.6, height: capH * 0.66)
+        Canvas { ctx, size in
+            ctx.enterGlyphSpace(size)
+            let c = CGPoint(x: 32, y: 32)
+            ctx.translateBy(x: c.x, y: c.y)
+            ctx.rotate(by: .degrees(-45))
+            ctx.translateBy(x: -c.x, y: -c.y)
+
+            let body = CGRect(x: 10, y: 22, width: 44, height: 20)
+            let capsule = Path(roundedRect: body, cornerRadius: 10)
+            let stroke: CGFloat = 4
+            ctx.drawLayer { layer in
+                layer.clip(to: Path(CGRect(x: body.minX, y: body.minY, width: body.width / 2, height: body.height)))
+                layer.fill(capsule, with: .color(color))
             }
-            .frame(width: capW, height: capH)
-            .position(x: geo.size.width / 2, y: geo.size.height / 2)
+            ctx.stroke(capsule, with: .color(color), lineWidth: stroke)
+            var seam = Path()
+            seam.move(to: CGPoint(x: body.midX, y: body.minY))
+            seam.addLine(to: CGPoint(x: body.midX, y: body.maxY))
+            ctx.stroke(seam, with: .color(color), lineWidth: stroke)
         }
     }
 }

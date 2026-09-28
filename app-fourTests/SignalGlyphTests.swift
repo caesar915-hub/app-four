@@ -34,9 +34,25 @@ struct SignalGlyphTests {
         #expect(signalName(.focus, level: 5) == "Locked In")
     }
 
-    @Test func nameNilForNonLevelSignals() {
-        #expect(signalName(.sleep, level: 3) == nil)
+    @Test func nameNilForMedication() {
         #expect(signalName(.medication, level: 3) == nil)
+    }
+
+    // Sleep gained a 1→5 ramp with the pen's moon glyph (spec 057, UI-13).
+    @Test func sleepNamesUseSleepLevelLabels() {
+        #expect(signalName(.sleep, level: 1) == "Restless")
+        #expect(signalName(.sleep, level: 2) == "Light")
+        #expect(signalName(.sleep, level: 3) == "Okay")
+        #expect(signalName(.sleep, level: 4) == "Good")
+        #expect(signalName(.sleep, level: 5) == "Deep")
+        #expect(GlyphSignal.sleep.variesByLevel)
+        #expect(!GlyphSignal.medication.variesByLevel)
+    }
+
+    @Test func sleepLevelChartColourFollowsTheMoodRamp() {
+        for level in SleepLevel.allCases {
+            #expect(level.color == MoodLevel.allCases[level.numericValue - 1].color)
+        }
     }
 
     // MARK: signalSynonym
@@ -60,6 +76,7 @@ struct SignalGlyphTests {
 
     @Test func a11yLabelTitleOnlyForSingleOrAbsent() {
         #expect(signalAccessibilityLabel(.sleep, level: nil) == "Sleep")
+        #expect(signalAccessibilityLabel(.sleep, level: 5) == "Sleep: Deep, 5 of 5")
         #expect(signalAccessibilityLabel(.medication, level: 3) == "Medication")
         #expect(signalAccessibilityLabel(.mood, level: nil) == "Mood")
     }
