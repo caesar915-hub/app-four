@@ -1,4 +1,4 @@
-<!-- Created: 2026-08-31 01:18 (WEST) · Updated: 2026-09-28 14:24 (WEST) -->
+<!-- Created: 2026-08-31 01:18 (WEST) · Updated: 2026-09-28 15:33 (WEST) -->
 # Shipaton Sprint Backlog — September 2026
 
 **The board for 2026-09-01 → 2026-09-30.** `docs/BACKLOG.md` is frozen for the sprint — read it for history, never edit it.
@@ -15,6 +15,8 @@ Newest first. **Keep to 15 rows** — older rows drop off; the devlog holds the 
 
 | When | What changed |
 |---|---|
+| 2026-09-28 15:33 | UI-30, UI-32, UI-42, UI-44, UI-49 → 🔨 In code (Insights, Settings card groups, bar title keys, dead-code + alias sweep; 562 tests); UI-33b partial (RecoveryKeySheet + Acknowledgements restyled; 055 paywall surfaces wait for 055) |
+| 2026-09-28 15:22 | UI-20–23, UI-25, UI-27, UI-28, UI-33a, UI-34–39, UI-41, UI-53 → 🔨 In code on `feat/057-ui-refresh` (check-in trio, Calendar, Day Details, Edit, Insights built; 570 tests); UI-40 → 🔨 In code as PR #47 `fix/insights-sleep-mood-gate`; UI-24/26/29 folded into spec 057 (deviation in DEVLOG) |
 | 2026-09-28 14:24 | UI epic scoped from the pen (spec 057): UI-01–03, UI-06–18 → 🔨 In code on `feat/057-ui-refresh` (Phase A docs + B1–B4 built, 552 tests green); UI-04/05/05b/19 partial (deviations in DEVLOG); UI-20–54 → 📐 Planned |
 | 2026-08-31 01:39 | Sprint tooling landed (`/morning`, `/evening`, constitution 2.2.0). **No ticket stages moved** — RC-08 + RC-10 still 🔨 In code, uncommitted |
 | 2026-08-31 01:18 | Board created. RC-08 + RC-10 → 🔨 In code; RC-01 → ⏭️ Today (blocking, owner) |
@@ -55,6 +57,32 @@ Newest first. **Keep to 15 rows** — older rows drop off; the devlog holds the 
 | **UI-17** | SF Symbol icon map (PR B2) | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
 | **UI-18** | FloatingTabBar + AddButton + root wiring (`ChromeVisibilityKey`; FAB hidden on hub) | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
 | **UI-19** | Design gallery (`SandboxApp/Sources/DesignGallery.swift`) + snapshot pack attached to PRs | `feat/057-ui-refresh` | SandboxApp gallery deferred to the PR |
+| **UI-20** | Spec Kit 058 check-in trio | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-21** | Check-in A idle hub (+ `CrescentRing`/`crescentDiameter` deleted) | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-22** | Check-in B listening (motion per D-R2) | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-23** | Check-in C saved | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-24** | Spec Kit 059 Calendar (incl. expanded previous-day card, Q25b) | `feat/057-ui-refresh` | folded into spec 057 (hand-written Spec Kit; deviation in DEVLOG) |
+| **UI-25** | Calendar / Mood Journal (private `Chip`/`DoseTrack` deleted first) | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-26** | Spec Kit 060 Day Details + Edit | `feat/057-ui-refresh` | folded into spec 057 (hand-written Spec Kit; deviation in DEVLOG) |
+| **UI-27** | Day Details (#45 regenerate hunk deleted here) | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-28** | Edit Check-In (private `ChipGroup` deleted first) | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-29** | Spec Kit 061 Insights | `feat/057-ui-refresh` | folded into spec 057 (hand-written Spec Kit; deviation in DEVLOG) |
+| **UI-30** | Insights (private `ConnectionCard`/`GatedCard`/`MiniBar` deleted first) | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-33a** | Secondary surfaces, wave 1 (Log Dose, composer, onboarding restyle) | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-34** | `CheckInViewModel.flowProgress` (test-first) | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-35** | `DoseStatus` hoist + status semantics (D10) | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-36** | `DayCardSummary` dose + `sleepLevel` | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-37** | `displayLabel` in `TimelineRow` + AX | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-38** | `RecordingDetailViewModel.relativeTitle/subtitle` | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-39** | `ExtractionReviewViewModel.isDirty`, `medicationRows`, `cancelIfUnsaved()` (D21) | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-40** | Sleep × Mood gate on `decodedSleepLevel` — own PR `fix/insights-sleep-mood-gate`, 1.1.x-shippable | `fix/insights-sleep-mood-gate` (PR #47) | PR #47 open against `main`; RED→GREEN (4 tests), full suite 546 green; owner device QA + merge pending |
+| **UI-41** | Bubble diameter · rhythm tint · range-bar span fns · caption case | `feat/057-ui-refresh` | built + full serial suite green; owner device QA pending |
+| **UI-53** | Wave-1 dark / AX / VoiceOver mini-pass (A/B/C + Calendar + Log Dose/composer) | `feat/057-ui-refresh` | screenshot pack (light/dark/AX5) sent to the owner; two defects fixed in C4; residual: collapsed day-card title-row height (UI-44) |
+| **UI-32** | Settings (`ModelDownloadRow` restyled, state machine untouched; `SettingsChip` deleted first) | `feat/057-ui-refresh` | built + full serial suite green; 055's Subscription / Terms rows arrive with 055; owner device QA pending |
+| **UI-33b** | Secondary surfaces, wave 2 (recovery key, 055 paywall surfaces, Acknowledgements restyle) | `feat/057-ui-refresh` | partial: `RecoveryKeySheet` + `AcknowledgementsView` restyled; the 055 paywall surfaces are restyled after 055 lands |
+| **UI-42** | `medicationBarShowTakenTime` / `ShowEndTime` keys + `titleLine` | `feat/057-ui-refresh` | built + `titleLineVariants` test green |
+| **UI-44** | Dead-code sweep (refresh-orphaned code only; `Constants.swift` never) | `feat/057-ui-refresh` | built + full serial suite green (562) |
+| **UI-49** | Token + typography alias deletion; Complexity row closed | `feat/057-ui-refresh` | `NewLook` / `Theme` / `Opacity` / Palette + Radius + Typography aliases deleted; SandboxApp migrated |
 
 ## 📐 Planned
 
@@ -91,41 +119,15 @@ Full ticket detail, estimates and acceptance criteria live in [SEPTEMBER_PLAN.md
 | BIP-01 | Daily #Shipaton post | — |
 | BIP-02 | Collect post links + engagement | BIP-01 |
 | BIP-03 | "How building in public helped" write-up | BIP-01 |
-| UI-20 | Spec Kit 058 check-in trio | UI-19 |
-| UI-21 | Check-in A idle hub (+ `CrescentRing`/`crescentDiameter` deleted) | UI-20 |
-| UI-22 | Check-in B listening (motion per D-R2) | UI-21, UI-34 |
-| UI-23 | Check-in C saved | UI-22 |
-| UI-24 | Spec Kit 059 Calendar (incl. expanded previous-day card, Q25b) | UI-23 |
-| UI-25 | Calendar / Mood Journal (private `Chip`/`DoseTrack` deleted first) | UI-24, UI-35, UI-36, UI-37 |
-| UI-26 | Spec Kit 060 Day Details + Edit | UI-25 |
-| UI-27 | Day Details (#45 regenerate hunk deleted here) | UI-26, UI-38, UI-54 |
-| UI-28 | Edit Check-In (private `ChipGroup` deleted first) | UI-27, UI-39 |
-| UI-29 | Spec Kit 061 Insights | UI-28, D12, UI-40 |
-| UI-30 | Insights (private `ConnectionCard`/`GatedCard`/`MiniBar` deleted first) | UI-29, UI-40, UI-41 |
 | UI-31 | Spec Kit 062 Settings + wave-2 secondary surfaces | UI-30, UI-04 (#41) |
-| UI-32 | Settings (`ModelDownloadRow` restyled, state machine untouched; `SettingsChip` deleted first) | UI-31, UI-42 |
-| UI-33a | Secondary surfaces, wave 1 (Log Dose, composer, onboarding restyle) | UI-20/24, UI-09–16 |
-| UI-33b | Secondary surfaces, wave 2 (recovery key, 055 paywall surfaces, Acknowledgements restyle) | UI-31 |
-| UI-34 | `CheckInViewModel.flowProgress` (test-first) | UI-20 |
-| UI-35 | `DoseStatus` hoist + status semantics (D10) | UI-24 |
-| UI-36 | `DayCardSummary` dose + `sleepLevel` | UI-13 |
-| UI-37 | `displayLabel` in `TimelineRow` + AX | UI-04 |
-| UI-38 | `RecordingDetailViewModel.relativeTitle/subtitle` | UI-26 |
-| UI-39 | `ExtractionReviewViewModel.isDirty`, `medicationRows`, `cancelIfUnsaved()` (D21) | UI-26 |
-| UI-40 | Sleep × Mood gate on `decodedSleepLevel` — own PR `fix/insights-sleep-mood-gate`, 1.1.x-shippable | UI-04 |
-| UI-41 | Bubble diameter · rhythm tint · range-bar span fns · caption case | UI-29 |
-| UI-42 | `medicationBarShowTakenTime` / `ShowEndTime` keys + `titleLine` | UI-31 |
 | UI-43 | Summary correction persistence (deferred, outside waves 1–2) | owner |
-| UI-44 | Dead-code sweep (refresh-orphaned code only; `Constants.swift` never) | UI-32 |
 | UI-45 | Dark-mode pass (wave-2 screens) | UI-33b |
 | UI-46 | Dynamic Type / AX pass (wave-2 screens) | UI-45 |
 | UI-47 | VoiceOver + Reduce Motion pass (wave-2 screens) | UI-46 |
 | UI-48 | Copy normalisation sweep (pen-screen strings only) | UI-32 |
-| UI-49 | Token + typography alias deletion; Complexity row closed | UI-48 |
 | UI-50 | PR gate (recurring, ~25 PRs; risk #11 workaround) | — |
 | UI-51 | Release 1.2 (wave 1) | UI-25, UI-33a, UI-53 |
 | UI-52 | Release 1.3 (wave 2) | UI-49 |
-| UI-53 | Wave-1 dark / AX / VoiceOver mini-pass (A/B/C + Calendar + Log Dose/composer) | UI-25, UI-33a |
 | UI-54 | Single `formattedDuration` — own PR `fix/duration-format` | UI-04 |
 | LLM-01 | *TBD — scope after Sep 4* | RC epic |
 
