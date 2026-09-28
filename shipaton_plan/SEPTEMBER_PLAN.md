@@ -1,4 +1,4 @@
-<!-- Created: 2026-08-30 23:19 (WEST) · Updated: 2026-08-31 01:39 (WEST) -->
+<!-- Created: 2026-08-30 23:19 (WEST) · Updated: 2026-09-28 14:24 (WEST) -->
 # September 2026 — Delivery Plan
 
 Rolling plan for September. Structured as **epics → tickets** so it exports to JIRA (or Linear) without rewriting. Ticket IDs are stable once assigned — never renumber.
@@ -7,7 +7,7 @@ Rolling plan for September. Structured as **epics → tickets** so it exports to
 |---|---|---|---|
 | **[RC](#epic-rc--revenuecat-monetization)** | RevenueCat monetization → Shipaton 2026 entry | Aug 31 – Sep 4 | 🔨 Active |
 | **[BIP](#epic-bip--build-in-public)** | #BuildInPublic posting track | Aug 31 – Sep 30 | 🔨 Active |
-| **[UI](#epic-ui--ui-refresh-placeholder)** | UI refresh | TBD | 📋 Not scoped |
+| **[UI](#epic-ui--ui-refresh-spec-057)** | UI refresh (spec 057, pen-derived) | Sep 28 – Dec 18 | 🔨 Active |
 | **[LLM](#epic-llm--llm-pipeline-placeholder)** | LLM pipeline work | TBD | 📋 Not scoped |
 
 **The three sprint documents, and what each is for** — nothing is written twice:
@@ -152,13 +152,70 @@ Angles worth posting that are already true: shipping a paywall that refuses dark
 
 ---
 
-## Epic UI — UI Refresh *(placeholder)*
+## Epic UI — UI Refresh (spec 057)
 
-📋 **Not scoped.** To be filled after RC ships. Seeds: 053 insights shape views (parked in `stash@{0}`), 054 settings topic hub.
+🔨 **Active since 2026-09-28.** Source of truth: the Pencil file `untitled.pen` → `DESIGN.md` (rewritten 2026-09-28); plan of record: [UI_REFRESH_PLAN.md](UI_REFRESH_PLAN.md) — the owner accepted every recommendation (D1–D26) on 2026-09-28 and asked for implementation ASAP. Branch `feat/057-ui-refresh`. **Two waves:** 1.2 ≈ Fri Nov 13 (foundations + chrome + check-in trio + Calendar), 1.3 ≈ Fri Dec 18 (Day Details + Edit + Insights + Settings); both after 055 / 1.1. The Shipaton release train no longer applies to this epic.
+
+Execution deviations from the plan, logged in DEVLOG 2026-09-28: #44/#45 are not absorbed into the branch (merge denied by the permission policy — owner merges them; the refresh re-implements their hunks); 055 is merged into the branch only before the Settings step; per-screen HTML mockups are replaced by SwiftUI previews + simulator screenshots (owner unavailable to review); Spec Kit 057 is hand-written, 058–062 folded into it.
 
 | ID | Summary | Type | Est | Owner | Depends | Acceptance |
 |---|---|---|---|---|---|---|
-| UI-01 | *TBD — scope after Sep 4* | — | — | — | RC epic | Must submit by ~Sep 15 to be live in week 3 |
+| UI-01 | DESIGN.md v2 (pen-derived) + CLAUDE.md/PRODUCT.md reconciled + pen exports committed | Design | 6 | Claude | D1–D5, D8, D9, D14 | docs PR to `main` before #44; all 79 references + `test -e` paths resolve; posture/paywall sections carried; decisions log seeded |
+| UI-02 | Decisions D1–D26 answered and logged | Task | 2 | Owner | — | no ★ item open |
+| UI-03 | Plan → Epic UI table, BACKLOG 🧊 rows, DEVLOG | Task | 1.5 | Claude | UI-02 | docs PR to `main`; IDs stable; WORKLOG regenerated |
+| UI-04 | Pre-flight: docs on main → #44 → #45 → #41 resolved → 055 merge + 1.1 (RC ETA) → 053/054 archived → ritual → worktrees removed, 057 re-cut | Task | 5 | Owner + Claude | UI-03; RC epic | `main..feat/057` empty; 053 stash entry gone, 15 others intact; Release build green; skills + constitution 3.1.0 present |
+| UI-05 | Spec Kit 057 foundations | Task | 4 | Claude | UI-04 (6) | Constitution Check I–XI vs branch version (3.1.0); tasks map to UI-06…19; 055 view files enumerated |
+| UI-05b | Design-system HTML mockup (Constitution I for Phase B atoms) | Design | 4 | Claude + Owner | UI-02, UI-01 | every §3.2 atom in all states, light/dark, 1×/AX5, 402/375; owner approval logged |
+| UI-06 | Colour tokens + dark pairs + aliases + AA tests (PR B1 = full-app visual change) | Task | 8 | Claude | UI-05, UI-05b | `TokenContrastTests` green; full-app device QA light/dark with before/after pack; `Palette.medication` = violet-500 |
+| UI-07 | Typography roles + alias map (old names kept until UI-49) | Task | 3 | Claude | UI-06 | zero call-site edits; 0-site roles gone; no silent re-weight; AX5 preview clean |
+| UI-08 | Layout tokens + card modifiers + heading atoms (0-consumer deletions only) | Task | 5 | Claude | UI-07 | five card variants preview light/dark; consumed symbols aliased, not deleted |
+| UI-09 | Button styles (Frame 3) replace three old styles + `PaywallButtonStyle` | Task | 5 | Claude | UI-08 | all call sites migrated; pressed/disabled states |
+| UI-10 | BillChip + ChipRow (display 6/6; interactive ≥ 44 pt pitch, D-K6) | Task | 3 | Claude | UI-08 | four variants; wrap at AX5; no overlapping hit areas |
+| UI-11 | NavPill, ToggleRow, RadioRow, SegmentedPicker, InfoRow | Task | 6 | Claude | UI-08 | a11y traits verified |
+| UI-12 | Mood/energy/focus glyph redraw + identity icons | Task | 8 | Claude | UI-06, D3 | grayscale-distinct levels; `SignalGlyphTests` green |
+| UI-13 | Sleep moon + `SleepLevel` ramp/label (`sleepIndigo` aliased) | Task | 3 | Claude | UI-12 | tests first; bed icon deleted; alias compiles |
+| UI-14 | Medication glyphs + ProgressTrack + SignalMiniBar | Task | 3 | Claude | UI-12 | previews 0–100 % |
+| UI-15 | `CheckInRing` + Welcome migration (`CrescentRing` kept until UI-21) | Task | 5 | Claude | UI-06, D5 | 375 pt fits; one remaining `CrescentRing` consumer recorded |
+| UI-16 | `LevelTilePicker` | Task | 3 | Claude | UI-13 | narrow-device rule; "Mood: Good, 4 of 5, selected" |
+| UI-17 | SF Symbol icon map (PR B2) | Task | 1 | Claude | UI-06 | `Icons.swift` table + preview strip; no literal `systemImage:` in views |
+| UI-18 | FloatingTabBar + AddButton + root wiring (`ChromeVisibilityKey`; FAB hidden on hub) | Story | 12 | Claude | UI-11, UI-17, D4, D5 | VoiceOver "tab, 1 of 4" verified or fallback; deep link → B; chrome hides on Edit/B/C; no FAB on Check In |
+| UI-19 | Design gallery (`SandboxApp/Sources/DesignGallery.swift`) + snapshot pack attached to PRs | Task | 3 | Claude | UI-18 | SandboxApp builds; pack attached to B4 PR |
+| UI-20 | Spec Kit 058 check-in trio | Task | 3 | Claude | UI-19 | spec/plan/tasks committed; every step has ≥ 1 task |
+| UI-21 | Check-in A idle hub (+ `CrescentRing`/`crescentDiameter` deleted) | Story | 15 | Claude | UI-20 | mockup approved; 32 VM tests green; FR-017/018 retired on record; no FAB on hub |
+| UI-22 | Check-in B listening (motion per D-R2) | Story | 19 | Claude | UI-21, UI-34 | prompt copy tests green; timer stable |
+| UI-23 | Check-in C saved | Story | 10 | Claude | UI-22 | SE-height AX5 OK; announcement matches copy |
+| UI-24 | Spec Kit 059 Calendar (incl. expanded previous-day card, Q25b) | Task | 3 | Claude | UI-23 | spec/plan/tasks committed |
+| UI-25 | Calendar / Mood Journal (private `Chip`/`DoseTrack` deleted first) | Story | 30 | Claude | UI-24, UI-35, UI-36, UI-37 | month-scoped previous days; `displayLabel`s spoken |
+| UI-26 | Spec Kit 060 Day Details + Edit | Task | 4 | Claude | UI-25 | spec/plan/tasks committed |
+| UI-27 | Day Details (#45 regenerate hunk deleted here) | Story | 35 | Claude | UI-26, UI-38, UI-54 | six card states; no AI byline on fallback transcript; tests re-baselined post-#45 |
+| UI-28 | Edit Check-In (private `ChipGroup` deleted first) | Story | 27 | Claude | UI-27, UI-39 | 12 VM tests green; provenance intact; tile contract string |
+| UI-29 | Spec Kit 061 Insights | Task | 3 | Claude | UI-28, D12, UI-40 | spec/plan/tasks committed |
+| UI-30 | Insights (private `ConnectionCard`/`GatedCard`/`MiniBar` deleted first) | Story | 29.5 | Claude | UI-29, UI-40, UI-41 | tests re-baselined post-#45; `RhythmTile` view, `RhythmCell` model untouched |
+| UI-31 | Spec Kit 062 Settings + wave-2 secondary surfaces | Task | 3 | Claude | UI-30, UI-04 (#41) | spec/plan/tasks committed; every `ModelDownloadRow` state mocked |
+| UI-32 | Settings (`ModelDownloadRow` restyled, state machine untouched; `SettingsChip` deleted first) | Story | 39.5 | Claude | UI-31, UI-42 | eight must-keep rows present; model-row tests untouched |
+| UI-33a | Secondary surfaces, wave 1 (Log Dose, composer, onboarding restyle) | Story | 8 | Claude | UI-20/24, UI-09–16 | onboarding chain runs; 44 pt close buttons; `GlyphRampPicker` gone |
+| UI-33b | Secondary surfaces, wave 2 (recovery key, 055 paywall surfaces, Acknowledgements restyle) | Story | 8 | Claude | UI-31 | paywall surfaces AX5 clean; export works unsubscribed |
+| UI-34 | `CheckInViewModel.flowProgress` (test-first) | Task | 1 (in UI-22) | Claude | UI-20 | RED → GREEN before UI-22 |
+| UI-35 | `DoseStatus` hoist + status semantics (D10) | Task | 2 (in UI-25) | Claude | UI-24 | threshold + boundary tests green |
+| UI-36 | `DayCardSummary` dose + `sleepLevel` | Task | 1.5 (in UI-25) | Claude | UI-13 | two `@Test`s green |
+| UI-37 | `displayLabel` in `TimelineRow` + AX | Task | 0 (PR #45) | — | UI-04 | merged with #45 |
+| UI-38 | `RecordingDetailViewModel.relativeTitle/subtitle` | Task | 0.5 (in UI-27) | Claude | UI-26 | `relativeTitleByDay` green |
+| UI-39 | `ExtractionReviewViewModel.isDirty`, `medicationRows`, `cancelIfUnsaved()` (D21) | Task | 5.5 (in UI-28) | Claude | UI-26 | 3 new + 3 rewritten tests green |
+| UI-40 | Sleep × Mood gate on `decodedSleepLevel` — own PR `fix/insights-sleep-mood-gate`, 1.1.x-shippable | Task | 1.5 | Claude | UI-04 | RED with canonical values → GREEN; copy unchanged; mergeable before Phase B |
+| UI-41 | Bubble diameter · rhythm tint · range-bar span fns · caption case | Task | 3 (in UI-30) | Claude | UI-29 | three test files green |
+| UI-42 | `medicationBarShowTakenTime` / `ShowEndTime` keys + `titleLine` | Task | 3 (in UI-32) | Claude | UI-31 | `titleLineVariants` green |
+| UI-43 | Summary correction persistence (deferred, outside waves 1–2) | Story | 6 | Claude | owner | — |
+| UI-44 | Dead-code sweep (refresh-orphaned code only; `Constants.swift` never) | Task | 3 | Claude | UI-32 | grep proofs; `WhisperKitTranscriptionService:134` still reads `medicalPromptEnabled` |
+| UI-45 | Dark-mode pass (wave-2 screens) | Task | 6 | Claude + Owner | UI-33b | screenshot pack |
+| UI-46 | Dynamic Type / AX pass (wave-2 screens) | Task | 6 | Claude | UI-45 | 3 × 3 matrix clean |
+| UI-47 | VoiceOver + Reduce Motion pass (wave-2 screens) | Task | 4 | Claude + Owner | UI-46 | per-screen scripts |
+| UI-48 | Copy normalisation sweep (pen-screen strings only) | Task | 3 | Claude | UI-32 | old strings gone |
+| UI-49 | Token + typography alias deletion; Complexity row closed | Task | 6 | Claude | UI-48 | no `NewLook`/`Theme`/old `Typography` symbols |
+| UI-50 | PR gate (recurring, ~25 PRs; risk #11 workaround) | Task | 37.5 | Owner + Claude | — | build · serial tests · review · device QA |
+| UI-51 | Release 1.2 (wave 1) | Task | 9 | Owner + Claude | UI-25, UI-33a, UI-53 | 2.3.3 screenshots refreshed; `v1.2.0`; `docs/BACKLOG.md` rows shipped |
+| UI-52 | Release 1.3 (wave 2) | Task | 9 | Owner + Claude | UI-49 | `v1.3.0` by Dec 18 |
+| UI-53 | Wave-1 dark / AX / VoiceOver mini-pass (A/B/C + Calendar + Log Dose/composer) | Task | 6 | Claude + Owner | UI-25, UI-33a | light/dark pack + VoiceOver scripts for the four screens |
+| UI-54 | Single `formattedDuration` — own PR `fix/duration-format` | Task | 0.5 | Claude | UI-04 | `durationFormatIsSingle` green; mergeable before Phase B |
 
 ---
 
