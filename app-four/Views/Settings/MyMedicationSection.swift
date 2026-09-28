@@ -1,15 +1,12 @@
 import SwiftUI
 
-/// 030 App Intents — "My Medication" default (FR-001/002) + confirmation naming (FR-023).
-/// Native grouped-`List` chrome (DESIGN.md §114 — Settings is SF/List-exempt). Binds to
-/// `SettingsViewModel`, which mirrors `AppSettings` and persists on each change.
-/// Inline chip accordion per the approved T011 mockup (030-settings-medication.html) —
-/// no push-navigation; chips act directly on the view model (single persist per tap),
-/// and picking a medication never auto-commits a dose: the dose takes its own tap.
+/// Settings › My medication (030 App Intents, FR-001/002): the default the hands-free
+/// "Log My Meds" action records. An inline chip picker — no push — acting directly on the view
+/// model (one persist per tap); picking a medication never auto-commits a dose.
 struct MyMedicationSection: View {
     @Bindable var viewModel: SettingsViewModel
-    /// Owned by `SettingsView`, which also opens the picker when the intent's
-    /// not-configured continuation focuses this section (FR-007/D13).
+    /// Owned by `SettingsView`, which also opens the picker when the intent's not-configured
+    /// continuation focuses this section (FR-007/D13).
     @Binding var isPickerExpanded: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -18,184 +15,152 @@ struct MyMedicationSection: View {
     }
 
     var body: some View {
-        Section {
+        VStack(alignment: .leading, spacing: Spacing.m) {
             Button {
                 withAnimation(reduceMotion ? nil : Motion.snappy) { isPickerExpanded.toggle() }
             } label: {
-                HStack {
-                    Label("Medication", systemImage: "pills")
-                    Spacer()
+                HStack(spacing: Spacing.m) {
+                    Image(systemName: Icons.medication)
+                        .font(.system(size: 18, weight: .medium))
+                        .foregroundStyle(Accent.violet)
+                        .frame(width: 21, height: 21)
+                        .accessibilityHidden(true)
+                    Text("Medication")
+                        .font(Typography.rowLabel)
+                        .foregroundStyle(Ink.primary)
+                    Spacer(minLength: Spacing.s)
                     medicationValue
-                    Image(systemName: "chevron.right")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(.tertiary)
+                    Image(systemName: Icons.chevronRight)
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(Ink.tertiary)
                         .rotationEffect(.degrees(isPickerExpanded ? 90 : 0))
+                        .accessibilityHidden(true)
                 }
+                .frame(minHeight: Metrics.minTapTarget)
+                .contentShape(.rect)
             }
-            .foregroundStyle(.primary)
+            .buttonStyle(.plain)
             .accessibilityHint(isPickerExpanded
                                ? "Collapses the medication picker."
                                : "Expands the picker for the medication logged by the hands-free Log My Meds action.")
 
             if isPickerExpanded {
-                medicationChips
-
+                HairlineDivider()
+                ChipGroupView("Medication") {
+                    ForEach(MedicationCatalog.all) { entry in
+                        ChipButton(entry.name, selected: viewModel.defaultMedicationName == entry.name) {
+                            withAnimation(reduceMotion ? nil : Motion.snappy) {
+                                viewModel.defaultMedicationName = entry.name
+                                viewModel.medicationDidChange()
+                            }
+                        }
+                        .accessibilityHint("Sets the medication logged by the hands-free action. The dose is picked separately.")
+                    }
+                }
                 if let entry = selectedEntry {
-                    doseChips(entry)
+                    ChipGroupView("Dose") {
+                        ForEach(entry.doseOptions, id: \.self) { dose in
+                            ChipButton(dose, selected: viewModel.defaultMedicationDose == dose) {
+                                withAnimation(reduceMotion ? nil : Motion.snappy) {
+                                    viewModel.defaultMedicationDose = dose
+                                    viewModel.syncMyMedication()
+                                }
+                            }
+                            .accessibilityHint("Sets the dose logged by the hands-free action.")
+                        }
+                    }
                 }
             }
 
             if viewModel.defaultMedicationName != nil {
-                Button("Clear Medication", role: .destructive) {
+                HairlineDivider()
+                Button {
                     withAnimation(reduceMotion ? nil : Motion.snappy) {
                         viewModel.defaultMedicationName = nil
                         viewModel.medicationDidChange()
                         isPickerExpanded = false
                     }
+                } label: {
+                    Text("Clear medication")
+                        .font(Typography.rowLabel)
+                        .foregroundStyle(Ink.destructive)
+                        .frame(minHeight: Metrics.minTapTarget)
+                        .contentShape(.rect)
                 }
+                .buttonStyle(.plain)
                 .accessibilityHint("Removes the default. Hands-free logging asks you to set a medication again; past logs keep what they recorded.")
             }
-        } header: {
-            Text("My Medication")
-        } footer: {
+
             Text("Logged by the Log My Meds action — Siri or Shortcuts. Only this medication and dose are recorded; changing it never alters past logs.")
-        }
-
-        Section {
-            Toggle(isOn: $viewModel.nameMedicationInConfirmations) {
-                Label("Name medication in confirmations", systemImage: "quote.bubble")
-            }
-            .onChange(of: viewModel.nameMedicationInConfirmations) { viewModel.syncNameInConfirmations() }
-            .accessibilityHint("When on, confirmations name the medication and dose everywhere, including the lock screen.")
-
-            confirmationBanner
-        } header: {
-            Text("Confirmations")
-        } footer: {
-            Text("Off — discreet everywhere; the medication name stays inside the app. On — confirmations name the medication and dose (banner, spoken, and on the lock screen).")
+                .font(Typography.captionMedium)
+                .foregroundStyle(Ink.tertiary)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
-    /// Mockup's three-state row value: bronze "Set" call-to-action, plain name while
-    /// the dose still needs its tap, med-purple once both are locked in.
-    private var medicationValue: some View {
-        Group {
-            if let name = viewModel.defaultMedicationName {
-                if let dose = viewModel.defaultMedicationDose {
-                    Text("\(name) · \(dose)")
-                        .fontWeight(.semibold)
-                        .foregroundStyle(Palette.medication)
-                } else {
-                    Text(name)
-                        .foregroundStyle(.secondary)
-                }
+    /// Three states: "Set" call-to-action, plain name while the dose still needs its tap,
+    /// violet once both are locked in.
+    @ViewBuilder private var medicationValue: some View {
+        if let name = viewModel.defaultMedicationName {
+            if let dose = viewModel.defaultMedicationDose {
+                Text("\(name) · \(dose)")
+                    .font(Typography.status)
+                    .foregroundStyle(Accent.violetText)
             } else {
-                Text("Set")
-                    .foregroundStyle(Color.accentColor)
+                Text(name)
+                    .font(Typography.captionMedium)
+                    .foregroundStyle(Ink.secondary)
             }
+        } else {
+            Text("Set")
+                .font(Typography.status)
+                .foregroundStyle(Accent.primaryText)
         }
-    }
-
-    private var medicationChips: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Medication")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            FlowLayout(spacing: 8) {
-                ForEach(MedicationCatalog.all) { entry in
-                    SettingsChip(
-                        title: entry.name,
-                        isSelected: viewModel.defaultMedicationName == entry.name,
-                        hint: "Sets the medication logged by the hands-free action. The dose is picked separately."
-                    ) {
-                        withAnimation(reduceMotion ? nil : Motion.snappy) {
-                            viewModel.defaultMedicationName = entry.name
-                            viewModel.medicationDidChange()
-                        }
-                    }
-                }
-            }
-        }
-        .padding(.vertical, 4)
-    }
-
-    private func doseChips(_ entry: MedicationCatalogEntry) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Dose")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            FlowLayout(spacing: 8) {
-                ForEach(entry.doseOptions, id: \.self) { dose in
-                    SettingsChip(
-                        title: dose,
-                        isSelected: viewModel.defaultMedicationDose == dose,
-                        hint: "Sets the dose logged by the hands-free action."
-                    ) {
-                        withAnimation(reduceMotion ? nil : Motion.snappy) {
-                            viewModel.defaultMedicationDose = dose
-                            viewModel.syncMyMedication()
-                        }
-                    }
-                }
-            }
-        }
-        .padding(.vertical, 4)
-    }
-
-    /// Live preview of the confirmation line (mockup's banner): a nested card set
-    /// apart from the actionable rows, so it reads as a preview, not a control.
-    private var confirmationBanner: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "pills.fill")
-                .font(.caption)
-                .foregroundStyle(.white)
-                .frame(width: 26, height: 26)
-                .background(Palette.medication, in: .rect(cornerRadius: 7))
-            Text(previewLine)
-                .font(.subheadline.weight(.semibold))
-            Text("· 17:42")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .monospacedDigit()
-            Spacer()
-        }
-        .padding(10)
-        .background(Color(.tertiarySystemFill), in: .rect(cornerRadius: 12))
-        .padding(.vertical, 2)
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("Preview: \(previewLine) at 17:42")
-    }
-
-    /// The sample uses the current selection, or a neutral example when nothing is
-    /// set yet, so the banner always shows what "on" would look like.
-    private var previewLine: String {
-        guard viewModel.nameMedicationInConfirmations else { return "Dose logged" }
-        let name = viewModel.defaultMedicationName ?? "Elvanse"
-        let dose = viewModel.defaultMedicationDose ?? "30 mg"
-        return "\(name) \(dose) logged"
     }
 }
 
-/// Content-width capsule chip in the medication-purple selection language (mockup
-/// `.chip`). Private to Settings — the Paper & Pollen `Chip` component is accent-green
-/// content-surface language; Settings is native-List chrome with med-purple selection.
-private struct SettingsChip: View {
-    let title: String
-    let isSelected: Bool
-    let hint: String
-    let action: () -> Void
+/// Settings › Confirmations (FR-023): the naming toggle and a live preview of the confirmation
+/// line, built by `DoseConfirmationCopy` so it can never drift from the real banner.
+struct ConfirmationsSection: View {
+    @Bindable var viewModel: SettingsViewModel
+
+    private static let sampleTime: Date = {
+        Calendar.current.date(bySettingHour: 9, minute: 54, second: 0, of: .now) ?? .now
+    }()
 
     var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(isSelected ? .white : .primary)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(isSelected ? AnyShapeStyle(Palette.medication) : AnyShapeStyle(.quaternary), in: .capsule)
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            ToggleRow("Name medication in confirmations",
+                      description: "Off — discreet everywhere; the medication name stays inside the app. On — confirmations name the medication and dose (banner, spoken, and on the lock screen).",
+                      isOn: $viewModel.nameMedicationInConfirmations)
+                .onChange(of: viewModel.nameMedicationInConfirmations) { viewModel.syncNameInConfirmations() }
+                .accessibilityHint("When on, confirmations name the medication and dose everywhere, including the lock screen.")
+
+            HStack(spacing: Spacing.m) {
+                MedicationBadge(size: 26)
+                Text(previewLine)
+                    .font(Typography.rowLabel)
+                    .foregroundStyle(Ink.primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.85)
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, Spacing.m)
+            .frame(minHeight: 40)
+            .background(Surface.medicationTint, in: .rect(cornerRadius: Radius.field))
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Preview: \(previewLine)")
         }
-        .buttonStyle(.plain)
-        .accessibilityHint(hint)
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
+    }
+
+    /// The sample uses the current selection, or a neutral example when nothing is set yet, so
+    /// the preview always shows what the current setting produces.
+    private var previewLine: String {
+        DoseConfirmationCopy.text(
+            for: .logged(name: viewModel.defaultMedicationName ?? "Elvanse",
+                         dose: viewModel.defaultMedicationDose ?? "30 mg",
+                         at: Self.sampleTime),
+            named: viewModel.nameMedicationInConfirmations
+        )
     }
 }

@@ -10,13 +10,19 @@ struct MedicationBarView: View {
 
     @AppStorage("medicationBarVisible") private var showBar = true
     @AppStorage("medicationBarShowName") private var showName = true
+    @AppStorage("medicationBarShowTakenTime") private var showTakenTime = true
+    @AppStorage("medicationBarShowEndTime") private var showEndTime = false
+
+    private var titleOptions: MedicationBarViewModel.DoseDisplay.TitleOptions {
+        .init(showName: showName, showTakenTime: showTakenTime, showEndTime: showEndTime)
+    }
 
     var body: some View {
         if showBar, !viewModel.activeDoses.isEmpty {
             VStack(spacing: Spacing.m) {
                 ForEach(Array(viewModel.activeDoses.enumerated()), id: \.element.eventID) { index, dose in
                     if index > 0 { HairlineDivider() }
-                    DoseRow(dose: dose, showName: showName) { selectedDose = dose }
+                    DoseRow(dose: dose, options: titleOptions) { selectedDose = dose }
                 }
             }
             .card(.small)
@@ -54,7 +60,7 @@ struct MedicationBarView: View {
 
 private struct DoseRow: View {
     let dose: MedicationBarViewModel.DoseDisplay
-    let showName: Bool
+    let options: MedicationBarViewModel.DoseDisplay.TitleOptions
     let onTap: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var pulsing = false
@@ -95,24 +101,21 @@ private struct DoseRow: View {
         .onChange(of: onsetPulsing) { _, _ in syncPulse() }
     }
 
-    /// "09:54 • Concerta 36 mg" — time 14/600, the rest 12/500 secondary; `showName` drops the suffix.
+    /// "09:54 • Concerta 36 mg • ends 21:54" — the first part 14/600, the rest 12/500 secondary
+    /// (`DoseDisplay.titleParts`, Settings › Medication bar).
     private var title: Text {
-        let time = Text(Self.timeFormatter.string(from: dose.takenAt))
+        let parts = dose.titleParts(options) { Self.timeFormatter.string(from: $0) }
+        let lead = Text(parts[0])
             .font(Typography.rowTitle)
             .foregroundStyle(Ink.primary)
-        guard showName else { return time }
-        let name = Text(nameText)
+        guard parts.count > 1 else { return lead }
+        let rest = Text(" • " + parts.dropFirst().joined(separator: " • "))
             .font(Typography.captionMedium)
             .foregroundStyle(Ink.secondary)
-        let dot = Text(" • ")
-            .font(Typography.captionMedium)
-            .foregroundStyle(Ink.secondary)
-        return Text("\(time)\(dot)\(name)")
+        return Text("\(lead)\(rest)")
     }
 
-    private var nameText: String {
-        dose.effectiveDose.map { "\(dose.name) \($0)" } ?? dose.name
-    }
+    private var nameText: String { dose.nameText }
 
     private var accessibilityLabel: String {
         let taken = Self.timeFormatter.string(from: dose.takenAt)

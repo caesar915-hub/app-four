@@ -44,4 +44,12 @@ public enum Icons {
     public static let accessibility = "accessibility"          // accessibility figure
     public static let clock = "clock"                          // time field
     public static let cellular = "antenna.radiowaves.left.and.right"
+    public static let waveform = "waveform"                    // voice model row
+    public static let brain = "brain.head.profile"             // insights model row
+    public static let shield = "shield"                        // dose guard
+    public static let export = "lock.doc"                      // journal export
+    public static let privacy = "hand.raised"                  // privacy policy
+    public static let credits = "heart"                        // acknowledgements
+    public static let warning = "exclamationmark.triangle"     // ephemeral store
+    public static let copy = "doc.on.doc"                      // recovery key
 }

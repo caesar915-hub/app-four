@@ -61,6 +61,26 @@ final class MedicationBarViewModel {
         let progress: Double
 
         var status: DoseStatus { DoseStatus(progress: progress) }
+
+        /// "Concerta 36 mg", or just the name when no dose was captured.
+        var nameText: String { effectiveDose.map { "\(name) \($0)" } ?? name }
+
+        /// Settings › Medication bar: which parts the row's title line carries.
+        struct TitleOptions: Equatable {
+            var showName = true
+            var showTakenTime = true
+            var showEndTime = false
+        }
+
+        /// The title parts in order — taken time · name + dose · "ends HH:mm" — per the options.
+        /// With everything switched off the name still shows: a bar row must say what it is.
+        func titleParts(_ options: TitleOptions, time: (Date) -> String) -> [String] {
+            var parts: [String] = []
+            if options.showTakenTime { parts.append(time(takenAt)) }
+            if options.showName { parts.append(nameText) }
+            if options.showEndTime { parts.append("ends \(time(endsAt))") }
+            return parts.isEmpty ? [nameText] : parts
+        }
     }
 
     init(context: ModelContext? = nil) {

@@ -39,6 +39,26 @@ struct MedicationBarViewModelTests {
         #expect(S.wornOff.displayLabel == "Worn off")
     }
 
+    // Spec 057 / UI-42 — the bar's title line follows the four Settings toggles.
+    @Test func titleLineVariants() {
+        typealias Options = MedicationBarViewModel.DoseDisplay.TitleOptions
+        let taken = Date(timeIntervalSince1970: 1_700_000_000)
+        let dose = MedicationBarViewModel.DoseDisplay(
+            eventID: UUID(), name: "Concerta", dose: "36 mg", effectiveDose: "36 mg",
+            takenAt: taken, endsAt: taken.addingTimeInterval(12 * 3600),
+            doseNumber: 1, totalDosesToday: 1, progress: 0.3)
+        let clock: (Date) -> String = { $0 == taken ? "09:54" : "21:54" }
+        #expect(dose.titleParts(Options(), time: clock) == ["09:54", "Concerta 36 mg"])
+        #expect(dose.titleParts(Options(showName: false), time: clock) == ["09:54"])
+        #expect(dose.titleParts(Options(showEndTime: true), time: clock) == ["09:54", "Concerta 36 mg", "ends 21:54"])
+        #expect(dose.titleParts(Options(showName: true, showTakenTime: false, showEndTime: true), time: clock) == ["Concerta 36 mg", "ends 21:54"])
+        #expect(dose.titleParts(Options(showName: false, showTakenTime: false, showEndTime: false), time: clock) == ["Concerta 36 mg"])
+        let noDose = MedicationBarViewModel.DoseDisplay(
+            eventID: UUID(), name: "Ritalin", dose: nil, effectiveDose: nil,
+            takenAt: taken, endsAt: taken, doseNumber: 1, totalDosesToday: 1, progress: 0)
+        #expect(noDose.titleParts(Options(showName: false, showTakenTime: false), time: clock) == ["Ritalin"])
+    }
+
     @Test func logManualDoseUsesGivenDuration() throws {
         viewModel.logManualDose(name: "Concerta", dose: "36 mg", takenAt: Date(), durationHours: 8)
         let events = try context.fetch(FetchDescriptor<MedicationEvent>())

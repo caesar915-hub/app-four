@@ -54,8 +54,7 @@ struct ModelDownloadRow: View {
     private var mainRow: some View {
         if isDownloading || hasError {
             HStack {
-                Label(title, systemImage: icon)
-                    .font(Typography.body)
+                titleLabel
                 Spacer()
                 trailingStatus
             }
@@ -64,13 +63,26 @@ struct ModelDownloadRow: View {
             .accessibilityActions { accessibilityActions }
         } else {
             Toggle(isOn: installBinding) {
-                Label(title, systemImage: icon)
-                    .font(Typography.body)
+                titleLabel
             }
+            .frame(minHeight: Metrics.minTapTarget)
             .accessibilityHint(isInstalled
                 ? "Removes the on-device transcription model"
                 : "Downloads the on-device transcription model, about 150 megabytes")
-            .tint(Theme.meadowGreen)
+            .tint(Accent.primaryFill)
+        }
+    }
+
+    private var titleLabel: some View {
+        HStack(spacing: Spacing.m) {
+            Image(systemName: icon)
+                .font(.system(size: 18, weight: .medium))
+                .foregroundStyle(Accent.primaryText)
+                .frame(width: 21, height: 21)
+                .accessibilityHidden(true)
+            Text(title)
+                .font(Typography.rowLabel)
+                .foregroundStyle(Ink.primary)
         }
     }
 
@@ -80,8 +92,8 @@ struct ModelDownloadRow: View {
             errorBlock(errorMessage)
         } else if !isInstalled && !isDownloading {
             Text("~150 MB · Wi-Fi recommended")
-                .font(Typography.caption)
-                .foregroundStyle(NewLook.inkSecondary)
+                .font(Typography.captionMedium)
+                .foregroundStyle(Ink.tertiary)
         }
     }
 
@@ -91,35 +103,37 @@ struct ModelDownloadRow: View {
             if downloadProgress > 0 {
                 ProgressView(value: downloadProgress)
                     .progressViewStyle(.linear)
+                    .tint(Accent.primaryFill)
                     .frame(width: 80)
                 Text("\(Int(downloadProgress * 100))%")
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkSecondary)
+                    .font(Typography.captionMedium)
+                    .foregroundStyle(Ink.tertiary)
                     .monospacedDigit()
             } else {
                 ProgressView()
+                    .tint(Accent.primaryFill)
                     .scaleEffect(0.8)
                 Text("Starting…")
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkSecondary)
+                    .font(Typography.captionMedium)
+                    .foregroundStyle(Ink.tertiary)
             }
             Button("Cancel", action: onCancel)
                 .buttonStyle(.plain)
-                .font(Typography.caption.weight(.medium))
-                .foregroundStyle(Theme.meadowGreen)
+                .font(Typography.captionMedium)
+                .foregroundStyle(Accent.primaryText)
         } else if hasError {
             Circle()
-                .fill(Theme.danger)
+                .fill(Ink.destructive)
                 .frame(width: 8, height: 8)
                 .accessibilityHidden(true)
         } else {
             Circle()
-                .fill(isInstalled ? Theme.statusDone : Theme.statusInProgress)
+                .fill(isInstalled ? Accent.primaryFill : Ink.tertiary)
                 .frame(width: 8, height: 8)
                 .accessibilityHidden(true)
             Text(isInstalled ? "Installed" : "Not installed")
-                .font(Typography.caption)
-                .foregroundStyle(NewLook.inkSecondary)
+                .font(Typography.captionMedium)
+                .foregroundStyle(isInstalled ? Accent.primaryText : Ink.tertiary)
         }
     }
 
@@ -127,34 +141,24 @@ struct ModelDownloadRow: View {
     private func errorBlock(_ message: String) -> some View {
         VStack(alignment: .leading, spacing: Spacing.s) {
             Text(message)
-                .font(Typography.caption)
-                .foregroundStyle(Theme.danger)
+                .font(Typography.captionMedium)
+                .foregroundStyle(Ink.destructive)
                 .fixedSize(horizontal: false, vertical: true)
             // Reflows to extra rows at large Dynamic Type so the three actions never
             // clip off a fixed single-line HStack.
-            FlowLayout(spacing: Spacing.s) {
-                ghostPill("Try again", action: onRetry)
+            ChipRow(interactive: true) {
+                Button("Try again", action: onRetry)
+                    .buttonStyle(.outlined(.small))
                 if canAllowCellular {
-                    ghostPill("Allow on cellular", action: onAllowCellular)
-                    ghostPill("Open Settings") {
+                    Button("Allow on cellular", action: onAllowCellular)
+                        .buttonStyle(.outlined(.small))
+                    Button("Open Settings") {
                         if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
                     }
+                    .buttonStyle(.outlined(.small))
                 }
             }
         }
-    }
-
-    private func ghostPill(_ label: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Text(label)
-                .font(Typography.caption.weight(.medium))
-                .foregroundStyle(Theme.meadowGreen)
-                .padding(.horizontal, Spacing.m)
-                .padding(.vertical, Spacing.s)
-                .frame(minHeight: Metrics.minTapTarget)
-                .overlay(Capsule().strokeBorder(NewLook.hairline, lineWidth: 1))
-        }
-        .buttonStyle(.plain)
     }
 
     private var accessibilityLabel: String {
@@ -193,7 +197,7 @@ struct ModelDownloadRow: View {
     VStack(spacing: Spacing.m) {
         ModelDownloadRow(
             title: "Voice Transcription",
-            icon: "waveform",
+            icon: Icons.waveform,
             isInstalled: true,
             isDownloading: false,
             downloadProgress: 0,
@@ -203,7 +207,7 @@ struct ModelDownloadRow: View {
         )
         ModelDownloadRow(
             title: "Voice Transcription",
-            icon: "waveform",
+            icon: Icons.waveform,
             isInstalled: false,
             isDownloading: false,
             downloadProgress: 0,
@@ -213,7 +217,7 @@ struct ModelDownloadRow: View {
         )
         ModelDownloadRow(
             title: "Voice Transcription",
-            icon: "waveform",
+            icon: Icons.waveform,
             isInstalled: false,
             isDownloading: true,
             downloadProgress: 0.42,
@@ -223,7 +227,7 @@ struct ModelDownloadRow: View {
         )
         ModelDownloadRow(
             title: "Voice Transcription",
-            icon: "waveform",
+            icon: Icons.waveform,
             isInstalled: false,
             isDownloading: false,
             downloadProgress: 0,
@@ -233,7 +237,7 @@ struct ModelDownloadRow: View {
         )
         ModelDownloadRow(
             title: "Voice Transcription",
-            icon: "waveform",
+            icon: Icons.waveform,
             isInstalled: false,
             isDownloading: false,
             downloadProgress: 0,

@@ -39,20 +39,21 @@ struct RecoveryKeySheet: View {
             VStack(alignment: .leading, spacing: Spacing.xxl) {
                 VStack(alignment: .leading, spacing: Spacing.m) {
                     Text("Keep this key safe")
-                        .font(Typography.title)
-                        .foregroundStyle(NewLook.inkPrimary)
+                        .font(Typography.question)
+                        .foregroundStyle(Ink.title)
+                        .accessibilityAddTraits(.isHeader)
                     Text("This file can only be opened by a future version of Squirl, using this exact key. If you lose the key, the backup can't be recovered — not even by us. Save it somewhere only you can reach.")
-                        .font(Typography.body)
-                        .foregroundStyle(NewLook.inkSecondary)
+                        .font(Typography.cardSubtitle)
+                        .foregroundStyle(Ink.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 Text(keyBase64)
                     .font(Typography.mono12)
-                    .foregroundStyle(NewLook.inkPrimary)
+                    .foregroundStyle(Ink.primary)
                     .textSelection(.enabled)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(Spacing.l)
-                    .background(NewLook.tintNeutral, in: .rect(cornerRadius: Radius.card))
+                    .card(.small, padding: Spacing.cardInset)
                     .accessibilityLabel("Recovery key")
                     .accessibilityValue(keyBase64)
 
@@ -66,16 +67,16 @@ struct RecoveryKeySheet: View {
                     )
                     withAnimation(reduceMotion ? nil : Motion.smooth) { copied = true }
                 } label: {
-                    Label(copied ? "Copied" : "Copy key", systemImage: copied ? "checkmark" : "doc.on.doc")
+                    Label(copied ? "Copied" : "Copy key", systemImage: copied ? Icons.check : Icons.copy)
                 }
-                .buttonStyle(.primary)
+                .buttonStyle(.filled(fullWidth: true))
 
                 Spacer()
             }
-            .padding(.horizontal, Spacing.l)
+            .padding(.horizontal, Spacing.gutter)
             .padding(.top, Spacing.section)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(NewLook.screen.ignoresSafeArea())
+            .background(Surface.screen.ignoresSafeArea())
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done", action: onDone)
