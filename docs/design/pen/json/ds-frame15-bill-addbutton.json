@@ -1,0 +1,565 @@
+{
+ "id": "53:10311",
+ "type": "FRAME",
+ "name": "Frame 15",
+ "bounds": [
+  4834,
+  79,
+  1029,
+  669
+ ],
+ "style": {
+  "strokes": [
+   {
+    "type": "SOLID",
+    "color": "#93c5fd",
+    "opacity": 1
+   }
+  ],
+  "strokeWeight": 4,
+  "cornerRadius": 20,
+  "opacity": 1,
+  "visible": true
+ },
+ "children": [
+  {
+   "id": "53:10312",
+   "type": "FRAME",
+   "name": "Frame 1",
+   "bounds": [
+    54,
+    54,
+    921,
+    155
+   ],
+   "style": {
+    "fills": [
+     {
+      "type": "SOLID",
+      "color": "#2a9134",
+      "opacity": 1
+     }
+    ],
+    "strokeWeight": 0.546890914440155,
+    "opacity": 1,
+    "visible": true
+   },
+   "children": [
+    {
+     "id": "53:10313",
+     "type": "TEXT",
+     "name": "Design Components",
+     "bounds": [
+      70,
+      35.5,
+      781,
+      84
+     ],
+     "text": "Design Components",
+     "style": {
+      "fills": [
+       {
+        "type": "SOLID",
+        "color": "#ffffff",
+        "opacity": 1
+       }
+      ],
+      "strokeWeight": 5.807846546173096,
+      "fontSize": 69.69415283203125,
+      "fontFamily": "Inter",
+      "fontStyle": "Medium",
+      "fontWeight": 500,
+      "lineHeight": {
+       "unit": "AUTO"
+      },
+      "letterSpacing": {
+       "value": 0,
+       "unit": "PIXELS"
+      },
+      "textAlignHorizontal": "LEFT",
+      "opacity": 1,
+      "visible": true
+     },
+     "children": []
+    }
+   ]
+  },
+  {
+   "id": "53:10314",
+   "type": "COMPONENT_SET",
+   "name": "Bill-shape",
+   "bounds": [
+    66,
+    277,
+    127,
+    161
+   ],
+   "style": {
+    "strokes": [
+     {
+      "type": "SOLID",
+      "color": "#8a38f5",
+      "opacity": 1
+     }
+    ],
+    "strokeWeight": 1,
+    "cornerRadius": 5,
+    "opacity": 1,
+    "visible": true
+   },
+   "children": [
+    {
+     "id": "53:10315",
+     "type": "COMPONENT",
+     "name": "BG=outline",
+     "bounds": [
+      20,
+      20,
+      87,
+      27
+     ],
+     "style": {
+      "fills": [
+       {
+        "type": "SOLID",
+        "color": "#ffffff",
+        "opacity": 1
+       }
+      ],
+      "strokes": [
+       {
+        "type": "SOLID",
+        "color": "#e4ece4",
+        "opacity": 1
+       }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 15,
+      "opacity": 1,
+      "visible": true
+     },
+     "children": [
+      {
+       "id": "53:10316",
+       "type": "FRAME",
+       "name": "Container",
+       "bounds": [
+        16,
+        6,
+        55,
+        15
+       ],
+       "style": {
+        "strokeWeight": 1,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": [
+        {
+         "id": "53:10317",
+         "type": "TEXT",
+         "name": "bill shape",
+         "bounds": [
+          0,
+          0,
+          55,
+          15
+         ],
+         "text": "bill shape",
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#193024",
+            "opacity": 1
+           }
+          ],
+          "strokeWeight": 1,
+          "fontSize": 12,
+          "fontFamily": "Inter",
+          "fontStyle": "Medium",
+          "fontWeight": 500,
+          "lineHeight": {
+           "unit": "AUTO"
+          },
+          "letterSpacing": {
+           "value": 0,
+           "unit": "PIXELS"
+          },
+          "textAlignHorizontal": "LEFT",
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "53:10318",
+     "type": "COMPONENT",
+     "name": "BG=With Dot",
+     "bounds": [
+      20,
+      114,
+      99,
+      27
+     ],
+     "style": {
+      "fills": [
+       {
+        "type": "SOLID",
+        "color": "#ffffff",
+        "opacity": 1
+       }
+      ],
+      "strokes": [
+       {
+        "type": "SOLID",
+        "color": "#e4ece4",
+        "opacity": 1
+       }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 15,
+      "opacity": 1,
+      "visible": true
+     },
+     "children": [
+      {
+       "id": "53:10319",
+       "type": "ELLIPSE",
+       "name": "Ellipse 7",
+       "bounds": [
+        16,
+        9.5,
+        8,
+        8
+       ],
+       "style": {
+        "fills": [
+         {
+          "type": "SOLID",
+          "color": "#d9d9d9",
+          "opacity": 1
+         }
+        ],
+        "strokeWeight": 1,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": []
+      },
+      {
+       "id": "53:10320",
+       "type": "FRAME",
+       "name": "Container",
+       "bounds": [
+        28,
+        6,
+        55,
+        15
+       ],
+       "style": {
+        "strokeWeight": 1,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": [
+        {
+         "id": "53:10321",
+         "type": "TEXT",
+         "name": "bill shape",
+         "bounds": [
+          0,
+          0,
+          55,
+          15
+         ],
+         "text": "bill shape",
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#193024",
+            "opacity": 1
+           }
+          ],
+          "strokeWeight": 1,
+          "fontSize": 12,
+          "fontFamily": "Inter",
+          "fontStyle": "Medium",
+          "fontWeight": 500,
+          "lineHeight": {
+           "unit": "AUTO"
+          },
+          "letterSpacing": {
+           "value": 0,
+           "unit": "PIXELS"
+          },
+          "textAlignHorizontal": "LEFT",
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "53:10322",
+     "type": "COMPONENT",
+     "name": "BG=solid",
+     "bounds": [
+      20,
+      67,
+      87,
+      27
+     ],
+     "style": {
+      "fills": [
+       {
+        "type": "SOLID",
+        "color": "#2a9134",
+        "opacity": 1
+       }
+      ],
+      "strokes": [
+       {
+        "type": "SOLID",
+        "color": "#2a9134",
+        "opacity": 1
+       }
+      ],
+      "strokeWeight": 1,
+      "cornerRadius": 15,
+      "opacity": 1,
+      "visible": true
+     },
+     "children": [
+      {
+       "id": "53:10323",
+       "type": "FRAME",
+       "name": "Container",
+       "bounds": [
+        16,
+        6,
+        55,
+        15
+       ],
+       "style": {
+        "strokeWeight": 1,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": [
+        {
+         "id": "53:10324",
+         "type": "TEXT",
+         "name": "bill shape",
+         "bounds": [
+          0,
+          0,
+          55,
+          15
+         ],
+         "text": "bill shape",
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#ffffff",
+            "opacity": 1
+           }
+          ],
+          "strokeWeight": 1,
+          "fontSize": 12,
+          "fontFamily": "Inter",
+          "fontStyle": "Medium",
+          "fontWeight": 500,
+          "lineHeight": {
+           "unit": "AUTO"
+          },
+          "letterSpacing": {
+           "value": 0,
+           "unit": "PIXELS"
+          },
+          "textAlignHorizontal": "LEFT",
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "53:10325",
+   "type": "COMPONENT",
+   "name": "Add Button",
+   "bounds": [
+    221,
+    284,
+    50,
+    50
+   ],
+   "style": {
+    "fills": [
+     {
+      "type": "SOLID",
+      "color": "#8c68d3",
+      "opacity": 1
+     }
+    ],
+    "strokeWeight": 1,
+    "cornerRadius": 75,
+    "effects": [
+     {
+      "type": "DROP_SHADOW",
+      "color": "#000000",
+      "opacity": 0.17000000178813934,
+      "offset": {
+       "x": 0,
+       "y": 7
+      },
+      "radius": 17,
+      "spread": 0,
+      "blendMode": "NORMAL"
+     }
+    ],
+    "opacity": 1,
+    "visible": true
+   },
+   "children": [
+    {
+     "id": "53:10330",
+     "type": "INSTANCE",
+     "name": "vuesax/twotone/add",
+     "bounds": [
+      4.500001907348633,
+      4.500001907348633,
+      40.999996185302734,
+      40.999996185302734
+     ],
+     "style": {
+      "strokeWeight": 0.9381549954414368,
+      "opacity": 1,
+      "visible": true
+     },
+     "children": [
+      {
+       "id": "I53:10330;8:33448",
+       "type": "GROUP",
+       "name": "vuesax/twotone/add",
+       "bounds": [
+        0,
+        0,
+        40.999996185302734,
+        40.999996185302734
+       ],
+       "style": {
+        "opacity": 1,
+        "visible": true
+       },
+       "children": [
+        {
+         "id": "I53:10330;8:33449",
+         "type": "GROUP",
+         "name": "add",
+         "bounds": [
+          0,
+          0,
+          40.999996185302734,
+          40.999996185302734
+         ],
+         "style": {
+          "opacity": 1,
+          "visible": true
+         },
+         "children": [
+          {
+           "id": "I53:10330;8:33450",
+           "type": "VECTOR",
+           "name": "Vector",
+           "bounds": [
+            10.249999046325684,
+            20.499998092651367,
+            20.499998092651367,
+            0
+           ],
+           "style": {
+            "fills": [
+             {
+              "type": "SOLID",
+              "color": "#e9e9ea",
+              "opacity": 1
+             }
+            ],
+            "strokes": [
+             {
+              "type": "SOLID",
+              "color": "#e9e9ea",
+              "opacity": 1
+             }
+            ],
+            "strokeWeight": 1.7128019332885742,
+            "opacity": 1,
+            "visible": true
+           },
+           "children": []
+          },
+          {
+           "id": "I53:10330;8:33451",
+           "type": "VECTOR",
+           "name": "Vector",
+           "bounds": [
+            20.499998092651367,
+            10.249999046325684,
+            0,
+            20.499998092651367
+           ],
+           "style": {
+            "strokes": [
+             {
+              "type": "SOLID",
+              "color": "#e9e9ea",
+              "opacity": 1
+             }
+            ],
+            "strokeWeight": 1.7128019332885742,
+            "opacity": 1,
+            "visible": true
+           },
+           "children": []
+          },
+          {
+           "id": "I53:10330;8:33452",
+           "type": "VECTOR",
+           "name": "Vector",
+           "bounds": [
+            0,
+            0,
+            40.999996185302734,
+            40.999996185302734
+           ],
+           "style": {
+            "strokeWeight": 0.9381549954414368,
+            "visible": true
+           },
+           "children": []
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

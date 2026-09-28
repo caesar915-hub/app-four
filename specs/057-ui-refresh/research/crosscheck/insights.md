@@ -1,0 +1,258 @@
+<!-- Created: 2026-09-27 22:32 WEST · Updated: 2026-09-27 22:32 WEST -->
+# Cross-check — pen "iPhone 17 - 7" (Statistics / Insights tab) vs the shipping SwiftUI
+
+Inputs: `out/screens/insights.md` (read fully), `pen/named/iphone17-7-statistics.png`, `pen/named/ds-frame4-navigation.png`, `pen/named/ds-frame12.png`, `out/design-system.md`, the three codebase maps, `out/constraints.md`, and the Swift files named below (opened and read; every `file:line` is from the worktree at `feat/057-ui-refresh`, HEAD `08ba8cba`). Planning only — no Swift touched, no build run, no git state changed. Paths are repo-relative unless they start with `Packages/`.
+
+Legend for §2: **KEEP** = already matches · **CHANGE** = exists, restyle/rearrange · **NEW** = must be built · **REMOVE** = exists today, absent in the pen.
+
+---
+
+## 1. Mapping — what implements this surface today
+
+| Pen element | Code | Notes |
+|---|---|---|
+| The screen | **`app-four/Views/InsightsView.swift`** (207 lines) | `ScreenContainer(title: "", scrollable: false, path: $path)` (:20) → `NavigationStack`, `NewLook.screen` ground, medication bar overlay ON by default (`app-four/DesignSystem/ScreenContainer.swift:28`, :79/:82). Own `ScrollView` › `VStack(spacing: Spacing.l)` padding h 16 / top 16 / bottom 40 + `.edgeFadeMask(top: 0, bottom: 36)` (:84-99). |
+| View model | `app-four/ViewModels/InsightsViewModel.swift` (74) + `InsightsViewModel+Signals.swift` (371) | `@Observable @MainActor`. `currentMonth`, `availableMonths` (:25-36), `monthRecordings` (:38-42), `prevMonth/nextMonth/jumpToToday` (:48-59, **unused by any view**), `hasAnyData` (:66). All chart data is computed in the `+Signals` extension (see §3). |
+| Title block | `insightsIdentity` — `InsightsView.swift:53-64` | "Insights" `Typography.text(24, .bold, .title2)` + `"<Month wide> · today vs your usual"` `subheadline` `inkSecondary`. |
+| Month selector | `app-four/Views/Insights/MonthSelectorScrollView.swift` (33) | Horizontal `ScrollView` of `.newLookChip` capsules, `"MMM yyyy"` uppercased, tracking 1.3 (:11, :23-25); selected fill = `Theme.meadowGreen` via `NewLookChipRole.standard` (`Packages/SquirlDesignSystem/Sources/SquirlDesignSystem/NewLook.swift:82`). |
+| Card 1 — breakdown | `breakdownCard` (:128-140) → `Views/Insights/MoodBubbleChart.swift` (92) + `Views/Insights/MoodLegend.swift` (42) | Header copy "Your overall check-in breakdown" + `"N check-in(s)"`. |
+| Card 2 — three signals | `signalsCard` (:142-150) → `Views/Insights/SignalStripsView.swift` (117) + `sleepDeferredChip` (:66-80) | Weekday-average strips (`weekdaySignalStrips`). |
+| Card 3 — where you averaged | `averagesCard` (:152-158) → `Views/Insights/SignalAverageGauges.swift` (137) | Three **vertical** 64×280 gauges (:23-24) — the pen draws horizontal range bars. |
+| Card 4 — daily rhythm | `rhythmCard` (:160-167) → `Views/Insights/DailyRhythmMatrix.swift` (102) | 3×4 matrix, 52 pt gradient blobs (:8). |
+| Connections | `connectionsBlock` (:171-186) → `Views/Insights/ConnectionCardsView.swift` (170) | Eyebrow + caption outside the cards; unlocked/gated card treatments inside. |
+| Tab bar + FAB | `app-four/Views/RootTabView.swift` (44) — native `TabView` + `.tabItem` SF symbols, `.tint(Theme.meadowGreen)` (:19-36); tab-bar background forced to `NewLook.screen` from `ScreenContainer.swift:59-60` | **No FAB exists anywhere in the app.** |
+| Empty state | `emptyState` (:188-201) — "Check in to see your month" | Pen draws none. |
+| Models | `app-four/Models/Recording.swift` (`createdAt` :7, `energyLevel` :27, `focusLevel` :28, `mood` :29, `sleepHours` :30, `sleepQuality` :31, `sleepLevelValue` :37, `medicationEvents` :58-59); `Packages/SquirlSignals/Sources/SquirlSignals/Levels.swift` | — |
+| Tests that pin this surface | `app-fourTests/ViewModels/InsightsViewModelTests.swift` — 28 `@Test` (lines 49–257) | Pins connection order (:204), gates (:143-174), gated copy (:180-196), averages "+" label (:86), rhythm tie-break (:131), weekday slot order (:250). |
+
+**Overlap warning (not this worktree):** `feat/053-insights-shape-views` (23 commits ahead of `main`, plus uncommitted edits in `stash@{0}`) adds `UsualRangeCard`, `PresenceDotsCard`, `MonthShapeCard`, `VariabilityBandsCard`, `EmotionFieldCard` and extracts `app-four/Views/Components/InsightGatedCard.swift` (same dashed-hairline gated card as today's private `GatedCard`). The pen shows **none** of the 053 cards. Decide merge-then-reskin vs archive before `/speckit-specify`, or Insights gets re-skinned twice (`constraints.md` §5.1).
+
+---
+
+## 2. Delta table — section by section (pen order)
+
+### 2.0 Page frame, gutters, rhythm
+
+| Item | Today | Pen | Verdict |
+|---|---|---|---|
+| Ground | `NewLook.screen` `#EFF2EB` / dark `#12140F` (`NewLook.swift:13`) | `#fbfffc` (off-palette, light only) | **CHANGE** — token swap (global). Dark value must be derived (§5). |
+| Gutter | 16 (`Spacing.l`, `InsightsView.swift:95`) | 29 left/right (content column 344 wide) | **CHANGE** — a 29 pt gutter is not a `Spacing` token (xs 4 · s 8 · m 12 · l 16 · xl 20 · xxl 24 · section 32). Needs a new token or `xxl + 5`; flag as pen noise vs intent (constraints §3.1 says 28–31 across screens). |
+| Section spacing | 16 (`Spacing.l`, :86) | 24 between cards; 22 title→selector; 12 Connections header→first card; 5 between connection cards | **CHANGE** — `Spacing.xxl` (24) exists; 5 pt does not. |
+| Card skin | `.newLookCard()` = padding 16, `#FFFFFF`, r 20, **no border**, shadow `black@0.05 r8 y2` + `black@0.03 r2 y1` (`NewLook.swift:52-66`) | 344 wide, `#ffffff`, **stroke `#000000@0.10` 0.5 pt inside**, r **24**, shadow `#183c28@0.08` (0,3) blur 8, padding **15** | **CHANGE** — shared card token (assumed to land with the DS work). Note the pen contradicts the New Look rule "never a card border" (`NewLook.swift:26`). Card 1 is 342 wide vs 344 for the rest — treat as pen drift (Q11 in the screen spec). |
+| Bottom inset | padding bottom 40 (`Spacing.hero`, :97) + fade 36 (:99) | Tab bar + FAB float over content from y 2041 of 2144 → ≥ 103 pt clearance needed | **CHANGE** — bottom content inset ≥ 103 + breathing room; the 36 pt fade assumes a system bar and must be re-measured or dropped. |
+| Status bar / home indicator | system | system (`#212529`) | **KEEP** (not implemented; iOS draws them). |
+
+### 2.1 Title block
+
+| Item | Today (`InsightsView.swift:53-64`) | Pen (§2.2 of the screen spec) | Verdict |
+|---|---|---|---|
+| Title | "Insights" — `Typography.text(24, .bold, .title2)`, `NewLook.inkPrimary` `#1C1B1F` | "Insights" — **34/600**, **`#17501d`** (green-800), at (30,74) | **CHANGE** — size 24→34, weight bold→semibold, ink→green-800. `Typography.largeTitle` is `sf(34, .bold, .largeTitle)` (`Typography.swift:23`), so a new 34/semibold role (or `text(34, .semibold, .largeTitle)`) is needed. Copy KEEP. |
+| Subtitle | `"\(month wide) · today vs your usual"` — `subheadline` (14/medium) `inkSecondary` `#8A8A8E` | "Your Month At Glance" — **16/500 `#6a6d70`**, 3 pt below the title | **CHANGE** — copy (drop the month; it now lives in the selector), size 14→16, colour. Copy fix per screen spec §4.2 #3: "Your month at a glance" (owner to approve casing). |
+| Header trait | `.accessibilityAddTraits(.isHeader)` (:63) | — | **KEEP**. |
+
+### 2.2 Month selector
+
+| Item | Today (`MonthSelectorScrollView.swift`) | Pen (§2.3) | Verdict |
+|---|---|---|---|
+| Component | Horizontal scroll of capsule chips, gap 8; selected = solid `Theme.meadowGreen` `#5F8A4C` + `onSelection` white; unselected = white + 1 pt `NewLook.hairline` + `inkPrimary`; label `"MMM yyyy"` **uppercased**, tracking 1.3, `Typography.caption` medium (:11, :23-25; `NewLook.swift:94-107`) | **Segmented control**: track 344×38 fill `#fafafa`, stroke `#000000@0.04` 1 pt inside, r 19, padding 4, gap 4; three equal segments 109.33×30 r 15; selected thumb `#ffffff` + shadow `#193024@0.07` (0,1) blur 3, label **12/500 `#1e6725`**; unselected no fill, **12/400 `#6a6d70`**; labels `June 2026 · July 2026 · Aug 2026` | **NEW component** (`SegmentedMonthPicker`); the chip row goes. Nothing in the DS package is a segmented control (`codebase-designsystem.md` §6 lists chips/buttons/cards/nav only). |
+| Month list | `availableMonths` = every month from the earliest recording to now (`InsightsViewModel.swift:25-36`); scrolls to any | Exactly three visible: previous · selected · next | **CHANGE** — data exists; behaviour is undecided (fixed 3 with tap-to-shift, or a paged strip). `prevMonth()`/`nextMonth()` (:48-55) already exist and are unused; `nextMonth()` refuses to go past the current month (:53), so the pen's "Aug 2026" segment only makes sense if July is *not* the current month. What the third segment shows when the selected month is the current one is **undefined in the pen**. |
+| Label format | `"MMM yyyy"` → "JUL 2026" | Mixed: full "June 2026"/"July 2026" vs abbreviated "Aug 2026" (screen spec §4.2 #4) | **CHANGE** — pick one (`"MMMM yyyy"` is already on the VM as `monthLabel`, :13-19). |
+| Touch target | chip ≈ 31 pt tall (caption + v 8) | segment 30 pt in a 38 pt track | Both below 44 (§5). |
+
+### 2.3 Card 1 — "Mood Check-In Breakdown"
+
+| Item | Today | Pen (§2.4) | Verdict |
+|---|---|---|---|
+| Header | "Your overall check-in breakdown" `Typography.headline` (16/semibold) `inkPrimary` + trailing `"\(count) check-in(s)"` `caption` (12/regular) `inkSecondary` (`InsightsView.swift:103-124`, :130-133) | `Mood Check-In Breackdoen` [sic] **16/600 `#212529`** + `24 check-ins` **12/500 `#4d5154`** right-aligned | **CHANGE** — title copy ("Mood Check-In Breakdown" after the typo fix), count style 12/regular→12/500, colours to grey-500/grey-400. Size/weight of the title already match. |
+| Card content when no mood data | header only (:134-137) | not drawn | KEEP behaviour; pen gap. |
+| Bubble chart height | 160 (`MoodBubbleChart.swift:10`) | 160.65 | **KEEP**. |
+| Bubble diameter | `44 + (118−44)·sqrt(fraction/maxFraction)` — area-relative to the largest share (:11-12, :31-36) | ≈ `60 + 1.3·pct` linear: 8 %→70.76, 13 %→78.41, 17 %→84.15, 29 %→98.49, 33 %→103.28 | **CHANGE** — different formula, different min/max (44–118 vs ≈70–103). Pen formula unconfirmed (screen spec Q3). Whichever wins is a pure function → test-first (Principle X). |
+| Bubble x | five equal columns, bubble centred in column `level−1` (:38-41) → no overlap at 312 wide | absolutely placed, **overlapping**, centres x ≈ 82.4 / 141.7 / 204.8 / 267.9 / 323.4 (pitch ≈ 59–63) | **CHANGE** — overlap is by design; z-order later-on-top already matches (`ZStack` + `ForEach` in low→great order, :16-23 → KEEP). |
+| Bubble y | `mid − (level−3)·14` (:43-47) | centre rises ≈ 13.4 pt per level | **KEEP** (within pen noise). |
+| Bubble fill | `share.level.bubbleFill` radial gradient partner→base (`SignalLevel.swift:44-47`) with `MoodLevel` base `#DA7A2A · #EDA94A · #9FCB79 · #5FB36E · #2E8B57` (`MoodLevel+Palette.swift:16-35`) | **flat** fills `#da7a2a · #eda94a · #9dcca2 · #55a75d · #2a9134` | **CHANGE** — levels 1–2 identical hex; 3–5 move onto the pen green ramp (green-200/400/500). `bubbleFill`/`fillGradient` go away for this chart. |
+| Bubble text | `"NN%"` `Typography.label` semibold + word only when d ≥ 68 (:66-74); ink = `Color.contrastingInk` (black/white by `getWhite > 0.6`, `SignalLevel.swift:12-18`) | **14/500** percent + **12/500** word, gap ≈ 1, always both; ink **`#1c1b1f`** on Low…Good, **`#ffffff`** on Great only | **CHANGE** — the luminance heuristic returns **white on `#55a75d`** (perceived grey ≈ 0.53 < 0.6) which is 2.97:1; the pen's explicit dark ink on Good is 7.07:1. Replace the heuristic with an explicit per-level ink (white only at level 5). White on `#2a9134` is 4.04:1 — passes only as large text (§5). |
+| Divider | none | 312×1 `#000000@0.10`, 15 below the chart | **NEW** (in-card hairline; also needed in cards 2–4). |
+| Legend | `MoodLegend`: `LazyVGrid(adaptive min 100, spacing 8)` **wraps**; chip = 8 pt dot `fillGradient` + word `caption` `inkPrimary` + `"(N)"` `caption` `inkSecondary`, white capsule, 1 pt `NewLook.hairline` `#DBDDDE`, padding h 12 / v 4 (`MoodLegend.swift:8-29`) | Five **Bill-shape `BG=With Dot`** chips: height 25, r 15, fill `#ffffff`, stroke **`#e4ece4`** 1 pt, dot 8×8 in the flat level colour, gap 4 to text, text **12/500 `#193024`** as one string `Low (2)`; row gap 7; **single row clipped** in the PNG (`Good (7)` cut, `Great (3)` hidden) vs two wrapped rows in the JSON | **CHANGE** → migrate to the DS `BillChip(.withDot)` component (assumed shared). Wrap vs horizontal scroll is **undecided** (screen spec Q2); today's wrap is the accessible default. Hairline colour changes `#DBDDDE`→`#e4ece4`; two-tone label collapses to one colour. |
+
+### 2.4 Card 2 — "Your month in three signals"
+
+| Item | Today | Pen (§2.5) | Verdict |
+|---|---|---|---|
+| Header | "Your month in three signals" `headline` + subtitle "Average by weekday — this month" `caption` `inkSecondary` (`InsightsView.swift:144-145`) | Same title 16/600 `#212529` ✔; subtitle `Average Across Weekdays In July` **14/400 `#6a6d70`** (month name dynamic) | **CHANGE** subtitle copy/size (12→14); title **KEEP**. Month name available: `viewModel.currentMonth.formatted(.dateTime.month(.wide))` (already used at :58). |
+| Row header | `SignalGlyph(kind, level: modal, size 18)` **level-coloured glyph** + `kind.label` `subheadline` medium `inkPrimary` + summary `caption` `inkSecondary` `"mostly Okay"` (`SignalStripsView.swift:30-42`; labels "Mood"/"Energy"/"Focus" from `InsightsViewModel+Signals.swift:9-11`) | Fixed **identity icon** (sprout 14×14 `#4caf50/#388e3c`, bolt 9×14 `#eda94a`, target 14×14) + label **14/500 `#292d32`** `Mood` / `Energy Level` / `Focus` + trailing tag **12/600** in signal colour: `Mostly Okay` `#2a9134`, `Mostly Steady` `#e38400`, `Mostly Sharp` `#4278a8` | **CHANGE** — icon becomes a static per-signal identity icon (no such asset today; `SignalGlyph` always encodes a level), label "Energy"→"Energy Level" (or keep "Energy" — pen is inconsistent with card 4, §4.2 #15), tag capitalised and coloured (no tokens for `#e38400`/`#4278a8`; §5 contrast). Summary text comes from `stripSummary` (:344-354) → KEEP data. |
+| Weekday cells | 7 × `BeadSlot`: `SignalGlyph(size 28)` + weekday `Typography.text(9, .medium, .caption1)` `inkSecondary`; `maxWidth ∞`, `minHeight 44` (:74-84); slots `Mo Tu We Th Fr Sa Su` (`+Signals.swift:133`) | 7 columns 44.57×52.55: glyph **33.55** + gap 4 + weekday **12/500 `#4d5154`**; `Mo Tu We Th Fr Sa Su` (energy row typo `Fr Fr` is a pen defect) | **CHANGE** — glyph 28→33.55, label 9→12 pt and colour; slot order **KEEP** (test `weekdayStrips_slotOrder`, `InsightsViewModelTests.swift:250`). |
+| Glyph art | Canvas shapes `SproutGlyph`/`BoltGlyph`/`ApertureGlyph` tinted by ramp (energy Lemon `#7C6E2E…#FCEE64`, focus `#44546E…#79C4FF`, `Palette+Signals.swift`) — level encoded by **shape + fill** (`codebase-designsystem.md` §7) | Multi-colour vector assets (Frame 12): sprout **colour-only** per level (shape constant), bolt amber constant + **black block** whose height encodes level, target blue arc sweep | **NEW (shared DS dependency)** — the 15 level assets must exist before this screen can match. Not counted in §7 hours. Two product-rule risks: the pen sprout encodes level by colour alone (PRODUCT.md principle 5 "colour is never the only cue"), and the black block is an unconfirmed export artefact (design-system.md §7 #3). |
+| Empty weekday | `EmptySignalGlyph` — dashed circle `Color.secondary.opacity(0.3)` `[2,2]` at 28 pt (`SignalGlyph.swift`, private) | **18 ⌀ solid** hairline circle `#8e8e93@0.30` 1.33 pt, centred in the 33.55 slot | **CHANGE** — solid instead of dashed, smaller. |
+| Row separators | `VStack(spacing: Spacing.m)` (12), no lines (:11) | 1 pt `#000000@0.10`, 15 above / 15 below | **NEW** divider. |
+| Sleep chip | "Sleep · not tracked yet" dashed capsule with `SignalGlyph(.sleep, 15)` (`InsightsView.swift:66-80`, :147) | absent | **REMOVE**. Loses only an informational placeholder. But note Frame 12 ships a 5-level **sleep moon**, and `Recording.sleepLevelValue` (`Recording.swift:37`) + `SleepLevel` (`Levels.swift:152-171`) already exist — a 4th "Sleep" row would be cheap data-wise; the pen chose not to draw one (open question Q6). |
+| Weekend | included (Sa, Su) | included; Su empty | **KEEP** (subtitle says "weekdays" — copy nit). |
+
+### 2.5 Card 3 — "Where you averaged"
+
+| Item | Today (`SignalAverageGauges.swift`) | Pen (§2.6) | Verdict |
+|---|---|---|---|
+| Header | "Where you averaged" `headline` (`InsightsView.swift:154`) | same, 16/600 `#212529` | **KEEP** copy. |
+| Layout | `HStack(.bottom, spacing 16)` of three **vertical** columns: `SignalGlyph(26)` at the average level, track **64×280** `tintNeutral` r 10 with 5 dashed tick lines, gradient fill height `280·fraction` with the fill label at its top (`"Okay+"` caption semibold, contrasting ink), caption below (`"between Okay & Good"` caption `inkSecondary`) (:10-16, :23-53, :58-76) | Three **stacked horizontal rows** (82 / 77 / 77 tall, 1 pt dividers 15 above/below): row header = identity icon + label 14/500 `#292d32` + trailing caption **12/400 `#6a6d70`** `Between Okay & Good`; bar block 312×50 = **range bracket** `⊓` 73×21, stroke `#4d5154` 1.25 pt round caps, over the two averaged segments; **5 pills 60.8×7 r 999 gap 2** in `#da7a2a · #eda94a · #9dcca2 · #55a75d · #2a9134` (mood ramp reused for every signal); labels 12/400 `#6a6d70` 4 pt under each pill | **CHANGE = rebuild.** `SignalAverageGauges` is deleted and replaced by a `RangeBar` component (NEW, screen-local unless the DS adopts it). The 280 pt gauges are the single biggest height change on the screen. |
+| Data → bracket | `SignalAverage.level` = `Int(avg)` (floor) and `caption` `"between X & Y"` / `"X on average"` (`+Signals.swift:161-187`) | bracket spans `[lower, lower+1]` | **KEEP data**, but the whole-number case (`isWhole`, :172) — bracket over **one** segment? — is not drawn in the pen. Rule needed (open Q). |
+| Segment labels | n/a | Mood `Low Flat Okay Good Great` ✔; Energy `Steady Alert Tired Good Great` ✘; Focus `Low Flat Okay Good Great` ✘ (pen copy defects, screen spec §4.2 #7-10) | **CHANGE with correction** — use `EnergyLevel.displayLabel` (`rawValue.capitalized`, `SignalLevel.swift:57`) = `Sluggish Tired Steady Alert Charged` and `FocusLevel.displayLabel` (`Levels.swift:113-121`) = `Foggy Distracted Present Sharp Locked In`. **Risk:** "Distracted" (~62 pt at 12/400) and "Locked In" (~55 pt) do not fit a 60.8 pt pill at default size — needs `lineLimit(1)` + `minimumScaleFactor`, two-line labels, or labels only under the bracketed pair. |
+| Caption case | `"between Okay & Good"` lower-case (:183) | `Between Okay & Good` | **CHANGE** copy (capitalise) — touches `averageHalfStepGetsPlusLabel` expectations only if the test asserts the caption string; `InsightsViewModelTests.swift:86-118` assert `fillLabel`/`level` (verify before editing). |
+| Fill label "Okay+" | rendered inside the gauge (:66-73) | not shown anywhere | **REMOVE** (`fillLabel` stays on the model for tests; no function lost — the bracket carries it). |
+| Level glyph on top | `SignalGlyph(26)` at average level (:28-30) | identity icon in the row header | **CHANGE** (same identity-icon dependency as card 2). |
+
+### 2.6 Card 4 — "Your Daily Rhythm"
+
+| Item | Today (`DailyRhythmMatrix.swift`) | Pen (§2.7) | Verdict |
+|---|---|---|---|
+| Header | "Your daily rhythm" `headline` + subtitle "Dominant level per signal by time of day" `caption` (`InsightsView.swift:162-163`) | `Your Daily Rhythm` 16/600 + same subtitle **14/400 `#6a6d70`** | **CHANGE** subtitle size 12→14; title casing per the copy rule the owner picks (§4.2 #14). |
+| Column headers | `Spacer(width 56)` + 4 × `TimeBucket.label` ("Morning / Afternoon / Evening / Late") `caption` `inkSecondary`, centred, `maxWidth ∞` (:14-23) | 48 pt spacer + 4 × `flex:1` (66.5 wide) **12/500 `#4d5154`** typed in caps `MORNING AFTERNOON EVENING LATE`; **AFTERNOON wraps** to `AFTERNOO / N` at 66.5 | **CHANGE** — `.textCase(.uppercase)` on the existing labels (keep `TimeBucket.label` as the source), colour/weight. The wrap is a pen layout defect the code must not reproduce (`ViewThatFits` or abbreviations at narrow widths). |
+| Row label | text only, width 56, `caption` medium `inkSecondary` (:27-31) | 41 wide centred column: identity icon (sprout 20×20 / bolt 13×19 / target 17×17) + label **12/500 `#292d32`** `Mood` / `Energy` / `Focus`, gap 3 | **CHANGE** — add icon, colour. Same identity-icon asset dependency. |
+| Filled cell | **52 ⌀** circle `level.fillGradient` + `displayLabel` `Typography.label` `inkSecondary` (minScale 0.7) (:8, :50-58) | **44 ⌀ (r 22) tinted circle** containing a **33.55 level glyph**, gap 4, label **11/500 `#6a6d70`**; tints: mood `#ddf4de@0.20` / `#9dcca2@0.20` / `#9dcca2@0.30`, energy `#fdf6eb` / `#eda94a@0.30` / `#c79043@0.20`, focus `#4278a8@0.10` / `#4278a8@0.10` / `#72a3ff@0.08` (nine ad-hoc combos) | **CHANGE** — blob → tint + glyph. The nine tints are not a rule (screen spec Q6); propose `signalColour @ 0.12` per signal, or `levelColour @ 0.2`, and test the label contrast on it. |
+| Empty cell | 52 ⌀ dashed circle `inkSecondary.opacity(0.3)` `[3,2]` 1.5 pt + `"—"` `label` at 0.4 opacity (:60-69) | 44 ⌀ **solid** stroke `#dbddde` 1 pt inside + `—` **11/400 `#8a8a8e@0.60`** | **CHANGE** — solid hairline; note `#dbddde` = today's `NewLook.hairline` light hex exactly. |
+| Hit target | `.frame(minWidth: 44, minHeight: 44)` (:71) | cell 68.25 wide × ~61 | **KEEP**. |
+| Row separators | `VStack(spacing: Spacing.s)` (8), no lines | 1 pt `#000000@0.10`, 11 above / 11 below | **NEW** divider (third card that needs it). |
+| Bucket hours | 06–11 / 12–17 / 18–21 / 22–05, tie → higher level (`+Signals.swift:49-72`, :191-213) | undefined | **KEEP** the code's definition; document it in the spec (Q10 in the screen spec is answered by code). |
+
+### 2.7 Connections
+
+| Item | Today | Pen (§2.8) | Verdict |
+|---|---|---|---|
+| Section header | eyebrow `CONNECTIONS` `Typography.label` tracking 1.3 `inkSecondary` + caption "Patterns across signals — 3 or more days to unlock" `caption` `inkSecondary`, `.padding(.top, Spacing.m)` (`InsightsView.swift:171-186`) | `Connections` **16/600 `#212529`** (not an eyebrow) + same caption verbatim **14/400 `#6a6d70`**, 12 pt to the first card | **CHANGE** — eyebrow → section title; caption copy KEEP (but it is wrong today and in the pen: real gates are **4 / 5 / 3+3 days**, `+Signals.swift:224, :256, :292`). |
+| Card stack | `VStack(spacing: Spacing.m)` (12) (`ConnectionCardsView.swift:10`) | gap **5**, cards r **18**, stroke `#000@0.10` 0.5, shadow `#183c28@0.08` (0,3,8), padding 15, heights 104 (unlocked) / 80 (locked) | **CHANGE** — 5 pt gap has no token; r 18 is a third card radius (pen "Card M"). |
+| Order | `[medFocus, energyMood, sleepMood]` (`+Signals.swift:217-219`) — pinned by `connectionsAlwaysThreeInOrder` (`InsightsViewModelTests.swift:204`) | `MEDICATION × FOCUS` · `SLEEP × MOOD` · `ENERGY × MOOD` | **CHANGE** if the pen order is intentional (test edit); pen may simply show the two locked cards last — ask. |
+| Unlocked card | title `label` uppercase tracking 0.5 `inkSecondary`; sentence **`Typography.display` (28/semibold)** `inkPrimary`; `MiniBar` h 8 `tintNeutral` track + **`Palette.medication` `#7E5CA8`** fill, leading `"Med days"` / trailing `"Sharp+ focus"` captions and centred `"75%"` `label` semibold (:39-72, :110-148) | row: icon tile **42×42 r 11** fill `#e3d8f9`, stroke `#000@0.10` 0.45, `vuesax/bold/unlock` 20 `#4d3974`; 10 pt; text column 262: title **12/600 `#7f5fc0`** uppercase `MEDICATION × FOCUS`, 5 pt, body **12/500 `#212529`** (2 lines); 9 pt; progress track **285×6 r 9.5** `#fafafa` stroke `#000@0.10` 0.25, fill **gradient 90° `#8061bf → #8c68d3`**, trailing `70%` 12/500 `#193024` | **CHANGE** — the display-size sentence shrinks to 12/500; tile + icon are NEW (vuesax `unlock` — no equivalent asset; SF "lock.open" would be the substitute); bar restyles. **REMOVE** the leading/trailing bar captions ("Med days" / "Sharp+ focus") — this loses the only explanation of what the bar's two ends mean; with the pen's 75 % / 70 % / 58 % contradiction (Q7) the captions may be worth keeping. |
+| Locked card | title + SF `lock` `caption` `inkSecondary` (right); copy `callout` `inkSecondary`; white r 20 with **dashed** `hairline` `[5,3]` border (:74-108) | same row layout as unlocked minus the bar: tile `#f4f0fb` + `vuesax/bold/lock` 20 `#7f5fc0`; title 12/600 `#7f5fc0`; body 12/500 `#212529`; **solid** card | **CHANGE** — dashed border → solid; lock moves into a leading tile; copy ink becomes primary. On `feat/053` this card is `InsightGatedCard` (shared by five cards) — restyling it there restyles all 053 cards (fine, if 053 is merged first). |
+| Gated copy | `"Log medication on \(n) more day(s) to unlock this connection."` / `"Log high energy on \(n) more day(s)…"` / `"Note \(a) more good-sleep day(s) and \(b) more poor-sleep day(s) to unlock this connection."` (:226, :258, :298) | `Log High Energy 2 More Days To Unlock This Connection` / `Note 1 More Good Sleep Day & 3More Poor-Sleep Days To Unlock This Connection` | **KEEP** the code copy (sentence case, correct grammar; pinned by `gatedCopyCountsRemainingDays`/`gatedCopySingularDay`/`gatedSleepCopyMentionsBothSidesShort`, tests :180-196). The pen strings are Title-Case renderings of the same sentences. Product question Q-P2 (constraints §4.1): "unlock" + padlock + "log N more days" reads as gamification/nudge. |
+| Unlocked sentence | `"On medication days, sharp focus appeared \(pct)% of the time."` (:241) | `On Medication Days, Sharp Focus Appeared 75% Of The Time.` | **KEEP** copy. |
+| Bar value | `fraction` = the same share as the sentence, `barLabel` = `"\(pct)%"` (:242-243) — one number | 58 % fill · `70%` label · `75%` sentence — three numbers | **KEEP** code semantics (one number); the pen is inconsistent (Q7). |
+| Tap behaviour | none | none indicated | **KEEP**. |
+
+### 2.8 Tab bar, FAB, chrome around the screen
+
+| Item | Today | Pen (§2.9) | Verdict |
+|---|---|---|---|
+| Tab bar | Native `TabView(selection:)` with `.tabItem { Label(_, systemImage:) }`: `calendar` · `checkmark.circle` · `chart.bar.fill` · `gear` (`RootTabView.swift:19-35`, `Icons.swift:7-10`), `.tint(Theme.meadowGreen)` (:36); background forced opaque `NewLook.screen` from `ScreenContainer.swift:59-60` | Floating pill **274×60** `#ffffff` r 75, shadow `#183c28@0.16` (0,8) blur 24; selected pill **64×44** `#2a9134` r 44 **icon-only** (DS `Status=Insights` variant is **116×44 with the label "Insights"**, Frame 4); inactive icons 24 pt `#999b9d` vuesax `task-square` (linear), `chart` (outline), `setting-2` (twotone); + **FAB 50 ⌀** `#8c68d3` shadow `#000@0.17` (0,7) blur 17, `+` `#e9e9ea` 1.71 pt strokes, 22 pt gap from the bar | **NEW (shared, app-shell scope)** — a custom floating tab bar replaces the system one (`TabView` + `toolbarVisibility(.hidden, for: .tabBar)` + overlay, or `Tab` builder with a custom bar). Not costed here. This screen's obligation: bottom inset + fade. **Pen defect:** the selected pill shows the *Calendar* icon on the Insights screen (screen spec Q1) — the DS frame's `Status=Insights` variant is the intent. |
+| FAB action on Insights | no FAB | `+` = DS "Add Button"; on Check-In screens it starts a check-in | **NEW / undefined** — `AppIntentRouter.requestCheckIn()` (`app-four/Intents/AppIntentRouter.swift:41-46`) + `selectedTab = .checkIn` is the existing plumbing if `+` means "new check-in". Conflicts with "one primary action per screen" while Check In is also a tab (constraints Q-L1). |
+| Medication bar | shown on Insights when a dose is active (`ScreenContainer.swift:28` default `true`; `InsightsView.swift:20` does not override) — a white card pinned as a top `safeAreaInset` (`MedicationBarOverlay.swift:17-25`) | **not drawn** on this screen (nor on any Insights/Settings pen frame) | **REMOVE?** — loses at-a-glance dose status on this tab (still on Check-in and Settings per the pen's medication bar card). Owner call: pen omission or intent. |
+| Empty state | "Check in to see your month" + `chart.bar.doc.horizontal` + month selector (`InsightsView.swift:22-30`, :188-201) | not drawn | **KEEP** (needs a pen/HTML mockup in the new language before implementation, Principle I). |
+| Push to detail | `.navigationDestination(for: UUID.self)` → `RecordingDetailView` (:32-39) but **nothing appends** to `path` (grep: no `path.append` / `NavigationLink` in `Views/Insights/`) | no drill-in shown | **REMOVE** dead route (no function lost). Also `selectedTab` binding (:7, :16) is received and unused → drop the parameter. |
+| Edge fade | `.edgeFadeMask(top: 0, bottom: 36)` (:99; `Views/Components/EdgeFadeMask.swift`) | content runs under a floating bar on `#fbfffc` | **CHANGE** — re-measure (bar 60 + 5 + home-indicator 34 ≈ 99–103 pt) or drop the mask. |
+| Scroll-to-top on re-select | `ScreenContainer` `scrollResetToken` exists but Insights passes `scrollable: false` and never uses it | — | KEEP as is. |
+
+---
+
+## 3. Data availability — every field/label the pen shows
+
+| Pen field | Available? | Where / what is missing |
+|---|---|---|
+| Selected month, previous, next (`June 2026 / July 2026 / Aug 2026`) | **YES** | `InsightsViewModel.currentMonth` (:9), `availableMonths` (:25-36), `prevMonth()`/`nextMonth()` (:48-55). Gap: `nextMonth()` stops at the current month (:53) — the pen's "next" segment beyond today needs a rule (blank? disabled? hidden?). |
+| Month name in subtitle ("In July") | **YES** | `currentMonth.formatted(.dateTime.month(.wide))` (`InsightsView.swift:58`). |
+| `24 check-ins` | **YES, with a caveat** | `monthRecordings.count` (`InsightsView.swift:130`; VM :38-42) counts **every** recording in the month, while the bubble percentages and legend counts use only recordings that resolved a `MoodLevel` (`+Signals.swift:102-106`). A month with 24 recordings and 20 moods shows "24 check-ins" over chips that sum to 20. Decide which number the header means. |
+| Bubble `8% Low` … `13% Great` | **YES** | `moodShares` → `MoodShare.fraction/count/level` (`+Signals.swift:101-111`); `%` = `Int((fraction*100).rounded())` per bubble (`MoodBubbleChart.swift:67`) — may not sum to 100. Levels with **zero** check-ins are omitted (:108), so the pen's five-bubble layout degrades to fewer bubbles — rule needed (Q3 in the screen spec). |
+| Legend `Low (2)` … `Great (3)` | **YES** | `MoodShare.count` + `MoodLevel.displayLabel` (`MoodLevel+Palette.swift:65`). Pen "Okey" is a typo. |
+| Weekday dominant level per signal (Mo–Su) | **YES** (as a rounded *mean*, not a mode) | `weekdaySignalStrips` (`+Signals.swift:132-157`): mean `numericValue` per weekday, `Int(avg.rounded())`; nil when no recordings that weekday → the pen's empty `Su` circle. If "dominant" must mean modal, change the aggregation (tests `weekdayStrips_averagesRoundUp/_averagesHalfRounds`, :227-244, pin the mean). |
+| `Mostly Okay` / `Mostly Steady` / `Mostly Sharp` | **YES** | `stripSummary` = modal `displayLabel` over the month, `"mostly \(label)"` (`+Signals.swift:344-354`) — only the capital M differs. Tag **colour per signal** (`#2a9134` / `#e38400` / `#4278a8`): **NO token** — amber and blue text colours do not exist in the DS (`Theme.meadowAmber #E0A33A` and `Palette.focusRamp` are the nearest and are not these hexes). |
+| Energy level words | **YES** | `EnergyLevel.displayLabel` = `Sluggish · Tired · Steady · Alert · Charged` (`SignalLevel.swift:57`, `Levels.swift:53-58`). The pen's `Steady · Alert · Tired · Good · Great` axis is a copy defect; Principle VII forbids inventing names outside `Levels.swift`. |
+| Focus level words (`Present`, `Sharp`, `Locked In`) | **YES** | `FocusLevel.displayLabel` (`Levels.swift:113-121`). The pen's focus axis reuses mood words — defect. |
+| Range `Between Okay & Good` (lower/upper) | **YES** | `signalAverages` → `level` (floor of the mean) + `caption` (`+Signals.swift:161-187`). Missing: how to draw a **whole-number** mean (bracket over one segment) — code emits `"X on average"` for that case. |
+| Rhythm dominant per bucket | **YES** | `rhythmMatrix` (`+Signals.swift:191-213`); buckets 06–11 / 12–17 / 18–21 / 22–05 (:64-71); tie → higher level (:206); nil → `—`. |
+| Rhythm cell tint per (signal, level) | **NO** | Nine literal fill/alpha pairs in the pen, no rule, no token. Needs a mapping function (test-first) and a dark-mode derivation. |
+| Rhythm cell glyph (level glyph inside the circle) | **YES (data)**, **NO (asset)** | Level available from `RhythmCell.dominant.numericValue`; the pen glyph art is the shared DS dependency (§2.4). |
+| Connection MEDICATION × FOCUS (gate, sentence, %) | **YES** | `medFocusConnection` (`+Signals.swift:221-248`): gate ≥ 4 distinct days with ≥ 1 `MedicationEvent` (`Recording.medicationEvents`, `Recording.swift:58-59`; `MedicationEvent.swift`), share of those days with focus ≥ 4. Sentence identical to the pen. |
+| Connection ENERGY × MOOD | **YES** | `energyMoodConnection` (:250-280): gate ≥ 5 high-energy days (energy ≥ 4). Pen copy "Log High Energy 2 More Days" = `need` (:257). |
+| Connection SLEEP × MOOD | **YES in shape, DEFECTIVE in data** | `sleepMoodConnection` (:282-328) matches `sleepQuality` against `poorSleep = ["poor","bad","terrible","awful","rough"]` and `goodSleep = ["good","great","excellent","well"]` (:283-284). But every writer of `Recording.sleepQuality` stores a **canonical `SleepLevel` rawValue** (`restless · light · okay · good · deep`): `ExtractionValidator.swift:63` normalises through `sleepSynonyms` (:723-734 — "poor"→`light`, "bad"/"terrible"/"awful"→`restless`), the raw-mention fallback writes `"good"`/`"light"` (:219, :221), and `deriveSleepLevel(hours:)` returns rawValues (:759-766); the text composer never sets `CheckInDraft.sleepQuality` (only `persistCheckInNote` copies it, `RecordingStore.swift:152`). So **`poorDays` is always empty on real data and this card can never unlock**; `goodDays` also misses `deep`. `sleepMoodUnlocksWithThreeEachSide` (`InsightsViewModelTests.swift:174`) passes only because the test writes "poor"/"bad" directly. Fix: gate on `Recording.decodedSleepLevel` (`Recording.swift:165-167`) with restless/light = poor, good/deep = good — a logic change, test-first. |
+| Unlock threshold copy "3 or more days" | **NO (wrong)** | Real gates 4 / 5 / 3+3 (`+Signals.swift:224, :256, :292`). Either the caption becomes generic ("a few days of data") or the gates change. |
+| Progress bar value (`70%` / 58 % fill) | **YES (one number)** | `ConnectionState.unlocked.fraction` and `barLabel` are the same share as the sentence (:242-243). "Progress toward unlocking" as a fraction is **NOT** computed for locked cards — only `need` days in copy (:225, :257, :293-294). The pen shows the bar only on the unlocked card, so nothing is missing unless the owner wants a progress bar on locked cards. |
+| Lock / unlock icons | **NO asset** | Today SF `lock` (`ConnectionCardsView.swift:87`). Pen uses vuesax `bold/lock` + `bold/unlock`; nearest SF: `lock.fill` / `lock.open.fill`. |
+| Identity icons (sprout / bolt / target, fixed per signal) | **NO** | `SignalGlyph` always renders a level (`SignalGlyph.swift:30-42`); a level-less "identity" variant does not exist. `GlyphSignal.variesByLevel` (`GlyphSignal.swift:24-29`) is true for mood/energy/focus, so `level: nil` renders `EmptySignalGlyph`, not an icon. |
+| Not on this screen (`Kicking In`/`Active`, `8h Sleep`, `Installed`, `34MB`, medication name/dose) | n/a | For the record: `kicking in / active / wearing off / worn off` exist (`MedicationBarView.swift:79-86`); `Locked In` exists (`Levels.swift:119`); `sleepHours` exists (`Recording.swift:30`); "Installed"/"34MB" belong to Settings (`SettingsViewModel.swift:150-155`, storage MB via `storageService.calculateTotalStorageUsed()`). None is needed here. |
+
+---
+
+## 4. Navigation delta
+
+| Aspect | Today | Pen | Delta |
+|---|---|---|---|
+| Tab shell | System `TabView`, 4 `.tabItem`s with SF symbols and text labels, `Theme.meadowGreen` tint (`RootTabView.swift:19-36`); tab bar painted opaque `NewLook.screen` and `.visible` from every tab root (`ScreenContainer.swift:59-60`) | Floating 274×60 white pill with one green selected pill (icon-only here; icon + label in the DS master), three inactive grey icons, plus a violet FAB beside it | Custom bar = **NEW app-shell work** shared by Calendar / Insights / Settings / Day-details. Keep `TabView(selection:)` for state and a11y, hide the system bar (`.toolbarVisibility(.hidden, for: .tabBar)`), overlay the pill bar + FAB at the root. `ScreenContainer`'s tab-bar background modifiers become dead and must go (Principle III). Selected-state label: DS says label, screen says icon-only — decide once for all screens (constraints Q-L1/Q-L3). |
+| Insights tab identity | `Icons.insights = "chart.bar.fill"` (`Icons.swift:9`) | `vuesax/bold/chart` (active) / `vuesax/outline/chart` (inactive) | Icon asset swap or SF substitute (`chart.bar.fill` is close). |
+| FAB | none | `Add Button` 50 ⌀ `#8c68d3` | NEW; action undefined on Insights. If it starts a check-in it duplicates the Check In tab and the deep link (`SquirlApp.swift:68-76` → `router.requestCheckIn()`); the router already gates on onboarding (`AppIntentRouter.swift:41-46`). |
+| Nav bar | `NavigationStack` with `.navigationTitle("")` inline, `toolbarBackground(NewLook.screen)` (`ScreenContainer.swift:51-54`) | No nav bar; page title is in-content 34/600 | Match: keep the empty inline title (or hide the bar with `.toolbar(.hidden, for: .navigationBar)`) — the in-content title pattern already exists (`InsightsView.swift:53-64`). |
+| Back pill | n/a (root tab) | none | KEEP. |
+| Sheets / pushes | dead `navigationDestination(UUID)` (`InsightsView.swift:32-39`) | none | REMOVE the route; if a future drill-in (weekday → Calendar) is wanted, `selectedTab` is already bound (:7). |
+| Month change | tap chip → `currentMonth = month` (`MonthSelectorScrollView.swift:22`) | tap segment; likely swipe/page (not shown) | Same binding; add `prevMonth()/nextMonth()` wiring if the strip pages. |
+| Medication bar | top `safeAreaInset` on this tab | absent | See §2.8. |
+
+---
+
+## 5. Accessibility, Dynamic Type, dark mode — specific to this screen
+
+**Type scaling.** Every pen size is fixed Inter (12/500 ×155 nodes app-wide, 11 pt in the rhythm grid). Today every role scales with Dynamic Type (`Typography.swift` — `sf(size, weight, textStyle)` via `UIFontMetrics`), including the 9 pt weekday labels (`SignalStripsView.swift:79`). Keep that: map pen sizes to `relativeTo:` styles (34→`.largeTitle`, 16→`.headline`, 14→`.subheadline`, 12/11→`.caption1`/`.caption2`). Places that break first at AX sizes: (1) the 7-column weekday row (7 × 44.57 with 33.55 fixed glyphs holds, but "Mo" at AX5 ≈ 3× width overflows the column); (2) the range-bar labels — `Distracted` / `Locked In` / `Sluggish` already exceed 60.8 pt at the default size; (3) `AFTERNOON` in a 66.5 pt column wraps at the default size in the pen itself (§2.6). Plan `ViewThatFits` / abbreviated headers (`MORN · AFT · EVE · LATE`) and a stacked layout for the range bars at `.accessibility1+`, the way `CalendarHeaderView.swift:20` already forces week view at AX sizes.
+
+**Contrast (text on white card, WCAG 2.x, my computation from the hexes):** `#212529` 15.4:1 ✔ · `#4d5154` 8.0:1 ✔ · `#6a6d70` **5.21:1 ✔ AA** (design-system.md §1.1 calls it "4.03 on white — AA large only"; 4.03 is *black text on the grey swatch* — grey text on white is 5.21, so the caption grey is fine) · `#1e6725` 6.95:1 ✔ · `#2a9134` **4.04:1 ✗** for 12/600 tags (`Mostly Okay`), passes only as large text · `#e38400` **≈2.8:1 ✗ fails even large text** (`Mostly Steady`) — and PRODUCT.md says amber is decorative-only (constraints Q-C2) · `#4278a8` 4.69:1 ✔ (`Mostly Sharp`) · `#7f5fc0` 4.88:1 ✔ (connection titles) · `#8a8a8e@0.60` for `—` ≈ 1.9:1 ✗ (decorative — the a11y label says "no data") · white on `#2a9134` (Great bubble, 14/500 + 12/500) 4.04:1 ✗ small · `#1c1b1f` on `#55a75d` 7.07:1 ✔ (why the pen switches ink at Good). Today's `contrastingInk` would put white on Good (§2.3) — 2.97:1. Recommendation to carry into the spec: tags in green-600 `#26842f` (4.75) / a darkened amber / blue-as-is, or drop tag colouring in favour of the identity icon.
+
+**Colour never the only cue.** Bubbles: size + label ✔. Range bars: position + bracket + word ✔. Rhythm: glyph + word ✔. Weekday row: the pen **sprout encodes level by colour only** (leaf hexes change, shape constant — design-system.md §1.3), which breaks PRODUCT.md principle 5 and regresses today's `SproutGlyph` (bud→open crown, size lift, stem notch; `codebase-designsystem.md` §7). The energy bolt's level cue is the black block (a fill-height cue — good for grayscale, if it is intentional); the focus arc sweep is shape ✔.
+
+**Touch targets.** Legend chips 25 pt and month segments 30 pt (38 track) are below `Metrics.minTapTarget` 44 (`Metrics.swift:10`). Chips are display-only in the pen (all `With Dot`, no selected variant) → not controls, acceptable; if they become tap-to-highlight, pad the hit area. Segments: extend the tappable frame to ≥ 44 with `contentShape`. Rhythm cells keep `minWidth/minHeight 44` (`DailyRhythmMatrix.swift:71`).
+
+**VoiceOver.** Current labels are worth carrying verbatim: bubble summary and per-bubble "Okay: 8 check-ins, 33%" (`MoodBubbleChart.swift:27-28, :78`), strip "Mood weekday averages: mostly Okay" + per-slot "Mo: Good" (`SignalStripsView.swift:52-61, :86-92`), gauge "Mood: Okay+, between Okay & Good" (`SignalAverageGauges.swift:99-101` → becomes the range bar's combined label), rhythm "Morning: Okay" (`DailyRhythmMatrix.swift:75-80`), connection "Medication × focus: locked. Log medication on 2 more days…" (`ConnectionCardsView.swift:69-70, :105-106`). The new range bar needs one `accessibilityElement(children: .combine)` per row so the bracket + five pills read as one sentence, not seven items. Card headers keep `.isHeader` (`InsightsView.swift:109`).
+
+**Dark mode.** The pen is light-only and every value is a literal; the DS today is `Color(lightHex:darkHex:)` throughout (dark "derived per iOS convention", `NewLook.swift:8-9`). Per-token derivations this screen needs: page `#fbfffc`, card `#ffffff`, card hairline `#000@0.10` (invisible on a dark card — needs a light hairline), the `#fafafa` tracks (segment control, progress bar), the nine rhythm tints (alpha tints over white wash out over dark), `#183c28` shadows (fine; invisible), and above all the **energy/sleep black block** — on a `#12140F`-class ground the level indicator vanishes, which removes the bolt's only level cue. The sprout ramp reds/greens and the focus base ring `#d6e5f0` need contrast checks on the dark card. Spec-033 precedent: "Figma specs light only; dark is derived" (constraints Q-C10) — document each derived value in the new DESIGN.md.
+
+**Reduce Motion.** Nothing on this screen animates in the pen or today (only scrolling). No work.
+
+---
+
+## 6. Risks and open questions
+
+### Risks (real, ranked)
+
+1. **Sleep × Mood can never unlock on production data** (§3): `poorSleep`/`goodSleep` word lists do not intersect the canonical `SleepLevel` values the validator writes. Re-skinning the card without fixing the gate ships a permanently locked card with a nudge sentence. Logic fix + tests before/with the restyle.
+2. **053 collision.** `feat/053-insights-shape-views` re-wires `InsightsView` and adds five cards the pen does not show; `stash@{0}` holds uncommitted edits to `InsightsView.swift` and the shape cards. Merging after the refresh = a second re-skin plus a certain conflict in `InsightsView.swift`; archiving = losing 23 commits of tested VM logic (`usualRange` is the pen's "Where you averaged" in another form). Decide first.
+3. **Glyph asset dependency.** Cards 2 and 4 cannot match until the Frame 12 set exists as tintable/renderable assets; the black-block question blocks the energy bolt; the colour-only sprout breaks principle 5. This screen is the one that shows 21 + 9 level glyphs at once — it is the acceptance test for that DS decision.
+4. **Contrast on the three coloured tags and the Great bubble** (§5): `#e38400` fails outright, `#2a9134` fails at 12 pt. Either the palette gains AA text steps (green-600/700 exist; amber has none) or the tags lose colour.
+5. **Horizontal room.** Range-bar labels with the real Energy/Focus vocabulary, `AFTERNOON`, and the single-row legend all overflow a 312 pt content width at default size — before Dynamic Type. The pen "solves" two of them by clipping/wrapping badly.
+6. **Copy drift vs pinned tests.** Connection order (`connectionsAlwaysThreeInOrder`), gated copy, average captions and weekday slot order are pinned in `InsightsViewModelTests.swift`; the pen's Title Case and order changes must be decided as spec, not slipped into the view.
+7. **Chrome cascade.** The floating bar/FAB and the medication-bar removal are app-shell decisions; this screen cannot be finished (bottom inset, fade, top inset) until they are.
+8. **Token sprawl.** The pen adds a 29 pt gutter, a 5 pt card gap, r 18/24 cards, `#e4ece4` + `#000@0.10` hairlines, nine tints — Principle IV wants these justified in Complexity Tracking, not added as literals.
+
+### Open questions for the owner (only the ones this screen cannot proceed without)
+
+1. **053:** merge-then-reskin, or archive and treat the pen as the Insights scope? (Blocks the spec.)
+2. **Month selector:** fixed three segments (prev / selected / next) or a paged strip; what shows in the "next" slot when the selected month is the current one?
+3. **Bubble rule:** confirm `d ≈ 60 + 1.3·pct` (or keep the sqrt-area rule), min/max diameter, and what a level with 0 check-ins renders (hidden vs minimum bubble).
+4. **Legend overflow:** wrap (JSON, accessible) or a horizontally scrolling single row (PNG)?
+5. **"Where you averaged":** bracket for a whole-number mean (one segment?), and confirm the Energy/Focus axes use `Levels.swift` words — accept the label-width consequence (two lines or scaled).
+6. **Sleep:** no Sleep row on Insights (as drawn), or a fourth row from `sleepLevelValue` now that Frame 12 has a sleep glyph? And does the Sleep × Mood gate move to `SleepLevel`?
+7. **Connections:** card order (pen: med · sleep · energy vs code: med · energy · sleep); keep or drop the bar's leading/trailing captions; "3 or more days" caption vs the real 4 / 5 / 3+3 gates; and Q-P2 — is "unlock" + padlock acceptable under the no-gamification rule?
+8. **Coloured tags:** keep `Mostly Steady` in amber knowing it fails AA, or move tags to AA-safe inks (`#26842f` / `#1e6725`) / no colour?
+9. **Rhythm tint rule:** one formula (signal colour @ fixed alpha) instead of nine literals?
+10. **Chrome:** medication bar hidden on Insights (as drawn)? FAB action on this tab? Selected tab pill icon-only (screen) or icon + label (DS)?
+11. **Copy casing:** Title Case (pen) vs sentence case (code/HIG) for section titles and subtitles — one rule for the whole screen (screen spec §4.2 #14).
+
+---
+
+## 7. Effort — senior SwiftUI engineer, assuming tokens + shared components (card skin, BillChip, floating tab bar, FAB, glyph assets, identity icons) already exist
+
+| Bucket | Work | Hours |
+|---|---|---|
+| **NEW** | `SegmentedMonthPicker` (track/thumb/shadow, 3 segments, `prevMonth/nextMonth` wiring, bounds rule, ≥ 44 hit area) | 3.0 |
+| NEW | `RangeBar` (5 pills + bracket + labels + caption; span rule incl. whole-number case; `ViewThatFits` for label overflow; combined a11y label) + pure-function tests for the span | 4.0 |
+| NEW | Rhythm cell: tinted circle + level glyph + tint-rule function (test-first) | 2.5 |
+| NEW | Connection card row layout (icon tile, lock/unlock, gradient bar, locked/unlocked variants) | 3.0 |
+| NEW | In-card hairline divider + signal row header (identity icon + label + coloured tag) as small shared sub-views | 1.5 |
+| NEW | Bubble sizing formula + explicit per-level ink + overlap positioning, with tests | 1.5 |
+| NEW (logic) | Sleep × Mood gate on `SleepLevel` — RED→GREEN tests, copy unchanged | 1.5 |
+| **NEW subtotal** | | **17.0** |
+| **CHANGE** | Page chrome: title/subtitle roles, 29 gutter, 24 rhythm, bottom inset for the floating bar, fade re-measure | 1.5 |
+| CHANGE | Card 1: header copy/count style, legend → `BillChip(.withDot)`, wrap/scroll per decision | 1.5 |
+| CHANGE | Card 2: 33.55 glyphs, 12/500 weekday labels, solid empty circle, tags, "Energy Level" label, dividers | 2.0 |
+| CHANGE | Card 4: uppercase headers with narrow-width fallback, row icons, dividers | 1.0 |
+| CHANGE | Connections header (eyebrow → 16/600 title), order/copy per decision, test updates (`InsightsViewModelTests`) | 1.5 |
+| CHANGE | Dark-mode derivation + device QA pass (light/dark, AX1–AX5) for this screen | 2.0 |
+| **CHANGE subtotal** | | **9.5** |
+| **REMOVE** | `SignalAverageGauges.swift`, sleep-deferred chip, dead `navigationDestination` + unused `selectedTab`, `MiniBar` captions (if dropped), medication-bar override (if decided); prune `fillGradient`/`bubbleFill` uses left only by Insights | 1.5 |
+| **REMOVE subtotal** | | **1.5** |
+| **Total (code)** | | **28.0** |
+| Process prerequisite (not engineering time, but on the critical path) | HTML mockup of this screen in the new language before any SwiftUI (constitution I) | 3.0 |
+| **Total incl. mockup** | | **31.0** |
+
+Not included: the shared DS work this screen depends on (card skin, `BillChip`, segmented control if promoted to the DS, floating tab bar + FAB, 15 level glyph assets + 3 identity icons, amber/blue text tokens), the 053 merge or archive, and the spec-kit artefacts.

@@ -1,0 +1,1099 @@
+{
+ "id": "72:16419",
+ "type": "FRAME",
+ "name": "iPhone 17 - 6",
+ "bounds": [
+  2401,
+  512,
+  402,
+  874
+ ],
+ "style": {
+  "fills": [
+   {
+    "type": "SOLID",
+    "color": "#fbfffc",
+    "opacity": 1
+   }
+  ],
+  "strokeWeight": 1,
+  "cornerRadius": 32,
+  "opacity": 1,
+  "visible": true
+ },
+ "children": [
+  {
+   "id": "72:16420",
+   "type": "INSTANCE",
+   "name": "Status Bar",
+   "bounds": [
+    0,
+    0,
+    402,
+    52
+   ],
+   "style": {
+    "strokeWeight": 1,
+    "opacity": 1,
+    "visible": true
+   },
+   "children": [
+    {
+     "id": "I72:16420;1:207",
+     "type": "FRAME",
+     "name": "Status Icons",
+     "bounds": [
+      301,
+      20,
+      69,
+      14
+     ],
+     "style": {
+      "strokeWeight": 1,
+      "opacity": 1,
+      "visible": true
+     },
+     "children": [
+      {
+       "id": "I72:16420;1:208",
+       "type": "FRAME",
+       "name": "Network Signal /\u00a0Light",
+       "bounds": [
+        0,
+        0,
+        20,
+        14
+       ],
+       "style": {
+        "strokeWeight": 1,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": [
+        {
+         "id": "I72:16420;1:209",
+         "type": "VECTOR",
+         "name": "Path",
+         "bounds": [
+          11,
+          4,
+          3,
+          8
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        },
+        {
+         "id": "I72:16420;1:210",
+         "type": "VECTOR",
+         "name": "Path",
+         "bounds": [
+          6.5,
+          6,
+          3,
+          6
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        },
+        {
+         "id": "I72:16420;1:211",
+         "type": "VECTOR",
+         "name": "Path",
+         "bounds": [
+          2,
+          7.5,
+          3,
+          4.5
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        },
+        {
+         "id": "I72:16420;1:212",
+         "type": "VECTOR",
+         "name": "Empty Bar",
+         "bounds": [
+          15.5,
+          2,
+          3,
+          10
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "opacity": 0.18000000715255737,
+          "visible": true
+         },
+         "children": []
+        },
+        {
+         "id": "I72:16420;1:213",
+         "type": "VECTOR",
+         "name": "Path",
+         "bounds": [
+          11,
+          4,
+          3,
+          8
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        },
+        {
+         "id": "I72:16420;1:214",
+         "type": "VECTOR",
+         "name": "Path",
+         "bounds": [
+          6.5,
+          6,
+          3,
+          6
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        },
+        {
+         "id": "I72:16420;1:215",
+         "type": "VECTOR",
+         "name": "Path",
+         "bounds": [
+          2,
+          7.5,
+          3,
+          4.5
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        }
+       ]
+      },
+      {
+       "id": "I72:16420;1:217",
+       "type": "FRAME",
+       "name": "WiFi Signal / Light",
+       "bounds": [
+        24,
+        0,
+        16,
+        14
+       ],
+       "style": {
+        "strokeWeight": 1,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": [
+        {
+         "id": "I72:16420;1:218",
+         "type": "VECTOR",
+         "name": "Path",
+         "bounds": [
+          5.938232421875,
+          8.9395751953125,
+          4.371864318847656,
+          3.060413122177124
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        },
+        {
+         "id": "I72:16420;1:219",
+         "type": "VECTOR",
+         "name": "Path",
+         "bounds": [
+          3.46484375,
+          5.4698486328125,
+          9.319799423217773,
+          3.314253330230713
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        },
+        {
+         "id": "I72:16420;1:220",
+         "type": "VECTOR",
+         "name": "Path",
+         "bounds": [
+          1,
+          2,
+          14.25,
+          4.3225884437561035
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        }
+       ]
+      },
+      {
+       "id": "I72:16420;1:221",
+       "type": "FRAME",
+       "name": "Battery / Light",
+       "bounds": [
+        44,
+        0,
+        25,
+        14
+       ],
+       "style": {
+        "strokeWeight": 1,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": [
+        {
+         "id": "I72:16420;1:224",
+         "type": "VECTOR",
+         "name": "Rectangle 23",
+         "bounds": [
+          24,
+          5,
+          1,
+          4
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "strokeWeight": 1,
+          "cornerRadius": "mixed",
+          "opacity": 0.6000000238418579,
+          "visible": true
+         },
+         "children": []
+        },
+        {
+         "id": "I72:16420;1:229",
+         "type": "VECTOR",
+         "name": "Rectangle 21 (Stroke)",
+         "bounds": [
+          0,
+          1,
+          23,
+          12
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "strokeWeight": 1,
+          "opacity": 0.6000000238418579,
+          "visible": true
+         },
+         "children": []
+        },
+        {
+         "id": "I72:16420;1:230",
+         "type": "RECTANGLE",
+         "name": "Rectangle 20",
+         "bounds": [
+          2,
+          3,
+          19,
+          8
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "strokeWeight": 1,
+          "cornerRadius": 1,
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "id": "I72:16420;1:233",
+     "type": "FRAME",
+     "name": "Time / Light",
+     "bounds": [
+      32,
+      18,
+      40,
+      21
+     ],
+     "style": {
+      "strokeWeight": 1,
+      "cornerRadius": 20,
+      "opacity": 1,
+      "visible": true
+     },
+     "children": [
+      {
+       "id": "I72:16420;1:234",
+       "type": "FRAME",
+       "name": "9:41",
+       "bounds": [
+        4,
+        3,
+        33,
+        15
+       ],
+       "style": {
+        "strokeWeight": 1,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": [
+        {
+         "id": "I72:16420;1:235",
+         "type": "VECTOR",
+         "name": "9:41",
+         "bounds": [
+          2,
+          2,
+          28.42616844177246,
+          11.0888671875
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#212529",
+            "opacity": 1
+           }
+          ],
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "72:16421",
+   "type": "INSTANCE",
+   "name": "Home Indicator",
+   "bounds": [
+    0,
+    840,
+    402,
+    34
+   ],
+   "style": {
+    "strokeWeight": 1,
+    "opacity": 1,
+    "visible": true
+   },
+   "children": [
+    {
+     "id": "I72:16421;1:254",
+     "type": "FRAME",
+     "name": "Bar",
+     "bounds": [
+      129,
+      21,
+      143,
+      5
+     ],
+     "style": {
+      "strokeWeight": 1,
+      "opacity": 1,
+      "visible": true
+     },
+     "children": [
+      {
+       "id": "I72:16421;1:255",
+       "type": "RECTANGLE",
+       "name": "Base",
+       "bounds": [
+        0,
+        0,
+        143,
+        5
+       ],
+       "style": {
+        "fills": [
+         {
+          "type": "SOLID",
+          "color": "#212529",
+          "opacity": 1
+         }
+        ],
+        "cornerRadius": 10,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "72:16422",
+   "type": "FRAME",
+   "name": "Container",
+   "bounds": [
+    31,
+    77,
+    340,
+    42.5999755859375
+   ],
+   "style": {
+    "strokeWeight": 1,
+    "opacity": 1,
+    "visible": true
+   },
+   "children": [
+    {
+     "id": "72:16423",
+     "type": "FRAME",
+     "name": "Frame 1",
+     "bounds": [
+      0,
+      0,
+      177.5999755859375,
+      42.5999755859375
+     ],
+     "style": {
+      "strokeWeight": 1,
+      "opacity": 1,
+      "visible": true
+     },
+     "children": [
+      {
+       "id": "72:16424",
+       "type": "FRAME",
+       "name": "Background+Border",
+       "bounds": [
+        0,
+        0,
+        42.5999755859375,
+        42.5999755859375
+       ],
+       "style": {
+        "fills": [
+         {
+          "type": "SOLID",
+          "color": "#ffffff",
+          "opacity": 1
+         }
+        ],
+        "strokes": [
+         {
+          "type": "SOLID",
+          "color": "#e4ece4",
+          "opacity": 1
+         }
+        ],
+        "strokeWeight": 1.0649993419647217,
+        "cornerRadius": 21.29998779296875,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": [
+        {
+         "id": "72:16425",
+         "type": "INSTANCE",
+         "name": "vuesax/outline/arrow-left",
+         "bounds": [
+          11.299986839294434,
+          11.29998779296875,
+          20,
+          20
+         ],
+         "style": {
+          "strokeWeight": 1,
+          "opacity": 1,
+          "visible": true
+         },
+         "children": [
+          {
+           "id": "I72:16425;8:18782",
+           "type": "GROUP",
+           "name": "vuesax/outline/arrow-left",
+           "bounds": [
+            0,
+            0,
+            20,
+            20
+           ],
+           "style": {
+            "opacity": 1,
+            "visible": true
+           },
+           "children": [
+            {
+             "id": "I72:16425;8:18783",
+             "type": "GROUP",
+             "name": "arrow-left",
+             "bounds": [
+              0,
+              0,
+              20,
+              20
+             ],
+             "style": {
+              "opacity": 1,
+              "visible": true
+             },
+             "children": [
+              {
+               "id": "I72:16425;8:18784",
+               "type": "VECTOR",
+               "name": "Vector",
+               "bounds": [
+                5.962499618530273,
+                2.777083396911621,
+                7.160416603088379,
+                14.447916030883789
+               ],
+               "style": {
+                "fills": [
+                 {
+                  "type": "SOLID",
+                  "color": "#1e6725",
+                  "opacity": 1
+                 }
+                ],
+                "strokeWeight": 1,
+                "opacity": 1,
+                "visible": true
+               },
+               "children": []
+              },
+              {
+               "id": "I72:16425;8:18785",
+               "type": "VECTOR",
+               "name": "Vector",
+               "bounds": [
+                0,
+                0,
+                20,
+                20
+               ],
+               "style": {
+                "strokeWeight": 1,
+                "visible": true
+               },
+               "children": []
+              }
+             ]
+            }
+           ]
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "id": "72:16426",
+       "type": "FRAME",
+       "name": "Frame 2",
+       "bounds": [
+        49.5999755859375,
+        10.29998779296875,
+        128,
+        22
+       ],
+       "style": {
+        "strokeWeight": 1,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": [
+        {
+         "id": "72:16427",
+         "type": "FRAME",
+         "name": "Container",
+         "bounds": [
+          0,
+          0,
+          128,
+          22
+         ],
+         "style": {
+          "strokeWeight": 1,
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "72:16432",
+   "type": "FRAME",
+   "name": "Frame 1707479478",
+   "bounds": [
+    30,
+    267,
+    342,
+    340
+   ],
+   "style": {
+    "strokeWeight": 1,
+    "opacity": 1,
+    "visible": true
+   },
+   "children": [
+    {
+     "id": "72:16433",
+     "type": "GROUP",
+     "name": "Group 735",
+     "bounds": [
+      65.5,
+      0,
+      211,
+      211
+     ],
+     "style": {
+      "effects": [
+       {
+        "type": "DROP_SHADOW",
+        "color": "#000000",
+        "opacity": 0.07999999821186066,
+        "offset": {
+         "x": 0,
+         "y": 1.2161383628845215
+        },
+        "radius": 10.945245742797852,
+        "spread": 0,
+        "blendMode": "NORMAL"
+       }
+      ],
+      "opacity": 1,
+      "visible": true
+     },
+     "children": [
+      {
+       "id": "72:16434",
+       "type": "FRAME",
+       "name": "Frame 1707479517",
+       "bounds": [
+        65.5,
+        0,
+        211,
+        211
+       ],
+       "style": {
+        "fills": [
+         {
+          "type": "SOLID",
+          "color": "#ebf8ee",
+          "opacity": 1
+         }
+        ],
+        "strokes": [
+         {
+          "type": "SOLID",
+          "color": "#bdddc0",
+          "opacity": 1
+         }
+        ],
+        "strokeWeight": 12.970115661621094,
+        "cornerRadius": 105.5,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": [
+        {
+         "id": "72:16435",
+         "type": "FRAME",
+         "name": "Frame 1000002966",
+         "bounds": [
+          57.02693557739258,
+          57.02693557739258,
+          96.94612884521484,
+          96.94612884521484
+         ],
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#2a9134",
+            "opacity": 1
+           }
+          ],
+          "strokeWeight": 1.6106959581375122,
+          "opacity": 1,
+          "visible": true
+         },
+         "children": [
+          {
+           "id": "72:16436",
+           "type": "VECTOR",
+           "name": "Vector",
+           "bounds": [
+            23.615081787109375,
+            29.82957649230957,
+            49.715965270996094,
+            37.2869758605957
+           ],
+           "style": {
+            "fills": [
+             {
+              "type": "SOLID",
+              "color": "#ffffff",
+              "opacity": 1
+             }
+            ],
+            "strokeWeight": 1.572588324546814,
+            "opacity": 1,
+            "visible": true
+           },
+           "children": []
+          }
+         ]
+        }
+       ]
+      },
+      {
+       "id": "72:16437",
+       "type": "ELLIPSE",
+       "name": "Ellipse 8",
+       "bounds": [
+        65.5,
+        0,
+        210.99998474121094,
+        210.99998474121094
+       ],
+       "style": {
+        "fills": [
+         {
+          "type": "GRADIENT_LINEAR",
+          "gradientStops": [
+           {
+            "color": "#26842f",
+            "opacity": 1,
+            "position": 0
+           },
+           {
+            "color": "#3fbb4b",
+            "opacity": 1,
+            "position": 0.5
+           },
+           {
+            "color": "#25832e",
+            "opacity": 1,
+            "position": 1
+           }
+          ],
+          "opacity": 1
+         }
+        ],
+        "strokeWeight": 0.5596816539764404,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": []
+      }
+     ]
+    },
+    {
+     "id": "72:16438",
+     "type": "FRAME",
+     "name": "Frame 1707479471",
+     "bounds": [
+      40.5,
+      259,
+      261,
+      81
+     ],
+     "style": {
+      "strokeWeight": 1,
+      "opacity": 1,
+      "visible": true
+     },
+     "children": [
+      {
+       "id": "72:16439",
+       "type": "TEXT",
+       "name": "Check-In Saved",
+       "bounds": [
+        0,
+        0,
+        261,
+        41
+       ],
+       "text": "Check-In Saved",
+       "style": {
+        "fills": [
+         {
+          "type": "SOLID",
+          "color": "#17501d",
+          "opacity": 1
+         }
+        ],
+        "strokeWeight": 1,
+        "fontSize": 34,
+        "fontFamily": "Inter",
+        "fontStyle": "Semi Bold",
+        "fontWeight": 600,
+        "lineHeight": {
+         "unit": "AUTO"
+        },
+        "letterSpacing": {
+         "value": 0,
+         "unit": "PIXELS"
+        },
+        "textAlignHorizontal": "LEFT",
+        "opacity": 1,
+        "visible": true
+       },
+       "children": []
+      },
+      {
+       "id": "72:16440",
+       "type": "TEXT",
+       "name": "A Moment For Yourself, Captured.\u2028See You At Next Check-In",
+       "bounds": [
+        0,
+        47,
+        261,
+        34
+       ],
+       "text": "A Moment For Yourself, Captured.\u2028See You At Next Check-In",
+       "style": {
+        "fills": [
+         {
+          "type": "SOLID",
+          "color": "#1e2225",
+          "opacity": 1
+         }
+        ],
+        "strokeWeight": 1,
+        "fontSize": 14,
+        "fontFamily": "Inter",
+        "fontStyle": "Medium",
+        "fontWeight": 500,
+        "lineHeight": {
+         "unit": "AUTO"
+        },
+        "letterSpacing": {
+         "value": 0,
+         "unit": "PIXELS"
+        },
+        "textAlignHorizontal": "CENTER",
+        "opacity": 1,
+        "visible": true
+       },
+       "children": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "72:16441",
+   "type": "FRAME",
+   "name": "Frame 1707479477",
+   "bounds": [
+    30,
+    717,
+    342,
+    44
+   ],
+   "style": {
+    "strokeWeight": 1,
+    "opacity": 1,
+    "visible": true
+   },
+   "children": [
+    {
+     "id": "72:16442",
+     "type": "FRAME",
+     "name": "665_frame",
+     "bounds": [
+      0,
+      0,
+      342,
+      44
+     ],
+     "style": {
+      "strokeWeight": 1,
+      "opacity": 1,
+      "visible": true
+     },
+     "children": [
+      {
+       "id": "72:16443",
+       "type": "INSTANCE",
+       "name": "Button / Filled",
+       "bounds": [
+        0,
+        0,
+        342,
+        44
+       ],
+       "style": {
+        "fills": [
+         {
+          "type": "SOLID",
+          "color": "#2a9134",
+          "opacity": 1
+         }
+        ],
+        "strokeWeight": 1,
+        "cornerRadius": 999,
+        "opacity": 1,
+        "visible": true
+       },
+       "children": [
+        {
+         "id": "I72:16443;27:1078",
+         "type": "TEXT",
+         "name": "label",
+         "bounds": [
+          114.5,
+          10,
+          113,
+          24
+         ],
+         "text": "Go Back Home",
+         "style": {
+          "fills": [
+           {
+            "type": "SOLID",
+            "color": "#ffffff",
+            "opacity": 1
+           }
+          ],
+          "strokeWeight": 1,
+          "fontSize": 16,
+          "fontFamily": "Inter",
+          "fontStyle": "Medium",
+          "fontWeight": 500,
+          "lineHeight": {
+           "value": 24,
+           "unit": "PIXELS"
+          },
+          "letterSpacing": {
+           "value": 0,
+           "unit": "PIXELS"
+          },
+          "textAlignHorizontal": "LEFT",
+          "opacity": 1,
+          "visible": true
+         },
+         "children": []
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

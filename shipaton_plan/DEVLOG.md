@@ -1,4 +1,4 @@
-<!-- Created: 2026-08-31 01:18 (WEST) · Updated: 2026-09-27 12:55 (WEST) -->
+<!-- Created: 2026-08-31 01:18 (WEST) · Updated: 2026-09-28 00:45 (WEST) -->
 # Shipaton Sprint DevLog — September 2026
 
 Chronological narrative of the sprint — the *why* behind what happened. Newest day on top.
@@ -12,6 +12,10 @@ This complements, never duplicates: **[BACKLOG.md](BACKLOG.md)** holds current *
 Rule inherited from `docs/DEVLOG.md`: **the why, not every edit.**
 
 ---
+
+## 2026-09-28
+
+- **[00:45 WEST] Direction — UI refresh (057) re-based on the Pencil file; DESIGN.md rewritten; step-by-step plan written, awaiting owner approval.** _what:_ owner commissioned an outside design (`untitled.pen`: 8 `iPhone 17` screens + a design system) and declared the Paper & Pollen / New Look `DESIGN.md` outdated. Read the pen through the pencil MCP exports, mapped the current SwiftUI and token package, cross-checked all 8 screens against the code with an independent verifier per screen (841 claims checked, 65 refuted), drafted and adversarially reviewed both documents (3 lenses, 53 findings applied). Outputs: `DESIGN.md` (pen-derived; Product Posture + Paywall rules carried verbatim; the open owner decisions indexed as D-*), `shipaton_plan/UI_REFRESH_PLAN.md` (26 decisions, 54 steps UI-01…UI-54 each with a ☐ Approved line, ≈425 h ± 20 %), research pack under `specs/057-ui-refresh/research/` and pen exports under `docs/design/pen/` (both untracked until UI-01). _why:_ the pen is the source of truth (owner, 2026-09-27); the refresh changes navigation topology and reverses four logged 2026-06 decisions, so nothing is implemented before the owner approves step by step. _timeline reality:_ the Shipaton gate has passed; the plan proposes two waves — 1.2 (foundations + chrome + check-in trio + Calendar) ≈ Nov 13, 1.3 (Day Details + Edit + Insights + Settings) ≈ Dec 18 — anchored on 055 merging first. _next:_ owner answers the five load-bearing decisions (D1 font · D3 glyphs · D4/D5 tab bar + FAB · D12 053/054 · D14 contrast) and approves UI-01…UI-04; no Swift is touched until then.
 
 ## 2026-09-27
 
