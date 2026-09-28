@@ -1,118 +1,67 @@
 import SwiftUI
 
-/// **New Look** — a cool **sage** ground with white, borderless, generously-rounded cards and
-/// iOS-ink text. As of spec 033, New Look is the app-wide default. `Theme` (Paper & Pollen) is
-/// retained only for the semantic-color exceptions documented in DESIGN.md (accent, meadow,
-/// status, danger, medication).
-///
-/// Values map 1:1 to the Figma "Tiimo Colors" variables (file Squil-Design); dark values are
-/// derived per iOS convention (cool-dark surfaces, light ink) and validated at device QA.
-/// Medication is NOT redefined here — it reuses `Palette.medication`.
+/// **Retired (spec 057).** New Look was the app-wide language of specs 032/033. Every member is
+/// now an alias of the pen-derived token it maps to (DESIGN.md §4.2 "Today" column), so the 261
+/// call sites keep compiling while screens migrate to `Surface` / `Ink` / `Accent` / `Stroke`.
+/// UI-49 deletes this file once the last consumer has moved.
 public enum NewLook {
-    /// Screen ground — cool sage.
-    public static let screen = Color(lightHex: "#EFF2EB", darkHex: "#12140F")
-    /// Card surface — raised, borderless.
-    public static let card = Color(lightHex: "#FFFFFF", darkHex: "#1C1E19")
-    /// Primary text.
-    public static let inkPrimary = Color(lightHex: "#1C1B1F", darkHex: "#F2F3EE")
-    /// Inverse label — text/glyphs placed ON an `inkPrimary` fill (e.g. the check-in stop button's
-    /// dark capsule). The inverse of `inkPrimary`; ≈16:1 on that capsule in both light and dark.
-    public static let onInk = Color(lightHex: "#F2F3EE", darkHex: "#1C1B1F")
-    /// Secondary text — labels, captions, unselected chip glyphs.
-    /// Known limitation: the light value `#8A8A8E` is below WCAG AA (3.0:1 on `screen`, 3.4:1 on
-    /// `card`) for normal-size body text — kept 1:1 with Figma by owner decision (2026-07-12, see
-    /// DESIGN.md Decisions Log). Do not darken without approval. Dark mode passes (~7:1).
-    public static let inkSecondary = Color(lightHex: "#8A8A8E", darkHex: "#9BA09A")
-    /// Hairline — chip / field borders (never a card border in New Look).
-    public static let hairline = Color(lightHex: "#DBDDDE", darkHex: "#33362F")
-    /// Neutral tint — grooves, tracks, segmented-control fills (never a card background).
-    public static let tintNeutral = Color(lightHex: "#ECEAE6", darkHex: "#272A22")
-    /// Selection accent — filled selected chips (non-medication).
-    public static let selection = Color(lightHex: "#54B492", darkHex: "#5FC49F")
-    /// Label on a selection/medication fill. White per Figma in light mode; in dark mode the
-    /// derived fills are light enough that white fails AA, so the label flips to dark ink
-    /// (~8:1 on `selection`, ~4.8:1 on `Palette.medication`). Owner decision 2026-07-16.
-    public static let onSelection = Color(lightHex: "#FFFFFF", darkHex: "#1C1B1F")
-    /// Capture-flow accent (check-in · onboarding · recording-detail edit) — the day check-in
-    /// card's "Good"-mood green (`MoodLevel.good` base `#5FB36E`), adopted as the single green
-    /// for those three surfaces by owner decision 2026-07-16. Dark value derived (lifted toward
-    /// the dark surface for legibility); validate at device QA. Deliberately scoped: selected
-    /// chips elsewhere keep `selection`, and other primary buttons keep the meadow gradient.
-    public static let checkInGreen = Color(lightHex: "#5FB36E", darkHex: "#6FC47E")
-    /// Soft end-stop of the check-in ring gradient (a04/a05) — the light green partner paired
-    /// with `checkInGreen` at the ring's bottom. Ring-gradient scope only.
-    public static let checkInGreenSoft = Color(lightHex: "#96C19F", darkHex: "#86BC9D")
+    public static let screen = Surface.screen
+    public static let card = Surface.card
+    public static let inkPrimary = Ink.primary
+    public static let onInk = Ink.onAccent
+    /// Was `#8a8a8e` (3.4:1, a logged AA exception) — now grey-400, which passes.
+    public static let inkSecondary = Ink.secondary
+    public static let hairline = Stroke.chip
+    public static let tintNeutral = Surface.track
+    public static let selection = Accent.primaryFill
+    public static let onSelection = Ink.onAccent
+    public static let checkInGreen = Accent.primaryFill
+    public static let checkInGreenSoft = Palette.green300
 }
 
-// MARK: - Card
+// MARK: - Card (alias of `.card(.large)`)
 
 public extension View {
-    /// New Look card: white surface, radius 20, soft shadow, **no border** — the app-wide
-    /// card treatment since spec 033.
-    func newLookCard(padding: CGFloat = Spacing.l) -> some View {
-        self
-            .padding(padding)
-            .background(NewLook.card, in: .rect(cornerRadius: Radius.newLookCard))
-            .newLookCardShadow()
+    /// Pre-057 card modifier — now the pen's large card (r 24, hairline, tinted shadow).
+    func newLookCard(padding: CGFloat = Spacing.cardInset) -> some View {
+        card(.large, padding: padding)
     }
 
-    /// The New Look card elevation — the canonical two-layer soft shadow. For full-bleed cards
-    /// that manage their own background/clip (e.g. `DayCard`) and can't take `newLookCard()`'s
-    /// padding; every card surface must source its shadow here, never inline the literals.
+    /// Pre-057 card shadow — now `Elevation.card`.
     func newLookCardShadow() -> some View {
-        self
-            .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
-            .shadow(color: .black.opacity(0.03), radius: 2, x: 0, y: 1)
+        elevation(Elevation.card)
     }
 }
 
-// MARK: - Chip grammar
+// MARK: - Chip grammar (alias of `BillChip` styling; migrates in UI-10 consumers)
 
-/// Which accent a selected chip fills with. Medication chips are always purple; everything else
-/// uses the meadow green — unified with the check-in ring/button and the Check-in tab.
+/// Which accent a selected chip fills with. The pen fills every selected chip green-600;
+/// the medication role is kept as a name only until its call sites migrate.
 public enum NewLookChipRole {
     case standard
     case medication
-    /// Capture-flow chips (check-in · recording-detail edit) — fill with `checkInGreen` instead
-    /// of the app-wide `selection`, so those surfaces read one green without shifting Insights.
     case checkIn
 
-    var selectedFill: Color {
-        switch self {
-        case .standard:   Theme.meadowGreen
-        case .medication: Palette.medication
-        case .checkIn:    NewLook.checkInGreen
-        }
-    }
+    var selectedFill: Color { Accent.primaryFill }
 }
 
 public extension View {
-    /// New Look pill/chip styling applied to a chip's label content: unselected = white fill +
-    /// hairline border + primary ink; selected = solid role fill + `onSelection` label (white in
-    /// light, dark ink in dark — the derived dark fills are too light for white). Shape is a capsule
-    /// (matches a03's 26pt pills). Pair with the caller's own `Button` + accessibility traits.
+    /// Pre-057 chip styling — now the Bill-shape chip's outline / solid states.
     func newLookChip(selected: Bool, role: NewLookChipRole = .standard) -> some View {
         self
-            .font(Typography.caption)
-            .fontWeight(.medium)
-            .foregroundStyle(selected ? NewLook.onSelection : NewLook.inkPrimary)
-            .padding(.horizontal, Spacing.m)
-            .padding(.vertical, Spacing.s)
-            .background(selected ? role.selectedFill : NewLook.card, in: .capsule)
+            .font(Typography.chipLabel)
+            .foregroundStyle(selected ? Ink.onAccent : Ink.chip)
+            .padding(.horizontal, Spacing.cardInset)
+            .padding(.vertical, 5)
+            .background(selected ? role.selectedFill : Surface.card, in: .capsule)
             .overlay {
-                if !selected {
-                    Capsule().strokeBorder(NewLook.hairline, lineWidth: 1)
-                }
+                Capsule().strokeBorder(selected ? role.selectedFill : Stroke.chip, lineWidth: Stroke.hairlineWidth)
             }
     }
 }
 
-// MARK: - Nav row
+// MARK: - Nav row (single consumer: the edit sheet, migrates in UI-28)
 
-/// New Look navigation row: a leading pill and a trailing pill at the edges with the title
-/// **mathematically centered on the screen axis** (a `ZStack` so the centering is independent of
-/// pill widths — a03's fix for the off-center title). Used in place of the system nav bar on the
-/// re-skinned sheets.
 public struct NewLookNavBar<Leading: View, Trailing: View>: View {
     private let title: String
     private let leading: Leading
@@ -131,8 +80,8 @@ public struct NewLookNavBar<Leading: View, Trailing: View>: View {
     public var body: some View {
         ZStack {
             Text(title)
-                .font(Typography.text(24, weight: .bold, relativeTo: .title2))
-                .foregroundStyle(NewLook.inkPrimary)
+                .font(Typography.navTitle)
+                .foregroundStyle(Ink.title)
                 .frame(maxWidth: .infinity, alignment: .center)
                 .accessibilityAddTraits(.isHeader)
 

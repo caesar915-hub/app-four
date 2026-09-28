@@ -8,13 +8,13 @@ struct RecordingMoodDisplayTests {
         Recording(audioFileName: "t.m4a", mood: mood)
     }
 
-    // `moodColor` is the soft fill (Meadow·Burnt light partner) — paired with dark ink on beads/banners.
-    @Test func moodColorUsesMeadowBurntFillHexes() {
-        #expect(rec(mood: "low").moodColor   == Color(hex: "#EA9248"))
-        #expect(rec(mood: "flat").moodColor  == Color(hex: "#FDC06C"))
-        #expect(rec(mood: "okay").moodColor  == Color(hex: "#B9DB9C"))
-        #expect(rec(mood: "good").moodColor  == Color(hex: "#7EC38A"))
-        #expect(rec(mood: "great").moodColor == Color(hex: "#459B6B"))
+    // `moodColor` is the soft fill (the pen ramp's light partner) — paired with dark ink on beads/banners.
+    @Test func moodColorUsesPenRampPartnerHexes() {
+        #expect(rec(mood: "low").moodColor   == Color(hex: "#E7A975"))
+        #expect(rec(mood: "flat").moodColor  == Color(hex: "#F3C789"))
+        #expect(rec(mood: "okay").moodColor  == Color(hex: "#BFDEC3"))
+        #expect(rec(mood: "good").moodColor  == Color(hex: "#90C696"))
+        #expect(rec(mood: "great").moodColor == Color(hex: "#75B87B"))
     }
 
     @Test func moodColorUnknownIsSystemGray() {
@@ -22,15 +22,16 @@ struct RecordingMoodDisplayTests {
         #expect(rec(mood: "alert").moodColor == Color(.systemGray4)) // energy word ≠ mood
     }
 
-    // The saturated base (Meadow·Burnt) lives on `color` / `deepFill` — the dark end of gradients.
-    @Test func moodLevelBaseAndPartnerMatchMeadowBurnt() {
-        #expect(MoodLevel.okay.color == Color(hex: "#9FCB79"))
-        #expect(MoodLevel.okay.deepFill == Color(hex: "#9FCB79"))
-        #expect(MoodLevel.okay.gradientPartner == Color(hex: "#B9DB9C"))
-        #expect(MoodLevel.okay.fill == Color(hex: "#B9DB9C"))
+    // The chart ramp (pen Frame 5 / bubble chart) lives on `color` / `deepFill` — the dark end of gradients.
+    @Test func moodLevelBaseAndPartnerMatchPenRamp() {
+        #expect(MoodLevel.okay.color == Color(hex: "#9DCCA2"))
+        #expect(MoodLevel.okay.deepFill == Color(hex: "#9DCCA2"))
+        #expect(MoodLevel.okay.gradientPartner == Color(hex: "#BFDEC3"))
+        #expect(MoodLevel.okay.fill == Color(hex: "#BFDEC3"))
         #expect(MoodLevel.low.color == Color(hex: "#DA7A2A"))
-        #expect(MoodLevel.flat.color == Color(hex: "#EDA94A")) // the chosen amber (was #F0B85C "light amber")
-        #expect(MoodLevel.great.color == Color(hex: "#2E8B57"))
+        #expect(MoodLevel.flat.color == Color(hex: "#EDA94A"))
+        #expect(MoodLevel.good.color == Color(hex: "#55A75D"))
+        #expect(MoodLevel.great.color == Color(hex: "#2A9134"))
     }
 
     @Test func moodLevelDisplayLabels() {

@@ -47,8 +47,8 @@ struct DayCardPaletteTests {
 
     /// Pin the tint/badge tokens so a swapped base colour or opacity wiring is caught.
     @Test func pinsRepresentativeMoodTokens() {
-        #expect(MoodLevel.good.blockTint == Color(hex: "#5FB36E").opacity(Opacity.moodBlock))
-        #expect(MoodLevel.great.badgeTint == Color(hex: "#2E8B57").opacity(Opacity.moodBadge))
+        #expect(MoodLevel.good.blockTint == Color(hex: "#55A75D").opacity(Opacity.moodBlock))
+        #expect(MoodLevel.great.badgeTint == Color(hex: "#2A9134").opacity(Opacity.moodBadge))
     }
 
     // MARK: - WCAG helpers (sRGB; mirrors the contrast-audit mockup)

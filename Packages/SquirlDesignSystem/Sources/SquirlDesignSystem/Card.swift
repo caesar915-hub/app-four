@@ -1,33 +1,11 @@
 import SwiftUI
 
-// MARK: - Card section eyebrow
-
 public extension Text {
-    /// Uppercase, tracked, muted eyebrow used as a card/section header (e.g. "Summary", "Meds", "Audio").
+    /// Pre-057 uppercase card eyebrow — now the pen's row label ink; the uppercase tracking is
+    /// gone (the pen has no eyebrows). Its four call sites migrate to `SectionHeading` in Phase C.
     public func cardEyebrow() -> some View {
         self
-            .font(Typography.label)
-            .textCase(.uppercase)
-            .tracking(0.7)
-            .foregroundStyle(NewLook.inkSecondary)
+            .font(Typography.rowLabel)
+            .foregroundStyle(Ink.primary)
     }
-}
-
-// MARK: - Preview
-
-#Preview {
-    VStack(spacing: Spacing.l) {
-        VStack(alignment: .leading, spacing: Spacing.s) {
-            Text("Card title").font(Typography.headline)
-            Text("Supporting text goes here").font(Typography.caption).foregroundStyle(.secondary)
-        }
-        .newLookCard()
-
-        HStack {
-            Label("Compact row", systemImage: "checkmark.circle.fill").foregroundStyle(.green)
-            Spacer()
-        }
-        .newLookCard(padding: Spacing.m)
-    }
-    .padding(Spacing.l)
 }

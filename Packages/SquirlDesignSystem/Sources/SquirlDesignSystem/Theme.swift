@@ -1,24 +1,23 @@
 import SwiftUI
 
-/// Retained from the retired Paper & Pollen system: semantic colours with no New Look
-/// equivalent (spec-033).
+/// **Retired (spec 057).** The Paper & Pollen semantic survivors, each now an alias of the
+/// pen-derived token it maps to. UI-49 deletes this file once the last consumer has moved.
 public enum Theme {
-    // MARK: - Accent + Meadow
-    /// Bronze accent — links, focus, the "current" ring.
-    public static let accent = Color(lightHex: "#B8842A", darkHex: "#D4A24A")
-    public static let meadowGreen = Color(lightHex: "#5F8A4C", darkHex: "#6E9A58")
-    public static let meadowAmber = Color(lightHex: "#E0A33A", darkHex: "#E8B255")
+    /// Was the bronze link/focus accent — now green text.
+    public static let accent = Accent.primaryText
+    /// Was `#5F8A4C` — now the text-carrying green fill.
+    public static let meadowGreen = Accent.primaryFill
+    /// Was `#E0A33A` — now the energy amber (decorative only).
+    public static let meadowAmber = Accent.energyAmber
 
-    // MARK: - Status (no raw system green/orange)
-    public static let statusDone = meadowGreen
-    public static let statusInProgress = meadowAmber
-    /// Quiet danger — failed transcription, a "stopped" med. Warm clay, never raw red.
-    public static let danger = Color(lightHex: "#B5503A", darkHex: "#CF6A52")
+    public static let statusDone = Accent.primaryText
+    public static let statusInProgress = Accent.energyText
+    /// Was a warm clay — now the single destructive ink (D-C10).
+    public static let danger = Ink.destructive
 
-    // MARK: - The signature gradient
-    /// Green → amber (~120°) — primary actions, the crescent, active states.
+    /// Was green → amber; filled controls are solid green-600 now, so this is a flat green pair.
     public static var meadowGradient: LinearGradient {
-        LinearGradient(colors: [meadowGreen, meadowAmber],
+        LinearGradient(colors: [Accent.primaryFill, Accent.primaryFill],
                        startPoint: .topLeading, endPoint: .bottomTrailing)
     }
 }
