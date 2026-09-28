@@ -3,9 +3,6 @@ import CoreFoundation
 /// Opacity tokens for layered tints and de-emphasis, kept out of raw view code so
 /// the same wash / de-emphasis reads consistently across the app.
 public enum Opacity {
-    /// 0.34 — de-emphasis for calendar days more recent than the selected date.
-    /// Always paired with a non-colour cue so it survives greyscale.
-    public static let deEmphasis: Double = 0.34
     /// 0.16 — the day's representative-mood colour as an inset panel tint behind the folded header
     /// and the open-state strip (Paper & Pollen "#4 Divided · Cream disc"). Deliberately light, and
     /// inset within a cream frame, so the card reads as a mood-tinted panel — not a full-card stain —

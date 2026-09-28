@@ -1,19 +1,20 @@
 import SwiftUI
 
+/// The check-in flow as the pen draws it (spec 057, `iPhone 17 - 4 / 5 / 6`): the hub (A) is the
+/// Check In tab root with the floating chrome; capturing (B) and the saved screen (C) hide the
+/// chrome and the medication bar. One anchored ring carries all three states as a three-step
+/// flow indicator (⅓ · ⅔ · full — D-R1); the hub's stack and the capture controls sit inside it.
 struct CheckInView: View {
     @State private var viewModel: CheckInViewModel
     @Environment(\.openURL) private var openURL
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(MedicationBarViewModel.self) private var medicationBarViewModel
     @Binding var shouldAutoStart: Bool
 
     @State private var showMedLogSheet = false
     @State private var showComposer = false
     @State private var showCapApproachCue = false
-
-    /// First-launch whisper hint (US5 / FR-018, R7): two ghost lines that orient a
-    /// first-ever visitor, dismissed forever on the first capture start (voice or text).
-    @AppStorage("checkInHintSeen") private var checkInHintSeen = false
 
     init(store: RecordingStore, services: AppServices, shouldAutoStart: Binding<Bool> = .constant(false)) {
         _viewModel = State(wrappedValue: CheckInViewModel(store: store, services: services))
@@ -41,7 +42,6 @@ struct CheckInView: View {
         }
         .sheet(isPresented: $showComposer) {
             TextCheckInComposer { draft in
-                checkInHintSeen = true   // a text capture also dismisses the hint (FR-018)
                 viewModel.saveTextCheckIn(draft)
                 return !viewModel.textSaveFailed
             }
@@ -91,9 +91,7 @@ struct CheckInView: View {
         }
     }
 
-    /// Posts a VoiceOver announcement (FR-010/012). A no-op when VoiceOver is off, so it
-    /// is safe to call unconditionally from state-change handlers. iOS 26 floor ⇒ the
-    /// SwiftUI announcement API is always available; no UIAccessibility fallback needed.
+    /// Posts a VoiceOver announcement (FR-010/012). A no-op when VoiceOver is off.
     private func announce(_ message: String) {
         AccessibilityNotification.Announcement(message).post()
     }
@@ -102,73 +100,61 @@ struct CheckInView: View {
         guard shouldAutoStart else { return }
         shouldAutoStart = false
         switch viewModel.state {
-        case .recording, .paused, .processing: return   // already capturing — never double-start (FR-016)
-        case .done: viewModel.reset(); startVoiceCapture()
-        case .idle: startVoiceCapture()
+        case .recording, .processing: return   // already capturing — never double-start (FR-016)
+        case .done: viewModel.reset(); viewModel.startRecording()
+        case .idle: viewModel.startRecording()
         }
     }
 
-    /// Single chokepoint for voice capture so the first-launch hint (US5) is dismissed
-    /// the moment any capture begins, whether tapped or auto-started (FR-018).
-    private func startVoiceCapture() {
-        checkInHintSeen = true
-        viewModel.startRecording()
-    }
-
     private var todayDate: String {
-        Date.now.formatted(.dateTime.weekday(.abbreviated).day().month(.wide))
+        Date.now.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
     }
 
     @ViewBuilder
     private var content: some View {
         switch viewModel.state {
         case .done:
-            CheckInSavedView(recording: viewModel.lastSavedRecording) {
-                viewModel.reset()
-            }
-        // Idle and recording/paused/processing share one layout (captureStage) so the crescent
-        // stays anchored — it grows in place rather than jumping down when capture starts.
-        // .processing keeps the stage on screen (crescent spinning, stop shows a spinner) for
-        // the brief save window; the headline reads "Saving…".
+            CheckInSavedView { viewModel.reset() }
         default:
             captureStage
         }
     }
 
-    // MARK: Capture stage (idle + recording share one anchored layout)
+    // MARK: - Capture stage (hub + capturing share one anchored ring)
 
-    /// Idle and recording/paused/processing render in one ZStack so the crescent is anchored at
-    /// the same screen-centre across the transition (spec 024): it grows in place (200→260) and
-    /// never jumps down. Top chrome (headline ▸ progress + prompt) pins to the top, bottom chrome
-    /// (Speak / Log / Type) to the bottom, and the crescent — carrying the timer + controls while
-    /// recording — stays centred. The grow animates via `content`'s state animation (Reduce Motion
-    /// honoured there).
+    private var isCapturing: Bool { viewModel.state != .idle }
+
     private var captureStage: some View {
-        let isRecording = viewModel.state != .idle
-        return ZStack {
-            // Centre: the anchored crescent, plus the live status + controls while recording.
+        GeometryReader { geo in
+            let accessibilitySize = dynamicTypeSize.isAccessibilitySize
+            let ringSize = accessibilitySize ? 160 : min(geo.size.width, Metrics.CheckIn.ringDiameter)
             ZStack {
-                CrescentRing(isActive: viewModel.state == .recording && !viewModel.saveFailed)
-                    .frame(width: crescentDiameter, height: crescentDiameter)
-                    .opacity(viewModel.state == .paused ? Opacity.deEmphasis : 1)
-                    .accessibilityHidden(true)
-                if isRecording { recordingCentre } else { idleRingCentre }
-            }
+                VStack(spacing: Spacing.l) {
+                    ZStack {
+                        CheckInRing(progress: viewModel.flowProgress, diameter: ringSize)
+                            .overlay { levelGlow(diameter: ringSize) }
+                        if !accessibilitySize { ringCentre(ringSize: ringSize) }
+                    }
+                    if accessibilitySize { ringCentre(ringSize: ringSize) }
+                }
 
-            // Top chrome floats above the centred crescent.
-            VStack(spacing: 0) {
-                if isRecording { recordingHeader } else { idleHeader }
-                Spacer(minLength: 0)
+                VStack(spacing: 0) {
+                    if isCapturing { capturingHeader } else { hubHeader }
+                    Spacer(minLength: 0)
+                }
+
+                VStack(spacing: 0) {
+                    Spacer(minLength: 0)
+                    hintLine
+                }
             }
+            .frame(width: geo.size.width, height: geo.size.height)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.horizontal, Spacing.l)
-        .padding(.bottom, Spacing.l)
+        .padding(.horizontal, Spacing.gutter)
         .onChange(of: viewModel.saveFailed) { _, failed in
             if failed { Haptics.error() }
         }
-        // FR-016: structured task lifetime tied to the view; cancelled automatically
-        // when id changes again or the view disappears.
+        // FR-016: structured task lifetime tied to the view.
         .task(id: viewModel.isApproachingCap) {
             guard viewModel.isApproachingCap, !viewModel.hasShownCapApproach else { return }
             viewModel.markCapApproachShown()
@@ -195,152 +181,137 @@ struct CheckInView: View {
         }
     }
 
-    private var crescentDiameter: CGFloat { Metrics.CheckIn.crescentDiameter }
+    /// D-R2 (c): the disc brightens with the mic level while recording — live-mic feedback without
+    /// rotating the arc. Static under Reduce Motion.
+    @ViewBuilder private func levelGlow(diameter: CGFloat) -> some View {
+        if viewModel.state == .recording, !reduceMotion {
+            Circle()
+                .fill(Accent.primary.opacity(Double(viewModel.audioLevel) * 0.08))
+                .padding(Metrics.CheckIn.ringStroke)
+                .animation(.linear(duration: 0.1), value: viewModel.audioLevel)
+                .allowsHitTesting(false)
+        }
+    }
 
-    // MARK: Idle chrome
+    @ViewBuilder private func ringCentre(ringSize: CGFloat) -> some View {
+        if isCapturing {
+            if viewModel.saveFailed { failureRecovery } else { capturingCentre(ringSize: ringSize) }
+        } else {
+            hubStack
+        }
+    }
 
-    private var idleHeader: some View {
-        VStack(spacing: Spacing.xs) {
+    // MARK: - Hub (A)
+
+    private var hubHeader: some View {
+        VStack(spacing: Spacing.s) {
             Text(todayDate)
-                .font(Typography.label)
-                .textCase(.uppercase)
-                .foregroundStyle(NewLook.inkSecondary)
+                .font(Typography.navSubtitle)
+                .foregroundStyle(Ink.nav)
             Text("How do you feel?")
-                .font(Typography.text(24, weight: .bold, relativeTo: .title2))
-                .foregroundStyle(NewLook.inkPrimary)
+                .font(Typography.pageTitle)
+                .foregroundStyle(Ink.title)
                 .multilineTextAlignment(.center)
                 .accessibilityAddTraits(.isHeader)
-
-            // US5 / FR-018: first-launch headline whisper — low-contrast, one-time.
-            if !checkInHintSeen {
-                Text("Say whatever's on your mind — a few words is plenty.")
-                    .font(Typography.callout)
-                    .foregroundStyle(NewLook.inkSecondary.opacity(0.7))
-                    .multilineTextAlignment(.center)
-            }
+            Text("Take a moment to check in with yourself")
+                .font(Typography.pageSubtitle)
+                .foregroundStyle(Ink.primary)
+                .multilineTextAlignment(.center)
         }
-        .padding(.top, Spacing.xl)
+        .padding(.top, Spacing.xxl)
         .frame(maxWidth: .infinity)
     }
 
-    private var idleRingCentre: some View {
+    private var hubStack: some View {
         VStack(spacing: Spacing.s) {
-            hubOption("Log meds", icon: Icons.medication, tint: Palette.medication) {
+            Button {
+                viewModel.startRecording()
+            } label: {
+                Label("Speak check-in", systemImage: Icons.mic)
+            }
+            .buttonStyle(.filled)
+            .accessibilityLabel("Start voice check-in")
+
+            Button {
                 showMedLogSheet = true
+            } label: {
+                HStack(spacing: Spacing.s) {
+                    CapsuleGlyph(color: Accent.violet).frame(width: 18, height: 18)
+                    Text("Log medications")
+                }
             }
-            speakButton
-            hubOption("Type note", icon: "square.and.pencil", tint: nil) {
+            .buttonStyle(.outlined(tint: .violet))
+
+            Button {
                 showComposer = true
+            } label: {
+                Label("Write notes", systemImage: Icons.note)
             }
+            .buttonStyle(.outlined)
         }
     }
 
-    private var speakButton: some View {
-        Button {
-            startVoiceCapture()
-        } label: {
-            HStack(spacing: Spacing.s) {
-                Image(systemName: "mic.fill")
-                Text("Speak check-in").font(Typography.headline)
-            }
-            .foregroundStyle(NewLook.onSelection)
-            .padding(.horizontal, Spacing.xl)
-            .frame(minHeight: 48)
-            .background(Theme.meadowGreen, in: Capsule())
-            .newLookCardShadow()
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("Start voice check-in")
-    }
+    // MARK: - Capturing (B)
 
-    /// White hub pill (a04): card capsule + soft shadow, hugging its content — the calm
-    /// secondary actions flanking the solid-green speak pill.
-    private func hubOption(_ label: String, icon: String, tint: Color?, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: Spacing.s) {
-                Image(systemName: icon).foregroundStyle(tint ?? NewLook.inkPrimary)
-                Text(label).font(Typography.headline).foregroundStyle(NewLook.inkPrimary)
-            }
-            .padding(.horizontal, Spacing.xl)
-            .frame(minHeight: Metrics.minTapTarget)
-            .background(NewLook.card, in: Capsule())
-            .newLookCardShadow()
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(label)
-    }
-
-    // MARK: Recording chrome
-
-    /// a05 prompt card: bar + question + hint + dots on one white New Look card.
-    private var recordingHeader: some View {
-        VStack(spacing: Spacing.m) {
-            promptProgressBar
-            heroPrompt
-        }
-        .newLookCard()
-    }
-
-    /// The timer + controls that sit over the anchored crescent while recording; a save failure
-    /// swaps in the recovery affordance. The grouped status reads to VoiceOver as the
-    /// "Recording, elapsed" live region. Paused dims the ring (above) and names the state here —
-    /// an honest visual floor only, no resume / audio-append engineering (FR-017).
-    @ViewBuilder private var recordingCentre: some View {
-        if viewModel.saveFailed {
-            failureRecovery
-        } else {
-            VStack(spacing: Spacing.m) {
-                // FR-011: crescent + timer read as one live-region status, throttled to whole
-                // seconds (timeString changes once a second, not every 0.1s tick) so VoiceOver
-                // doesn't chatter.
-                Text(viewModel.timeString)
-                    .font(Typography.timer)
-                    .foregroundStyle(NewLook.inkPrimary)
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel(viewModel.state == .paused
-                                        ? "Paused, \(viewModel.timeString) elapsed"
-                                        : "Recording, \(viewModel.timeString) elapsed")
-                    .accessibilityAddTraits(.updatesFrequently)
-
-                if viewModel.state == .paused {
-                    Text("Paused")
-                        .font(Typography.label)
-                        .textCase(.uppercase)
-                        .foregroundStyle(NewLook.inkSecondary)
-                }
-                stopButton
-                Button {
-                    viewModel.cancelRecording()
-                } label: {
-                    Text("Cancel")
-                        .font(Typography.callout)
-                        .foregroundStyle(NewLook.inkSecondary)
-                        .padding(.horizontal, Spacing.l)
-                        .frame(minWidth: Metrics.minTapTarget, minHeight: 38)
-                        .background(NewLook.card, in: Capsule())
-                        .newLookCardShadow()
-                }
-                .buttonStyle(.plain)
+    private var capturingHeader: some View {
+        VStack(alignment: .leading, spacing: Spacing.m) {
+            NavPill(.back) { viewModel.cancelRecording() }
                 .accessibilityLabel("Cancel recording")
-
-                // FR-014 / R5: a single calm "wrapping up soon" line on the approach to the cap —
-                // faint, no red, no ticking bar. Fades after a beat; one-shot via the VM latch.
-                Text("Wrapping up soon")
-                    .font(Typography.caption)
-                    .foregroundStyle(NewLook.inkSecondary.opacity(0.7))
-                    .opacity(showCapApproachCue ? 1 : 0)
-                    .accessibilityHidden(!showCapApproachCue)
-            }
+            promptCard
         }
+        .padding(.top, Spacing.s)
     }
 
-    private var promptProgressBar: some View {
+    /// The pen's prompt card: question, hint, five dots (active dot larger, D14) and the kept
+    /// hairline countdown (spec 016 — the only cue a time-blind user gets before a prompt advances).
+    private var promptCard: some View {
+        VStack(spacing: Spacing.m) {
+            Text(viewModel.currentPrompt.question)
+                .font(Typography.promptTitle)
+                .foregroundStyle(Ink.title)
+                .multilineTextAlignment(.center)
+                .id(viewModel.currentPromptIndex)
+                .transition(.asymmetric(
+                    insertion: .move(edge: .trailing).combined(with: .opacity),
+                    removal: .move(edge: .leading).combined(with: .opacity)
+                ))
+            Text(viewModel.currentPrompt.hint)
+                .font(Typography.promptSubtitle)
+                .foregroundStyle(Ink.tertiary)
+                .multilineTextAlignment(.center)
+                .id("hint-\(viewModel.currentPromptIndex)")
+                .transition(.opacity)
+            VStack(spacing: Spacing.s) {
+                promptDots
+                promptProgressLine
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .raisedCard(.medium)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.35), value: viewModel.currentPromptIndex)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(viewModel.currentPrompt.question) \(viewModel.currentPrompt.hint)")
+    }
+
+    private var promptDots: some View {
+        HStack(spacing: Spacing.xs) {
+            ForEach(0..<CheckInViewModel.nudgePrompts.count, id: \.self) { index in
+                let active = index == viewModel.currentPromptIndex
+                Circle()
+                    .fill(active ? Accent.primary : Surface.ringTrack)
+                    .frame(width: active ? 8 : 6, height: active ? 8 : 6)
+            }
+        }
+        .frame(height: 8)
+        .accessibilityHidden(true)
+    }
+
+    private var promptProgressLine: some View {
         GeometryReader { geo in
             ZStack(alignment: .leading) {
+                Capsule().fill(Stroke.separator)
                 Capsule()
-                    .fill(NewLook.tintNeutral)
-                Capsule()
-                    .fill(Theme.meadowGreen)
+                    .fill(Accent.primary)
                     .frame(width: geo.size.width * viewModel.promptProgress)
                     .animation(reduceMotion ? nil : .linear(duration: 0.1), value: viewModel.promptProgress)
                     // New identity per prompt so the per-window reset snaps to 0
@@ -348,103 +319,82 @@ struct CheckInView: View {
                     .id(viewModel.currentPromptIndex)
             }
         }
-        .frame(height: Metrics.CheckIn.promptBarHeight)
+        .frame(height: 2)
         .accessibilityHidden(true)
     }
 
-    private var heroPrompt: some View {
+    private func capturingCentre(ringSize: CGFloat) -> some View {
         VStack(spacing: Spacing.s) {
-            Text(viewModel.currentPrompt.question)
-                .font(Typography.text(24, weight: .bold, relativeTo: .title2))
-                .foregroundStyle(NewLook.inkPrimary)
-                .multilineTextAlignment(.center)
-                .id(viewModel.currentPromptIndex)
-                .transition(.asymmetric(
-                    insertion: .move(edge: .trailing).combined(with: .opacity),
-                    removal: .move(edge: .leading).combined(with: .opacity)
-                ))
+            // FR-011: the timer reads as one live-region status, throttled to whole seconds.
+            Text(viewModel.timeString)
+                .font(Typography.timerHero)
+                .foregroundStyle(Ink.title)
+                .lineLimit(1)
+                .minimumScaleFactor(0.5)
+                .frame(maxWidth: ringSize - 2 * Metrics.CheckIn.ringStroke - Spacing.l)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Recording, \(viewModel.timeString) elapsed")
+                .accessibilityAddTraits(.updatesFrequently)
 
-            Text(viewModel.currentPrompt.hint)
-                .font(Typography.callout)
-                .foregroundStyle(NewLook.inkSecondary)
-                .multilineTextAlignment(.center)
-                .id("hint-\(viewModel.currentPromptIndex)")
-                .transition(.opacity)
-
-            promptDots
-                .padding(.top, Spacing.xs)
-        }
-        .animation(reduceMotion ? nil : .easeInOut(duration: 0.35), value: viewModel.currentPromptIndex)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(viewModel.currentPrompt.question) \(viewModel.currentPrompt.hint)")
-    }
-
-    private var promptDots: some View {
-        HStack(spacing: Metrics.CheckIn.promptDot) {
-            ForEach(0..<CheckInViewModel.nudgePrompts.count, id: \.self) { index in
-                Circle()
-                    .fill(index == viewModel.currentPromptIndex
-                          ? Theme.meadowGreen
-                          : NewLook.inkSecondary.opacity(0.3))
-                    .frame(width: Metrics.CheckIn.promptDot, height: Metrics.CheckIn.promptDot)
-            }
-        }
-        .accessibilityHidden(true)
-    }
-
-    private var stopButton: some View {
-        Button {
-            viewModel.stopRecording()
-        } label: {
-            HStack(spacing: Spacing.s) {
-                if viewModel.state == .processing {
-                    ProgressView().tint(NewLook.onSelection)
-                } else {
-                    RoundedRectangle(cornerRadius: Metrics.CheckIn.stopGlyphRadius)
-                        .fill(NewLook.onSelection)
-                        .frame(width: Metrics.CheckIn.stopGlyph, height: Metrics.CheckIn.stopGlyph)
-                    Text("Stop & save").font(Typography.headline)
+            Button {
+                viewModel.stopRecording()
+            } label: {
+                HStack(spacing: Spacing.s) {
+                    if viewModel.state == .processing {
+                        ProgressView().tint(Ink.onAccent)
+                    } else {
+                        RoundedRectangle(cornerRadius: Metrics.CheckIn.stopGlyphRadius)
+                            .fill(Ink.onAccent)
+                            .frame(width: Metrics.CheckIn.stopGlyph, height: Metrics.CheckIn.stopGlyph)
+                    }
+                    Text("Stop & save")
                 }
             }
-            .foregroundStyle(NewLook.onSelection)
-            .padding(.vertical, Spacing.m)
-            .padding(.horizontal, Spacing.xxl)
-            .frame(minHeight: Metrics.minTapTarget)
-            .background(Theme.meadowGreen, in: Capsule())
+            .buttonStyle(.filled)
+            .disabled(viewModel.state == .processing)
+            .accessibilityLabel("Finish check-in")
+
+            Button("Cancel") { viewModel.cancelRecording() }
+                .buttonStyle(.outlined)
+                .accessibilityLabel("Cancel recording")
         }
-        .buttonStyle(.plain)
-        .disabled(viewModel.state == .processing)
-        .accessibilityLabel("Finish check-in")
     }
 
-    // §04b Save-failed recovery — calm, recovery-framed, no alarm styling: the audio
-    // is already buffered (FR-005), so reassure and offer a one-tap re-save (FR-006).
+    /// The line under the ring: the hub's reassurance, or the capture hint — swapped for the
+    /// calm "wrapping up soon" cue on the approach to the cap (FR-014, no red, no ticking bar).
+    private var hintLine: some View {
+        Text(hintText)
+            .font(Typography.rowLabel)
+            .foregroundStyle(Ink.nav)
+            .multilineTextAlignment(.center)
+            .contentTransition(.opacity)
+            .padding(.bottom, Spacing.xxl)
+            .accessibilityHidden(isCapturing && !showCapApproachCue)
+    }
+
+    private var hintText: String {
+        guard isCapturing else { return "A few words are enough" }
+        return showCapApproachCue ? "Wrapping up soon" : "Take your time, speak freely."
+    }
+
+    // §04b Save-failed recovery — calm, recovery-framed, no alarm styling: the audio is already
+    // buffered (FR-005), so reassure and offer a one-tap re-save (FR-006).
     private var failureRecovery: some View {
         VStack(spacing: Spacing.s) {
             Text("Couldn't save that one.")
-                .font(Typography.headline)
-                .foregroundStyle(NewLook.inkPrimary)
+                .font(Typography.sectionTitle)
+                .foregroundStyle(Ink.primary)
             Text("Your check-in is safe — tap to try again.")
-                .font(Typography.callout)
-                .foregroundStyle(NewLook.inkSecondary)
+                .font(Typography.cardSubtitle)
+                .foregroundStyle(Ink.tertiary)
                 .multilineTextAlignment(.center)
 
-            Button { viewModel.retrySave() } label: {
-                Text("Try again")
-                    .font(Typography.headline)
-                    .foregroundStyle(NewLook.onInk)
-                    .padding(.vertical, Spacing.m)
-                    .padding(.horizontal, Spacing.xxl)
-                    .frame(minHeight: Metrics.minTapTarget)
-                    .background(NewLook.inkPrimary, in: Capsule())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Try saving again")
+            Button("Try again") { viewModel.retrySave() }
+                .buttonStyle(.filled)
+                .accessibilityLabel("Try saving again")
 
             Button("Discard") { viewModel.discardFailedCapture() }
-                .font(Typography.callout)
-                .foregroundStyle(NewLook.inkSecondary)
-                .frame(minWidth: Metrics.minTapTarget, minHeight: Metrics.minTapTarget)
+                .buttonStyle(.underline)
                 .accessibilityLabel("Discard this check-in")
         }
         .padding(.horizontal, Spacing.l)
@@ -452,59 +402,65 @@ struct CheckInView: View {
     }
 }
 
-// MARK: - Saved
+// MARK: - Saved (C)
 
-/// §05 Saved (a06) — pure confirmation: a selection-green check disc that settles in with a
-/// success haptic, "Captured.", a calm subtitle, and a full-width green Done pill.
+/// The pen's saved screen: the ring completes to full around a sharp green check tile (D-K1),
+/// "Check-in saved", a two-line reassurance, and one full-width exit back to the hub (D5).
 private struct CheckInSavedView: View {
-    let recording: Recording?
-    let onNewCheckIn: () -> Void
+    let onDone: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var popped = false
+    @State private var settled = false
 
     var body: some View {
-        VStack(spacing: Spacing.l) {
-            Spacer()
-            ZStack {
-                Circle()
-                    .fill(Theme.meadowGreen)
-                    .frame(width: Metrics.CheckIn.savedDisc, height: Metrics.CheckIn.savedDisc)
-                    .newLookCardShadow()
-                Image(systemName: "checkmark")
-                    .font(.system(size: Metrics.CheckIn.savedCheck, weight: .bold))
-                    .foregroundStyle(NewLook.onSelection)
+        VStack(spacing: 0) {
+            HStack {
+                NavPill(.back, action: onDone)
+                Spacer()
             }
-            .scaleEffect(popped ? 1 : 0.6)
-            .opacity(popped ? 1 : 0)
+            .padding(.top, Spacing.s)
 
-            Text("Captured.")
-                .font(Typography.text(24, weight: .bold, relativeTo: .title2))
-                .foregroundStyle(NewLook.inkPrimary)
-            Text("That's today's check-in. Talk to you next time.")
-                .font(Typography.callout)
-                .foregroundStyle(NewLook.inkSecondary)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: 240)
+            Spacer(minLength: Spacing.l)
 
-            Spacer()
-            // a06 full-width green pill — a local style; the shared `.primary` (meadow)
-            // stays untouched for its other consumers.
-            Button(action: onNewCheckIn) {
-                Text("Done")
-                    .font(Typography.headline)
-                    .foregroundStyle(NewLook.onSelection)
-                    .frame(maxWidth: .infinity, minHeight: 50)
-                    .background(Theme.meadowGreen, in: Capsule())
+            VStack(spacing: Spacing.hero + Spacing.s) {
+                ZStack {
+                    CheckInRing(progress: settled ? 1 : 2.0 / 3.0, diameter: Metrics.CheckIn.ringSavedDiameter)
+                    Rectangle()
+                        .fill(Accent.primary)
+                        .frame(width: Metrics.CheckIn.checkTile, height: Metrics.CheckIn.checkTile)
+                        .overlay {
+                            Image(systemName: Icons.check)
+                                .font(.system(size: 44, weight: .bold))
+                                .foregroundStyle(Ink.onAccent)
+                        }
+                        .scaleEffect(settled ? 1 : 0.6)
+                        .opacity(settled ? 1 : 0)
+                }
+                .accessibilityHidden(true)
+
+                VStack(spacing: Spacing.s) {
+                    Text("Check-in saved")
+                        .font(Typography.pageTitle)
+                        .foregroundStyle(Ink.title)
+                        .multilineTextAlignment(.center)
+                        .accessibilityAddTraits(.isHeader)
+                    Text("A moment for yourself, captured.\nSee you at your next check-in.")
+                        .font(Typography.rowLabel)
+                        .foregroundStyle(Ink.primary)
+                        .multilineTextAlignment(.center)
+                }
             }
-            .buttonStyle(.plain)
-            .padding(.bottom, Spacing.hero)
+
+            Spacer(minLength: Spacing.l)
+
+            Button("Go back home", action: onDone)
+                .buttonStyle(.filled(fullWidth: true))
+                .padding(.bottom, Spacing.l)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.horizontal, Spacing.l)
+        .padding(.horizontal, Spacing.gutter)
         .onAppear {
             Haptics.success()
-            guard !reduceMotion else { popped = true; return }
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.6)) { popped = true }
+            guard !reduceMotion else { settled = true; return }
+            withAnimation(Motion.settle) { settled = true }
         }
     }
 }

@@ -78,10 +78,5 @@ public enum Metrics {
         public static let stopGlyph: CGFloat = 16
         public static let stopGlyphRadius: CGFloat = 4
 
-        // Pre-057 (aliases until UI-21/22/23 migrate; UI-49 deletes)
-        public static let crescentDiameter: CGFloat = 300
-        public static let promptBarHeight: CGFloat = 4
-        public static let savedDisc: CGFloat = 78
-        public static let savedCheck: CGFloat = 32
     }
 }

@@ -49,9 +49,7 @@ struct WelcomeView: View {
         VStack(spacing: Spacing.section) {
             Spacer(minLength: Spacing.section)
 
-            CrescentRing(breathing: false)
-                .frame(width: crescentSize, height: crescentSize)
-                .accessibilityHidden(true)
+            CheckInRing(progress: 1.0 / 3.0, diameter: crescentSize)
 
             VStack(spacing: Spacing.m) {
                 Text("Welcome to Squirl")

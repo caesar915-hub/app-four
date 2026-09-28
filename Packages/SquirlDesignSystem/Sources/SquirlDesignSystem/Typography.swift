@@ -90,8 +90,6 @@ public enum Typography {
     public static let label: Font = captionMedium
     /// Day-card mood word — keeps its 24/700 until the journal migrates (UI-25).
     public static let moodWord: Font = sf(24, .bold, .title2)
-    /// Recording timer — keeps SF Mono 22 until the check-in migrates (UI-22).
-    public static let timer: Font = sf(22, .medium, .title2, mono: true)
     public static let duration: Font = sf(12, .regular, .caption1, mono: true)
     public static let mono12: Font = sf(12, .regular, .caption1, mono: true)
 
